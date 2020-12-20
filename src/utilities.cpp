@@ -317,6 +317,28 @@ Eigen::VectorXi diff_union(Eigen::VectorXi A, Eigen::VectorXi B, Eigen::VectorXi
 //     return vec;
 // }
 
+Eigen::VectorXi min_k(Eigen::VectorXd vec, int k)
+{
+    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
+    auto rule = [vec](int i, int j) -> bool {
+        return vec(i) < vec(j);
+    }; // sort rule
+    std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
+    std::sort(ind.data(), ind.data() + k, rule);
+    return ind.head(k).eval();
+}
+
+Eigen::VectorXi max_k(Eigen::VectorXd vec, int k)
+{
+    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
+    auto rule = [vec](int i, int j) -> bool {
+        return vec(i) > vec(j);
+    }; // sort rule
+    std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
+    std::sort(ind.data(), ind.data() + k, rule);
+    return ind.head(k).eval();
+}
+
 // Ac
 std::vector<int> Ac(std::vector<int> A, int N)
 {
@@ -408,16 +430,6 @@ Eigen::VectorXi find_ind(std::vector<int> L, Eigen::VectorXi &index, Eigen::Vect
         }
         return ind.head(mark);
     }
-}
-
-Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind)
-{
-    Eigen::MatrixXd X_new(n, ind.size());
-    for (int k = 0; k < ind.size(); k++)
-    {
-        X_new.col(k) = X.col(ind[k]);
-    }
-    return X_new;
 }
 
 std::vector<int> vec_seg(std::vector<int> L, std::vector<int> ind)
