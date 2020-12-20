@@ -366,20 +366,28 @@ std::vector<int> Ac(std::vector<int> A, int N)
 Eigen::VectorXi Ac(Eigen::VectorXi A, int N)
 {
     int A_size = A.size();
-    int temp = 0;
-    int j = 0;
     if (A_size == 0)
     {
-        return Eigen::VectorXi::LinSpaced(N, 0, N - 1)
+        return Eigen::VectorXi::LinSpaced(N, 0, N - 1);
     }
     else
     {
-        std::vector<int> vec(N);
+        Eigen::VectorXi I(N - A.size());
+        int cur_index = 0;
+        int A_index = 0;
         for (int i = 0; i < N; i++)
         {
-            vec[i] = i;
+            if (i != A(A_index))
+            {
+                I(cur_index) = i;
+                cur_index += 1;
+            }
+            else
+            {
+                A_index += 1;
+            }
         }
-        return vec;
+        return I;
     }
 }
 
