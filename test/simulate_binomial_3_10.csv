@@ -1,0 +1,5 @@
+,TP_pdas_list,FP_pdas_list,mcc_pdas_list,pre_loss_pdas_list,t_pdas_list,TP_gpdas_list,FP_gpdas_list,mcc_gpdas_list,pre_loss_gpdas_list,t_gpdas_list,TP_lasso_list,FP_lasso_list,mcc_lasso_list,pre_loss_lasso_list,t_lasso_list
+n=1000p=8k=4,3.7,1.6,0.5248579134663366,0.009896224628740671,0.026488089561462404,3.9,1.2,nan,0.008489096744061331,0.0339092493057251
+n=1000p=10k=4,3.8,1.8,0.6506602726317776,0.012795322593213799,0.06166296005249024,3.9,1.6,0.7143959924780228,0.0116374445258052,0.03371117115020752
+n=1000p=12k=4,3.8,1.6,0.7352502701267362,0.010104496218792282,0.05894308090209961,4.0,1.2,0.8260853668509398,0.009057204181838181,0.03048269748687744
+,TP_pdas_list,FP_pdas_list,mcc_pdas_list,pre_loss_pdas_list,t_pdas_list,TP_gpdas_list,FP_gpdas_list,mcc_gpdas_list,pre_loss_gpdas_list,t_gpdas_list,TP_lasso_list,FP_lasso_list,mcc_lasso_list,pre_loss_lasso_list,t_lasso_list

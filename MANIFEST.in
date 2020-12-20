@@ -1,0 +1,7 @@
+include README.md
+include LICENSE
+recursive-include include *
+recursive-include src *
+include pre.sh
+include cygwinccompiler.py
+include distutils.cfg
