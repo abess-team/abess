@@ -1,9 +1,0 @@
-,TP_pdas_list,FP_pdas_list,mcc_pdas_list,pre_loss_pdas_list,t_pdas_list,TP_gpdas_list,FP_gpdas_list,mcc_gpdas_list,pre_loss_gpdas_list,t_gpdas_list,TP_lasso_list,FP_lasso_list,mcc_lasso_list,pre_loss_lasso_list,t_lasso_list
-n=1000p=8k=4,3.9,1.2,0.6929297207620735,0.0008666279100472653,0.7299858093261719,4.0,1.0,nan,0.0008111490751688715,0.8000983715057373
-n=1000p=10k=4,3.8,1.5,0.6718025902897122,0.0010052280100263855,0.8628626585006713,3.9,1.1,nan,0.0032968042333771986,0.8943928241729736
-n=1000p=12k=4,3.8,2.0,0.6911799283644389,0.0010896362598633454,1.0695661067962647,3.9,0.8,0.8673320053068151,0.0007852852392085295,0.8500139951705933
-,TP_pdas_list,FP_pdas_list,mcc_pdas_list,pre_loss_pdas_list,t_pdas_list,TP_gpdas_list,FP_gpdas_list,mcc_gpdas_list,pre_loss_gpdas_list,t_gpdas_list,TP_lasso_list,FP_lasso_list,mcc_lasso_list,pre_loss_lasso_list,t_lasso_list
-,TP_pdas_list,FP_pdas_list,mcc_pdas_list,pre_loss_pdas_list,t_pdas_list,TP_gpdas_list,FP_gpdas_list,mcc_gpdas_list,pre_loss_gpdas_list,t_gpdas_list,TP_lasso_list,FP_lasso_list,mcc_lasso_list,pre_loss_lasso_list,t_lasso_list
-,TP_pdas_list,FP_pdas_list,mcc_pdas_list,pre_loss_pdas_list,t_pdas_list,TP_gpdas_list,FP_gpdas_list,mcc_gpdas_list,pre_loss_gpdas_list,t_gpdas_list,TP_lasso_list,FP_lasso_list,mcc_lasso_list,pre_loss_lasso_list,t_lasso_list
-n=1000p=100k=20,17.6,11.8,0.6692518029376215,0.03081324356317063,101.04359061717987,19.9,0.8,0.973450660723206,0.013439253906685345,7.2235125541687015
-,TP_pdas_list,FP_pdas_list,mcc_pdas_list,pre_loss_pdas_list,t_pdas_list,TP_gpdas_list,FP_gpdas_list,mcc_gpdas_list,pre_loss_gpdas_list,t_gpdas_list,TP_lasso_list,FP_lasso_list,mcc_lasso_list,pre_loss_lasso_list,t_lasso_list
