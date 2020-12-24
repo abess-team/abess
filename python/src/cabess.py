@@ -10,9 +10,9 @@ if _swig_python_version_info < (2, 7, 0):
 
 # Import the low-level C/C++ module
 if __package__ or "." in __name__:
-    from . import _cbess
+    from . import _cabess
 else:
-    import _cbess
+    import _cabess
 
 try:
     import builtins as __builtin__
@@ -62,7 +62,7 @@ class _SwigNonDynamicMeta(type):
 
 
 
-def pywrap_bess(IN_ARRAY2, arg2, data_type, arg4, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, is_cv, K, arg15, arg16, arg17, arg18, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, n_lambda, is_screening, screening_size, powell_path, arg29, tao, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38):
-    return _cbess.pywrap_bess(IN_ARRAY2, arg2, data_type, arg4, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, is_cv, K, arg15, arg16, arg17, arg18, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, n_lambda, is_screening, screening_size, powell_path, arg29, tao, arg31, arg32, arg33, arg34, arg35, arg36, arg37, arg38)
+def pywrap_abess(IN_ARRAY2, arg2, data_type, arg4, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, is_cv, K, arg15, arg16, arg17, arg18, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, n_lambda, is_screening, screening_size, powell_path, arg29, tau, primary_model_fit_max_iter, primary_model_fit_epsilon, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40):
+    return _cabess.pywrap_abess(IN_ARRAY2, arg2, data_type, arg4, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, is_cv, K, arg15, arg16, arg17, arg18, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, n_lambda, is_screening, screening_size, powell_path, arg29, tau, primary_model_fit_max_iter, primary_model_fit_epsilon, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40)
 
 

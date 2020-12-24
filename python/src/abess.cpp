@@ -34,20 +34,21 @@ using namespace Eigen;
 using namespace std;
 
 // [[Rcpp::export]]
-List bessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorXd weight,
-             bool is_normal,
-             int algorithm_type, int model_type, int max_iter, int exchange_num,
-             int path_type, bool is_warm_start,
-             int ic_type, bool is_cv, int K,
-             Eigen::VectorXd state,
-             Eigen::VectorXi sequence,
-             Eigen::VectorXd lambda_seq,
-             int s_min, int s_max, int K_max, double epsilon,
-             double lambda_min, double lambda_max, int nlambda,
-             bool is_screening, int screening_size, int powell_path,
-             Eigen::VectorXi g_index,
-             Eigen::VectorXi always_select,
-             double tau)
+List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorXd weight,
+              bool is_normal,
+              int algorithm_type, int model_type, int max_iter, int exchange_num,
+              int path_type, bool is_warm_start,
+              int ic_type, bool is_cv, int K,
+              Eigen::VectorXd state,
+              Eigen::VectorXi sequence,
+              Eigen::VectorXd lambda_seq,
+              int s_min, int s_max, int K_max, double epsilon,
+              double lambda_min, double lambda_max, int nlambda,
+              bool is_screening, int screening_size, int powell_path,
+              Eigen::VectorXi g_index,
+              Eigen::VectorXi always_select,
+              double tau,
+              int primary_model_fit_max_iter, double primary_model_fit_epsilon)
 {
     srand(123);
     int p = x.cols();
@@ -113,13 +114,14 @@ List bessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorX
     {
         if (model_type == 2)
         {
-            algorithm = new GSplicingLogistic(data, algorithm_type, max_iter);
+            algorithm = new abessLogistic(data, algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
         }
     }
 
     algorithm->set_warm_start(is_warm_start);
     algorithm->always_select = always_select;
     algorithm->tau = tau;
+    algorithm->exchange_num = exchange_num;
 
 #ifdef OTHER_ALGORITHM1
     if (algorithm_type == 6)
@@ -222,23 +224,24 @@ List bessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorX
 
 #ifndef R_BUILD
 
-void pywrap_bess(double *x, int x_row, int x_col, double *y, int y_len, int data_type, double *weight, int weight_len,
-                 bool is_normal,
-                 int algorithm_type, int model_type, int max_iter, int exchange_num,
-                 int path_type, bool is_warm_start,
-                 int ic_type, bool is_cv, int K,
-                 int *gindex, int gindex_len,
-                 double *state, int state_len,
-                 int *sequence, int sequence_len,
-                 double *lambda_sequence, int lambda_sequence_len,
-                 int s_min, int s_max, int K_max, double epsilon,
-                 double lambda_min, double lambda_max, int n_lambda,
-                 bool is_screening, int screening_size, int powell_path,
-                 int *always_select, int always_select_len, double tau,
-                 double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
-                 int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
-                 int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
-                 int A_out_len, int *l_out)
+void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int data_type, double *weight, int weight_len,
+                  bool is_normal,
+                  int algorithm_type, int model_type, int max_iter, int exchange_num,
+                  int path_type, bool is_warm_start,
+                  int ic_type, bool is_cv, int K,
+                  int *gindex, int gindex_len,
+                  double *state, int state_len,
+                  int *sequence, int sequence_len,
+                  double *lambda_sequence, int lambda_sequence_len,
+                  int s_min, int s_max, int K_max, double epsilon,
+                  double lambda_min, double lambda_max, int n_lambda,
+                  bool is_screening, int screening_size, int powell_path,
+                  int *always_select, int always_select_len, double tau,
+                  int primary_model_fit_max_iter, double primary_model_fit_epsilon,
+                  double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
+                  int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
+                  int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
+                  int A_out_len, int *l_out)
 {
     Eigen::MatrixXd x_Mat;
     Eigen::VectorXd y_Vec;
@@ -258,19 +261,20 @@ void pywrap_bess(double *x, int x_row, int x_col, double *y, int y_len, int data
     lambda_sequence_Vec = Pointer2VectorXd(lambda_sequence, lambda_sequence_len);
     always_select_Vec = Pointer2VectorXi(always_select, always_select_len);
 
-    List mylist = bessCpp(x_Mat, y_Vec, data_type, weight_Vec,
-                          is_normal,
-                          algorithm_type, model_type, max_iter, exchange_num,
-                          path_type, is_warm_start,
-                          ic_type, is_cv, K,
-                          state_Vec,
-                          sequence_Vec,
-                          lambda_sequence_Vec,
-                          s_min, s_max, K_max, epsilon,
-                          lambda_min, lambda_max, n_lambda,
-                          is_screening, screening_size, powell_path,
-                          gindex_Vec,
-                          always_select_Vec, tau);
+    List mylist = abessCpp(x_Mat, y_Vec, data_type, weight_Vec,
+                           is_normal,
+                           algorithm_type, model_type, max_iter, exchange_num,
+                           path_type, is_warm_start,
+                           ic_type, is_cv, K,
+                           state_Vec,
+                           sequence_Vec,
+                           lambda_sequence_Vec,
+                           s_min, s_max, K_max, epsilon,
+                           lambda_min, lambda_max, n_lambda,
+                           is_screening, screening_size, powell_path,
+                           gindex_Vec,
+                           always_select_Vec, tau,
+                           primary_model_fit_max_iter, primary_model_fit_epsilon);
 
     Eigen::VectorXd beta;
     double coef0;

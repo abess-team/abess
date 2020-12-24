@@ -30,6 +30,7 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
     int j = 0;
     int sequence_size = sequence.size();
     int lambda_size = lambda_seq.size();
+    int N = data.g_num;
     Eigen::VectorXi full_mask(n);
     for (i = 0; i < n; i++)
         full_mask(i) = int(i);
@@ -44,6 +45,8 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
 
     Eigen::VectorXd beta_init = Eigen::VectorXd::Zero(p);
     double coef0_init = 0.0;
+    Eigen::VectorXi A_init;
+    Eigen::VectorXi I_init = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
 
     for (i = 0; i < sequence_size; i++)
     {
@@ -57,12 +60,16 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
             algorithm->update_lambda_level(lambda_seq(j));
             algorithm->update_beta_init(beta_init);
             algorithm->update_coef0_init(coef0_init);
+            algorithm->update_A_init(A_init);
+            algorithm->update_I_init(I_init);
             algorithm->update_group_XTX(full_group_XTX);
             algorithm->fit();
             if (algorithm->warm_start)
             {
                 beta_init = algorithm->get_beta();
                 coef0_init = algorithm->get_coef0();
+                A_init = algorithm->get_A_out();
+                I_init = algorithm->get_I_out();
             }
 
             beta_matrix[j].resize(p, sequence_size);
@@ -663,7 +670,7 @@ void golden_section_search(Data &data, Algorithm *algorithm, Metric *metric, dou
 
     ic_row = int(c[0]);
     ic_col = floor((c[1] - log_lambda_min) / d_lambda);
-    if (isnan(ic_sequence(ic_row, ic_col)))
+    if (std::isnan(ic_sequence(ic_row, ic_col)))
     {
         ic_sequence(ic_row, ic_col) = closs;
     }
@@ -691,7 +698,7 @@ void golden_section_search(Data &data, Algorithm *algorithm, Metric *metric, dou
     train_loss_temp2 = metric->train_loss(algorithm, data);
     ic_row = int(d[0]);
     ic_col = floor((d[1] - log_lambda_min) / d_lambda);
-    if (isnan(ic_sequence(ic_row, ic_col)))
+    if (std::isnan(ic_sequence(ic_row, ic_col)))
     {
         ic_sequence(ic_row, ic_col) = dloss;
     }
@@ -744,7 +751,7 @@ void golden_section_search(Data &data, Algorithm *algorithm, Metric *metric, dou
             tmp_loss = metric->ic(algorithm, data);
             ic_row = int(c[0]);
             ic_col = floor((c[1] - log_lambda_min) / d_lambda);
-            if (isnan(ic_sequence(ic_row, ic_col)))
+            if (std::isnan(ic_sequence(ic_row, ic_col)))
             {
                 ic_sequence(ic_row, ic_col) = tmp_loss;
             }
@@ -813,7 +820,7 @@ void golden_section_search(Data &data, Algorithm *algorithm, Metric *metric, dou
             train_loss_temp1 = metric->train_loss(algorithm, data);
             ic_row = int(c[0]);
             ic_col = floor((c[1] - log_lambda_min) / d_lambda);
-            if (isnan(ic_sequence(ic_row, ic_col)))
+            if (std::isnan(ic_sequence(ic_row, ic_col)))
             {
                 ic_sequence(ic_row, ic_col) = closs;
             }
@@ -868,7 +875,7 @@ void golden_section_search(Data &data, Algorithm *algorithm, Metric *metric, dou
             train_loss_temp2 = metric->train_loss(algorithm, data);
             ic_row = int(d[0]);
             ic_col = floor((d[1] - log_lambda_min) / d_lambda);
-            if (isnan(ic_sequence(ic_row, ic_col)))
+            if (std::isnan(ic_sequence(ic_row, ic_col)))
             {
                 ic_sequence(ic_row, ic_col) = dloss;
             }
@@ -922,7 +929,7 @@ void golden_section_search(Data &data, Algorithm *algorithm, Metric *metric, dou
 
                 ic_row = int(c[0]);
                 ic_col = floor((c[1] - log_lambda_min) / d_lambda);
-                if (isnan(ic_sequence(ic_row, ic_col)))
+                if (std::isnan(ic_sequence(ic_row, ic_col)))
                 {
                     ic_sequence(ic_row, ic_col) = tmp_loss;
                 }
@@ -1044,7 +1051,7 @@ void seq_search(Data &data, Algorithm *algorithm, Metric *metric, double p[], do
 
     ic_row = p[0] + i * u[0] - s_min;
     ic_col = (p[1] + i * u[1] - log_lambda_min) / d_lambda;
-    if (isnan(ic_sequence(ic_row, ic_col)))
+    if (std::isnan(ic_sequence(ic_row, ic_col)))
     {
         ic_sequence(ic_row, ic_col) = ic_sequence_1(i);
     }
@@ -1081,7 +1088,7 @@ void seq_search(Data &data, Algorithm *algorithm, Metric *metric, double p[], do
         train_loss_1(i) = metric->train_loss(algorithm, data);
         ic_row = p[0] + i * u[0] - s_min;
         ic_col = round((p[1] + i * u[1] - log_lambda_min) / d_lambda);
-        if (isnan(ic_sequence(ic_row, ic_col)))
+        if (std::isnan(ic_sequence(ic_row, ic_col)))
         {
             ic_sequence(ic_row, ic_col) = ic_sequence_1(i);
         }
@@ -1119,7 +1126,7 @@ void seq_search(Data &data, Algorithm *algorithm, Metric *metric, double p[], do
         train_loss_2(j) = metric->train_loss(algorithm, data);
         ic_row = p[0] - j * u[0] - s_min;
         ic_col = round((p[1] - j * u[1] - log_lambda_min) / d_lambda);
-        if (isnan(ic_sequence(ic_row, ic_col)))
+        if (std::isnan(ic_sequence(ic_row, ic_col)))
         {
             ic_sequence(ic_row, ic_col) = ic_sequence_2(j);
         }
