@@ -122,10 +122,10 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
         Eigen::VectorXi ind = Eigen::VectorXi::Zero(p);
         for (int i = 0; i < L.size(); i++)
         {
-            ind.segment(mark, gsize(L[i])) = Eigen::VectorXi::LinSpaced(gsize(L[i]), index(L[i]), index(L[i]) + gsize(L[i]) - 1);
-            mark = mark + gsize(L[i]);
+            ind.segment(mark, gsize(L(i))) = Eigen::VectorXi::LinSpaced(gsize(L(i)), index(L(i)), index(L(i)) + gsize(L(i)) - 1);
+            mark = mark + gsize(L(i));
         }
-        return ind.head(mark);
+        return ind.head(mark).eval();
     }
 }
 
@@ -134,7 +134,7 @@ Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind)
     Eigen::MatrixXd X_new(n, ind.size());
     for (int k = 0; k < ind.size(); k++)
     {
-        X_new.col(k) = X.col(ind[k]);
+        X_new.col(k) = X.col(ind(k));
     }
     return X_new;
 }
@@ -394,11 +394,17 @@ Eigen::VectorXi Ac(Eigen::VectorXi A, int N)
     }
     else
     {
-        Eigen::VectorXi I(N - A.size());
+        Eigen::VectorXi I(N - A_size);
         int cur_index = 0;
         int A_index = 0;
         for (int i = 0; i < N; i++)
         {
+            if (A_index >= A_size)
+            {
+                I(cur_index) = i;
+                cur_index += 1;
+                continue;
+            }
             if (i != A(A_index))
             {
                 I(cur_index) = i;
@@ -428,7 +434,7 @@ Eigen::VectorXi find_ind(std::vector<int> L, Eigen::VectorXi &index, Eigen::Vect
             ind.segment(mark, gsize(L[i])) = Eigen::VectorXi::LinSpaced(gsize(L[i]), index(L[i]), index(L[i]) + gsize(L[i]) - 1);
             mark = mark + gsize(L[i]);
         }
-        return ind.head(mark);
+        return ind.head(mark).eval();
     }
 }
 

@@ -61,7 +61,8 @@ public:
         if (g_num > 1)
         {
             Eigen::VectorXi temp = Eigen::VectorXi::Zero(g_num);
-            temp.head(g_num - 1) = g_index.tail(g_num - 1);
+            for (int i = 0; i < g_num - 1; i++)
+                temp(i) = g_index(i + 1);
             temp(g_num - 1) = this->p;
             this->g_size = temp - g_index;
         }

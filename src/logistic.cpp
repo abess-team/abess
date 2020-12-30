@@ -20,7 +20,7 @@ Eigen::VectorXd pi(Eigen::MatrixXd X, Eigen::VectorXd y, Eigen::VectorXd coef, i
   {
     Eigen::VectorXd intercept = Eigen::VectorXd::Ones(n) * coef(0);
     Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-    Eigen::VectorXd eta = X * (coef.tail(p - 1)) + intercept;
+    Eigen::VectorXd eta = X * (coef.tail(p - 1).eval()) + intercept;
     for (int i = 0; i < n; i++)
     {
       if (eta(i) > 30)

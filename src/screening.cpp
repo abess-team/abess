@@ -5,7 +5,7 @@
 using namespace Rcpp;
 // [[Rcpp::depends(RcppEigen)]]
 #else
-#include <Eigen\Eigen>
+#include <Eigen/Eigen>
 #include "List.h"
 #endif
 
@@ -31,7 +31,8 @@ Eigen::VectorXi screening(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorX
 
     int g_num = (g_index).size();
     Eigen::VectorXi temp = Eigen::VectorXi::Zero(g_num);
-    temp.head(g_num - 1) = g_index.tail(g_num - 1);
+    for (int i = 0; i < g_num - 1; i++)
+        temp(i) = g_index(i + 1);
     temp(g_num - 1) = p;
     Eigen::VectorXi g_size = temp - g_index;
 

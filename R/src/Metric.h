@@ -13,6 +13,7 @@
 #include <algorithm>
 #include "utilities.h"
 
+// To do: calculate loss && all to one && lm poisson cox
 class Metric
 {
 public:
@@ -25,13 +26,16 @@ public:
 
     std::vector<std::vector<Eigen::MatrixXd>> group_XTX_list;
 
+    double ic_coef;
+
     Metric() = default;
 
-    Metric(int ic_type, bool is_cv, int K = 0)
+    Metric(int ic_type, double ic_coef = 1.0, bool is_cv = false, int K = 5)
     {
         this->is_cv = is_cv;
         this->ic_type = ic_type;
         this->K = K;
+        this->ic_coef = ic_coef;
     };
 
     void set_cv_initial_model_param(int K, int p)
@@ -136,7 +140,7 @@ public:
 class LmMetric : public Metric
 {
 public:
-    LmMetric(int ic_type, bool is_cv, int K = 0) : Metric(ic_type, is_cv, K){};
+    LmMetric(int ic_type, double ic_coef, bool is_cv, int K = 5) : Metric(ic_type, ic_coef, is_cv, K){};
 
     double train_loss(Algorithm *algorithm, Data &data)
     {
@@ -158,12 +162,12 @@ public:
             Eigen::VectorXd loss_list(this->K);
             for (k = 0; k < this->K; k++)
             {
-                int test_size = this->test_mask_list[k].size();
-                Eigen::MatrixXd test_x(test_size, p);
-                Eigen::VectorXd test_y(test_size);
-                Eigen::VectorXd test_weight(test_size);
+                int test_n = this->test_mask_list[k].size();
+                Eigen::MatrixXd test_x(test_n, p);
+                Eigen::VectorXd test_y(test_n);
+                Eigen::VectorXd test_weight(test_n);
 
-                for (int i = 0; i < test_size; i++)
+                for (int i = 0; i < test_n; i++)
                 {
                     test_x.row(i) = data.x.row(this->test_mask_list[k](i));
                     test_y(i) = data.y(this->test_mask_list[k](i));
@@ -183,7 +187,7 @@ public:
                     this->update_cv_initial_model_param(algorithm->get_beta(), k);
                 }
 
-                loss_list(k) = (test_y - test_x * algorithm->get_beta()).array().square().sum() / double(2 * test_size);
+                loss_list(k) = (test_y - test_x * algorithm->get_beta()).array().square().sum() / double(2 * test_n);
             }
 
             return loss_list.mean();
@@ -255,32 +259,52 @@ public:
 class LogisticMetric : public Metric
 {
 public:
-    LogisticMetric(int ic_type, bool is_cv, int K = 0) : Metric(ic_type, is_cv, K){};
+    LogisticMetric(int ic_type, double ic_coef, bool is_cv, int K = 5) : Metric(ic_type, ic_coef, is_cv, K){};
 
     double train_loss(Algorithm *algorithm, Data &data)
     {
-        int i;
-        int n = data.get_n();
-        Eigen::VectorXd coef(n);
-        Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
+        // int i;
+        // int n = data.get_n();
+        // Eigen::VectorXd coef(n);
+        // Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
 
-        for (i = 0; i <= n - 1; i++)
+        // for (i = 0; i <= n - 1; i++)
+        // {
+        //     coef(i) = algorithm->get_coef0();
+        // }
+        // Eigen::VectorXd xbeta_exp = data.x * algorithm->get_beta() + coef;
+        // for (int i = 0; i <= n - 1; i++)
+        // {
+        //     if (xbeta_exp(i) > 30.0)
+        //         xbeta_exp(i) = 30.0;
+        //     if (xbeta_exp(i) < -30.0)
+        //         xbeta_exp(i) = -30.0;
+        // }
+        // xbeta_exp = xbeta_exp.array().exp();
+        // Eigen::VectorXd pr = xbeta_exp.array() / (xbeta_exp + one).array();
+
+        clock_t t1 = clock();
+        Eigen::VectorXi A = algorithm->get_A_out();
+        Eigen::VectorXi g_index = data.g_index;
+        Eigen::VectorXi g_size = data.g_size;
+        int p = data.p;
+        int N = data.g_num;
+        int n = data.n;
+        Eigen::VectorXd beta = algorithm->get_beta();
+        double coef0 = algorithm->get_coef0();
+
+        Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
+        Eigen::MatrixXd X_A = X_seg(data.x, n, A_ind);
+        Eigen::VectorXd beta_A(A_ind.size());
+        for (int k = 0; k < A_ind.size(); k++)
         {
-            coef(i) = algorithm->get_coef0();
+            beta_A(k) = beta(A_ind(k));
         }
-        Eigen::VectorXd xbeta_exp = data.x * algorithm->get_beta() + coef;
-        for (int i = 0; i <= n - 1; i++)
-        {
-            if (xbeta_exp(i) > 30.0)
-                xbeta_exp(i) = 30.0;
-            if (xbeta_exp(i) < -30.0)
-                xbeta_exp(i) = -30.0;
-        }
-        xbeta_exp = xbeta_exp.array().exp();
-        Eigen::VectorXd pr = xbeta_exp.array() / (xbeta_exp + one).array();
-        return -2 * (data.weight.array() *
-                     ((data.y.array() * pr.array().log()) + (one - data.y).array() * (one - pr).array().log()))
-                        .sum();
+        double L0 = algorithm->neg_loglik_loss(X_A, data.y, data.weight, beta_A, coef0);
+        clock_t t2 = clock();
+        std::cout << "ic loss time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+
+        return 2 * L0;
     }
 
     double test_loss(Algorithm *algorithm, Data &data)
@@ -292,19 +316,28 @@ public:
         else
         {
             int k, i;
-            int p = data.get_p();
+            Eigen::VectorXi g_index = data.g_index;
+            Eigen::VectorXi g_size = data.g_size;
+            int p = data.p;
+            int N = data.g_num;
+
+            Eigen::VectorXi A;
+            Eigen::VectorXd beta;
+            double coef0;
+            Eigen::VectorXi A_ind;
+            Eigen::MatrixXd X_A;
 
             Eigen::VectorXd loss_list(this->K);
 
             for (k = 0; k < this->K; k++)
             {
                 //get test_x, test_y
-                int test_size = this->test_mask_list[k].size();
-                Eigen::MatrixXd test_x(test_size, p);
-                Eigen::VectorXd test_y(test_size);
-                Eigen::VectorXd test_weight(test_size);
+                int test_n = this->test_mask_list[k].size();
+                Eigen::MatrixXd test_x(test_n, p);
+                Eigen::VectorXd test_y(test_n);
+                Eigen::VectorXd test_weight(test_n);
 
-                for (i = 0; i < test_size; i++)
+                for (i = 0; i < test_n; i++)
                 {
                     test_x.row(i) = data.x.row(this->test_mask_list[k](i));
                     test_y(i) = data.y(this->test_mask_list[k](i));
@@ -322,27 +355,39 @@ public:
                     this->update_cv_initial_model_param(algorithm->get_beta(), k);
                 }
 
-                Eigen::VectorXd coef(test_size);
-                Eigen::VectorXd one = Eigen::VectorXd::Ones(test_size);
-
-                for (i = 0; i <= test_size - 1; i++)
+                A = algorithm->get_A_out();
+                beta = algorithm->get_beta();
+                coef0 = algorithm->get_coef0();
+                A_ind = find_ind(A, g_index, g_size, p, N);
+                X_A = X_seg(test_x, test_n, A_ind);
+                Eigen::VectorXd beta_A(A_ind.size());
+                for (int j = 0; j < A_ind.size(); j++)
                 {
-                    coef(i) = algorithm->get_coef0();
+                    beta_A(j) = beta(A_ind(j));
                 }
-                Eigen::VectorXd xbeta_exp = test_x * algorithm->get_beta() + coef;
-                for (i = 0; i <= test_size - 1; i++)
-                {
-                    if (xbeta_exp(i) > 25.0)
-                        xbeta_exp(i) = 25.0;
-                    if (xbeta_exp(i) < -25.0)
-                        xbeta_exp(i) = -25.0;
-                }
-                xbeta_exp = xbeta_exp.array().exp();
-                Eigen::VectorXd pr = xbeta_exp.array() / (xbeta_exp + one).array();
+                loss_list(k) = 2 * algorithm->neg_loglik_loss(X_A, test_y, test_weight, beta_A, coef0);
 
-                loss_list(k) = -2 * (test_weight.array() * ((test_y.array() * pr.array().log()) +
-                                                            (one - test_y).array() * (one - pr).array().log()))
-                                        .sum();
+                // Eigen::VectorXd coef(test_n);
+                // Eigen::VectorXd one = Eigen::VectorXd::Ones(test_n);
+
+                // for (i = 0; i <= test_n - 1; i++)
+                // {
+                //     coef(i) = algorithm->get_coef0();
+                // }
+                // Eigen::VectorXd xbeta_exp = test_x * algorithm->get_beta() + coef;
+                // for (i = 0; i <= test_n - 1; i++)
+                // {
+                //     if (xbeta_exp(i) > 25.0)
+                //         xbeta_exp(i) = 25.0;
+                //     if (xbeta_exp(i) < -25.0)
+                //         xbeta_exp(i) = -25.0;
+                // }
+                // xbeta_exp = xbeta_exp.array().exp();
+                // Eigen::VectorXd pr = xbeta_exp.array() / (xbeta_exp + one).array();
+
+                // loss_list(k) = -2 * (test_weight.array() * ((test_y.array() * pr.array().log()) +
+                //                                             (one - test_y).array() * (one - pr).array().log()))
+                //                         .sum();
             }
             return loss_list.mean();
         }
@@ -356,7 +401,7 @@ public:
         }
         else
         {
-            if (data.get_g_index().size() == data.get_p())
+            if (algorithm->algorithm_type == 1 || algorithm->algorithm_type == 5)
             {
                 if (ic_type == 1)
                 {
@@ -391,17 +436,17 @@ public:
                 else if (ic_type == 2)
                 {
                     return this->train_loss(algorithm, data) +
-                           log(double(data.get_n())) * algorithm->get_group_df();
+                           this->ic_coef * (double(data.get_n())) * algorithm->get_group_df();
                 }
                 else if (ic_type == 3)
                 {
                     return this->train_loss(algorithm, data) +
-                           log(double(data.get_g_num())) * log(log(double(data.get_n()))) * algorithm->get_group_df();
+                           this->ic_coef * log(double(data.get_g_num())) * log(log(double(data.get_n()))) * algorithm->get_group_df();
                 }
                 else if (ic_type == 4)
                 {
                     return this->train_loss(algorithm, data) +
-                           (log(double(data.get_n())) + 2 * log(double(data.get_g_num()))) * algorithm->get_group_df();
+                           this->ic_coef * (log(double(data.get_n())) + 2 * log(double(data.get_g_num()))) * algorithm->get_group_df();
                 }
                 else
                     return 0;
@@ -413,7 +458,7 @@ public:
 class PoissonMetric : public Metric
 {
 public:
-    PoissonMetric(int ic_type, bool is_cv, int K = 0) : Metric(ic_type, is_cv, K){};
+    PoissonMetric(int ic_type, double ic_coef, bool is_cv, int K = 5) : Metric(ic_type, ic_coef, is_cv, K){};
 
     double train_loss(Algorithm *algorithm, Data &data)
     {
@@ -447,12 +492,12 @@ public:
             for (k = 0; k < this->K; k++)
             {
 
-                int test_size = this->test_mask_list[k].size();
-                Eigen::MatrixXd test_x(test_size, p);
-                Eigen::VectorXd test_y(test_size);
-                Eigen::VectorXd test_weight(test_size);
+                int test_n = this->test_mask_list[k].size();
+                Eigen::MatrixXd test_x(test_n, p);
+                Eigen::VectorXd test_y(test_n);
+                Eigen::VectorXd test_weight(test_n);
 
-                for (i = 0; i < test_size; i++)
+                for (i = 0; i < test_n; i++)
                 {
                     test_x.row(i) = data.x.row(this->test_mask_list[k](i));
                     test_y(i) = data.y(this->test_mask_list[k](i));
@@ -478,7 +523,7 @@ public:
                 {
                     coef(i + 1) = beta(i);
                 }
-                loss_list(k) = -loglik_poisson(test_x, test_y, coef, test_size, test_weight);
+                loss_list(k) = -loglik_poisson(test_x, test_y, coef, test_n, test_weight);
             }
 
             return loss_list.sum() / loss_list.size();
@@ -550,7 +595,7 @@ public:
 class CoxMetric : public Metric
 {
 public:
-    CoxMetric(int ic_type, bool is_cv, int K = 0) : Metric(ic_type, is_cv, K){};
+    CoxMetric(int ic_type, double ic_coef, bool is_cv, int K = 5) : Metric(ic_type, ic_coef, is_cv, K){};
 
     double train_loss(Algorithm *algorithm, Data &data)
     {
@@ -573,13 +618,13 @@ public:
             for (k = 0; k < this->K; k++)
             {
 
-                int test_size = this->test_mask_list[k].size();
+                int test_n = this->test_mask_list[k].size();
 
-                Eigen::MatrixXd test_x(test_size, p);
-                Eigen::VectorXd test_y(test_size);
-                Eigen::VectorXd test_weight(test_size);
+                Eigen::MatrixXd test_x(test_n, p);
+                Eigen::VectorXd test_y(test_n);
+                Eigen::VectorXd test_weight(test_n);
 
-                for (i = 0; i < test_size; i++)
+                for (i = 0; i < test_n; i++)
                 {
                     test_x.row(i) = data.x.row(this->test_mask_list[k](i)).eval();
                     test_y(i) = data.y(this->test_mask_list[k](i));
