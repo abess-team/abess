@@ -333,9 +333,9 @@ public:
     {
       Eigen::MatrixXd XG = X.middleCols(g_index(i), g_size(i));
       Eigen::MatrixXd XG_new = XG;
-      for (int j = 0; j < n; j++)
+      for (int j = 0; j < g_size(i); j++)
       {
-        XG_new.row(j) = XG.row(j) * h(j);
+        XG_new.col(j) = XG.col(j).cwiseProduct(h);
       }
       Eigen::MatrixXd XGbar = XG_new.transpose() * XG;
       Eigen::MatrixXd phiG = XGbar.sqrt();
