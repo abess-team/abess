@@ -19,7 +19,7 @@ using namespace Eigen;
 #include "Algorithm.h"
 #include "Metric.h"
 
-List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq);
+List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, bool early_stop);
 
 List gs_path(Data &data, Algorithm *algorithm, Metric *metric,
              int s_min, int s_max, int K_max, double epsilon);

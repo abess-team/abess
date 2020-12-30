@@ -62,7 +62,7 @@ class _SwigNonDynamicMeta(type):
 
 
 
-def pywrap_abess(IN_ARRAY2, arg2, data_type, arg4, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, is_cv, K, arg15, arg16, arg17, arg18, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, n_lambda, is_screening, screening_size, powell_path, arg29, tau, primary_model_fit_max_iter, primary_model_fit_epsilon, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40):
-    return _cabess.pywrap_abess(IN_ARRAY2, arg2, data_type, arg4, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, is_cv, K, arg15, arg16, arg17, arg18, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, n_lambda, is_screening, screening_size, powell_path, arg29, tau, primary_model_fit_max_iter, primary_model_fit_epsilon, arg33, arg34, arg35, arg36, arg37, arg38, arg39, arg40)
+def pywrap_abess(IN_ARRAY2, arg2, data_type, arg4, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, is_cv, K, arg16, arg17, arg18, arg19, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, n_lambda, is_screening, screening_size, powell_path, arg30, tau, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, arg36, arg37, arg38, arg39, arg40, arg41, arg42, arg43):
+    return _cabess.pywrap_abess(IN_ARRAY2, arg2, data_type, arg4, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, is_cv, K, arg16, arg17, arg18, arg19, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, n_lambda, is_screening, screening_size, powell_path, arg30, tau, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, arg36, arg37, arg38, arg39, arg40, arg41, arg42, arg43)
 
 

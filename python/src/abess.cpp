@@ -38,7 +38,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
               bool is_normal,
               int algorithm_type, int model_type, int max_iter, int exchange_num,
               int path_type, bool is_warm_start,
-              int ic_type, bool is_cv, int K,
+              int ic_type, double ic_coef, bool is_cv, int K,
               Eigen::VectorXd state,
               Eigen::VectorXi sequence,
               Eigen::VectorXd lambda_seq,
@@ -48,7 +48,8 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
               Eigen::VectorXi g_index,
               Eigen::VectorXi always_select,
               double tau,
-              int primary_model_fit_max_iter, double primary_model_fit_epsilon)
+              int primary_model_fit_max_iter, double primary_model_fit_epsilon,
+              bool early_stop, bool approximate_Newton)
 {
     srand(123);
     int p = x.cols();
@@ -122,6 +123,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     algorithm->always_select = always_select;
     algorithm->tau = tau;
     algorithm->exchange_num = exchange_num;
+    algorithm->approximate_Newton = approximate_Newton;
 
 #ifdef OTHER_ALGORITHM1
     if (algorithm_type == 6)
@@ -148,19 +150,19 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     Metric *metric;
     if (model_type == 1)
     {
-        metric = new LmMetric(ic_type, is_cv, K);
+        metric = new LmMetric(ic_type, ic_coef, is_cv, K);
     }
     else if (model_type == 2)
     {
-        metric = new LogisticMetric(ic_type, is_cv, K);
+        metric = new LogisticMetric(ic_type, ic_coef, is_cv, K);
     }
     else if (model_type == 3)
     {
-        metric = new PoissonMetric(ic_type, is_cv, K);
+        metric = new PoissonMetric(ic_type, ic_coef, is_cv, K);
     }
     else
     {
-        metric = new CoxMetric(ic_type, is_cv, K);
+        metric = new CoxMetric(ic_type, ic_coef, is_cv, K);
     }
 
     // For CV
@@ -175,7 +177,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     List result;
     if (path_type == 1)
     {
-        result = sequential_path(data, algorithm, metric, sequence, lambda_seq);
+        result = sequential_path(data, algorithm, metric, sequence, lambda_seq, early_stop);
     }
     else
     {
@@ -194,7 +196,6 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     if (is_screening)
     {
         Eigen::VectorXd beta_screening_A;
-
         Eigen::VectorXd beta = Eigen::VectorXd::Zero(p);
 
 #ifndef R_BUILD
@@ -228,7 +229,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                   bool is_normal,
                   int algorithm_type, int model_type, int max_iter, int exchange_num,
                   int path_type, bool is_warm_start,
-                  int ic_type, bool is_cv, int K,
+                  int ic_type, double ic_coef, bool is_cv, int K,
                   int *gindex, int gindex_len,
                   double *state, int state_len,
                   int *sequence, int sequence_len,
@@ -238,6 +239,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                   bool is_screening, int screening_size, int powell_path,
                   int *always_select, int always_select_len, double tau,
                   int primary_model_fit_max_iter, double primary_model_fit_epsilon,
+                  bool early_stop, bool approximate_Newton,
                   double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
@@ -265,7 +267,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                            is_normal,
                            algorithm_type, model_type, max_iter, exchange_num,
                            path_type, is_warm_start,
-                           ic_type, is_cv, K,
+                           ic_type, ic_coef, is_cv, K,
                            state_Vec,
                            sequence_Vec,
                            lambda_sequence_Vec,
@@ -274,7 +276,8 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                            is_screening, screening_size, powell_path,
                            gindex_Vec,
                            always_select_Vec, tau,
-                           primary_model_fit_max_iter, primary_model_fit_epsilon);
+                           primary_model_fit_max_iter, primary_model_fit_epsilon,
+                           early_stop, approximate_Newton);
 
     Eigen::VectorXd beta;
     double coef0;

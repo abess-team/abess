@@ -22,7 +22,7 @@ using namespace Rcpp;
 using namespace Eigen;
 using namespace std;
 
-List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq)
+List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, bool early_stop)
 {
     int p = data.get_p();
     int n = data.get_n();
@@ -31,6 +31,7 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
     int sequence_size = sequence.size();
     int lambda_size = lambda_seq.size();
     int N = data.g_num;
+    int early_stop_s = sequence_size;
     Eigen::VectorXi full_mask(n);
     for (i = 0; i < n; i++)
         full_mask(i) = int(i);
@@ -80,6 +81,18 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
             loss_sequence[j](i) = metric->train_loss(algorithm, data);
             ic_sequence(i, j) = metric->ic(algorithm, data);
         }
+
+        if (early_stop && lambda_size <= 1 && i >= 3)
+        {
+            bool condition1 = ic_sequence(i, 0) > ic_sequence(i - 1, 0);
+            bool condition2 = ic_sequence(i - 1, 0) > ic_sequence(i - 2, 0);
+            bool condition3 = ic_sequence(i - 2, 0) > ic_sequence(i - 3, 0);
+            if (condition1 && condition2 && condition3)
+            {
+                early_stop_s = i + 1;
+                break;
+            }
+        }
     }
 
     if (data.is_normal)
@@ -88,7 +101,7 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
         {
             for (j = 0; j < lambda_size; j++)
             {
-                for (i = 0; i < sequence_size; i++)
+                for (i = 0; i < early_stop_s; i++)
                 {
                     beta_matrix[j].col(i) = sqrt(double(n)) * beta_matrix[j].col(i).cwiseQuotient(data.x_norm);
                     coef0_sequence[j](i) = data.y_mean - beta_matrix[j].col(i).dot(data.x_mean);
@@ -99,7 +112,7 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
         {
             for (j = 0; j < lambda_size; j++)
             {
-                for (i = 0; i < sequence_size; i++)
+                for (i = 0; i < early_stop_s; i++)
                 {
                     beta_matrix[j].col(i) = sqrt(double(n)) * beta_matrix[j].col(i).cwiseQuotient(data.x_norm);
                     coef0_sequence[j](i) = coef0_sequence[j](i) - beta_matrix[j].col(i).dot(data.x_mean);
@@ -110,7 +123,7 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
         {
             for (j = 0; j < lambda_size; j++)
             {
-                for (i = 0; i < sequence_size; i++)
+                for (i = 0; i < early_stop_s; i++)
                 {
                     beta_matrix[j].col(i) = sqrt(double(n)) * beta_matrix[j].col(i).cwiseQuotient(data.x_norm);
                 }
@@ -118,7 +131,7 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
         }
     }
 
-    for (i = 0; i < sequence_size; i++)
+    for (i = 0; i < early_stop_s; i++)
     {
         cout << endl;
         for (j = 0; j < lambda_size; j++)
@@ -127,6 +140,11 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
                  << ", j: " << j + 1 << ", ";
             cout << ic_sequence(i, j) << " " << loss_sequence[j](i) << endl;
         }
+    }
+
+    if (early_stop)
+    {
+        ic_sequence = ic_sequence.block(0, 0, early_stop_s, lambda_size).eval();
     }
 
     int min_loss_index_row = 0, min_loss_index_col = 0;
