@@ -3,3 +3,5 @@ python/abess.egg-info/PKG-INFO
 python/abess.egg-info/requires.txt
 python/abess.egg-info/SOURCES.txt
 python/abess.egg-info/top_level.txt
+python/src/test.cpp
+python/src/test.exe

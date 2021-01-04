@@ -51,7 +51,12 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
               int primary_model_fit_max_iter, double primary_model_fit_epsilon,
               bool early_stop, bool approximate_Newton)
 {
+    // clock_t t1, t2;
+    // t1 = clock();
     srand(123);
+    // Eigen::initParallel();
+    // Eigen::setNbThreads(4);
+    // cout << Eigen::nbThreads() << " Threads for eigen." << endl;
     int p = x.cols();
     Eigen::VectorXi screening_A;
     if (is_screening)
@@ -121,7 +126,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
 
     algorithm->set_warm_start(is_warm_start);
     algorithm->always_select = always_select;
-    algorithm->tau = tau;
+    // algorithm->tau = tau;
     algorithm->exchange_num = exchange_num;
     algorithm->approximate_Newton = approximate_Newton;
 
@@ -170,9 +175,16 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     {
         metric->set_cv_train_test_mask(data.get_n());
         metric->set_cv_initial_model_param(K, data.get_p());
+        metric->set_cv_initial_A(K, data.get_p());
+        // metric->set_cv_initial_I(K, data.get_p());
+        metric->set_cv_initial_coef0(K, data.get_p());
         if (model_type == 1)
             metric->cal_cv_group_XTX(data);
     }
+
+    // t2 = clock();
+
+    // std::cout << "preprocess time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
     List result;
     if (path_type == 1)
@@ -193,6 +205,9 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
             result = gs_path(data, algorithm, metric, s_min, s_max, K_max, epsilon);
         }
     }
+
+    // mean
+
     if (is_screening)
     {
         Eigen::VectorXd beta_screening_A;
@@ -254,6 +269,8 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
     Eigen::VectorXd lambda_sequence_Vec;
     Eigen::VectorXi always_select_Vec;
 
+    // clock_t t1, t2;
+    // t1 = clock();
     x_Mat = Pointer2MatrixXd(x, x_row, x_col);
     y_Vec = Pointer2VectorXd(y, y_len);
     weight_Vec = Pointer2VectorXd(weight, weight_len);
@@ -262,7 +279,10 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
     sequence_Vec = Pointer2VectorXi(sequence, sequence_len);
     lambda_sequence_Vec = Pointer2VectorXd(lambda_sequence, lambda_sequence_len);
     always_select_Vec = Pointer2VectorXi(always_select, always_select_len);
+    // t2 = clock();
+    // std::cout << "pointer to data: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
+    // t1 = clock();
     List mylist = abessCpp(x_Mat, y_Vec, data_type, weight_Vec,
                            is_normal,
                            algorithm_type, model_type, max_iter, exchange_num,
@@ -278,7 +298,10 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                            always_select_Vec, tau,
                            primary_model_fit_max_iter, primary_model_fit_epsilon,
                            early_stop, approximate_Newton);
+    // t2 = clock();
+    // std::cout << "get result : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
+    // t1 = clock();
     Eigen::VectorXd beta;
     double coef0;
     double train_loss;
@@ -292,5 +315,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
     *coef0_out = coef0;
     *train_loss_out = train_loss;
     *ic_out = ic;
+    // t2 = clock();
+    // std::cout << "result to pointer: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 }
 #endif

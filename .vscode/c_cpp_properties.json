@@ -4,6 +4,12 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**"
+                // "C:/Rtools/mingw_64/lib/gcc/x86_64-w64-mingw32/4.9.3/include",
+                // "C:/Rtools/mingw_64/include/",
+                // "C:/Rtools/mingw_64/x86_64-w64-mingw32/include/c++",
+                // "C:/Rtools/mingw_64/x86_64-w64-mingw32/include/c++/tr1",
+                // "C:/Rtools/mingw_64/x86_64-w64-mingw32/include/c++/x86_64-w64-mingw32",
+                // "D:/anaconda/include"
             ],
             "defines": [
                 "_DEBUG",

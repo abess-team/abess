@@ -21,6 +21,9 @@ public:
     int K;
     int ic_type;
     Eigen::MatrixXd cv_initial_model_param;
+    std::vector<Eigen::VectorXi> cv_initial_A;
+    std::vector<Eigen::VectorXi> cv_initial_I;
+    std::vector<double> cv_initial_coef0;
     std::vector<Eigen::VectorXi> train_mask_list;
     std::vector<Eigen::VectorXi> test_mask_list;
 
@@ -43,9 +46,46 @@ public:
         this->cv_initial_model_param = Eigen::MatrixXd::Zero(K, p);
     };
 
+    void set_cv_initial_A(int K, int p)
+    {
+        vector<Eigen::VectorXi> tmp(K);
+        this->cv_initial_A = tmp;
+    };
+
+    // void set_cv_initial_I(int K, int p)
+    // {
+    //     vector<Eigen::VectorXi> tmp(K);
+    //     for (int i = 0; i < K; i++)
+    //         tmp[i] = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
+    //     this->cv_initial_I = tmp;
+    // };
+
+    void set_cv_initial_coef0(int K, int p)
+    {
+        vector<double> tmp(K);
+        for (int i = 0; i < K; i++)
+            tmp[i] = 0;
+        this->cv_initial_coef0 = tmp;
+    };
+
     void update_cv_initial_model_param(Eigen::VectorXd model_param, int k)
     {
         this->cv_initial_model_param.row(k) = model_param;
+    }
+
+    void update_cv_initial_A(Eigen::VectorXi A, int k)
+    {
+        this->cv_initial_A[k] = A;
+    }
+
+    // void update_cv_initial_I(Eigen::VectorXi I, int k)
+    // {
+    //     this->cv_initial_I[k] = I;
+    // }
+
+    void update_cv_initial_coef0(double coef0, int k)
+    {
+        this->cv_initial_coef0[k] = coef0;
     }
 
     void set_cv_train_test_mask(int n)
@@ -283,7 +323,7 @@ public:
         // xbeta_exp = xbeta_exp.array().exp();
         // Eigen::VectorXd pr = xbeta_exp.array() / (xbeta_exp + one).array();
 
-        clock_t t1 = clock();
+        // clock_t t1 = clock();
         Eigen::VectorXi A = algorithm->get_A_out();
         Eigen::VectorXi g_index = data.g_index;
         Eigen::VectorXi g_size = data.g_size;
@@ -301,8 +341,8 @@ public:
             beta_A(k) = beta(A_ind(k));
         }
         double L0 = algorithm->neg_loglik_loss(X_A, data.y, data.weight, beta_A, coef0);
-        clock_t t2 = clock();
-        std::cout << "ic loss time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+        // clock_t t2 = clock();
+        // std::cout << "ic loss time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
         return 2 * L0;
     }
@@ -347,12 +387,19 @@ public:
                 if (algorithm->get_warm_start())
                 {
                     algorithm->update_beta_init(this->cv_initial_model_param.row(k));
+                    algorithm->update_coef0_init(this->cv_initial_coef0[k]);
+                    algorithm->update_A_init(this->cv_initial_A[k], N);
+                    // algorithm->update_I_init(this->cv_initial_I[k]);
+                    // cout << "this->cv_initial_A" << this->cv_initial_A[k] << endl;
                 }
                 algorithm->update_train_mask(this->train_mask_list[k]);
                 algorithm->fit();
                 if (algorithm->get_warm_start())
                 {
                     this->update_cv_initial_model_param(algorithm->get_beta(), k);
+                    this->update_cv_initial_A(algorithm->get_A_out(), k);
+                    // this->update_cv_initial_I(algorithm->get_I_out(), k);
+                    this->update_cv_initial_coef0(algorithm->get_coef0(), k);
                 }
 
                 A = algorithm->get_A_out();
@@ -401,6 +448,7 @@ public:
         }
         else
         {
+            algorithm->fit();
             if (algorithm->algorithm_type == 1 || algorithm->algorithm_type == 5)
             {
                 if (ic_type == 1)

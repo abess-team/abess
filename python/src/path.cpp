@@ -40,9 +40,14 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
 
     Eigen::MatrixXd ic_sequence(sequence_size, lambda_size);
     vector<Eigen::VectorXd> loss_sequence(lambda_size);
-
     vector<Eigen::MatrixXd> beta_matrix(lambda_size);
     vector<Eigen::VectorXd> coef0_sequence(lambda_size);
+    vector<vector<Eigen::VectorXi>> A_sequence(sequence_size);
+    for (int i = 0; i < sequence_size; i++)
+    {
+        vector<Eigen::VectorXi> A_sequence_tmp(lambda_size);
+        A_sequence[i] = A_sequence_tmp;
+    }
 
     Eigen::VectorXd beta_init = Eigen::VectorXd::Zero(p);
     double coef0_init = 0.0;
@@ -61,25 +66,34 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
             algorithm->update_lambda_level(lambda_seq(j));
             algorithm->update_beta_init(beta_init);
             algorithm->update_coef0_init(coef0_init);
-            algorithm->update_A_init(A_init);
-            algorithm->update_I_init(I_init);
+            algorithm->update_A_init(A_init, N);
+            // algorithm->update_I_init(I_init);
             algorithm->update_group_XTX(full_group_XTX);
-            algorithm->fit();
+
+            ic_sequence(i, j) = metric->ic(algorithm, data);
+
+            // algorithm->fit();
             if (algorithm->warm_start)
             {
                 beta_init = algorithm->get_beta();
                 coef0_init = algorithm->get_coef0();
                 A_init = algorithm->get_A_out();
-                I_init = algorithm->get_I_out();
             }
+
+            // clock_t t1, t2;
+            // t1 = clock();
 
             beta_matrix[j].resize(p, sequence_size);
             coef0_sequence[j].resize(sequence_size);
             loss_sequence[j].resize(sequence_size);
             beta_matrix[j].col(i) = algorithm->get_beta();
             coef0_sequence[j](i) = algorithm->get_coef0();
+            A_sequence[i][j] = algorithm->get_A_out();
             loss_sequence[j](i) = metric->train_loss(algorithm, data);
-            ic_sequence(i, j) = metric->ic(algorithm, data);
+
+            // t2 = clock();
+
+            // std::cout << "result save time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
         }
 
         if (early_stop && lambda_size <= 1 && i >= 3)
@@ -95,6 +109,10 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
         }
     }
 
+    // clock_t t1, t2;
+    // t1 = clock();
+
+    // To do: delete
     if (data.is_normal)
     {
         if (algorithm->model_type == 1)
@@ -133,22 +151,61 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
 
     for (i = 0; i < early_stop_s; i++)
     {
-        cout << endl;
+        std::cout << endl;
         for (j = 0; j < lambda_size; j++)
         {
-            cout << "i: " << i + 1 << " "
-                 << ", j: " << j + 1 << ", ";
-            cout << ic_sequence(i, j) << " " << loss_sequence[j](i) << endl;
+            std::cout << "i: " << i + 1 << " "
+                      << ", j: " << j + 1 << ", ";
+            std::cout << ic_sequence(i, j) << " " << loss_sequence[j](i) << endl;
         }
     }
+    // t2 = clock();
+    // std::cout << "normal back time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
     if (early_stop)
     {
         ic_sequence = ic_sequence.block(0, 0, early_stop_s, lambda_size).eval();
     }
 
+    // get bestmodel index
     int min_loss_index_row = 0, min_loss_index_col = 0;
     ic_sequence.minCoeff(&min_loss_index_row, &min_loss_index_col);
+
+    // fit best model
+    int best_s = sequence(min_loss_index_row);
+    double best_lambda = lambda_seq(min_loss_index_col);
+
+    Eigen::VectorXd best_beta;
+    double best_coef0;
+    double best_train_loss;
+    double best_ic;
+
+    if (!metric->is_cv)
+    {
+        best_beta = beta_matrix[min_loss_index_col].col(min_loss_index_row).eval();
+        best_coef0 = coef0_sequence[min_loss_index_col](min_loss_index_row);
+        best_train_loss = loss_sequence[min_loss_index_col](min_loss_index_row);
+        best_ic = ic_sequence(min_loss_index_row, min_loss_index_col);
+    }
+    else
+    {
+        algorithm->update_train_mask(full_mask);
+        algorithm->update_sparsity_level(best_s);
+        algorithm->update_lambda_level(best_lambda);
+        algorithm->update_beta_init(beta_matrix[min_loss_index_col].col(min_loss_index_row).eval());
+        algorithm->update_coef0_init(coef0_sequence[min_loss_index_col](min_loss_index_row));
+        algorithm->update_A_init(A_sequence[min_loss_index_row][min_loss_index_col], N);
+        // algorithm->update_I_init(I_init);
+        algorithm->update_group_XTX(full_group_XTX);
+
+        algorithm->fit();
+
+        best_beta = algorithm->get_beta();
+        best_coef0 = algorithm->get_coef0();
+        best_train_loss = metric->train_loss(algorithm, data);
+        best_ic = ic_sequence(min_loss_index_row, min_loss_index_col);
+    }
+
     List mylist;
 #ifdef R_BUILD
     mylist = List::create(Named("beta") = beta_matrix[min_loss_index_col].col(min_loss_index_row).eval(),
@@ -160,11 +217,215 @@ List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::Ve
                           Named("train_loss_all") = loss_sequence,
                           Named("ic_all") = ic_sequence);
 #else
-    mylist.add("beta", beta_matrix[min_loss_index_col].col(min_loss_index_row).eval());
-    mylist.add("coef0", coef0_sequence[min_loss_index_col](min_loss_index_row));
-    mylist.add("train_loss", loss_sequence[min_loss_index_col](min_loss_index_row));
-    mylist.add("ic", ic_sequence(min_loss_index_row, min_loss_index_col));
-    mylist.add("lambda", lambda_seq(min_loss_index_col));
+    mylist.add("beta", best_beta);
+    mylist.add("coef0", best_coef0);
+    mylist.add("train_loss", best_train_loss);
+    mylist.add("ic", best_ic);
+    mylist.add("lambda", best_lambda);
+#endif
+    return mylist;
+}
+
+List sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, bool early_stop, int k)
+{
+    int p = data.get_p();
+    int n = data.get_n();
+    int i;
+    int j = 0;
+    int sequence_size = sequence.size();
+    int lambda_size = lambda_seq.size();
+    int N = data.g_num;
+    int early_stop_s = sequence_size;
+    Eigen::VectorXi full_mask(n);
+    for (i = 0; i < n; i++)
+        full_mask(i) = int(i);
+
+    vector<Eigen::MatrixXd> full_group_XTX = group_XTX(data.x, data.g_index, data.g_size, data.n, data.p, data.g_num, algorithm->model_type);
+
+    Eigen::MatrixXd ic_sequence(sequence_size, lambda_size);
+    vector<Eigen::VectorXd> loss_sequence(lambda_size);
+    vector<Eigen::MatrixXd> beta_matrix(lambda_size);
+    vector<Eigen::VectorXd> coef0_sequence(lambda_size);
+    vector<vector<Eigen::VectorXi>> A_sequence(sequence_size);
+    for (int i = 0; i < sequence_size; i++)
+    {
+        vector<Eigen::VectorXi> A_sequence_tmp(lambda_size);
+        A_sequence[i] = A_sequence_tmp;
+    }
+
+    Eigen::VectorXd beta_init = Eigen::VectorXd::Zero(p);
+    double coef0_init = 0.0;
+    Eigen::VectorXi A_init;
+    Eigen::VectorXi I_init = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
+
+    for (i = 0; i < sequence_size; i++)
+    {
+        std::cout << "\n sequence= " << sequence(i);
+        for (j = (1 - pow(-1, i)) * (lambda_size - 1) / 2; j < lambda_size && j >= 0; j = j + pow(-1, i))
+        {
+            std::cout << " =========j: " << j << ", lambda= " << lambda_seq(j) << ", T: " << sequence(i) << endl;
+
+            algorithm->update_train_mask(full_mask);
+            algorithm->update_sparsity_level(sequence(i));
+            algorithm->update_lambda_level(lambda_seq(j));
+            algorithm->update_beta_init(beta_init);
+            algorithm->update_coef0_init(coef0_init);
+            algorithm->update_A_init(A_init, N);
+            // algorithm->update_I_init(I_init);
+            algorithm->update_group_XTX(full_group_XTX);
+
+            ic_sequence(i, j) = metric->ic(algorithm, data);
+
+            // algorithm->fit();
+            if (algorithm->warm_start)
+            {
+                beta_init = algorithm->get_beta();
+                coef0_init = algorithm->get_coef0();
+                A_init = algorithm->get_A_out();
+            }
+
+            // clock_t t1, t2;
+            // t1 = clock();
+
+            beta_matrix[j].resize(p, sequence_size);
+            coef0_sequence[j].resize(sequence_size);
+            loss_sequence[j].resize(sequence_size);
+            beta_matrix[j].col(i) = algorithm->get_beta();
+            coef0_sequence[j](i) = algorithm->get_coef0();
+            A_sequence[i][j] = algorithm->get_A_out();
+            loss_sequence[j](i) = metric->train_loss(algorithm, data);
+
+            // t2 = clock();
+
+            // std::cout << "result save time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+        }
+
+        if (early_stop && lambda_size <= 1 && i >= 3)
+        {
+            bool condition1 = ic_sequence(i, 0) > ic_sequence(i - 1, 0);
+            bool condition2 = ic_sequence(i - 1, 0) > ic_sequence(i - 2, 0);
+            bool condition3 = ic_sequence(i - 2, 0) > ic_sequence(i - 3, 0);
+            if (condition1 && condition2 && condition3)
+            {
+                early_stop_s = i + 1;
+                break;
+            }
+        }
+    }
+
+    // clock_t t1, t2;
+    // t1 = clock();
+
+    // To do: delete
+    if (data.is_normal)
+    {
+        if (algorithm->model_type == 1)
+        {
+            for (j = 0; j < lambda_size; j++)
+            {
+                for (i = 0; i < early_stop_s; i++)
+                {
+                    beta_matrix[j].col(i) = sqrt(double(n)) * beta_matrix[j].col(i).cwiseQuotient(data.x_norm);
+                    coef0_sequence[j](i) = data.y_mean - beta_matrix[j].col(i).dot(data.x_mean);
+                }
+            }
+        }
+        else if (data.data_type == 2)
+        {
+            for (j = 0; j < lambda_size; j++)
+            {
+                for (i = 0; i < early_stop_s; i++)
+                {
+                    beta_matrix[j].col(i) = sqrt(double(n)) * beta_matrix[j].col(i).cwiseQuotient(data.x_norm);
+                    coef0_sequence[j](i) = coef0_sequence[j](i) - beta_matrix[j].col(i).dot(data.x_mean);
+                }
+            }
+        }
+        else
+        {
+            for (j = 0; j < lambda_size; j++)
+            {
+                for (i = 0; i < early_stop_s; i++)
+                {
+                    beta_matrix[j].col(i) = sqrt(double(n)) * beta_matrix[j].col(i).cwiseQuotient(data.x_norm);
+                }
+            }
+        }
+    }
+
+    for (i = 0; i < early_stop_s; i++)
+    {
+        std::cout << endl;
+        for (j = 0; j < lambda_size; j++)
+        {
+            std::cout << "i: " << i + 1 << " "
+                      << ", j: " << j + 1 << ", ";
+            std::cout << ic_sequence(i, j) << " " << loss_sequence[j](i) << endl;
+        }
+    }
+    // t2 = clock();
+    // std::cout << "normal back time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+
+    if (early_stop)
+    {
+        ic_sequence = ic_sequence.block(0, 0, early_stop_s, lambda_size).eval();
+    }
+
+    // get bestmodel index
+    int min_loss_index_row = 0, min_loss_index_col = 0;
+    ic_sequence.minCoeff(&min_loss_index_row, &min_loss_index_col);
+
+    // fit best model
+    int best_s = sequence(min_loss_index_row);
+    double best_lambda = lambda_seq(min_loss_index_col);
+
+    Eigen::VectorXd best_beta;
+    double best_coef0;
+    double best_train_loss;
+    double best_ic;
+
+    if (!metric->is_cv)
+    {
+        best_beta = beta_matrix[min_loss_index_col].col(min_loss_index_row).eval();
+        best_coef0 = coef0_sequence[min_loss_index_col](min_loss_index_row);
+        best_train_loss = loss_sequence[min_loss_index_col](min_loss_index_row);
+        best_ic = ic_sequence(min_loss_index_row, min_loss_index_col);
+    }
+    else
+    {
+        algorithm->update_train_mask(full_mask);
+        algorithm->update_sparsity_level(best_s);
+        algorithm->update_lambda_level(best_lambda);
+        algorithm->update_beta_init(beta_matrix[min_loss_index_col].col(min_loss_index_row).eval());
+        algorithm->update_coef0_init(coef0_sequence[min_loss_index_col](min_loss_index_row));
+        algorithm->update_A_init(A_sequence[min_loss_index_row][min_loss_index_col], N);
+        // algorithm->update_I_init(I_init);
+        algorithm->update_group_XTX(full_group_XTX);
+
+        algorithm->fit();
+
+        best_beta = algorithm->get_beta();
+        best_coef0 = algorithm->get_coef0();
+        best_train_loss = metric->train_loss(algorithm, data);
+        best_ic = ic_sequence(min_loss_index_row, min_loss_index_col);
+    }
+
+    List mylist;
+#ifdef R_BUILD
+    mylist = List::create(Named("beta") = beta_matrix[min_loss_index_col].col(min_loss_index_row).eval(),
+                          Named("coef0") = coef0_sequence[min_loss_index_col](min_loss_index_row),
+                          Named("train_loss") = loss_sequence[min_loss_index_col](min_loss_index_row),
+                          Named("ic") = ic_sequence(min_loss_index_row, min_loss_index_col), Named("lambda") = lambda_seq(min_loss_index_col),
+                          Named("beta_all") = beta_matrix,
+                          Named("coef0_all") = coef0_sequence,
+                          Named("train_loss_all") = loss_sequence,
+                          Named("ic_all") = ic_sequence);
+#else
+    mylist.add("beta", best_beta);
+    mylist.add("coef0", best_coef0);
+    mylist.add("train_loss", best_train_loss);
+    mylist.add("ic", best_ic);
+    mylist.add("lambda", best_lambda);
 #endif
     return mylist;
 }

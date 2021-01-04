@@ -59,6 +59,8 @@
         "splines": "cpp",
         "random": "cpp",
         "iterativelinearsolvers": "cpp",
-        "eigen": "cpp"
+        "eigen": "cpp",
+        "dense": "cpp",
+        "cinttypes": "cpp"
     }
 }

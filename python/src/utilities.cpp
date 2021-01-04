@@ -392,6 +392,11 @@ Eigen::VectorXi Ac(Eigen::VectorXi A, int N)
     {
         return Eigen::VectorXi::LinSpaced(N, 0, N - 1);
     }
+    else if (A_size == N)
+    {
+        Eigen::VectorXi I(0);
+        return I;
+    }
     else
     {
         Eigen::VectorXi I(N - A_size);

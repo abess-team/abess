@@ -80,7 +80,11 @@ public:
 
   void update_beta_init(Eigen::VectorXd beta_init) { this->beta_init = beta_init; }
 
-  void update_A_init(Eigen::VectorXi A_init) { this->A_init = A_init; }
+  void update_A_init(Eigen::VectorXi A_init, int g_num)
+  {
+    this->A_init = A_init;
+    this->I_init = Ac(A_init, g_num);
+  }
 
   void update_I_init(Eigen::VectorXi I_init) { this->I_init = I_init; }
 
@@ -162,6 +166,8 @@ public:
     this->beta = this->beta_init;
     this->coef0 = this->coef0_init;
 
+    // clock_t t1, t2;
+
     // cout << "this->beta: " << this->beta << endl;
     // cout << "this->coef0_init" << this->coef0_init << endl;
     // cout << "this->A_init: " << this->A_init << endl;
@@ -170,12 +176,9 @@ public:
     // input: this->beta_init, this->coef0_init, this->A_init, this->I_init
     // for splicing get A;for the others 0;
     // std::cout << "fit 2" << endl;
-    // clock_t t1 = clock();
+    // t1 = clock();
     Eigen::VectorXi A = inital_screening(train_x, train_y, this->beta_init, this->coef0_init, this->A_init, this->I_init, train_weight, g_index, g_size, N);
-    // clock_t t2 = clock();
-    // cout << "A: " << A << endl;
-    // cout << "A_size: " << A.size() << endl;
-    // cout << "N: " << N << endl;
+    // t2 = clock();
     // std::cout << "init screening time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
     // printf("fit time=%f\n", (double)(t2 - t1) / CLOCKS_PER_SEC);
 
@@ -399,7 +402,7 @@ public:
     Eigen::VectorXd beta1;
     for (j = 0; j < this->primary_model_fit_max_iter; j++)
     {
-      // To do: Appr   oximate Newton method
+      // To do: Approximate Newton method
       if (this->approximate_Newton)
       {
         Eigen::VectorXd h_diag(p + 1);
@@ -458,7 +461,14 @@ public:
           X_new.col(i) = X.col(i).cwiseProduct(W).cwiseProduct(weights);
         }
         X_new_transpose = X_new.transpose();
-        beta0 = (X_new_transpose * X).ldlt().solve(X_new_transpose * Z);
+        // beta0 = (X_new_transpose * X).ldlt().solve(X_new_transpose * Z);
+        // VectorXd x(n), b(n);
+        // SparseMatrix<double> A(n, n);
+        // fill A and b
+        ConjugateGradient<MatrixXd, Lower | Upper> cg;
+        cg.compute(X_new_transpose * X);
+        // beta0 = cg.solve(X_new_transpose * Z);
+        beta0 = cg.solveWithGuess(X_new_transpose * Z, beta0);
         Pi = pi(X, y, beta0, n);
         log_Pi = Pi.array().log();
         log_1_Pi = (one - Pi).array().log();
@@ -533,7 +543,8 @@ public:
     int n = X.rows();
     int p = X.cols();
 
-    // clock_t t1 = clock();
+    // clock_t t1, t2;
+    // t1 = clock();
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
     Eigen::MatrixXd X_A = X_seg(X, n, A_ind);
     Eigen::VectorXd beta_A(A_ind.size());
@@ -542,7 +553,7 @@ public:
       beta_A(k) = beta(A_ind(k));
     }
     double L1, L0 = neg_loglik_loss(X_A, y, weights, beta_A, coef0);
-    // clock_t t2 = clock();
+    // t2 = clock();
     // std::cout << "loss time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
     // t1 = clock();
@@ -594,8 +605,12 @@ public:
     // std::cout << "beta_A_group: " << beta_A_group << endl;
     // std::cout << "d_I_group: " << d_I_group << endl;
 
+    // t1 = clock();
     Eigen::VectorXi s1 = slice(A, min_k(beta_A_group, C_max));
     Eigen::VectorXi s2 = slice(I, max_k(d_I_group, C_max));
+    // t2 = clock();
+    // std::cout << "s1 s2 time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+
     // cout << "get A 5" << endl;
     Eigen::VectorXi A_exchange(A_size);
     Eigen::VectorXi A_ind_exchage;
@@ -610,6 +625,7 @@ public:
     {
       // std::cout << "s1: " << s1 << endl;
       // std::cout << "s2: " << s2 << endl;
+      // t1 = clock();
       A_exchange = diff_union(A, s1, s2);
       // cout << "get A 6" << endl;
       // std::cout << "A_exchange: " << A_exchange << endl;
@@ -625,6 +641,9 @@ public:
       primary_model_fit(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, L0);
 
       L1 = neg_loglik_loss(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange);
+      // t2 = clock();
+      // std::cout << "exchange time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+
       // cout << "L0: " << L0 << " L1: " << L1 << endl;
       if (L0 - L1 > tau)
       {

@@ -19,7 +19,7 @@ if sys.platform.startswith('win32'):
                                       'src/Algorithm.cpp', 'src/Data.cpp', 'src/Metric.cpp', 'src/path.cpp',
                                       'src/logistic.cpp', 'src/coxph.cpp', 'src/poisson.cpp', 'src/screening.cpp'],
                              language='c++',
-                             extra_compile_args=["-DNDEBUG", "-fopenmp", "-O2", "-Wall",
+                             extra_compile_args=["-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-mavx", "-mfma",
                                                  "-std=c++11", "-mtune=generic", "-D%s" % os_type, path1, path2],
                              extra_link_args=['-lgomp'],
                              libraries=["vcruntime140"],
@@ -36,7 +36,7 @@ else:
                                       'src/logistic.cpp', 'src/coxph.cpp', 'src/poisson.cpp', 'src/screening.cpp'],
                              language='c++',
                              extra_compile_args=[
-                                 "-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-std=c++11"],
+                                 "-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", ],
                              extra_link_args=['-lgomp'],
                              include_dirs=[numpy.get_include(), eigen_path],
                              swig_opts=["-c++"]
