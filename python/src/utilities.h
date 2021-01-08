@@ -29,8 +29,10 @@ void max_k(Eigen::VectorXd &vec, int k, Eigen::VectorXi &result);
 void slice_assignment(Eigen::VectorXd &nums, Eigen::VectorXi &ind, double value);
 
 Eigen::VectorXi get_value_index(Eigen::VectorXd &nums, double value);
-Eigen::VectorXd slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind);
+Eigen::VectorXd vector_slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind);
+Eigen::VectorXi vector_slice(Eigen::VectorXi &nums, Eigen::VectorXi ind);
 Eigen::MatrixXd row_slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind);
+Eigen::MatrixXd matrix_slice(Eigen::MatrixXd &nums, Eigen::VectorXi ind, int axis);
 
 //Splicing
 std::vector<int> diff_union(std::vector<int> A, std::vector<int> B, std::vector<int> C);
@@ -38,13 +40,12 @@ std::vector<int> vec_seg(std::vector<int> ind, std::vector<int> L);
 std::vector<int> Ac(std::vector<int> A, int N);
 // std::vector<int> max_k(Eigen::VectorXd L, int k);
 // std::vector<int> min_k(Eigen::VectorXd L, int k);
-Eigen::VectorXi find_ind(std::vector<int> L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int N, int p);
+// Eigen::VectorXi find_ind(std::vector<int> L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int N, int p);
 
 Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind);
 Eigen::VectorXi Ac(Eigen::VectorXi A, int N);
 Eigen::VectorXi diff_union(Eigen::VectorXi A, Eigen::VectorXi B, Eigen::VectorXi C);
 Eigen::VectorXi min_k(Eigen::VectorXd L, int k);
 Eigen::VectorXi max_k(Eigen::VectorXd L, int k);
-Eigen::VectorXi slice(Eigen::VectorXi &nums, Eigen::VectorXi ind);
 
 #endif //BESS_UTILITIES_H

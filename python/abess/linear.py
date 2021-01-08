@@ -90,7 +90,8 @@ class bess_base:
                  is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
                  always_select=[], tau=0.,
                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-8,
-                 early_stop=False, approximate_Newton=False):
+                 early_stop=False, approximate_Newton=False,
+                 thread=1):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
         self.path_type = path_type
@@ -128,6 +129,7 @@ class bess_base:
         self.primary_model_fit_epsilon = primary_model_fit_epsilon
         self.early_stop = early_stop
         self.approximate_Newton = approximate_Newton
+        self.thread = thread
 
         self.beta = None
         self.coef0 = None
@@ -376,6 +378,7 @@ class bess_base:
                               self.always_select, self.tau,
                               self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
                               self.early_stop, self.approximate_Newton,
+                              self.thread,
                               p,
                               1, 1, 1, 1, 1, 1, p
                               )
@@ -961,7 +964,8 @@ class abessLogistic(bess_base):
                  K_max=None, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", ic_coef=1.0, is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
                  always_select=[], tau=0.,
                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-8,
-                 early_stop=False, approximate_Newton=False
+                 early_stop=False, approximate_Newton=False,
+                 thread=1
                  ):
         super(abessLogistic, self).__init__(
             algorithm_type="abess", model_type="Logistic", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -969,6 +973,7 @@ class abessLogistic(bess_base):
             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
             always_select=always_select, tau=tau,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
-            early_stop=early_stop, approximate_Newton=approximate_Newton
+            early_stop=early_stop, approximate_Newton=approximate_Newton,
+            thread=thread
         )
         self.data_type = 2

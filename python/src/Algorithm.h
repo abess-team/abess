@@ -21,12 +21,12 @@ bool quick_sort_pair_max(std::pair<int, double> x, std::pair<int, double> y);
 class Algorithm
 {
 public:
-  Data data;
+  // Data data;
   vector<Eigen::MatrixXd> PhiG;
   vector<Eigen::MatrixXd> invPhiG;
   Eigen::VectorXd beta_init;
-  int group_df;
-  int sparsity_level;
+  int group_df = 0;
+  int sparsity_level = 0;
   double lambda_level = 0;
   Eigen::VectorXi train_mask;
   int max_iter;
@@ -55,16 +55,16 @@ public:
 
   Algorithm() = default;
 
-  Algorithm(Data &data, int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8)
+  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8)
   {
-    this->data = data;
+    // this->data = data;
     this->max_iter = max_iter;
-    this->A_out = Eigen::VectorXi::Zero(data.get_p());
+    // this->A_out = Eigen::VectorXi::Zero(data.get_p());
     this->model_type = model_type;
     this->coef0 = 0.0;
-    this->beta = Eigen::VectorXd::Zero(data.get_p());
+    // this->beta = Eigen::VectorXd::Zero(data.get_p());
     this->coef0_init = 0.0;
-    this->beta_init = Eigen::VectorXd::Zero(data.get_p());
+    // this->beta_init = Eigen::VectorXd::Zero(data.get_p());
     this->warm_start = true;
     this->exchange_num = 5;
     this->algorithm_type = algorithm_type;
@@ -92,11 +92,7 @@ public:
 
   void update_group_df(int group_df) { this->group_df = group_df; }
 
-  void update_sparsity_level(int sparsity_level)
-  {
-    this->sparsity_level = sparsity_level;
-    this->group_df = sparsity_level;
-  }
+  void update_sparsity_level(int sparsity_level) { this->sparsity_level = sparsity_level; }
 
   void update_lambda_level(double lambda_level) { this->lambda_level = lambda_level; }
 
@@ -124,41 +120,41 @@ public:
 
   int get_l() { return this->l; }
 
-  void fit()
+  void fit(Eigen::MatrixXd train_x, Eigen::VectorXd train_y, Eigen::VectorXd train_weight, Eigen::VectorXi g_index, Eigen::VectorXi g_size, int train_n, int p, int N)
   {
     // std::cout << "fit" << endl;
-    int N = data.get_g_num();
-    int train_n = this->train_mask.size();
-    int p = data.get_p();
-    Eigen::MatrixXd train_x(train_n, p);
-    Eigen::VectorXd train_y(train_n);
-    Eigen::VectorXd train_weight(train_n);
+    // int N = data.get_g_num();
+    // int train_n = this->train_mask.size();
+    // int p = data.get_p();
+    // Eigen::MatrixXd train_x(train_n, p);
+    // Eigen::VectorXd train_y(train_n);
+    // Eigen::VectorXd train_weight(train_n);
     int T0 = this->sparsity_level;
 
-    Eigen::VectorXi g_index = data.get_g_index();
-    Eigen::VectorXi g_size = data.get_g_size();
-    if (train_n == data.get_n())
-    {
-      train_x = data.x;
-      train_y = data.y;
-      train_weight = data.weight;
-    }
-    else
-    {
-      for (int i = 0; i < train_n; i++)
-      {
-        train_x.row(i) = data.x.row(this->train_mask(i)).eval();
-        train_y(i) = data.y(this->train_mask(i));
-        train_weight(i) = data.weight(this->train_mask(i));
-      }
-    }
+    // Eigen::VectorXi g_index = data.get_g_index();
+    // Eigen::VectorXi g_size = data.get_g_size();
+    // if (train_n == data.get_n())
+    // {
+    //   train_x = data.x;
+    //   train_y = data.y;
+    //   train_weight = data.weight;
+    // }
+    // else
+    // {
+    //   for (int i = 0; i < train_n; i++)
+    //   {
+    //     train_x.row(i) = data.x.row(this->train_mask(i)).eval();
+    //     train_y(i) = data.y(this->train_mask(i));
+    //     train_weight(i) = data.weight(this->train_mask(i));
+    //   }
+    // }
 
-    this->tau = 0.01 * (double)this->sparsity_level * log((double)p) * log(log((double)train_n)) / (double)train_n;
+    this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
 
     // std::cout << "fit 1" << endl;
-    if (N == this->get_sparsity_level())
+    if (N == T0)
     {
-      this->primary_model_fit(train_x, train_y, train_weight, this->beta, this->coef0, DBL_MIN);
+      this->primary_model_fit(train_x, train_y, train_weight, this->beta, this->coef0, DBL_MAX);
       this->A_out = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
       return;
     }
@@ -252,7 +248,7 @@ public:
             this->group_df = 0;
             for (unsigned int i = 0; i < A.size(); i++)
             {
-              this->group_df = this->group_df + data.g_size(A(i));
+              this->group_df = this->group_df + g_size(A(i));
             }
             return;
           }
@@ -269,7 +265,7 @@ public:
           this->group_df = 0;
           for (unsigned int i = 0; i < A.size(); i++)
           {
-            this->group_df = this->group_df + data.g_size(A(i));
+            this->group_df = this->group_df + g_size(A(i));
           }
           return;
         }
@@ -293,7 +289,7 @@ public:
 class abessLogistic : public Algorithm
 {
 public:
-  abessLogistic(Data &data, int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8) : Algorithm(data, algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon){};
+  abessLogistic(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon){};
 
   Eigen::VectorXi inital_screening(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights,
                                    Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
@@ -529,7 +525,8 @@ public:
 
     Eigen::VectorXd pr = pi(XA, y, coef, n);
     // cout << "pr: " << pr;
-    Eigen::VectorXd d_I = XI.transpose() * ((y - pr).cwiseProduct(weights));
+    Eigen::VectorXd res = (y - pr).cwiseProduct(weights);
+    Eigen::VectorXd d_I = XI.transpose() * res;
 
     h = weights.array() * pr.array() * (one - pr).array();
 
@@ -606,8 +603,8 @@ public:
     // std::cout << "d_I_group: " << d_I_group << endl;
 
     // t1 = clock();
-    Eigen::VectorXi s1 = slice(A, min_k(beta_A_group, C_max));
-    Eigen::VectorXi s2 = slice(I, max_k(d_I_group, C_max));
+    Eigen::VectorXi s1 = vector_slice(A, min_k(beta_A_group, C_max));
+    Eigen::VectorXi s2 = vector_slice(I, max_k(d_I_group, C_max));
     // t2 = clock();
     // std::cout << "s1 s2 time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
