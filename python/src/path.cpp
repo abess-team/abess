@@ -275,18 +275,22 @@ List sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
     Eigen::VectorXd beta_init = Eigen::VectorXd::Zero(p);
     double coef0_init = 0.0;
     Eigen::VectorXi A_init;
+    Eigen::VectorXd d_init;
+    Eigen::VectorXd h_init;
 
     for (int i = 0; i < sequence_size; i++)
     {
-        std::cout << "\n sequence= " << sequence(i);
+        // std::cout << "\n sequence= " << sequence(i);
         for (int j = (1 - pow(-1, i)) * (lambda_size - 1) / 2; j < lambda_size && j >= 0; j = j + pow(-1, i))
         {
-            std::cout << " =========j: " << j << ", lambda= " << lambda_seq(j) << ", T: " << sequence(i) << endl;
+            // std::cout << " =========j: " << j << ", lambda= " << lambda_seq(j) << ", T: " << sequence(i) << endl;
 
             // algorithm->update_train_mask(full_mask);
             algorithm->update_sparsity_level(sequence(i));
             algorithm->update_lambda_level(lambda_seq(j));
             algorithm->update_beta_init(beta_init);
+            algorithm->update_d_init(d_init);
+            algorithm->update_h_init(h_init);
             algorithm->update_coef0_init(coef0_init);
             algorithm->update_A_init(A_init, N);
             algorithm->update_group_XTX(train_group_XTX);
@@ -298,6 +302,8 @@ List sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
                 beta_init = algorithm->get_beta();
                 coef0_init = algorithm->get_coef0();
                 A_init = algorithm->get_A_out();
+                d_init = algorithm->get_d();
+                h_init = algorithm->get_h();
             }
 
             // evaluate the beta
@@ -376,7 +382,7 @@ List sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
     mylist.add("ic_matrix", ic_matrix);
     mylist.add("test_loss_matrix", test_loss_matrix);
 #endif
-    cout << "path end" << endl;
+    // cout << "path end" << endl;
     return mylist;
 }
 
@@ -418,7 +424,10 @@ List sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
 //     algorithm->update_coef0_init(coef0_init);
 //     algorithm->update_group_XTX(full_group_XTX);
 
-//     algorithm->fit();
+//     // algorithm->fit();
+
+//     ic_sequence(1) = metric->fit_and_evaluate_in_metric(algorithm, data);
+
 //     if (algorithm->warm_start)
 //     {
 //         beta_init = algorithm->get_beta();
@@ -427,8 +436,8 @@ List sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
 
 //     beta_matrix.col(1) = algorithm->get_beta();
 //     coef0_sequence(1) = algorithm->get_coef0();
-//     train_loss_sequence(1) = metric->train_loss(algorithm, data);
-//     ic_sequence(1) = metric->ic(algorithm, data);
+//     // train_loss_sequence(1) = metric->train_loss(algorithm, data);
+//     // ic_sequence(1) = metric->ic(algorithm, data);
 //     beta_all.col(0) = beta_matrix.col(1);
 //     coef0_all(0) = coef0_sequence(1);
 //     train_loss_all(0) = train_loss_sequence(1);

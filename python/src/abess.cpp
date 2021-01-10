@@ -49,6 +49,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
               bool early_stop, bool approximate_Newton,
               int thread)
 {
+    // to do: -openmp
     // clock_t t1, t2;
     // t1 = clock();
     srand(123);
@@ -148,22 +149,6 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     // #endif
 
     Metric *metric = new Metric(ic_type, ic_coef, is_cv, Kfold);
-    // if (model_type == 1)
-    // {
-    //     metric = new LmMetric(ic_type, ic_coef, is_cv, Kfold);
-    // }
-    // else if (model_type == 2)
-    // {
-    //     metric = new LogisticMetric(ic_type, ic_coef, is_cv, Kfold);
-    // }
-    // else if (model_type == 3)
-    // {
-    //     metric = new PoissonMetric(ic_type, ic_coef, is_cv, Kfold);
-    // }
-    // else
-    // {
-    //     metric = new CoxMetric(ic_type, ic_coef, is_cv, Kfold);
-    // }
 
     // For CV:
     // 1:mask
@@ -443,7 +428,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
 
     delete algorithm;
     delete metric;
-    cout << "abess 8" << endl;
+    // cout << "abess 8" << endl;
     return result;
 }
 
