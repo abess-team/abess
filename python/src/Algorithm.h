@@ -36,12 +36,10 @@ public:
   double coef0_init;
   Eigen::VectorXi A_init;
   Eigen::VectorXi I_init;
-  Eigen::VectorXd d_init;
-  Eigen::VectorXd h_init;
-  Eigen::VectorXd d;
-  Eigen::VectorXd h;
+  Eigen::VectorXd bd_init;
+  Eigen::VectorXd bd;
   double coef0;
-  double loss;
+  double train_loss = 0;
   Eigen::VectorXi A_out;
   Eigen::VectorXi I_out;
   int l;
@@ -84,19 +82,17 @@ public:
 
   void set_warm_start(bool warm_start) { this->warm_start = warm_start; }
 
-  void update_beta_init(Eigen::VectorXd beta_init) { this->beta_init = beta_init; }
+  void update_beta_init(Eigen::VectorXd &beta_init) { this->beta_init = beta_init; }
 
-  void update_A_init(Eigen::VectorXi A_init, int g_num)
+  void update_A_init(Eigen::VectorXi &A_init, int g_num)
   {
     this->A_init = A_init;
     this->I_init = Ac(A_init, g_num);
   }
 
-  void update_I_init(Eigen::VectorXi I_init) { this->I_init = I_init; }
+  // void update_I_init(Eigen::VectorXi I_init) { this->I_init = I_init; }
 
-  void update_d_init(Eigen::VectorXd d_init) { this->d_init = d_init; }
-
-  void update_h_init(Eigen::VectorXd h_init) { this->h_init = h_init; }
+  void update_bd_init(Eigen::VectorXd &bd_init) { this->bd_init = bd_init; }
 
   void update_coef0_init(double coef0) { this->coef0_init = coef0; }
 
@@ -114,7 +110,7 @@ public:
 
   bool get_warm_start() { return this->warm_start; }
 
-  double get_loss() { return this->loss; }
+  double get_train_loss() { return this->train_loss; }
 
   int get_group_df() { return this->group_df; }
 
@@ -128,40 +124,14 @@ public:
 
   Eigen::VectorXi get_I_out() { return this->I_out; };
 
-  Eigen::VectorXd get_d() { return this->d; }
-
-  Eigen::VectorXd get_h() { return this->h; }
+  Eigen::VectorXd get_bd() { return this->bd; }
 
   int get_l() { return this->l; }
 
-  void fit(Eigen::MatrixXd train_x, Eigen::VectorXd train_y, Eigen::VectorXd train_weight, Eigen::VectorXi g_index, Eigen::VectorXi g_size, int train_n, int p, int N)
+  void fit(Eigen::MatrixXd &train_x, Eigen::VectorXd &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N)
   {
     // std::cout << "fit" << endl;
-    // int N = data.get_g_num();
-    // int train_n = this->train_mask.size();
-    // int p = data.get_p();
-    // Eigen::MatrixXd train_x(train_n, p);
-    // Eigen::VectorXd train_y(train_n);
-    // Eigen::VectorXd train_weight(train_n);
     int T0 = this->sparsity_level;
-
-    // Eigen::VectorXi g_index = data.get_g_index();
-    // Eigen::VectorXi g_size = data.get_g_size();
-    // if (train_n == data.get_n())
-    // {
-    //   train_x = data.x;
-    //   train_y = data.y;
-    //   train_weight = data.weight;
-    // }
-    // else
-    // {
-    //   for (int i = 0; i < train_n; i++)
-    //   {
-    //     train_x.row(i) = data.x.row(this->train_mask(i)).eval();
-    //     train_y(i) = data.y(this->train_mask(i));
-    //     train_weight(i) = data.weight(this->train_mask(i));
-    //   }
-    // }
 
     this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
 
@@ -175,10 +145,9 @@ public:
 
     this->beta = this->beta_init;
     this->coef0 = this->coef0_init;
-    this->d = this->d_init;
-    this->h = this->h_init;
+    this->bd = this->bd_init;
 
-    // clock_t t1, t2;
+    clock_t t1, t2;
 
     // cout << "this->beta: " << this->beta << endl;
     // cout << "this->coef0_init" << this->coef0_init << endl;
@@ -188,11 +157,10 @@ public:
     // input: this->beta_init, this->coef0_init, this->A_init, this->I_init
     // for splicing get A;for the others 0;
     // std::cout << "fit 2" << endl;
-    // t1 = clock();
-    Eigen::VectorXi A = inital_screening(train_x, train_y, this->beta_init, this->coef0_init, this->A_init, this->I_init, this->d_init, this->h_init, train_weight, g_index, g_size, N);
-    // t2 = clock();
-    // std::cout << "init screening time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-    // printf("fit time=%f\n", (double)(t2 - t1) / CLOCKS_PER_SEC);
+    t1 = clock();
+    Eigen::VectorXi A = inital_screening(train_x, train_y, this->beta, this->coef0, this->A_init, this->I_init, this->bd, train_weight, g_index, g_size, N);
+    t2 = clock();
+    std::cout << "init screening time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
     // std::cout << "fit 3" << endl;
     // t1 = clock();
@@ -209,7 +177,7 @@ public:
     Eigen::VectorXi A_ind;
 
     // std::cout << "fit 5" << endl;
-    // t1 = clock();
+    t1 = clock();
     if (this->algorithm_type == 6)
     {
       A_ind = find_ind(A, g_index, g_size, p, N);
@@ -229,19 +197,20 @@ public:
     this->beta_warmstart = this->beta;
     this->coef0_warmstart = this->coef0;
 
-    // t2 = clock();
-    // std::cout << "primary fit" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t2 = clock();
+    std::cout << "primary fit" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
     // std::cout << "fit 6" << endl;
     int C_max = min(min(T0, N - T0), this->exchange_num);
 
+    t1 = clock();
     for (this->l = 1; this->l <= this->max_iter; l++)
     {
       // std::cout << "fit 7" << endl;
       // t1 = clock();
-      this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->d, this->h, T0, train_weight, g_index, g_size, N, this->tau);
-      // t2 = clock();
-      // std::cout << "get A" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+      this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size, N, this->tau, this->train_loss);
+      t2 = clock();
+      std::cout << "get A" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
       A_list.col(this->l) = A;
       // std::cout << "fit 8" << endl;
@@ -274,15 +243,21 @@ public:
       {
         if (A == A_list.col(this->l - 1))
         {
-          // std::cout << "------------iter time: ----------" << this->l << endl;
-          // std::cout << "A" << A;
+          std::cout << "------------iter time: ----------" << this->l << endl;
+          t2 = clock();
+          std::cout << "fit get A" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+
+          t1 = clock();
           this->A_out = A;
-          this->I_out = I;
+          // this->I_out = I;
           this->group_df = 0;
           for (unsigned int i = 0; i < A.size(); i++)
           {
             this->group_df = this->group_df + g_size(A(i));
           }
+          t2 = clock();
+          std::cout << "group_df time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+
           return;
         }
       }
@@ -292,10 +267,10 @@ public:
 
   virtual void primary_model_fit(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0) = 0;
 
-  virtual void get_A(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &d, Eigen::VectorXd &h, int T0, Eigen::VectorXd &weights,
-                     Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau) = 0;
+  virtual void get_A(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &bd, int T0, Eigen::VectorXd &weights,
+                     Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss) = 0;
 
-  virtual Eigen::VectorXi inital_screening(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &d, Eigen::VectorXd &h, Eigen::VectorXd &weights,
+  virtual Eigen::VectorXi inital_screening(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
                                            Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N) = 0;
 
   virtual double neg_loglik_loss(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0) = 0;
@@ -309,35 +284,39 @@ public:
 
   ~abessLogistic(){};
 
-  Eigen::VectorXi inital_screening(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &d, Eigen::VectorXd &h, Eigen::VectorXd &weights,
+  Eigen::VectorXi inital_screening(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
                                    Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
   {
     // cout << "inital_screening: " << endl;
-    // variable initialization
-    int n = X.rows();
-    int p = X.cols();
-    Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
-    Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
-    Eigen::VectorXd bd = Eigen::VectorXd::Zero(N);
+    clock_t t3, t4;
+    t3 = clock();
 
-    // calculate beta & d & h
-    // cout << "inital_screening 1" << endl;
-    Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
-    Eigen::MatrixXd X_A = X_seg(X, n, A_ind);
-    Eigen::VectorXd beta_A(A_ind.size());
-    for (int k = 0; k < A_ind.size(); k++)
+    if (bd.size() == 0)
     {
-      beta_A(k) = beta(A_ind(k));
-    }
-    // cout << "A_ind: " << A_ind << endl;
-    // cout << "beta_A: " << beta_A << endl;
-    // cout << "coef0: " << endl;
+      clock_t t1, t2;
+      t1 = clock();
+      // variable initialization
+      int n = X.rows();
+      int p = X.cols();
+      Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
+      Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
+      bd = Eigen::VectorXd::Zero(N);
 
-    // cout << "1" << endl;
-    if (d.size() == 0 && h.size() == 0)
-    {
+      // calculate beta & d & h
+      // cout << "inital_screening 1" << endl;
+      Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
+      Eigen::MatrixXd X_A = X_seg(X, n, A_ind);
+      Eigen::VectorXd beta_A(A_ind.size());
+      for (int k = 0; k < A_ind.size(); k++)
+      {
+        beta_A(k) = beta(A_ind(k));
+      }
+
+      t2 = clock();
+      std::cout << "inital_screening beta: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
       cout << "2" << endl;
-      d = Eigen::VectorXd::Zero(p);
+      Eigen::VectorXd d = Eigen::VectorXd::Zero(p);
+      Eigen::VectorXd h;
 
       Eigen::VectorXi I_ind = find_ind(I, g_index, g_size, p, N);
       Eigen::MatrixXd X_I = X_seg(X, n, I_ind);
@@ -348,39 +327,48 @@ public:
       {
         d(I_ind(k)) = d_I(k);
       }
+
+      // calculate group bd
+      t1 = clock();
+      for (int i = 0; i < N; i++)
+      {
+        Eigen::MatrixXd XG = X.middleCols(g_index(i), g_size(i));
+        Eigen::MatrixXd XG_new = XG;
+        for (int j = 0; j < g_size(i); j++)
+        {
+          XG_new.col(j) = XG.col(j).cwiseProduct(h);
+        }
+        Eigen::MatrixXd XGbar = XG_new.transpose() * XG;
+        Eigen::MatrixXd phiG = XGbar.sqrt();
+        Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
+        // cout << "phiG: " << phiG << endl;
+        // cout << "invphiG: " << invphiG << endl;
+        betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
+        dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
+      }
+      Eigen::VectorXd temp = betabar + dbar;
+      for (int i = 0; i < N; i++)
+      {
+        bd(i) = (temp.segment(g_index(i), g_size(i))).squaredNorm() / g_size(i);
+      }
     }
 
-    // cout << "d: " << d << endl;
-    // calculate group bd
-    for (int i = 0; i < N; i++)
-    {
-      Eigen::MatrixXd XG = X.middleCols(g_index(i), g_size(i));
-      Eigen::MatrixXd XG_new = XG;
-      for (int j = 0; j < g_size(i); j++)
-      {
-        XG_new.col(j) = XG.col(j).cwiseProduct(h);
-      }
-      Eigen::MatrixXd XGbar = XG_new.transpose() * XG;
-      Eigen::MatrixXd phiG = XGbar.sqrt();
-      Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
-      // cout << "phiG: " << phiG << endl;
-      // cout << "invphiG: " << invphiG << endl;
-      betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
-      dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
-    }
-    Eigen::VectorXd temp = betabar + dbar;
-    for (int i = 0; i < N; i++)
-    {
-      bd(i) = (temp.segment(g_index(i), g_size(i))).squaredNorm() / g_size(i);
-    }
+    t4 = clock();
+    std::cout << "inital_screening bd: " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << endl;
+
     // cout << "g_index: " << g_index << endl;
     // cout << "g_size: " << g_size << endl;
     // cout << "betabar: " << betabar << endl;
     // cout << "dbar: " << dbar << endl;
 
     // get Active-set A according to max_k bd
+    t3 = clock();
+
     Eigen::VectorXi A_new;
     max_k(bd, this->get_sparsity_level(), A_new);
+    t4 = clock();
+    std::cout << "inital_screening max_k: " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << endl;
+
     // cout << "bd: " << bd << endl;
     // cout << "A_new: " << A_new << endl;
     return A_new;
@@ -388,7 +376,7 @@ public:
 
   void primary_model_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0)
   {
-    // clock_t t1 = clock();
+    clock_t t1 = clock();
     // cout << "primary_fit-----------" << endl;
     int n = x.rows();
     int p = x.cols();
@@ -517,9 +505,9 @@ public:
         Z = X * beta0 + (y - Pi).cwiseQuotient(W);
       }
     }
-    // clock_t t2 = clock();
-    // std::cout << "primary fit time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-    // cout << "primary fit iter : " << j << endl;
+    clock_t t2 = clock();
+    std::cout << "primary fit time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    cout << "primary fit iter : " << j << endl;
 
     beta = beta0.tail(p).eval();
     coef0 = beta0(0);
@@ -557,15 +545,15 @@ public:
     return d_I;
   }
 
-  void get_A(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &d, Eigen::VectorXd &h, int T0, Eigen::VectorXd &weights,
-             Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau)
+  void get_A(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &bd, int T0, Eigen::VectorXd &weights,
+             Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss)
   {
     // cout << "get A 1" << endl;
     int n = X.rows();
     int p = X.cols();
 
-    // clock_t t1, t2;
-    // t1 = clock();
+    clock_t t0, t1, t2;
+    t1 = clock();
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
     Eigen::MatrixXd X_A = X_seg(X, n, A_ind);
     Eigen::VectorXd beta_A(A_ind.size());
@@ -573,17 +561,23 @@ public:
     {
       beta_A(k) = beta(A_ind(k));
     }
-    double L1, L0 = neg_loglik_loss(X_A, y, weights, beta_A, coef0);
-    // t2 = clock();
-    // std::cout << "loss time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t2 = clock();
+    std::cout << "A ind time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
-    // t1 = clock();
+    t1 = clock();
+    double L1, L0 = neg_loglik_loss(X_A, y, weights, beta_A, coef0);
+    train_loss = L0;
+    t2 = clock();
+    std::cout << "loss time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+
+    t1 = clock();
     int A_size = A.size();
     int I_size = I.size();
 
     Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
-    d = Eigen::VectorXd::Zero(p);
+    Eigen::VectorXd d = Eigen::VectorXd::Zero(p);
+    Eigen::VectorXd h;
     Eigen::VectorXi I_ind = find_ind(I, g_index, g_size, p, N);
     Eigen::MatrixXd X_I = X_seg(X, n, I_ind);
     Eigen::VectorXd d_I = this->dual(X_I, X_A, y, beta_A, coef0, weights, n, h);
@@ -612,24 +606,31 @@ public:
     for (int i = 0; i < A_size; i++)
     {
       beta_A_group(i) = betabar.segment(g_index(A[i]), g_size(A[i])).squaredNorm() / g_size(A[i]);
+      bd(A[i]) = beta_A_group(i);
     }
     for (int i = 0; i < I_size; i++)
     {
       d_I_group(i) = dbar.segment(g_index(I[i]), g_size(I[i])).squaredNorm() / g_size(I[i]);
+      bd(I[i]) = d_I_group(i);
     }
+    // Eigen::VectorXd temp = betabar + dbar;
+    // for (int i = 0; i < N; i++)
+    // {
+    //   bd(i) = (temp.segment(g_index(i), g_size(i))).squaredNorm() / g_size(i);
+    // }
     // cout << "get A 4" << endl;
-    // t2 = clock();
-    // std::cout << "get A beta d: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t2 = clock();
+    std::cout << "get A beta d: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
     // std::cout << "A: " << A << endl;
     // std::cout << "I: " << I << endl;
     // std::cout << "beta_A_group: " << beta_A_group << endl;
     // std::cout << "d_I_group: " << d_I_group << endl;
 
-    // t1 = clock();
+    t1 = clock();
     Eigen::VectorXi s1 = vector_slice(A, min_k(beta_A_group, C_max));
     Eigen::VectorXi s2 = vector_slice(I, max_k(d_I_group, C_max));
-    // t2 = clock();
-    // std::cout << "s1 s2 time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t2 = clock();
+    std::cout << "s1 s2 time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
     // cout << "get A 5" << endl;
     Eigen::VectorXi A_exchange(A_size);
@@ -638,7 +639,7 @@ public:
     Eigen::VectorXd beta_A_exchange;
     double coef0_A_exchange;
 
-    // t1 = clock();
+    t0 = clock();
     // Eigen::VectorXd beta_Ac = beta_A;
     // double coef0_Ac = coef0;
     for (int k = C_max; k >= 1;)
@@ -661,13 +662,12 @@ public:
       primary_model_fit(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, L0);
 
       L1 = neg_loglik_loss(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange);
-      // t2 = clock();
-      // std::cout << "exchange time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
       // cout << "L0: " << L0 << " L1: " << L1 << endl;
       if (L0 - L1 > tau)
       {
         // update A & I & beta & coef0
+        train_loss = L1;
         A = A_exchange;
         I = Ac(A_exchange, N);
         beta = Eigen::VectorXd::Zero(p);
@@ -676,10 +676,10 @@ public:
           beta(A_ind_exchage[i]) = beta_A_exchange(i);
         }
         coef0 = coef0_A_exchange;
-        // std::cout << "C_max: " << C_max << " k: " << k << endl;
+        std::cout << "C_max: " << C_max << " k: " << k << endl;
         C_max = k;
-        // t2 = clock();
-        // std::cout << "exchange time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+        t2 = clock();
+        std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
         break;
       }
       else
@@ -689,6 +689,8 @@ public:
         s2 = s2.head(k).eval();
       }
     }
+    t2 = clock();
+    std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
   };
 };
 

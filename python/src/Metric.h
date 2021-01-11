@@ -43,7 +43,7 @@ public:
 
     void set_cv_initial_model_param(int Kfold, int p)
     {
-        this->cv_initial_model_param = Eigen::MatrixXd::Zero(Kfold, p);
+        this->cv_initial_model_param = Eigen::MatrixXd::Zero(p, Kfold);
     };
 
     void set_cv_initial_A(int Kfold, int p)
@@ -70,7 +70,7 @@ public:
 
     void update_cv_initial_model_param(Eigen::VectorXd model_param, int k)
     {
-        this->cv_initial_model_param.row(k) = model_param;
+        this->cv_initial_model_param.col(k) = model_param;
     }
 
     void update_cv_initial_A(Eigen::VectorXi A, int k)
@@ -176,30 +176,30 @@ public:
 
     // virtual double ic(Algorithm *algorithm, Data &data) = 0;
 
-    double ic(Eigen::MatrixXd &train_x, Eigen::VectorXd &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm *algorithm)
+    double ic(int train_n, int N, Algorithm *algorithm)
     {
-        double train_loss = 2 * this->neg_loglik_loss(train_x, train_y, train_weight, g_index, g_size, train_n, p, N, algorithm);
+        double loss = 2 * algorithm->get_train_loss();
         if (ic_type == 1)
         {
-            return train_loss + 2.0 * algorithm->get_group_df();
+            return loss + 2.0 * algorithm->get_group_df();
         }
         else if (ic_type == 2)
         {
-            return train_loss + this->ic_coef * (double(train_n)) * algorithm->get_group_df();
+            return loss + this->ic_coef * (double(train_n)) * algorithm->get_group_df();
         }
         else if (ic_type == 3)
         {
-            return train_loss + this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_group_df();
+            return loss + this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_group_df();
         }
         else if (ic_type == 4)
         {
-            return train_loss + this->ic_coef * (log(double(train_n)) + 2 * log(double(N))) * algorithm->get_group_df();
+            return loss + this->ic_coef * (log(double(train_n)) + 2 * log(double(N))) * algorithm->get_group_df();
         }
         else
             return 0;
     };
 
-    double neg_loglik_loss(Eigen::MatrixXd train_x, Eigen::VectorXd train_y, Eigen::VectorXd train_weight, Eigen::VectorXi g_index, Eigen::VectorXi g_size, int train_n, int p, int N, Algorithm *algorithm)
+    double neg_loglik_loss(Eigen::MatrixXd &train_x, Eigen::VectorXd &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm *algorithm)
     {
         // clock_t t1 = clock();
         Eigen::VectorXi A = algorithm->get_A_out();
@@ -225,7 +225,7 @@ public:
         if (!this->is_cv)
         {
             algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num);
-            return this->ic(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, algorithm);
+            return this->ic(data.n, data.g_num, algorithm);
         }
         else
         {
@@ -249,10 +249,12 @@ public:
                 Eigen::VectorXd test_y = vector_slice(data.y, this->test_mask_list[k]);
                 Eigen::VectorXd train_weight = vector_slice(data.weight, this->train_mask_list[k]);
                 Eigen::VectorXd test_weight = vector_slice(data.weight, this->test_mask_list[k]);
+                Eigen::VectorXd beta_init;
 
                 if (algorithm->get_warm_start())
                 {
-                    algorithm->update_beta_init(this->cv_initial_model_param.row(k));
+                    beta_init = this->cv_initial_model_param.col(k).eval();
+                    algorithm->update_beta_init(beta_init);
                     algorithm->update_coef0_init(this->cv_initial_coef0[k]);
                     algorithm->update_A_init(this->cv_initial_A[k], N);
                 }

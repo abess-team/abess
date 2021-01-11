@@ -50,7 +50,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
               int thread)
 {
     // to do: -openmp
-    // clock_t t1, t2;
+    clock_t t1, t2;
     // t1 = clock();
     srand(123);
 
@@ -70,57 +70,6 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
 
     Algorithm *algorithm = nullptr;
 
-    // bool is_parallel = true;
-
-    /// ### keep
-    // if (algorithm_type == 1 || algorithm_type == 5) {
-    //     if (model_type == 1) {
-    //         data.add_weight();
-    //         algorithm = new L0L2Lm(data, algorithm_type, max_iter);
-    //     } else if (model_type == 2) {
-    //         algorithm = new L0L2Logistic(data, algorithm_type, max_iter);
-    //     } else if (model_type == 3) {
-    //         algorithm = new L0L2Poisson(data, algorithm_type, max_iter);
-    //     } else {
-    //         algorithm = new L0L2Cox(data,algorithm_type, max_iter);
-    //     }
-    // }
-    //    else if (algorithm_type == 2 || algorithm_type == 3) {
-    //     if (model_type == 1) {
-    //         data.add_weight();
-    //         algorithm = new GroupPdasLm(data,algorithm_type, max_iter);
-    //         // algorithm->PhiG = Phi(data.x, g_index, data.get_g_size(), data.get_n(), data.get_p(), data.get_g_num(), 0.);
-    //         // algorithm->invPhiG = invPhi(algorithm->PhiG, data.get_g_num());
-    //     } else if (model_type == 2) {
-    //         algorithm = new GroupPdasLogistic(data, algorithm_type, max_iter);
-    //     } else if (model_type == 3) {
-    //         algorithm = new GroupPdasPoisson(data, algorithm_type, max_iter);
-    //     } else {
-    //         algorithm = new GroupPdasCox(data, algorithm_type, max_iter);
-    //     }
-    // }
-
-    // if (algorithm_type == 1 || algorithm_type == 5 || algorithm_type == 2 || algorithm_type == 3)
-    // {
-    //     if (model_type == 1)
-    //     {
-    //         data.add_weight();
-    //         algorithm = new GroupPdasLm(data, algorithm_type, max_iter);
-    //     }
-    //     else if (model_type == 2)
-    //     {
-    //         algorithm = new GroupPdasLogistic(data, algorithm_type, max_iter);
-    //     }
-    //     else if (model_type == 3)
-    //     {
-    //         algorithm = new GroupPdasPoisson(data, algorithm_type, max_iter);
-    //     }
-    //     else
-    //     {
-    //         algorithm = new GroupPdasCox(data, algorithm_type, max_iter);
-    //     }
-    // }
-
     //////////////////// function generate_algorithm_pointer() ////////////////////////////
 
     if (algorithm_type == 6)
@@ -136,17 +85,6 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     // algorithm->tau = tau;
     algorithm->exchange_num = exchange_num;
     algorithm->approximate_Newton = approximate_Newton;
-
-    // #ifdef OTHER_ALGORITHM2
-    //     if (algorithm_type == 7)
-    //     {
-    //         if (model_type == 1)
-    //         {
-    //             data.add_weight();
-    //             algorithm = new PrincipalBallLm(data, max_iter);
-    //         }
-    //     }
-    // #endif
 
     Metric *metric = new Metric(ic_type, ic_coef, is_cv, Kfold);
 
@@ -185,6 +123,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     // std::cout << "preprocess time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
     // calculate loss for each parameter parameter combination
+    t1 = clock();
     List result;
     vector<List> result_list(Kfold);
     if (path_type == 1)
@@ -227,6 +166,8 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     //         result = gs_path(data, algorithm, metric, s_min, s_max, K_max, epsilon);
     //     }
     // }
+    t2 = clock();
+    std::cout << "path time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
     // Get bestmodel index && fit bestmodel
     ////////////////////////////put in abess.cpp///////////////////////////////////////
@@ -235,6 +176,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     Eigen::Matrix<VectorXd, Dynamic, Dynamic> beta_matrix;
     Eigen::MatrixXd coef0_matrix;
     Eigen::Matrix<VectorXi, Dynamic, Dynamic> A_matrix;
+    Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix;
     Eigen::MatrixXd ic_matrix;
     Eigen::MatrixXd test_loss_sum = Eigen::MatrixXd::Zero(sequence.size(), lambda_seq.size());
 
@@ -257,6 +199,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
             result_list[0].get_value_by_name("beta_matrix", beta_matrix);
             result_list[0].get_value_by_name("coef0_matrix", coef0_matrix);
             result_list[0].get_value_by_name("A_matrix", A_matrix);
+            result_list[0].get_value_by_name("bd_matrix", bd_matrix);
             // cout << "abess 4" << endl;
         }
         else
@@ -290,7 +233,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
         algorithm->update_beta_init(beta_matrix(min_loss_index_row, min_loss_index_col));
         algorithm->update_coef0_init(coef0_matrix(min_loss_index_row, min_loss_index_col));
         algorithm->update_A_init(A_matrix(min_loss_index_row, min_loss_index_col), data.g_num);
-        // algorithm->update_I_init(I_init);
+        algorithm->update_bd_init(bd_matrix(min_loss_index_row, min_loss_index_col));
         algorithm->update_group_XTX(full_group_XTX);
         // cout << "abess 5" << endl;
 
@@ -309,32 +252,6 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
         best_train_loss = 0; ///////// to do ////////
         best_ic = test_loss_sum(min_loss_index_row, min_loss_index_col);
     }
-
-    // if (!metric->is_cv)
-    // {
-    //     best_beta = beta_matrix[min_loss_index_col].col(min_loss_index_row).eval();
-    //     best_coef0 = coef0_sequence[min_loss_index_col](min_loss_index_row);
-    //     // best_train_loss = loss_sequence[min_loss_index_col](min_loss_index_row);
-    //     best_ic = ic_sequence(min_loss_index_row, min_loss_index_col);
-    // }
-    // else
-    // {
-    //     // algorithm->update_train_mask(full_mask);
-    //     algorithm->update_sparsity_level(best_s);
-    //     algorithm->update_lambda_level(best_lambda);
-    //     algorithm->update_beta_init(beta_matrix[min_loss_index_col].col(min_loss_index_row).eval());
-    //     algorithm->update_coef0_init(coef0_sequence[min_loss_index_col](min_loss_index_row));
-    //     algorithm->update_A_init(A_sequence[min_loss_index_row][min_loss_index_col], N);
-    //     // algorithm->update_I_init(I_init);
-    //     algorithm->update_group_XTX(full_group_XTX);
-
-    //     algorithm->fit();
-
-    //     best_beta = algorithm->get_beta();
-    //     best_coef0 = algorithm->get_coef0();
-    //     // best_train_loss = metric->train_loss(algorithm, data);
-    //     best_ic = ic_sequence(min_loss_index_row, min_loss_index_col);
-    // }
 
     //////////////Restore best_fit_result for normal//////////////
     if (data.is_normal)
@@ -464,7 +381,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
     Eigen::VectorXd lambda_sequence_Vec;
     Eigen::VectorXi always_select_Vec;
 
-    // clock_t t1, t2;
+    clock_t t1, t2;
     // t1 = clock();
     x_Mat = Pointer2MatrixXd(x, x_row, x_col);
     y_Vec = Pointer2VectorXd(y, y_len);
@@ -477,7 +394,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
     // t2 = clock();
     // std::cout << "pointer to data: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
-    // t1 = clock();
+    t1 = clock();
     List mylist = abessCpp(x_Mat, y_Vec, data_type, weight_Vec,
                            is_normal,
                            algorithm_type, model_type, max_iter, exchange_num,
@@ -494,8 +411,8 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                            primary_model_fit_max_iter, primary_model_fit_epsilon,
                            early_stop, approximate_Newton,
                            thread);
-    // t2 = clock();
-    // std::cout << "get result : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t2 = clock();
+    std::cout << "get result : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
     // t1 = clock();
     Eigen::VectorXd beta;

@@ -228,6 +228,7 @@ using namespace std;
 
 List sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, bool early_stop, int k)
 {
+    clock_t t0, t1, t2;
     int p = data.get_p();
     int N = data.g_num;
     Eigen::VectorXi g_index = data.g_index;
@@ -271,59 +272,69 @@ List sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
     Eigen::Matrix<VectorXd, Dynamic, Dynamic> beta_matrix(sequence_size, lambda_size);
     Eigen::MatrixXd coef0_matrix(sequence_size, lambda_size);
     Eigen::Matrix<VectorXi, Dynamic, Dynamic> A_matrix(sequence_size, lambda_size);
+    Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(sequence_size, lambda_size);
 
     Eigen::VectorXd beta_init = Eigen::VectorXd::Zero(p);
     double coef0_init = 0.0;
     Eigen::VectorXi A_init;
-    Eigen::VectorXd d_init;
-    Eigen::VectorXd h_init;
+    Eigen::VectorXd bd_init;
 
     for (int i = 0; i < sequence_size; i++)
     {
-        // std::cout << "\n sequence= " << sequence(i);
+        std::cout << "\n sequence= " << sequence(i);
         for (int j = (1 - pow(-1, i)) * (lambda_size - 1) / 2; j < lambda_size && j >= 0; j = j + pow(-1, i))
         {
-            // std::cout << " =========j: " << j << ", lambda= " << lambda_seq(j) << ", T: " << sequence(i) << endl;
+            std::cout << " =========j: " << j << ", lambda= " << lambda_seq(j) << ", T: " << sequence(i) << endl;
+            t0 = clock();
 
+            t1 = clock();
             // algorithm->update_train_mask(full_mask);
             algorithm->update_sparsity_level(sequence(i));
             algorithm->update_lambda_level(lambda_seq(j));
             algorithm->update_beta_init(beta_init);
-            algorithm->update_d_init(d_init);
-            algorithm->update_h_init(h_init);
+            algorithm->update_bd_init(bd_init);
             algorithm->update_coef0_init(coef0_init);
             algorithm->update_A_init(A_init, N);
             algorithm->update_group_XTX(train_group_XTX);
 
             algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N);
+            t2 = clock();
+            std::cout << "fit time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
+            t1 = clock();
             if (algorithm->warm_start)
             {
                 beta_init = algorithm->get_beta();
                 coef0_init = algorithm->get_coef0();
                 A_init = algorithm->get_A_out();
-                d_init = algorithm->get_d();
-                h_init = algorithm->get_h();
+                bd_init = algorithm->get_bd();
             }
+            t2 = clock();
+            std::cout << "warm start time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
             // evaluate the beta
+            t1 = clock();
             if (metric->is_cv)
             {
                 test_loss_matrix(i, j) = metric->neg_loglik_loss(test_x, test_y, test_weight, g_index, g_size, test_n, p, N, algorithm);
             }
             else
             {
-                ic_matrix(i, j) = metric->ic(train_x, train_y, train_weight, g_index, g_size, train_n, p, N, algorithm);
+                ic_matrix(i, j) = metric->ic(train_n, N, algorithm);
             }
+            t2 = clock();
+            std::cout << "ic time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
-            // t1 = clock();
             // save for best_model fit
+            t1 = clock();
             beta_matrix(i, j) = algorithm->beta;
             coef0_matrix(i, j) = algorithm->coef0;
             A_matrix(i, j) = algorithm->A_out;
+            bd_matrix(i, j) = algorithm->bd;
+            t2 = clock();
+            std::cout << "save time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
-            // t2 = clock();
-            // std::cout << "result save time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+            std::cout << "path i= " << i << " j= " << j << " time = " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
         }
 
         // To be ensured
@@ -381,6 +392,7 @@ List sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
     mylist.add("A_matrix", A_matrix);
     mylist.add("ic_matrix", ic_matrix);
     mylist.add("test_loss_matrix", test_loss_matrix);
+    mylist.add("bd_matrix", bd_matrix);
 #endif
     // cout << "path end" << endl;
     return mylist;
