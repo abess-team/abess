@@ -52,7 +52,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     // to do: -openmp
     clock_t t1, t2;
     // t1 = clock();
-    srand(123);
+    std::srand(123);
 
     bool is_parallel = thread != 1;
 

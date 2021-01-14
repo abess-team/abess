@@ -96,8 +96,8 @@ public:
         {
             index_vec[i] = i;
         }
-        std::random_device rd;
-        std::mt19937 g(rd());
+        // std::random_device rd;
+        std::mt19937 g(123);
         std::shuffle(index_vec.begin(), index_vec.end(), g);
 
         for (int i = 0; i < n; i++)
@@ -143,6 +143,7 @@ public:
             train_mask_list_tmp[k] = train_mask;
             test_mask_list_tmp[k] = group_list[k];
         }
+        cout << "train_mask[0]: " << train_mask_list_tmp[0] << endl;
         this->train_mask_list = train_mask_list_tmp;
         this->test_mask_list = test_mask_list_tmp;
     };
