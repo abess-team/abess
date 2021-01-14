@@ -131,23 +131,19 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
 
 Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind)
 {
-    Eigen::MatrixXd X_new(n, ind.size());
-    for (int k = 0; k < ind.size(); k++)
+    if (ind.size() == X.cols())
     {
-        X_new.col(k) = X.col(ind(k));
+        return X;
     }
-    return X_new;
-}
-
-std::vector<Eigen::MatrixXd> Phi(Eigen::MatrixXd &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, double lambda, std::vector<Eigen::MatrixXd> group_XTX)
-{
-    std::vector<Eigen::MatrixXd> Phi(N);
-    for (int i = 0; i < N; i++)
+    else
     {
-        Eigen::MatrixXd lambda_XtX = 2 * lambda * Eigen::MatrixXd::Identity(gsize(i), gsize(i)) + group_XTX[i] / double(n);
-        lambda_XtX.sqrt().evalTo(Phi[i]);
+        Eigen::MatrixXd X_new(n, ind.size());
+        for (int k = 0; k < ind.size(); k++)
+        {
+            X_new.col(k) = X.col(ind(k));
+        }
+        return X_new;
     }
-    return Phi;
 }
 
 std::vector<Eigen::MatrixXd> group_XTX(Eigen::MatrixXd &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)
@@ -164,6 +160,17 @@ std::vector<Eigen::MatrixXd> group_XTX(Eigen::MatrixXd &X, Eigen::VectorXi index
     return XTX;
 }
 
+std::vector<Eigen::MatrixXd> Phi(Eigen::MatrixXd &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, double lambda, std::vector<Eigen::MatrixXd> group_XTX)
+{
+    std::vector<Eigen::MatrixXd> Phi(N);
+    for (int i = 0; i < N; i++)
+    {
+        Eigen::MatrixXd lambda_XtX = 2 * lambda * Eigen::MatrixXd::Identity(gsize(i), gsize(i)) + group_XTX[i] / double(n);
+        lambda_XtX.sqrt().evalTo(Phi[i]);
+    }
+    return Phi;
+}
+
 std::vector<Eigen::MatrixXd> invPhi(std::vector<Eigen::MatrixXd> &Phi, int N)
 {
     std::vector<Eigen::MatrixXd> invPhi(N);
@@ -174,17 +181,6 @@ std::vector<Eigen::MatrixXd> invPhi(std::vector<Eigen::MatrixXd> &Phi, int N)
         invPhi[i] = (Phi[i]).ldlt().solve(Eigen::MatrixXd::Identity(row, row));
     }
     return invPhi;
-}
-
-void max_k(Eigen::VectorXd &vec, int k, Eigen::VectorXi &result)
-{
-    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
-    auto rule = [vec](int i, int j) -> bool {
-        return vec(i) > vec(j);
-    }; // sort rule
-    std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
-    std::sort(ind.data(), ind.data() + k);
-    result = ind.head(k).eval();
 }
 
 void slice_assignment(Eigen::VectorXd &nums, Eigen::VectorXi &ind, double value)
@@ -198,7 +194,7 @@ void slice_assignment(Eigen::VectorXd &nums, Eigen::VectorXi &ind, double value)
     }
 }
 
-Eigen::VectorXd slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind)
+Eigen::VectorXd vector_slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind)
 {
     Eigen::VectorXd sub_nums(ind.size());
     if (ind.size() != 0)
@@ -211,7 +207,7 @@ Eigen::VectorXd slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind)
     return sub_nums;
 }
 
-Eigen::VectorXi slice(Eigen::VectorXi &nums, Eigen::VectorXi ind)
+Eigen::VectorXi vector_slice(Eigen::VectorXi &nums, Eigen::VectorXi &ind)
 {
     Eigen::VectorXi sub_nums(ind.size());
     if (ind.size() != 0)
@@ -222,6 +218,34 @@ Eigen::VectorXi slice(Eigen::VectorXi &nums, Eigen::VectorXi ind)
         }
     }
     return sub_nums;
+}
+
+Eigen::MatrixXd matrix_slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, int axis)
+{
+    if (axis == 0)
+    {
+        Eigen::MatrixXd sub_nums(ind.size(), nums.cols());
+        if (ind.size() != 0)
+        {
+            for (int i = 0; i < ind.size(); i++)
+            {
+                sub_nums.row(i) = nums.row(ind(i));
+            }
+        }
+        return sub_nums;
+    }
+    else
+    {
+        Eigen::MatrixXd sub_nums(nums.rows(), ind.size());
+        if (ind.size() != 0)
+        {
+            for (int i = 0; i < ind.size(); i++)
+            {
+                sub_nums.col(i) = nums.col(ind(i));
+            }
+        }
+        return sub_nums;
+    }
 }
 
 Eigen::MatrixXd row_slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind)
@@ -252,32 +276,32 @@ Eigen::VectorXi get_value_index(Eigen::VectorXd &nums, double value)
     return ind.head(cur_index).eval();
 }
 
-std::vector<int> diff_union(std::vector<int> A, std::vector<int> B, std::vector<int> C)
-{
-    unsigned int k;
-    for (unsigned int i = 0; i < A.size(); i++)
-    {
-        for (k = 0; k < B.size(); k++)
-        {
-            if (A[i] == B[k])
-            {
-                A.erase(A.begin() + i);
-                i--;
-                break;
-            }
-        }
-    }
-    for (k = 0; k < C.size(); k++)
-    {
-        A.push_back(C[k]);
-    }
-    sort(A.begin(), A.end());
-    return A;
-}
+// std::vector<int> diff_union(std::vector<int> A, std::vector<int> B, std::vector<int> C)
+// {
+//     unsigned int k;
+//     for (unsigned int i = 0; i < A.size(); i++)
+//     {
+//         for (k = 0; k < B.size(); k++)
+//         {
+//             if (A[i] == B[k])
+//             {
+//                 A.erase(A.begin() + i);
+//                 i--;
+//                 break;
+//             }
+//         }
+//     }
+//     for (k = 0; k < C.size(); k++)
+//     {
+//         A.push_back(C[k]);
+//     }
+//     sort(A.begin(), A.end());
+//     return A;
+// }
 
 // replace B by C in A
 // to do : binary search
-Eigen::VectorXi diff_union(Eigen::VectorXi A, Eigen::VectorXi B, Eigen::VectorXi C)
+Eigen::VectorXi diff_union(Eigen::VectorXi A, Eigen::VectorXi &B, Eigen::VectorXi &C)
 {
     unsigned int k;
     for (unsigned int i = 0; i < B.size(); i++)
@@ -295,102 +319,111 @@ Eigen::VectorXi diff_union(Eigen::VectorXi A, Eigen::VectorXi B, Eigen::VectorXi
     return A;
 }
 
-// std::vector<int> max_k(Eigen::VectorXd L, int k)
-// {
-//     std::vector<int> vec(k);
-//     for (int i = 0; i < k; i++)
-//     {
-//         L.maxCoeff(&vec[i]);
-//         L(vec[i]) = -1;
-//     }
-//     return vec;
-// }
-
-// std::vector<int> min_k(Eigen::VectorXd L, int k)
-// {
-//     std::vector<int> vec(k);
-//     for (int i = 0; i < k; i++)
-//     {
-//         L.minCoeff(&vec[i]);
-//         L(vec[i]) = 1e100;
-//     }
-//     return vec;
-// }
-
-Eigen::VectorXi min_k(Eigen::VectorXd vec, int k)
+Eigen::VectorXi min_k(Eigen::VectorXd &vec, int k, bool sort_by_value)
 {
     Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
     auto rule = [vec](int i, int j) -> bool {
         return vec(i) < vec(j);
     }; // sort rule
     std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
-    std::sort(ind.data(), ind.data() + k, rule);
+    if (sort_by_value)
+    {
+        std::sort(ind.data(), ind.data() + k, rule);
+    }
+    else
+    {
+        std::sort(ind.data(), ind.data() + k);
+    }
+
     return ind.head(k).eval();
 }
 
-Eigen::VectorXi max_k(Eigen::VectorXd vec, int k)
+Eigen::VectorXi max_k(Eigen::VectorXd &vec, int k, bool sort_by_value)
 {
     Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
     auto rule = [vec](int i, int j) -> bool {
         return vec(i) > vec(j);
     }; // sort rule
     std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
-    std::sort(ind.data(), ind.data() + k, rule);
+    if (sort_by_value)
+    {
+        std::sort(ind.data(), ind.data() + k, rule);
+    }
+    else
+    {
+        std::sort(ind.data(), ind.data() + k);
+    }
+    return ind.head(k).eval();
+}
+
+Eigen::VectorXi max_k_2(Eigen::VectorXd &vec, int k)
+{
+    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
+    auto rule = [vec](int i, int j) -> bool {
+        return vec(i) > vec(j);
+    }; // sort rule
+    std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
+    std::sort(ind.data(), ind.data() + k);
     return ind.head(k).eval();
 }
 
 // Ac
-std::vector<int> Ac(std::vector<int> A, int N)
-{
-    int A_size = A.size();
-    int temp = 0;
-    int j = 0;
-    if (A_size != 0)
-    {
-        bool label;
-        std::vector<int> vec;
-        for (int i = 0; i < N; i++)
-        {
-            label = false;
-            for (; j < A_size; j++)
-            {
-                if (i == A[j])
-                {
-                    label = true;
-                    temp++;
-                    break;
-                }
-            }
-            j = temp;
-            if (label == true)
-            {
-                continue;
-            }
-            else
-            {
-                vec.push_back(i);
-            }
-        }
-        return vec;
-    }
-    else
-    {
-        std::vector<int> vec(N);
-        for (int i = 0; i < N; i++)
-        {
-            vec[i] = i;
-        }
-        return vec;
-    }
-}
+// std::vector<int> Ac(std::vector<int> A, int N)
+// {
+//     int A_size = A.size();
+//     int temp = 0;
+//     int j = 0;
+//     if (A_size != 0)
+//     {
+//         bool label;
+//         std::vector<int> vec;
+//         for (int i = 0; i < N; i++)
+//         {
+//             label = false;
+//             for (; j < A_size; j++)
+//             {
+//                 if (i == A[j])
+//                 {
+//                     label = true;
+//                     temp++;
+//                     break;
+//                 }
+//             }
+//             j = temp;
+//             if (label == true)
+//             {
+//                 continue;
+//             }
+//             else
+//             {
+//                 vec.push_back(i);
+//             }
+//         }
+//         return vec;
+//     }
+//     else
+//     {
+//         std::vector<int> vec(N);
+//         for (int i = 0; i < N; i++)
+//         {
+//             vec[i] = i;
+//         }
+//         return vec;
+//     }
+// }
 
 // Ac
-Eigen::VectorXi Ac(Eigen::VectorXi A, int N)
+Eigen::VectorXi Ac(Eigen::VectorXi &A, int N)
 {
     int A_size = A.size();
     if (A_size == 0)
     {
         return Eigen::VectorXi::LinSpaced(N, 0, N - 1);
+    }
+    else if (A_size == N)
+    {
+        Eigen::VectorXi I(0);
+        return I;
     }
     else
     {
@@ -419,31 +452,31 @@ Eigen::VectorXi Ac(Eigen::VectorXi A, int N)
     }
 }
 
-Eigen::VectorXi find_ind(std::vector<int> L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N)
-{
-    if (L.size() == N)
-    {
-        return Eigen::VectorXi::LinSpaced(p, 0, p - 1);
-    }
-    else
-    {
-        int mark = 0;
-        Eigen::VectorXi ind = Eigen::VectorXi::Zero(p);
-        for (unsigned int i = 0; i < L.size(); i++)
-        {
-            ind.segment(mark, gsize(L[i])) = Eigen::VectorXi::LinSpaced(gsize(L[i]), index(L[i]), index(L[i]) + gsize(L[i]) - 1);
-            mark = mark + gsize(L[i]);
-        }
-        return ind.head(mark).eval();
-    }
-}
+// Eigen::VectorXi find_ind(std::vector<int> L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N)
+// {
+//     if (L.size() == N)
+//     {
+//         return Eigen::VectorXi::LinSpaced(p, 0, p - 1);
+//     }
+//     else
+//     {
+//         int mark = 0;
+//         Eigen::VectorXi ind = Eigen::VectorXi::Zero(p);
+//         for (unsigned int i = 0; i < L.size(); i++)
+//         {
+//             ind.segment(mark, gsize(L[i])) = Eigen::VectorXi::LinSpaced(gsize(L[i]), index(L[i]), index(L[i]) + gsize(L[i]) - 1);
+//             mark = mark + gsize(L[i]);
+//         }
+//         return ind.head(mark).eval();
+//     }
+// }
 
-std::vector<int> vec_seg(std::vector<int> L, std::vector<int> ind)
-{
-    std::vector<int> vec(ind.size());
-    for (unsigned int i = 0; i < ind.size(); i++)
-    {
-        vec[i] = L[ind[i]];
-    }
-    return vec;
-}
+// std::vector<int> vec_seg(std::vector<int> L, std::vector<int> ind)
+// {
+//     std::vector<int> vec(ind.size());
+//     for (unsigned int i = 0; i < ind.size(); i++)
+//     {
+//         vec[i] = L[ind[i]];
+//     }
+//     return vec;
+// }

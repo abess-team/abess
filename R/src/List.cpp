@@ -48,7 +48,7 @@ void List::add(string name, double value)
     vector_double_name.push_back(name);
 }
 
-void List::add(string name, MatrixXd value)
+void List::add(string name, MatrixXd &value)
 {
     //	cout<<"value in MatrixXd add"<<endl;
     std::size_t i;
@@ -69,7 +69,7 @@ void List::add(string name, MatrixXd value)
     vector_MatrixXd_name.push_back(name);
 }
 
-void List::add(string name, VectorXd value)
+void List::add(string name, VectorXd &value)
 {
     //	cout<<"value in VectorXd add"<<endl;
     std::size_t i;
@@ -86,7 +86,7 @@ void List::add(string name, VectorXd value)
     vector_VectorXd_name.push_back(name);
 }
 
-void List::add(string name, VectorXi value)
+void List::add(string name, VectorXi &value)
 {
     //	cout<<"value in VectorXi add"<<endl;
     std::size_t i;
@@ -101,6 +101,68 @@ void List::add(string name, VectorXi value)
     }
     vector_VectorXi.push_back(value);
     vector_VectorXi_name.push_back(name);
+}
+
+void List::add(string name, Eigen::Matrix<VectorXi, Dynamic, Dynamic> &value)
+{
+    //	cout<<"value in VectorXi add"<<endl;
+    std::size_t i;
+    for (i = 0; i < vector_Matrix_VectorXi_name.size(); i++)
+    {
+        //		cout<<"value in get VectorXi"<<endl;
+        if (vector_Matrix_VectorXi_name[i] == name)
+        {
+            vector_Matrix_VectorXi[i] = value;
+            return;
+        }
+    }
+    vector_Matrix_VectorXi.push_back(value);
+    vector_Matrix_VectorXi_name.push_back(name);
+}
+
+void List::get_value_by_name(string name, Eigen::Matrix<VectorXi, Dynamic, Dynamic> &value)
+{
+    std::size_t i;
+    for (i = 0; i < vector_Matrix_VectorXi_name.size(); i++)
+    {
+        //		cout<<"value in get VectorXi"<<endl;
+        if (vector_Matrix_VectorXi_name[i] == name)
+        {
+            value = vector_Matrix_VectorXi[i];
+            break;
+        }
+    }
+}
+
+void List::add(string name, Eigen::Matrix<VectorXd, Dynamic, Dynamic> &value)
+{
+    //	cout<<"value in VectorXi add"<<endl;
+    std::size_t i;
+    for (i = 0; i < vector_Matrix_VectorXd_name.size(); i++)
+    {
+        //		cout<<"value in get VectorXi"<<endl;
+        if (vector_Matrix_VectorXd_name[i] == name)
+        {
+            vector_Matrix_VectorXd[i] = value;
+            return;
+        }
+    }
+    vector_Matrix_VectorXd.push_back(value);
+    vector_Matrix_VectorXd_name.push_back(name);
+}
+
+void List::get_value_by_name(string name, Eigen::Matrix<VectorXd, Dynamic, Dynamic> &value)
+{
+    std::size_t i;
+    for (i = 0; i < vector_Matrix_VectorXd_name.size(); i++)
+    {
+        //		cout<<"value in get VectorXi"<<endl;
+        if (vector_Matrix_VectorXd_name[i] == name)
+        {
+            value = vector_Matrix_VectorXd[i];
+            break;
+        }
+    }
 }
 
 void List::get_value_by_name(string name, int &value)
@@ -120,9 +182,10 @@ void List::get_value_by_name(string name, int &value)
 void List::get_value_by_name(string name, double &value)
 {
     std::size_t i;
+    //		cout<<"value in get double"<<endl;
     for (i = 0; i < vector_double_name.size(); i++)
     {
-        //		cout<<"value in get double"<<endl;
+
         if (vector_double_name[i] == name)
         {
             value = vector_double[i];
@@ -134,13 +197,8 @@ void List::get_value_by_name(string name, double &value)
 void List::get_value_by_name(string name, MatrixXd &value)
 {
     std::size_t i;
-    //	int j;
     for (i = 0; i < vector_MatrixXd_name.size(); i++)
     {
-        //		cout<<"value in get MatrixXd"<<endl;
-        //		cout<<vector_MatrixXd_name[i]<<endl;
-        //		cout<<name<<endl;
-        //		cout<<(vector_MatrixXd_name[i] == name)<<endl;
         if (vector_MatrixXd_name[i] == name)
         {
             value = vector_MatrixXd[i];
