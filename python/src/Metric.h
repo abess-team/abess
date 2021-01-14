@@ -178,7 +178,16 @@ public:
 
     double ic(int train_n, int N, Algorithm *algorithm)
     {
-        double loss = 2 * algorithm->get_train_loss();
+        double loss;
+        if (algorithm->model_type == 1)
+        {
+            loss = train_n * log(algorithm->get_train_loss());
+        }
+        else
+        {
+            loss = 2 * algorithm->get_train_loss();
+        }
+
         if (ic_type == 1)
         {
             return loss + 2.0 * algorithm->get_group_df();

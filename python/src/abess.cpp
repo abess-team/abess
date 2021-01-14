@@ -74,7 +74,11 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
 
     if (algorithm_type == 6)
     {
-        if (model_type == 2)
+        if (model_type == 1)
+        {
+            algorithm = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+        }
+        else if (model_type == 2)
         {
             algorithm = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
         }
@@ -111,7 +115,11 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
             {
                 if (algorithm_type == 6)
                 {
-                    if (model_type == 2)
+                    if (model_type == 1)
+                    {
+                        algorithm_list[i] = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+                    }
+                    else if (model_type == 2)
                     {
                         algorithm_list[i] = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
                     }
