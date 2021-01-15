@@ -151,23 +151,21 @@
 #' Data <- gen.data(n, p, k, rho, family = "gaussian", beta = Tbeta, seed = seed)
 #' x <- Data$x[1:140, ]
 #' y <- Data$y[1:140]
-#' x_new <- Data$x[141:200, ]
-#' y_new <- Data$y[141:200]
 #' lm.bss <- bess(x, y)
-#' lambda.list <- exp(seq(log(5), log(0.1), length.out = 10))
-#' lm.bsrr <- bess(x, y, type = "bsrr", method = "pgsection")
 #' coef(lm.bss)
-#' coef(lm.bsrr)
 #' print(lm.bss)
-#' print(lm.bsrr)
 #' summary(lm.bss)
 #' summary(lm.bsrr)
+#' 
+#' x_new <- Data$x[141:200, ]
+#' y_new <- Data$y[141:200]
 #' pred.bss <- predict(lm.bss, newx = x_new)
 #' pred.bsrr <- predict(lm.bsrr, newx = x_new)
 #'
 #' # generate plots
 #' plot(lm.bss, type = "both", breaks = TRUE)
 #' plot(lm.bsrr)
+#' 
 #' #-------------------logistic model----------------------#
 #' #Generate simulated data
 #' Data <- gen.data(n, p, k, rho, family = "binomial", beta = Tbeta, seed = seed)
@@ -176,8 +174,7 @@
 #' print(logi.bss)
 #' summary(logi.bss)
 #' pred.bss <- predict(logi.bss, newx = x_new)
-abess <- function(x, ...)
-  UseMethod("abess")
+abess <- function(x, ...) UseMethod("abess")
 
 
 #' @rdname abess
@@ -186,8 +183,8 @@ abess <- function(x, ...)
 bess <- function(x,
                  y,
                  family = c("gaussian", "binomial"),
-                 method = c("gsection", "sequential"),
-                 tune = c("gic", "ebic", "bic", "aic", "cv"),
+                 method = c("sequential", "gsection"),
+                 tune.type = c("gic", "ebic", "bic", "aic", "cv"),
                  weight = rep(1, nrow(x)),
                  normalize = NULL,
                  c.max = 2,
@@ -201,9 +198,10 @@ bess <- function(x,
                  warm.start = TRUE,
                  nfolds = 5,
                  newton = c("auto", "exact", "approx"), 
-                 newton.thresh = , 
+                 newton.thresh = 1e-6, 
                  max.newton.iter = 50, 
                  early.stop = FALSE, 
+                 num.threads = 0, 
                  seed = 1, 
                  ...)
 {
@@ -220,19 +218,30 @@ bess <- function(x,
   
   set.seed(seed)
   
+  ## task type:
+  family <- match.arg(family)
+  model_type <- switch(
+    family,
+    "gaussian" = 1,
+    "binomial" = 2,
+    "poisson" = 3,
+    "cox" = 4
+  )
+
   ## check predictors:
   # if (anyNA(x)) {
   #   stop("x has missing value!")
   # }
+  nvars <- ncol(x)
   if (!is.matrix(x)) {
     x <- as.matrix(x)
   }
-  if (ncol(x) == 1) {
+  if (nvars == 1) {
     stop("x should have two columns at least!")
   }
   vn <- colnames(x)
   if (is.null(vn)) {
-    vn <- paste("X", 1:ncol(x), sep = "")
+    vn <- paste("X", 1:nvars, sep = "")
   }
   
   ## check response:
@@ -261,6 +270,11 @@ bess <- function(x,
     if (ncol(y) != 2) {
       stop("Please input y with two columns!")
     }
+    ## pre-process data for cox model
+    sort_y <- order(y[, 1])
+    y <- y[sort_y, ]
+    x <- x[sort_y, ]
+    y <- y[, 2]
   }
   
   # check whether x and y are matching:
@@ -271,16 +285,6 @@ bess <- function(x,
     if (nrow(x) != nrow(y))
       stop("Rows of x must be the same as rows of y!")
   }
-  
-  ## task type:
-  family <- match.arg(family)
-  model_type <- switch(
-    family,
-    "gaussian" = 1,
-    "binomial" = 2,
-    "poisson" = 3,
-    "cox" = 4
-  )
   
   ## check parameters for sub-optimization:
   newton <- match.arg(newton)
@@ -294,26 +298,36 @@ bess <- function(x,
   stopifnot(max.newton.iter > 0 & is.integer(max.newton.iter))
   stopifnot(newton.thresh > 0)
   
-  # sparse level:
+  # sparse level list (sequential):
   if (is.null(s.list)) {
-    s.list <- 1:min(ncol(x), round(nrow(x) / log(nrow(x))))
+    s.list <- 1:min(nvars, round(nrow(x) / log(nrow(x))))
+  } else {
+    stopifnot(any(is.integer(s.list) & s.list > 0))
+    s.list <- sort(s.list)
+    stopifnot(max(s.list) > nvars)
   }
+  
+  # sparse range (golden-section):
   if (is.null(gs.range)) {
     s.min <- 1
-    s.max <- min(ncol(x), round(nrow(x) / log(nrow(x))))
+    s.max <- min(nvars, round(nrow(x) / log(nrow(x))))
+  } else {
+    stopifnot(any(is.integer(gs.range) & gs.range > 0))
+    gs.range <- sort(gs.range)
+    stopifnot(any(gs.range[1] != gs.range[2]))
   }
   
   # tune model size method:
-  tune <- match.arg(tune)
+  tune.type <- match.arg(tune.type)
   ic_type <- switch(
-    tune,
+    tune.type,
     "aic" = 1,
     "bic" = 2,
     "gic" = 3,
     "ebic" = 4,
     "cv" = 1
   )
-  is_cv <- ifelse(tune == "cv", TRUE, FALSE)
+  is_cv <- ifelse(tune.type == "cv", TRUE, FALSE)
   if (is_cv) {
     stopifnot(is.integer(nfolds) & nfolds > 1)
   }
@@ -322,16 +336,12 @@ bess <- function(x,
   method <- match.arg(method)
   if (method == "pgsection") {
     path_type <- 2
-    line.search <- 1
   } else if (method == "psequential") {
     path_type <- 2
-    line.search <- 2
   } else if (method == "sequential") {
     path_type <- 1
-    line.search <- 1
-  } else{
+  } else {
     path_type <- 2
-    line.search <- 1
   }
   
   ## group variable:
@@ -344,9 +354,9 @@ bess <- function(x,
       stop("s.max is too large. Should be smaller than the number of groups!")
   } else{
     if (path_type == 1 &
-        s.list[length(s.list)] > ncol(x))
+        s.list[length(s.list)] > nvars)
       stop("The maximum one in s.list is too large!")
-    if (path_type == 2 & s.max > ncol(x))
+    if (path_type == 2 & s.max > nvars)
       stop("s.max is too large")
   }
   if (!is.null(group.index)) {
@@ -401,12 +411,12 @@ bess <- function(x,
 
   if (is.null(screening.num)) {
     screening <- FALSE
-    screening.num <- ncol(x)
+    screening.num <- nvars
   } else{
     stopifnot(is.integer(screening.num))
     stopifnot(screening.num > 0)
     screening <- TRUE
-    if (screening.num > ncol(x))
+    if (screening.num > nvars)
       stop("The number of screening features must be equal or less than that of the column of x!")
     if (path_type == 1) {
       if (screening.num < s.list[length(s.list)])
@@ -443,79 +453,60 @@ bess <- function(x,
     }
   }
   
-  if (algorithm_type == "PDAS") {
-    if (model_type == 4) {
-      ys <- y
-      xs <- x
-      sort_y <- order(y[, 1])
-      y <- y[sort_y, ]
-      x <- x[sort_y, ]
-      y <- y[, 2]
-    }
-    res.pdas <-
-      abessCpp(x = x, y = y, data_type = normalize,
-        weight = weight, is_normal = is_normal,
-        algorithm_type = 1, model_type =  model_type,
-        max_iter = max.iter, exchange_num = 2,
-        path_type = path_type, is_warm_start = warm.start,
-        ic_type = ic_type, is_cv = is_cv,
-        K = nfolds, state = rep(2, 10),
-        sequence = s.list, lambda_seq = 0,
-        s_min = gs.min, s_max = gs.max,
-        K_max = 10, epsilon = 10,
-        lambda_max = 0, lambda_min = 0,
-        nlambda = nlambda, is_screening = screening,
-        screening_size = screening.num,
-        powell_path = 1, g_index = (1:ncol(x) - 1),
-        always_select = always.include,
-        tao = 1.1, 
-        primary_model_fit_max_iter = , 
-        primary_model_fit_epsilon = , 
-        early_stop = early_stop, 
-        approximate_Newton = approximate_Newton
-      )
-    beta.pdas <- res.pdas$beta
-    names(beta.pdas) <- vn
-    res.pdas$beta <- beta.pdas
-    if (is_cv == TRUE) {
-      names(res.pdas)[which(names(res.pdas) == "ic")] <- "cvm"
-      names(res.pdas)[which(names(res.pdas) == "ic_all")] <-
-        "cvm.all"
-    } else{
-      names(res.pdas)[which(names(res.pdas) == 'ic_all')] <- 'ic.all'
-    }
-    res.pdas$x <- ifelse(family == "cox", xs, x)
-    res.pdas$y <- ifelse(family == "cox", ys, y)
-    res.pdas$family <- family
-    names(res.pdas)[which(names(res.pdas) == "train_loss")] <-
-      "loss"
-    names(res.pdas)[which(names(res.pdas) == "train_loss_all")] <-
-      "loss.all"
-    names(res.pdas)[which(names(res.pdas) == 'beta_all')] <-
-      'beta.all'
-    names(res.pdas)[which(names(res.pdas) == "coef0_all")] <-
-      'coef0.all'
-    res.pdas$s.list <- s.list
-    res.pdas$nsample <- nrow(x)
-    res.pdas$algorithm_type <- "ABESS"
-    res.pdas$method <- method
-    res.pdas$type <- type
-    res.pdas$ic.type <-
-      ifelse(is_cv == TRUE, "cv", c("AIC", "BIC", "GIC", "EBIC")[ic_type])
-    res.pdas$s.max <- s.max
-    res.pdas$s.min <- s.min
-    if (screening)
-      res.pdas$screening_A <-  res.pdas$screening_A + 1
-    
-    res.pdas$call <- match.call()
-    class(res.pdas) <- 'abess'
-    #res.pdas$beta_all <- res.pdas$beta.all
-    res.pdas$beta.all <- recover(res.pdas, F)
-    
-  }
+  result <- abessCpp(x = x, y = y, 
+                       data_type = normalize,
+                       weight = weight, 
+                       is_normal = is_normal,
+                       algorithm_type = 6, 
+                       model_type = model_type,
+                       max_iter = max.iter, 
+                       exchange_num = 2,
+                       path_type = path_type, 
+                       is_warm_start = warm.start,
+                       ic_type = ic_type, ic_coef = 1.0, 
+                       is_cv = is_cv,
+                       Kfold = nfolds, state = rep(2, 10),
+                       sequence = s.list, 
+                       lambda_seq = 0,
+                       s_min = gs.range[0], s_max = gs.range[1],
+                       K_max = 20, epsilon = 0,
+                       lambda_max = 0, lambda_min = 0,
+                       nlambda = nlambda, is_screening = screening,
+                       screening_size = screening.num,
+                       powell_path = 1, g_index = (1:nvars - 1),
+                       always_select = always.include,
+                       tao = tau_value, 
+                       primary_model_fit_max_iter = , 
+                       primary_model_fit_epsilon = , 
+                       early_stop = early_stop, 
+                       approximate_Newton = approximate_Newton, 
+                       thread = num.threads
+                       )
+  names(result[["beta"]]) <- vn
+  bestmodel <- list("beta" = result[["beta"]], 
+                    "coef0" = result[["coef0"]], 
+                    "dev" = result[["train_loss"]], 
+                    "tune.value" = result[["ic"]])
   
+  names(result)[which(names(result) == "train_loss_all")] <- "dev"
+  names(result)[which(names(result) == 'ic_all')] <- 'tune.value'
+  names(result)[which(names(result) == 'beta_all')] <- "beta"
+  names(result)[which(names(result) == "coef0_all")] <- "coef0"
+  result[["family"]] <- family
+  result[["tune.criterion"]] <- method
+  result[["s.list"]] <- s.list
+  result[["tune.type"]] <- ifelse(is_cv == TRUE, "cv", c("AIC", "BIC", "GIC", "EBIC")[ic_type])
+  result[["gs.range"]] <- gs.range
+  result[["screening.index"]] <- result[["screening_A"]] + 1
+  
+  result[["call"]] <- match.call()
+  class(result) <- "abess"
+  
+  result$beta.all <- recover(result, FALSE)
+    
   set.seed(NULL)
-  return(res.pdas)
+  
+  return(result)
 }
 
 #' @rdname abess
