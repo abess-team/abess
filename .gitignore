@@ -5,3 +5,6 @@ python/abess.egg-info/SOURCES.txt
 python/abess.egg-info/top_level.txt
 python/src/test.cpp
 python/src/test.exe
+R-package/.Rproj.user/
+*.o
+.Rhistory
