@@ -143,7 +143,7 @@ public:
             train_mask_list_tmp[k] = train_mask;
             test_mask_list_tmp[k] = group_list[k];
         }
-        cout << "train_mask[0]: " << train_mask_list_tmp[0] << endl;
+        // cout << "train_mask[0]: " << train_mask_list_tmp[0] << endl;
         this->train_mask_list = train_mask_list_tmp;
         this->test_mask_list = test_mask_list_tmp;
     };

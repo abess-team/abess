@@ -17,6 +17,16 @@ using namespace Rcpp;
 
 #include <iostream>
 
+struct Result
+{
+    Eigen::MatrixXd ic_matrix;
+    Eigen::MatrixXd test_loss_matrix;
+    Eigen::Matrix<VectorXd, Dynamic, Dynamic> beta_matrix;
+    Eigen::MatrixXd coef0_matrix;
+    Eigen::Matrix<VectorXi, Dynamic, Dynamic> A_matrix;
+    Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix;
+};
+
 List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorXd weight,
               bool is_normal,
               int algorithm_type, int model_type, int max_iter, int exchange_num,

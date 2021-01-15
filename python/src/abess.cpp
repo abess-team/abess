@@ -18,14 +18,10 @@ using namespace std;
 #include "Metric.h"
 #include "path.h"
 #include "utilities.h"
-//#include "bess.h"
+#include "abess.h"
 #include "screening.h"
 #include <vector>
 #include <omp.h>
-
-// #ifdef OTHER_ALGORITHM2
-// #include "PrincipalBallAlgorithm.h"
-// #endif
 
 using namespace Eigen;
 using namespace std;
@@ -132,8 +128,10 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
 
     // calculate loss for each parameter parameter combination
     t1 = clock();
-    List result;
-    vector<List> result_list(Kfold);
+    cout << "build Result" << endl;
+    Result result;
+    vector<Result> result_list(Kfold);
+    cout << "build Result" << endl;
     if (path_type == 1)
     {
         if (is_cv)
@@ -144,20 +142,20 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
 #pragma omp parallel for
                 for (int i = 0; i < Kfold; i++)
                 {
-                    result_list[i] = sequential_path_cv(data, algorithm_list[i], metric, sequence, lambda_seq, early_stop, i);
+                    sequential_path_cv(data, algorithm_list[i], metric, sequence, lambda_seq, early_stop, i, result_list[i]);
                 }
             }
             else
             {
                 for (int i = 0; i < Kfold; i++)
                 {
-                    result_list[i] = sequential_path_cv(data, algorithm, metric, sequence, lambda_seq, early_stop, i);
+                    sequential_path_cv(data, algorithm, metric, sequence, lambda_seq, early_stop, i, result_list[i]);
                 }
             }
         }
         else
         {
-            result = sequential_path_cv(data, algorithm, metric, sequence, lambda_seq, early_stop, -1);
+            sequential_path_cv(data, algorithm, metric, sequence, lambda_seq, early_stop, -1, result);
         }
     }
     // else
@@ -197,31 +195,30 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
             for (int i = 0; i < Kfold; i++)
             {
                 // cout << "abess 2" << endl;
-                result_list[i].get_value_by_name("test_loss_matrix", test_loss_tmp);
+                test_loss_tmp = result_list[i].test_loss_matrix;
                 // cout << "abess 2.1" << endl;
                 test_loss_sum = test_loss_sum + test_loss_tmp / Kfold;
                 // cout << "abess 2.2" << endl;
             }
             test_loss_sum.minCoeff(&min_loss_index_row, &min_loss_index_col);
             // cout << "abess 3" << endl;
-            result_list[0].get_value_by_name("beta_matrix", beta_matrix);
-            result_list[0].get_value_by_name("coef0_matrix", coef0_matrix);
-            result_list[0].get_value_by_name("A_matrix", A_matrix);
-            result_list[0].get_value_by_name("bd_matrix", bd_matrix);
+            beta_matrix = result_list[0].beta_matrix;
+            coef0_matrix = result_list[0].coef0_matrix;
+            // A_matrix = result_list[0].A_matrix;
+            bd_matrix = result_list[0].bd_matrix;
             // cout << "abess 4" << endl;
         }
         else
         {
-            result.get_value_by_name("beta_matrix", beta_matrix);
-            result.get_value_by_name("coef0_matrix", coef0_matrix);
-            // result.get_value_by_name("A_matrix", A_matrix);
-            result.get_value_by_name("ic_matrix", ic_matrix);
+            beta_matrix = result.beta_matrix;
+            coef0_matrix = result.coef0_matrix;
+            // A_matrix = result.A_matrix;
+            // bd_matrix = result.bd_matrix;
+            ic_matrix = result.ic_matrix;
 
             ic_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
         }
     }
-
-    // cout << "abess end" << endl;
 
     // fit best model
     int best_s = sequence(min_loss_index_row);
@@ -240,7 +237,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
         algorithm->update_lambda_level(best_lambda);
         algorithm->update_beta_init(beta_matrix(min_loss_index_row, min_loss_index_col));
         algorithm->update_coef0_init(coef0_matrix(min_loss_index_row, min_loss_index_col));
-        algorithm->update_A_init(A_matrix(min_loss_index_row, min_loss_index_col), data.g_num);
+        // algorithm->update_A_init(A_matrix(min_loss_index_row, min_loss_index_col), data.g_num);
         algorithm->update_bd_init(bd_matrix(min_loss_index_row, min_loss_index_col));
         algorithm->update_group_XTX(full_group_XTX);
         // cout << "abess 5" << endl;
@@ -258,7 +255,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
         best_beta = beta_matrix(min_loss_index_row, min_loss_index_col);
         best_coef0 = coef0_matrix(min_loss_index_row, min_loss_index_col);
         best_train_loss = 0; ///////// to do ////////
-        best_ic = test_loss_sum(min_loss_index_row, min_loss_index_col);
+        best_ic = ic_matrix(min_loss_index_row, min_loss_index_col);
     }
 
     //////////////Restore best_fit_result for normal//////////////
@@ -316,14 +313,26 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     //         }
     //     }
     // }
-    // cout << "abess 7" << endl;
 
-    // List result;
-    result.add("beta", best_beta);
-    result.add("coef0", best_coef0);
-    result.add("train_loss", best_train_loss);
-    result.add("ic", best_ic);
-    result.add("lambda", best_lambda);
+    //////////////////////////// save result with List//////////////////////////////////////
+    List out_result;
+#ifdef R_BUILD
+    out_result = List::create(Named("beta") = best_beta,
+                              Named("coef0") = best_coef0,
+                              Named("train_loss") = best_train_loss,
+                              Named("ic") = best_ic,
+                              Named("lambda") = best_lambda);
+    //   Named("beta_all") = beta_matrix,
+    //   Named("coef0_all") = coef0_sequence,
+    //   Named("train_loss_all") = loss_sequence,
+    //   Named("ic_all") = ic_sequence);
+#else
+    out_result.add("beta", best_beta);
+    out_result.add("coef0", best_coef0);
+    out_result.add("train_loss", best_train_loss);
+    out_result.add("ic", best_ic);
+    out_result.add("lambda", best_lambda);
+#endif
 
     // Restore best_fit_result for screening
     if (is_screening)
@@ -332,21 +341,21 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
         Eigen::VectorXd beta = Eigen::VectorXd::Zero(p);
 
 #ifndef R_BUILD
-        result.get_value_by_name("beta", beta_screening_A);
+        out_result.get_value_by_name("beta", beta_screening_A);
         for (unsigned int i = 0; i < screening_A.size(); i++)
         {
             beta(screening_A(i)) = beta_screening_A(i);
         }
-        result.add("beta", beta);
-        result.add("screening_A", screening_A);
+        out_result.add("beta", beta);
+        out_result.add("screening_A", screening_A);
 #else
-        beta_screening_A = result["beta"];
+        beta_screening_A = out_result["beta"];
         for (int i = 0; i < screening_A.size(); i++)
         {
             beta(screening_A(i)) = beta_screening_A(i);
         }
-        result["beta"] = beta;
-        result.push_back(screening_A, "screening_A");
+        out_result["beta"] = beta;
+        out_result.push_back(screening_A, "screening_A");
         cout << "screening AA";
 #endif
     }
@@ -354,7 +363,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
     delete algorithm;
     delete metric;
     // cout << "abess 8" << endl;
-    return result;
+    return out_result;
 }
 
 #ifndef R_BUILD

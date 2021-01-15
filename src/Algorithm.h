@@ -1227,12 +1227,7 @@ public:
 
   double neg_loglik_loss(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0)
   {
-    int n = X.rows();
-    int p = X.cols();
-    Eigen::VectorXd coef = Eigen::VectorXd::Ones(p + 1);
-    coef(0) = coef0;
-    coef.tail(p) = beta;
-    return -loglik_logit(X, y, coef, n, weights);
+    return -loglik_cox(X, y, beta, weights);
   }
 
   Eigen::VectorXd dual(Eigen::MatrixXd &XI, Eigen::MatrixXd &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &weight, int n, Eigen::VectorXd &h)
