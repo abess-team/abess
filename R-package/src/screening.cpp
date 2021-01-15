@@ -64,7 +64,7 @@ Eigen::VectorXi screening(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorX
     // keep always_select in active_set
     slice_assignment(coef_norm, always_select, DBL_MAX);
 
-    max_k(coef_norm, screening_size, screening_A);
+    screening_A = max_k(coef_norm, screening_size);
 
     Eigen::VectorXi new_g_index(screening_size);
     Eigen::VectorXi new_g_size(screening_size);

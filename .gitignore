@@ -8,3 +8,4 @@ python/src/test.exe
 R-package/.Rproj.user/
 *.o
 .Rhistory
+.Rproj.user
