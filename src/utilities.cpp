@@ -2,12 +2,21 @@
 // Created by jiangkangkang on 2020/3/9.
 //
 
-#include "utilities.h"
+#ifndef R_BUILD
+#include <Eigen/Eigen>
 #include <unsupported/Eigen/MatrixFunctions>
+
+#else
+
+#include <RcppEigen.h>
+
+#endif
+
+#include "utilities.h"
 #include <algorithm>
 #include <vector>
 #include <iostream>
-#include <Eigen/Eigen>
+
 using namespace std;
 
 Eigen::MatrixXd Pointer2MatrixXd(double *x, int x_row, int x_col)
