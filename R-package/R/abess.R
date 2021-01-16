@@ -1,5 +1,5 @@
 #' @export
-abess <- function(x, y, ...) UseMethod("abess")
+abess <- function(x, ...) UseMethod("abess")
 
 #' @title Adaptive Best-Subset Selection via splicing algorithm
 #'

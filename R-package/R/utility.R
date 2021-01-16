@@ -245,7 +245,7 @@ list.beta <- function(beta.mat, object, sparse) {
 }
 
 
-.onUnload <- function (libpath)
-{
-  library.dynam.unload("abess", libpath)
-}
+# .onUnload <- function (libpath)
+# {
+#   library.dynam.unload("abess", libpath)
+# }

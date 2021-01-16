@@ -21,6 +21,7 @@ Maintainer: Jin Zhu <zhuj37@mail2.sysu.edu.cn>
 Description: A polynomial algorithm for best-subset selection problem for linear and logistic regression. 
 License: GPL (>= 3)
 LazyData: true
+Depends: R (>= 2.10)
 Imports: 
     Rcpp,
     MASS, 
