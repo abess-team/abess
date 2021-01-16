@@ -17,6 +17,16 @@ using namespace Rcpp;
 
 #include <iostream>
 
+typedef struct
+{
+    Eigen::MatrixXd ic_matrix;
+    Eigen::MatrixXd test_loss_matrix;
+    Eigen::MatrixXd coef0_matrix;
+    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> beta_matrix;
+    Eigen::Matrix<Eigen::VectorXi, Eigen::Dynamic, Eigen::Dynamic> A_matrix;
+    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> bd_matrix;
+} Result;
+
 List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorXd weight,
               bool is_normal,
               int algorithm_type, int model_type, int max_iter, int exchange_num,
@@ -35,6 +45,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::Vector
               bool early_stop, bool approximate_Newton,
               int thread);
 
+#ifndef R_BUILD
 void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int data_type, double *weight, int weight_len,
                   bool is_normal,
                   int algorithm_type, int model_type, int max_iter, int exchange_num,
@@ -55,5 +66,6 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
                   int A_out_len, int *l_out);
+#endif
 
 #endif //BESS_BESS_H

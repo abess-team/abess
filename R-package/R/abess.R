@@ -30,7 +30,7 @@
 #' @param tune The criterion for choosing the model size and \eqn{L_2} shrinkage
 #' parameters. Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
 #' Default is \code{"gic"}.
-#' @param s.list An increasing list of sequential values representing the model
+#' @param support.size An increasing list of sequential values representing the model
 #' sizes. Only used for \code{method = "sequential"}. Default is \code{1:min(p,
 #' round(n/log(n)))}.
 #' @param lambda.list A lambda sequence for \code{"bsrr"}. Default is
@@ -126,8 +126,8 @@
 #' cross-validation.}
 #' \item{lambda.all}{The lambda chosen for each step in \code{pgsection} and \code{psequential}.}
 #' \item{family}{Type of the model.}
-#' \item{s.list}{The input
-#' \code{s.list}.} \item{nsample}{The sample size.}
+#' \item{support.size}{The input
+#' \code{support.size}.} \item{nsample}{The sample size.}
 #' \item{type}{Either \code{"bss"} or \code{"bsrr"}.}
 #' \item{method}{Method used for tuning parameters selection.}
 #' \item{ic.type}{The criterion of model selection.}
@@ -139,74 +139,55 @@
 #'
 #' @export
 #' @examples
-#' #-------------------linear model----------------------#
-#' # Generate simulated data
-#' n <- 200
-#' p <- 20
-#' k <- 5
-#' rho <- 0.4
-#' seed <- 10
-#' Tbeta <- rep(0, p)
-#' Tbeta[1:k*floor(p/k):floor(p/k)] <- rep(1, k)
-#' Data <- gen.data(n, p, k, rho, family = "gaussian", beta = Tbeta, seed = seed)
-#' x <- Data$x[1:140, ]
-#' y <- Data$y[1:140]
-#' lm.bss <- bess(x, y)
-#' coef(lm.bss)
-#' print(lm.bss)
-#' summary(lm.bss)
-#' summary(lm.bsrr)
 #' 
-#' x_new <- Data$x[141:200, ]
-#' y_new <- Data$y[141:200]
-#' pred.bss <- predict(lm.bss, newx = x_new)
-#' pred.bsrr <- predict(lm.bsrr, newx = x_new)
-#'
-#' # generate plots
-#' plot(lm.bss, type = "both", breaks = TRUE)
-#' plot(lm.bsrr)
+#' n <- 200
+#' p <- 300
+#' support.size <- 3
+#' #-------------------linear model----------------------#
+#' dataset <- generate.data(n, p, support.size)
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]])
+#' abess_fit[["best.model"]]
 #' 
 #' #-------------------logistic model----------------------#
-#' #Generate simulated data
-#' Data <- gen.data(n, p, k, rho, family = "binomial", beta = Tbeta, seed = seed)
-#' logi.bss <- bess(x, y, family = "binomial")
-#' coef(logi.bss)
-#' print(logi.bss)
-#' summary(logi.bss)
-#' pred.bss <- predict(logi.bss, newx = x_new)
+#' dataset <- generate.data(n, p, support.size, family = "binomial")
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "binomial")
+#' abess_fit[["best.model"]]
+#' 
 abess <- function(x, ...) UseMethod("abess")
 
 
 #' @rdname abess
 #' @export
 #' @method abess default
-bess <- function(x,
-                 y,
-                 family = c("gaussian", "binomial"),
-                 method = c("sequential", "gsection"),
-                 tune.type = c("gic", "ebic", "bic", "aic", "cv"),
-                 weight = rep(1, nrow(x)),
-                 normalize = NULL,
-                 c.max = 2,
-                 tau = NULL,
-                 s.list = NULL,
-                 gs.range = NULL, 
-                 always.include = NULL,
-                 max.iter = 20,
-                 screening.num = NULL,
-                 group.index = NULL,
-                 warm.start = TRUE,
-                 nfolds = 5,
-                 newton = c("auto", "exact", "approx"), 
-                 newton.thresh = 1e-6, 
-                 max.newton.iter = 50, 
-                 early.stop = FALSE, 
-                 num.threads = 0, 
-                 seed = 1, 
-                 ...)
+abess.default <- function(x, y,
+                  family = c("gaussian", "binomial"),
+                  method = c("sequential", "gsection"),
+                  tune.type = c("gic", "ebic", "bic", "aic", "cv"),
+                  weight = rep(1, nrow(x)),
+                  normalize = NULL,
+                  c.max = 2,
+                  support.size = NULL,
+                  gs.range = NULL, 
+                  always.include = NULL,
+                  max.splicing.iter = 20,
+                  screening.num = NULL,
+                  group.index = NULL,
+                  warm.start = TRUE,
+                  nfolds = 5,
+                  newton = c("exact", "approx"), 
+                  newton.thresh = 1e-6, 
+                  max.newton.iter = NULL, 
+                  early.stop = FALSE, 
+                  num.threads = 0, 
+                  seed = 1, 
+                  ...)
 {
+  tau <- NULL
+  
+  ## TODO:
   type <- c("bss", "bsrr")
-  type <- match.arg(type)
+  # type <- match.arg(type)
+  type <- type[1]
   algorithm_type = switch(type,
                           "bss" = "GPDAS",
                           "bsrr" = "GL0L2")
@@ -218,6 +199,21 @@ bess <- function(x,
   
   set.seed(seed)
   
+  ## check number of thread:
+  stopifnot(is.numeric(num.threads) & num.threads >= 0)
+  num_threads <- as.integer(num.threads)
+  
+  ## check early stop:
+  stopifnot(is.logical(early.stop))
+  early_stop <- early.stop
+  
+  ## check warm start:
+  stopifnot(is.logical(warm.start))
+  
+  ## check max splicing iteration
+  stopifnot(is.numeric(max.splicing.iter) & max.splicing.iter >= 1)
+  max_splicing_iter <- as.integer(max.splicing.iter)
+  
   ## task type:
   family <- match.arg(family)
   model_type <- switch(
@@ -227,22 +223,30 @@ bess <- function(x,
     "poisson" = 3,
     "cox" = 4
   )
-
+  
   ## check predictors:
   # if (anyNA(x)) {
   #   stop("x has missing value!")
   # }
-  nvars <- ncol(x)
   if (!is.matrix(x)) {
     x <- as.matrix(x)
   }
+  nvars <- ncol(x)
+  nobs <- nrow(x)
   if (nvars == 1) {
     stop("x should have two columns at least!")
   }
   vn <- colnames(x)
   if (is.null(vn)) {
-    vn <- paste("X", 1:nvars, sep = "")
+    vn <- paste("x", 1:nvars, sep = "")
   }
+  
+  ## check C-max:
+  stopifnot(is.numeric(c.max) & c.max >= 1)
+  if (c.max >= nvars) {
+    stop("c.max should smaller than the number of predictors!")
+  }
+  c_max <- as.integer(c.max)
   
   ## check response:
   if (anyNA(y)) {
@@ -286,7 +290,15 @@ bess <- function(x,
       stop("Rows of x must be the same as rows of y!")
   }
   
+  # check weight
+  stopifnot(is.vector(weight))
+  if (length(weight) != nobs) {
+    stop("Rows of x must be the same as length of weight!")
+  }
+  stopifnot(all(is.numeric(weight)), all(weight >= 0))
+  
   ## check parameters for sub-optimization:
+  # 1:
   newton <- match.arg(newton)
   newton_type <- switch(
     newton,
@@ -294,27 +306,41 @@ bess <- function(x,
     "approx" = 1,
     "auto" = 2
   )
-  approximate_Newton <- ifelse(newton_type == 1, TRUE, FALSE)
-  stopifnot(max.newton.iter > 0 & is.integer(max.newton.iter))
-  stopifnot(newton.thresh > 0)
+  approximate_newton <- ifelse(newton_type == 1, TRUE, FALSE)
+  # 2:
+  if (!is.null(max.newton.iter)) {
+    stopifnot(is.numeric(max.newton.iter) & max.newton.iter >= 1)
+    max_newton_iter <- as.integer(max.newton.iter)
+  } else {
+    max_newton_iter <- ifelse(newton_type == 0, 10, 60)
+  }
+  # 3:
+  stopifnot(is.numeric(newton.thresh) & newton.thresh > 0)
+  newton_thresh <- as.double(newton.thresh)
   
   # sparse level list (sequential):
-  if (is.null(s.list)) {
-    s.list <- 1:min(nvars, round(nrow(x) / log(nrow(x))))
+  if (is.null(support.size)) {
+    s_list <- 1:min(c(nvars, round(nobs / log(log(nobs)) / log(p))))
   } else {
-    stopifnot(any(is.integer(s.list) & s.list > 0))
-    s.list <- sort(s.list)
-    stopifnot(max(s.list) > nvars)
+    stopifnot(any(is.numeric(support.size) & support.size > 0))
+    stopifnot(max(support.size) > nvars)
+    support.size <- sort(support.size)
+    support.size <- unique(support.size)
+    s_list <- support.size
   }
   
   # sparse range (golden-section):
   if (is.null(gs.range)) {
-    s.min <- 1
-    s.max <- min(nvars, round(nrow(x) / log(nrow(x))))
+    s_min <- 1
+    s_max <- min(c(nvars, round(nobs / log(log(nobs)) / log(p))))
   } else {
-    stopifnot(any(is.integer(gs.range) & gs.range > 0))
-    gs.range <- sort(gs.range)
-    stopifnot(any(gs.range[1] != gs.range[2]))
+    stopifnot(length(gs.range) == 2)
+    stopifnot(any(is.numeric(gs.range) & gs.range > 0))
+    stopifnot(as.integer(gs.range)[1] != as.integer(gs.range)[2])
+    stopifnot(as.integer(max(gs.range)) <= nvars)
+    gs.range <- as.integer(gs.range)
+    s_min <- min(gs.range)
+    s_max <- max(gs.range)
   }
   
   # tune model size method:
@@ -329,7 +355,8 @@ bess <- function(x,
   )
   is_cv <- ifelse(tune.type == "cv", TRUE, FALSE)
   if (is_cv) {
-    stopifnot(is.integer(nfolds) & nfolds > 1)
+    stopifnot(is.numeric(nfolds) & nfolds >= 2)
+    nfolds <- as.integer(nfolds)
   }
   
   ## strategy for tunning
@@ -346,37 +373,17 @@ bess <- function(x,
   
   ## group variable:
   if (!is.null(group.index)) {
-    if (path_type == 1 &
-        s.list[length(s.list)] > length(group.index))
-      stop("The maximum one s.list should not be larger than the number of groups!")
-    if (path_type == 2 &
-        s.max > length(group.index))
+    if (path_type == 1 & max(support.size) > length(group.index))
+      stop("The maximum one support.size should not be larger than the number of groups!")
+    if (path_type == 2 & s.max > length(group.index))
       stop("s.max is too large. Should be smaller than the number of groups!")
-  } else{
-    if (path_type == 1 &
-        s.list[length(s.list)] > nvars)
-      stop("The maximum one in s.list is too large!")
-    if (path_type == 2 & s.max > nvars)
-      stop("s.max is too large")
-  }
-  if (!is.null(group.index)) {
+    
     gi <- unique(group.index)
     g_index <- match(gi, group.index) - 1
     g_df <- c(diff(g_index), 
               length(group.index) - g_index[length(g_index)])
-    # g_df <- NULL
-    # g_index <- NULL
-    # group_set <- unique(group.index)
-    # j <- 1
-    # k <- 0
-    # for(i in group_set){
-    #   while(group.index[j] != i){
-    #     j <- j+1
-    #     k <- k+1
-    #   }
-    #   g_index <- c(g_index, j - 1)
-    #   g_df <- c(g_df, k)
-    # }
+  } else {
+    g_index <- 1:nvars - 1
   }
   
   ## normalize strategy: 
@@ -389,112 +396,139 @@ bess <- function(x,
       "poisson" = 2,
       "cox" = 3
     )
-  } else if (normalize != 0) {
-    # normalize <- as.character(normalize)
-    # normalize <- switch (normalize,
-    #                      '1' <- 2,
-    #                      '2' <- 3,
-    #                      '3' <- 1
-    # )
-    if (normalize == 1) {
-      normalize <- 2
-    } else if (normalize == 2) {
-      normalize <- 3
-    } else{
-      normalize <- 1
+  } else {
+    stopifnot(normalize %in% 0:3)
+    if (normalize != 0) {
+      # normalize <- as.character(normalize)
+      # normalize <- switch (normalize,
+      #                      '1' <- 2,
+      #                      '2' <- 3,
+      #                      '3' <- 1
+      # )
+      if (normalize == 1) {
+        normalize <- 2
+      } else if (normalize == 2) {
+        normalize <- 3
+      } else if (normalize == 3) {
+        normalize <- 1
+      } else {
+      }
+      is_normal <- TRUE
+    } else {
+      is_normal <- FALSE
+      normalize <- 0
     }
-    is_normal <- TRUE
-  } else{
-    is_normal <- FALSE
-    normalize <- 0
   }
 
   if (is.null(screening.num)) {
     screening <- FALSE
-    screening.num <- nvars
-  } else{
-    stopifnot(is.integer(screening.num))
-    stopifnot(screening.num > 0)
-    screening <- TRUE
+    screening_num <- nvars
+  } else {
+    stopifnot(is.numeric(screening.num))
+    stopifnot(screening.num >= 1)
+    screening.num <- as.integer(screening.num)
     if (screening.num > nvars)
       stop("The number of screening features must be equal or less than that of the column of x!")
     if (path_type == 1) {
-      if (screening.num < s.list[length(s.list)])
+      if (screening.num < max(support.size))
         stop(
-          "The number of screening features must be equal or greater than the maximum one in s.list!"
+          "The number of screening features must be equal or greater than the maximum one in support.size!"
         )
     } else{
       if (screening.num < s.max)
         stop("The number of screening features must be equal or greater than the s.max!")
     }
+    screening <- TRUE
+    screening_num <- screening.num
   }
   
   # check always included varibles:
   if (is.null(always.include)) {
-    always.include <- numeric(0)
-  } else{
-    if (is.na(sum(as.integer(always.include))))
-      stop("always.include should be an integer vector")
-    if (sum(always.include <= 0))
-      stop("always.include should be an vector containing variable indexes which is possitive.")
+    always_include <- numeric(0)
+  } else {
+    if (anyNA(always.include)) {
+      stop("always.include has missing values.")
+    }
+    if (any(always.include <= 0)) {
+      stop("always.include should be an vector containing variable indexes which is positive.")
+    }
     always.include <- as.integer(always.include) - 1
     if (length(always.include) > screening.num)
-      stop("The number of variables in always.include should not exceed the sc")
+      stop("The number of variables in always.include should not exceed the screening.num")
     if (path_type == 1) {
-      if (length(always.include) > s.list[length(s.list)])
-        stop(
-          "always.include containing too many variables. The length of it should not exceed the maximum in s.list."
-        )
+      if (length(always.include) > max(support.size))
+        stop("always.include containing too many variables. 
+             The length of it should not exceed the maximum in support.size.")
     } else{
       if (length(always.include) > s.max)
         stop(
           "always.include containing too many variables. The length of it should not exceed the s.max."
         )
     }
+    always_include <- always.include
   }
   
-  result <- abessCpp(x = x, y = y, 
-                       data_type = normalize,
-                       weight = weight, 
-                       is_normal = is_normal,
-                       algorithm_type = 6, 
-                       model_type = model_type,
-                       max_iter = max.iter, 
-                       exchange_num = 2,
-                       path_type = path_type, 
-                       is_warm_start = warm.start,
-                       ic_type = ic_type, ic_coef = 1.0, 
-                       is_cv = is_cv,
-                       Kfold = nfolds, state = rep(2, 10),
-                       sequence = s.list, 
-                       lambda_seq = 0,
-                       s_min = gs.range[0], s_max = gs.range[1],
-                       K_max = 20, epsilon = 0,
-                       lambda_max = 0, lambda_min = 0,
-                       nlambda = nlambda, is_screening = screening,
-                       screening_size = screening.num,
-                       powell_path = 1, g_index = (1:nvars - 1),
-                       always_select = always.include,
-                       tao = tau_value, 
-                       primary_model_fit_max_iter = , 
-                       primary_model_fit_epsilon = , 
-                       early_stop = early_stop, 
-                       approximate_Newton = approximate_Newton, 
-                       thread = num.threads
-                       )
+  result <- abessCpp(
+    x = x,
+    y = y,
+    data_type = normalize,
+    weight = weight,
+    is_normal = is_normal,
+    algorithm_type = 6,
+    model_type = model_type,
+    max_iter = max_splicing_iter,
+    exchange_num = c_max,
+    path_type = path_type,
+    is_warm_start = warm.start,
+    ic_type = ic_type,
+    ic_coef = 1.0,
+    is_cv = is_cv,
+    Kfold = nfolds,
+    state = rep(2, 10),
+    sequence = s_list,
+    lambda_seq = 0,
+    s_min = s_min,
+    s_max = s_max,
+    K_max = as.integer(20),
+    epsilon = 0,
+    lambda_max = 0,
+    lambda_min = 0,
+    nlambda = 10,
+    is_screening = screening,
+    screening_size = screening_num,
+    powell_path = 1,
+    g_index = g_index,
+    always_select = always_include,
+    tau = 0.0,
+    primary_model_fit_max_iter = max_newton_iter,
+    primary_model_fit_epsilon = newton_thresh,
+    early_stop = early_stop,
+    approximate_Newton = approximate_newton,
+    thread = num_threads
+  )
   names(result[["beta"]]) <- vn
-  bestmodel <- list("beta" = result[["beta"]], 
+  best_model <- list("beta" = result[["beta"]], 
                     "coef0" = result[["coef0"]], 
+                    "support.size" = sum(result[["beta"]] != 0.0), 
                     "dev" = result[["train_loss"]], 
                     "tune.value" = result[["ic"]])
+  result[["beta"]] <- NULL
+  result[["coef0"]] <- NULL
+  result[["train_loss"]] <- NULL
+  result[["ic"]] <- NULL
+  result[["lambda"]] <- NULL
+  result[["best.model"]] <- best_model
   
-  names(result)[which(names(result) == "train_loss_all")] <- "dev"
+  # names(result)[which(names(result) == "train_loss_all")] <- "dev"
   names(result)[which(names(result) == 'ic_all')] <- 'tune.value'
-  names(result)[which(names(result) == 'beta_all')] <- "beta"
   names(result)[which(names(result) == "coef0_all")] <- "coef0"
+  names(result)[which(names(result) == 'beta_all')] <- "beta"
+  result[["beta"]] <- do.call("cbind", result[["beta"]])
+  rownames(result[["beta"]]) <- vn
+  
   result[["family"]] <- family
-  result[["tune.criterion"]] <- method
-  result[["s.list"]] <- s.list
+  result[["tune.path"]] <- method
+  result[["support.size"]] <- s_list
   result[["tune.type"]] <- ifelse(is_cv == TRUE, "cv", c("AIC", "BIC", "GIC", "EBIC")[ic_type])
   result[["gs.range"]] <- gs.range
   result[["screening.index"]] <- result[["screening_A"]] + 1
@@ -502,7 +536,7 @@ bess <- function(x,
   result[["call"]] <- match.call()
   class(result) <- "abess"
   
-  result$beta.all <- recover(result, FALSE)
+  result[["beta"]] <- recover(result, sparse = FALSE)
     
   set.seed(NULL)
   
@@ -511,40 +545,37 @@ bess <- function(x,
 
 #' @rdname abess
 #'
-#' @param formula a formula of the form \code{response ~ group} where \code{response} gives the data values and \code{group} a vector or factor of the corresponding groups.
-#' @param data an optional matrix or data frame (or similar: see \code{model.frame}) containing the variables in the formula \code{formula}. By default the variables are taken from \code{environment(formula)}.
+#' @param formula an object of class "\code{formula}": 
+#' a symbolic description of the model to be fitted. 
+#' The details of model specification are given in the "Details" section of "\code{\link{formula}}".
+#' @param data a data frame containing the variables in the \code{formula}. 
 #' @param subset an optional vector specifying a subset of observations to be used.
-#' @param na.action a function which indicates what should happen when the data contain \code{NA}s. Defaults to \code{getOption("na.action")}.
-#' @method bd.test formula
+#' @param na.action a function which indicates 
+#' what should happen when the data contain \code{NA}s. 
+#' Defaults to \code{getOption("na.action")}.
+#' @method abess formula
 #' @export
 #' @examples
-#'
+#' 
 #' ################  Formula interface  ################
-#'
+#' data("trim32")
+#' abess_fit <- abess(y ~ ., data = trim32)
+#' abess_fit
 abess.formula <- function(formula, data, subset, na.action, ...) {
-  if (missing(formula)
-      || (length(formula) != 3L)
-      || (length(attr(terms(formula[-2L]), "term.labels")) != 1L))
-    stop("'formula' missing or incorrect")
-  m <- match.call(expand.dots = FALSE)
-  if (is.matrix(eval(m$data, parent.frame())))
-    m$data <- as.data.frame(data)
-  ## need stats:: for non-standard evaluation
-  m[[1L]] <- quote(stats::model.frame)
-  m$... <- NULL
-  mf <- eval(m, parent.frame())
-  DNAME <- paste(names(mf), collapse = " by ")
-  names(mf) <- NULL
-  response <- attr(attr(mf, "terms"), "response")
-  g <- factor(mf[[-response]])
-  if (nlevels(g) < 2L)
-    stop("grouping factor must contain at least two levels")
-  DATA <- list()
-  DATA[["x"]] <- split(mf[[response]], g)
-  y <- do.call("bd.test", c(DATA, list(...)))
-  remind_info <-
-    strsplit(y$data.name, split = "number of observations")[[1]][2]
-  DNAME <- paste0(DNAME, "\nnumber of observations")
-  y$data.name <- paste0(DNAME, remind_info)
-  y
+  contrasts <- NULL   ## for sparse X matrix
+  cl <- match.call()
+  mf <- match.call(expand.dots = FALSE)
+  m <- match(c("formula", "data", "subset", "na.action"), 
+             names(mf), 0L)
+  mf <- mf[c(1L, m)]
+  mf$drop.unused.levels <- TRUE
+  mf[[1L]] <- quote(stats::model.frame)
+  mf <- eval(mf, parent.frame())
+  mt <- attr(mf, "terms")
+  
+  y <- model.response(mf, "numeric")
+  x <- model.matrix(mt, mf, contrasts)[, -1]
+  
+  abess_res <- abess.default(x, y, ...)
+  abess_res
 }
