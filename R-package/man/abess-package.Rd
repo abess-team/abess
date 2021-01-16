@@ -4,8 +4,21 @@
 \name{abess-package}
 \alias{abess}
 \alias{abess-package}
-\title{abess: abess: Adaptive Best Subset Selection in Polynomial Time}
+\title{abess: Adaptive Best Subset Selection in Polynomial Time}
 \description{
-More about what it does (maybe more than one line)
+A polynomial algorithm for best-subset selection problem for linear and logistic regression.
+}
+\author{
+\strong{Maintainer}: Jin Zhu \email{zhuj37@mail2.sysu.edu.cn}
+
+Authors:
+\itemize{
+  \item Kangkang Jiang \email{jiangkk3@mail2.sysu.edu.cn}
+  \item Junxian Zhu \email{zhujunx@mail2.sysu.edu.cn}
+  \item Canhong Wen \email{wencanhong@gmail.com}
+  \item Heping Zhang \email{heping.zhang@yale.edu}
+  \item Xueqin Wang \email{wangxq20@ustc.edu.cn}
+}
+
 }
 \keyword{internal}

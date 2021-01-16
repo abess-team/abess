@@ -7,7 +7,7 @@
 generate.data(
   n,
   p,
-  s = NULL,
+  support.size = NULL,
   rho = 0,
   family = c("gaussian", "binomial"),
   beta = NULL,
@@ -21,7 +21,7 @@ generate.data(
 
 \item{p}{The number of predictors of interest.}
 
-\item{s}{The number of nonzero coefficients in the underlying regression
+\item{support.size}{The number of nonzero coefficients in the underlying regression
 model. Can be omitted if \code{beta} is supplied.}
 
 \item{rho}{A parameter used to characterize the pairwise correlation in
@@ -31,7 +31,7 @@ predictors. Default is \code{0}.}
 gaussian data.\code{"binomial"} for binary data.}
 
 \item{beta}{The coefficient values in the underlying regression model. 
-If it is supplied, \code{s} would be omitted.}
+If it is supplied, \code{support.size} would be omitted.}
 
 \item{cortype}{The correlation structure. 
 \code{cortype = 1} denotes the independence structure, 

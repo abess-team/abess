@@ -1,12 +1,26 @@
 Package: abess
 Type: Package
-Title: abess: Adaptive Best Subset Selection in Polynomial Time
+Title: Adaptive Best Subset Selection in Polynomial Time
 Version: 0.1.0
 Date: 2021-01-15
-Author: Jin Zhu, Kangkang Jiang, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang
+Authors@R: c(
+  person(given = "Jin", family = "Zhu", email = "zhuj37@mail2.sysu.edu.cn", role = c("aut", "cre")),
+  person(given = "Kangkang", family = "Jiang", email = "jiangkk3@mail2.sysu.edu.cn" ,role = c("aut")),
+  person(given = "Junxian", family = "Zhu", email = "zhujunx@mail2.sysu.edu.cn", role = c("aut")),
+  person(given = "Canhong", family = "Wen", email = "wencanhong@gmail.com", role = c("aut")),
+  person(given = "Heping", family = "Zhang", email = "heping.zhang@yale.edu", role = c("aut")),
+  person(given = "Xueqin", family = "Wang", email = "wangxq20@ustc.edu.cn", role = c("aut")))
+Author: 
+  Jin Zhu [aut, cre],
+  Kangkang Jiang [aut],
+  Junxian Zhu [aut]
+  Canhong Wen [aut],
+  Heping Zhang [aut],
+  Xueqin Wang [aut]
 Maintainer: Jin Zhu <zhuj37@mail2.sysu.edu.cn>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Description: A polynomial algorithm for best-subset selection problem for linear and logistic regression. 
+License: GPL (>= 3)
+LazyData: true
 Imports: 
     Rcpp,
     MASS
@@ -15,3 +29,8 @@ LinkingTo:
     RcppEigen
 RoxygenNote: 7.1.1
 SystemRequirements: C++11
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

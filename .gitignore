@@ -9,3 +9,5 @@ R-package/.Rproj.user/
 *.o
 .Rhistory
 .Rproj.user
+abess.Rcheck/*
+*.tar.gz

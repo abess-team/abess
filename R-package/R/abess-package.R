@@ -11,7 +11,6 @@
 #' @importFrom stats rnorm
 #' @importFrom stats rbinom
 #' @importFrom stats rpois
-#' @import RcppEigen
 ## usethis namespace: end
 NULL
 

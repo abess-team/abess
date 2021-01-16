@@ -1,189 +1,196 @@
+#' @export
+#' @aliases abess
+abess <- function(x, y, ...) UseMethod("abess")
+
 #' @title Adaptive Best-Subset Selection via splicing algorithm
 #'
-#' @description Performs the nonparametric two-sample or \eqn{K}-sample Ball Divergence test for
-#' equality of multivariate distributions
+#' @description Perform adaptive best-subset selection for regression and binary classification in polynomial times.
 #'
 #' @aliases abess
-#'
+#' 
 #' @author Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang
 #'
 #' @param x Input matrix, of dimension \eqn{n \times p}; each row is an observation
 #' vector and each column is a predictor/feature/variable.
-#' @param y The response variable, of \code{n} observations. For \code{family = "binomial"} should be
-#' a factor with two levels. For \code{family="poisson"}, \code{y} should be a vector with positive integer.
-#'  For \code{family = "cox"}, \code{y} should be a two-column matrix
-#' with columns named \code{time} and \code{status}.
-#' @param type One of the two types of problems.
-#' \code{type = "bss"} for the best subset selection,
-#' and \code{type = "bsrr"} for the best subset ridge regression.
-#' @param family One of the following models: \code{"gaussian"}, \code{"binomial"},
-#' \code{"poisson"}, or \code{"cox"}. Depending on the response. Any unambiguous substring can be given.
-#' @param method The method to be used to select the optimal model size and \eqn{L_2} shrinkage. For
-#' \code{method = "sequential"}, we solve the best subset selection and the best subset ridge regression
-#' problem for each \code{s} in \code{1,2,...,s.max} and \eqn{\lambda} in \code{lambda.list}. For \code{method =
-#' "gsection"}, which is only valid for \code{type = "bss"},
-#' we solve the best subset selection problem with model size ranged between s.min and s.max,
-#' where the specific model size to be considered is determined by golden section. we
-#' solve the best subset selection problem with a range of non-continuous model
-#' sizes. For \code{method = "pgsection"} and \code{"psequential"}, the Powell method is used to
-#' solve the best subset ridge regression problem. Any unambiguous substring can be given.
-#' @param tune The criterion for choosing the model size and \eqn{L_2} shrinkage
-#' parameters. Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
+#' @param y The response variable, of \code{n} observations. 
+#' For \code{family = "binomial"} should have two levels. 
+# For \code{family="poisson"}, \code{y} should be a vector with positive integer. 
+# For \code{family = "cox"}, \code{y} should be a two-column matrix with columns named \code{time} and \code{status}.
+# @param type One of the two types of problems.
+# \code{type = "bss"} for the best subset selection,
+# and \code{type = "bsrr"} for the best subset ridge regression.
+#' @param family One of the following models: \code{"gaussian"} and \code{"binomial"}.
+# \code{"poisson"}, or \code{"cox"}. 
+#' Depending on the response. Any unambiguous substring can be given.
+#' @param tune.path The method to be used to select the optimal support size. For
+#' \code{method = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
+#' For \code{method = "gsection"}, we solve the best subset selection problem with support size ranged in \code{gs.range},
+#' where the specific support size to be considered is determined by golden section. 
+# @param method The method to be used to select the optimal support size and \eqn{L_2} shrinkage. For
+# \code{method = "sequence"}, we solve the best subset selection and the best subset ridge regression
+# problem for each \code{s} in \code{1,2,...,s.max} and \eqn{\lambda} in \code{lambda.list}. 
+# For \code{method = "gsection"}, which is only valid for \code{type = "bss"},
+# we solve the best subset selection problem with the range support size \code{gs.range},
+# where the specific support size to be considered is determined by golden section. we
+# solve the best subset selection problem with a range of non-continuous model
+# sizes. For \code{method = "pgsection"} and \code{"psequence"}, the Powell method is used to
+# solve the best subset ridge regression problem. Any unambiguous substring can be given.
+#' @param tune.type The type of criterion for choosing the support size. 
+#' Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
 #' Default is \code{"gic"}.
-#' @param support.size An increasing list of sequential values representing the model
-#' sizes. Only used for \code{method = "sequential"}. Default is \code{1:min(p,
-#' round(n/log(n)))}.
-#' @param lambda.list A lambda sequence for \code{"bsrr"}. Default is
-#' \code{exp(seq(log(100), log(0.01), length.out = 100))}.
-#' @param s.min The minimum value of model sizes. Only used for \code{method =
-#' "gsection"}, \code{"psequential"} and \code{"pgsection"}. Default is 1.
-#' @param s.max The maximum value of model sizes. Only used for \code{method =
-#' "gsection"}, \code{"psequential"} and \code{"pgsection"}. Default is \code{min(p, round(n/log(n)))}.
-#' @param lambda.min The minimum value of lambda. Only used for \code{method =
-#' "powell"}. Default is \code{0.001}.
-#' @param lambda.max The maximum value of lambda. Only used for \code{method =
-#' "powell"}. Default is \code{100}.
-#' @param nlambda The number of \eqn{\lambda}s for the Powell path with sequential line search method.
-#' Only valid for \code{method = "psequential"}.
+#' @param support.size An integer vector representing the alternative support sizes. 
+#' Only used for \code{method = "sequence"}. Default is \code{1:min(n, round(n/(log(log(n))log(p))))}.
+# @param lambda.list A lambda sequence for \code{"bsrr"}. Default is
+# \code{exp(seq(log(100), log(0.01), length.out = 100))}.
+# @param s.min The minimum value of support sizes. Only used for \code{method =
+# "gsection"}, \code{"psequence"} and \code{"pgsection"}. Default is 1.
+# @param s.max The maximum value of support sizes. Only used for \code{method =
+# "gsection"}, \code{"psequence"} and \code{"pgsection"}. Default is \code{min(p, round(n/log(n)))}.
+# @param lambda.min The minimum value of lambda. Only used for \code{method =
+# "powell"}. Default is \code{0.001}.
+# @param lambda.max The maximum value of lambda. Only used for \code{method =
+# "powell"}. Default is \code{100}.
+# @param nlambda The number of \eqn{\lambda}s for the Powell path with sequence line search method.
+# Only valid for \code{method = "psequence"}.
 #' @param always.include An integer vector containing the indexes of variables that should always be included in the model.
-#' @param screening.num Users can pre-exclude some irrelevant variables according to maximum marginal likelihood estimators before fitting a
-#' model by passing an integer to \code{screening.num} and the sure independence screening will choose a set of variables of this size.
-#' Then the active set updates are restricted on this subset.
-#' @param normalize Options for normalization. \code{normalize = 0} for
-#' no normalization. Setting \code{normalize = 1} will
-#' only subtract the mean of columns of \code{x}.
+#' @param screening.num An integer number. Preserve \code{screening.num} number of predictors with the largest 
+#' marginal maximum likelihood estimator before running algorithm.
+#' @param normalize Options for normalization. \code{normalize = 0} for no normalization. 
+#' \code{normalize = 1} for subtracting the mean of columns of \code{x}.
 #' \code{normalize = 2} for scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
 #' \code{normalize = 3} for subtracting the means of the columns of \code{x} and \code{y}, and also
 #' normalizing the columns of \code{x} to have \eqn{\sqrt n} norm.
-#' If \code{normalize = NULL}, by default, \code{normalize} will be set \code{1} for \code{"gaussian"},
-#' \code{2} for \code{"binomial"} and \code{"poisson"}, \code{3} for \code{"cox"}.
+#' If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gaussian"},
+#' \code{2} for \code{"binomial"}. Default is \code{normalize = NULL}.
 #' @param weight Observation weights. Default is \code{1} for each observation.
-#' @param max.iter The maximum number of iterations in the bess function.
-#' In most of the case, only a few steps can guarantee the convergence. Default
-#' is \code{20}.
-#' @param warm.start Whether to use the last solution as a warm start. Default
-#' is \code{TRUE}.
-#' @param nfolds The number of folds in cross-validation. Default is \code{5}.
-#' @param group.index A vector of integers indicating the which group each variable is in.
+#' @param max.splicing.iter The maximum number of performing splicing algorithm. 
+#' In most of the case, only a few splicings can guarantee the convergence. 
+#' Default is \code{max.splicing.iter = 20}.
+#' @param warm.start Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.
+#' @param nfolds The number of folds in cross-validation. Default is \code{nfolds = 5}.
+# @param group.index A vector of integers indicating the which group each variable is in.
 #' For variables in the same group, they should be located in adjacent columns of \code{x}
 #' and their corresponding index in \code{group.index} should be the same.
 #' Denote the first group as \code{1}, the second \code{2}, etc.
 #' If you do not fit a model with a group structure,
 #' please set \code{group.index = NULL}. Default is \code{NULL}.
-#' @param seed Seed to be used to devide the sample into K cross-validation folds. Default is \code{NULL}.
+#' @param newton A character specify the Newton's method for fitting generalized linear models, 
+#' it should be either \code{newton = "exact"} or \code{newton = "approx"}.
+#' If \code{newton = "exact"}, then the exact hessian is used, 
+#' while \code{newton = "approx"} uses diagonal entry of the hessian, and can be faster.
+#' @param newton.thresh a numerica value for controlling positive convergence tolerance. 
+#' The Newton's iterations converge when \eqn{|dev - dev_{old}|/(|dev| + 0.1)<} \code{newton.thresh}.
+#' @param max.newton.iter a integer giving the maximal number of Newton's iteration iterations.
+#' Default is \code{max.newton.iter = 10} if \code{newton = "exact"}, and \code{max.newton.iter = 60} if \code{newton = "approx"}.
+#' @param early.stop A boolean value decide whether early stoping. 
+#' If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one. 
+#' Default: \code{early.stop = FALSE}.
+#' @param num.threads A integer decide the number of threads. 
+#' If \code{num.threads = 0}, then all of available cores will be used. Default: \code{num.threads = 0}.
+#' @param seed Seed to be used to devide the sample into cross-validation folds. Default is \code{seed = 1}.
 #' @param ... further arguments to be passed to or from methods.
 #'
-#' @return A list with class attribute 'bess' and named components:
-#' \item{beta}{The best fitting coefficients.}
-#' \item{coef0}{The best fitting
-#' intercept.}
-#' \item{bestmodel}{The best fitted model for \code{type = "bss"}, the class of which is \code{"lm"}, \code{"glm"} or \code{"coxph"}.}
-#' \item{loss}{The training loss of the best fitting model.}
-#' \item{ic}{The information criterion of the best fitting model when model
-#' selection is based on a certain information criterion.} \item{cvm}{The mean
-#' cross-validated error for the best fitting model when model selection is
-#' based on the cross-validation.}
-#' \item{lambda}{The lambda chosen for the best fitting model}
-#' \item{beta.all}{For \code{bess} objects obtained by \code{gsection}, \code{pgsection}
-#' and \code{psequential}, \code{beta.all} is a matrix with each column be the coefficients
-#' of the model in each iterative step in the tuning path.
-#' For \code{bess} objects obtained by \code{sequential} method,
-#' A list of the best fitting coefficients of size
-#' \code{s=0,1,...,p} and \eqn{\lambda} in \code{lambda.list} with the
-#' smallest loss function. For \code{"bess"} objects of \code{"bsrr"} type, the fitting coefficients of the
-#' \eqn{i^{th} \lambda} and the \eqn{j^{th}} \code{s} are at the \eqn{i^{th}}
-#' list component's \eqn{j^{th}} column.}
-#' \item{coef0.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequential},
-#' \code{coef0.all} contains the intercept for the model in each iterative step in the tuning path.
-#' For \code{bess} objects obtained from \code{sequential} path,
-#' \code{coef0.all} contains the best fitting
-#' intercepts of size \eqn{s=0,1,\dots,p} and \eqn{\lambda} in
-#' \code{lambda.list} with the smallest loss function.}
-#' \item{loss.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequential},
-#' \code{loss.all} contains the training loss of the model in each iterative step in the tuning path.
-#' For \code{bess} objects obtained from \code{sequential} path, this is a
-#' list of the training loss of the best fitting intercepts of model size
-#' \eqn{s=0,1,\dots,p} and \eqn{\lambda} in \code{lambda.list}. For \code{"bess"} object obtained by \code{"bsrr"},
-#' the training loss of the \eqn{i^{th} \lambda} and the \eqn{j^{th}} \code{s}
-#' is at the \eqn{i^{th}} list component's \eqn{j^{th}} entry.}
-#' \item{ic.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequential},
-#' \code{ic.all} contains the values of the chosen information criterion of the model in each iterative step in the tuning path.
-#' For \code{bess} objects obtained from \code{sequential} path, this is a
-#' matrix of the values of the chosen information criterion of model size \eqn{s=0,1,\dots,p}
-#' and \eqn{\lambda} in \code{lambda.list} with the smallest loss function. For \code{"bess"} object obtained by \code{"bsrr"},
-#' the training loss of the \eqn{i^{th} \lambda} and the \eqn{j^{th}}
-#' \code{s} is at the \eqn{i^{th}} row \eqn{j^{th}} column. Only available when
-#' model selection is based on a certain information criterion.}
-#'
-#' \item{cvm.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequential},
-#' \code{cvm.all} contains the mean cross-validation error of the model in each iterative step in the tuning path.
-#' For \code{bess} objects obtained from \code{sequential} path, this is a
-#'  matrix of the mean cross-validation error of model size
-#' \eqn{s=0,1,\dots,p} and \eqn{\lambda} in \code{lambda.list} with the
-#' smallest loss function. For \code{"bess"} object obtained by \code{"bsrr"}, the training loss of the \eqn{i^{th}
-#' \lambda} and the \eqn{j^{th}} \code{s} is at the \eqn{i^{th}} row
-#' \eqn{j^{th}} column. Only available when model selection is based on the
-#' cross-validation.}
-#' \item{lambda.all}{The lambda chosen for each step in \code{pgsection} and \code{psequential}.}
+#' @return A \code{abess} class object, which is a \code{list} with the following components:
+#' \item{best.model}{The best model chosen by algorithm. It is a \code{list} object comprising the following sub-components:
+#'  1. \code{beta}: a fitted \eqn{p}-dimensional coefficients vector; 2. \code{coef0}: a numeric fitted intercept; 
+#'  3. \code{support.size}: the support size of the best model; 4. \code{dev}: the deviance of the model; 
+#'  5. \code{tune.value}: the tune value of the model.
+#' }
+#' \item{beta}{A \eqn{p}-by-\code{length(support.size)} matrix of coefficients, stored in column format.}
+#' \item{coef0}{A Intercept vector of length \code{length(support.size)}.}
+#' \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
+# \item{best.model}{The best fitted model for \code{type = "bss"}.}
+# \item{lambda}{The lambda chosen for the best fitting model}
+# \item{beta.all}{For \code{bess} objects obtained by \code{gsection}, \code{pgsection}
+# and \code{psequence}, \code{beta.all} is a matrix with each column be the coefficients
+# of the model in each iterative step in the tuning path.
+# For \code{bess} objects obtained by \code{sequence} method,
+# A list of the best fitting coefficients of size
+# \code{s=0,1,...,p} and \eqn{\lambda} in \code{lambda.list} with the
+# smallest loss function. For \code{"bess"} objects of \code{"bsrr"} type, the fitting coefficients of the
+# \eqn{i^{th} \lambda} and the \eqn{j^{th}} \code{s} are at the \eqn{i^{th}}
+# list component's \eqn{j^{th}} column.}
+# \item{coef0.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequence},
+# \code{coef0.all} contains the intercept for the model in each iterative step in the tuning path.
+# For \code{bess} objects obtained from \code{sequence} path,
+# \code{coef0.all} contains the best fitting
+# intercepts of size \eqn{s=0,1,\dots,p} and \eqn{\lambda} in
+# \code{lambda.list} with the smallest loss function.}
+# \item{loss.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequence},
+# \code{loss.all} contains the training loss of the model in each iterative step in the tuning path.
+# For \code{bess} objects obtained from \code{sequence} path, this is a
+# list of the training loss of the best fitting intercepts of support size
+# \eqn{s=0,1,\dots,p} and \eqn{\lambda} in \code{lambda.list}. For \code{"bess"} object obtained by \code{"bsrr"},
+# the training loss of the \eqn{i^{th} \lambda} and the \eqn{j^{th}} \code{s}
+# is at the \eqn{i^{th}} list component's \eqn{j^{th}} entry.}
+# \item{ic.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequence},
+# \code{ic.all} contains the values of the chosen information criterion of the model in each iterative step in the tuning path.
+# For \code{bess} objects obtained from \code{sequence} path, this is a
+# matrix of the values of the chosen information criterion of support size \eqn{s=0,1,\dots,p}
+# and \eqn{\lambda} in \code{lambda.list} with the smallest loss function. For \code{"bess"} object obtained by \code{"bsrr"},
+# the training loss of the \eqn{i^{th} \lambda} and the \eqn{j^{th}}
+# \code{s} is at the \eqn{i^{th}} row \eqn{j^{th}} column. Only available when
+# model selection is based on a certain information criterion.}
+# \item{lambda.all}{The lambda chosen for each step in \code{pgsection} and \code{psequence}.}
 #' \item{family}{Type of the model.}
-#' \item{support.size}{The input
-#' \code{support.size}.} \item{nsample}{The sample size.}
-#' \item{type}{Either \code{"bss"} or \code{"bsrr"}.}
-#' \item{method}{Method used for tuning parameters selection.}
-#' \item{ic.type}{The criterion of model selection.}
-#'
-#' @seealso
-#' \code{\link{bess.fix}}
+#' \item{tune.path}{The path type for tuning parameters.}
+#' \item{support.size}{The actual \code{support.size} values used. Note that it is not necessary the same as the input if the later have double values or duplicated values.} 
+#' \item{tune.type}{The criterion type for tuning parameters.}
+#' \item{screening.index}{The vector of indices selected by only feature screening. 
+#' It would a empty numerical vector if \code{screening.num = 0}.}
+#' \item{call}{The original call to \code{abess}.}
+#' 
+# \item{nsample}{The sample size.}
+# \item{type}{Either \code{"bss"} or \code{"bsrr"}.}
 #'
 #' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
-#'
-#' @export
-#' @examples
+#' @references Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x
 #' 
-#' n <- 200
-#' p <- 300
+#' @export
+#' @rdname abess
+#' @method abess default
+#' @examples
+#' n <- 100
+#' p <- 500
 #' support.size <- 3
-#' #-------------------linear model----------------------#
+#' 
+#' ################ linear model ################
 #' dataset <- generate.data(n, p, support.size)
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]])
 #' abess_fit[["best.model"]]
 #' 
-#' #-------------------logistic model----------------------#
+#' ################ logistic model ################
 #' dataset <- generate.data(n, p, support.size, family = "binomial")
-#' abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "binomial")
+#' ## use cross-validation to tuning
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+#'                    family = "binomial", tune.type = "cv")
 #' abess_fit[["best.model"]]
 #' 
-abess <- function(x, ...) UseMethod("abess")
-
-
-#' @rdname abess
-#' @export
-#' @method abess default
-abess.default <- function(x, y,
-                  family = c("gaussian", "binomial"),
-                  method = c("sequential", "gsection"),
-                  tune.type = c("gic", "ebic", "bic", "aic", "cv"),
-                  weight = rep(1, nrow(x)),
-                  normalize = NULL,
-                  c.max = 2,
-                  support.size = NULL,
-                  gs.range = NULL, 
-                  always.include = NULL,
-                  max.splicing.iter = 20,
-                  screening.num = NULL,
-                  group.index = NULL,
-                  warm.start = TRUE,
-                  nfolds = 5,
-                  newton = c("exact", "approx"), 
-                  newton.thresh = 1e-6, 
-                  max.newton.iter = NULL, 
-                  early.stop = FALSE, 
-                  num.threads = 0, 
-                  seed = 1, 
-                  ...)
+abess.default <- function(x, 
+                          y,
+                          family = c("gaussian", "binomial"),
+                          tune.path = c("sequence", "gsection"),
+                          tune.type = c("gic", "ebic", "bic", "aic", "cv"),
+                          weight = rep(1, nrow(x)),
+                          normalize = NULL,
+                          c.max = 2,
+                          support.size = NULL,
+                          gs.range = NULL, 
+                          always.include = NULL,
+                          max.splicing.iter = 20,
+                          screening.num = NULL, 
+                          warm.start = TRUE,
+                          nfolds = 5,
+                          newton = c("exact", "approx"), 
+                          newton.thresh = 1e-6, 
+                          max.newton.iter = NULL, 
+                          early.stop = FALSE, 
+                          num.threads = 0, 
+                          seed = 1, 
+                          ...)
 {
   tau <- NULL
-  
+  group.index <- NULL
   ## TODO:
   type <- c("bss", "bsrr")
   # type <- match.arg(type)
@@ -238,7 +245,7 @@ abess.default <- function(x, y,
   }
   vn <- colnames(x)
   if (is.null(vn)) {
-    vn <- paste("x", 1:nvars, sep = "")
+    vn <- paste0("x", 1:nvars)
   }
   
   ## check C-max:
@@ -318,12 +325,12 @@ abess.default <- function(x, y,
   stopifnot(is.numeric(newton.thresh) & newton.thresh > 0)
   newton_thresh <- as.double(newton.thresh)
   
-  # sparse level list (sequential):
+  # sparse level list (sequence):
   if (is.null(support.size)) {
-    s_list <- 1:min(c(nvars, round(nobs / log(log(nobs)) / log(p))))
+    s_list <- 1:min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
   } else {
     stopifnot(any(is.numeric(support.size) & support.size > 0))
-    stopifnot(max(support.size) > nvars)
+    stopifnot(max(support.size) < nvars)
     support.size <- sort(support.size)
     support.size <- unique(support.size)
     s_list <- support.size
@@ -332,7 +339,7 @@ abess.default <- function(x, y,
   # sparse range (golden-section):
   if (is.null(gs.range)) {
     s_min <- 1
-    s_max <- min(c(nvars, round(nobs / log(log(nobs)) / log(p))))
+    s_max <- min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
   } else {
     stopifnot(length(gs.range) == 2)
     stopifnot(any(is.numeric(gs.range) & gs.range > 0))
@@ -343,7 +350,7 @@ abess.default <- function(x, y,
     s_max <- max(gs.range)
   }
   
-  # tune model size method:
+  # tune support size method:
   tune.type <- match.arg(tune.type)
   ic_type <- switch(
     tune.type,
@@ -360,12 +367,12 @@ abess.default <- function(x, y,
   }
   
   ## strategy for tunning
-  method <- match.arg(method)
-  if (method == "pgsection") {
+  tune.path <- match.arg(tune.path)
+  if (tune.path == "pgsection") {
     path_type <- 2
-  } else if (method == "psequential") {
+  } else if (tune.path == "psequence") {
     path_type <- 2
-  } else if (method == "sequential") {
+  } else if (tune.path == "sequence") {
     path_type <- 1
   } else {
     path_type <- 2
@@ -508,10 +515,11 @@ abess.default <- function(x, y,
   )
   names(result[["beta"]]) <- vn
   best_model <- list("beta" = result[["beta"]], 
-                    "coef0" = result[["coef0"]], 
-                    "support.size" = sum(result[["beta"]] != 0.0), 
-                    "dev" = result[["train_loss"]], 
-                    "tune.value" = result[["ic"]])
+                     "coef0" = result[["coef0"]], 
+                     "best.subset" = which(result[["beta"]] != 0.0),
+                     "support.size" = sum(result[["beta"]] != 0.0), 
+                     "dev" = result[["train_loss"]], 
+                     "tune.value" = result[["ic"]])
   result[["beta"]] <- NULL
   result[["coef0"]] <- NULL
   result[["train_loss"]] <- NULL
@@ -527,7 +535,7 @@ abess.default <- function(x, y,
   rownames(result[["beta"]]) <- vn
   
   result[["family"]] <- family
-  result[["tune.path"]] <- method
+  result[["tune.path"]] <- tune.path
   result[["support.size"]] <- s_list
   result[["tune.type"]] <- ifelse(is_cv == TRUE, "cv", c("AIC", "BIC", "GIC", "EBIC")[ic_type])
   result[["gs.range"]] <- gs.range
@@ -556,7 +564,6 @@ abess.default <- function(x, y,
 #' @method abess formula
 #' @export
 #' @examples
-#' 
 #' ################  Formula interface  ################
 #' data("trim32")
 #' abess_fit <- abess(y ~ ., data = trim32)
@@ -577,5 +584,6 @@ abess.formula <- function(formula, data, subset, na.action, ...) {
   x <- model.matrix(mt, mf, contrasts)[, -1]
   
   abess_res <- abess.default(x, y, ...)
+  abess_res[["call"]] <- cl
   abess_res
 }
