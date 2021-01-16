@@ -2,6 +2,8 @@
 // Created by Mamba on 2020/2/18.
 //
 // #define R_BUILD
+// #define TEST
+
 #ifdef R_BUILD
 #include <Rcpp.h>
 #include <RcppEigen.h>
@@ -25,7 +27,6 @@ using namespace std;
 
 void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, bool early_stop, int k, Result &result)
 {
-  cout << "111" << endl;
   clock_t t0, t1, t2;
   int p = data.get_p();
   int N = data.g_num;
@@ -80,10 +81,14 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
 
   for (int i = 0; i < sequence_size; i++)
   {
+#ifdef TEST
     std::cout << "\n sequence= " << sequence(i);
+#endif
     for (int j = (1 - pow(-1, i)) * (lambda_size - 1) / 2; j < lambda_size && j >= 0; j = j + pow(-1, i))
     {
+#ifdef TEST
       std::cout << " =========j: " << j << ", lambda= " << lambda_seq(j) << ", T: " << sequence(i) << endl;
+#endif
       t0 = clock();
 
       t1 = clock();
@@ -97,7 +102,9 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
 
       algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N);
       t2 = clock();
+#ifdef TEST
       std::cout << "fit time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+#endif
 
       t1 = clock();
       if (algorithm->warm_start)
@@ -108,7 +115,9 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
         bd_init = algorithm->get_bd();
       }
       t2 = clock();
+#ifdef TEST
       std::cout << "warm start time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+#endif
 
       // evaluate the beta
       t1 = clock();
@@ -121,7 +130,9 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
         ic_matrix(i, j) = metric->ic(train_n, N, algorithm);
       }
       t2 = clock();
+#ifdef TEST
       std::cout << "ic time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+#endif
 
       // save for best_model fit
       t1 = clock();
@@ -132,9 +143,10 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
       bd_matrix(i, j) = algorithm->bd;
 
       t2 = clock();
+#ifdef TEST
       std::cout << "save time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-
       std::cout << "path i= " << i << " j= " << j << " time = " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
+#endif
     }
 
     // To be ensured
