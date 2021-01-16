@@ -1,5 +1,4 @@
 #' @export
-#' @aliases abess
 abess <- function(x, y, ...) UseMethod("abess")
 
 #' @title Adaptive Best-Subset Selection via splicing algorithm
@@ -40,6 +39,9 @@ abess <- function(x, y, ...) UseMethod("abess")
 #' Default is \code{"gic"}.
 #' @param support.size An integer vector representing the alternative support sizes. 
 #' Only used for \code{method = "sequence"}. Default is \code{1:min(n, round(n/(log(log(n))log(p))))}.
+#' @param gs.range A integer vector with two elements. 
+#' The first element is the minimum model size considered by golden-section, 
+#' the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
 # @param lambda.list A lambda sequence for \code{"bsrr"}. Default is
 # \code{exp(seq(log(100), log(0.01), length.out = 100))}.
 # @param s.min The minimum value of support sizes. Only used for \code{method =
@@ -62,6 +64,7 @@ abess <- function(x, y, ...) UseMethod("abess")
 #' normalizing the columns of \code{x} to have \eqn{\sqrt n} norm.
 #' If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gaussian"},
 #' \code{2} for \code{"binomial"}. Default is \code{normalize = NULL}.
+#' @param c.max an integer splicing size. Default is: \code{c.max = 2}. 
 #' @param weight Observation weights. Default is \code{1} for each observation.
 #' @param max.splicing.iter The maximum number of performing splicing algorithm. 
 #' In most of the case, only a few splicings can guarantee the convergence. 
@@ -382,8 +385,8 @@ abess.default <- function(x,
   if (!is.null(group.index)) {
     if (path_type == 1 & max(support.size) > length(group.index))
       stop("The maximum one support.size should not be larger than the number of groups!")
-    if (path_type == 2 & s.max > length(group.index))
-      stop("s.max is too large. Should be smaller than the number of groups!")
+    if (path_type == 2 & s_max > length(group.index))
+      stop("max(gs.range) is too large. Should be smaller than the number of groups!")
     
     gi <- unique(group.index)
     g_index <- match(gi, group.index) - 1
@@ -442,8 +445,8 @@ abess.default <- function(x,
           "The number of screening features must be equal or greater than the maximum one in support.size!"
         )
     } else{
-      if (screening.num < s.max)
-        stop("The number of screening features must be equal or greater than the s.max!")
+      if (screening.num < s_max)
+        stop("The number of screening features must be equal or greater than the max(gs.range)!")
     }
     screening <- TRUE
     screening_num <- screening.num
@@ -467,10 +470,8 @@ abess.default <- function(x,
         stop("always.include containing too many variables. 
              The length of it should not exceed the maximum in support.size.")
     } else{
-      if (length(always.include) > s.max)
-        stop(
-          "always.include containing too many variables. The length of it should not exceed the s.max."
-        )
+      if (length(always.include) > s_max)
+        stop("always.include containing too many variables. The length of it should not exceed the max(gs.range).")
     }
     always_include <- always.include
   }

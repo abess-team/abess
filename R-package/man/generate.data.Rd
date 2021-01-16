@@ -50,11 +50,6 @@ The noise is added to the linear predictor \eqn{\eta} = \eqn{x\beta}. Default is
 This option is invalid for \code{cortype = 3}.}
 
 \item{seed}{seed to be used in generating the random numbers.}
-
-\item{sigma}{A parameter used to control the signal-to-noise ratio. For linear regression,
-it is the error variance \eqn{\sigma^2}. For logistic regression,
-the larger the value of sigma, the higher the signal-to-noise ratio. 
-Valid only for \code{cortype = 3}.}
 }
 \value{
 A \code{list} object comprising:

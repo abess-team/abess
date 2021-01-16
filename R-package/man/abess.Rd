@@ -62,8 +62,14 @@ normalizing the columns of \code{x} to have \eqn{\sqrt n} norm.
 If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gaussian"},
 \code{2} for \code{"binomial"}. Default is \code{normalize = NULL}.}
 
+\item{c.max}{an integer splicing size. Default is: \code{c.max = 2}.}
+
 \item{support.size}{An integer vector representing the alternative support sizes. 
 Only used for \code{method = "sequence"}. Default is \code{1:min(n, round(n/(log(log(n))log(p))))}.}
+
+\item{gs.range}{A integer vector with two elements. 
+The first element is the minimum model size considered by golden-section, 
+the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.}
 
 \item{always.include}{An integer vector containing the indexes of variables that should always be included in the model.}
 

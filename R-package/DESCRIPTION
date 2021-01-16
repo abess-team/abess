@@ -23,7 +23,8 @@ License: GPL (>= 3)
 LazyData: true
 Imports: 
     Rcpp,
-    MASS
+    MASS, 
+    Matrix
 LinkingTo: 
     Rcpp,
     RcppEigen

@@ -2,8 +2,8 @@
 % Please edit documentation in R/abess-package.R
 \docType{package}
 \name{abess-package}
-\alias{abess}
 \alias{abess-package}
+\alias{_PACKAGE}
 \title{abess: Adaptive Best Subset Selection in Polynomial Time}
 \description{
 A polynomial algorithm for best-subset selection problem for linear and logistic regression.
