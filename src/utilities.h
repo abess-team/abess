@@ -5,8 +5,19 @@
 #ifndef BESS_UTILITIES_H
 #define BESS_UTILITIES_H
 
-#include <iostream>
+#ifndef R_BUILD
+
 #include <Eigen/Eigen>
+
+#else
+
+#include <RcppEigen.h>
+
+#endif
+
+
+
+#include <iostream>
 #include <vector>
 using namespace std;
 

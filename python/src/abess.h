@@ -21,10 +21,10 @@ typedef struct
 {
     Eigen::MatrixXd ic_matrix;
     Eigen::MatrixXd test_loss_matrix;
-    Eigen::Matrix<VectorXd, Dynamic, Dynamic> beta_matrix;
     Eigen::MatrixXd coef0_matrix;
-    Eigen::Matrix<VectorXi, Dynamic, Dynamic> A_matrix;
-    Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix;
+    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> beta_matrix;
+    Eigen::Matrix<Eigen::VectorXi, Eigen::Dynamic, Eigen::Dynamic> A_matrix;
+    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> bd_matrix;
 } Result;
 
 List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorXd weight,

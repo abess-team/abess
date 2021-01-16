@@ -18,8 +18,9 @@ using namespace Eigen;
 #include "Data.h"
 #include "Algorithm.h"
 #include "Metric.h"
+#include "abess.h"
 
-List sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, bool early_stop, int k);
+void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, bool early_stop, int k, Result &result);
 
 // List gs_path(Data &data, Algorithm *algorithm, Metric *metric,
 //              int s_min, int s_max, int K_max, double epsilon);
