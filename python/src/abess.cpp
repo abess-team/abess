@@ -1,4 +1,5 @@
 // #define R_BUILD
+// #define TEST
 #ifdef R_BUILD
 
 #include <Rcpp.h>
@@ -69,8 +70,10 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
     thread = omp_get_max_threads();
   }
   Eigen::setNbThreads(thread);
+#ifdef TEST
   cout << Eigen::nbThreads() << " Threads for eigen." << endl;
   cout << omp_get_thread_num() << " Threads for omp." << endl;
+#endif
 #endif
 
   int p = x.cols();
@@ -141,14 +144,11 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
     }
   }
   // t2 = clock();
-  // std::cout << "preprocess time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
   // calculate loss for each parameter parameter combination
   t1 = clock();
-  cout << "build Result" << endl;
   Result result;
   vector<Result> result_list(Kfold);
-  cout << "build Result" << endl;
   if (path_type == 1)
   {
     if (is_cv)
@@ -190,8 +190,9 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   //     }
   // }
   t2 = clock();
+#ifdef TEST
   std::cout << "path time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-
+#endif
   // Get bestmodel index && fit bestmodel
   ////////////////////////////put in abess.cpp///////////////////////////////////////
   // get bestmodel index
@@ -374,7 +375,6 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
     }
     out_result["beta"] = beta;
     out_result.push_back(screening_A, "screening_A");
-    cout << "screening AA";
 #endif
   }
 
@@ -447,7 +447,9 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                          early_stop, approximate_Newton,
                          thread);
   t2 = clock();
+#ifdef TEST
   std::cout << "get result : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+#endif
 
   // t1 = clock();
   Eigen::VectorXd beta;
