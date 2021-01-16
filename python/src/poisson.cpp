@@ -34,7 +34,7 @@ double loglik_poisson(Eigen::MatrixXd x, Eigen::VectorXd y, Eigen::VectorXd coef
     }
     else
     {
-      for (int j = 1; j <= y(i); j++)
+      for (double j = 1; j <= y(i); j = j + 1.)
       {
         temp(i) = temp(i) + log(j);
       }
@@ -55,7 +55,7 @@ double factorial_poiss(Eigen::VectorXd y, int n)
     }
     else
     {
-      for (int j = 1; j <= y(i); j++)
+      for (double j = 1; j <= y(i); j = j + 1.)
       {
         temp(i) = temp(i) + log(j);
       }

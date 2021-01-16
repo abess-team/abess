@@ -19,10 +19,10 @@ using namespace Eigen;
 #include "Algorithm.h"
 #include "Metric.h"
 
-List sequential_path(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, bool early_stop);
+List sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, bool early_stop, int k);
 
-List gs_path(Data &data, Algorithm *algorithm, Metric *metric,
-             int s_min, int s_max, int K_max, double epsilon);
+// List gs_path(Data &data, Algorithm *algorithm, Metric *metric,
+//              int s_min, int s_max, int K_max, double epsilon);
 
 double det(double a[], double b[]);
 
@@ -41,6 +41,6 @@ void golden_section_search(Data &data, Algorithm *algorithm, Metric *metric, dou
 void seq_search(Data &data, Algorithm *algorithm, Metric *metric, double p[], double u[], int s_min, int s_max, double log_lambda_min, double log_lambda_max, double best_arg[],
                 Eigen::VectorXd &beta1, double &coef01, double &train_loss1, double &ic1, int nlambda, Eigen::MatrixXd &ic_sequence);
 
-List pgs_path(Data &data, Algorithm *algorithm, Metric *metric, int s_min, int s_max, double log_lambda_min, double log_lambda_max, int powell_path, int nlambda);
+// List pgs_path(Data &data, Algorithm *algorithm, Metric *metric, int s_min, int s_max, double log_lambda_min, double log_lambda_max, int powell_path, int nlambda);
 
 #endif //SRC_PATH_H
