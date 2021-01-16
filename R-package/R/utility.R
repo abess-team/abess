@@ -30,10 +30,10 @@
 # @param censoring Whether data is censored or not. Valid only for \code{family = "cox"}. Default is \code{TRUE}.
 # @param c The censoring rate. Default is \code{1}.
 # @param weibull.scale A parameter in generating survival time based on the Weibull distribution. Only used for the "\code{cox}" family.
-#' @param sigma A parameter used to control the signal-to-noise ratio. For linear regression,
-#' it is the error variance \eqn{\sigma^2}. For logistic regression,
-#' the larger the value of sigma, the higher the signal-to-noise ratio. 
-#' Valid only for \code{cortype = 3}.
+# @param sigma A parameter used to control the signal-to-noise ratio. For linear regression,
+# it is the error variance \eqn{\sigma^2}. For logistic regression,
+# the larger the value of sigma, the higher the signal-to-noise ratio. 
+# Valid only for \code{cortype = 3}.
 #' @param seed seed to be used in generating the random numbers.
 #' 
 #' @return A \code{list} object comprising:

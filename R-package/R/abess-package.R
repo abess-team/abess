@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @aliases abess-package
 "_PACKAGE"
 
 # The following block is used by usethis to automatically manage
@@ -11,6 +12,9 @@
 #' @importFrom stats rnorm
 #' @importFrom stats rbinom
 #' @importFrom stats rpois
+#' @importFrom stats model.matrix
+#' @importFrom stats model.response
+#' @importFrom Matrix Matrix
 ## usethis namespace: end
 NULL
 
