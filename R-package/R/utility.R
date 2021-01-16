@@ -4,7 +4,7 @@
 #'
 #' @param n The number of observations.
 #' @param p The number of predictors of interest.
-#' @param s The number of nonzero coefficients in the underlying regression
+#' @param support.size The number of nonzero coefficients in the underlying regression
 #' model. Can be omitted if \code{beta} is supplied.
 #' @param rho A parameter used to characterize the pairwise correlation in
 #' predictors. Default is \code{0}.
@@ -12,7 +12,7 @@
 #' gaussian data.\code{"binomial"} for binary data. 
 # \code{"poisson"} for count data. \code{"cox"} for survival data.
 #' @param beta The coefficient values in the underlying regression model. 
-#' If it is supplied, \code{s} would be omitted.
+#' If it is supplied, \code{support.size} would be omitted.
 #' @param cortype The correlation structure. 
 #' \code{cortype = 1} denotes the independence structure, 
 #' where the covariance matrix has \eqn{(i,j)} entry equals \eqn{I(i \neq j)}.
@@ -35,6 +35,7 @@
 #' the larger the value of sigma, the higher the signal-to-noise ratio. 
 #' Valid only for \code{cortype = 3}.
 #' @param seed seed to be used in generating the random numbers.
+#' 
 #' @return A \code{list} object comprising:
 #' \item{x}{Design matrix of predictors.} 
 #' \item{y}{Response variable.}
@@ -84,34 +85,36 @@
 #' 
 #' @export
 #'
-generate.data <-
-  function(n,
-           p,
-           s = NULL,
-           rho = 0,
-           family = c("gaussian", "binomial"),
-           beta = NULL,
-           cortype = 1,
-           snr = 10,
-           seed = 1) {
-    censoring <- TRUE
-    c <- 1
-    weibull.scale <- 1
-    sigma <- 1
-    
+generate.data <- function(n,
+                          p,
+                          support.size = NULL,
+                          rho = 0,
+                          family = c("gaussian", "binomial"),
+                          beta = NULL,
+                          cortype = 1,
+                          snr = 10,
+                          seed = 1) 
+{
+  censoring <- TRUE
+  c <- 1
+  weibull.scale <- 1
+  sigma <- 1
+  
   family <- match.arg(family)
   set.seed(seed)
   # if(is.null(beta)){
-  #   Tbeta <- rep(0, p)
-  #   Tbeta[1:s*floor(p/s):floor(p/s)] <- rep(1, s)
+  #   beta <- rep(0, p)
+  #   beta[1:support.size*floor(p/support.size):floor(p/support.size)] <- rep(1, support.size)
   # } else{
-  #   Tbeta <- beta
+  #   beta <- beta
   # }
   if (!is.null(beta)) {
-    s = sum(abs(beta) > 1e-5)
-  } else{
-    if (is.null(s))
-      stop("Please provide an integer to s.")
+    support.size = sum(abs(beta) > 1e-5)
+    beta[abs(beta) <= 1e-5] <- 0
+  } else {
+    if (is.null(support.size))
+      stop("Please provide an integer to support.size.")
+    stopifnot(is.numeric(support.size) & support.size >= 1)
   }
   
   if (cortype == 1) {
@@ -123,39 +126,44 @@ generate.data <-
     Sigma <- matrix(rho, p, p)
     diag(Sigma) <- 1
   }
-  x <- MASS::mvrnorm(n, rep(0, p), Sigma)
-  Tbeta = rep(0, p)
-  nonzero = sample(1:p, s)
+  if (cortype == 1) {
+    x <- matrix(rnorm(n * p), nrow = n, ncol = p)
+  } else {
+    x <- MASS::mvrnorm(n, rep(0, p), Sigma)
+  }
+  input_beta <- beta
+  beta = rep(0, p)
+  nonzero = sample(1:p, support.size)
   if (family == "gaussian") {
     m = 5 * sqrt(2 * log(p) / n)
     M = 100 * m
-    if (is.null(beta))
-      Tbeta[nonzero] = stats::runif(s, m, M)
+    if (is.null(input_beta))
+      beta[nonzero] = stats::runif(support.size, m, M)
     else
-      Tbeta = beta
-    sigma <- sqrt((t(Tbeta) %*% Sigma %*% Tbeta) / snr)
+      beta = input_beta
+    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     
-    y <- x %*% Tbeta + rnorm(n, 0, sigma)
+    y <- x %*% beta + rnorm(n, 0, sigma)
   } else if (family == "binomial") {
     m = 5 * sqrt(2 * log(p) / n)
-    if (is.null(beta))
-      Tbeta[nonzero] = stats::runif(s, 2 * m, 10 * m)
+    if (is.null(input_beta))
+      beta[nonzero] = stats::runif(support.size, 2 * m, 10 * m)
     else
-      Tbeta = beta
-    sigma <- sqrt((t(Tbeta) %*% Sigma %*% Tbeta) / snr)
+      beta = input_beta
+    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     
-    eta <- x %*% Tbeta + rnorm(n, 0, sigma)
+    eta <- x %*% beta + rnorm(n, 0, sigma)
     PB <- apply(eta, 1, generatedata2)
     y <- stats::rbinom(n, 1, PB)
   } else if (family == "cox") {
     m = 5 * sqrt(2 * log(p) / n)
-    if (is.null(beta))
-      Tbeta[nonzero] = stats::runif(s, 2 * m, 10 * m)
+    if (is.null(input_beta))
+      beta[nonzero] = stats::runif(support.size, 2 * m, 10 * m)
     else
-      Tbeta = beta
-    sigma <- sqrt((t(Tbeta) %*% Sigma %*% Tbeta) / snr)
+      beta = input_beta
+    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     
-    time = (-log(stats::runif(n)) / drop(exp(x %*% Tbeta))) ^ (1 / weibull.scale)
+    time = (-log(stats::runif(n)) / drop(exp(x %*% beta))) ^ (1 / weibull.scale)
     if (censoring) {
       ctime = c * stats::runif(n)
       status = (time < ctime) * 1
@@ -170,15 +178,15 @@ generate.data <-
   } else if (family == "poisson") {
     x = x / 16
     m = 5 * sigma * sqrt(2 * log(p) / n)
-    if (is.null(beta))
-      Tbeta[nonzero] = stats::runif(s, 2 * m, 10 * m)
+    if (is.null(input_beta))
+      beta[nonzero] = stats::runif(support.size, 2 * m, 10 * m)
     else
-      Tbeta = beta
-    sigma <- sqrt((t(Tbeta) %*% Sigma %*% Tbeta) / snr)
+      beta = input_beta
+    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     
-    eta <- x %*% Tbeta + stats::rnorm(n, 0, sigma)
+    eta <- x %*% beta + stats::rnorm(n, 0, sigma)
     eta <- ifelse(eta > 30, 30, eta)
-    eta <- ifelse(eta < -30,-30, eta)
+    eta <- ifelse(eta < -30, -30, eta)
     eta <- exp(eta)
     # eta[eta<0.0001] <- 0.0001
     # eta[eta>1e5] <- 1e5
@@ -188,7 +196,8 @@ generate.data <-
   }
   set.seed(NULL)
   
-  return(list(x = x, y = y, Tbeta = Tbeta))
+  colnames(x) <- paste0("x", 1:p)
+  return(list(x = x, y = y, beta = beta))
 }
 
 generatedata2 <- function(eta) {
@@ -238,5 +247,5 @@ list.beta <- function(beta.mat, object, sparse) {
 
 .onUnload <- function (libpath)
 {
-  library.dynam.unload("BeSS", libpath)
+  library.dynam.unload("abess", libpath)
 }
