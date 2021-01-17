@@ -27,7 +27,9 @@ using namespace std;
 
 void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, bool early_stop, int k, Result &result)
 {
+#ifdef TEST
   clock_t t0, t1, t2;
+#endif
   int p = data.get_p();
   int N = data.g_num;
   Eigen::VectorXi g_index = data.g_index;
@@ -88,10 +90,10 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
     {
 #ifdef TEST
       std::cout << " =========j: " << j << ", lambda= " << lambda_seq(j) << ", T: " << sequence(i) << endl;
-#endif
       t0 = clock();
-
       t1 = clock();
+#endif
+
       algorithm->update_sparsity_level(sequence(i));
       algorithm->update_lambda_level(lambda_seq(j));
       algorithm->update_beta_init(beta_init);
@@ -101,12 +103,12 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
       algorithm->update_group_XTX(train_group_XTX);
 
       algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N);
-      t2 = clock();
 #ifdef TEST
+      t2 = clock();
       std::cout << "fit time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+      t1 = clock();
 #endif
 
-      t1 = clock();
       if (algorithm->warm_start)
       {
         beta_init = algorithm->get_beta();
@@ -114,13 +116,13 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
         // A_init = algorithm->get_A_out();
         bd_init = algorithm->get_bd();
       }
-      t2 = clock();
 #ifdef TEST
+      t2 = clock();
       std::cout << "warm start time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+      t1 = clock();
 #endif
 
       // evaluate the beta
-      t1 = clock();
       if (metric->is_cv)
       {
         test_loss_matrix(i, j) = metric->neg_loglik_loss(test_x, test_y, test_weight, g_index, g_size, test_n, p, N, algorithm);
@@ -129,21 +131,21 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
       {
         ic_matrix(i, j) = metric->ic(train_n, N, algorithm);
       }
-      t2 = clock();
 #ifdef TEST
+      t2 = clock();
       std::cout << "ic time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+      t1 = clock();
 #endif
 
       // save for best_model fit
-      t1 = clock();
       beta_matrix(i, j) = algorithm->beta;
       coef0_matrix(i, j) = algorithm->coef0;
       train_loss_matrix(i, j) = algorithm->get_train_loss();
       // A_matrix(i, j) = algorithm->A_out;
       bd_matrix(i, j) = algorithm->bd;
 
-      t2 = clock();
 #ifdef TEST
+      t2 = clock();
       std::cout << "save time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
       std::cout << "path i= " << i << " j= " << j << " time = " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
 #endif

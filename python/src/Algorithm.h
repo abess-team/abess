@@ -156,8 +156,10 @@ public:
     this->coef0 = this->coef0_init;
     this->bd = this->bd_init;
 
+#ifdef TEST
     clock_t t1, t2;
     t1 = clock();
+#endif
     if (this->model_type == 1)
     {
       if (this->algorithm_type == 7 || this->PhiG.size() == 0)
@@ -166,9 +168,10 @@ public:
         this->invPhiG = invPhi(PhiG, N);
       }
     }
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "PhiG invPhiG time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t1 = clock();
 #endif
     // cout << "this->beta: " << this->beta << endl;
     // cout << "this->coef0_init" << this->coef0_init << endl;
@@ -178,10 +181,9 @@ public:
     // input: this->beta_init, this->coef0_init, this->A_init, this->I_init
     // for splicing get A;for the others 0;
     // std::cout << "fit 2" << endl;
-    t1 = clock();
     Eigen::VectorXi A = inital_screening(train_x, train_y, this->beta, this->coef0, this->A_init, this->I_init, this->bd, train_weight, g_index, g_size, N);
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "init screening time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
 
@@ -195,7 +197,9 @@ public:
     Eigen::VectorXi A_ind;
 
     // std::cout << "fit 5" << endl;
+#ifdef TEST
     t1 = clock();
+#endif
     if (this->algorithm_type == 6)
     {
       A_ind = find_ind(A, g_index, g_size, p, N);
@@ -215,21 +219,21 @@ public:
     this->beta_warmstart = this->beta;
     this->coef0_warmstart = this->coef0;
 
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "primary fit" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t1 = clock();
 #endif
     // std::cout << "fit 6" << endl;
     int C_max = min(min(T0, N - T0), this->exchange_num);
 
-    t1 = clock();
     for (this->l = 1; this->l <= this->max_iter; l++)
     {
       // std::cout << "fit 7" << endl;
       // t1 = clock();
       this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size, N, this->tau, this->train_loss);
-      t2 = clock();
 #ifdef TEST
+      t2 = clock();
       std::cout << "get A" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
 
@@ -266,12 +270,12 @@ public:
         {
 #ifdef TEST
           std::cout << "------------iter time: ----------" << this->l << endl;
-#endif
           t2 = clock();
+#endif
 #ifdef TEST
           std::cout << "fit get A" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-#endif
           t1 = clock();
+#endif
           this->A_out = A;
           // this->I_out = I;
           this->group_df = 0;
@@ -279,8 +283,8 @@ public:
           {
             this->group_df = this->group_df + g_size(A(i));
           }
-          t2 = clock();
 #ifdef TEST
+          t2 = clock();
           std::cout << "group_df time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
 
@@ -314,13 +318,16 @@ public:
                                    Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
   {
     // cout << "inital_screening: " << endl;
+#ifdef TEST
     clock_t t3, t4;
     t3 = clock();
-
+#endif
     if (bd.size() == 0)
     {
+#ifdef TEST
       clock_t t1, t2;
       t1 = clock();
+#endif
       // variable initialization
       int n = X.rows();
       int p = X.cols();
@@ -338,8 +345,8 @@ public:
         beta_A(k) = beta(A_ind(k));
       }
 
-      t2 = clock();
 #ifdef TEST
+      t2 = clock();
       std::cout << "inital_screening beta: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
       cout << "2" << endl;
 #endif
@@ -357,7 +364,9 @@ public:
       }
 
       // calculate group bd
+#ifdef TEST
       t1 = clock();
+#endif
       for (int i = 0; i < N; i++)
       {
         Eigen::MatrixXd XG = X.middleCols(g_index(i), g_size(i));
@@ -382,17 +391,17 @@ public:
       }
     }
 
-    t4 = clock();
 #ifdef TEST
+    t4 = clock();
     std::cout << "inital_screening bd: " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << endl;
+    t3 = clock();
 #endif
 
     // get Active-set A according to max_k bd
-    t3 = clock();
 
     Eigen::VectorXi A_new = max_k(bd, this->get_sparsity_level());
-    t4 = clock();
 #ifdef TEST
+    t4 = clock();
     std::cout << "inital_screening max_k: " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << endl;
 #endif
     return A_new;
@@ -400,7 +409,9 @@ public:
 
   void primary_model_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0)
   {
+#ifdef TEST
     clock_t t1 = clock();
+#endif
     // cout << "primary_fit-----------" << endl;
     int n = x.rows();
     int p = x.cols();
@@ -524,8 +535,8 @@ public:
         Z = X * beta0 + (y - Pi).cwiseQuotient(W);
       }
     }
-    clock_t t2 = clock();
 #ifdef TEST
+    clock_t t2 = clock();
     std::cout << "primary fit time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
     cout << "primary fit iter : " << j << endl;
 #endif
@@ -569,9 +580,10 @@ public:
     // cout << "get A 1" << endl;
     int n = X.rows();
     int p = X.cols();
-
+#ifdef TEST
     clock_t t0, t1, t2;
     t1 = clock();
+#endif
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
     Eigen::MatrixXd X_A = X_seg(X, n, A_ind);
     Eigen::VectorXd beta_A(A_ind.size());
@@ -579,20 +591,20 @@ public:
     {
       beta_A(k) = beta(A_ind(k));
     }
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "A ind time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t1 = clock();
 #endif
 
-    t1 = clock();
     double L1, L0 = neg_loglik_loss(X_A, y, weights, beta_A, coef0);
     train_loss = L0;
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "loss time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t1 = clock();
 #endif
 
-    t1 = clock();
     int A_size = A.size();
     int I_size = I.size();
 
@@ -642,9 +654,10 @@ public:
     //   bd(i) = (temp.segment(g_index(i), g_size(i))).squaredNorm() / g_size(i);
     // }
     // cout << "get A 4" << endl;
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "get A beta d: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t1 = clock();
 #endif
 
     // std::cout << "A: " << A << endl;
@@ -652,14 +665,14 @@ public:
     // std::cout << "beta_A_group: " << beta_A_group << endl;
     // std::cout << "d_I_group: " << d_I_group << endl;
 
-    t1 = clock();
     Eigen::VectorXi A_min_k = min_k(beta_A_group, C_max);
     Eigen::VectorXi I_max_k = max_k(d_I_group, C_max);
     Eigen::VectorXi s1 = vector_slice(A, A_min_k);
     Eigen::VectorXi s2 = vector_slice(I, I_max_k);
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "s1 s2 time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t0 = clock();
 #endif
     // cout << "get A 5" << endl;
     Eigen::VectorXi A_exchange(A_size);
@@ -668,7 +681,6 @@ public:
     Eigen::VectorXd beta_A_exchange;
     double coef0_A_exchange;
 
-    t0 = clock();
     // Eigen::VectorXd beta_Ac = beta_A;
     // double coef0_Ac = coef0;
     for (int k = C_max; k >= 1;)
@@ -709,8 +721,8 @@ public:
         std::cout << "C_max: " << C_max << " k: " << k << endl;
 #endif
         C_max = k;
-        t2 = clock();
 #ifdef TEST
+        t2 = clock();
         std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
 #endif
         return;
@@ -722,8 +734,8 @@ public:
         s2 = s2.head(k).eval();
       }
     }
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
 #endif
   };
@@ -740,13 +752,17 @@ public:
                                    Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
   {
     // cout << "inital_screening: " << endl;
+#ifdef TEST
     clock_t t3, t4;
     t3 = clock();
+#endif
 
     if (bd.size() == 0)
     {
+#ifdef TEST
       clock_t t1, t2;
       t1 = clock();
+#endif
       // variable initialization
       int n = X.rows();
       int p = X.cols();
@@ -764,8 +780,8 @@ public:
         beta_A(k) = beta(A_ind(k));
       }
 
-      t2 = clock();
 #ifdef TEST
+      t2 = clock();
       std::cout << "inital_screening beta: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
       cout << "2" << endl;
 #endif
@@ -783,7 +799,9 @@ public:
       }
 
       // calculate group bd
+#ifdef TEST
       t1 = clock();
+#endif
       for (int i = 0; i < N; i++)
       {
         Eigen::MatrixXd phiG = PhiG[i];
@@ -798,9 +816,10 @@ public:
       }
     }
 
-    t4 = clock();
 #ifdef TEST
+    t4 = clock();
     std::cout << "inital_screening bd: " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << endl;
+    t3 = clock();
 #endif
 
     // cout << "g_index: " << g_index << endl;
@@ -809,12 +828,11 @@ public:
     // cout << "dbar: " << dbar << endl;
 
     // get Active-set A according to max_k bd
-    t3 = clock();
 
     Eigen::VectorXi A_new = max_k_2(bd, this->get_sparsity_level());
 
-    t4 = clock();
 #ifdef TEST
+    t4 = clock();
     std::cout << "inital_screening max_k: " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << endl;
 #endif
     return A_new;
@@ -873,9 +891,10 @@ public:
     // cout << "get A 1" << endl;
     int n = X.rows();
     int p = X.cols();
-
+#ifdef TEST
     clock_t t0, t1, t2;
     t1 = clock();
+#endif
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
     Eigen::MatrixXd X_A = X_seg(X, n, A_ind);
     Eigen::VectorXd beta_A(A_ind.size());
@@ -883,20 +902,20 @@ public:
     {
       beta_A(k) = beta(A_ind(k));
     }
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "A ind time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t1 = clock();
 #endif
 
-    t1 = clock();
     double L1, L0 = neg_loglik_loss(X_A, y, weights, beta_A, coef0);
     train_loss = L0;
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "loss time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t1 = clock();
 #endif
 
-    t1 = clock();
     int A_size = A.size();
     int I_size = I.size();
 
@@ -938,23 +957,24 @@ public:
     //   bd(i) = (temp.segment(g_index(i), g_size(i))).squaredNorm() / g_size(i);
     // }
     // cout << "get A 4" << endl;
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "get A beta d: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t1 = clock();
 #endif
     // std::cout << "A: " << A << endl;
     // std::cout << "I: " << I << endl;
     // std::cout << "beta_A_group: " << beta_A_group << endl;
     // std::cout << "d_I_group: " << d_I_group << endl;
 
-    t1 = clock();
     Eigen::VectorXi A_min_k = min_k(beta_A_group, C_max, true);
     Eigen::VectorXi I_max_k = max_k(d_I_group, C_max, true);
     Eigen::VectorXi s1 = vector_slice(A, A_min_k);
     Eigen::VectorXi s2 = vector_slice(I, I_max_k);
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "s1 s2 time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t0 = clock();
 #endif
 
     // cout << "get A 5" << endl;
@@ -964,7 +984,6 @@ public:
     Eigen::VectorXd beta_A_exchange;
     double coef0_A_exchange;
 
-    t0 = clock();
     // Eigen::VectorXd beta_Ac = beta_A;
     // double coef0_Ac = coef0;
     for (int k = C_max; k >= 1;)
@@ -1005,8 +1024,8 @@ public:
         std::cout << "C_max: " << C_max << " k: " << k << endl;
 #endif
         C_max = k;
-        t2 = clock();
 #ifdef TEST
+        t2 = clock();
         std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
 #endif
         return;
@@ -1018,8 +1037,8 @@ public:
         s2 = s2.head(k).eval();
       }
     }
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
 #endif
   };
@@ -1036,13 +1055,16 @@ public:
                                    Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
   {
     // cout << "inital_screening: " << endl;
+#ifdef TEST
     clock_t t3, t4;
     t3 = clock();
-
+#endif
     if (bd.size() == 0)
     {
+#ifdef TEST
       clock_t t1, t2;
       t1 = clock();
+#endif
       // variable initialization
       int n = X.rows();
       int p = X.cols();
@@ -1060,8 +1082,8 @@ public:
         beta_A(k) = beta(A_ind(k));
       }
 
-      t2 = clock();
 #ifdef TEST
+      t2 = clock();
       std::cout << "inital_screening beta: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
       cout << "2" << endl;
 #endif
@@ -1079,7 +1101,9 @@ public:
       }
 
       // calculate group bd
+#ifdef TEST
       t1 = clock();
+#endif
       for (int i = 0; i < N; i++)
       {
         Eigen::MatrixXd XG = X.middleCols(g_index(i), g_size(i));
@@ -1104,9 +1128,10 @@ public:
       }
     }
 
-    t4 = clock();
 #ifdef TEST
+    t4 = clock();
     std::cout << "inital_screening bd: " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << endl;
+    t3 = clock();
 #endif
 
     // cout << "g_index: " << g_index << endl;
@@ -1115,11 +1140,10 @@ public:
     // cout << "dbar: " << dbar << endl;
 
     // get Active-set A according to max_k bd
-    t3 = clock();
 
     Eigen::VectorXi A_new = max_k(bd, this->get_sparsity_level());
-    t4 = clock();
 #ifdef TEST
+    t4 = clock();
     std::cout << "inital_screening max_k: " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << endl;
 #endif
 
@@ -1130,7 +1154,9 @@ public:
 
   void primary_model_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0)
   {
+#ifdef TEST
     clock_t t1 = clock();
+#endif
     // cout << "primary_fit-----------" << endl;
     int n = x.rows();
     int p = x.cols();
@@ -1259,8 +1285,8 @@ public:
         Z = X * beta0 + (y - Pi).cwiseQuotient(W);
       }
     }
-    clock_t t2 = clock();
 #ifdef TEST
+    clock_t t2 = clock();
     std::cout << "primary fit time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
     cout << "primary fit iter : " << j << endl;
 #endif
@@ -1325,8 +1351,10 @@ public:
     int n = X.rows();
     int p = X.cols();
 
+#ifdef TEST
     clock_t t0, t1, t2;
     t1 = clock();
+#endif
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
     Eigen::MatrixXd X_A = X_seg(X, n, A_ind);
     Eigen::VectorXd beta_A(A_ind.size());
@@ -1334,18 +1362,18 @@ public:
     {
       beta_A(k) = beta(A_ind(k));
     }
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "A ind time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-#endif
     t1 = clock();
+#endif
     double L1, L0 = neg_loglik_loss(X_A, y, weights, beta_A, coef0);
     train_loss = L0;
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "loss time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-#endif
     t1 = clock();
+#endif
     int A_size = A.size();
     int I_size = I.size();
 
@@ -1395,23 +1423,24 @@ public:
     //   bd(i) = (temp.segment(g_index(i), g_size(i))).squaredNorm() / g_size(i);
     // }
     // cout << "get A 4" << endl;
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "get A beta d: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t1 = clock();
 #endif
     // std::cout << "A: " << A << endl;
     // std::cout << "I: " << I << endl;
     // std::cout << "beta_A_group: " << beta_A_group << endl;
     // std::cout << "d_I_group: " << d_I_group << endl;
 
-    t1 = clock();
     Eigen::VectorXi A_min_k = min_k(beta_A_group, C_max);
     Eigen::VectorXi I_max_k = max_k(d_I_group, C_max);
     Eigen::VectorXi s1 = vector_slice(A, A_min_k);
     Eigen::VectorXi s2 = vector_slice(I, I_max_k);
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "s1 s2 time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t0 = clock();
 #endif
 
     // cout << "get A 5" << endl;
@@ -1421,7 +1450,6 @@ public:
     Eigen::VectorXd beta_A_exchange;
     double coef0_A_exchange;
 
-    t0 = clock();
     // Eigen::VectorXd beta_Ac = beta_A;
     // double coef0_Ac = coef0;
     for (int k = C_max; k >= 1;)
@@ -1462,8 +1490,8 @@ public:
         std::cout << "C_max: " << C_max << " k: " << k << endl;
 #endif
         C_max = k;
-        t2 = clock();
 #ifdef TEST
+        t2 = clock();
         std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
 #endif
         return;
@@ -1475,8 +1503,8 @@ public:
         s2 = s2.head(k).eval();
       }
     }
-    t2 = clock();
 #ifdef TEST
+    t2 = clock();
     std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
 #endif
   };

@@ -57,10 +57,15 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
               int thread)
 {
   // to do: -openmp
+#ifdef TEST
   clock_t t1, t2;
+#endif
   // t1 = clock();
+  
+#ifndef R_BUILD
   std::srand(123);
-
+#endif
+  
   bool is_parallel = thread != 1;
 
 #ifdef _OPENMP
@@ -146,7 +151,9 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   // t2 = clock();
 
   // calculate loss for each parameter parameter combination
+#ifdef TEST
   t1 = clock();
+#endif
   Result result;
   vector<Result> result_list(Kfold);
   if (path_type == 1)
@@ -189,8 +196,8 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   //         result = gs_path(data, algorithm, metric, s_min, s_max, K_max, epsilon);
   //     }
   // }
-  t2 = clock();
 #ifdef TEST
+  t2 = clock();
   std::cout << "path time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
   // Get bestmodel index && fit bestmodel
@@ -344,7 +351,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
                             Named("coef0_all") = coef0_matrix,
                             Named("train_loss_all") = train_loss_matrix,
                             Named("ic_all") = ic_matrix,
-                            Named("test_loss_all") = test_loss_matrix);
+                            Named("test_loss_all") = test_loss_sum);
 #else
   out_result.add("beta", best_beta);
   out_result.add("coef0", best_coef0);
