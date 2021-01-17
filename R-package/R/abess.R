@@ -96,8 +96,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' @return A \code{abess} class object, which is a \code{list} with the following components:
 #' \item{best.model}{The best model chosen by algorithm. It is a \code{list} object comprising the following sub-components:
 #'  1. \code{beta}: a fitted \eqn{p}-dimensional coefficients vector; 2. \code{coef0}: a numeric fitted intercept; 
-#'  3. \code{support.size}: the support size of the best model; 4. \code{dev}: the deviance of the model; 
-#'  5. \code{tune.value}: the tune value of the model.
+#'  3. \code{support.index}: an index vector of best model's support set; 4. \code{support.size}: the support size of the best model; 
+#'  5. \code{dev}: the deviance of the model; 6. \code{tune.value}: the tune value of the model.
 #' }
 #' \item{beta}{A \eqn{p}-by-\code{length(support.size)} matrix of coefficients, stored in column format.}
 #' \item{coef0}{A Intercept vector of length \code{length(support.size)}.}
@@ -153,8 +153,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' @rdname abess
 #' @method abess default
 #' @examples
-#' n <- 100
-#' p <- 500
+#' n <- 500
+#' p <- 1500
 #' support.size <- 3
 #' 
 #' ################ linear model ################
@@ -514,10 +514,11 @@ abess.default <- function(x,
     approximate_Newton = approximate_newton,
     thread = num_threads
   )
+  support.index <- which(result[["beta"]] != 0.0)
   names(result[["beta"]]) <- vn
   best_model <- list("beta" = result[["beta"]], 
                      "coef0" = result[["coef0"]], 
-                     "best.subset" = which(result[["beta"]] != 0.0),
+                     "support.index" = support.index,
                      "support.size" = sum(result[["beta"]] != 0.0), 
                      "dev" = result[["train_loss"]], 
                      "tune.value" = result[["ic"]])

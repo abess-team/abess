@@ -19,11 +19,12 @@ using namespace Rcpp;
 
 typedef struct
 {
+    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> beta_matrix;
+    Eigen::MatrixXd coef0_matrix;
     Eigen::MatrixXd ic_matrix;
     Eigen::MatrixXd test_loss_matrix;
-    Eigen::MatrixXd coef0_matrix;
-    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> beta_matrix;
-    Eigen::Matrix<Eigen::VectorXi, Eigen::Dynamic, Eigen::Dynamic> A_matrix;
+    Eigen::MatrixXd train_loss_matrix;
+    // Eigen::Matrix<Eigen::VectorXi, Eigen::Dynamic, Eigen::Dynamic> A_matrix;
     Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> bd_matrix;
 } Result;
 

@@ -2,6 +2,8 @@
 // Created by Mamba on 2020/2/18.
 //
 // #define R_BUILD
+// #define TEST
+
 #ifdef R_BUILD
 #include <Rcpp.h>
 #include <RcppEigen.h>
@@ -25,8 +27,9 @@ using namespace std;
 
 void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, bool early_stop, int k, Result &result)
 {
-  cout << "111" << endl;
+#ifdef TEST
   clock_t t0, t1, t2;
+#endif
   int p = data.get_p();
   int N = data.g_num;
   Eigen::VectorXi g_index = data.g_index;
@@ -34,12 +37,12 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
   int sequence_size = sequence.size();
   int lambda_size = lambda_seq.size();
   // int early_stop_s = sequence_size;
-  
+
   Eigen::VectorXi train_mask, test_mask;
   Eigen::VectorXd train_y, test_y, train_weight, test_weight;
   Eigen::MatrixXd train_x, test_x;
   int train_n = 0, test_n = 0;
-  
+
   // train & test data
   if (!metric->is_cv)
   {
@@ -58,35 +61,39 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
     test_y = vector_slice(data.y, test_mask);
     train_weight = vector_slice(data.weight, train_mask);
     test_weight = vector_slice(data.weight, test_mask);
-    
+
     train_n = train_mask.size();
     test_n = test_mask.size();
   }
-  
+
   vector<Eigen::MatrixXd> train_group_XTX = group_XTX(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
-  
-  Eigen::MatrixXd ic_matrix(sequence_size, lambda_size);
-  Eigen::MatrixXd test_loss_matrix(sequence_size, lambda_size);
+
   Eigen::Matrix<VectorXd, Dynamic, Dynamic> beta_matrix(sequence_size, lambda_size);
   Eigen::MatrixXd coef0_matrix(sequence_size, lambda_size);
-  // Eigen::Matrix<VectorXi, Dynamic, Dynamic> A_matrix(sequence_size, lambda_size);
+  Eigen::MatrixXd train_loss_matrix(sequence_size, lambda_size);
+  Eigen::MatrixXd ic_matrix(sequence_size, lambda_size);
+  Eigen::MatrixXd test_loss_matrix(sequence_size, lambda_size);
   Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(sequence_size, lambda_size);
-  
+  // Eigen::Matrix<VectorXi, Dynamic, Dynamic> A_matrix(sequence_size, lambda_size);
+
   Eigen::VectorXd beta_init = Eigen::VectorXd::Zero(p);
   double coef0_init = 0.0;
   Eigen::VectorXi A_init;
   Eigen::VectorXd bd_init;
-  
+
   for (int i = 0; i < sequence_size; i++)
   {
+#ifdef TEST
     std::cout << "\n sequence= " << sequence(i);
+#endif
     for (int j = (1 - pow(-1, i)) * (lambda_size - 1) / 2; j < lambda_size && j >= 0; j = j + pow(-1, i))
     {
+#ifdef TEST
       std::cout << " =========j: " << j << ", lambda= " << lambda_seq(j) << ", T: " << sequence(i) << endl;
       t0 = clock();
-      
       t1 = clock();
-      // algorithm->update_train_mask(full_mask);
+#endif
+
       algorithm->update_sparsity_level(sequence(i));
       algorithm->update_lambda_level(lambda_seq(j));
       algorithm->update_beta_init(beta_init);
@@ -94,12 +101,14 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
       algorithm->update_coef0_init(coef0_init);
       algorithm->update_A_init(A_init, N);
       algorithm->update_group_XTX(train_group_XTX);
-      
+
       algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N);
+#ifdef TEST
       t2 = clock();
       std::cout << "fit time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-      
       t1 = clock();
+#endif
+
       if (algorithm->warm_start)
       {
         beta_init = algorithm->get_beta();
@@ -107,11 +116,13 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
         // A_init = algorithm->get_A_out();
         bd_init = algorithm->get_bd();
       }
+#ifdef TEST
       t2 = clock();
       std::cout << "warm start time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-      
-      // evaluate the beta
       t1 = clock();
+#endif
+
+      // evaluate the beta
       if (metric->is_cv)
       {
         test_loss_matrix(i, j) = metric->neg_loglik_loss(test_x, test_y, test_weight, g_index, g_size, test_n, p, N, algorithm);
@@ -120,21 +131,26 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
       {
         ic_matrix(i, j) = metric->ic(train_n, N, algorithm);
       }
+#ifdef TEST
       t2 = clock();
       std::cout << "ic time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-      
-      // save for best_model fit
       t1 = clock();
+#endif
+
+      // save for best_model fit
       beta_matrix(i, j) = algorithm->beta;
       coef0_matrix(i, j) = algorithm->coef0;
+      train_loss_matrix(i, j) = algorithm->get_train_loss();
       // A_matrix(i, j) = algorithm->A_out;
       bd_matrix(i, j) = algorithm->bd;
+
+#ifdef TEST
       t2 = clock();
       std::cout << "save time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-      
       std::cout << "path i= " << i << " j= " << j << " time = " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
+#endif
     }
-    
+
     // To be ensured
     // if (early_stop && lambda_size <= 1 && i >= 3)
     // {
@@ -148,61 +164,19 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
     //     }
     // }
   }
-  
-  // clock_t t1, t2;
-  // t1 = clock();
-  // for (i = 0; i < early_stop_s; i++)
-  // {
-  //     std::cout << endl;
-  //     for (j = 0; j < lambda_size; j++)
-  //     {
-  //         std::cout << "i: " << i + 1 << " "
-  //                   << ", j: " << j + 1 << ", ";
-  //         std::cout << ic_sequence(i, j) << " " << loss_sequence[j](i) << endl;
-  //     }
-  // }
-  // t2 = clock();
-  // std::cout << "normal back time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-  
+
   // if (early_stop)
   // {
   //     ic_sequence = ic_sequence.block(0, 0, early_stop_s, lambda_size).eval();
   // }
-  
+
   result.beta_matrix = beta_matrix;
-  // result.A_matrix = A_matrix;
-  result.bd_matrix = bd_matrix;
   result.coef0_matrix = coef0_matrix;
+  result.train_loss_matrix = train_loss_matrix;
+  result.bd_matrix = bd_matrix;
+  // result.A_matrix = A_matrix;
   result.ic_matrix = ic_matrix;
   result.test_loss_matrix = test_loss_matrix;
-  
-  //     Result result;
-  
-  //     List mylist;
-  // #ifdef R_BUILD
-  //     mylist = List::create(Named("beta") = beta_matrix[min_loss_index_col].col(min_loss_index_row).eval(),
-  //                           Named("coef0") = coef0_sequence[min_loss_index_col](min_loss_index_row),
-  //                           Named("train_loss") = loss_sequence[min_loss_index_col](min_loss_index_row),
-  //                           Named("ic") = ic_sequence(min_loss_index_row, min_loss_index_col), Named("lambda") = lambda_seq(min_loss_index_col),
-  //                           Named("beta_all") = beta_matrix,
-  //                           Named("coef0_all") = coef0_sequence,
-  //                           Named("train_loss_all") = loss_sequence,
-  //                           Named("ic_all") = ic_sequence);
-  // #else
-  //     // mylist.add("beta", best_beta);
-  //     // mylist.add("coef0", best_coef0);
-  //     // mylist.add("train_loss", best_train_loss);
-  //     // mylist.add("ic", best_ic);
-  //     // mylist.add("lambda", best_lambda);
-  //     mylist.add("beta_matrix", beta_matrix);
-  //     mylist.add("coef0_matrix", coef0_matrix);
-  //     mylist.add("A_matrix", A_matrix);
-  //     mylist.add("ic_matrix", ic_matrix);
-  //     mylist.add("test_loss_matrix", test_loss_matrix);
-  //     mylist.add("bd_matrix", bd_matrix);
-  // #endif
-  //     // cout << "path end" << endl;
-  //     return mylist;
 }
 
 // List gs_path(Data &data, Algorithm *algorithm, Metric *metric, int s_min, int s_max, int K_max, double epsilon)
@@ -492,12 +466,12 @@ void line_intersection(double line1[2][2], double line2[2][2], double intersecti
 {
   double xdiff[2], ydiff[2], d[2];
   double div;
-  
+
   xdiff[0] = line1[0][0] - line1[1][0];
   xdiff[1] = line2[0][0] - line2[1][0];
   ydiff[0] = line1[0][1] - line1[1][1];
   ydiff[1] = line2[0][1] - line2[1][1];
-  
+
   div = det(xdiff, ydiff);
   if (div == 0)
   {
@@ -508,7 +482,7 @@ void line_intersection(double line1[2][2], double line2[2][2], double intersecti
   {
     d[0] = det(line1[0], line1[1]);
     d[1] = det(line2[0], line2[1]);
-    
+
     intersection[0] = det(d, xdiff) / div;
     intersection[1] = det(d, ydiff) / div;
     need_flag = true;
@@ -524,37 +498,37 @@ void cal_intersections(double p[], double u[], int s_min, int s_max, double lamb
   double line0[2][2], line_set[4][2][2], intersections[4][2];
   bool need_flag[4];
   int i, j;
-  
+
   line0[0][0] = double(p[0]);
   line0[0][1] = double(p[1]);
   line0[1][0] = double(p[0] + u[0]);
   line0[1][1] = double(p[1] + u[1]);
-  
+
   line_set[0][0][0] = double(s_min);
   line_set[0][0][1] = double(lambda_min);
   line_set[0][1][0] = double(s_min);
   line_set[0][1][1] = double(lambda_max);
-  
+
   line_set[1][0][0] = double(s_max);
   line_set[1][0][1] = double(lambda_min);
   line_set[1][1][0] = double(s_max);
   line_set[1][1][1] = double(lambda_max);
-  
+
   line_set[2][0][0] = double(s_min);
   line_set[2][0][1] = double(lambda_min);
   line_set[2][1][0] = double(s_max);
   line_set[2][1][1] = double(lambda_min);
-  
+
   line_set[3][0][0] = double(s_min);
   line_set[3][0][1] = double(lambda_max);
   line_set[3][1][0] = double(s_max);
   line_set[3][1][1] = double(lambda_max);
-  
+
   for (i = 0; i < 4; i++)
   {
     line_intersection(line0, line_set[i], intersections[i], need_flag[i]);
   }
-  
+
   // delete intersections beyond boundary
   for (i = 0; i < 4; i++)
   {
@@ -566,7 +540,7 @@ void cal_intersections(double p[], double u[], int s_min, int s_max, double lamb
       }
     }
   }
-  
+
   // delecte repetitive intersections
   for (i = 0; i < 4; i++)
   {
@@ -584,7 +558,7 @@ void cal_intersections(double p[], double u[], int s_min, int s_max, double lamb
       }
     }
   }
-  
+
   j = 0;
   for (i = 0; i < 4; i++)
   {
@@ -608,7 +582,7 @@ void cal_intersections(double p[], double u[], int s_min, int s_max, double lamb
       }
     }
   }
-  
+
   if (j != 2)
   {
 #ifdef R_BUILD
@@ -649,7 +623,7 @@ void cal_intersections(double p[], double u[], int s_min, int s_max, double lamb
     cout << "need_flag[3]" << need_flag[3] << endl;
 #endif
   }
-  
+
   return;
 }
 

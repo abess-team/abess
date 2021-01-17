@@ -14,7 +14,7 @@ test_that("abess (gaussian) works", {
   expect_equal(best_model[["support.size"]], support.size)
   
   ## subset
-  est_index <- best_model[["best.subset"]]
+  est_index <- best_model[["support.index"]]
   names(est_index) <- NULL
   true_index <- which(dataset[["beta"]] != 0)
   expect_equal(est_index, true_index)
@@ -35,4 +35,8 @@ test_that("abess (gaussian) works", {
   
   expect_equal(oracle_beta, est_beta, tolerance = 1e-5)
   expect_equal(oracle_beta, est_beta, tolerance = 1e-5)
+  
+  ## deviance
+  oracle_dev <- mean((oracle_est[["residuals"]])^2)
+  expect_equal(oracle_dev, best_model[["dev"]])
 })

@@ -66,6 +66,3 @@ The output of `abess` also comprises the selected best model:
 str(abess_fit[["best.model"]])
 ```
 The output model accurately detect the true model size, which implies the **Algorithm 3** efficiently find both the optimal sparsity level and true effective predictors.
-
-
-## Quick example        
