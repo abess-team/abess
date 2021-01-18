@@ -108,11 +108,11 @@ public:
 
   void update_lambda_level(double lambda_level) { this->lambda_level = lambda_level; }
 
-  void update_train_mask(Eigen::VectorXi train_mask) { this->train_mask = train_mask; }
+  void update_train_mask(Eigen::VectorXi &train_mask) { this->train_mask = train_mask; }
 
   void update_exchange_num(int exchange_num) { this->exchange_num = exchange_num; }
 
-  void update_group_XTX(std::vector<Eigen::MatrixXd> group_XTX)
+  void update_group_XTX(std::vector<Eigen::MatrixXd> &group_XTX)
   {
     this->group_XTX = group_XTX;
   }
@@ -160,6 +160,7 @@ public:
     clock_t t1, t2;
     t1 = clock();
 #endif
+
     if (this->model_type == 1)
     {
       if (this->algorithm_type == 7 || this->PhiG.size() == 0)
@@ -168,6 +169,7 @@ public:
         this->invPhiG = invPhi(PhiG, N);
       }
     }
+
 #ifdef TEST
     t2 = clock();
     std::cout << "PhiG invPhiG time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
