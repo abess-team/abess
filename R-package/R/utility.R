@@ -27,13 +27,13 @@
 #' The gaussian noise \eqn{\epsilon} is set with mean 0 and variance.
 #' The noise is added to the linear predictor \eqn{\eta} = \eqn{x\beta}. Default is \code{snr = 10}.
 #' This option is invalid for \code{cortype = 3}.
-# @param censoring Whether data is censored or not. Valid only for \code{family = "cox"}. Default is \code{TRUE}.
-# @param c The censoring rate. Default is \code{1}.
-# @param weibull.scale A parameter in generating survival time based on the Weibull distribution. Only used for the "\code{cox}" family.
-# @param sigma A parameter used to control the signal-to-noise ratio. For linear regression,
-# it is the error variance \eqn{\sigma^2}. For logistic regression,
-# the larger the value of sigma, the higher the signal-to-noise ratio. 
-# Valid only for \code{cortype = 3}.
+#' @param censoring Whether data is censored or not. Valid only for \code{family = "cox"}. Default is \code{TRUE}.
+#' @param c The censoring rate. Default is \code{1}.
+#' @param weibull.scale A parameter in generating survival time based on the Weibull distribution. Only used for the "\code{cox}" family.
+#' @param sigma A parameter used to control the signal-to-noise ratio. For linear regression,
+#' it is the error variance \eqn{\sigma^2}. For logistic regression,
+#' the larger the value of sigma, the higher the signal-to-noise ratio. 
+#' Valid only for \code{cortype = 3}.
 #' @param seed seed to be used in generating the random numbers.
 #' 
 #' @return A \code{list} object comprising:
@@ -60,14 +60,14 @@
 #' For \code{family= "binomial"}, the data model is \deqn{Prob(Y = 1) = \exp(X
 #' \beta + \epsilon)/(1 + \exp(X \beta + \epsilon)).}
 #' The underlying regression coefficient \eqn{\beta} has uniform distribution [2m, 10m], \eqn{m = 5\sigma \sqrt{2log(p)/n}.}
-# For \code{family = "poisson"} , the data is modeled to have an exponential distribution: \deqn{Y = Exp(\exp(X \beta +
-# \epsilon)).}
-#
-# For \code{family = "cox"}, the data model is
-# \deqn{T = (-\log(S(t))/\exp(X \beta))^{1/weibull.scale}.}
-# The centering time is generated from uniform distribution \eqn{[0, c]},
-# then we define the censor status as \eqn{\delta = I\{T \leq C\}, R = min\{T, C\}}.
-# The underlying regression coefficient \eqn{\beta} has uniform distribution [2m, 10m], \eqn{m = 5\sigma \sqrt{2log(p)/n}.}
+#' For \code{family = "poisson"} , the data is modeled to have an exponential distribution: \deqn{Y = Exp(\exp(X \beta +
+#' \epsilon)).}
+#'
+#' For \code{family = "cox"}, the data model is
+#' \deqn{T = (-\log(S(t))/\exp(X \beta))^{1/weibull.scale}.}
+#' The centering time is generated from uniform distribution \eqn{[0, c]},
+#' then we define the censor status as \eqn{\delta = I\{T \leq C\}, R = min\{T, C\}}.
+#' The underlying regression coefficient \eqn{\beta} has uniform distribution [2m, 10m], \eqn{m = 5\sigma \sqrt{2log(p)/n}.}
 #' 
 #' In the above models, \eqn{\epsilon \sim N(0,
 #' \sigma^2 ),} where \eqn{\sigma^2} is determined by the \code{snr}.
@@ -89,17 +89,16 @@ generate.data <- function(n,
                           p,
                           support.size = NULL,
                           rho = 0,
-                          family = c("gaussian", "binomial"),
+                          family = c("gaussian", "binomial", "cox"),
                           beta = NULL,
                           cortype = 1,
                           snr = 10,
+                          censoring = TRUE,
+                          c = 1, 
+                          weibull.scale = 1,
+                          sigma = 1,
                           seed = 1) 
 {
-  censoring <- TRUE
-  c <- 1
-  weibull.scale <- 1
-  sigma <- 1
-  
   family <- match.arg(family)
   set.seed(seed)
   # if(is.null(beta)){

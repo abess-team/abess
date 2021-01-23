@@ -169,9 +169,16 @@ abess <- function(x, ...) UseMethod("abess")
 #'                    family = "binomial", tune.type = "cv")
 #' abess_fit[["best.model"]]
 #' 
+#' ################ Cox model ################
+#' dataset <- generate.data(n, p, support.size, family = "cox")
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+#'                    family = "cox", tune.type = "cv", 
+#'                    newton = "approx")
+#' abess_fit[["best.model"]]
+#' 
 abess.default <- function(x, 
                           y,
-                          family = c("gaussian", "binomial"),
+                          family = c("gaussian", "binomial", "cox"),
                           tune.path = c("sequence", "gsection"),
                           tune.type = c("gic", "ebic", "bic", "aic", "cv"),
                           weight = rep(1, nrow(x)),
@@ -310,6 +317,13 @@ abess.default <- function(x,
   ## check parameters for sub-optimization:
   # 1:
   newton <- match.arg(newton)
+  # if (newton == "auto") {
+  #   if (family == "cox") {
+  #     newton <- "approx"
+  #   } else if (family == "logistic") {
+  #     newton <- "auto"
+  #   }
+  # }
   newton_type <- switch(
     newton,
     "exact" = 0,

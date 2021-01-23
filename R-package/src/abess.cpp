@@ -1,5 +1,5 @@
 // #define R_BUILD
-// #define TEST
+#define TEST
 #ifdef R_BUILD
 
 #include <Rcpp.h>
@@ -61,11 +61,11 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   clock_t t1, t2;
 #endif
   // t1 = clock();
-  
+
 #ifndef R_BUILD
   std::srand(123);
 #endif
-  
+
   bool is_parallel = thread != 1;
 
 #ifdef _OPENMP
@@ -104,6 +104,14 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
     {
       algorithm = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
     }
+    else if (model_type == 4)
+    {
+      algorithm = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+    }
+    // else if (model_type == 3)
+    // {
+    //   algorithm_list[i] = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+    // }
   }
 
   algorithm->set_warm_start(is_warm_start);
@@ -144,6 +152,14 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
           {
             algorithm_list[i] = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
           }
+          else if (model_type == 4)
+          {
+            algorithm_list[i] = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+          }
+          // else if (model_type == 3)
+          // {
+          //   algorithm_list[i] = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+          // }
         }
       }
     }
@@ -285,7 +301,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   //////////////Restore best_fit_result for normal//////////////
   if (data.is_normal)
   {
-    if (algorithm->model_type == 1)
+    if (data.data_type == 1)
     {
       best_beta = sqrt(double(data.n)) * best_beta.cwiseQuotient(data.x_norm);
       best_coef0 = data.y_mean - best_beta.dot(data.x_mean);
@@ -423,7 +439,9 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
   Eigen::VectorXd lambda_sequence_Vec;
   Eigen::VectorXi always_select_Vec;
 
+#ifdef TEST
   clock_t t1, t2;
+#endif
   // t1 = clock();
   x_Mat = Pointer2MatrixXd(x, x_row, x_col);
   y_Vec = Pointer2VectorXd(y, y_len);
@@ -435,8 +453,9 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
   always_select_Vec = Pointer2VectorXi(always_select, always_select_len);
   // t2 = clock();
   // std::cout << "pointer to data: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-
+#ifdef TEST
   t1 = clock();
+#endif
   List mylist = abessCpp(x_Mat, y_Vec, data_type, weight_Vec,
                          is_normal,
                          algorithm_type, model_type, max_iter, exchange_num,
@@ -453,8 +472,9 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                          primary_model_fit_max_iter, primary_model_fit_epsilon,
                          early_stop, approximate_Newton,
                          thread);
-  t2 = clock();
+
 #ifdef TEST
+  t2 = clock();
   std::cout << "get result : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
 
