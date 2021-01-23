@@ -1,5 +1,5 @@
 // #define R_BUILD
-// #define TEST
+#define TEST
 #ifdef R_BUILD
 
 #include <Rcpp.h>
@@ -104,6 +104,14 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
     {
       algorithm = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
     }
+    else if (model_type == 4)
+    {
+      algorithm = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+    }
+    // else if (model_type == 3)
+    // {
+    //   algorithm_list[i] = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+    // }
   }
 
   algorithm->set_warm_start(is_warm_start);
@@ -144,6 +152,14 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
           {
             algorithm_list[i] = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
           }
+          else if (model_type == 4)
+          {
+            algorithm_list[i] = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+          }
+          // else if (model_type == 3)
+          // {
+          //   algorithm_list[i] = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+          // }
         }
       }
     }
@@ -285,7 +301,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   //////////////Restore best_fit_result for normal//////////////
   if (data.is_normal)
   {
-    if (algorithm->model_type == 1)
+    if (data.data_type == 1)
     {
       best_beta = sqrt(double(data.n)) * best_beta.cwiseQuotient(data.x_norm);
       best_coef0 = data.y_mean - best_beta.dot(data.x_mean);
