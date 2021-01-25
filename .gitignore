@@ -11,9 +11,3 @@ R-package/.Rproj.user/
 .Rproj.user
 abess.Rcheck/*
 *.tar.gz
-R-package/NAMESPACE
-R-package/man/abess-package.Rd
-R-package/man/abess.Rd
-R-package/man/generate.data.Rd
-R-package/man/trim32.Rd
-R-package/tests/testthat/test-abess.R

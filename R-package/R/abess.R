@@ -3,8 +3,10 @@ abess <- function(x, ...) UseMethod("abess")
 
 #' @title Adaptive Best-Subset Selection via splicing algorithm
 #'
-#' @description Perform adaptive best-subset selection for regression and binary classification in polynomial times.
-#'
+#' @description Adaptive best-subset selection for regression, 
+#' binary classification and censored-response modeling 
+#' in polynomial times.
+#' 
 #' @aliases abess
 #' 
 #' @author Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang
@@ -18,7 +20,8 @@ abess <- function(x, ...) UseMethod("abess")
 # @param type One of the two types of problems.
 # \code{type = "bss"} for the best subset selection,
 # and \code{type = "bsrr"} for the best subset ridge regression.
-#' @param family One of the following models: \code{"gaussian"} and \code{"binomial"}.
+#' @param family One of the following models: \code{"gaussian"}, \code{"binomial"}
+#' and \code{"cox"}.
 # \code{"poisson"}, or \code{"cox"}. 
 #' Depending on the response. Any unambiguous substring can be given.
 #' @param tune.path The method to be used to select the optimal support size. For
@@ -38,7 +41,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
 #' Default is \code{"gic"}.
 #' @param support.size An integer vector representing the alternative support sizes. 
-#' Only used for \code{method = "sequence"}. Default is \code{1:min(n, round(n/(log(log(n))log(p))))}.
+#' Only used for \code{method = "sequence"}. Default is \code{0:min(n, round(n/(log(log(n))log(p))))}.
 #' @param gs.range A integer vector with two elements. 
 #' The first element is the minimum model size considered by golden-section, 
 #' the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
@@ -80,7 +83,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param newton A character specify the Newton's method for fitting generalized linear models, 
 #' it should be either \code{newton = "exact"} or \code{newton = "approx"}.
 #' If \code{newton = "exact"}, then the exact hessian is used, 
-#' while \code{newton = "approx"} uses diagonal entry of the hessian, and can be faster.
+#' while \code{newton = "approx"} uses diagonal entry of the hessian, 
+#' and can be faster (especially when \code{family = "cox"}).
 #' @param newton.thresh a numerica value for controlling positive convergence tolerance. 
 #' The Newton's iterations converge when \eqn{|dev - dev_{old}|/(|dev| + 0.1)<} \code{newton.thresh}.
 #' @param max.newton.iter a integer giving the maximal number of Newton's iteration iterations.
@@ -88,9 +92,12 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param early.stop A boolean value decide whether early stoping. 
 #' If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one. 
 #' Default: \code{early.stop = FALSE}.
-#' @param num.threads A integer decide the number of threads. 
-#' If \code{num.threads = 0}, then all of available cores will be used. Default: \code{num.threads = 0}.
-#' @param seed Seed to be used to devide the sample into cross-validation folds. Default is \code{seed = 1}.
+#' @param num.threads An integer decide the number of threads to be 
+#' concurrently used for cross-validation (i.e., \code{tune.type = "cv"}). 
+#' If \code{num.threads = 0}, then all of available cores will be used. 
+#' Default: \code{num.threads = 0}.
+#' @param seed Seed to be used to divide the sample into cross-validation folds. 
+#' Default is \code{seed = 1}.
 #' @param ... further arguments to be passed to or from methods.
 #'
 #' @return A \code{abess} class object, which is a \code{list} with the following components:
@@ -153,29 +160,39 @@ abess <- function(x, ...) UseMethod("abess")
 #' @rdname abess
 #' @method abess default
 #' @examples
-#' n <- 500
-#' p <- 1500
+#' n <- 100
+#' p <- 20
 #' support.size <- 3
 #' 
 #' ################ linear model ################
 #' dataset <- generate.data(n, p, support.size)
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]])
-#' abess_fit[["best.model"]]
+#' print(abess_fit)
+#' coef(abess_fit, support.size = 3)
+#' predict(abess_fit, newx = dataset[["x"]][1:10, ], 
+#'         support.size = c(3, 4))
+#' deviance(abess_fit)
 #' 
 #' ################ logistic model ################
 #' dataset <- generate.data(n, p, support.size, family = "binomial")
-#' ## use cross-validation to tuning
+#' ## allow cross-validation to tuning
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
 #'                    family = "binomial", tune.type = "cv")
-#' abess_fit[["best.model"]]
+#' abess_fit
 #' 
 #' ################ Cox model ################
 #' dataset <- generate.data(n, p, support.size, family = "cox")
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
 #'                    family = "cox", tune.type = "cv", 
 #'                    newton = "approx")
-#' abess_fit[["best.model"]]
+#' abess_fit
 #' 
+#' ################ Feature screening ################
+#' p <- 1000
+#' dataset <- generate.data(n, p, support.size)
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+#'                    screening.num = 100)
+#' abess_fit
 abess.default <- function(x, 
                           y,
                           family = c("gaussian", "binomial", "cox"),
@@ -344,13 +361,19 @@ abess.default <- function(x,
   
   # sparse level list (sequence):
   if (is.null(support.size)) {
-    s_list <- 1:min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
+    s_list <- 0:min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
   } else {
-    stopifnot(any(is.numeric(support.size) & support.size > 0))
+    stopifnot(any(is.numeric(support.size) & support.size >= 0))
     stopifnot(max(support.size) < nvars)
     support.size <- sort(support.size)
     support.size <- unique(support.size)
     s_list <- support.size
+    # if (s_list[1] == 0) {
+    #   zero_size <- TRUE
+    # } else {
+    #   zero_size <- FALSE
+    #   s_list <- c(0, s_list)
+    # }
   }
   
   # sparse range (golden-section):
@@ -397,7 +420,7 @@ abess.default <- function(x,
   
   ## group variable:
   if (!is.null(group.index)) {
-    if (path_type == 1 & max(support.size) > length(group.index))
+    if (path_type == 1 & max(s_list) > length(group.index))
       stop("The maximum one support.size should not be larger than the number of groups!")
     if (path_type == 2 & s_max > length(group.index))
       stop("max(gs.range) is too large. Should be smaller than the number of groups!")
@@ -454,7 +477,7 @@ abess.default <- function(x,
     if (screening.num > nvars)
       stop("The number of screening features must be equal or less than that of the column of x!")
     if (path_type == 1) {
-      if (screening.num < max(support.size))
+      if (screening.num < max(s_list))
         stop(
           "The number of screening features must be equal or greater than the maximum one in support.size!"
         )
@@ -480,7 +503,7 @@ abess.default <- function(x,
     if (length(always.include) > screening.num)
       stop("The number of variables in always.include should not exceed the screening.num")
     if (path_type == 1) {
-      if (length(always.include) > max(support.size))
+      if (length(always.include) > max(s_list))
         stop("always.include containing too many variables. 
              The length of it should not exceed the maximum in support.size.")
     } else{
@@ -528,40 +551,87 @@ abess.default <- function(x,
     approximate_Newton = approximate_newton,
     thread = num_threads
   )
-  support.index <- which(result[["beta"]] != 0.0)
-  names(result[["beta"]]) <- vn
-  best_model <- list("beta" = result[["beta"]], 
-                     "coef0" = result[["coef0"]], 
-                     "support.index" = support.index,
-                     "support.size" = sum(result[["beta"]] != 0.0), 
-                     "dev" = result[["train_loss"]], 
-                     "tune.value" = result[["ic"]])
+  
+  ## process result
+  
+  ### process best model (abandon):
+  # support.index <- which(result[["beta"]] != 0.0)
+  # names(result[["beta"]]) <- vn
+  # best_model <- list("beta" = result[["beta"]], 
+  #                    "coef0" = result[["coef0"]], 
+  #                    "support.index" = support.index,
+  #                    "support.size" = sum(result[["beta"]] != 0.0), 
+  #                    "dev" = result[["train_loss"]], 
+  #                    "tune.value" = result[["ic"]])
+  # result[["best.model"]] <- best_model
+  
   result[["beta"]] <- NULL
   result[["coef0"]] <- NULL
   result[["train_loss"]] <- NULL
   result[["ic"]] <- NULL
   result[["lambda"]] <- NULL
-  result[["best.model"]] <- best_model
   
-  # names(result)[which(names(result) == "train_loss_all")] <- "dev"
-  names(result)[which(names(result) == 'ic_all')] <- 'tune.value'
-  names(result)[which(names(result) == "coef0_all")] <- "coef0"
-  names(result)[which(names(result) == 'beta_all')] <- "beta"
-  result[["beta"]] <- do.call("cbind", result[["beta"]])
-  rownames(result[["beta"]]) <- vn
-  
+  result[["call"]] <- match.call()
+  result[["nobs"]] <- nobs
+  result[["nvars"]] <- nvars
   result[["family"]] <- family
   result[["tune.path"]] <- tune.path
   result[["support.size"]] <- s_list
-  result[["tune.type"]] <- ifelse(is_cv == TRUE, "cv", c("AIC", "BIC", "GIC", "EBIC")[ic_type])
+  result[["tune.type"]] <- ifelse(is_cv == TRUE, "cv", 
+                                  c("AIC", "BIC", "GIC", "EBIC")[ic_type])  
   result[["gs.range"]] <- gs.range
-  result[["screening.index"]] <- result[["screening_A"]] + 1
   
-  result[["call"]] <- match.call()
+  names(result)[which(names(result) == "train_loss_all")] <- "dev"
+  result[["dev"]] <- result[["dev"]][, 1]
+  if (is_cv) {
+    names(result)[which(names(result) == "test_loss_all")] <- "tune.value"
+    result[["ic_all"]] <- NULL
+  } else {
+    names(result)[which(names(result) == "ic_all")] <- "tune.value"
+    result[["test_loss_all"]] <- NULL
+  }
+  result[["tune.value"]] <- result[["tune.value"]][, 1]
+  result[["best.size"]] <- s_list[which.min(result[["tune.value"]])]
+  names(result)[which(names(result) == "coef0_all")] <- "intercept"
+  result[["intercept"]] <- result[["intercept"]][, 1]
+  names(result)[which(names(result) == 'beta_all')] <- "beta"
+  # names(result)[which(names(result) == 'screening_A')] <- "screening.index"
+  # result[["screening.index"]] <- result[["screening.index"]] + 1
+  result[["beta"]] <- do.call("cbind", result[["beta"]])
+  if (screening) {
+    beta_all <- matrix(0, nrow = nvars, 
+                       ncol = length(s_list))
+    beta_all[result[["screening_A"]] + 1, ] <- result[["beta"]]
+    result[["beta"]] <- beta_all
+  }
+  result[["beta"]] <- Matrix::Matrix(result[["beta"]], 
+                                     sparse = TRUE, 
+                                     dimnames = list(vn, 
+                                                     as.character(s_list)))
+  result[["screening.vars"]] <- vn[result[["screening_A"]] + 1]
+  result[["screening_A"]] <- NULL
+  
+  # if (s_list[0] == 0) {
+  #   nulldev <- result[["dev"]][1]
+  # } else {
+  #   f <- switch(
+  #     family,
+  #     "gaussian" = gaussian(),
+  #     "binomial" = binomial(),
+  #     "poisson" = poisson()
+  #   )
+  #   if (family != "cox") {
+  #     nulldev <- deviance(glm(y ~ ., 
+  #                             data = cbind.data.frame(y, 1), 
+  #                             family = f))
+  #   } else {
+  #     nulldev <- 0
+  #   }
+  # }
+  # result[["nulldev"]] <- 0 
+  
   class(result) <- "abess"
-  
-  result[["beta"]] <- recover(result, sparse = FALSE)
-    
+
   set.seed(NULL)
   
   return(result)
@@ -597,9 +667,25 @@ abess.formula <- function(formula, data, subset, na.action, ...) {
   mt <- attr(mf, "terms")
   
   y <- model.response(mf, "numeric")
-  x <- model.matrix(mt, mf, contrasts)[, -1]
+  x <- abess_model_matrix(mt, mf, contrasts)[, -1]
+  
+  # all_name <- all.vars(mt)
+  # if (abess_res[["family"]] == "cox") {
+  #   response_name <- all_name[1:2]
+  # } else {
+  #   response_name <- all_name[1]
+  # }
   
   abess_res <- abess.default(x, y, ...)
   abess_res[["call"]] <- cl
+  
+  # best_support <- abess_res[["best.model"]][["support.index"]]
+  # support_name <- colnames(x)[best_support]
+  # 
+  # response_index <- match(response_name, all_name)
+  # x_index <- match(support_name, all_name)
+  # abess_res[["best.model"]][["support.index"]] <- x_index
+  # names(abess_res[["best.model"]][["support.index"]]) <- support_name
+  
   abess_res
 }

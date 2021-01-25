@@ -1,36 +1,32 @@
 library(abess)
 library(testthat)
 
-test_that("abess (gaussian) works", {
-  n <- 500
-  p <- 1500
-  support.size <- 3
-  
-  dataset <- generate.data(n, p, support.size, seed = 1)
-  abess_fit <- abess(dataset[["x"]], dataset[["y"]])
-  best_model <- abess_fit[["best.model"]]
+test_batch <- function(abess_fit, dataset, family) {
+  support_size <- sum(dataset[["beta"]] != 0)
   
   ## support size
-  expect_equal(best_model[["support.size"]], support.size)
+  fit_s_size <- abess_fit[["best.size"]]
+  expect_equal(fit_s_size, support_size)
   
   ## subset
-  est_index <- best_model[["support.index"]]
-  names(est_index) <- NULL
+  coef_value <- coef(abess_fit, support.size = 3)
+  est_index <- coef_value@i[-1]
   true_index <- which(dataset[["beta"]] != 0)
   expect_equal(est_index, true_index)
   
   ## estimation
-  # oracle estimation by lm function:
+  # oracle estimation by glm function:
   dat <- cbind.data.frame("y" = dataset[["y"]], 
                           dataset[["x"]][, true_index])
-  oracle_est <- lm(y ~ ., data = dat)
+  
+  oracle_est <- glm(y ~ ., data = dat, family = family)
   oracle_beta <- coef(oracle_est)[-1]
   oracle_coef0 <- coef(oracle_est)[1]
   names(oracle_beta) <- NULL
   names(oracle_coef0) <- NULL
   # estimation by abess:
-  est_beta <- best_model[["beta"]][est_index]
-  est_coef0 <- best_model[["coef0"]]
+  est_beta <- coef_value@x[-1]
+  est_coef0 <- coef_value@x[1]
   names(est_beta) <- NULL
   names(est_coef0) <- NULL
   
@@ -38,8 +34,31 @@ test_that("abess (gaussian) works", {
   expect_equal(oracle_coef0, est_coef0, tolerance = 1e-5)
   
   ## deviance
-  oracle_dev <- mean((oracle_est[["residuals"]])^2)
-  expect_equal(oracle_dev, best_model[["dev"]])
+  f <- family()
+  if (f[["family"]] == "gaussian") {
+    oracle_dev <- mean((oracle_est[["residuals"]])^2)
+  } else {
+    oracle_dev <- deviance(oracle_est) / 2
+  }
+  expect_equal(oracle_dev, abess_fit[["dev"]][fit_s_size + 1])
+}
+
+test_that("abess (gaussian) works", {
+  
+  n <- 500
+  p <- 1500
+  support_size <- 3
+  
+  ## default interface
+  dataset <- generate.data(n, p, support_size, seed = 1)
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]])
+  test_batch(abess_fit, dataset, gaussian)
+  
+  ## formula interface
+  dat <- cbind.data.frame(dataset[["x"]][, 1:30], "y" = dataset[["y"]], 
+                          dataset[["x"]][, 31:p])
+  abess_fit <- abess(y ~ ., data = dat)
+  test_batch(abess_fit, dataset, gaussian)
 })
 
 test_that("abess (binomial) works", {
@@ -52,38 +71,8 @@ test_that("abess (binomial) works", {
                            family = "binomial", seed = 1)
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
                      family = "binomial", tune.type = "cv", 
-                     newton = "approx", max.newton.iter = 80)
-  best_model <- abess_fit[["best.model"]]
-  
-  ## support size
-  expect_equal(best_model[["support.size"]], support.size)
-  
-  ## subset
-  est_index <- best_model[["support.index"]]
-  names(est_index) <- NULL
-  true_index <- which(dataset[["beta"]] != 0)
-  expect_equal(est_index, true_index)
-  
-  ## estimation
-  # oracle estimation by glm function:
-  dat <- cbind.data.frame("y" = dataset[["y"]], dataset[["x"]][, true_index])
-  oracle_est <- glm(y ~ ., data = dat, family = binomial())
-  oracle_beta <- coef(oracle_est)[-1]
-  oracle_coef0 <- coef(oracle_est)[1]
-  names(oracle_beta) <- NULL
-  names(oracle_coef0) <- NULL
-  # estimation by abess:
-  est_beta <- best_model[["beta"]][est_index]
-  est_coef0 <- best_model[["coef0"]]
-  names(est_beta) <- NULL
-  names(est_coef0) <- NULL
-  
-  expect_equal(oracle_beta, est_beta, tolerance = 1e-5)
-  expect_equal(oracle_coef0, est_coef0, tolerance = 1e-5)
-  
-  ## deviance
-  oracle_dev <- oracle_est[["deviance"]] / 2
-  expect_equal(oracle_dev, best_model[["dev"]])
+                     newton = "approx", max.newton.iter = 100)
+  test_batch(abess_fit, dataset, binomial)
 })
 
 test_that("abess (cox) works", {
@@ -96,15 +85,16 @@ test_that("abess (cox) works", {
                            family = "cox", seed = 1)
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
                      family = "cox", tune.type = "cv", 
-                     newton = "newton", max.newton.iter = 80)
+                     newton = "approx", max.newton.iter = 20)
   best_model <- abess_fit[["best.model"]]
   
   ## support size
-  expect_equal(best_model[["support.size"]], support.size)
+  fit_s_size <- abess_fit[["support.size"]][which.min(abess_fit[["tune.value"]])]
+  expect_equal(fit_s_size, support.size)
   
   ## subset
-  est_index <- best_model[["support.index"]]
-  names(est_index) <- NULL
+  coef_value <- coef(abess_fit, support.size = 3)
+  est_index <- coef_value@i
   true_index <- which(dataset[["beta"]] != 0)
   expect_equal(est_index, true_index)
   
@@ -113,19 +103,15 @@ test_that("abess (cox) works", {
   dat <- cbind.data.frame(dataset[["y"]], dataset[["x"]][, true_index])
   oracle_est <- coxph(Surv(time, status) ~ ., data = dat)
   oracle_beta <- coef(oracle_est)
-  # oracle_coef0 <- coef(oracle_est)
   names(oracle_beta) <- NULL
-  # names(oracle_coef0) <- NULL
   # estimation by abess:
-  est_beta <- best_model[["beta"]][est_index]
-  # est_coef0 <- best_model[["coef0"]]
+  est_beta <- coef_value@x
   names(est_beta) <- NULL
-  # names(est_coef0) <- NULL
   
-  expect_equal(oracle_beta, est_beta, tolerance = 1e-5)
   expect_equal(oracle_beta, est_beta, tolerance = 1e-5)
   
   ## deviance
-  oracle_dev <- mean((oracle_est[["residuals"]])^2)
-  expect_equal(oracle_dev, best_model[["dev"]])
+  oracle_dev <- -1.0 * oracle_est[["loglik"]][2]
+  expect_equal(oracle_dev, abess_fit[["dev"]][fit_s_size], 
+               tolerance = 1e-5)
 })

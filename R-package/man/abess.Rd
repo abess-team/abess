@@ -9,7 +9,7 @@
 \method{abess}{default}(
   x,
   y,
-  family = c("gaussian", "binomial"),
+  family = c("gaussian", "binomial", "cox"),
   tune.path = c("sequence", "gsection"),
   tune.type = c("gic", "ebic", "bic", "aic", "cv"),
   weight = rep(1, nrow(x)),
@@ -40,7 +40,8 @@ vector and each column is a predictor/feature/variable.}
 \item{y}{The response variable, of \code{n} observations. 
 For \code{family = "binomial"} should have two levels.}
 
-\item{family}{One of the following models: \code{"gaussian"} and \code{"binomial"}.
+\item{family}{One of the following models: \code{"gaussian"}, \code{"binomial"}
+and \code{"cox"}.
 Depending on the response. Any unambiguous substring can be given.}
 
 \item{tune.path}{The method to be used to select the optimal support size. For
@@ -65,7 +66,7 @@ If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gau
 \item{c.max}{an integer splicing size. Default is: \code{c.max = 2}.}
 
 \item{support.size}{An integer vector representing the alternative support sizes. 
-Only used for \code{method = "sequence"}. Default is \code{1:min(n, round(n/(log(log(n))log(p))))}.}
+Only used for \code{method = "sequence"}. Default is \code{0:min(n, round(n/(log(log(n))log(p))))}.}
 
 \item{gs.range}{A integer vector with two elements. 
 The first element is the minimum model size considered by golden-section, 
@@ -92,7 +93,8 @@ please set \code{group.index = NULL}. Default is \code{NULL}.}
 \item{newton}{A character specify the Newton's method for fitting generalized linear models, 
 it should be either \code{newton = "exact"} or \code{newton = "approx"}.
 If \code{newton = "exact"}, then the exact hessian is used, 
-while \code{newton = "approx"} uses diagonal entry of the hessian, and can be faster.}
+while \code{newton = "approx"} uses diagonal entry of the hessian, 
+and can be faster (especially when \code{family = "cox"}).}
 
 \item{newton.thresh}{a numerica value for controlling positive convergence tolerance. 
 The Newton's iterations converge when \eqn{|dev - dev_{old}|/(|dev| + 0.1)<} \code{newton.thresh}.}
@@ -104,10 +106,13 @@ Default is \code{max.newton.iter = 10} if \code{newton = "exact"}, and \code{max
 If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one. 
 Default: \code{early.stop = FALSE}.}
 
-\item{num.threads}{A integer decide the number of threads. 
-If \code{num.threads = 0}, then all of available cores will be used. Default: \code{num.threads = 0}.}
+\item{num.threads}{An integer decide the number of threads to be 
+concurrently used for cross-validation (i.e., \code{tune.type = "cv"}). 
+If \code{num.threads = 0}, then all of available cores will be used. 
+Default: \code{num.threads = 0}.}
 
-\item{seed}{Seed to be used to devide the sample into cross-validation folds. Default is \code{seed = 1}.}
+\item{seed}{Seed to be used to divide the sample into cross-validation folds. 
+Default is \code{seed = 1}.}
 
 \item{...}{further arguments to be passed to or from methods.}
 
@@ -142,25 +147,44 @@ It would a empty numerical vector if \code{screening.num = 0}.}
 \item{call}{The original call to \code{abess}.}
 }
 \description{
-Perform adaptive best-subset selection for regression and binary classification in polynomial times.
+Adaptive best-subset selection for regression, 
+binary classification and censored-response modeling 
+in polynomial times.
 }
 \examples{
-n <- 500
-p <- 1500
+n <- 100
+p <- 20
 support.size <- 3
 
 ################ linear model ################
 dataset <- generate.data(n, p, support.size)
 abess_fit <- abess(dataset[["x"]], dataset[["y"]])
-abess_fit[["best.model"]]
+print(abess_fit)
+coef(abess_fit, support.size = 3)
+predict(abess_fit, newx = dataset[["x"]][1:10, ], 
+        support.size = c(3, 4))
+deviance(abess_fit)
 
 ################ logistic model ################
 dataset <- generate.data(n, p, support.size, family = "binomial")
-## use cross-validation to tuning
+## allow cross-validation to tuning
 abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
                    family = "binomial", tune.type = "cv")
-abess_fit[["best.model"]]
+abess_fit
 
+################ Cox model ################
+dataset <- generate.data(n, p, support.size, family = "cox")
+abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                   family = "cox", tune.type = "cv", 
+                   newton = "approx")
+abess_fit
+
+################ Feature screening ################
+p <- 1000
+dataset <- generate.data(n, p, support.size)
+abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                   screening.num = 100)
+abess_fit
 ################  Formula interface  ################
 data("trim32")
 abess_fit <- abess(y ~ ., data = trim32)
