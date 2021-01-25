@@ -9,10 +9,12 @@ generate.data(
   p,
   support.size = NULL,
   rho = 0,
-  family = c("gaussian", "binomial"),
+  family = c("gaussian", "binomial", "cox"),
   beta = NULL,
   cortype = 1,
   snr = 10,
+  weibull.shape = 1,
+  uniform.max = 1,
   seed = 1
 )
 }
@@ -40,16 +42,25 @@ where the covariance matrix has \eqn{(i,j)} entry equals \eqn{I(i \neq j)}.
 where the covariance matrix has \eqn{(i,j)} entry equals \eqn{rho^{|i-j|}}.
 code{cortype = 3} denotes the constant structure, 
 where the non-diagnoal entries of covariance 
-matrix are \eqn{rho} and diagnoal entries are 1.}
+matrix are \eqn{rho} and diagonal entries are 1.}
 
 \item{snr}{A numerical value controlling the signal-to-noise ratio (SNR). The SNR is defined as
 as the variance of \eqn{x\beta} divided
 by the variance of a gaussian noise: \eqn{\frac{Var(x\beta)}{\sigma^2}}.
 The gaussian noise \eqn{\epsilon} is set with mean 0 and variance.
-The noise is added to the linear predictor \eqn{\eta} = \eqn{x\beta}. Default is \code{snr = 10}.
-This option is invalid for \code{cortype = 3}.}
+The noise is added to the linear predictor \eqn{\eta} = \eqn{x\beta}. Default is \code{snr = 10}.}
 
-\item{seed}{seed to be used in generating the random numbers.}
+\item{weibull.shape}{The shape parameter of the Weibull distribution. 
+It works only when \code{family = "cox"}. 
+Default: \code{weibull.shape = 1}.}
+
+\item{uniform.max}{A parameter controlling censored rate. 
+A large value implies a small censored rate; 
+otherwise, a large censored rate. 
+It works only when \code{family = "cox"}. 
+Default is \code{uniform.max = 1}.}
+
+\item{seed}{random seed. Default: \code{seed = 1}.#'}
 }
 \value{
 A \code{list} object comprising:
@@ -58,27 +69,36 @@ A \code{list} object comprising:
 \item{beta}{The coefficients used in the underlying regression model.}
 }
 \description{
-Generate data for simulations under the generalized linear model.
+Generate simulated data under the 
+generalized linear model and Cox proportional hazard model.
 }
 \details{
-We generate an \eqn{n \times p} random Gaussian matrix
-\eqn{X} with mean 0 and a covariance matrix with an exponential structure
-or a constant structure. For the exponential structure, the covariance matrix
-has \eqn{(i,j)} entry equals \eqn{rho^{|i-j|}}. For the constant structure,
-the \eqn{(i,j)} entry of the covariance matrix is \eqn{rho} for every \eqn{i
-\neq j} and 1 elsewhere. For the moving average structure,  For the design matrix \eqn{X},
-we first generate an \eqn{n \times p} random Gaussian matrix \eqn{\bar{X}}
-whose entries are i.i.d. \eqn{\sim N(0,1)} and then normalize its columns
-to the \eqn{\sqrt n} length. Then the design matrix \eqn{X} is generated with
-\eqn{X_j = \bar{X}_j + \rho(\bar{X}_{j+1}+\bar{X}_{j-1})} for \eqn{j=2,\dots,p-1}.
-
-For \code{family = "gaussian"} , the data model is \deqn{Y = X \beta +
-\epsilon.}
-The underlying regression coefficient \eqn{\beta} has uniform distribution [m, 100m], \eqn{m=5 \sqrt{2log(p)/n}.}
+For \code{family = "gaussian"} , the data model is 
+\deqn{Y = X \beta + \epsilon.}
+The underlying regression coefficient \eqn{\beta} has 
+uniform distribution [m, 100m] and \eqn{m=5 \sqrt{2log(p)/n}.}
 
 For \code{family= "binomial"}, the data model is \deqn{Prob(Y = 1) = \exp(X
 \beta + \epsilon)/(1 + \exp(X \beta + \epsilon)).}
-The underlying regression coefficient \eqn{\beta} has uniform distribution [2m, 10m], \eqn{m = 5\sigma \sqrt{2log(p)/n}.}
+The underlying regression coefficient \eqn{\beta} has 
+uniform distribution [2m, 10m] and \eqn{m = 5 \sqrt{2log(p)/n}.}
+
+For \code{family = "poisson"}, the data is modeled to have 
+an exponential distribution: 
+\deqn{Y = Exp(\exp(X \beta + \epsilon)).}
+The underlying regression coefficient \eqn{\beta} has 
+uniform distribution [2m, 10m] and \eqn{m = \sqrt{2log(p)/n}/3.}
+
+For \code{family = "cox"}, the model for failure time \eqn{T} is
+\deqn{T = (-\log(U / \exp(X \beta)))^{1/weibull.shape},}
+where \eqn{U} is a uniform random variable with range [0, 1].
+The centering time \eqn{C} is generated from 
+uniform distribution \eqn{[0, uniform.max]},
+then we define the censor status as 
+\eqn{\delta = I(T \le C)} and observed time as \eqn{R = \min\{T, C\}}.
+The underlying regression coefficient \eqn{\beta} has 
+uniform distribution [2m, 10m], 
+where \eqn{m = 5 \sqrt{2log(p)/n}}.
 
 In the above models, \eqn{\epsilon \sim N(0,
 \sigma^2 ),} where \eqn{\sigma^2} is determined by the \code{snr}.
@@ -91,6 +111,7 @@ p <- 20
 support.size <- 5
 dataset <- generate.data(n, p, support.size)
 str(dataset)
+
 
 }
 \author{

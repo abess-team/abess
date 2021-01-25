@@ -12,8 +12,11 @@
 #' @importFrom stats rnorm
 #' @importFrom stats rbinom
 #' @importFrom stats rpois
+#' @importFrom stats poisson
+#' @importFrom stats binomial
 #' @importFrom stats model.matrix
 #' @importFrom stats model.response
+#' @importFrom methods rbind2
 #' @importFrom Matrix Matrix
 ## usethis namespace: end
 NULL
