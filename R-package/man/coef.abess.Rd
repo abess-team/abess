@@ -23,9 +23,6 @@ presented as sparse matrix or not. Default: \code{sparse = TRUE}.}
 This function provides estimated
 coefficients from a fitted "\code{abess}" object.
 }
-\examples{
-
-}
 \seealso{
 \code{\link{abess}}, \code{\link{print.abess}}.
 }

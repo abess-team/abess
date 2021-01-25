@@ -90,7 +90,7 @@ crime <- cbind.data.frame(y, x)
 set.seed(1)
 part_index <- 1:nrow(x)
 part_index <- sample(part_index, 
-                     size = 200, 
+                     size = 500, 
                      replace = FALSE)
 crime <- crime[part_index, ]
 

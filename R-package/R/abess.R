@@ -101,13 +101,14 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param ... further arguments to be passed to or from methods.
 #'
 #' @return A \code{abess} class object, which is a \code{list} with the following components:
-#' \item{best.model}{The best model chosen by algorithm. It is a \code{list} object comprising the following sub-components:
-#'  1. \code{beta}: a fitted \eqn{p}-dimensional coefficients vector; 2. \code{coef0}: a numeric fitted intercept; 
-#'  3. \code{support.index}: an index vector of best model's support set; 4. \code{support.size}: the support size of the best model; 
-#'  5. \code{dev}: the deviance of the model; 6. \code{tune.value}: the tune value of the model.
-#' }
+# \item{best.model}{The best model chosen by algorithm. It is a \code{list} object comprising the following sub-components:
+#  1. \code{beta}: a fitted \eqn{p}-dimensional coefficients vector; 2. \code{coef0}: a numeric fitted intercept; 
+#  3. \code{support.index}: an index vector of best model's support set; 4. \code{support.size}: the support size of the best model; 
+#  5. \code{dev}: the deviance of the model; 6. \code{tune.value}: the tune value of the model.
+# }
 #' \item{beta}{A \eqn{p}-by-\code{length(support.size)} matrix of coefficients, stored in column format.}
-#' \item{coef0}{A Intercept vector of length \code{length(support.size)}.}
+#' \item{intercept}{A Intercept vector of length \code{length(support.size)}.}
+#' \item{dev}{the deviance of length \code{length(support.size)}.}
 #' \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
 # \item{best.model}{The best fitted model for \code{type = "bss"}.}
 # \item{lambda}{The lambda chosen for the best fitting model}
@@ -142,15 +143,19 @@ abess <- function(x, ...) UseMethod("abess")
 # \code{s} is at the \eqn{i^{th}} row \eqn{j^{th}} column. Only available when
 # model selection is based on a certain information criterion.}
 # \item{lambda.all}{The lambda chosen for each step in \code{pgsection} and \code{psequence}.}
+#' \item{nobs}{The number of sample used for training.}
+#' \item{nvars}{The number of variables used for training.}
 #' \item{family}{Type of the model.}
 #' \item{tune.path}{The path type for tuning parameters.}
-#' \item{support.size}{The actual \code{support.size} values used. Note that it is not necessary the same as the input if the later have double values or duplicated values.} 
+#' \item{support.size}{The actual \code{support.size} values used. 
+#' Note that it is not necessary the same as the input 
+#' if the later have non-integer values or duplicated values.} 
 #' \item{tune.type}{The criterion type for tuning parameters.}
-#' \item{screening.index}{The vector of indices selected by only feature screening. 
-#' It would a empty numerical vector if \code{screening.num = 0}.}
+#' \item{tune.path}{The strategy for tuning parameters.}
+#' \item{screening.vars}{The character vector specify the feature 
+#' selected by feature screening. 
+#' It would a empty character vector if \code{screening.num = 0}.}
 #' \item{call}{The original call to \code{abess}.}
-#' 
-# \item{nsample}{The sample size.}
 # \item{type}{Either \code{"bss"} or \code{"bsrr"}.}
 #'
 #' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
@@ -571,7 +576,6 @@ abess.default <- function(x,
   result[["ic"]] <- NULL
   result[["lambda"]] <- NULL
   
-  result[["call"]] <- match.call()
   result[["nobs"]] <- nobs
   result[["nvars"]] <- nvars
   result[["family"]] <- family
@@ -630,6 +634,7 @@ abess.default <- function(x,
   # }
   # result[["nulldev"]] <- 0 
   
+  result[["call"]] <- match.call()
   class(result) <- "abess"
 
   set.seed(NULL)

@@ -25,6 +25,7 @@ Depends: R (>= 2.10)
 Imports: 
     Rcpp,
     MASS, 
+    methods, 
     Matrix
 LinkingTo: 
     Rcpp,

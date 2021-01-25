@@ -46,7 +46,7 @@ abess_fit <- abess(y ~ ., data = dat, support.size = 3)
     
 The output of `abess` comprises the selected best model: 
 ```{r}
-str(abess_fit[["best.model"]])
+coef(abess_fit)[1:10]
 ```
 The best model's support set is identical to the ground truth, and the coefficient estimation is the same as the oracle estimator given by `lm` function:
 ```{r}
@@ -63,39 +63,67 @@ abess_fit <- abess(y ~ ., data = dat)
 
 The output of `abess` also comprises the selected best model: 
 ```{r}
-str(abess_fit[["best.model"]])
+best_size <- abess_fit[["best.size"]]
+print(best_size)
+print(coef(abess_fit, support.size = best_size)[1:10])
 ```
 The output model accurately detect the true model size, which implies the **Algorithm 3** efficiently find both the optimal sparsity level and true effective predictors.
 
-## Advanced features
+## Advanced features        
 ### Feature screening       
+The [crime dataset](https://archive.ics.uci.edu/ml/datasets/communities+and+crime) in community level consists of 18 variables about crime from the 1995 FBI UCR (e.g., per capita arson crimes and per capita violent crimes), communities information in the U.S. (e.g., the percent of the population considered urban), socio-economic data from the 90s census (e.g., the median family income), and law enforcement data from the 1990 law enforcement management and admin stats survey (e.g., per capita number of police officers). It would be appropriate if any of the crime state in community can be modeled by the basic community information, socio-economic and law enforcement state in community. 
+Here, without the loss of generality, per capita violent crimes is chosen as the response variable, and 102 numerical variables as well as their pairwise interactions is considered as predictors.
+<!-- Note that, the numerical variables with at least 50\% percentages missing observations are excluded,  -->
+<!-- and 200 observations without missing records are randomly picked out from the pool.  -->
+The pre-processed dataset for statistical modeling has 200 observations and 5253 predictors, and the pre-processed details are presented in [https://github.com/Mamba413/abess/tree/master/R-package/data-raw](https://github.com/Mamba413/abess/tree/master/R-package/data-raw).   
+The pre-processed dataset can be freely downloaded by running:
 ```{r}
-crime_data_url <- "https://github.com/Mamba413/abess/raw/master/R-package/data-raw/crime.rda"
 working_directory <- getwd()
 if (file.exists("crime.rda")) {
   load("crime.rda")
 } else {
+  crime_data_url <- "https://github.com/Mamba413/abess/raw/master/R-package/data-raw/crime.rda"
   download.file(crime_data_url, "crime.rda")
   load(file.path(working_directory, "crime.rda"))
 }
+```
+As mentioned before, this dataset comprises 5000+ features, much larger than the number of observations:
+```{r}
 dim(crime)
 ```
+And thus, it would be better to first perform feature screening, 
+which is also supported by the `abess` function. 
+Suppose we are interested in retaining 1000 variables with the largest marginal utility, then we can conduct the command:       
 
 ```{r}
 abess_fit <- abess(y ~ ., data = crime, screening.num = 1000)
 abess_fit
 ```
+The returned object of `abess` includes the features selected by screening. We exhibit six variables of them:
 ```{r}
-best_coef <- coef.abess(abess_fit, abess_fit[["best.size"]])
-best_vars <- best_coef@Dimnames[[1]][best_coef@i[-1] + 1]
+head(abess_fit[["screening.vars"]])
+```
+
+
+```{r}
+best_coef <- coef(abess_fit, abess_fit[["best.size"]])
+best_vars <- best_coef@Dimnames[[1]][best_coef@i[-1]]
 best_vars
+```
+
+```{r}
+lm_dat <- cbind.data.frame(crime[, c("y", best_vars)])
+lm_fit <- lm(y ~ ., data = lm_dat)
+summary(lm_fit)
 ```
 
 
 ```{r}
 library(reshape2)
 library(ggplot2)
-pdat <- cbind.data.frame(crime[, c("y", best_vars[1:2])])
+pdat <- cbind.data.frame(crime[, c("y",
+                                   "pctKidsBornNevrMarr:pctHousOwnerOccup", 
+                                   "pct65up:pctMaleNevMar")])
 pdat <- melt(pdat, id.vars = "y")
 p <- ggplot(pdat) + geom_point(aes(value, y), size = 0.3) + 
   geom_smooth(aes(value, y), method = "lm", se = FALSE) +
@@ -111,7 +139,7 @@ p
 ```
 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FALSE}
 working_directory
 file.remove("crime.rda")
 ```

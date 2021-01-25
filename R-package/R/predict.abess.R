@@ -10,14 +10,14 @@
 #' fitted values. \code{type = "response"} gives the fitted probabilities for
 #' \code{"binomial"}, fitted mean for \code{"poisson"} and the fitted relative-risk for
 #' \code{"cox"}; for \code{"gaussian"}, \code{type = "response"} is equivalent to \code{type = "link"}
+#' @param support.size An integer vector specify 
+#' the model size used for prediction.
 #' @param ... Additional arguments affecting the predictions produced.
 #' 
 #' @return The object returned depends on the types of family.
 #' 
 #' @seealso \code{\link{abess}}.
 #' 
-#' @examples
-#'
 #' @export
 #'
 predict.abess <- function(object, newx, 

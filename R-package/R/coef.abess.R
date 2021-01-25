@@ -15,8 +15,6 @@
 #' 
 #' @seealso \code{\link{abess}}, \code{\link{print.abess}}.
 #' 
-#' @examples
-#'
 #' @export
 #'
 coef.abess <- function(object, 

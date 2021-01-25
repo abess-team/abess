@@ -130,20 +130,22 @@ Defaults to \code{getOption("na.action")}.}
 }
 \value{
 A \code{abess} class object, which is a \code{list} with the following components:
-\item{best.model}{The best model chosen by algorithm. It is a \code{list} object comprising the following sub-components:
- 1. \code{beta}: a fitted \eqn{p}-dimensional coefficients vector; 2. \code{coef0}: a numeric fitted intercept; 
- 3. \code{support.index}: an index vector of best model's support set; 4. \code{support.size}: the support size of the best model; 
- 5. \code{dev}: the deviance of the model; 6. \code{tune.value}: the tune value of the model.
-}
 \item{beta}{A \eqn{p}-by-\code{length(support.size)} matrix of coefficients, stored in column format.}
-\item{coef0}{A Intercept vector of length \code{length(support.size)}.}
+\item{intercept}{A Intercept vector of length \code{length(support.size)}.}
+\item{dev}{the deviance of length \code{length(support.size)}.}
 \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
+\item{nobs}{The number of sample used for training.}
+\item{nvars}{The number of variables used for training.}
 \item{family}{Type of the model.}
 \item{tune.path}{The path type for tuning parameters.}
-\item{support.size}{The actual \code{support.size} values used. Note that it is not necessary the same as the input if the later have double values or duplicated values.} 
+\item{support.size}{The actual \code{support.size} values used. 
+Note that it is not necessary the same as the input 
+if the later have non-integer values or duplicated values.} 
 \item{tune.type}{The criterion type for tuning parameters.}
-\item{screening.index}{The vector of indices selected by only feature screening. 
-It would a empty numerical vector if \code{screening.num = 0}.}
+\item{tune.path}{The strategy for tuning parameters.}
+\item{screening.vars}{The character vector specify the feature 
+selected by feature screening. 
+It would a empty character vector if \code{screening.num = 0}.}
 \item{call}{The original call to \code{abess}.}
 }
 \description{

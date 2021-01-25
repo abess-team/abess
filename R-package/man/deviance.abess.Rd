@@ -9,7 +9,12 @@
 \arguments{
 \item{object}{A "\code{abess}" object.}
 
-\item{\dots}{additional arguments}
+\item{type}{The type of deviance. 
+One of the following: \code{"standard"}, 
+\code{"gic"}, \code{"ebic"}, \code{"bic"} and \code{"aic"}. 
+Default is \code{"standard"}.}
+
+\item{...}{additional arguments}
 }
 \description{
 Similar to other deviance methods, 

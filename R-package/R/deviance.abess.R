@@ -5,7 +5,12 @@
 #'
 #'
 #' @param object A "\code{abess}" object.
-#' @param \dots additional arguments
+#' @param type The type of deviance. 
+#' One of the following: \code{"standard"}, 
+#' \code{"gic"}, \code{"ebic"}, \code{"bic"} and \code{"aic"}. 
+#' Default is \code{"standard"}.
+#' @param ... additional arguments
+#' 
 #' @seealso \code{\link{abess}}.
 #' 
 #' @export
