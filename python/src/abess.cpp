@@ -43,7 +43,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
               int algorithm_type, int model_type, int max_iter, int exchange_num,
               int path_type, bool is_warm_start,
               int ic_type, double ic_coef, bool is_cv, int Kfold,
-              Eigen::VectorXd state,
+              Eigen::VectorXd status,
               Eigen::VectorXi sequence,
               Eigen::VectorXd lambda_seq,
               int s_min, int s_max, int K_max, double epsilon,
@@ -104,14 +104,14 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
     {
       algorithm = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
     }
+    else if (model_type == 3)
+    {
+      algorithm = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+    }
     else if (model_type == 4)
     {
       algorithm = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
     }
-    // else if (model_type == 3)
-    // {
-    //   algorithm_list[i] = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
-    // }
   }
 
   algorithm->set_warm_start(is_warm_start);
@@ -145,21 +145,20 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
         {
           if (model_type == 1)
           {
-
             algorithm_list[i] = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
           }
           else if (model_type == 2)
           {
             algorithm_list[i] = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
           }
+          else if (model_type == 3)
+          {
+            algorithm_list[i] = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+          }
           else if (model_type == 4)
           {
             algorithm_list[i] = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
           }
-          // else if (model_type == 3)
-          // {
-          //   algorithm_list[i] = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
-          // }
         }
       }
     }
@@ -415,7 +414,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                   int path_type, bool is_warm_start,
                   int ic_type, double ic_coef, bool is_cv, int Kfold,
                   int *gindex, int gindex_len,
-                  double *state, int state_len,
+                  double *status, int status_len,
                   int *sequence, int sequence_len,
                   double *lambda_sequence, int lambda_sequence_len,
                   int s_min, int s_max, int K_max, double epsilon,
@@ -434,7 +433,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
   Eigen::VectorXd y_Vec;
   Eigen::VectorXd weight_Vec;
   Eigen::VectorXi gindex_Vec;
-  Eigen::VectorXd state_Vec;
+  Eigen::VectorXd status_Vec;
   Eigen::VectorXi sequence_Vec;
   Eigen::VectorXd lambda_sequence_Vec;
   Eigen::VectorXi always_select_Vec;
@@ -446,7 +445,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
   x_Mat = Pointer2MatrixXd(x, x_row, x_col);
   y_Vec = Pointer2VectorXd(y, y_len);
   weight_Vec = Pointer2VectorXd(weight, weight_len);
-  state_Vec = Pointer2VectorXd(state, state_len);
+  status_Vec = Pointer2VectorXd(status, status_len);
   gindex_Vec = Pointer2VectorXi(gindex, gindex_len);
   sequence_Vec = Pointer2VectorXi(sequence, sequence_len);
   lambda_sequence_Vec = Pointer2VectorXd(lambda_sequence, lambda_sequence_len);
@@ -461,7 +460,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                          algorithm_type, model_type, max_iter, exchange_num,
                          path_type, is_warm_start,
                          ic_type, ic_coef, is_cv, Kfold,
-                         state_Vec,
+                         status_Vec,
                          sequence_Vec,
                          lambda_sequence_Vec,
                          s_min, s_max, K_max, epsilon,
