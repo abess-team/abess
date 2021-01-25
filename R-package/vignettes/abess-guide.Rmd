@@ -66,3 +66,53 @@ The output of `abess` also comprises the selected best model:
 str(abess_fit[["best.model"]])
 ```
 The output model accurately detect the true model size, which implies the **Algorithm 3** efficiently find both the optimal sparsity level and true effective predictors.
+
+## Advanced features
+### Feature screening       
+```{r}
+crime_data_url <- "https://github.com/Mamba413/abess/raw/master/R-package/data-raw/crime.rda"
+working_directory <- getwd()
+if (file.exists("crime.rda")) {
+  load("crime.rda")
+} else {
+  download.file(crime_data_url, "crime.rda")
+  load(file.path(working_directory, "crime.rda"))
+}
+dim(crime)
+```
+
+```{r}
+abess_fit <- abess(y ~ ., data = crime, screening.num = 1000)
+abess_fit
+```
+```{r}
+best_coef <- coef.abess(abess_fit, abess_fit[["best.size"]])
+best_vars <- best_coef@Dimnames[[1]][best_coef@i[-1] + 1]
+best_vars
+```
+
+
+```{r}
+library(reshape2)
+library(ggplot2)
+pdat <- cbind.data.frame(crime[, c("y", best_vars[1:2])])
+pdat <- melt(pdat, id.vars = "y")
+p <- ggplot(pdat) + geom_point(aes(value, y), size = 0.3) + 
+  geom_smooth(aes(value, y), method = "lm", se = FALSE) +
+  # geom_smooth(aes(value, y), color = "red") + 
+  facet_wrap(. ~ variable, scales = "free_x") + 
+  xlab("") + ylab("Per capita violent crimes") + 
+  theme_bw() + 
+  theme(
+    strip.background = element_blank(),
+    strip.text.x = element_blank()
+  )
+p
+```
+
+
+```{r, echo=FALSE}
+working_directory
+file.remove("crime.rda")
+```
+
