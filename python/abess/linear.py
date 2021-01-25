@@ -283,7 +283,7 @@ class bess_base:
 
         # To do
         if state is None:
-            state = np.ones(n)
+            state = [0]
 
         # path parameter
         if self.path_type_int == 1:

@@ -36,9 +36,11 @@ public:
     Eigen::VectorXi g_index;
     Eigen::VectorXi g_size;
 
+    Eigen::VectorXi status;
+
     Data() = default;
 
-    Data(Eigen::MatrixXd &x, Eigen::VectorXd &y, int data_type, Eigen::VectorXd weight, bool is_normal, Eigen::VectorXi g_index)
+    Data(Eigen::MatrixXd &x, Eigen::VectorXd &y, int data_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, Eigen::VectorXi &status)
     {
         this->x = x;
         this->y = y;
@@ -50,6 +52,8 @@ public:
         this->is_normal = is_normal;
         this->x_mean = Eigen::VectorXd::Zero(this->p);
         this->x_norm = Eigen::VectorXd::Zero(this->p);
+
+        this->status = status;
 
         if (is_normal)
         {
@@ -118,16 +122,16 @@ public:
         return this->p;
     };
 
-    double get_nullloss()
-    {
-        if (this->data_type == 1)
-        {
-            return this->y.squaredNorm() / double(this->n);
-        }
-        else
-        {
-            return -2 * log(0.5) * this->weight.sum();
-        }
-    };
+    // double get_nullloss()
+    // {
+    //     if (this->data_type == 1)
+    //     {
+    //         return this->y.squaredNorm() / double(this->n);
+    //     }
+    //     else
+    //     {
+    //         return -2 * log(0.5) * this->weight.sum();
+    //     }
+    // };
 };
 #endif //SRC_DATA_H

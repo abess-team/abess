@@ -43,7 +43,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
               int algorithm_type, int model_type, int max_iter, int exchange_num,
               int path_type, bool is_warm_start,
               int ic_type, double ic_coef, bool is_cv, int Kfold,
-              Eigen::VectorXd status,
+              Eigen::VectorXi status,
               Eigen::VectorXi sequence,
               Eigen::VectorXd lambda_seq,
               int s_min, int s_max, int K_max, double epsilon,
@@ -88,7 +88,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   {
     screening_A = screening(x, y, weight, model_type, screening_size, g_index, always_select);
   }
-  Data data(x, y, data_type, weight, is_normal, g_index);
+  Data data(x, y, data_type, weight, is_normal, g_index, status);
 
   Algorithm *algorithm = nullptr;
 
@@ -281,7 +281,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
     algorithm->update_group_XTX(full_group_XTX);
     // cout << "abess 5" << endl;
 
-    algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num);
+    algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, data.status);
 
     best_beta = algorithm->get_beta();
     best_coef0 = algorithm->get_coef0();
@@ -414,7 +414,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                   int path_type, bool is_warm_start,
                   int ic_type, double ic_coef, bool is_cv, int Kfold,
                   int *gindex, int gindex_len,
-                  double *status, int status_len,
+                  int *status, int status_len,
                   int *sequence, int sequence_len,
                   double *lambda_sequence, int lambda_sequence_len,
                   int s_min, int s_max, int K_max, double epsilon,
@@ -433,7 +433,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
   Eigen::VectorXd y_Vec;
   Eigen::VectorXd weight_Vec;
   Eigen::VectorXi gindex_Vec;
-  Eigen::VectorXd status_Vec;
+  Eigen::VectorXi status_Vec;
   Eigen::VectorXi sequence_Vec;
   Eigen::VectorXd lambda_sequence_Vec;
   Eigen::VectorXi always_select_Vec;
@@ -445,7 +445,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
   x_Mat = Pointer2MatrixXd(x, x_row, x_col);
   y_Vec = Pointer2VectorXd(y, y_len);
   weight_Vec = Pointer2VectorXd(weight, weight_len);
-  status_Vec = Pointer2VectorXd(status, status_len);
+  status_Vec = Pointer2VectorXi(status, status_len);
   gindex_Vec = Pointer2VectorXi(gindex, gindex_len);
   sequence_Vec = Pointer2VectorXi(sequence, sequence_len);
   lambda_sequence_Vec = Pointer2VectorXd(lambda_sequence, lambda_sequence_len);
