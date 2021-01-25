@@ -60,6 +60,7 @@ public:
   bool approximate_Newton;
   Eigen::VectorXd beta_warmstart;
   double coef0_warmstart;
+  Eigen::VectorXi status;
 
   Algorithm() = default;
 
@@ -137,10 +138,11 @@ public:
 
   int get_l() { return this->l; }
 
-  void fit(Eigen::MatrixXd &train_x, Eigen::VectorXd &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N)
+  void fit(Eigen::MatrixXd &train_x, Eigen::VectorXd &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::VectorXi &status)
   {
     // std::cout << "fit" << endl;
     int T0 = this->sparsity_level;
+    this->status = status;
 
     this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
 
@@ -1155,7 +1157,7 @@ public:
     return A_new;
   }
 
-  void primary_model_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0)
+  void primary_model_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd &beta, double &coef0, double loss0)
   {
 #ifdef TEST
     clock_t t1 = clock();
@@ -1170,72 +1172,116 @@ public:
     Eigen::VectorXd cum_theta(n);
     Eigen::VectorXd g(p);
     Eigen::VectorXd beta0 = beta, beta1;
+    Eigen::VectorXd cum_eta(n);
+    Eigen::VectorXd cum_eta2(n);
+    Eigen::VectorXd cum_eta3(n);
+    Eigen::MatrixXd h(p, p);
+    Eigen::VectorXd eta;
 
     Eigen::VectorXd d(p);
-    double loglik1, loglik0 = -neg_loglik_loss(x, y, weights, beta0, coef0);
+    double loglik1, loglik0 = -neg_loglik_loss(x, y, weight, beta0, coef0);
     // beta = Eigen::VectorXd::Zero(p);
 
     double step = 1.0;
     int l;
     for (l = 1; l <= primary_model_fit_max_iter; l++)
     {
-      theta = x * beta0;
+
+      eta = x * beta0;
+      for (int i = 0; i <= n - 1; i++)
+      {
+        if (eta(i) < -30.0)
+          eta(i) = -30.0;
+        if (eta(i) > 30.0)
+          eta(i) = 30.0;
+      }
+      eta = weight.array() * eta.array().exp();
+      cum_eta(n - 1) = eta(n - 1);
+      for (int k = n - 2; k >= 0; k--)
+      {
+        cum_eta(k) = cum_eta(k + 1) + eta(k);
+      }
+      cum_eta2(0) = (y(0) * weight(0)) / cum_eta(0);
+      for (int k = 1; k <= n - 1; k++)
+      {
+        cum_eta2(k) = (y(k) * weight(k)) / cum_eta(k) + cum_eta2(k - 1);
+      }
+      cum_eta3(0) = (y(0) * weight(0)) / pow(cum_eta(0), 2);
+      for (int k = 1; k <= n - 1; k++)
+      {
+        cum_eta3(k) = (y(k) * weight(k)) / pow(cum_eta(k), 2) + cum_eta3(k - 1);
+      }
+      h = -cum_eta3.replicate(1, n);
+      h = h.cwiseProduct(eta.replicate(1, n));
+      h = h.cwiseProduct(eta.replicate(1, n).transpose());
       for (int i = 0; i < n; i++)
       {
-        if (theta(i) > 30)
-          theta(i) = 30;
-        else if (theta(i) < -30)
-          theta(i) = -30;
-      }
-      theta = theta.array().exp();
-      cum_theta = one * theta;
-      x_theta = x.array().colwise() * theta.array();
-      x_theta = one * x_theta;
-      x_theta = x_theta.array().colwise() / cum_theta.array();
-      g = (x - x_theta).transpose() * (weights.cwiseProduct(y));
-
-      if (this->approximate_Newton)
-      {
-        Eigen::VectorXd h(p);
-        for (int k1 = 0; k1 < p; k1++)
+        for (int j = i + 1; j < n; j++)
         {
-          xij_theta = (theta.cwiseProduct(x.col(k1))).cwiseProduct(x.col(k1));
-          for (int j = n - 2; j >= 0; j--)
-          {
-            xij_theta(j) = xij_theta(j + 1) + xij_theta(j);
-          }
-          h(k1) = -(xij_theta.cwiseQuotient(cum_theta) - x_theta.col(k1).cwiseProduct(x_theta.col(k1))).dot(weights.cwiseProduct(y));
+          h(j, i) = h(i, j);
         }
-        d = g.cwiseQuotient(h);
       }
-      else
-      {
-        Eigen::MatrixXd h(p, p);
-        for (int k1 = 0; k1 < p; k1++)
-        {
-          for (int k2 = k1; k2 < p; k2++)
-          {
-            xij_theta = (theta.cwiseProduct(x.col(k1))).cwiseProduct(x.col(k2));
-            for (int j = n - 2; j >= 0; j--)
-            {
-              xij_theta(j) = xij_theta(j + 1) + xij_theta(j);
-            }
-            h(k1, k2) = -(xij_theta.cwiseQuotient(cum_theta) - x_theta.col(k1).cwiseProduct(x_theta.col(k2))).dot(weights.cwiseProduct(y));
-            h(k2, k1) = h(k1, k2);
-          }
-        }
-        d = h.ldlt().solve(g);
-      }
+      h.diagonal() = cum_eta2.cwiseProduct(eta) + h.diagonal();
+      g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
 
-      beta1 = beta0 - step * d;
+      d = (x.transpose() * h * x).ldlt().solve(x.transpose() * g);
+      // theta = x * beta0;
+      // for (int i = 0; i < n; i++)
+      // {
+      //   if (theta(i) > 30)
+      //     theta(i) = 30;
+      //   else if (theta(i) < -30)
+      //     theta(i) = -30;
+      // }
+      // theta = theta.array().exp();
+      // cum_theta = one * theta;
+      // x_theta = x.array().colwise() * theta.array();
+      // x_theta = one * x_theta;
+      // x_theta = x_theta.array().colwise() / cum_theta.array();
+      // g = (x - x_theta).transpose() * (weights.cwiseProduct(y));
 
-      loglik1 = -neg_loglik_loss(x, y, weights, beta1, coef0);
+      // if (this->approximate_Newton)
+      // {
+      //   Eigen::VectorXd h(p);
+      //   for (int k1 = 0; k1 < p; k1++)
+      //   {
+      //     xij_theta = (theta.cwiseProduct(x.col(k1))).cwiseProduct(x.col(k1));
+      //     for (int j = n - 2; j >= 0; j--)
+      //     {
+      //       xij_theta(j) = xij_theta(j + 1) + xij_theta(j);
+      //     }
+      //     h(k1) = -(xij_theta.cwiseQuotient(cum_theta) - x_theta.col(k1).cwiseProduct(x_theta.col(k1))).dot(weights.cwiseProduct(y));
+      //   }
+      //   d = g.cwiseQuotient(h);
+      // }
+      // else
+      // {
+      //   Eigen::MatrixXd h(p, p);
+      //   for (int k1 = 0; k1 < p; k1++)
+      //   {
+      //     for (int k2 = k1; k2 < p; k2++)
+      //     {
+      //       xij_theta = (theta.cwiseProduct(x.col(k1))).cwiseProduct(x.col(k2));
+      //       for (int j = n - 2; j >= 0; j--)
+      //       {
+      //         xij_theta(j) = xij_theta(j + 1) + xij_theta(j);
+      //       }
+      //       h(k1, k2) = -(xij_theta.cwiseQuotient(cum_theta) - x_theta.col(k1).cwiseProduct(x_theta.col(k2))).dot(weights.cwiseProduct(y));
+      //       h(k2, k1) = h(k1, k2);
+      //     }
+      //   }
+      //   d = h.ldlt().solve(g);
+      // }
+
+      beta1 = beta0 + step * d;
+
+      loglik1 = -neg_loglik_loss(x, y, weight, beta1, coef0);
 
       while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon)
       {
         step = step / 2;
-        beta1 = beta0 - step * d;
-        loglik1 = -neg_loglik_loss(x, y, weights, beta1, coef0);
+        beta1 = beta0 + step * d;
+        loglik1 = -neg_loglik_loss(x, y, weight, beta1, coef0);
       }
 
       // cout << "j=" << j << " loglik: " << loglik1 << endl;

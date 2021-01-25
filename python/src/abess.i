@@ -18,7 +18,7 @@ void pywrap_abess(double* IN_ARRAY2, int DIM1, int DIM2, double* IN_ARRAY1, int 
                  int path_type, bool is_warm_start,
                  int ic_type, double ic_coef, bool is_cv, int K,
                  int *IN_ARRAY1, int DIM1,
-                 double* IN_ARRAY1, int DIM1,
+                 int* IN_ARRAY1, int DIM1,
                  int * IN_ARRAY1, int DIM1,
                  double* IN_ARRAY1, int DIM1,
                  int s_min, int s_max, int K_max, double epsilon,

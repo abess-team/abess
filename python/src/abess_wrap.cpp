@@ -3458,7 +3458,7 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
   int arg19 ;
   int *arg20 = (int *) 0 ;
   int arg21 ;
-  double *arg22 = (double *) 0 ;
+  int *arg22 = (int *) 0 ;
   int arg23 ;
   int *arg24 = (int *) 0 ;
   int arg25 ;
@@ -3702,11 +3702,11 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
       -1 
     };
     array22 = obj_to_array_contiguous_allow_conversion(swig_obj[16],
-      NPY_DOUBLE,
+      NPY_INT,
       &is_new_object22);
     if (!array22 || !require_dimensions(array22, 1) ||
       !require_size(array22, size, 1)) SWIG_fail;
-    arg22 = (double*) array_data(array22);
+    arg22 = (int*) array_data(array22);
     arg23 = (int) array_size(array22,0);
   }
   {
