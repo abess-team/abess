@@ -7,9 +7,9 @@
 \method{coef}{abess}(object, support.size = NULL, sparse = TRUE, ...)
 }
 \arguments{
-\item{object}{A "\code{abess}" project.}
+\item{object}{An "\code{abess}" project.}
 
-\item{support.size}{An integer vector specify 
+\item{support.size}{An integer vector specifies 
 the coefficient fitted at given \code{support.size}. 
 If \code{support.size = NULL}, then all coefficients would be returned. 
 Default: \code{support.size = NULL}.}
@@ -24,5 +24,9 @@ This function provides estimated
 coefficients from a fitted "\code{abess}" object.
 }
 \seealso{
-\code{\link{abess}}, \code{\link{print.abess}}.
+\code{\link{print.abess}}, 
+\code{\link{predict.abess}}, 
+\code{\link{coef.abess}}, 
+\code{\link{extract.abess}},
+\code{\link{deviance.abess}}.
 }

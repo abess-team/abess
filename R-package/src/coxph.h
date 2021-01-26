@@ -1,7 +1,7 @@
 #ifndef coxph_H
 #define coxph_H
 
-double loglik_cox(Eigen::MatrixXd X, Eigen::VectorXd status, Eigen::VectorXd beta, Eigen::VectorXd weights);
+double loglik_cox(Eigen::MatrixXd &X, Eigen::VectorXd &status, Eigen::VectorXd &beta, Eigen::VectorXd &weights);
 
 Eigen::VectorXd cox_fit(Eigen::MatrixXd X, Eigen::VectorXd status, int n, int p, Eigen::VectorXd weights);
 

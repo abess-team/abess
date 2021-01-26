@@ -107,7 +107,7 @@ abess <- function(x, ...) UseMethod("abess")
 #  5. \code{dev}: the deviance of the model; 6. \code{tune.value}: the tune value of the model.
 # }
 #' \item{beta}{A \eqn{p}-by-\code{length(support.size)} matrix of coefficients, stored in column format.}
-#' \item{intercept}{A Intercept vector of length \code{length(support.size)}.}
+#' \item{intercept}{An intercept vector of length \code{length(support.size)}.}
 #' \item{dev}{the deviance of length \code{length(support.size)}.}
 #' \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
 # \item{best.model}{The best fitted model for \code{type = "bss"}.}
@@ -149,7 +149,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' \item{tune.path}{The path type for tuning parameters.}
 #' \item{support.size}{The actual \code{support.size} values used. 
 #' Note that it is not necessary the same as the input 
-#' if the later have non-integer values or duplicated values.} 
+#' if the later have non-integer values or duplicated values.}
+#' \item{best.size}{The best support size selected by the tuning value.} 
 #' \item{tune.type}{The criterion type for tuning parameters.}
 #' \item{tune.path}{The strategy for tuning parameters.}
 #' \item{screening.vars}{The character vector specify the feature 
@@ -160,6 +161,12 @@ abess <- function(x, ...) UseMethod("abess")
 #'
 #' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
 #' @references Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x
+#' 
+#' @seealso \code{\link{print.abess}}, 
+#' \code{\link{predict.abess}}, 
+#' \code{\link{coef.abess}}, 
+#' \code{\link{extract.abess}},
+#' \code{\link{deviance.abess}}. 
 #' 
 #' @export
 #' @rdname abess
@@ -534,13 +541,13 @@ abess.default <- function(x,
     ic_coef = 1.0,
     is_cv = is_cv,
     Kfold = nfolds,
-    state = rep(2, 10),
+    status = c(0),
     sequence = s_list,
     lambda_seq = 0,
     s_min = s_min,
     s_max = s_max,
     K_max = as.integer(20),
-    epsilon = 0,
+    epsilon = 0.0001,
     lambda_max = 0,
     lambda_min = 0,
     nlambda = 10,

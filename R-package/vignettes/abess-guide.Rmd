@@ -46,7 +46,7 @@ abess_fit <- abess(y ~ ., data = dat, support.size = 3)
     
 The output of `abess` comprises the selected best model: 
 ```{r}
-coef(abess_fit)[1:10]
+head(coef(abess_fit, sparse = FALSE))
 ```
 The best model's support set is identical to the ground truth, and the coefficient estimation is the same as the oracle estimator given by `lm` function:
 ```{r}
@@ -65,17 +65,18 @@ The output of `abess` also comprises the selected best model:
 ```{r}
 best_size <- abess_fit[["best.size"]]
 print(best_size)
-print(coef(abess_fit, support.size = best_size)[1:10])
+head(coef(abess_fit, support.size = best_size, sparse = FALSE))
 ```
 The output model accurately detect the true model size, which implies the **Algorithm 3** efficiently find both the optimal sparsity level and true effective predictors.
 
 ## Advanced features        
-### Feature screening       
-The [crime dataset](https://archive.ics.uci.edu/ml/datasets/communities+and+crime) in community level consists of 18 variables about crime from the 1995 FBI UCR (e.g., per capita arson crimes and per capita violent crimes), communities information in the U.S. (e.g., the percent of the population considered urban), socio-economic data from the 90s census (e.g., the median family income), and law enforcement data from the 1990 law enforcement management and admin stats survey (e.g., per capita number of police officers). It would be appropriate if any of the crime state in community can be modeled by the basic community information, socio-economic and law enforcement state in community. 
+### Feature screening for ultra-high dimensional dataset       
+The [\color{blue}{
+communities-and-crime dataset}](https://archive.ics.uci.edu/ml/datasets/communities+and+crime) consists of 18 variables about crime from the 1995 FBI UCR (e.g., per capita arson crimes and per capita violent crimes), communities information in the U.S. (e.g., the percent of the population considered urban), socio-economic data from the 90s census (e.g., the median family income), and law enforcement data from the 1990 law enforcement management and admin stats survey (e.g., per capita number of police officers). It would be appropriate if any of the crime state in community can be modeled by the basic community information, socio-economic and law enforcement state in community. 
 Here, without the loss of generality, per capita violent crimes is chosen as the response variable, and 102 numerical variables as well as their pairwise interactions is considered as predictors.
 <!-- Note that, the numerical variables with at least 50\% percentages missing observations are excluded,  -->
 <!-- and 200 observations without missing records are randomly picked out from the pool.  -->
-The pre-processed dataset for statistical modeling has 200 observations and 5253 predictors, and the pre-processed details are presented in [https://github.com/Mamba413/abess/tree/master/R-package/data-raw](https://github.com/Mamba413/abess/tree/master/R-package/data-raw).   
+The pre-processed dataset for statistical modeling has 200 observations and 5253 predictors, and the code for pre-processing are openly shared in [\color{blue}{https://github.com/Mamba413/abess/tree/master/R-package/data-raw/DATASET\_VIGNETTES.R}](https://github.com/Mamba413/abess/tree/master/R-package/data-raw/DATASET_VIGNETTES.R).   
 The pre-processed dataset can be freely downloaded by running:
 ```{r}
 working_directory <- getwd()
@@ -103,38 +104,48 @@ The returned object of `abess` includes the features selected by screening. We e
 ```{r}
 head(abess_fit[["screening.vars"]])
 ```
-
-
+Then, by the generic `extract` function, we can obtain the best model detected by `ABESS` algorithm, and get the variables in the best model: 
 ```{r}
-best_coef <- coef(abess_fit, abess_fit[["best.size"]])
-best_vars <- best_coef@Dimnames[[1]][best_coef@i[-1]]
+best_model <- extract(abess_fit)
+str(best_model)
+best_vars <- best_model[["support.vars"]]
 best_vars
 ```
-
+From the linear model based on the selected features, we see that the two predictors, 
+'pctMaleDivorc:pctKidsBornNevrMarr' 
+(i.e., the linear interaction between the percentage of divorced males and the percentage of kids born to never married) 
+and 'pct65up:pctPopDenseHous' 
+(i.e., the linear interaction between the percentage of population that is 65 at least in age and the percent of persons in dense housing that have more than 1 person per room), have the most significant impact on the response: 
 ```{r}
 lm_dat <- cbind.data.frame(crime[, c("y", best_vars)])
 lm_fit <- lm(y ~ ., data = lm_dat)
 summary(lm_fit)
 ```
-
-
-```{r}
+We visualize the relationship between the response and the 
+two most significant
+selected predictors:
+```{r, fig.height=3, fig.width=6, echo=TRUE, eval=TRUE}
 library(reshape2)
 library(ggplot2)
-pdat <- cbind.data.frame(crime[, c("y",
-                                   "pctKidsBornNevrMarr:pctHousOwnerOccup", 
-                                   "pct65up:pctMaleNevMar")])
+pdat <- crime[, c("y", 
+                  "pctMaleDivorc:pctKidsBornNevrMarr",
+                  "pct65up:pctPopDenseHous")]
 pdat <- melt(pdat, id.vars = "y")
 p <- ggplot(pdat) + geom_point(aes(value, y), size = 0.3) + 
   geom_smooth(aes(value, y), method = "lm", se = FALSE) +
-  # geom_smooth(aes(value, y), color = "red") + 
   facet_wrap(. ~ variable, scales = "free_x") + 
-  xlab("") + ylab("Per capita violent crimes") + 
-  theme_bw() + 
-  theme(
-    strip.background = element_blank(),
-    strip.text.x = element_blank()
-  )
+  xlab("") + ylab("Per capita violent crimes") 
+p
+```
+
+```{r, fig.height=6, fig.width=9, echo=FALSE, eval=FALSE}
+library(reshape2)
+library(ggplot2)
+pdat <- melt(lm_dat, id.vars = "y")
+p <- ggplot(pdat) + geom_point(aes(value, y), size = 0.3) + 
+  geom_smooth(aes(value, y), method = "lm", se = FALSE) +
+  facet_wrap(. ~ variable, scales = "free_x") + 
+  xlab("") + ylab("Per capita violent crimes") 
 p
 ```
 

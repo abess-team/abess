@@ -62,7 +62,6 @@ test_that("abess (gaussian) works", {
 })
 
 test_that("abess (binomial) works", {
-  require(survival)
   n <- 500
   p <- 1500
   support.size <- 3
@@ -71,7 +70,8 @@ test_that("abess (binomial) works", {
                            family = "binomial", seed = 1)
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
                      family = "binomial", tune.type = "cv", 
-                     newton = "approx", max.newton.iter = 100)
+                     newton = "exact", max.newton.iter = 50, 
+                     newton.thresh = 1e-8)
   test_batch(abess_fit, dataset, binomial)
 })
 
@@ -85,7 +85,7 @@ test_that("abess (cox) works", {
                            family = "cox", seed = 1)
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
                      family = "cox", tune.type = "cv", 
-                     newton = "approx", max.newton.iter = 20)
+                     newton = "exact", max.newton.iter = 60)
   best_model <- abess_fit[["best.model"]]
   
   ## support size

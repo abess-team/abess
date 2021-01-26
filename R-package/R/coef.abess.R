@@ -2,10 +2,10 @@
 #'
 #' This function provides estimated
 #' coefficients from a fitted "\code{abess}" object.
+#' @rdname coef.abess
 #'
-#'
-#' @param object A "\code{abess}" project.
-#' @param support.size An integer vector specify 
+#' @param object An "\code{abess}" project.
+#' @param support.size An integer vector specifies 
 #' the coefficient fitted at given \code{support.size}. 
 #' If \code{support.size = NULL}, then all coefficients would be returned. 
 #' Default: \code{support.size = NULL}.
@@ -13,7 +13,7 @@
 #' presented as sparse matrix or not. Default: \code{sparse = TRUE}.
 #' @param ... Other arguments.
 #' 
-#' @seealso \code{\link{abess}}, \code{\link{print.abess}}.
+#' @inherit abess.default seealso
 #' 
 #' @export
 #'
@@ -30,7 +30,6 @@ coef.abess <- function(object,
     supp_size_index <- match_support_size(object, support.size)
     coef <- coef[, supp_size_index, drop = FALSE]
   }
-  rownames(coef)[1] <- "(intercept)"
   
   stopifnot(is.logical(sparse))
   if (!sparse) {
