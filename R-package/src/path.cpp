@@ -34,6 +34,7 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
   int N = data.g_num;
   Eigen::VectorXi g_index = data.g_index;
   Eigen::VectorXi g_size = data.g_size;
+  Eigen::VectorXi status = data.status;
   int sequence_size = sequence.size();
   int lambda_size = lambda_seq.size();
   // int early_stop_s = sequence_size;
@@ -102,7 +103,7 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
       algorithm->update_A_init(A_init, N);
       algorithm->update_group_XTX(train_group_XTX);
 
-      algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N);
+      algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N, status);
 #ifdef TEST
       t2 = clock();
       std::cout << "fit time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;

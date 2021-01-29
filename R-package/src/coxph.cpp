@@ -13,7 +13,7 @@ using namespace Rcpp;
 
 using namespace std;
 
-double loglik_cox(Eigen::MatrixXd X, Eigen::VectorXd status, Eigen::VectorXd beta, Eigen::VectorXd weights)
+double loglik_cox(Eigen::MatrixXd &X, Eigen::VectorXd &status, Eigen::VectorXd &beta, Eigen::VectorXd &weights)
 {
   int n = X.rows();
   Eigen::VectorXd eta = X * beta;

@@ -1,6 +1,9 @@
 +rm(list = ls()); gc(reset = TRUE)
 library(data.table)
 library(fastDummies)
+working_path <- getwd()
+data_raw_path <- paste0(working_path, "/data-raw")
+setwd(data_raw_path)
 
 #############################################################
 ####################### Crime Dataset #######################
@@ -82,5 +85,13 @@ y <- y[["violentPerPop"]]
 
 # save data:
 crime <- cbind.data.frame(y, x)
+
+# sample:
+set.seed(1)
+part_index <- 1:nrow(x)
+part_index <- sample(part_index, 
+                     size = 500, 
+                     replace = FALSE)
+crime <- crime[part_index, ]
 
 save(crime, file = "crime.rda")

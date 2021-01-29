@@ -263,12 +263,12 @@ abess_model_matrix <- function(object, data = environment(object),
   ############################################################
   # The wrapped code refers to model.matrix.default function
   t <- if (missing(data)) {
-    terms(object)
+    stats::terms(object)
   } else {
-    terms(object, data = data)
+    stats::terms(object, data = data)
   }
   if (is.null(attr(data, "terms"))) {
-    data <- model.frame(object, data, xlev = xlev)
+    data <- stats::model.frame(object, data, xlev = xlev)
   } else {
     deparse2 <- function(x) {
       paste(deparse(x, width.cutoff = 500L), collapse = " ")

@@ -15,9 +15,9 @@
 }
 \value{
 print a \code{data.frame} with three columns:
-\item 1. support size 
-\item 2. deviance of model
-\item 3. the tuning value
+\item{support.size}{Support size of model} 
+\item{dev}{deviance of model}
+\item{tune.type}{The tuning value of the certain tuning type}
 }
 \description{
 Print the primary elements of the "\code{abess}" object.
