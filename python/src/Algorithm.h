@@ -66,7 +66,7 @@ public:
 
   virtual ~Algorithm(){};
 
-  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8)
+  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0))
   {
     // this->data = data;
     this->max_iter = max_iter;
@@ -76,8 +76,10 @@ public:
     // this->beta = Eigen::VectorXd::Zero(data.get_p());
     this->coef0_init = 0.0;
     // this->beta_init = Eigen::VectorXd::Zero(data.get_p());
-    this->warm_start = true;
-    this->exchange_num = 5;
+    this->warm_start = warm_start;
+    this->exchange_num = exchange_num;
+    this->approximate_Newton = approximate_Newton;
+    this->always_select = always_select;
     this->algorithm_type = algorithm_type;
     this->primary_model_fit_max_iter = primary_model_fit_max_iter;
     this->primary_model_fit_epsilon = primary_model_fit_epsilon;
@@ -315,7 +317,7 @@ public:
 class abessLogistic : public Algorithm
 {
 public:
-  abessLogistic(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon){};
+  abessLogistic(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0)) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select){};
 
   ~abessLogistic(){};
 
@@ -749,7 +751,7 @@ public:
 class abessLm : public Algorithm
 {
 public:
-  abessLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon){};
+  abessLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0)) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select){};
 
   ~abessLm(){};
 
@@ -1052,7 +1054,7 @@ public:
 class abessCox : public Algorithm
 {
 public:
-  abessCox(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon){};
+  abessCox(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0)) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select){};
 
   ~abessCox(){};
 
@@ -1224,7 +1226,15 @@ public:
       h.diagonal() = cum_eta2.cwiseProduct(eta) + h.diagonal();
       g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
 
-      d = (x.transpose() * h * x).ldlt().solve(x.transpose() * g);
+      if (this->approximate_Newton)
+      {
+        d = (x.transpose() * g).cwiseQuotient((x.transpose() * h * x).diagonal());
+      }
+      else
+      {
+        d = (x.transpose() * h * x).ldlt().solve(x.transpose() * g);
+      }
+
       // theta = x * beta0;
       // for (int i = 0; i < n; i++)
       // {
@@ -1562,7 +1572,7 @@ public:
 class abessPoisson : public Algorithm
 {
 public:
-  abessPoisson(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon){};
+  abessPoisson(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0)) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select){};
 
   ~abessPoisson(){};
 

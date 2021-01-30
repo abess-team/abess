@@ -99,26 +99,21 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   {
     if (model_type == 1)
     {
-      algorithm = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+      algorithm = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
     }
     else if (model_type == 2)
     {
-      algorithm = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+      algorithm = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
     }
     else if (model_type == 3)
     {
-      algorithm = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+      algorithm = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
     }
     else if (model_type == 4)
     {
-      algorithm = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+      algorithm = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
     }
   }
-
-  algorithm->set_warm_start(is_warm_start);
-  algorithm->always_select = always_select;
-  algorithm->exchange_num = exchange_num;
-  algorithm->approximate_Newton = approximate_Newton;
 
   Metric *metric = new Metric(ic_type, ic_coef, is_cv, Kfold);
 
@@ -146,19 +141,19 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
         {
           if (model_type == 1)
           {
-            algorithm_list[i] = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+            algorithm_list[i] = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
           }
           else if (model_type == 2)
           {
-            algorithm_list[i] = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+            algorithm_list[i] = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
           }
           else if (model_type == 3)
           {
-            algorithm_list[i] = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+            algorithm_list[i] = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
           }
           else if (model_type == 4)
           {
-            algorithm_list[i] = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+            algorithm_list[i] = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
           }
         }
       }
@@ -290,7 +285,6 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
         {
           int s_index = i / lambda_seq.size();
           int lambda_index = i % lambda_seq.size();
-          int algorithm_index = 0;
           cout << "s_index: " << s_index;
           cout << " lambda_index: " << lambda_index << endl;
 
