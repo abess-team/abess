@@ -39,7 +39,7 @@ double loglik_cox(Eigen::MatrixXd &X, Eigen::VectorXd &status, Eigen::VectorXd &
   return (ratio.cwiseProduct(status)).dot(weights);
 }
 
-Eigen::VectorXd cox_fit(Eigen::MatrixXd X, Eigen::VectorXd status, int n, int p, Eigen::VectorXd weights)
+Eigen::VectorXd cox_fit(Eigen::MatrixXd &X, Eigen::VectorXd &status, int n, int p, Eigen::VectorXd &weights)
 {
   Eigen::VectorXd beta0 = Eigen::VectorXd::Zero(p);
   Eigen::VectorXd beta1 = Eigen::VectorXd::Zero(p);
