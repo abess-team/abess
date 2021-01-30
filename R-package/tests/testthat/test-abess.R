@@ -86,7 +86,6 @@ test_that("abess (cox) works", {
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
                      family = "cox", tune.type = "cv", 
                      newton = "exact", max.newton.iter = 60)
-  best_model <- abess_fit[["best.model"]]
   
   ## support size
   fit_s_size <- abess_fit[["support.size"]][which.min(abess_fit[["tune.value"]])]
