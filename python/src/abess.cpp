@@ -166,7 +166,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   t1 = clock();
 #endif
   Result result;
-  vector<Result> result_list(Kfold);
+  vector<Result>, data.statusresult_list(Kfold);
   if (path_type == 1)
   {
     if (is_cv)
