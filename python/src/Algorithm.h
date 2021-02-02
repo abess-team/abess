@@ -1198,31 +1198,31 @@ public:
           eta(i) = 30.0;
       }
       eta = weight.array() * eta.array().exp();
-      // cum_eta(n - 1) = eta(n - 1);
-      // for (int k = n - 2; k >= 0; k--)
-      // {
-      //   cum_eta(k) = cum_eta(k + 1) + eta(k);
-      // }
-      // cum_eta2(0) = (y(0) * weight(0)) / cum_eta(0);
-      // for (int k = 1; k <= n - 1; k++)
-      // {
-      //   cum_eta2(k) = (y(k) * weight(k)) / cum_eta(k) + cum_eta2(k - 1);
-      // }
-      // cum_eta3(0) = (y(0) * weight(0)) / pow(cum_eta(0), 2);
-      // for (int k = 1; k <= n - 1; k++)
-      // {
-      //   cum_eta3(k) = (y(k) * weight(k)) / pow(cum_eta(k), 2) + cum_eta3(k - 1);
-      // }
-      // h = -cum_eta3.replicate(1, n);
-      // h = h.cwiseProduct(eta.replicate(1, n));
-      // h = h.cwiseProduct(eta.replicate(1, n).transpose());
-      // for (int i = 0; i < n; i++)
-      // {
-      //   for (int j = i + 1; j < n; j++)
-      //   {
-      //     h(j, i) = h(i, j);
-      //   }
-      // }
+      cum_eta(n - 1) = eta(n - 1);
+      for (int k = n - 2; k >= 0; k--)
+      {
+        cum_eta(k) = cum_eta(k + 1) + eta(k);
+      }
+      cum_eta2(0) = (y(0) * weight(0)) / cum_eta(0);
+      for (int k = 1; k <= n - 1; k++)
+      {
+        cum_eta2(k) = (y(k) * weight(k)) / cum_eta(k) + cum_eta2(k - 1);
+      }
+      cum_eta3(0) = (y(0) * weight(0)) / pow(cum_eta(0), 2);
+      for (int k = 1; k <= n - 1; k++)
+      {
+        cum_eta3(k) = (y(k) * weight(k)) / pow(cum_eta(k), 2) + cum_eta3(k - 1);
+      }
+      h = -cum_eta3.replicate(1, n);
+      h = h.cwiseProduct(eta.replicate(1, n));
+      h = h.cwiseProduct(eta.replicate(1, n).transpose());
+      for (int i = 0; i < n; i++)
+      {
+        for (int j = i + 1; j < n; j++)
+        {
+          h(j, i) = h(i, j);
+        }
+      }
       h.diagonal() = cum_eta2.cwiseProduct(eta) + h.diagonal();
       g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
 
@@ -1294,10 +1294,7 @@ public:
         loglik1 = -neg_loglik_loss(x, y, weight, beta1, coef0);
       }
 
-      // cout << "j=" << j << " loglik: " << loglik1 << endl;
-      // cout << "j=" << j << " loglik diff: " << loglik1 - loglik0 << endl;
       bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - l - 1) * (loglik1 - loglik0)) + tau > loss0;
-      // bool condition1 = false;
       if (condition1)
       {
         loss0 = -loglik0;
@@ -1319,30 +1316,6 @@ public:
         cout << "condition2" << endl;
         return;
       }
-      // beta = beta - pow(step, m) * d;
-      // loglik1 = loglik_cox(x, y, beta, weights);
-      // while ((loglik0 > loglik1) && (m < 5))
-      // {
-      //   m = m + 1;
-      //   beta = beta - pow(step, m) * d;
-      //   loglik1 = loglik_cox(x, y, beta, weights);
-      // }
-      // bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - l - 1) * (loglik1 - loglik0)) + tau > loss0;
-      // // bool condition1 = false;
-      // bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
-      // bool condition3 = abs(loglik1) < min(1e-3, tau);
-      // if (condition1 || condition2 || condition3)
-      // {
-      //   // cout << "condition1:" << condition1 << endl;
-      //   // cout << "condition2:" << condition2 << endl;
-      //   // cout << "condition3:" << condition3 << endl;
-      //   break;
-      // }
-      // // if (abs(loglik0 - loglik1) / abs(0.1 + loglik0) < 1e-6)
-      // // {
-      // //   break;
-      // // }
-      // loglik0 = loglik1;
     }
 #ifdef TEST
     clock_t t2 = clock();
