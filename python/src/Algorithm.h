@@ -62,6 +62,8 @@ public:
   double coef0_warmstart;
   Eigen::VectorXi status;
 
+  Eigen::MatrixXd cox_hessian;
+
   Algorithm() = default;
 
   virtual ~Algorithm(){};
@@ -1186,7 +1188,7 @@ public:
 
     double step = 1.0;
     int l;
-    for (l = 1; l <= primary_model_fit_max_iter; l++)
+    for (l = 1; l <= 10; l++)
     {
 
       eta = x * beta0;
@@ -1299,6 +1301,7 @@ public:
       {
         loss0 = -loglik0;
         beta = beta0;
+        this->cox_hessian = h;
         cout << "condition1" << endl;
         return;
       }
@@ -1307,12 +1310,14 @@ public:
       {
         beta0 = beta1;
         loglik0 = loglik1;
+        this->cox_hessian = h;
       }
 
       if (step < this->primary_model_fit_epsilon)
       {
         loss0 = -loglik0;
         beta = beta0;
+        this->cox_hessian = h;
         cout << "condition2" << endl;
         return;
       }
@@ -1371,6 +1376,7 @@ public:
       }
     }
     h.diagonal() = cum_eta2.cwiseProduct(eta) + h.diagonal();
+    this->cox_hessian = h;
     Eigen::VectorXd g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
     return XI.transpose() * g;
   }
