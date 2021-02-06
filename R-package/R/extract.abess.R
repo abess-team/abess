@@ -49,8 +49,15 @@ extract.abess <- function(object,
   
   beta <- best_coef[-1, , drop = FALSE]
   intercept <- best_coef[1, 1]
-  support_vars <- best_coef@Dimnames[[1]][-1][best_coef@i[-1]]
-  support_beta <- best_coef@x[-1]
+  vars_name <- best_coef@Dimnames[[1]][-1]
+  if (intercept != 0.0) {
+    support_index <- best_coef@i[-1]
+    support_beta <- best_coef@x[-1]
+  } else {
+    support_index <- best_coef@i
+    support_beta <- best_coef@x
+  }
+  support_vars <- vars_name[support_index]
   support_size <- s_value
   dev <- object[["dev"]][support_size_index]
   dev_explain <- 0

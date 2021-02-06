@@ -183,7 +183,8 @@ generate.data <- function(n,
     }
     sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     
-    time <- (-log(stats::runif(n)) / drop(exp(x %*% beta))) ^ (1 / weibull.shape)
+    eta <- x %*% beta + rnorm(n, 0, sigma)
+    time <- (-log(stats::runif(n)) / drop(exp(eta))) ^ (1 / weibull.shape)
     ctime <- stats::runif(n, max = uniform.max)
     status <- (time < ctime) * 1
     censoringrate <- 1 - mean(status)
