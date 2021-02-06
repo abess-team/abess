@@ -63,6 +63,7 @@ public:
   Eigen::VectorXi status;
 
   Eigen::MatrixXd cox_hessian;
+  Eigen::VectorXd cox_g;
 
   Algorithm() = default;
 
@@ -147,6 +148,7 @@ public:
     // std::cout << "fit" << endl;
     int T0 = this->sparsity_level;
     this->status = status;
+    this->cox_g = Eigen::VectorXd::Zero(0);
 
     this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
 
@@ -1188,7 +1190,7 @@ public:
 
     double step = 1.0;
     int l;
-    for (l = 1; l <= 10; l++)
+    for (l = 1; l <= this->primary_model_fit_max_iter; l++)
     {
 
       eta = x * beta0;
@@ -1302,7 +1304,8 @@ public:
         loss0 = -loglik0;
         beta = beta0;
         this->cox_hessian = h;
-        cout << "condition1" << endl;
+        this->cox_g = g;
+        // cout << "condition1" << endl;
         return;
       }
 
@@ -1311,6 +1314,8 @@ public:
         beta0 = beta1;
         loglik0 = loglik1;
         this->cox_hessian = h;
+        this->cox_g = g;
+        // cout << "condition1" << endl;
       }
 
       if (step < this->primary_model_fit_epsilon)
@@ -1318,7 +1323,8 @@ public:
         loss0 = -loglik0;
         beta = beta0;
         this->cox_hessian = h;
-        cout << "condition2" << endl;
+        this->cox_g = g;
+        // cout << "condition2" << endl;
         return;
       }
     }
@@ -1338,46 +1344,55 @@ public:
 
   Eigen::VectorXd dual(Eigen::MatrixXd &XI, Eigen::MatrixXd &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &weight, int n, Eigen::MatrixXd &h)
   {
-    Eigen::VectorXd cum_eta(n);
-    Eigen::VectorXd cum_eta2(n);
-    Eigen::VectorXd cum_eta3(n);
-    Eigen::VectorXd eta = XA * beta;
-    for (int i = 0; i <= n - 1; i++)
+    Eigen::VectorXd g;
+    if (this->cox_g.size() != 0)
     {
-      if (eta(i) < -30.0)
-        eta(i) = -30.0;
-      if (eta(i) > 30.0)
-        eta(i) = 30.0;
+      h = this->cox_hessian;
+      g = this->cox_g;
     }
-    eta = weight.array() * eta.array().exp();
-    cum_eta(n - 1) = eta(n - 1);
-    for (int k = n - 2; k >= 0; k--)
+    else
     {
-      cum_eta(k) = cum_eta(k + 1) + eta(k);
-    }
-    cum_eta2(0) = (y(0) * weight(0)) / cum_eta(0);
-    for (int k = 1; k <= n - 1; k++)
-    {
-      cum_eta2(k) = (y(k) * weight(k)) / cum_eta(k) + cum_eta2(k - 1);
-    }
-    cum_eta3(0) = (y(0) * weight(0)) / pow(cum_eta(0), 2);
-    for (int k = 1; k <= n - 1; k++)
-    {
-      cum_eta3(k) = (y(k) * weight(k)) / pow(cum_eta(k), 2) + cum_eta3(k - 1);
-    }
-    h = -cum_eta3.replicate(1, n);
-    h = h.cwiseProduct(eta.replicate(1, n));
-    h = h.cwiseProduct(eta.replicate(1, n).transpose());
-    for (int i = 0; i < n; i++)
-    {
-      for (int j = i + 1; j < n; j++)
+      Eigen::VectorXd cum_eta(n);
+      Eigen::VectorXd cum_eta2(n);
+      Eigen::VectorXd cum_eta3(n);
+      Eigen::VectorXd eta = XA * beta;
+      for (int i = 0; i <= n - 1; i++)
       {
-        h(j, i) = h(i, j);
+        if (eta(i) < -30.0)
+          eta(i) = -30.0;
+        if (eta(i) > 30.0)
+          eta(i) = 30.0;
       }
+      eta = weight.array() * eta.array().exp();
+      cum_eta(n - 1) = eta(n - 1);
+      for (int k = n - 2; k >= 0; k--)
+      {
+        cum_eta(k) = cum_eta(k + 1) + eta(k);
+      }
+      cum_eta2(0) = (y(0) * weight(0)) / cum_eta(0);
+      for (int k = 1; k <= n - 1; k++)
+      {
+        cum_eta2(k) = (y(k) * weight(k)) / cum_eta(k) + cum_eta2(k - 1);
+      }
+      cum_eta3(0) = (y(0) * weight(0)) / pow(cum_eta(0), 2);
+      for (int k = 1; k <= n - 1; k++)
+      {
+        cum_eta3(k) = (y(k) * weight(k)) / pow(cum_eta(k), 2) + cum_eta3(k - 1);
+      }
+      h = -cum_eta3.replicate(1, n);
+      h = h.cwiseProduct(eta.replicate(1, n));
+      h = h.cwiseProduct(eta.replicate(1, n).transpose());
+      for (int i = 0; i < n; i++)
+      {
+        for (int j = i + 1; j < n; j++)
+        {
+          h(j, i) = h(i, j);
+        }
+      }
+      h.diagonal() = cum_eta2.cwiseProduct(eta) + h.diagonal();
+      g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
     }
-    h.diagonal() = cum_eta2.cwiseProduct(eta) + h.diagonal();
-    this->cox_hessian = h;
-    Eigen::VectorXd g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
+
     return XI.transpose() * g;
   }
 
@@ -1431,14 +1446,18 @@ public:
     Eigen::VectorXd d_I_group = Eigen::VectorXd::Zero(I_size);
     for (int i = 0; i < N; i++)
     {
-      Eigen::MatrixXd XG = X.middleCols(g_index(i), g_size(i));
-      // Eigen::MatrixXd XG_new = XG;
-      // for (int j = 0; j < g_size(i); j++)
-      // {
-      //   XG_new.col(j) = XG.col(j).cwiseProduct(h);
-      // }
       Eigen::MatrixXd XGbar;
-      XGbar.noalias() = XG.transpose() * h * XG;
+      if (g_size(i) != 1)
+      {
+        Eigen::MatrixXd XG = X.middleCols(g_index(i), g_size(i));
+        XGbar.noalias() = XG.transpose() * h * XG;
+      }
+      else
+      {
+        Eigen::VectorXd XG = X.middleCols(g_index(i), g_size(i));
+        XGbar.noalias() = XG.transpose() * h * XG;
+      }
+
       Eigen::MatrixXd phiG;
       XGbar.sqrt().evalTo(phiG);
       Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
@@ -1475,6 +1494,9 @@ public:
     Eigen::VectorXi I_max_k = max_k(d_I_group, C_max);
     Eigen::VectorXi s1 = vector_slice(A, A_min_k);
     Eigen::VectorXi s2 = vector_slice(I, I_max_k);
+
+    Eigen::MatrixXd hessian_init = this->cox_g;
+    Eigen::VectorXd g_init = this->cox_hessian;
 #ifdef TEST
     t2 = clock();
     std::cout << "s1 s2 time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
@@ -1541,6 +1563,8 @@ public:
         s2 = s2.head(k).eval();
       }
     }
+    this->cox_g = hessian_init;
+    this->cox_hessian = g_init;
 #ifdef TEST
     t2 = clock();
     std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
