@@ -1,7 +1,7 @@
 #' @export
 abess <- function(x, ...) UseMethod("abess")
 
-#' @title Adaptive Best-Subset Selection via splicing algorithm
+#' @title Adaptive Best-Subset Selection via Splicing
 #'
 #' @description Adaptive best-subset selection for regression, 
 #' binary classification and censored-response modeling 
@@ -70,7 +70,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param c.max an integer splicing size. Default is: \code{c.max = 2}. 
 #' @param weight Observation weights. Default is \code{1} for each observation.
 #' @param max.splicing.iter The maximum number of performing splicing algorithm. 
-#' In most of the case, only a few splicings can guarantee the convergence. 
+#' In most of the case, only a few times of splicing iteration can guarantee the convergence. 
 #' Default is \code{max.splicing.iter = 20}.
 #' @param warm.start Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.
 #' @param nfolds The number of folds in cross-validation. Default is \code{nfolds = 5}.
@@ -512,7 +512,7 @@ abess.default <- function(x,
       stop("always.include should be an vector containing variable indexes which is positive.")
     }
     always.include <- as.integer(always.include) - 1
-    if (length(always.include) > screening.num)
+    if (length(always.include) > screening_num)
       stop("The number of variables in always.include should not exceed the screening.num")
     if (path_type == 1) {
       if (length(always.include) > max(s_list))

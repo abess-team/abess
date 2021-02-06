@@ -98,19 +98,19 @@ test_that("abess (cox) works", {
   expect_equal(est_index, true_index)
   
   ## estimation
-  # oracle estimation by coxph function:
+  # true value:
+  true_beta <- dataset[["beta"]][true_index]
+  # estimated by coxph:
   dat <- cbind.data.frame(dataset[["y"]], dataset[["x"]][, true_index])
   oracle_est <- coxph(Surv(time, status) ~ ., data = dat)
   oracle_beta <- coef(oracle_est)
-  names(oracle_beta) <- NULL
-  # estimation by abess:
+  # estimated by abess:
   est_beta <- coef_value@x
   names(est_beta) <- NULL
   
-  expect_equal(oracle_beta, est_beta, tolerance = 1e-5)
-  
-  ## deviance
-  oracle_dev <- -1.0 * oracle_est[["loglik"]][2]
-  expect_equal(oracle_dev, abess_fit[["dev"]][fit_s_size], 
-               tolerance = 1e-5)
+  for (i in 1:support.size) {
+    abs_abess_diff <- abs(est_beta[i] - true_beta[i])
+    abs_coxph_diff <- abs(oracle_beta[i] - true_beta[i])
+    expect_lt(abs_abess_diff / abs_coxph_diff, 1.05)
+  }
 })
