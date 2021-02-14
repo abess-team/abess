@@ -4,12 +4,12 @@
 \alias{abess.default}
 \alias{abess}
 \alias{abess.formula}
-\title{Adaptive Best-Subset Selection via splicing algorithm}
+\title{Adaptive Best-Subset Selection via Splicing}
 \usage{
 \method{abess}{default}(
   x,
   y,
-  family = c("gaussian", "binomial", "cox"),
+  family = c("gaussian", "binomial", "poisson", "cox"),
   tune.path = c("sequence", "gsection"),
   tune.type = c("gic", "ebic", "bic", "aic", "cv"),
   weight = rep(1, nrow(x)),
@@ -40,8 +40,11 @@ vector and each column is a predictor/feature/variable.}
 \item{y}{The response variable, of \code{n} observations. 
 For \code{family = "binomial"} should have two levels.}
 
-\item{family}{One of the following models: \code{"gaussian"}, \code{"binomial"}
-and \code{"cox"}.
+\item{family}{One of the following models: 
+\code{"gaussian"} (continuous response), 
+\code{"binomial"} (binary response), 
+\code{"poisson"} (non-negative count), 
+and \code{"cox"} (left-censored response).
 Depending on the response. Any unambiguous substring can be given.}
 
 \item{tune.path}{The method to be used to select the optimal support size. For
@@ -75,7 +78,7 @@ the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(
 \item{always.include}{An integer vector containing the indexes of variables that should always be included in the model.}
 
 \item{max.splicing.iter}{The maximum number of performing splicing algorithm. 
-In most of the case, only a few splicings can guarantee the convergence. 
+In most of the case, only a few times of splicing iteration can guarantee the convergence. 
 Default is \code{max.splicing.iter = 20}.}
 
 \item{screening.num}{An integer number. Preserve \code{screening.num} number of predictors with the largest 

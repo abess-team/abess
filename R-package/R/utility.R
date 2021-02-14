@@ -11,7 +11,7 @@
 #' predictors. Default is \code{0}.
 #' @param family The distribution of the simulated data. \code{"gaussian"} for
 #' gaussian data.\code{"binomial"} for binary data. 
-# \code{"poisson"} for count data. \code{"cox"} for survival data.
+#' \code{"poisson"} for count data. \code{"cox"} for survival data.
 #' @param beta The coefficient values in the underlying regression model. 
 #' If it is supplied, \code{support.size} would be omitted.
 #' @param cortype The correlation structure. 
@@ -107,7 +107,7 @@ generate.data <- function(n,
                           p,
                           support.size = NULL,
                           rho = 0,
-                          family = c("gaussian", "binomial", "cox"),
+                          family = c("gaussian", "binomial", "poisson", "cox"),
                           beta = NULL,
                           cortype = 1,
                           snr = 10,

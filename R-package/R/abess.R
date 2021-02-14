@@ -20,9 +20,11 @@ abess <- function(x, ...) UseMethod("abess")
 # @param type One of the two types of problems.
 # \code{type = "bss"} for the best subset selection,
 # and \code{type = "bsrr"} for the best subset ridge regression.
-#' @param family One of the following models: \code{"gaussian"}, \code{"binomial"}
-#' and \code{"cox"}.
-# \code{"poisson"}, or \code{"cox"}. 
+#' @param family One of the following models: 
+#' \code{"gaussian"} (continuous response), 
+#' \code{"binomial"} (binary response), 
+#' \code{"poisson"} (non-negative count), 
+#' and \code{"cox"} (left-censored response).
 #' Depending on the response. Any unambiguous substring can be given.
 #' @param tune.path The method to be used to select the optimal support size. For
 #' \code{method = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
@@ -207,7 +209,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' abess_fit
 abess.default <- function(x, 
                           y,
-                          family = c("gaussian", "binomial", "cox"),
+                          family = c("gaussian", "binomial", "poisson", "cox"),
                           tune.path = c("sequence", "gsection"),
                           tune.type = c("gic", "ebic", "bic", "aic", "cv"),
                           weight = rep(1, nrow(x)),

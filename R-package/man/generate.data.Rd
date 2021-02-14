@@ -9,7 +9,7 @@ generate.data(
   p,
   support.size = NULL,
   rho = 0,
-  family = c("gaussian", "binomial", "cox"),
+  family = c("gaussian", "binomial", "poisson", "cox"),
   beta = NULL,
   cortype = 1,
   snr = 10,
@@ -30,7 +30,8 @@ model. Can be omitted if \code{beta} is supplied.}
 predictors. Default is \code{0}.}
 
 \item{family}{The distribution of the simulated data. \code{"gaussian"} for
-gaussian data.\code{"binomial"} for binary data.}
+gaussian data.\code{"binomial"} for binary data. 
+\code{"poisson"} for count data. \code{"cox"} for survival data.}
 
 \item{beta}{The coefficient values in the underlying regression model. 
 If it is supplied, \code{support.size} would be omitted.}

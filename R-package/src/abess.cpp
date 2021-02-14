@@ -99,26 +99,21 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   {
     if (model_type == 1)
     {
-      algorithm = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+      algorithm = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
     }
     else if (model_type == 2)
     {
-      algorithm = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+      algorithm = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
     }
     else if (model_type == 3)
     {
-      algorithm = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+      algorithm = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
     }
     else if (model_type == 4)
     {
-      algorithm = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+      algorithm = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
     }
   }
-
-  algorithm->set_warm_start(is_warm_start);
-  algorithm->always_select = always_select;
-  algorithm->exchange_num = exchange_num;
-  algorithm->approximate_Newton = approximate_Newton;
 
   Metric *metric = new Metric(ic_type, ic_coef, is_cv, Kfold);
 
@@ -146,19 +141,19 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
         {
           if (model_type == 1)
           {
-            algorithm_list[i] = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+            algorithm_list[i] = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
           }
           else if (model_type == 2)
           {
-            algorithm_list[i] = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+            algorithm_list[i] = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
           }
           else if (model_type == 3)
           {
-            algorithm_list[i] = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+            algorithm_list[i] = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
           }
           else if (model_type == 4)
           {
-            algorithm_list[i] = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon);
+            algorithm_list[i] = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
           }
         }
       }
@@ -247,18 +242,14 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
 
       if (is_parallel)
       {
-#ifdef TEST
-        cout << "cv parallel" << endl;
-#endif
+        // cout << "cv parallel" << endl;
 #pragma omp parallel for
         for (int i = 0; i < sequence.size() * lambda_seq.size(); i++)
         {
           int s_index = i / lambda_seq.size();
           int lambda_index = i % lambda_seq.size();
           int algorithm_index = omp_get_thread_num();
-#ifdef TEST
-          cout << "algorithm_index : " << algorithm_index << endl;
-#endif
+          // cout << "algorithm_index : " << algorithm_index << endl;
 
           Eigen::VectorXd beta_init = Eigen::VectorXd::Zero(data.p);
           double coef0_init = 0;
@@ -289,19 +280,13 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
       }
       else
       {
-#ifdef TEST
-        cout << "cv not parallel" << endl;
-#endif
+        // cout << "cv not parallel" << endl;
         for (int i = 0; i < sequence.size() * lambda_seq.size(); i++)
         {
           int s_index = i / lambda_seq.size();
           int lambda_index = i % lambda_seq.size();
-          int algorithm_index = 0;
-
-#ifdef TEST
-          cout << "s_index: " << s_index;
-          cout << " lambda_index: " << lambda_index << endl;
-#endif
+          // cout << "s_index: " << s_index;
+          // cout << " lambda_index: " << lambda_index << endl;
 
           Eigen::VectorXd beta_init = Eigen::VectorXd::Zero(data.p);
           double coef0_init = 0;
@@ -313,9 +298,8 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
             coef0_init = coef0_init + result_list[j].coef0_matrix(s_index, lambda_index) / Kfold;
             bd_init = bd_init + result_list[j].bd_matrix(s_index, lambda_index) / Kfold;
           }
-#ifdef TEST
-          cout << "abess 1.1: " << endl;
-#endif
+          // cout << "abess 1.1: " << endl;
+
           algorithm->update_sparsity_level(sequence(s_index));
           algorithm->update_lambda_level(lambda_seq(lambda_index));
           algorithm->update_beta_init(beta_init);
@@ -323,21 +307,16 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
           algorithm->update_bd_init(bd_init);
           algorithm->update_group_XTX(full_group_XTX);
           // cout << "abess 5" << endl;
-#ifdef TEST
-          cout << "abess 1.2: " << endl;
-#endif
+          // cout << "abess 1.2: " << endl;
+
           algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, data.status);
 
-#ifdef TEST
-          cout << "abess 1.3: " << endl;
-#endif
+          // cout << "abess 1.:3" << endl;
           beta_matrix(s_index, lambda_index) = algorithm->get_beta();
           coef0_matrix(s_index, lambda_index) = algorithm->get_coef0();
           train_loss_matrix(s_index, lambda_index) = algorithm->get_train_loss();
           ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.g_num, algorithm);
-#ifdef TEST
-          cout << "abess 1.4: " << endl;
-#endif
+          // cout << "abess 1.4: " << endl;
         }
       }
 
@@ -360,7 +339,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   }
 
   // fit best model
-  int best_s = sequence(min_loss_index_row);
+  // int best_s = sequence(min_loss_index_row);
   double best_lambda = lambda_seq(min_loss_index_col);
 
   Eigen::VectorXd best_beta;

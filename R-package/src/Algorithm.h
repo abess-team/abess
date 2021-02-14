@@ -62,11 +62,14 @@ public:
   double coef0_warmstart;
   Eigen::VectorXi status;
 
+  Eigen::MatrixXd cox_hessian;
+  Eigen::VectorXd cox_g;
+
   Algorithm() = default;
 
   virtual ~Algorithm(){};
 
-  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8)
+  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0))
   {
     // this->data = data;
     this->max_iter = max_iter;
@@ -76,8 +79,10 @@ public:
     // this->beta = Eigen::VectorXd::Zero(data.get_p());
     this->coef0_init = 0.0;
     // this->beta_init = Eigen::VectorXd::Zero(data.get_p());
-    this->warm_start = true;
-    this->exchange_num = 5;
+    this->warm_start = warm_start;
+    this->exchange_num = exchange_num;
+    this->approximate_Newton = approximate_Newton;
+    this->always_select = always_select;
     this->algorithm_type = algorithm_type;
     this->primary_model_fit_max_iter = primary_model_fit_max_iter;
     this->primary_model_fit_epsilon = primary_model_fit_epsilon;
@@ -143,6 +148,7 @@ public:
     // std::cout << "fit" << endl;
     int T0 = this->sparsity_level;
     this->status = status;
+    this->cox_g = Eigen::VectorXd::Zero(0);
 
     this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
 
@@ -315,7 +321,7 @@ public:
 class abessLogistic : public Algorithm
 {
 public:
-  abessLogistic(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon){};
+  abessLogistic(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0)) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select){};
 
   ~abessLogistic(){};
 
@@ -749,7 +755,7 @@ public:
 class abessLm : public Algorithm
 {
 public:
-  abessLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon){};
+  abessLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0)) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select){};
 
   ~abessLm(){};
 
@@ -1052,7 +1058,7 @@ public:
 class abessCox : public Algorithm
 {
 public:
-  abessCox(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon){};
+  abessCox(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0)) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select){};
 
   ~abessCox(){};
 
@@ -1184,7 +1190,7 @@ public:
 
     double step = 1.0;
     int l;
-    for (l = 1; l <= primary_model_fit_max_iter; l++)
+    for (l = 1; l <= this->primary_model_fit_max_iter; l++)
     {
 
       eta = x * beta0;
@@ -1224,7 +1230,15 @@ public:
       h.diagonal() = cum_eta2.cwiseProduct(eta) + h.diagonal();
       g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
 
-      d = (x.transpose() * h * x).ldlt().solve(x.transpose() * g);
+      if (this->approximate_Newton)
+      {
+        d = (x.transpose() * g).cwiseQuotient((x.transpose() * h * x).diagonal());
+      }
+      else
+      {
+        d = (x.transpose() * h * x).ldlt().solve(x.transpose() * g);
+      }
+
       // theta = x * beta0;
       // for (int i = 0; i < n; i++)
       // {
@@ -1284,17 +1298,14 @@ public:
         loglik1 = -neg_loglik_loss(x, y, weight, beta1, coef0);
       }
 
-      // cout << "j=" << j << " loglik: " << loglik1 << endl;
-      // cout << "j=" << j << " loglik diff: " << loglik1 - loglik0 << endl;
       bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - l - 1) * (loglik1 - loglik0)) + tau > loss0;
-      // bool condition1 = false;
       if (condition1)
       {
         loss0 = -loglik0;
         beta = beta0;
-#ifdef TEST
-        cout << "condition1" << endl;
-#endif
+        this->cox_hessian = h;
+        this->cox_g = g;
+        // cout << "condition1" << endl;
         return;
       }
 
@@ -1302,41 +1313,20 @@ public:
       {
         beta0 = beta1;
         loglik0 = loglik1;
+        this->cox_hessian = h;
+        this->cox_g = g;
+        // cout << "condition1" << endl;
       }
 
       if (step < this->primary_model_fit_epsilon)
       {
         loss0 = -loglik0;
         beta = beta0;
-#ifdef TEST
-        cout << "condition2" << endl;
-#endif
+        this->cox_hessian = h;
+        this->cox_g = g;
+        // cout << "condition2" << endl;
         return;
       }
-      // beta = beta - pow(step, m) * d;
-      // loglik1 = loglik_cox(x, y, beta, weights);
-      // while ((loglik0 > loglik1) && (m < 5))
-      // {
-      //   m = m + 1;
-      //   beta = beta - pow(step, m) * d;
-      //   loglik1 = loglik_cox(x, y, beta, weights);
-      // }
-      // bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - l - 1) * (loglik1 - loglik0)) + tau > loss0;
-      // // bool condition1 = false;
-      // bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
-      // bool condition3 = abs(loglik1) < min(1e-3, tau);
-      // if (condition1 || condition2 || condition3)
-      // {
-      //   // cout << "condition1:" << condition1 << endl;
-      //   // cout << "condition2:" << condition2 << endl;
-      //   // cout << "condition3:" << condition3 << endl;
-      //   break;
-      // }
-      // // if (abs(loglik0 - loglik1) / abs(0.1 + loglik0) < 1e-6)
-      // // {
-      // //   break;
-      // // }
-      // loglik0 = loglik1;
     }
 #ifdef TEST
     clock_t t2 = clock();
@@ -1354,45 +1344,55 @@ public:
 
   Eigen::VectorXd dual(Eigen::MatrixXd &XI, Eigen::MatrixXd &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &weight, int n, Eigen::MatrixXd &h)
   {
-    Eigen::VectorXd cum_eta(n);
-    Eigen::VectorXd cum_eta2(n);
-    Eigen::VectorXd cum_eta3(n);
-    Eigen::VectorXd eta = XA * beta;
-    for (int i = 0; i <= n - 1; i++)
+    Eigen::VectorXd g;
+    if (this->cox_g.size() != 0)
     {
-      if (eta(i) < -30.0)
-        eta(i) = -30.0;
-      if (eta(i) > 30.0)
-        eta(i) = 30.0;
+      h = this->cox_hessian;
+      g = this->cox_g;
     }
-    eta = weight.array() * eta.array().exp();
-    cum_eta(n - 1) = eta(n - 1);
-    for (int k = n - 2; k >= 0; k--)
+    else
     {
-      cum_eta(k) = cum_eta(k + 1) + eta(k);
-    }
-    cum_eta2(0) = (y(0) * weight(0)) / cum_eta(0);
-    for (int k = 1; k <= n - 1; k++)
-    {
-      cum_eta2(k) = (y(k) * weight(k)) / cum_eta(k) + cum_eta2(k - 1);
-    }
-    cum_eta3(0) = (y(0) * weight(0)) / pow(cum_eta(0), 2);
-    for (int k = 1; k <= n - 1; k++)
-    {
-      cum_eta3(k) = (y(k) * weight(k)) / pow(cum_eta(k), 2) + cum_eta3(k - 1);
-    }
-    h = -cum_eta3.replicate(1, n);
-    h = h.cwiseProduct(eta.replicate(1, n));
-    h = h.cwiseProduct(eta.replicate(1, n).transpose());
-    for (int i = 0; i < n; i++)
-    {
-      for (int j = i + 1; j < n; j++)
+      Eigen::VectorXd cum_eta(n);
+      Eigen::VectorXd cum_eta2(n);
+      Eigen::VectorXd cum_eta3(n);
+      Eigen::VectorXd eta = XA * beta;
+      for (int i = 0; i <= n - 1; i++)
       {
-        h(j, i) = h(i, j);
+        if (eta(i) < -30.0)
+          eta(i) = -30.0;
+        if (eta(i) > 30.0)
+          eta(i) = 30.0;
       }
+      eta = weight.array() * eta.array().exp();
+      cum_eta(n - 1) = eta(n - 1);
+      for (int k = n - 2; k >= 0; k--)
+      {
+        cum_eta(k) = cum_eta(k + 1) + eta(k);
+      }
+      cum_eta2(0) = (y(0) * weight(0)) / cum_eta(0);
+      for (int k = 1; k <= n - 1; k++)
+      {
+        cum_eta2(k) = (y(k) * weight(k)) / cum_eta(k) + cum_eta2(k - 1);
+      }
+      cum_eta3(0) = (y(0) * weight(0)) / pow(cum_eta(0), 2);
+      for (int k = 1; k <= n - 1; k++)
+      {
+        cum_eta3(k) = (y(k) * weight(k)) / pow(cum_eta(k), 2) + cum_eta3(k - 1);
+      }
+      h = -cum_eta3.replicate(1, n);
+      h = h.cwiseProduct(eta.replicate(1, n));
+      h = h.cwiseProduct(eta.replicate(1, n).transpose());
+      for (int i = 0; i < n; i++)
+      {
+        for (int j = i + 1; j < n; j++)
+        {
+          h(j, i) = h(i, j);
+        }
+      }
+      h.diagonal() = cum_eta2.cwiseProduct(eta) + h.diagonal();
+      g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
     }
-    h.diagonal() = cum_eta2.cwiseProduct(eta) + h.diagonal();
-    Eigen::VectorXd g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
+
     return XI.transpose() * g;
   }
 
@@ -1446,14 +1446,18 @@ public:
     Eigen::VectorXd d_I_group = Eigen::VectorXd::Zero(I_size);
     for (int i = 0; i < N; i++)
     {
-      Eigen::MatrixXd XG = X.middleCols(g_index(i), g_size(i));
-      // Eigen::MatrixXd XG_new = XG;
-      // for (int j = 0; j < g_size(i); j++)
-      // {
-      //   XG_new.col(j) = XG.col(j).cwiseProduct(h);
-      // }
       Eigen::MatrixXd XGbar;
-      XGbar.noalias() = XG.transpose() * h * XG;
+      if (g_size(i) != 1)
+      {
+        Eigen::MatrixXd XG = X.middleCols(g_index(i), g_size(i));
+        XGbar.noalias() = XG.transpose() * h * XG;
+      }
+      else
+      {
+        Eigen::VectorXd XG = X.middleCols(g_index(i), g_size(i));
+        XGbar.noalias() = XG.transpose() * h * XG;
+      }
+
       Eigen::MatrixXd phiG;
       XGbar.sqrt().evalTo(phiG);
       Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
@@ -1490,6 +1494,9 @@ public:
     Eigen::VectorXi I_max_k = max_k(d_I_group, C_max);
     Eigen::VectorXi s1 = vector_slice(A, A_min_k);
     Eigen::VectorXi s2 = vector_slice(I, I_max_k);
+
+    Eigen::MatrixXd hessian_init = this->cox_g;
+    Eigen::VectorXd g_init = this->cox_hessian;
 #ifdef TEST
     t2 = clock();
     std::cout << "s1 s2 time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
@@ -1556,6 +1563,8 @@ public:
         s2 = s2.head(k).eval();
       }
     }
+    this->cox_g = hessian_init;
+    this->cox_hessian = g_init;
 #ifdef TEST
     t2 = clock();
     std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
@@ -1566,7 +1575,7 @@ public:
 class abessPoisson : public Algorithm
 {
 public:
-  abessPoisson(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon){};
+  abessPoisson(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0)) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select){};
 
   ~abessPoisson(){};
 
@@ -1762,9 +1771,7 @@ public:
       {
         loss0 = -loglik0;
         beta = beta0;
-#ifdef TEST
         cout << "condition1" << endl;
-#endif
         return;
       }
 
@@ -1778,9 +1785,7 @@ public:
       {
         loss0 = -loglik0;
         beta = beta0;
-#ifdef TEST
         cout << "condition2" << endl;
-#endif
         return;
       }
       // beta = beta - pow(step, m) * d;
