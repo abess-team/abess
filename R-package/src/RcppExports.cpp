@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // abessCpp
-List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorXd weight, bool is_normal, int algorithm_type, int model_type, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef, bool is_cv, int Kfold, Eigen::VectorXi status, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int K_max, double epsilon, double lambda_min, double lambda_max, int nlambda, bool is_screening, int screening_size, int powell_path, Eigen::VectorXi g_index, Eigen::VectorXi always_select, double tau, int primary_model_fit_max_iter, double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton, int thread);
-RcppExport SEXP _abess_abessCpp(SEXP xSEXP, SEXP ySEXP, SEXP data_typeSEXP, SEXP weightSEXP, SEXP is_normalSEXP, SEXP algorithm_typeSEXP, SEXP model_typeSEXP, SEXP max_iterSEXP, SEXP exchange_numSEXP, SEXP path_typeSEXP, SEXP is_warm_startSEXP, SEXP ic_typeSEXP, SEXP ic_coefSEXP, SEXP is_cvSEXP, SEXP KfoldSEXP, SEXP statusSEXP, SEXP sequenceSEXP, SEXP lambda_seqSEXP, SEXP s_minSEXP, SEXP s_maxSEXP, SEXP K_maxSEXP, SEXP epsilonSEXP, SEXP lambda_minSEXP, SEXP lambda_maxSEXP, SEXP nlambdaSEXP, SEXP is_screeningSEXP, SEXP screening_sizeSEXP, SEXP powell_pathSEXP, SEXP g_indexSEXP, SEXP always_selectSEXP, SEXP tauSEXP, SEXP primary_model_fit_max_iterSEXP, SEXP primary_model_fit_epsilonSEXP, SEXP early_stopSEXP, SEXP approximate_NewtonSEXP, SEXP threadSEXP) {
+List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y, int data_type, Eigen::VectorXd weight, bool is_normal, int algorithm_type, int model_type, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef, bool is_cv, int Kfold, Eigen::VectorXi status, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int K_max, double epsilon, double lambda_min, double lambda_max, int nlambda, bool is_screening, int screening_size, int powell_path, Eigen::VectorXi g_index, Eigen::VectorXi always_select, double tau, int primary_model_fit_max_iter, double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton, int thread, bool covariance_update);
+RcppExport SEXP _abess_abessCpp(SEXP xSEXP, SEXP ySEXP, SEXP data_typeSEXP, SEXP weightSEXP, SEXP is_normalSEXP, SEXP algorithm_typeSEXP, SEXP model_typeSEXP, SEXP max_iterSEXP, SEXP exchange_numSEXP, SEXP path_typeSEXP, SEXP is_warm_startSEXP, SEXP ic_typeSEXP, SEXP ic_coefSEXP, SEXP is_cvSEXP, SEXP KfoldSEXP, SEXP statusSEXP, SEXP sequenceSEXP, SEXP lambda_seqSEXP, SEXP s_minSEXP, SEXP s_maxSEXP, SEXP K_maxSEXP, SEXP epsilonSEXP, SEXP lambda_minSEXP, SEXP lambda_maxSEXP, SEXP nlambdaSEXP, SEXP is_screeningSEXP, SEXP screening_sizeSEXP, SEXP powell_pathSEXP, SEXP g_indexSEXP, SEXP always_selectSEXP, SEXP tauSEXP, SEXP primary_model_fit_max_iterSEXP, SEXP primary_model_fit_epsilonSEXP, SEXP early_stopSEXP, SEXP approximate_NewtonSEXP, SEXP threadSEXP, SEXP covariance_updateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -48,13 +48,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type early_stop(early_stopSEXP);
     Rcpp::traits::input_parameter< bool >::type approximate_Newton(approximate_NewtonSEXP);
     Rcpp::traits::input_parameter< int >::type thread(threadSEXP);
-    rcpp_result_gen = Rcpp::wrap(abessCpp(x, y, data_type, weight, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, is_cv, Kfold, status, sequence, lambda_seq, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, nlambda, is_screening, screening_size, powell_path, g_index, always_select, tau, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, thread));
+    Rcpp::traits::input_parameter< bool >::type covariance_update(covariance_updateSEXP);
+    rcpp_result_gen = Rcpp::wrap(abessCpp(x, y, data_type, weight, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, is_cv, Kfold, status, sequence, lambda_seq, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, nlambda, is_screening, screening_size, powell_path, g_index, always_select, tau, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, thread, covariance_update));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_abess_abessCpp", (DL_FUNC) &_abess_abessCpp, 36},
+    {"_abess_abessCpp", (DL_FUNC) &_abess_abessCpp, 37},
     {NULL, NULL, 0}
 };
 

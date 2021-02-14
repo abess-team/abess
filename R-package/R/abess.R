@@ -221,7 +221,7 @@ abess.default <- function(x,
                           max.splicing.iter = 20,
                           screening.num = NULL, 
                           warm.start = TRUE,
-                          nfolds = 5,
+                          nfolds = 5, 
                           newton = c("exact", "approx"), 
                           newton.thresh = 1e-6, 
                           max.newton.iter = NULL, 
@@ -344,6 +344,13 @@ abess.default <- function(x,
     stop("Rows of x must be the same as length of weight!")
   }
   stopifnot(all(is.numeric(weight)), all(weight >= 0))
+  
+  ## check covariance update
+  # type.gaussian <- c("naive", "covariance")
+  # covariance_update <- match.arg(type.gaussian)
+  covariance_update <- "naive"
+  covariance_update <- ifelse(covariance_update == "naive", 
+                              FALSE, TRUE)
   
   ## check parameters for sub-optimization:
   # 1:
@@ -527,6 +534,7 @@ abess.default <- function(x,
     always_include <- always.include
   }
   
+  t1 <- proc.time()
   result <- abessCpp(
     x = x,
     y = y,
@@ -563,8 +571,11 @@ abess.default <- function(x,
     primary_model_fit_epsilon = newton_thresh,
     early_stop = early_stop,
     approximate_Newton = approximate_newton,
-    thread = num_threads
+    thread = num_threads, 
+    covariance_update = covariance_update
   )
+  t2 <- proc.time()
+  # print(t2 - t1)
   
   ## process result
   

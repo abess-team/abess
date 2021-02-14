@@ -68,6 +68,18 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
   }
 
   vector<Eigen::MatrixXd> train_group_XTX = group_XTX(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
+  if (algorithm->covariance_update)
+  {
+    algorithm->covariance = Eigen::MatrixXd::Zero(p, p);
+    for (int i = 0; i < p; i++) {
+      for (int j = i; j < p; j++) {
+        algorithm->covariance(i, j) = train_x.col(i).dot(train_x.col(j));
+        algorithm->covariance(j, i) = algorithm->covariance(i, j);
+      }
+    }
+    algorithm->XTy = train_x.transpose() * train_y;
+    algorithm->XTone = train_x.transpose() * Eigen::VectorXd::Ones(train_n);
+  }
 
   Eigen::Matrix<VectorXd, Dynamic, Dynamic> beta_matrix(sequence_size, lambda_size);
   Eigen::MatrixXd coef0_matrix(sequence_size, lambda_size);
@@ -180,6 +192,7 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
   result.test_loss_matrix = test_loss_matrix;
 }
 
+// IMPROVE: golden-section path should be supplied!
 // List gs_path(Data &data, Algorithm *algorithm, Metric *metric, int s_min, int s_max, int K_max, double epsilon)
 // {
 //     int p = data.get_p();

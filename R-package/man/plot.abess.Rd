@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.abess.R
 \name{plot.abess}
 \alias{plot.abess}
-\title{Title}
+\title{plot from a "abess" object}
 \usage{
 \method{plot}{abess}(
   x,
@@ -28,13 +28,13 @@ label the curves with variable sequence numbers.}
 \item{...}{Other graphical parameters to plot}
 }
 \description{
-Title
+Produces a coefficient/deviance/tuning-value plot 
+for a fitted "abess" object.
 }
-\details{
-A coefficient profile plot is produced. 
-Especially, 
-if \code{family = "mgaussian"} or \code{family = "multinomial"}, 
-a coefficient plot is produced for each class.
+\note{
+If \code{family = "mgaussian"} or \code{family = "multinomial"}, 
+a coefficient plot is produced for 
+each dimension of multivariate response.
 }
 \examples{
 dataset <- generate.data(100, 20, 3)

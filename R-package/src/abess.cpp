@@ -54,7 +54,8 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
               double tau,
               int primary_model_fit_max_iter, double primary_model_fit_epsilon,
               bool early_stop, bool approximate_Newton,
-              int thread)
+              int thread,
+              bool covariance_update)
 {
   // to do: -openmp
 #ifdef TEST
@@ -99,7 +100,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   {
     if (model_type == 1)
     {
-      algorithm = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
+      algorithm = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update);
     }
     else if (model_type == 2)
     {
@@ -135,13 +136,14 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
 
     if (is_parallel)
     {
+      // IMPROVE: max(Kfold, thread) --> min(Kfold, thread)
       for (int i = 0; i < max(Kfold, thread); i++)
       {
         if (algorithm_type == 6)
         {
           if (model_type == 1)
           {
-            algorithm_list[i] = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
+            algorithm_list[i] = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update);
           }
           else if (model_type == 2)
           {
@@ -230,18 +232,36 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
       Eigen::MatrixXd test_loss_tmp;
       for (int i = 0; i < Kfold; i++)
       {
-        // cout << "abess 2" << endl;
-        test_loss_tmp = result_list[i].test_loss_matrix;
         // cout << "abess 2.1" << endl;
-        test_loss_sum = test_loss_sum + test_loss_tmp / Kfold;
+        test_loss_sum = test_loss_sum + result_list[i].test_loss_matrix;
         // cout << "abess 2.2" << endl;
       }
+      test_loss_sum = test_loss_sum / Kfold;
       test_loss_sum.minCoeff(&min_loss_index_row, &min_loss_index_col);
 
       vector<Eigen::MatrixXd> full_group_XTX = group_XTX(data.x, data.g_index, data.g_size, data.n, data.p, data.g_num, model_type);
 
+      Eigen::MatrixXd covariance;
+      Eigen::VectorXd XTy;
+      Eigen::VectorXd XTone;
+      if (covariance_update)
+      {
+        covariance = data.x.transpose() * data.x;
+        XTy = data.x.transpose() * data.y;
+        XTone = data.x.transpose() * Eigen::VectorXd::Ones(data.n);
+      }
+
       if (is_parallel)
       {
+        if (covariance_update)
+        {
+          for (int i = 0; i < max(Kfold, thread); i++) {
+            algorithm_list[i]->covariance = covariance;
+            algorithm_list[i]->XTy = XTy;
+            algorithm_list[i]->XTone = XTone;
+          }
+        }
+
         // cout << "cv parallel" << endl;
 #pragma omp parallel for
         for (int i = 0; i < sequence.size() * lambda_seq.size(); i++)
@@ -257,10 +277,13 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
 
           for (int j = 0; j < Kfold; j++)
           {
-            beta_init = beta_init + result_list[j].beta_matrix(s_index, lambda_index) / Kfold;
-            coef0_init = coef0_init + result_list[j].coef0_matrix(s_index, lambda_index) / Kfold;
-            bd_init = bd_init + result_list[j].bd_matrix(s_index, lambda_index) / Kfold;
+            beta_init = beta_init + result_list[j].beta_matrix(s_index, lambda_index);
+            coef0_init = coef0_init + result_list[j].coef0_matrix(s_index, lambda_index);
+            bd_init = bd_init + result_list[j].bd_matrix(s_index, lambda_index);
           }
+          beta_init = beta_init / Kfold;
+          coef0_init = coef0_init / Kfold;
+          bd_init = bd_init / Kfold;
 
           algorithm_list[algorithm_index]->update_sparsity_level(sequence(s_index));
           algorithm_list[algorithm_index]->update_lambda_level(lambda_seq(lambda_index));
@@ -287,6 +310,12 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
           int lambda_index = i % lambda_seq.size();
           // cout << "s_index: " << s_index;
           // cout << " lambda_index: " << lambda_index << endl;
+          if (covariance_update)
+          {
+            algorithm->covariance = covariance;
+            algorithm->XTy = XTy;
+            algorithm->XTone = XTone;
+          }
 
           Eigen::VectorXd beta_init = Eigen::VectorXd::Zero(data.p);
           double coef0_init = 0;
@@ -380,6 +409,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   best_test_loss = test_loss_sum(min_loss_index_row, min_loss_index_col);
 
   //////////////Restore best_fit_result for normal//////////////
+  // IMPROVE: wrap the code to a function in "Data" class ?
   if (data.is_normal)
   {
     if (data.data_type == 1)
@@ -399,6 +429,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
   }
 
   ////////////// Restore all_fit_result for normal ////////////////////////
+  // IMPROVE: wrap the code to a function in "Data" class ?
   if (data.is_normal)
   {
     if (data.data_type == 1)
@@ -506,6 +537,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                   int primary_model_fit_max_iter, double primary_model_fit_epsilon,
                   bool early_stop, bool approximate_Newton,
                   int thread,
+                  bool covariance_update,
                   double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
@@ -552,7 +584,8 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_len, int dat
                          always_select_Vec, tau,
                          primary_model_fit_max_iter, primary_model_fit_epsilon,
                          early_stop, approximate_Newton,
-                         thread);
+                         thread,
+                         covariance_update);
 
 #ifdef TEST
   t2 = clock();

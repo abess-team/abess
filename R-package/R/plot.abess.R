@@ -1,4 +1,7 @@
-#' Title
+#' @title plot from a "abess" object
+#' 
+#' @description Produces a coefficient/deviance/tuning-value plot 
+#' for a fitted "abess" object.
 #'
 #' @inheritParams print.abess
 #' @param type The type of terms to be plot in the y-axis. 
@@ -12,10 +15,10 @@
 #' label the curves with variable sequence numbers. 
 #' @param ... Other graphical parameters to plot
 #'
-#' @details A coefficient profile plot is produced. 
-#' Especially, 
-#' if \code{family = "mgaussian"} or \code{family = "multinomial"}, 
-#' a coefficient plot is produced for each class.
+#' @note 
+#' If \code{family = "mgaussian"} or \code{family = "multinomial"}, 
+#' a coefficient plot is produced for 
+#' each dimension of multivariate response.
 #' 
 #' @export
 #' 
