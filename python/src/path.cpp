@@ -68,6 +68,12 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
   }
 
   vector<Eigen::MatrixXd> train_group_XTX = group_XTX(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
+  if (algorithm->covariance_update)
+  {
+    algorithm->covariance.noalias() = train_x.transpose() * train_x;
+    algorithm->XTy = train_x.transpose() * train_y;
+    algorithm->XTone = train_x.transpose() * Eigen::VectorXd::Ones(train_n);
+  }
 
   Eigen::Matrix<VectorXd, Dynamic, Dynamic> beta_matrix(sequence_size, lambda_size);
   Eigen::MatrixXd coef0_matrix(sequence_size, lambda_size);

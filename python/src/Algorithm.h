@@ -65,11 +65,16 @@ public:
   Eigen::MatrixXd cox_hessian;
   Eigen::VectorXd cox_g;
 
+  bool covariance_update;
+  Eigen::MatrixXd covariance;
+  Eigen::VectorXd XTy;
+  Eigen::VectorXd XTone;
+
   Algorithm() = default;
 
   virtual ~Algorithm(){};
 
-  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0))
+  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), bool covariance_update = false)
   {
     // this->data = data;
     this->max_iter = max_iter;
@@ -86,6 +91,8 @@ public:
     this->algorithm_type = algorithm_type;
     this->primary_model_fit_max_iter = primary_model_fit_max_iter;
     this->primary_model_fit_epsilon = primary_model_fit_epsilon;
+
+    this->covariance_update = covariance_update;
   };
 
   void update_PhiG(vector<Eigen::MatrixXd> &PhiG) { this->PhiG = PhiG; }
@@ -755,7 +762,7 @@ public:
 class abessLm : public Algorithm
 {
 public:
-  abessLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0)) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select){};
+  abessLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), bool covariance_update = true) : Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select){};
 
   ~abessLm(){};
 
@@ -802,7 +809,7 @@ public:
 
       Eigen::VectorXi I_ind = find_ind(I, g_index, g_size, p, N);
       Eigen::MatrixXd X_I = X_seg(X, n, I_ind);
-      Eigen::VectorXd d_I = this->dual(X_I, X_A, y, beta_A, coef0, weights, n, h);
+      Eigen::VectorXd d_I = this->dual(X_I, X_A, y, beta_A, coef0, weights, n, h, A_ind, I_ind);
 
       for (int k = 0; k < I_ind.size(); k++)
       {
@@ -875,25 +882,49 @@ public:
   //   return n * log((y - X * beta - coef0 * one).array().square().sum() / n) / 2.0;
   // }
 
-  Eigen::VectorXd dual(Eigen::MatrixXd &XI, Eigen::MatrixXd &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &weights, int n, Eigen::VectorXd &h)
+  Eigen::VectorXd dual(Eigen::MatrixXd &XI, Eigen::MatrixXd &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &weights, int n, Eigen::VectorXd &h, Eigen::VectorXi &A_ind, Eigen::VectorXi &I_ind)
   {
-    Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-    Eigen::VectorXd d_I;
-    if (XI.cols() != 0)
+    if (!this->covariance_update)
     {
-      if (beta.size() != 0)
+      Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
+      Eigen::VectorXd d_I;
+      if (XI.cols() != 0)
       {
-        d_I = XI.adjoint() * (y - XA * beta - coef0 * one) / double(n);
+        if (beta.size() != 0)
+        {
+          d_I = XI.adjoint() * (y - XA * beta - coef0 * one) / double(n);
+        }
+        else
+        {
+          d_I = XI.adjoint() * (y - coef0 * one) / double(n);
+        }
       }
-      else
-      {
-        d_I = XI.adjoint() * (y - coef0 * one) / double(n);
-      }
+      return d_I;
     }
+    else
+    {
+      Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
+      Eigen::VectorXd d_I;
 
-    // h = weights.array() * pr.array() * (one - pr).array();
-
-    return d_I;
+      if (XI.cols() != 0)
+      {
+        if (beta.size() != 0)
+        {
+          Eigen::VectorXd XTXbeta = X_seg(this->covariance, n, A_ind) * beta;
+          Eigen::VectorXd XTonecoef0 = this->XTone * coef0;
+          Eigen::VectorXd d = this->XTy - XTXbeta - XTonecoef0;
+          d_I = vector_slice(d, I_ind);
+          // d_I = XI.adjoint() * (y - XA * beta - coef0 * one) / double(n);
+        }
+        else
+        {
+          Eigen::VectorXd XTonecoef0 = this->XTone * coef0;
+          Eigen::VectorXd d = this->XTy - XTonecoef0;
+          d_I = vector_slice(d, I_ind);
+        }
+      }
+      return d_I;
+    }
   }
 
   void get_A(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &bd, int T0, Eigen::VectorXd &weights,
@@ -936,7 +967,7 @@ public:
     Eigen::VectorXd h;
     Eigen::VectorXi I_ind = find_ind(I, g_index, g_size, p, N);
     Eigen::MatrixXd X_I = X_seg(X, n, I_ind);
-    Eigen::VectorXd d_I = this->dual(X_I, X_A, y, beta_A, coef0, weights, n, h);
+    Eigen::VectorXd d_I = this->dual(X_I, X_A, y, beta_A, coef0, weights, n, h, A_ind, I_ind);
     for (int k = 0; k < I_ind.size(); k++)
     {
       d(I_ind(k)) = d_I(k);
