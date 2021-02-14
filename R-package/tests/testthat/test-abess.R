@@ -125,8 +125,7 @@ test_that("abess (poisson) works", {
   
   dataset <- generate.data(n, p, support.size, 
                            family = "poisson", seed = 1)
-  abess_fit <- abess(dataset[["x"]], dataset[["y"]], support.size = 1:5, 
-                     family = "poisson", tune.type = "cv", 
-                     newton.thresh = 1e-8)
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                     family = "poisson", tune.type = "cv")
   test_batch(abess_fit, dataset, poisson)
 })

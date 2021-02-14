@@ -1803,7 +1803,9 @@ public:
       {
         loss0 = -loglik0;
         beta = beta0;
+#ifdef TEST
         cout << "condition1" << endl;
+#endif
         return;
       }
 
@@ -1817,7 +1819,9 @@ public:
       {
         loss0 = -loglik0;
         beta = beta0;
+#ifdef TEST
         cout << "condition2" << endl;
+#endif
         return;
       }
       // beta = beta - pow(step, m) * d;
