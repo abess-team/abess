@@ -4,10 +4,8 @@
 \name{trim32}
 \alias{trim32}
 \title{The Bardet-Biedl syndrome Gene expression data}
-\format{
-A data frame with 120 rows and 501 variables, where the first variable is the expression level of TRIM32 gene,
-and the remaining 500 variables are 500 gene probes.
-}
+\format{A data frame with 120 rows and 501 variables, where the first variable is the expression level of TRIM32 gene,
+and the remaining 500 variables are 500 gene probes.}
 \description{
 Gene expression data (500 gene probes for 120 samples) from the microarray experiments of mammalianeye tissue samples of Scheetz et al. (2006).
 }
