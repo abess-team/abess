@@ -15,3 +15,7 @@ R-package.pdf
 abess_0.1.0.zip
 R-package/X.txt
 reference
+python/.coverage
+python/abess/__pycache__/
+python/abess/__pycache__/
+python/abess/__pycache__/
