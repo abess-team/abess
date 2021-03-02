@@ -3,3 +3,6 @@
 ^data-raw$
 ^LICENSE\.md$
 ^vignettes/crime\.rda$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
