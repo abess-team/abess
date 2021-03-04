@@ -877,6 +877,12 @@ public:
 
     // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).ldlt().solve(X.adjoint() * y);
 
+    if (X.cols() == 0)
+    {
+      coef0 = y.mean();
+      return;
+    }
+
     // CG
     ConjugateGradient<MatrixXd, Lower | Upper> cg;
     cg.compute(X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols()));
@@ -2152,7 +2158,7 @@ public:
              Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss)
   {
 
-    if (x.cols() == 0)
+    if (X.cols() == 0)
     {
       coef0 = log(y.mean());
       return;
