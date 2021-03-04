@@ -246,7 +246,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
       Eigen::VectorXd XTone;
       if (covariance_update)
       {
-        covariance = data.x.transpose() * data.x;
+        // covariance = data.x.transpose() * data.x;
         XTy = data.x.transpose() * data.y;
         XTone = data.x.transpose() * Eigen::VectorXd::Ones(data.n);
       }
@@ -263,7 +263,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
           // cout << "algorithm_index : " << algorithm_index << endl;
           if (algorithm->covariance_update)
           {
-            algorithm_list[algorithm_index]->covariance = covariance;
+            algorithm_list[algorithm_index]->covariance_update_flag = Eigen::VectorXi::Zero(data.p);
             algorithm_list[algorithm_index]->XTy = XTy;
             algorithm_list[algorithm_index]->XTone = XTone;
           }
@@ -306,7 +306,7 @@ List abessCpp(Eigen::MatrixXd x, Eigen::VectorXd y,
           // cout << " lambda_index: " << lambda_index << endl;
           if (covariance_update)
           {
-            algorithm->covariance = covariance;
+            algorithm->covariance_update_flag = Eigen::VectorXi::Zero(data.p);
             algorithm->XTy = XTy;
             algorithm->XTone = XTone;
           }
