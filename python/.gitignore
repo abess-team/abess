@@ -3,5 +3,6 @@ bess.egg-info/*
 build/*
 test/*
 dist/*
+doc/build/*
 
 
