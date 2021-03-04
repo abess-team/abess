@@ -4,5 +4,5 @@ build/*
 test/*
 dist/*
 doc/build/*
-
+docs/build/*
 
