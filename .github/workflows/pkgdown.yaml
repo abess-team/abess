@@ -34,7 +34,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          remotes::install_deps(dependencies = TRUE)
+          remotes::install_deps("R-package", dependencies = TRUE)
           install.packages("pkgdown", type = "binary")
         shell: Rscript {0}
 
@@ -45,4 +45,4 @@ jobs:
         run: |
           git config --local user.email "zhuj37@mail2.sysu.edu.cn"
           git config --local user.name "Mamba413"
-          Rscript -e 'pkgdown::deploy_to_branch(new_process = FALSE)'
+          Rscript -e 'pkgdown::deploy_to_branch("R-package", new_process = FALSE)'
