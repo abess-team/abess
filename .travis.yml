@@ -1,9 +1,21 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: R
+
 before_install:
   - cd R-package
+  - git config --global user.name "Mamba413"
+  - git config --global user.email "zhuj37@mail2.sysu.edu.cn"
+  - sed -i'' "s~https://github.com/Mamba413/abess.git~https://${ACCESS_TOKEN}@github.com/Mamba413/abess.git~" _config.yml
+
+before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
+
 cache: packages
 
-after_success:
-  - Rscript -e 'covr::codecov()'
+deploy:
+  provider: script
+  script: Rscript -e 'pkgdown::deploy_site_github()'
+  skip_cleanup: true
+
+# after_success:
+#   - Rscript -e 'covr::codecov()'
