@@ -4,12 +4,13 @@ Title: Adaptive Best Subset Selection in Polynomial Time
 Version: 0.1.0
 Date: 2021-01-15
 Authors@R: c(
-  person(given = "Jin", family = "Zhu", email = "zhuj37@mail2.sysu.edu.cn", role = c("aut", "cre")),
+  person(given = "Jin", family = "Zhu", email = "zhuj37@mail2.sysu.edu.cn", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8550-5822")),
   person(given = "Kangkang", family = "Jiang", email = "jiangkk3@mail2.sysu.edu.cn" ,role = c("aut")),
   person(given = "Junxian", family = "Zhu", email = "zhujunx@mail2.sysu.edu.cn", role = c("aut")),
   person(given = "Canhong", family = "Wen", email = "wencanhong@gmail.com", role = c("aut")),
   person(given = "Heping", family = "Zhang", email = "heping.zhang@yale.edu", role = c("aut")),
-  person(given = "Xueqin", family = "Wang", email = "wangxq20@ustc.edu.cn", role = c("aut")))
+  person(given = "Xueqin", family = "Wang", email = "wangxq20@ustc.edu.cn", role = c("aut"), comment = c(ORCID = "0000-0001-5205-9950"))
+  )
 Author: 
   Jin Zhu [aut, cre],
   Kangkang Jiang [aut],
@@ -37,3 +38,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+URL: https://github.com/Mamba413/abess
+BugReports: https://github.com/Mamba413/abess/issues

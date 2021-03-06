@@ -22,6 +22,7 @@
   screening.num = NULL,
   warm.start = TRUE,
   nfolds = 5,
+  cov.update = TRUE,
   newton = c("exact", "approx"),
   newton.thresh = 1e-06,
   max.newton.iter = NULL,
@@ -92,6 +93,11 @@ and their corresponding index in \code{group.index} should be the same.
 Denote the first group as \code{1}, the second \code{2}, etc.
 If you do not fit a model with a group structure,
 please set \code{group.index = NULL}. Default is \code{NULL}.}
+
+\item{cov.update}{A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE}, 
+use a covariance-based implementation; otherwise, a naive implementation. 
+The naive method is more efficient than covariance-based method only when \eqn{p >> n}. 
+Default: \code{cov.update = TRUE}.}
 
 \item{newton}{A character specify the Newton's method for fitting generalized linear models, 
 it should be either \code{newton = "exact"} or \code{newton = "approx"}.

@@ -82,6 +82,10 @@ abess <- function(x, ...) UseMethod("abess")
 #' Denote the first group as \code{1}, the second \code{2}, etc.
 #' If you do not fit a model with a group structure,
 #' please set \code{group.index = NULL}. Default is \code{NULL}.
+#' @param cov.update A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE}, 
+#' use a covariance-based implementation; otherwise, a naive implementation. 
+#' The naive method is more efficient than covariance-based method only when \eqn{p >> n}. 
+#' Default: \code{cov.update = TRUE}. 
 #' @param newton A character specify the Newton's method for fitting generalized linear models, 
 #' it should be either \code{newton = "exact"} or \code{newton = "approx"}.
 #' If \code{newton = "exact"}, then the exact hessian is used, 
@@ -222,6 +226,7 @@ abess.default <- function(x,
                           screening.num = NULL, 
                           warm.start = TRUE,
                           nfolds = 5, 
+                          cov.update = TRUE, 
                           newton = c("exact", "approx"), 
                           newton.thresh = 1e-6, 
                           max.newton.iter = NULL, 
@@ -346,11 +351,12 @@ abess.default <- function(x,
   stopifnot(all(is.numeric(weight)), all(weight >= 0))
   
   ## check covariance update
-  # type.gaussian <- c("naive", "covariance")
-  # covariance_update <- match.arg(type.gaussian)
-  covariance_update <- "naive"
-  covariance_update <- ifelse(covariance_update == "naive", 
-                              FALSE, TRUE)
+  stopifnot(is.logical(cov.update))
+  if (model_type == 1) {
+    covariance_update <- cov.update
+  } else {
+    covariance_update <- FALSE
+  }
   
   ## check parameters for sub-optimization:
   # 1:
