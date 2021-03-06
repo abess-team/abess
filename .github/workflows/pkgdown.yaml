@@ -19,7 +19,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v1
       
       - name: Change working-dictectory
-        shell: cd R-package
+        run: cd R-package
 
       - name: Query dependencies
         run: |
