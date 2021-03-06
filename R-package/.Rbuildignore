@@ -8,3 +8,6 @@
 ^pkgdown$
 ^\.travis\.yml$
 ^codecov\.yml$
+^.*\.gz$
+^.*\.zip$
+^tests/testthat\.R$

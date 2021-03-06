@@ -56,7 +56,7 @@ plot.abess <- function (x,
       }
     }
   }
-  df_list <- abess_fit[["support.size"]]
+  df_list <- x[["support.size"]]
   
   if (type %in% c("dev", "tune")) {
     plot_loss(y_value, df_list, 

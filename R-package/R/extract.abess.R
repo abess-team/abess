@@ -1,5 +1,6 @@
+#' @rdname extract.abess
 #' @export
-extract <- function(x, ...) UseMethod("extract")
+extract <- function(object, support.size = NULL, ...) UseMethod("extract")
 
 #' 
 #' @title Extract one model from a fitted "abess" object.
@@ -7,6 +8,8 @@ extract <- function(x, ...) UseMethod("extract")
 #' @description Extract the fixed-support-size 
 #' model's information such as the selected 
 #' predictors, coefficient estimation, and so on.
+#' 
+#' @rdname extract.abess
 #' 
 #' @inheritParams coef.abess
 #' @param support.size An integer value specifies
@@ -31,13 +34,12 @@ extract <- function(x, ...) UseMethod("extract")
 #' @inherit abess.default seealso
 #' 
 #' @export
-#'
 extract.abess <- function(object, 
                           support.size = NULL, 
                           ...) 
 {
   if (is.null(support.size)) {
-    s_value <- abess_fit[["best.size"]]
+    s_value <- object[["best.size"]]
   } else {
     stopifnot(length(support.size) != 1)
     stopifnot(is.integer(support.size))
@@ -45,7 +47,7 @@ extract.abess <- function(object,
   }
   
   support_size_index <- match(s_value, object[["support.size"]])
-  best_coef <- coef(abess_fit, s_value)
+  best_coef <- coef.abess(object, s_value)
   
   beta <- best_coef[-1, , drop = FALSE]
   intercept <- best_coef[1, 1]

@@ -75,6 +75,7 @@ test_that("abess (binomial) works", {
 })
 
 test_that("abess (cox) works", {
+  # skip("skip cox now")
   require(survival)
   n <- 500
   p <- 500
@@ -103,7 +104,7 @@ test_that("abess (cox) works", {
   true_beta <- dataset[["beta"]][true_index]
   # estimated by coxph:
   dat <- cbind.data.frame(dataset[["y"]], dataset[["x"]][, true_index])
-  oracle_est <- coxph(Surv(time, status) ~ ., data = dat)
+  oracle_est <- survival::coxph(survival::Surv(time, status) ~ ., data = dat)
   oracle_beta <- coef(oracle_est)
   # estimated by abess:
   est_beta <- coef_value@x
@@ -170,6 +171,8 @@ test_that("Covariance update works", {
 })
 
 test_that("Fast than Lasso (gaussian) works", {
+  # skip("Skip comparison with glmnet now!")
+  require(glmnet)
   n <- 500
   p <- 1500
   support_size <- 3

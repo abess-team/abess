@@ -2,14 +2,20 @@
 title: "An Introduction to `abess`"
 author: "Jin Zhu"
 output:
+  html_document: 
+    toc: yes
+    keep_md: yes
+    self_contained: no
   pdf_document:
     fig_caption: yes
     toc: yes
     toc_depth: 3
-vignette: >
-  %\VignetteIndexEntry{An Introduction to abess}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  word_document: 
+    toc: yes
+    keep_md: yes
+vignette: |
+  %\VignetteIndexEntry{An Introduction to abess} 
+  %\VignetteEngine{knitr::rmarkdown} \usepackage[utf8]{inputenc}
 ---
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -124,7 +130,8 @@ summary(lm_fit)
 We visualize the relationship between the response and the 
 two most significant
 selected predictors:
-```{r, fig.height=3, fig.width=6, echo=TRUE, eval=TRUE}
+![](./crime.jpg)
+```{r, fig.height=3, fig.width=6, echo=FALSE, eval=FALSE}
 library(reshape2)
 library(ggplot2)
 pdat <- crime[, c("y", 
@@ -136,6 +143,7 @@ p <- ggplot(pdat) + geom_point(aes(value, y), size = 0.3) +
   facet_wrap(. ~ variable, scales = "free_x") + 
   xlab("") + ylab("Per capita violent crimes") 
 p
+ggsave(p, filename = "crime.jpg", height = 3, width = 6)
 ```
 
 ```{r, fig.height=6, fig.width=9, echo=FALSE, eval=FALSE}
