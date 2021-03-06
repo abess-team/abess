@@ -36,7 +36,8 @@ SystemRequirements: C++11
 Suggests: 
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    covr
 VignetteBuilder: knitr
 URL: https://github.com/Mamba413/abess
 BugReports: https://github.com/Mamba413/abess/issues
