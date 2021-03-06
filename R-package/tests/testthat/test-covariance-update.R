@@ -3,7 +3,7 @@ library(testthat)
 
 test_that("Covariance update works", {
   skip('Skip Covariance update!')
-  n <- 10000
+  n <- 1000
   p <- 100
   support_size <- 3
   
@@ -19,5 +19,4 @@ test_that("Covariance update works", {
                                        num.threads = 1))
   
   expect_lt(t2[3], t1[3])
-  
 })

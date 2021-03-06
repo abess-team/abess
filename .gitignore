@@ -20,3 +20,5 @@ python/.coverage
 python/abess/__pycache__/*
 python/pytest/__pycache__/test_all.cpython-37-pytest-6.2.2.pyc
 python/.gitignore
+.vs/slnx.sqlite
+.vs/VSWorkspaceState.json

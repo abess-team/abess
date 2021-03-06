@@ -1,0 +1,16 @@
+citHeader("To cite abess in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "A polynomial algorithm for best-subset selection problem",
+  author   = "Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang",
+  journal  = "Proceedings of the National Academy of Sciences",
+  year     = "2020",
+  volume   = "117",
+  number   = "52",
+  pages    = "33117--33123",
+  url      = "https://www.pnas.org/content/117/52/33117",
+  textVersion = paste(
+  
+  )
+)

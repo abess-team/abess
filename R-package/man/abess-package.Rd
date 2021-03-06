@@ -8,8 +8,16 @@
 \description{
 A polynomial algorithm for best-subset selection problem for linear and logistic regression.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/Mamba413/abess}
+  \item Report bugs at \url{https://github.com/Mamba413/abess/issues}
+}
+
+}
 \author{
-\strong{Maintainer}: Jin Zhu \email{zhuj37@mail2.sysu.edu.cn}
+\strong{Maintainer}: Jin Zhu \email{zhuj37@mail2.sysu.edu.cn} (\href{https://orcid.org/0000-0001-8550-5822}{ORCID})
 
 Authors:
 \itemize{
@@ -17,7 +25,7 @@ Authors:
   \item Junxian Zhu \email{zhujunx@mail2.sysu.edu.cn}
   \item Canhong Wen \email{wencanhong@gmail.com}
   \item Heping Zhang \email{heping.zhang@yale.edu}
-  \item Xueqin Wang \email{wangxq20@ustc.edu.cn}
+  \item Xueqin Wang \email{wangxq20@ustc.edu.cn} (\href{https://orcid.org/0000-0001-5205-9950}{ORCID})
 }
 
 }

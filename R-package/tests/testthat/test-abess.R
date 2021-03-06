@@ -44,7 +44,6 @@ test_batch <- function(abess_fit, dataset, family) {
 }
 
 test_that("abess (gaussian) works", {
-  
   n <- 500
   p <- 1500
   support_size <- 3
@@ -78,7 +77,7 @@ test_that("abess (binomial) works", {
 test_that("abess (cox) works", {
   require(survival)
   n <- 500
-  p <- 1500
+  p <- 500
   support.size <- 3
   
   dataset <- generate.data(n, p, support.size, 
@@ -86,7 +85,7 @@ test_that("abess (cox) works", {
   t <- system.time(abess_fit <- abess(
     dataset[["x"]], dataset[["y"]], 
     family = "cox", tune.type = "cv", 
-    newton = "exact", max.newton.iter = 60)
+    newton = "exact", max.newton.iter = 10)
   )
   
   ## support size
@@ -128,4 +127,59 @@ test_that("abess (poisson) works", {
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
                      family = "poisson", tune.type = "cv")
   test_batch(abess_fit, dataset, poisson)
+})
+
+test_that("Covariance update works", {
+  skip('Skip Covariance update!')
+  n <- 1000
+  p <- 500
+  support_size <- 3
+  
+  dataset <- generate.data(n, p, support_size, seed = 1)
+  t1 <- system.time(abess_fit1 <- abess(dataset[["x"]], 
+                                        dataset[["y"]],
+                                        cov.update = FALSE, 
+                                        num.threads = 1))
+  t2 <- system.time(abess_fit2 <- abess(dataset[["x"]], 
+                                        dataset[["y"]], 
+                                        num.threads = 1))
+  
+  expect_lt(t2[3], t1[3])
+  abess_fit1[["call"]] <- NULL
+  abess_fit2[["call"]] <- NULL
+  expect_true(all.equal(abess_fit1, abess_fit2))
+  
+  
+  # n <- 100
+  # p <- 5000
+  # support_size <- 3
+  # 
+  # dataset <- generate.data(n, p, support_size, seed = 1)
+  # t1 <- system.time(abess_fit1 <- abess(dataset[["x"]], 
+  #                                       dataset[["y"]],
+  #                                       cov.update = FALSE, 
+  #                                       num.threads = 1))
+  # t2 <- system.time(abess_fit2 <- abess(dataset[["x"]], 
+  #                                       dataset[["y"]], 
+  #                                       num.threads = 1))
+  # 
+  # expect_gt(t2[3], t1[3])
+  # abess_fit1[["call"]] <- NULL
+  # abess_fit2[["call"]] <- NULL
+  # expect_true(all.equal(abess_fit1, abess_fit2))
+})
+
+test_that("Fast than Lasso (gaussian) works", {
+  n <- 500
+  p <- 1500
+  support_size <- 3
+  
+  dataset <- generate.data(n, p, support_size, seed = 1)
+  t1 <- system.time(abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                                       tune.type = "cv", nfolds = 10))
+  tune_num <- length(abess_fit[["support.size"]])
+  glmnet_fit <- glmnet::glmnet(dataset[["x"]], dataset[["y"]], nlambda = tune_num)
+  t2 <- system.time(glmnet_fit <- glmnet::cv.glmnet(dataset[["x"]], dataset[["y"]], 
+                                                    lambda = glmnet_fit[["lambda"]], nfolds = 10))
+  expect_lt(t1[3], t2[3])
 })
