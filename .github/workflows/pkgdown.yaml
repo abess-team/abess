@@ -8,7 +8,7 @@ name: pkgdown
 
 jobs:
   pkgdown:
-    runs-on: macOS-latest
+    runs-on: Ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.ABESS_TOKEN }}
     steps:
