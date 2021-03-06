@@ -877,11 +877,11 @@ public:
 
     // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).ldlt().solve(X.adjoint() * y);
 
-    if (X.cols() == 0)
-    {
-      coef0 = y.mean();
-      return;
-    }
+    // if (X.cols() == 0)
+    // {
+    //   coef0 = y.mean();
+    //   return;
+    // }
 
     // CG
     ConjugateGradient<MatrixXd, Lower | Upper> cg;
@@ -2054,7 +2054,6 @@ public:
       {
         loss0 = -loglik0;
         beta = beta0;
-        cout << "condition1" << endl;
         return;
       }
 
@@ -2068,7 +2067,6 @@ public:
       {
         loss0 = -loglik0;
         beta = beta0;
-        cout << "condition2" << endl;
         return;
       }
       // beta = beta - pow(step, m) * d;
