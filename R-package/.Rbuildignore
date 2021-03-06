@@ -11,3 +11,4 @@
 ^.*\.gz$
 ^.*\.zip$
 ^tests/testthat\.R$
+^\.github$
