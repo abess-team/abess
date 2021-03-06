@@ -461,6 +461,42 @@ Eigen::VectorXi Ac(Eigen::VectorXi &A, int N)
     }
 }
 
+// Ac
+Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U)
+{
+    int A_size = A.size();
+    int N = U.size();
+    if (A_size == 0)
+    {
+        return U;
+    }
+    else if (A_size == N)
+    {
+        Eigen::VectorXi I(0);
+        return I;
+    }
+    else
+    {
+        Eigen::VectorXi I(N - A_size);
+        int cur_index = 0;
+        int A_index = 0;
+        for (int i = 0; i < N; i++)
+        {
+            if (A_index < A.size() && U(i) == A(A_index))
+            {
+                A_index += 1;
+                continue;
+            }
+            else
+            {
+                I(cur_index) = U(i);
+                cur_index += 1;
+            }
+        }
+        return I;
+    }
+}
+
 // Eigen::VectorXi find_ind(std::vector<int> L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N)
 // {
 //     if (L.size() == N)
