@@ -896,13 +896,6 @@ public:
     return (y - X * beta - coef0 * one).array().square().sum() / n;
   }
 
-  // double neg_loglik_loss(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0)
-  // {
-  //   int n = X.rows();
-  //   Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-  //   return n * log((y - X * beta - coef0 * one).array().square().sum() / n) / 2.0;
-  // }
-
   void covariance_update_f(Eigen::MatrixXd &X, Eigen::VectorXi &A_ind)
   {
     if (this->covariance.rows() == 0)
