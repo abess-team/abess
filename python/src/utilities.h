@@ -60,4 +60,23 @@ Eigen::VectorXi max_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
 
 Eigen::VectorXi max_k_2(Eigen::VectorXd &vec, int k);
 
+// to do
+void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int axis = 0);
+void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int axis = 0);
+
+void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nums, int axis = 0);
+void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nums, int axis = 0);
+
+void coef_set_zero(int p, int M, Eigen::VectorXd &beta, double &coef0);
+void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0);
+
+void array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis = 0);
+void array_product(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis = 0);
+
+void array_quotient(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis = 0);
+void array_quotient(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis = 0);
+
+double matrix_dot(Eigen::VectorXd &A, Eigen::VectorXd &B);
+Eigen::VectorXd matrix_dot(Eigen::MatrixXd &A, Eigen::VectorXd &B);
+
 #endif //BESS_UTILITIES_H

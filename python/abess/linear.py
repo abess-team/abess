@@ -364,6 +364,9 @@ class bess_base:
 
         # print(X[:10, :10])
         # print(y)
+        y = y.reshape(len(y), 1)
+        print(y.shape)
+        print(y)
 
         result = pywrap_abess(X, y, self.data_type, weight,
                               is_normal,

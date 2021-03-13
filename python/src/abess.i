@@ -12,7 +12,7 @@ import_array();
 %}
 
 
-void pywrap_abess(double* IN_ARRAY2, int DIM1, int DIM2, double* IN_ARRAY1, int DIM1, int data_type, double* IN_ARRAY1, int DIM1,
+void pywrap_abess(double* IN_ARRAY2, int DIM1, int DIM2, double* IN_ARRAY2, int DIM1, int DIM2, int data_type, double* IN_ARRAY1, int DIM1,
                  bool is_normal,
                  int algorithm_type, int model_type, int max_iter, int exchange_num,
                  int path_type, bool is_warm_start,

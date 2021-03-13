@@ -13,6 +13,7 @@
 #include <algorithm>
 #include "utilities.h"
 
+template <class T1, class T2, class T3>
 // To do: calculate loss && all to one && lm poisson cox
 class Metric
 {
@@ -20,10 +21,12 @@ public:
   bool is_cv;
   int Kfold;
   int ic_type;
-  Eigen::MatrixXd cv_initial_model_param;
+  // Eigen::Matrix<T2, Dynamic, 1> cv_initial_model_param;
+  // Eigen::Matrix<T3, Dynamic, 1> cv_initial_coef0;
+
   std::vector<Eigen::VectorXi> cv_initial_A;
   std::vector<Eigen::VectorXi> cv_initial_I;
-  std::vector<double> cv_initial_coef0;
+
   std::vector<Eigen::VectorXi> train_mask_list;
   std::vector<Eigen::VectorXi> test_mask_list;
 
@@ -39,12 +42,14 @@ public:
     this->ic_type = ic_type;
     this->Kfold = Kfold;
     this->ic_coef = ic_coef;
+    // cv_initial_model_param.resize(Kfold, 1);
+    // cv_coef0_model_param.resize(Kfold, 1);
   };
 
-  void set_cv_initial_model_param(int Kfold, int p)
-  {
-    this->cv_initial_model_param = Eigen::MatrixXd::Zero(p, Kfold);
-  };
+  // void set_cv_initial_model_param(int Kfold, int p)
+  // {
+  //   this->cv_initial_model_param = Eigen::MatrixXd::Zero(p, Kfold);
+  // };
 
   void set_cv_initial_A(int Kfold, int p)
   {
@@ -52,21 +57,13 @@ public:
     this->cv_initial_A = tmp;
   };
 
-  // void set_cv_initial_I(int Kfold, int p)
+  // void set_cv_initial_coef0(int Kfold, int p)
   // {
-  //     vector<Eigen::VectorXi> tmp(Kfold);
-  //     for (int i = 0; i < Kfold; i++)
-  //         tmp[i] = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
-  //     this->cv_initial_I = tmp;
+  //   vector<double> tmp(Kfold);
+  //   for (int i = 0; i < Kfold; i++)
+  //     tmp[i] = 0;
+  //   this->cv_initial_coef0 = tmp;
   // };
-
-  void set_cv_initial_coef0(int Kfold, int p)
-  {
-    vector<double> tmp(Kfold);
-    for (int i = 0; i < Kfold; i++)
-      tmp[i] = 0;
-    this->cv_initial_coef0 = tmp;
-  };
 
   void update_cv_initial_model_param(Eigen::VectorXd model_param, int k)
   {
@@ -78,15 +75,10 @@ public:
     this->cv_initial_A[k] = A;
   }
 
-  // void update_cv_initial_I(Eigen::VectorXi I, int k)
+  // void update_cv_initial_coef0(double coef0, int k)
   // {
-  //     this->cv_initial_I[k] = I;
+  //   this->cv_initial_coef0[k] = coef0;
   // }
-
-  void update_cv_initial_coef0(double coef0, int k)
-  {
-    this->cv_initial_coef0[k] = coef0;
-  }
 
   void set_cv_train_test_mask(int n)
   {
@@ -148,7 +140,7 @@ public:
     this->test_mask_list = test_mask_list_tmp;
   };
 
-  void cal_cv_group_XTX(Data &data)
+  void cal_cv_group_XTX(Data<T1, T2, T3> &data)
   {
     int p = data.p;
     Eigen::VectorXi index = data.g_index;
@@ -171,13 +163,7 @@ public:
     this->group_XTX_list = group_XTX_list_tmp;
   }
 
-  // virtual double test_loss(Algorithm *algorithm, Data &data) = 0;
-
-  // virtual double train_loss(Algorithm *algorithm, Data &data) = 0;
-
-  // virtual double ic(Algorithm *algorithm, Data &data) = 0;
-
-  double ic(int train_n, int N, Algorithm *algorithm)
+  double ic(int train_n, int N, Algorithm<T1, T2, T3> *algorithm)
   {
     double loss;
     if (algorithm->model_type == 1)
@@ -209,20 +195,24 @@ public:
       return 0;
   };
 
-  double neg_loglik_loss(Eigen::MatrixXd &train_x, Eigen::VectorXd &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm *algorithm)
+  double neg_loglik_loss(Eigen::MatrixXd &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm<T1, T2, T3> *algorithm)
   {
     // clock_t t1 = clock();
     Eigen::VectorXi A = algorithm->get_A_out();
-    Eigen::VectorXd beta = algorithm->get_beta();
-    double coef0 = algorithm->get_coef0();
+    T2 beta = algorithm->get_beta();
+    T3 coef0 = algorithm->get_coef0();
 
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
     Eigen::MatrixXd X_A = X_seg(train_x, train_n, A_ind);
-    Eigen::VectorXd beta_A(A_ind.size());
-    for (int k = 0; k < A_ind.size(); k++)
-    {
-      beta_A(k) = beta(A_ind(k));
-    }
+
+    T2 beta_A;
+    slice(beta, A_ind, beta_A);
+
+    // Eigen::VectorXd beta_A(A_ind.size());
+    // for (int k = 0; k < A_ind.size(); k++)
+    // {
+    //   beta_A(k) = beta(A_ind(k));
+    // }
     double L0 = algorithm->neg_loglik_loss(X_A, train_y, train_weight, beta_A, coef0);
     // clock_t t2 = clock();
     // std::cout << "ic loss time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
@@ -230,58 +220,59 @@ public:
     return L0;
   }
 
-  double fit_and_evaluate_in_metric(Algorithm *algorithm, Data &data)
-  {
-    if (!this->is_cv)
-    {
-      algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, data.status);
-      return this->ic(data.n, data.g_num, algorithm);
-    }
-    else
-    {
-      int k;
-      Eigen::VectorXi g_index = data.g_index;
-      Eigen::VectorXi g_size = data.g_size;
-      int p = data.p;
-      int N = data.g_num;
+  // // to do
+  //   double fit_and_evaluate_in_metric(Algorithm<T1, T2, T3> *algorithm, Data &data)
+  //   {
+  //     if (!this->is_cv)
+  //     {
+  //       algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, data.status);
+  //       return this->ic(data.n, data.g_num, algorithm);
+  //     }
+  //     else
+  //     {
+  //       int k;
+  //       Eigen::VectorXi g_index = data.g_index;
+  //       Eigen::VectorXi g_size = data.g_size;
+  //       int p = data.p;
+  //       int N = data.g_num;
 
-      Eigen::VectorXd loss_list(this->Kfold);
-      ///////////////////////parallel/////////////////////////
-      for (k = 0; k < this->Kfold; k++)
-      {
-        //get test_x, test_y
-        int test_n = this->test_mask_list[k].size();
-        int train_n = this->train_mask_list[k].size();
-        // train & test data
-        Eigen::MatrixXd train_x = matrix_slice(data.x, this->train_mask_list[k], 0);
-        Eigen::MatrixXd test_x = matrix_slice(data.x, this->test_mask_list[k], 0);
-        Eigen::VectorXd train_y = vector_slice(data.y, this->train_mask_list[k]);
-        Eigen::VectorXd test_y = vector_slice(data.y, this->test_mask_list[k]);
-        Eigen::VectorXd train_weight = vector_slice(data.weight, this->train_mask_list[k]);
-        Eigen::VectorXd test_weight = vector_slice(data.weight, this->test_mask_list[k]);
-        Eigen::VectorXd beta_init;
+  //       Eigen::VectorXd loss_list(this->Kfold);
+  //       ///////////////////////parallel/////////////////////////
+  //       for (k = 0; k < this->Kfold; k++)
+  //       {
+  //         //get test_x, test_y
+  //         int test_n = this->test_mask_list[k].size();
+  //         int train_n = this->train_mask_list[k].size();
+  //         // train & test data
+  //         Eigen::MatrixXd train_x = matrix_slice(data.x, this->train_mask_list[k], 0);
+  //         Eigen::MatrixXd test_x = matrix_slice(data.x, this->test_mask_list[k], 0);
+  //         Eigen::VectorXd train_y = vector_slice(data.y, this->train_mask_list[k]);
+  //         Eigen::VectorXd test_y = vector_slice(data.y, this->test_mask_list[k]);
+  //         Eigen::VectorXd train_weight = vector_slice(data.weight, this->train_mask_list[k]);
+  //         Eigen::VectorXd test_weight = vector_slice(data.weight, this->test_mask_list[k]);
+  //         Eigen::VectorXd beta_init;
 
-        if (algorithm->get_warm_start())
-        {
-          beta_init = this->cv_initial_model_param.col(k).eval();
-          algorithm->update_beta_init(beta_init);
-          algorithm->update_coef0_init(this->cv_initial_coef0[k]);
-          algorithm->update_A_init(this->cv_initial_A[k], N);
-        }
-        // algorithm->update_train_mask(this->train_mask_list[k]);
-        /// ??????????????????????????????????????????????????????????????
-        algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N, data.status);
-        if (algorithm->get_warm_start())
-        {
-          this->update_cv_initial_model_param(algorithm->get_beta(), k);
-          this->update_cv_initial_A(algorithm->get_A_out(), k);
-          this->update_cv_initial_coef0(algorithm->get_coef0(), k);
-        }
+  //         if (algorithm->get_warm_start())
+  //         {
+  //           beta_init = this->cv_initial_model_param.col(k).eval();
+  //           algorithm->update_beta_init(beta_init);
+  //           algorithm->update_coef0_init(this->cv_initial_coef0[k]);
+  //           algorithm->update_A_init(this->cv_initial_A[k], N);
+  //         }
+  //         // algorithm->update_train_mask(this->train_mask_list[k]);
+  //         /// ??????????????????????????????????????????????????????????????
+  //         algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N, data.status);
+  //         if (algorithm->get_warm_start())
+  //         {
+  //           this->update_cv_initial_model_param(algorithm->get_beta(), k);
+  //           this->update_cv_initial_A(algorithm->get_A_out(), k);
+  //           this->update_cv_initial_coef0(algorithm->get_coef0(), k);
+  //         }
 
-        loss_list(k) = this->neg_loglik_loss(test_x, test_y, test_weight, g_index, g_size, test_n, p, N, algorithm);
-      }
-    }
-  };
+  //         loss_list(k) = this->neg_loglik_loss(test_x, test_y, test_weight, g_index, g_size, test_n, p, N, algorithm);
+  //       }
+  //     }
+  //   };
 };
 
 // class LogisticMetric : public Metric

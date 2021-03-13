@@ -25,13 +25,15 @@ using namespace Rcpp;
 using namespace Eigen;
 using namespace std;
 
-void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, bool early_stop, int k, Result &result)
+template <class T1, class T2, class T3>
+void sequential_path_cv(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm, Metric<T1, T2, T3> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3> &result)
 {
 #ifdef TEST
   clock_t t0, t1, t2;
 #endif
   int p = data.get_p();
   int N = data.g_num;
+  int M = data.y.cols();
   Eigen::VectorXi g_index = data.g_index;
   Eigen::VectorXi g_size = data.g_size;
   Eigen::VectorXi status = data.status;
@@ -40,7 +42,8 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
   // int early_stop_s = sequence_size;
 
   Eigen::VectorXi train_mask, test_mask;
-  Eigen::VectorXd train_y, test_y, train_weight, test_weight;
+  T1 train_y, test_y;
+  Eigen::VectorXd train_weight, test_weight;
   Eigen::MatrixXd train_x, test_x;
   int train_n = 0, test_n = 0;
 
@@ -56,12 +59,12 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
   {
     train_mask = metric->train_mask_list[k];
     test_mask = metric->test_mask_list[k];
-    train_x = matrix_slice(data.x, train_mask, 0);
-    test_x = matrix_slice(data.x, test_mask, 0);
-    train_y = vector_slice(data.y, train_mask);
-    test_y = vector_slice(data.y, test_mask);
-    train_weight = vector_slice(data.weight, train_mask);
-    test_weight = vector_slice(data.weight, test_mask);
+    slice(data.x, train_mask, train_x);
+    slice(data.x, test_mask, test_x);
+    slice(data.y, train_mask, train_y);
+    slice(data.y, test_mask, test_y);
+    slice(data.weight, train_mask, train_weight);
+    slice(data.weight, test_mask, test_weight);
 
     train_n = train_mask.size();
     test_n = test_mask.size();
@@ -72,19 +75,23 @@ void sequential_path_cv(Data &data, Algorithm *algorithm, Metric *metric, Eigen:
   {
     algorithm->covariance_update_flag = Eigen::VectorXi::Zero(p);
     algorithm->XTy = train_x.transpose() * train_y;
-    algorithm->XTone = train_x.transpose() * Eigen::VectorXd::Ones(train_n);
+
+    // to do : add ifelse
+    algorithm->XTone = train_x.transpose() * Eigen::MatrixXd::Ones(train_n, M);
   }
 
-  Eigen::Matrix<VectorXd, Dynamic, Dynamic> beta_matrix(sequence_size, lambda_size);
-  Eigen::MatrixXd coef0_matrix(sequence_size, lambda_size);
+  Eigen::Matrix<T2, Dynamic, Dynamic> beta_matrix(sequence_size, lambda_size);
+  Eigen::Matrix<T3, Dynamic, Dynamic> coef0_matrix(sequence_size, lambda_size);
   Eigen::MatrixXd train_loss_matrix(sequence_size, lambda_size);
   Eigen::MatrixXd ic_matrix(sequence_size, lambda_size);
   Eigen::MatrixXd test_loss_matrix(sequence_size, lambda_size);
   Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(sequence_size, lambda_size);
   // Eigen::Matrix<VectorXi, Dynamic, Dynamic> A_matrix(sequence_size, lambda_size);
 
-  Eigen::VectorXd beta_init = Eigen::VectorXd::Zero(p);
-  double coef0_init = 0.0;
+  // to ensure
+  T2 beta_init;
+  T3 coef0_init;
+  coef_set_zero(p, M, beta_init, coef0_init);
   Eigen::VectorXi A_init;
   Eigen::VectorXd bd_init;
 
