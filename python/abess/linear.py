@@ -172,6 +172,8 @@ class bess_base:
             self.model_type_int = 3
         elif self.model_type == "Cox":
             self.model_type_int = 4
+        elif self.model_type == "MLm":
+            self.model_type_int = 5
         else:
             raise ValueError("model_type should not be " +
                              str(self.model_type))
@@ -269,7 +271,7 @@ class bess_base:
             # print(y)
             y = y[:, 1].reshape(-1)
 
-        if n != y.size:
+        if n != y.shape[0]:
             raise ValueError("X.shape(0) should be equal to y.size")
 
         if is_weight:
@@ -364,9 +366,10 @@ class bess_base:
 
         # print(X[:10, :10])
         # print(y)
-        y = y.reshape(len(y), 1)
-        print(y.shape)
-        print(y)
+        if y.ndim == 1:
+            y = y.reshape(len(y), 1)
+        # print(y.shape)
+        # print(y)
 
         result = pywrap_abess(X, y, self.data_type, weight,
                               is_normal,
@@ -638,6 +641,56 @@ class abessPoisson(bess_base):
             thread=thread
         )
         self.data_type = 2
+
+
+@fix_docs
+class abessMLm(bess_base):
+    """
+    Examples
+    --------
+    ### Sparsity known
+    >>> from bess.linear import *
+    >>> import numpy as np
+    >>> np.random.seed(12345)
+    >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
+    >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
+    >>> xbeta = np.matmul(x, beta)
+    >>> p = np.exp(xbeta)/(1+np.exp(xbeta))
+    >>> y = np.random.binomial(1, p)
+    >>> model = GroupPdasLogistic(path_type="seq", sequence=[5])
+    >>> model.fit(X=x, y=y)
+    >>> model.predict(x)
+
+    ### Sparsity unknown
+    >>> # path_type="seq", Default:sequence=[1,2,...,min(x.shape[0], x.shape[1])]
+    >>> model = GroupPdasLogistic(path_type="seq")
+    >>> model.fit(X=x, y=y)
+    >>> model.predict(x)
+
+    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+    >>> model = GroupPdasLogistic(path_type="pgs")
+    >>> model.fit(X=x, y=y)
+    >>> model.predict(x)
+    """
+
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, sequence=None, lambda_sequence=None, s_min=None, s_max=None,
+                 K_max=None, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", ic_coef=1.0, is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
+                 always_select=[], tau=0.,
+                 primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-8,
+                 early_stop=False, approximate_Newton=False,
+                 thread=1, covariance_update=False
+                 ):
+        super(abessMLm, self).__init__(
+            algorithm_type="abess", model_type="MLm", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, sequence=sequence, lambda_sequence=lambda_sequence, s_min=s_min, s_max=s_max, K_max=K_max,
+            epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
+            always_select=always_select, tau=tau,
+            primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
+            early_stop=early_stop, approximate_Newton=approximate_Newton,
+            thread=thread, covariance_update=covariance_update
+        )
+        self.data_type = 1
+
 
 # @fix_docs
 # class PdasLm(bess_base):

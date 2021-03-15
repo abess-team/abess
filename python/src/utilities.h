@@ -43,14 +43,6 @@ Eigen::VectorXi vector_slice(Eigen::VectorXi &nums, Eigen::VectorXi &ind);
 Eigen::MatrixXd row_slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind);
 Eigen::MatrixXd matrix_slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, int axis);
 
-//Splicing
-// std::vector<int> diff_union(std::vector<int> A, std::vector<int> B, std::vector<int> C);
-// std::vector<int> vec_seg(std::vector<int> ind, std::vector<int> L);
-// std::vector<int> Ac(std::vector<int> A, int N);
-// std::vector<int> max_k(Eigen::VectorXd L, int k);
-// std::vector<int> min_k(Eigen::VectorXd L, int k);
-// Eigen::VectorXi find_ind(std::vector<int> L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int N, int p);
-
 Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind);
 Eigen::VectorXi Ac(Eigen::VectorXi &A, int N);
 Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U);
@@ -70,8 +62,8 @@ void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nu
 void coef_set_zero(int p, int M, Eigen::VectorXd &beta, double &coef0);
 void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0);
 
-void array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis = 0);
-void array_product(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis = 0);
+Eigen::VectorXd array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis = 0);
+Eigen::MatrixXd array_product(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis = 0);
 
 void array_quotient(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis = 0);
 void array_quotient(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis = 0);

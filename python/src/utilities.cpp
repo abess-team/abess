@@ -158,7 +158,7 @@ Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind)
 std::vector<Eigen::MatrixXd> group_XTX(Eigen::MatrixXd &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)
 {
     std::vector<Eigen::MatrixXd> XTX(N);
-    if (model_type == 1)
+    if (model_type == 1 || model_type == 5)
     {
         for (int i = 0; i < N; i++)
         {
@@ -592,11 +592,12 @@ void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0)
     coef0 = Eigen::VectorXd::Zero(M);
 }
 
-void array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis)
+Eigen::VectorXd array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis)
 {
     A = A.array() * B.array();
+    return A;
 }
-void array_product(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis)
+Eigen::MatrixXd array_product(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis)
 {
     if (axis == 0)
     {
@@ -612,6 +613,7 @@ void array_product(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis)
             A.col(i) = A.col(i).array() * B.array();
         }
     }
+    return A;
 }
 
 void array_quotient(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis)

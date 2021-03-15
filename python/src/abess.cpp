@@ -172,6 +172,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
   }
   else
   {
+    cout << "abesscpp2 5" << endl;
     out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd>(x, y,
                                                                              data_type, weight,
                                                                              is_normal,
@@ -192,11 +193,16 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
                                                                              thread,
                                                                              covariance_update,
                                                                              algorithm_mul, algorithm_list_mul);
+    cout << "abesscpp2 6" << endl;
   }
   return out_result;
 };
 
-// [[Rcpp::export]]
+//  T1 for y, XTy, XTone
+//  T2 for beta
+//  T3 for coef0
+//  <Eigen::VectorXd, Eigen::VectorXd, double> for Univariate
+//  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd> for Multivariable
 template <class T1, class T2, class T3>
 List abessCpp(Eigen::MatrixXd x, T1 y,
               int data_type, Eigen::VectorXd weight,

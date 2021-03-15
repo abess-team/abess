@@ -19,7 +19,7 @@ def sample(p, k):
     return select
 
 
-def gen_data(n, p, family, k, rho=0, sigma=1, beta=None, censoring =True, c=1, scal=10):
+def gen_data(n, p, family, k, rho=0, sigma=1, beta=None, censoring=True, c=1, scal=10):
     zero = np.zeros([n, 1])
     ones = np.ones([n, 1])
     X = np.random.normal(0, 1, n*p).reshape(n, p)
@@ -27,7 +27,9 @@ def gen_data(n, p, family, k, rho=0, sigma=1, beta=None, censoring =True, c=1, s
     normX = np.sqrt(np.matmul(ones.reshape(1, n), X ** 2))
     X = np.sqrt(n) * X / normX
 
-    x = X + rho * (np.hstack((zero, X[:, 0:(p-2)], zero)) + np.hstack((zero, X[:, 2:p], zero)))
+    x = X + rho * \
+        (np.hstack((zero, X[:, 0:(p-2)], zero)) +
+         np.hstack((zero, X[:, 2:p], zero)))
 
     nonzero = sample(p, k)
     Tbeta = np.zeros(p)
@@ -82,7 +84,8 @@ def gen_data(n, p, family, k, rho=0, sigma=1, beta=None, censoring =True, c=1, s
         else:
             Tbeta = beta
 
-        time = np.power(-np.log(np.random.uniform(0, 1, n)) / np.exp(np.matmul(x, Tbeta)), 1/scal)
+        time = np.power(-np.log(np.random.uniform(0, 1, n)) /
+                        np.exp(np.matmul(x, Tbeta)), 1/scal)
 
         if censoring:
             ctime = c * np.random.uniform(0, 1, n)
@@ -99,4 +102,5 @@ def gen_data(n, p, family, k, rho=0, sigma=1, beta=None, censoring =True, c=1, s
 
         return data(x, y, Tbeta)
     else:
-        raise ValueError("Family should be \'gaussian\', \'binomial\', \'possion\', or \'cox\'")
+        raise ValueError(
+            "Family should be \'gaussian\', \'binomial\', \'possion\', or \'cox\'")
