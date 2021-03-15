@@ -243,6 +243,10 @@ class bess_base:
         self.p = X.shape[1]
         n = X.shape[0]
         p = X.shape[1]
+        if y.ndim == 1:
+            M = 1
+        else:
+            M = y.shape[1]
 
         if self.algorithm_type_int == 2:
             if group is None:
@@ -388,15 +392,22 @@ class bess_base:
                               self.early_stop, self.approximate_Newton,
                               self.thread,
                               self.covariance_update,
-                              p,
-                              1, 1, 1, 1, 1, 1, p
+                              p * M,
+                              1 * M, 1, 1, 1, 1, 1, p
                               )
 
-        # print(2)
+        # print("linear fit end")
+        # print(len(result))
+        # print(result)
         self.beta = result[0]
         self.coef0 = result[1]
         self.train_loss = result[2]
         self.ic = result[3]
+        # print(self.beta)
+        # print(self.coef0)
+        # print(self.train_loss)
+        # print(self.ic)
+        # print("linear fit end")
         # self.nullloss_out = result[3]
         # self.aic_sequence = result[4]
         # self.bic_sequence = result[5]

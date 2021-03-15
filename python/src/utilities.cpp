@@ -174,8 +174,10 @@ std::vector<Eigen::MatrixXd> Phi(Eigen::MatrixXd &X, Eigen::VectorXi index, Eige
     std::vector<Eigen::MatrixXd> Phi(N);
     for (int i = 0; i < N; i++)
     {
+        cout << "i= " << i << endl;
         Eigen::MatrixXd lambda_XtX = 2 * lambda * Eigen::MatrixXd::Identity(gsize(i), gsize(i)) + group_XTX[i] / double(n);
         lambda_XtX.sqrt().evalTo(Phi[i]);
+        cout << "Phi[i]= " << Phi[i] << endl;
     }
     return Phi;
 }
@@ -186,8 +188,10 @@ std::vector<Eigen::MatrixXd> invPhi(std::vector<Eigen::MatrixXd> &Phi, int N)
     int row;
     for (int i = 0; i < N; i++)
     {
+        cout << "i= " << i << endl;
         row = (Phi[i]).rows();
         invPhi[i] = (Phi[i]).ldlt().solve(Eigen::MatrixXd::Identity(row, row));
+        cout << "Phi[i]= " << invPhi[i] << endl;
     }
     return invPhi;
 }
@@ -645,5 +649,5 @@ double matrix_dot(Eigen::VectorXd &A, Eigen::VectorXd &B)
 
 Eigen::VectorXd matrix_dot(Eigen::MatrixXd &A, Eigen::VectorXd &B)
 {
-    return B * A;
+    return A.transpose() * B;
 }

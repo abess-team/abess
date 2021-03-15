@@ -59,8 +59,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
 {
   bool is_parallel = thread != 1;
 
-  cout << "y: " << endl;
-  cout << y << endl;
+  // cout << "y: " << endl;
+  // cout << y << endl;
 
   Algorithm<Eigen::VectorXd, Eigen::VectorXd, double> *algorithm_uni = nullptr;
   Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd> *algorithm_mul = nullptr;
@@ -172,6 +172,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
   }
   else
   {
+    cout << "y: " << endl;
+    cout << y << endl;
     cout << "abesscpp2 5" << endl;
     out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd>(x, y,
                                                                              data_type, weight,
@@ -194,6 +196,16 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
                                                                              covariance_update,
                                                                              algorithm_mul, algorithm_list_mul);
     cout << "abesscpp2 6" << endl;
+  }
+  delete algorithm_uni;
+  delete algorithm_mul;
+  for (unsigned int i = 0; i < algorithm_list_uni.size(); i++)
+  {
+    delete algorithm_list_uni[i];
+  }
+  for (unsigned int i = 0; i < algorithm_list_mul.size(); i++)
+  {
+    delete algorithm_list_mul[i];
   }
   return out_result;
 };
@@ -263,6 +275,9 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
   // }
 
   Data<T1, T2, T3> data(x, y, data_type, weight, is_normal, g_index, status);
+
+  cout << "y normal :" << endl;
+  cout << y << endl;
 
   // Algorithm<T1, T2, T3> *algorithm = nullptr;
 
@@ -658,7 +673,7 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
 #endif
   }
 
-  delete algorithm;
+  // delete algorithm;
   delete metric;
   // cout << "abess 8" << endl;
   return out_result;
@@ -738,19 +753,54 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
 #endif
 
   // t1 = clock();
-  Eigen::VectorXd beta;
-  double coef0 = 0;
-  double train_loss = 0;
-  double ic = 0;
-  mylist.get_value_by_name("beta", beta);
-  mylist.get_value_by_name("coef0", coef0);
-  mylist.get_value_by_name("train_loss", train_loss);
-  mylist.get_value_by_name("ic", ic);
+  if (y_col == 1)
+  {
+    Eigen::VectorXd beta;
+    double coef0 = 0;
+    double train_loss = 0;
+    double ic = 0;
+    mylist.get_value_by_name("beta", beta);
+    mylist.get_value_by_name("coef0", coef0);
+    mylist.get_value_by_name("train_loss", train_loss);
+    mylist.get_value_by_name("ic", ic);
 
-  VectorXd2Pointer(beta, beta_out);
-  *coef0_out = coef0;
-  *train_loss_out = train_loss;
-  *ic_out = ic;
+    VectorXd2Pointer(beta, beta_out);
+    *coef0_out = coef0;
+    *train_loss_out = train_loss;
+    *ic_out = ic;
+  }
+  else
+  {
+    Eigen::MatrixXd beta;
+    Eigen::VectorXd coef0;
+    double train_loss = 0;
+    double ic = 0;
+    mylist.get_value_by_name("beta", beta);
+    mylist.get_value_by_name("coef0", coef0);
+    mylist.get_value_by_name("train_loss", train_loss);
+    mylist.get_value_by_name("ic", ic);
+    // cout << "beta" << endl;
+    // cout << beta << endl;
+
+    // cout << "coef0" << endl;
+    // cout << coef0 << endl;
+
+    // cout << "train_loss" << endl;
+    // cout << train_loss << endl;
+
+    // cout << "ic" << endl;
+    // cout << ic << endl;
+
+    MatrixXd2Pointer(beta, beta_out);
+    // cout << "1" << endl;
+    VectorXd2Pointer(coef0, coef0_out);
+    // cout << "2" << endl;
+    train_loss_out[0] = train_loss;
+    // cout << "3" << endl;
+    ic_out[0] = ic;
+    // cout << "4" << endl;
+  }
+
   // t2 = clock();
   // std::cout << "result to pointer: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 }
