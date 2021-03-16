@@ -399,7 +399,10 @@ class bess_base:
         # print("linear fit end")
         # print(len(result))
         # print(result)
-        self.beta = result[0]
+        if M != 1:
+            self.beta = result[0].reshape(p, M)
+        else:
+            self.beta = result[0]
         self.coef0 = result[1]
         self.train_loss = result[2]
         self.ic = result[3]

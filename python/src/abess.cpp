@@ -172,8 +172,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
   }
   else
   {
-    cout << "y: " << endl;
-    cout << y << endl;
+    // cout << "y: " << endl;
+    // cout << y << endl;
     cout << "abesscpp2 5" << endl;
     out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd>(x, y,
                                                                              data_type, weight,
@@ -276,8 +276,8 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
 
   Data<T1, T2, T3> data(x, y, data_type, weight, is_normal, g_index, status);
 
-  cout << "y normal :" << endl;
-  cout << y << endl;
+  // cout << "y normal :" << endl;
+  // cout << y << endl;
 
   // Algorithm<T1, T2, T3> *algorithm = nullptr;
 
@@ -318,34 +318,8 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
     metric->set_cv_initial_A(Kfold, data.get_p());
     // metric->set_cv_initial_coef0(Kfold, data.get_p());
 
-    if (model_type == 1)
-      metric->cal_cv_group_XTX(data);
-
-    // if (is_parallel)
-    // {
-    //   for (int i = 0; i < max(Kfold, thread); i++)
-    //   {
-    //     if (algorithm_type == 6)
-    //     {
-    //       if (model_type == 1)
-    //       {
-    //         algorithm_list[i] = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update);
-    //       }
-    //       else if (model_type == 2)
-    //       {
-    //         algorithm_list[i] = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
-    //       }
-    //       else if (model_type == 3)
-    //       {
-    //         algorithm_list[i] = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
-    //       }
-    //       else if (model_type == 4)
-    //       {
-    //         algorithm_list[i] = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
-    //       }
-    //     }
-    //   }
-    // }
+    // if (model_type == 1)
+    //   metric->cal_cv_group_XTX(data);
   }
   // t2 = clock();
 
@@ -367,6 +341,8 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
         {
           sequential_path_cv<T1, T2, T3>(data, algorithm_list[i], metric, sequence, lambda_seq, early_stop, i, result_list[i]);
         }
+
+        cout << "parallel cv end" << endl;
       }
       else
       {
@@ -450,14 +426,16 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
             algorithm_list[i]->XTone = XTone;
           }
         }
-
-#pragma omp parallel for
+// to do
+#pragma omp parallel for num_threads(thread)
         for (int i = 0; i < sequence.size() * lambda_seq.size(); i++)
         {
           int s_index = i / lambda_seq.size();
           int lambda_index = i % lambda_seq.size();
           int algorithm_index = omp_get_thread_num();
-          // cout << "algorithm_index : " << algorithm_index << endl;
+          cout << "algorithm_index : ____________________" << algorithm_index << endl;
+          cout << "s_index : ____________________" << s_index << endl;
+          cout << "lambda_index : ____________________" << lambda_index << endl;
 
           T2 beta_init;
           T3 coef0_init;
@@ -485,7 +463,10 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
           coef0_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_coef0();
           train_loss_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_train_loss();
           ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.g_num, algorithm_list[algorithm_index]);
+          cout << "111111111" << endl;
         }
+
+        cout << "parallel cv 2 end--------" << endl;
       }
       else
       {
@@ -545,6 +526,8 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
       cout << ic_matrix << endl;
     }
   }
+
+  cout << "abesscpp 3 end --------" << endl;
 
   // fit best model
   // int best_s = sequence(min_loss_index_row);

@@ -104,7 +104,6 @@ void sequential_path_cv(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm
             t0 = clock();
             t1 = clock();
 #endif
-
             algorithm->update_sparsity_level(sequence(i));
             algorithm->update_lambda_level(lambda_seq(j));
             algorithm->update_beta_init(beta_init);

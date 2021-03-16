@@ -1,7 +1,7 @@
 //
 // Created by jk on 2020/3/18.
 //
-// #define TEST
+#define TEST
 
 #ifndef SRC_ALGORITHM_H
 #define SRC_ALGORITHM_H
@@ -2426,9 +2426,6 @@ public:
       {
         Eigen::MatrixXd phiG = PhiG[i];
         Eigen::MatrixXd invphiG = invPhiG[i];
-#ifdef TEST
-        cout << "3.5" << endl;
-#endif
         betabar.block(g_index(i), 0, g_size(i), M) = phiG * beta.block(g_index(i), 0, g_size(i), M);
         // betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
         dbar.block(g_index(i), 0, g_size(i), M) = invphiG * d.block(g_index(i), 0, g_size(i), M);
