@@ -51,7 +51,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
                bool covariance_update);
 
 template <class T1, class T2, class T3>
-List abessCpp(Eigen::MatrixXd x, T1 y,
+List abessCpp(Eigen::MatrixXd &x, T1 &y,
               int data_type, Eigen::VectorXd weight,
               bool is_normal,
               int algorithm_type, int model_type, int max_iter, int exchange_num,

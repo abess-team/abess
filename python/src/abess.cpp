@@ -71,6 +71,20 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
 {
   bool is_parallel = thread != 1;
 
+#ifdef _OPENMP
+  // Eigen::initParallel();
+  if (thread == 0)
+  {
+    thread = omp_get_max_threads();
+  }
+  Eigen::setNbThreads(thread);
+  // omp_set_num_threads(thread);
+#ifdef TEST
+  cout << Eigen::nbThreads() << " Threads for eigen." << endl;
+  cout << omp_get_num_threads() << " Threads for omp." << endl;
+#endif
+#endif
+
   // cout << "y: " << endl;
   // cout << y << endl;
 
@@ -228,7 +242,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
 //  <Eigen::VectorXd, Eigen::VectorXd, double> for Univariate
 //  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd> for Multivariable
 template <class T1, class T2, class T3>
-List abessCpp(Eigen::MatrixXd x, T1 y,
+List abessCpp(Eigen::MatrixXd &x, T1 &y,
               int data_type, Eigen::VectorXd weight,
               bool is_normal,
               int algorithm_type, int model_type, int max_iter, int exchange_num,
@@ -261,20 +275,6 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
 
   bool is_parallel = thread != 1;
 
-#ifdef _OPENMP
-  // Eigen::initParallel();
-  if (thread == 0)
-  {
-    thread = omp_get_max_threads();
-  }
-  Eigen::setNbThreads(thread);
-  // omp_set_num_threads(thread);
-#ifdef TEST
-  cout << Eigen::nbThreads() << " Threads for eigen." << endl;
-  cout << omp_get_num_threads() << " Threads for omp." << endl;
-#endif
-#endif
-
   int p = x.cols();
   // int n = x.rows();
   int M = y.cols();
@@ -287,33 +287,6 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
   // }
 
   Data<T1, T2, T3> data(x, y, data_type, weight, is_normal, g_index, status);
-
-  // cout << "y normal :" << endl;
-  // cout << y << endl;
-
-  // Algorithm<T1, T2, T3> *algorithm = nullptr;
-
-  //////////////////// function generate_algorithm_pointer() ////////////////////////////
-  // // to do
-  // if (algorithm_type == 6)
-  // {
-  //   if (model_type == 1)
-  //   {
-  //     algorithm = new abessLm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update);
-  //   }
-  //   else if (model_type == 2)
-  //   {
-  //     algorithm = new abessLogistic(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
-  //   }
-  //   else if (model_type == 3)
-  //   {
-  //     algorithm = new abessPoisson(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
-  //   }
-  //   else if (model_type == 4)
-  //   {
-  //     algorithm = new abessCox(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select);
-  //   }
-  // }
 
   Metric<T1, T2, T3> *metric = new Metric<T1, T2, T3>(ic_type, ic_coef, is_cv, Kfold);
 
@@ -383,6 +356,7 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
   //         result = gs_path(data, algorithm, metric, s_min, s_max, K_max, epsilon);
   //     }
   // }
+
 #ifdef TEST
   t2 = clock();
   std::cout << "path time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
