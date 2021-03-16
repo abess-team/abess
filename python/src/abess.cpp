@@ -120,7 +120,9 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
     }
   }
 
-  cout << "abesscpp2 1" << endl;
+#ifdef TEST
+    cout << "abesscpp2 1" << endl;
+#endif
 
   vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double> *> algorithm_list_uni(max(Kfold, thread));
   vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd> *> algorithm_list_mul(max(Kfold, thread));
@@ -160,20 +162,26 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
       }
     }
   }
-  cout << "abesscpp2 2" << endl;
+#ifdef TEST
+    cout << "abesscpp2 2" << endl;
+#endif
 
   List out_result;
   if (y.cols() == 1)
   {
+#ifdef TEST
     cout << "abesscpp2 3" << endl;
+#endif
     Eigen::VectorXd y_vec = Eigen::VectorXd::Zero(y.rows());
     for (int i = 0; i < y.rows(); i++)
     {
       y_vec(i) = y(i, 0);
     }
+#ifdef TEST
     cout << "y_vec: " << endl;
     cout << y_vec << endl;
     cout << "abesscpp2 4" << endl;
+#endif
     out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double>(x, y_vec,
                                                                     data_type, weight,
                                                                     is_normal,
@@ -194,13 +202,17 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
                                                                     thread,
                                                                     covariance_update,
                                                                     algorithm_uni, algorithm_list_uni);
+#ifdef TEST
     cout << "abesscpp2 5" << endl;
+#endif
   }
   else
   {
     // cout << "y: " << endl;
     // cout << y << endl;
+#ifdef TEST
     cout << "abesscpp2 5" << endl;
+#endif
     out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd>(x, y,
                                                                              data_type, weight,
                                                                              is_normal,
@@ -221,7 +233,9 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
                                                                              thread,
                                                                              covariance_update,
                                                                              algorithm_mul, algorithm_list_mul);
+#ifdef TEST
     cout << "abesscpp2 6" << endl;
+#endif
   }
   delete algorithm_uni;
   delete algorithm_mul;
