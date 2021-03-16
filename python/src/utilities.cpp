@@ -155,39 +155,39 @@ Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind)
     }
 }
 
-std::vector<Eigen::MatrixXd> group_XTX(Eigen::MatrixXd &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)
+Eigen::Matrix<Eigen::MatrixXd, -1, -1> group_XTX(Eigen::MatrixXd &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)
 {
-    std::vector<Eigen::MatrixXd> XTX(N);
+    Eigen::Matrix<Eigen::MatrixXd, -1, -1> XTX(N, 1);
     if (model_type == 1 || model_type == 5)
     {
         for (int i = 0; i < N; i++)
         {
             Eigen::MatrixXd X_ind = X.block(0, index(i), n, gsize(i));
-            XTX[i] = X_ind.transpose() * X_ind;
+            XTX(i, 0) = X_ind.transpose() * X_ind;
         }
     }
     return XTX;
 }
 
-std::vector<Eigen::MatrixXd> Phi(Eigen::MatrixXd &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, double lambda, std::vector<Eigen::MatrixXd> group_XTX)
+Eigen::Matrix<Eigen::MatrixXd, -1, -1> Phi(Eigen::MatrixXd &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, double lambda, Eigen::Matrix<Eigen::MatrixXd, -1, -1> group_XTX)
 {
-    std::vector<Eigen::MatrixXd> Phi(N);
+    Eigen::Matrix<Eigen::MatrixXd, -1, -1> Phi(N, 1);
     for (int i = 0; i < N; i++)
     {
-        Eigen::MatrixXd lambda_XtX = 2 * lambda * Eigen::MatrixXd::Identity(gsize(i), gsize(i)) + group_XTX[i] / double(n);
-        lambda_XtX.sqrt().evalTo(Phi[i]);
+        Eigen::MatrixXd lambda_XtX = 2 * lambda * Eigen::MatrixXd::Identity(gsize(i), gsize(i)) + group_XTX(i, 0) / double(n);
+        lambda_XtX.sqrt().evalTo(Phi(i, 0));
     }
     return Phi;
 }
 
-std::vector<Eigen::MatrixXd> invPhi(std::vector<Eigen::MatrixXd> &Phi, int N)
+Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &Phi, int N)
 {
-    std::vector<Eigen::MatrixXd> invPhi(N);
+    Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(N, 1);
     int row;
     for (int i = 0; i < N; i++)
     {
-        row = (Phi[i]).rows();
-        invPhi[i] = (Phi[i]).ldlt().solve(Eigen::MatrixXd::Identity(row, row));
+        row = (Phi(i, 0)).rows();
+        invPhi(i, 0) = (Phi(i, 0)).ldlt().solve(Eigen::MatrixXd::Identity(row, row));
     }
     return invPhi;
 }

@@ -58,10 +58,12 @@ public:
   Eigen::VectorXi A_out;
   Eigen::VectorXi I_out;
 
-  vector<Eigen::MatrixXd> PhiG;
-  vector<Eigen::MatrixXd> invPhiG;
+  Eigen::Matrix<Eigen::MatrixXd, -1, -1> PhiG;
 
-  std::vector<Eigen::MatrixXd> group_XTX;
+  Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhiG;
+
+  Eigen::Matrix<Eigen::MatrixXd, -1, -1> group_XTX;
+
   Eigen::VectorXi always_select;
   double tau;
   int primary_model_fit_max_iter;
@@ -114,9 +116,9 @@ public:
     this->covariance_update = covariance_update;
   };
 
-  void update_PhiG(vector<Eigen::MatrixXd> &PhiG) { this->PhiG = PhiG; }
+  void update_PhiG(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &PhiG) { this->PhiG = PhiG; }
 
-  void update_invPhiG(vector<Eigen::MatrixXd> &invPhiG) { this->invPhiG = invPhiG; }
+  void update_invPhiG(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &invPhiG) { this->invPhiG = invPhiG; }
 
   void set_warm_start(bool warm_start) { this->warm_start = warm_start; }
 
@@ -144,7 +146,7 @@ public:
 
   void update_exchange_num(int exchange_num) { this->exchange_num = exchange_num; }
 
-  void update_group_XTX(std::vector<Eigen::MatrixXd> &group_XTX)
+  void update_group_XTX(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &group_XTX)
   {
     this->group_XTX = group_XTX;
   }
@@ -200,7 +202,7 @@ public:
 
     if (this->model_type == 1 || this->model_type == 5)
     {
-      if (this->algorithm_type == 6 && this->PhiG.size() == 0)
+      if (this->algorithm_type == 6 && this->PhiG.rows() == 0)
       {
         this->PhiG = Phi(train_x, g_index, g_size, train_n, p, N, this->lambda_level, this->group_XTX);
         this->invPhiG = invPhi(PhiG, N);
@@ -865,8 +867,8 @@ public:
 #endif
       for (int i = 0; i < N; i++)
       {
-        Eigen::MatrixXd phiG = PhiG[i];
-        Eigen::MatrixXd invphiG = invPhiG[i];
+        Eigen::MatrixXd phiG = PhiG(i, 0);
+        Eigen::MatrixXd invphiG = invPhiG(i, 0);
         betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
         dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
       }
@@ -1239,8 +1241,8 @@ public:
 #endif
     for (int i = 0; i < N; i++)
     {
-      phiG = PhiG[i];
-      invphiG = invPhiG[i];
+      phiG = PhiG(i, 0);
+      invphiG = invPhiG(i, 0);
       betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
       dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
     }
@@ -2424,8 +2426,8 @@ public:
 #endif
       for (int i = 0; i < N; i++)
       {
-        Eigen::MatrixXd phiG = PhiG[i];
-        Eigen::MatrixXd invphiG = invPhiG[i];
+        Eigen::MatrixXd phiG = PhiG(i, 0);
+        Eigen::MatrixXd invphiG = invPhiG(i, 0);
         betabar.block(g_index(i), 0, g_size(i), M) = phiG * beta.block(g_index(i), 0, g_size(i), M);
         // betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
         dbar.block(g_index(i), 0, g_size(i), M) = invphiG * d.block(g_index(i), 0, g_size(i), M);
@@ -2535,21 +2537,23 @@ public:
       {
         if (beta.size() != 0)
         {
-          // clock_t t1 = clock();
+          clock_t t1 = clock();
 
           this->covariance_update_f(X, A_ind);
-          // clock_t t2 = clock();
-          // std::cout << "covariance_update_f: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-          // std::cout << "this->covariance_update_flag sum: " << this->covariance_update_flag.sum() << endl;
-          // t1 = clock();
+          clock_t t2 = clock();
+          std::cout << "covariance_update_f: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+          std::cout << "this->covariance_update_flag sum: " << this->covariance_update_flag.sum() << endl;
+          t1 = clock();
           Eigen::MatrixXd XTXbeta = X_seg(this->covariance, this->covariance.rows(), A_ind) * beta;
-          // t2 = clock();
-          // std::cout << "X beta time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+          t2 = clock();
+          std::cout << "X beta time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 
           // Eigen::VectorXd XTonecoef0 = ;
           Eigen::MatrixXd d = (this->XTy - XTXbeta - array_product(this->XTone, coef0)) / double(n);
-          // std::cout << "d 1" << endl;
+          cout << d.rows() << " " << d.cols() << endl;
+          std::cout << "d 1" << endl;
           d_I = matrix_slice(d, I_ind, 0);
+          std::cout << "d 2" << endl;
           // d_I = XI.adjoint() * (y - XA * beta - coef0 * one) / double(n);
         }
         else
@@ -2615,6 +2619,9 @@ public:
 
     Eigen::VectorXi I_ind = find_ind(I, g_index, g_size, p, N);
     Eigen::MatrixXd d_I = this->dual(X, X_A, y, beta_A, coef0, weights, n, h, A_ind, I_ind);
+    cout << "3" << endl;
+    cout << d_I.rows() << " " << d_I.cols() << endl;
+    cout << I_ind.size() << endl;
 
     for (int k = 0; k < I_ind.size(); k++)
     {
@@ -2635,8 +2642,8 @@ public:
 #endif
     for (int i = 0; i < N; i++)
     {
-      Eigen::MatrixXd phiG = PhiG[i];
-      Eigen::MatrixXd invphiG = invPhiG[i];
+      Eigen::MatrixXd phiG = PhiG(i, 0);
+      Eigen::MatrixXd invphiG = invPhiG(i, 0);
       betabar.block(g_index(i), 0, g_size(i), M) = phiG * beta.block(g_index(i), 0, g_size(i), M);
       // betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
       dbar.block(g_index(i), 0, g_size(i), M) = invphiG * d.block(g_index(i), 0, g_size(i), M);
@@ -3045,8 +3052,8 @@ public:
 #endif
       for (int i = 0; i < N; i++)
       {
-        Eigen::MatrixXd phiG = PhiG[i];
-        Eigen::MatrixXd invphiG = invPhiG[i];
+        Eigen::MatrixXd phiG = PhiG(i, 0);
+        Eigen::MatrixXd invphiG = invPhiG(i, 0);
 #ifdef TEST
         cout << "3.5" << endl;
 #endif
@@ -3159,13 +3166,13 @@ public:
       {
         if (beta.size() != 0)
         {
-          // clock_t t1 = clock();
+          clock_t t1 = clock();
 
           this->covariance_update_f(X, A_ind);
-          // clock_t t2 = clock();
-          // std::cout << "covariance_update_f: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-          // std::cout << "this->covariance_update_flag sum: " << this->covariance_update_flag.sum() << endl;
-          // t1 = clock();
+          clock_t t2 = clock();
+          std::cout << "covariance_update_f: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+          std::cout << "this->covariance_update_flag sum: " << this->covariance_update_flag.sum() << endl;
+          t1 = clock();
           Eigen::MatrixXd XTXbeta = X_seg(this->covariance, this->covariance.rows(), A_ind) * beta;
           // t2 = clock();
           // std::cout << "X beta time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
@@ -3259,8 +3266,8 @@ public:
 #endif
     for (int i = 0; i < N; i++)
     {
-      Eigen::MatrixXd phiG = PhiG[i];
-      Eigen::MatrixXd invphiG = invPhiG[i];
+      Eigen::MatrixXd phiG = PhiG(i, 0);
+      Eigen::MatrixXd invphiG = invPhiG(i, 0);
       betabar.block(g_index(i), 0, g_size(i), M) = phiG * beta.block(g_index(i), 0, g_size(i), M);
       // betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
       dbar.block(g_index(i), 0, g_size(i), M) = invphiG * d.block(g_index(i), 0, g_size(i), M);

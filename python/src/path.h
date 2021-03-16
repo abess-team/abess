@@ -67,7 +67,9 @@ void sequential_path_cv(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm
         test_n = test_mask.size();
     }
 
-    vector<Eigen::MatrixXd> train_group_XTX = group_XTX(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
+    Eigen::Matrix<Eigen::MatrixXd, -1, -1> train_group_XTX = group_XTX(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
+    algorithm->update_group_XTX(train_group_XTX);
+
     if (algorithm->covariance_update)
     {
         algorithm->covariance_update_flag = Eigen::VectorXi::Zero(p);
@@ -110,7 +112,6 @@ void sequential_path_cv(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm
             algorithm->update_bd_init(bd_init);
             algorithm->update_coef0_init(coef0_init);
             algorithm->update_A_init(A_init, N);
-            algorithm->update_group_XTX(train_group_XTX);
 
             algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N, status);
 #ifdef TEST

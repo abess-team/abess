@@ -28,6 +28,18 @@ using namespace Rcpp;
 #ifdef _OPENMP
 #include <omp.h>
 // [[Rcpp::plugins(openmp)]]
+#else
+#ifndef DISABLE_OPENMP
+// use pragma message instead of warning
+#pragma message("Warning: OpenMP is not available, "                 \
+                "project will be compiled into single-thread code. " \
+                "Use OpenMP-enabled compiler to get benefit of multi-threading.")
+#endif
+inline int omp_get_thread_num() { return 0; }
+inline int omp_get_num_threads() { return 1; }
+inline int omp_get_num_procs() { return 1; }
+inline void omp_set_num_threads(int nthread) {}
+inline void omp_set_dynamic(int flag) {}
 #endif
 
 // #ifdef OTHER_ALGORITHM2
@@ -256,10 +268,10 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
     thread = omp_get_max_threads();
   }
   Eigen::setNbThreads(thread);
-  omp_set_num_threads(thread);
+  // omp_set_num_threads(thread);
 #ifdef TEST
   cout << Eigen::nbThreads() << " Threads for eigen." << endl;
-  cout << omp_get_thread_num() << " Threads for omp." << endl;
+  cout << omp_get_num_threads() << " Threads for omp." << endl;
 #endif
 #endif
 
@@ -402,11 +414,11 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
       }
       test_loss_sum.minCoeff(&min_loss_index_row, &min_loss_index_col);
 
-      vector<Eigen::MatrixXd> full_group_XTX = group_XTX(data.x, data.g_index, data.g_size, data.n, data.p, data.g_num, model_type);
+      Eigen::Matrix<Eigen::MatrixXd, -1, -1> full_group_XTX = group_XTX(data.x, data.g_index, data.g_size, data.n, data.p, data.g_num, model_type);
 
       Eigen::MatrixXd covariance;
-      Eigen::VectorXd XTy;
-      Eigen::VectorXd XTone;
+      T1 XTy;
+      T1 XTone;
       if (covariance_update)
       {
         // covariance = data.x.transpose() * data.x;
@@ -425,6 +437,10 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
             algorithm_list[i]->XTy = XTy;
             algorithm_list[i]->XTone = XTone;
           }
+
+          algorithm_list[i]->update_group_XTX(full_group_XTX);
+
+          algorithm_list[i]->PhiG = Eigen::Matrix<Eigen::MatrixXd, -1, -1>(0, 0);
         }
 // to do
 #pragma omp parallel for num_threads(thread)
@@ -454,7 +470,7 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
           algorithm_list[algorithm_index]->update_beta_init(beta_init);
           algorithm_list[algorithm_index]->update_coef0_init(coef0_init);
           algorithm_list[algorithm_index]->update_bd_init(bd_init);
-          algorithm_list[algorithm_index]->update_group_XTX(full_group_XTX);
+
           // cout << "abess 5" << endl;
 
           algorithm_list[algorithm_index]->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, data.status);
@@ -476,6 +492,11 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
           algorithm->XTy = XTy;
           algorithm->XTone = XTone;
         }
+
+        algorithm->update_group_XTX(full_group_XTX);
+
+        algorithm->PhiG = Eigen::Matrix<Eigen::MatrixXd, -1, -1>(0, 0);
+
         // cout << "cv not parallel" << endl;
         for (int i = 0; i < sequence.size() * lambda_seq.size(); i++)
         {
@@ -501,7 +522,6 @@ List abessCpp(Eigen::MatrixXd x, T1 y,
           algorithm->update_beta_init(beta_init);
           algorithm->update_coef0_init(coef0_init);
           algorithm->update_bd_init(bd_init);
-          algorithm->update_group_XTX(full_group_XTX);
 
           algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, data.status);
 
