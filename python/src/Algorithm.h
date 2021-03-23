@@ -3134,13 +3134,13 @@ public:
       Eigen::MatrixXd XTX = X.transpose() * X;
       Eigen::MatrixXd invXTX = XTX.ldlt().solve(Eigen::MatrixXd::Identity(p + 1, p + 1));
 
-      cout << "y: " << y.rows() << " " << y.cols() << endl;
-      cout << "Pi: " << Pi.rows() << " " << Pi.cols() << endl;
+      // cout << "y: " << y.rows() << " " << y.cols() << endl;
+      // cout << "Pi: " << Pi.rows() << " " << Pi.cols() << endl;
 
-      cout << "Pi: " << Pi << endl;
-      cout << "t: " << t << endl;
-      cout << "invXTX: " << invXTX << endl;
-      cout << "one: " << invXTX * XTX << endl;
+      // cout << "Pi: " << Pi << endl;
+      // cout << "t: " << t << endl;
+      // cout << "invXTX: " << invXTX << endl;
+      // cout << "one: " << invXTX * XTX << endl;
 
       Eigen::MatrixXd beta1;
       for (j = 0; j < this->primary_model_fit_max_iter; j++)
@@ -3151,7 +3151,7 @@ public:
 
         // beta1 = beta0 + cg.solve(res);
         beta1 = beta0 + invXTX * res;
-        cout << "beta1: " << beta1 << endl;
+        // cout << "beta1: " << beta1 << endl;
 
         double app_loss0, app_loss1, app_loss2;
         app_loss0 = ((y - Pi) / t).squaredNorm();
