@@ -121,7 +121,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
   }
 
 #ifdef TEST
-    cout << "abesscpp2 1" << endl;
+  cout << "abesscpp2 1" << endl;
 #endif
 
   vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double> *> algorithm_list_uni(max(Kfold, thread));
@@ -163,7 +163,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
     }
   }
 #ifdef TEST
-    cout << "abesscpp2 2" << endl;
+  cout << "abesscpp2 2" << endl;
 #endif
 
   List out_result;
