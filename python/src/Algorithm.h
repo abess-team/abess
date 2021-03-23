@@ -170,6 +170,7 @@ public:
     if (N == T0)
     {
       this->primary_model_fit(train_x, train_y, train_weight, this->beta, this->coef0, DBL_MAX);
+      this->train_loss = neg_loglik_loss(train_x, train_y, train_weight, this->beta, this->coef0);
       this->A_out = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
       return;
     }
@@ -3103,8 +3104,8 @@ public:
     int M = y.cols();
     Eigen::MatrixXd X = Eigen::MatrixXd::Ones(n, p + 1);
     X.rightCols(p) = x;
-    Eigen::MatrixXd X_new = Eigen::MatrixXd::Zero(n, p + 1);
-    Eigen::MatrixXd X_new_transpose = Eigen::MatrixXd::Zero(p + 1, n);
+    // Eigen::MatrixXd X_new = Eigen::MatrixXd::Zero(n, p + 1);
+    // Eigen::MatrixXd X_new_transpose = Eigen::MatrixXd::Zero(p + 1, n);
     Eigen::MatrixXd beta0 = Eigen::MatrixXd::Zero(p + 1, M);
 #ifdef TEST
     std::cout << "primary_model_fit 2" << endl;
@@ -3134,13 +3135,13 @@ public:
       Eigen::MatrixXd XTX = X.transpose() * X;
       Eigen::MatrixXd invXTX = XTX.ldlt().solve(Eigen::MatrixXd::Identity(p + 1, p + 1));
 
-      // cout << "y: " << y.rows() << " " << y.cols() << endl;
-      // cout << "Pi: " << Pi.rows() << " " << Pi.cols() << endl;
+      cout << "y: " << y.rows() << " " << y.cols() << endl;
+      cout << "Pi: " << Pi.rows() << " " << Pi.cols() << endl;
 
-      // cout << "Pi: " << Pi << endl;
-      // cout << "t: " << t << endl;
-      // cout << "invXTX: " << invXTX << endl;
-      // cout << "one: " << invXTX * XTX << endl;
+      cout << "Pi: " << Pi << endl;
+      cout << "t: " << t << endl;
+      cout << "invXTX: " << invXTX << endl;
+      cout << "one: " << invXTX * XTX << endl;
 
       Eigen::MatrixXd beta1;
       for (j = 0; j < this->primary_model_fit_max_iter; j++)
@@ -3151,7 +3152,7 @@ public:
 
         // beta1 = beta0 + cg.solve(res);
         beta1 = beta0 + invXTX * res;
-        // cout << "beta1: " << beta1 << endl;
+        cout << "beta1: " << beta1 << endl;
 
         double app_loss0, app_loss1, app_loss2;
         app_loss0 = ((y - Pi) / t).squaredNorm();
@@ -3189,7 +3190,6 @@ public:
     else
     {
       /* Newton */
-      // Eigen::Matrix<Eigen::MatrixXd, -1, -1> W(M, M);
       Eigen::MatrixXd W(M * n, M * n);
       Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
       for (int m1 = 0; m1 < M; m1++)
@@ -3198,12 +3198,10 @@ public:
         {
           if (m1 == m2)
           {
-            // W(m1, m2) = Eigen::MatrixXd::Zero(n, n);
-            // W(m1, m2).diagonal() = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
-
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 #ifdef TEST
             std::cout << "primary_model_fit 5" << endl;
+
 #endif
             Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
             for (int i = 0; i < PiPj.size(); i++)
@@ -3214,8 +3212,10 @@ public:
               }
             }
             W.block(m1 * n, m2 * n, n, n).diagonal() = PiPj;
+
 #ifdef TEST
             std::cout << "primary_model_fit 6" << endl;
+            cout << "W m1 m2: " << W.block(m1 * n, m2 * n, n, n) << endl;
 #endif
           }
           else
@@ -3223,20 +3223,20 @@ public:
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 #ifdef TEST
             std::cout << "primary_model_fit 5" << endl;
+
 #endif
-            Eigen::VectorXd PiPj = -Pi.col(m1).array() * Pi.col(m2).array();
+            Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array();
             for (int i = 0; i < PiPj.size(); i++)
             {
-              if (PiPj(i) > -0.001)
+              if (PiPj(i) < 0.001)
               {
-                PiPj(i) = -0.001;
+                PiPj(i) = 0.001;
               }
             }
-            W.block(m1 * n, m2 * n, n, n).diagonal() = PiPj;
-#ifdef TEST
-            std::cout << "primary_model_fit 6" << endl;
-#endif
+            W.block(m1 * n, m2 * n, n, n).diagonal() = -PiPj;
             W.block(m2 * n, m1 * n, n, n) = W.block(m1 * n, m2 * n, n, n);
+
+            cout << "W m1 m2: " << W.block(m1 * n, m2 * n, n, n) << endl;
           }
         }
       }
@@ -3244,19 +3244,14 @@ public:
 #ifdef TEST
       std::cout << "primary_model_fit 7" << endl;
 #endif
+      cout << "W: " << W << endl;
 
-      // Eigen::Matrix<Eigen::MatrixXd, -1, -1> XTWX(M, M);
-      // Eigen::Matrix<Eigen::MatrixXd, -1, -1> XTW(M, M);
       Eigen::MatrixXd XTWX(M * (p + 1), M * (p + 1));
       Eigen::MatrixXd XTW(M * (p + 1), M * n);
       for (int m1 = 0; m1 < M; m1++)
       {
         for (int m2 = m1; m2 < M; m2++)
         {
-          // XTW(m1, m2) = X.transpose() * W(m1, m2);
-          // XTWX(m1, m2) = XTW(m1, m2) * X;
-          // XTW(m2, m1) = XTW(m1, m2);
-          // XTWX(m2, m1) = XTWX(m1, m2);
           XTW.block(m1 * (p + 1), m2 * n, (p + 1), n) = X.transpose() * W.block(m1 * n, m2 * n, n, n);
           XTWX.block(m1 * (p + 1), m2 * (p + 1), (p + 1), (p + 1)) = XTW.block(m1 * (p + 1), m2 * n, (p + 1), n) * X;
           XTW.block(m2 * (p + 1), m1 * n, (p + 1), n) = XTW.block(m1 * (p + 1), m2 * n, (p + 1), n);
@@ -3300,155 +3295,100 @@ public:
       std::cout << "primary_model_fit 2" << endl;
 #endif
 
-      // cout << "l0 loglik: " << loglik0 << endl;
-
-      // int j;
-      // double step = 1;
-      // Eigen::MatrixXd g(p + 1);
       Eigen::MatrixXd beta1;
-      // Eigen::Matrix<Eigen::MatrixXd, -1, -1> beta0_tmp;
       Eigen::VectorXd beta0_tmp;
       for (j = 0; j < this->primary_model_fit_max_iter; j++)
       {
 #ifdef TEST
         std::cout << "primary_model_fit 3: " << j << endl;
 #endif
-        // To do: Approximate Newton method
-        if (this->approximate_Newton)
+        beta0_tmp = XTWX.ldlt().solve(XTW * Z);
+        for (int m1 = 0; m1 < M; m1++)
         {
-          // for (int i = 0; i < p + 1; i++)
-          // {
-          //   X_new.col(i) = X.col(i).cwiseProduct(W).cwiseProduct(weights);
-          // }
-          X_new_transpose = X.transpose() * W;
-
-          beta0 = (X_new_transpose * X).ldlt().solve(X_new_transpose * Z);
-
-          // CG
-          // ConjugateGradient<MatrixXd, Lower | Upper> cg;
-          // cg.compute(X_new_transpose * X);
-          // beta0 = cg.solveWithGuess(X_new_transpose * Z, beta0);
-
-          Pi = pi(X, y, beta0);
-          log_Pi = Pi.array().log();
-          array_product(log_Pi, weights, 1);
-          loglik1 = (log_Pi.array() * y.array()).sum();
-          // cout << "j=" << j << " loglik: " << loglik1 << endl;
-          // cout << "j=" << j << " loglik diff: " << loglik0 - loglik1 << endl;
-          bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + tau > loss0;
-          // bool condition1 = false;
-          bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
-          bool condition3 = abs(loglik1) < min(1e-3, tau);
-          if (condition1 || condition2 || condition3)
-          {
-            // cout << "condition1:" << condition1 << endl;
-            // cout << "condition2:" << condition2 << endl;
-            // cout << "condition3:" << condition3 << endl;
-            break;
-          }
-
-          loglik0 = loglik1;
-          W = Pi.transpose() * Pi;
-          W.diagonal() = W.diagonal() - Pi.colwise().sum();
-          Z = X * beta0 + (y - Pi).cwiseQuotient(W);
+          beta0.col(m1) = beta0_tmp.segment(m1 * (p + 1), (p + 1));
         }
-        else
+        cout << "beta0" << beta0 << endl;
+
+        Pi = pi(X, y, beta0);
+        log_Pi = Pi.array().log();
+        array_product(log_Pi, weights, 1);
+        loglik1 = (log_Pi.array() * y.array()).sum();
+        cout << "loss" << loglik1 << endl;
+        // cout << "j=" << j << " loglik: " << loglik1 << endl;
+        // cout << "j=" << j << " loglik diff: " << loglik0 - loglik1 << endl;
+        bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + tau > loss0;
+        // bool condition1 = false;
+        bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
+        bool condition3 = abs(loglik1) < min(1e-3, tau);
+        bool condition4 = loglik1 < loglik0;
+        if (condition1 || condition2 || condition3 || condition4)
         {
-          beta0_tmp = XTWX.ldlt().solve(XTW * Z);
-          for (int m1 = 0; m1 < M; m1++)
-          {
-            beta0.col(m1) = beta0_tmp.segment(m1 * (p + 1), (p + 1));
-          }
-          cout << "beta0" << beta0 << endl;
-          // CG
-          // ConjugateGradient<MatrixXd, Lower | Upper> cg;
-          // cg.compute(X_new_transpose * X);
-          // beta0 = cg.solveWithGuess(X_new_transpose * Z, beta0);
+          // cout << "condition1:" << condition1 << endl;
+          // cout << "condition2:" << condition2 << endl;
+          // cout << "condition3:" << condition3 << endl;
+          break;
+        }
+        loglik0 = loglik1;
 
-          Pi = pi(X, y, beta0);
-          log_Pi = Pi.array().log();
-          array_product(log_Pi, weights, 1);
-          loglik1 = (log_Pi.array() * y.array()).sum();
-          cout << "loss" << loglik1 << endl;
-          // cout << "j=" << j << " loglik: " << loglik1 << endl;
-          // cout << "j=" << j << " loglik diff: " << loglik0 - loglik1 << endl;
-          bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + tau > loss0;
-          // bool condition1 = false;
-          bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
-          bool condition3 = abs(loglik1) < min(1e-3, tau);
-          bool condition4 = loglik1 < loglik0;
-          if (condition1 || condition2 || condition3 || condition4)
+        for (int m1 = 0; m1 < M; m1++)
+        {
+          for (int m2 = m1; m2 < M; m2++)
           {
-            // cout << "condition1:" << condition1 << endl;
-            // cout << "condition2:" << condition2 << endl;
-            // cout << "condition3:" << condition3 << endl;
-            break;
-          }
-          loglik0 = loglik1;
-
-          for (int m1 = 0; m1 < M; m1++)
-          {
-            for (int m2 = m1; m2 < M; m2++)
+            if (m1 == m2)
             {
-              if (m1 == m2)
-              {
-                // W(m1, m2) = Eigen::MatrixXd::Zero(n, n);
-                // W(m1, m2).diagonal() = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
+              // W(m1, m2) = Eigen::MatrixXd::Zero(n, n);
+              // W(m1, m2).diagonal() = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
 
-                W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
-                Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
-                for (int i = 0; i < PiPj.size(); i++)
-                {
-                  if (PiPj(i) < 0.001)
-                  {
-                    PiPj(i) = 0.001;
-                  }
-                }
-                W.block(m1 * n, m2 * n, n, n).diagonal() = PiPj;
-              }
-              else
+              W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
+              Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
+              for (int i = 0; i < PiPj.size(); i++)
               {
-                W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
-                Eigen::VectorXd PiPj = -Pi.col(m1).array() * Pi.col(m2).array();
-                for (int i = 0; i < PiPj.size(); i++)
+                if (PiPj(i) < 0.001)
                 {
-                  if (PiPj(i) > -0.001)
-                  {
-                    PiPj(i) = -0.001;
-                  }
+                  PiPj(i) = 0.001;
                 }
-                W.block(m1 * n, m2 * n, n, n).diagonal() = PiPj;
-                W.block(m2 * n, m1 * n, n, n) = W.block(m1 * n, m2 * n, n, n);
               }
+              W.block(m1 * n, m2 * n, n, n).diagonal() = PiPj;
+            }
+            else
+            {
+              W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
+              Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array();
+              for (int i = 0; i < PiPj.size(); i++)
+              {
+                if (PiPj(i) < 0.001)
+                {
+                  PiPj(i) = 0.001;
+                }
+              }
+              W.block(m1 * n, m2 * n, n, n).diagonal() = -PiPj;
+              W.block(m2 * n, m1 * n, n, n) = W.block(m1 * n, m2 * n, n, n);
             }
           }
-
-          for (int m1 = 0; m1 < M; m1++)
-          {
-            for (int m2 = m1; m2 < M; m2++)
-            {
-              // XTW(m1, m2) = X.transpose() * W(m1, m2);
-              // XTWX(m1, m2) = XTW(m1, m2) * X;
-              // XTW(m2, m1) = XTW(m1, m2);
-              // XTWX(m2, m1) = XTWX(m1, m2);
-              XTW.block(m1 * (p + 1), m2 * n, (p + 1), n) = X.transpose() * W.block(m1 * n, m2 * n, n, n);
-              XTWX.block(m1 * (p + 1), m2 * (p + 1), (p + 1), (p + 1)) = XTW.block(m1 * (p + 1), m2 * n, (p + 1), n) * X;
-              XTW.block(m2 * (p + 1), m1 * n, (p + 1), n) = XTW.block(m1 * (p + 1), m2 * n, (p + 1), n);
-              XTWX.block(m2 * (p + 1), m1 * (p + 1), (p + 1), (p + 1)) = XTWX.block(m1 * (p + 1), m2 * (p + 1), (p + 1), (p + 1));
-            }
-          }
-
-          for (int m1 = 0; m1 < M; m1++)
-          {
-            res.segment(m1 * n, n) = y.col(m1).eval() - Pi.col(m1).eval();
-          }
-
-          for (int m1 = 0; m1 < M; m1++)
-          {
-            Xbeta.segment(m1 * n, n) = X * beta0.col(m1).eval();
-          }
-          Z = Xbeta + W.ldlt().solve(res);
         }
+
+        for (int m1 = 0; m1 < M; m1++)
+        {
+          for (int m2 = m1; m2 < M; m2++)
+          {
+            XTW.block(m1 * (p + 1), m2 * n, (p + 1), n) = X.transpose() * W.block(m1 * n, m2 * n, n, n);
+            XTWX.block(m1 * (p + 1), m2 * (p + 1), (p + 1), (p + 1)) = XTW.block(m1 * (p + 1), m2 * n, (p + 1), n) * X;
+            XTW.block(m2 * (p + 1), m1 * n, (p + 1), n) = XTW.block(m1 * (p + 1), m2 * n, (p + 1), n);
+            XTWX.block(m2 * (p + 1), m1 * (p + 1), (p + 1), (p + 1)) = XTWX.block(m1 * (p + 1), m2 * (p + 1), (p + 1), (p + 1));
+          }
+        }
+
+        for (int m1 = 0; m1 < M; m1++)
+        {
+          res.segment(m1 * n, n) = y.col(m1).eval() - Pi.col(m1).eval();
+        }
+
+        for (int m1 = 0; m1 < M; m1++)
+        {
+          Xbeta.segment(m1 * n, n) = X * beta0.col(m1).eval();
+        }
+
+        Z = Xbeta + W.ldlt().solve(res);
       }
     }
 
