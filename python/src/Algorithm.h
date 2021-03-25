@@ -1,7 +1,7 @@
 //
 // Created by jk on 2020/3/18.
 //
-#define TEST
+// #define TEST
 
 #ifndef SRC_ALGORITHM_H
 #define SRC_ALGORITHM_H
@@ -3025,20 +3025,20 @@ public:
         cout << "1.21" << endl;
 #endif
         // cout << "h: " << h << endl;
-        cout << "XGbar: " << XGbar << endl;
-        cout << "XG.shape: " << XG.rows() << " " << XG.cols() << endl;
-        cout << "XGNEW.shape: " << XG_new.rows() << " " << XG_new.cols() << endl;
-        cout << "XGbar.diagonal(): " << XGbar.diagonal() << endl;
+        // cout << "XGbar: " << XGbar << endl;
+        // cout << "XG.shape: " << XG.rows() << " " << XG.cols() << endl;
+        // cout << "XGNEW.shape: " << XG_new.rows() << " " << XG_new.cols() << endl;
+        // cout << "XGbar.diagonal(): " << XGbar.diagonal() << endl;
         XGbar.diagonal() = (XG.transpose() * XG_new).eval() - XGbar.diagonal();
-        cout << "XGbar.diagonal(): " << XGbar.diagonal() << endl;
+        // cout << "XGbar.diagonal(): " << XGbar.diagonal() << endl;
 #ifdef TEST
         cout << "1.22" << endl;
 #endif
-        cout << "XGbar: " << XGbar << endl;
+        // cout << "XGbar: " << XGbar << endl;
         Eigen::MatrixXd phiG;
         XGbar.sqrt().evalTo(phiG);
 
-        cout << "phiG: " << phiG << endl;
+        // cout << "phiG: " << phiG << endl;
         Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(M, M));
 #ifdef TEST
         cout << "1.3" << endl;
@@ -3135,13 +3135,13 @@ public:
       Eigen::MatrixXd XTX = X.transpose() * X;
       Eigen::MatrixXd invXTX = XTX.ldlt().solve(Eigen::MatrixXd::Identity(p + 1, p + 1));
 
-      cout << "y: " << y.rows() << " " << y.cols() << endl;
-      cout << "Pi: " << Pi.rows() << " " << Pi.cols() << endl;
+      // cout << "y: " << y.rows() << " " << y.cols() << endl;
+      // cout << "Pi: " << Pi.rows() << " " << Pi.cols() << endl;
 
-      cout << "Pi: " << Pi << endl;
-      cout << "t: " << t << endl;
-      cout << "invXTX: " << invXTX << endl;
-      cout << "one: " << invXTX * XTX << endl;
+      // cout << "Pi: " << Pi << endl;
+      // cout << "t: " << t << endl;
+      // cout << "invXTX: " << invXTX << endl;
+      // cout << "one: " << invXTX * XTX << endl;
 
       Eigen::MatrixXd beta1;
       for (j = 0; j < this->primary_model_fit_max_iter; j++)
@@ -3152,37 +3152,41 @@ public:
 
         // beta1 = beta0 + cg.solve(res);
         beta1 = beta0 + invXTX * res;
-        cout << "beta1: " << beta1 << endl;
+        // cout << "beta1: " << beta1 << endl;
 
-        double app_loss0, app_loss1, app_loss2;
-        app_loss0 = ((y - Pi) / t).squaredNorm();
-        app_loss1 = (-X * beta0 - (y - Pi) / t).squaredNorm();
-        app_loss2 = (X * (beta1 - beta0) - (y - Pi) / t).squaredNorm();
-        cout << "app_loss0: " << app_loss0 << endl;
-        cout << "app_loss1: " << app_loss1 << endl;
-        cout << "app_loss2: " << app_loss2 << endl;
+        // double app_loss0, app_loss1, app_loss2;
+        // app_loss0 = ((y - Pi) / t).squaredNorm();
+        // app_loss1 = (-X * beta0 - (y - Pi) / t).squaredNorm();
+        // app_loss2 = (X * (beta1 - beta0) - (y - Pi) / t).squaredNorm();
+        // cout << "app_loss0: " << app_loss0 << endl;
+        // cout << "app_loss1: " << app_loss1 << endl;
+        // cout << "app_loss2: " << app_loss2 << endl;
 
         Pi = pi(X, y, beta1);
         log_Pi = Pi.array().log();
         array_product(log_Pi, weights, 1);
         loglik1 = (log_Pi.array() * y.array()).sum();
-        cout << "loglik1: " << loglik1 << endl;
-        cout << "loglik0: " << loglik0 << endl;
+        // cout << "loglik1: " << loglik1 << endl;
+        // cout << "loglik0: " << loglik0 << endl;
 
         // cout << "j=" << j << " loglik: " << loglik1 << endl;
         // cout << "j=" << j << " loglik diff: " << loglik0 - loglik1 << endl;
-        bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + tau > loss0;
+        bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
         // bool condition1 = false;
         bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
         bool condition3 = abs(loglik1) < min(1e-3, tau);
-        // bool condition4 = loglik1 < loglik0;
-        bool condition4 = false;
+        bool condition4 = loglik1 < loglik0;
+        // bool condition4 = false;
         if (condition1 || condition2 || condition3 || condition4)
         {
           break;
         }
         loglik0 = loglik1;
-        beta0 = beta1;
+        for (int m1 = 0; m1 < M; m1++)
+        {
+          beta0.col(m1) = beta1.col(m1) - beta1.col(M - 1);
+        }
+        // beta0 = beta1;
         t = 2 * (Pi.array() * (one - Pi).array()).maxCoeff();
         res = X.transpose() * (y - Pi) / t;
       }
@@ -3204,6 +3208,7 @@ public:
 
 #endif
             Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
+            // cout << "PiPj: " << PiPj << endl;
             for (int i = 0; i < PiPj.size(); i++)
             {
               if (PiPj(i) < 0.001)
@@ -3226,6 +3231,7 @@ public:
 
 #endif
             Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array();
+            // cout << "PiPj: " << PiPj << endl;
             for (int i = 0; i < PiPj.size(); i++)
             {
               if (PiPj(i) < 0.001)
@@ -3236,7 +3242,7 @@ public:
             W.block(m1 * n, m2 * n, n, n).diagonal() = -PiPj;
             W.block(m2 * n, m1 * n, n, n) = W.block(m1 * n, m2 * n, n, n);
 
-            cout << "W m1 m2: " << W.block(m1 * n, m2 * n, n, n) << endl;
+            // cout << "W m1 m2: " << W.block(m1 * n, m2 * n, n, n) << endl;
           }
         }
       }
@@ -3244,7 +3250,7 @@ public:
 #ifdef TEST
       std::cout << "primary_model_fit 7" << endl;
 #endif
-      cout << "W: " << W << endl;
+      // cout << "W: " << W << endl;
 
       Eigen::MatrixXd XTWX(M * (p + 1), M * (p + 1));
       Eigen::MatrixXd XTW(M * (p + 1), M * n);
@@ -3272,9 +3278,9 @@ public:
 
 #ifdef TEST
       std::cout << "primary_model_fit 9" << endl;
+      cout << "res: " << res << endl;
 #endif
 
-      // Eigen::Matrix<Eigen::MatrixXd, -1, -1> Xbeta(M, 1);
       Eigen::VectorXd Xbeta(M * n);
       for (int m1 = 0; m1 < M; m1++)
       {
@@ -3283,9 +3289,9 @@ public:
 
 #ifdef TEST
       std::cout << "primary_model_fit 10" << endl;
+      cout << "Xbeta: " << Xbeta << endl;
 #endif
 
-      // Eigen::Matrix<Eigen::MatrixXd, -1, -1> Z = Xbeta - W.ldlt().solve(res);
       Eigen::VectorXd Z = Xbeta + W.ldlt().solve(res);
 #ifdef TEST
       std::cout << "primary_model_fit 11" << endl;
@@ -3305,15 +3311,15 @@ public:
         beta0_tmp = XTWX.ldlt().solve(XTW * Z);
         for (int m1 = 0; m1 < M; m1++)
         {
-          beta0.col(m1) = beta0_tmp.segment(m1 * (p + 1), (p + 1));
+          beta0.col(m1) = beta0_tmp.segment(m1 * (p + 1), (p + 1)) - beta0_tmp.segment((M - 1) * (p + 1), (p + 1));
         }
-        cout << "beta0" << beta0 << endl;
+        // cout << "beta0" << beta0 << endl;
 
         Pi = pi(X, y, beta0);
         log_Pi = Pi.array().log();
         array_product(log_Pi, weights, 1);
         loglik1 = (log_Pi.array() * y.array()).sum();
-        cout << "loss" << loglik1 << endl;
+        // cout << "loss" << loglik1 << endl;
         // cout << "j=" << j << " loglik: " << loglik1 << endl;
         // cout << "j=" << j << " loglik diff: " << loglik0 - loglik1 << endl;
         bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + tau > loss0;
@@ -3407,9 +3413,9 @@ public:
     // weight
     Eigen::MatrixXd pr = pi(X, y, beta, coef0);
     Eigen::MatrixXd log_pr = pr.array().log();
-    cout << "loss 0" << endl;
+    // cout << "loss 0" << endl;
     array_product(log_pr, weights, 1);
-    cout << "loss 1" << endl;
+    // cout << "loss 1" << endl;
     return -((log_pr.array() * y.array()).sum());
   }
 

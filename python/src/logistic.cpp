@@ -62,17 +62,14 @@ Eigen::VectorXd pi(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &coef
 Eigen::MatrixXd pi(Eigen::MatrixXd &X, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0)
 {
   int n = X.rows();
-  cout << "pi 1" << endl;
   Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, 1);
   Eigen::MatrixXd Xbeta = X * beta + one * coef0.transpose();
-  cout << "pi 2" << endl;
   Eigen::MatrixXd pi = Xbeta.array().exp();
   Eigen::VectorXd sumpi = pi.rowwise().sum();
   for (int i = 0; i < n; i++)
   {
     pi.row(i) = pi.row(i) / sumpi(i);
   }
-  cout << "pi end" << endl;
   return pi;
 };
 
