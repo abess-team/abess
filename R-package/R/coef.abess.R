@@ -21,20 +21,44 @@ coef.abess <- function(object,
                        support.size = NULL, 
                        sparse = TRUE, ...)
 {
-  coef <- object[["beta"]]
-  beta0 <- t(as.matrix(object[["intercept"]]))
-  rownames(beta0) <- "(intercept)"
-  coef <- methods::rbind2(beta0, coef)
-  
+  supp_size_index <- NULL
   if (!is.null(support.size)) {
     supp_size_index <- match_support_size(object, support.size)
-    coef <- coef[, supp_size_index, drop = FALSE]
+  } else {
+    supp_size_index <- match_support_size(object, object[["support.size"]])
   }
-  
   stopifnot(is.logical(sparse))
-  if (!sparse) {
-    coef <- as.matrix(coef)
+  multi_y <- object[["family"]] %in% MULTIVARIATE_RESPONSE
+  
+  if (multi_y) {
+    coef <- list()
+    for (i in 1:length(supp_size_index)) {
+      coef[[i]] <- combine_beta_intercept(object[["beta"]][[supp_size_index[i]]], 
+                                          object[["intercept"]][[supp_size_index[i]]])
+    }
+  } else {
+    coef <- combine_beta_intercept(object[["beta"]], object[["intercept"]])
+    if (!is.null(supp_size_index)) {
+      coef <- coef[, supp_size_index, drop = FALSE]
+    }
   }
   
+  if (!sparse) {
+    if (multi_y) {
+      coef <- lapply(coef, as.matrix)
+    } else {
+      coef <- as.matrix(coef)
+    }
+  }
+  
+  coef
+}
+
+
+combine_beta_intercept <- function(beta_mat, intercept_vec) {
+  coef <- beta_mat
+  beta0 <- t(as.matrix(intercept_vec))
+  rownames(beta0) <- "(intercept)"
+  coef <- methods::rbind2(beta0, coef)
   coef
 }

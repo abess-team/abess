@@ -9,12 +9,14 @@ generate.data(
   p,
   support.size = NULL,
   rho = 0,
-  family = c("gaussian", "binomial", "poisson", "cox"),
+  family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
   beta = NULL,
   cortype = 1,
   snr = 10,
   weibull.shape = 1,
   uniform.max = 1,
+  y.dim = 3,
+  class.num = 3,
   seed = 1
 )
 }
@@ -29,9 +31,11 @@ model. Can be omitted if \code{beta} is supplied.}
 \item{rho}{A parameter used to characterize the pairwise correlation in
 predictors. Default is \code{0}.}
 
-\item{family}{The distribution of the simulated data. \code{"gaussian"} for
-gaussian data.\code{"binomial"} for binary data. 
-\code{"poisson"} for count data. \code{"cox"} for survival data.}
+\item{family}{The distribution of the simulated response. \code{"gaussian"} for
+univariate quantitative response, \code{"binomial"} for binary classification response,  
+\code{"poisson"} for counting response, \code{"cox"} for left-censored response, 
+\code{"mgaussian"} for multivariate quantitative response, 
+\code{"mgaussian"} for multi-classification response.}
 
 \item{beta}{The coefficient values in the underlying regression model. 
 If it is supplied, \code{support.size} would be omitted.}
@@ -61,7 +65,11 @@ otherwise, a large censored rate.
 It works only when \code{family = "cox"}. 
 Default is \code{uniform.max = 1}.}
 
-\item{seed}{random seed. Default: \code{seed = 1}.#'}
+\item{y.dim}{Response's Dimension. It works only when \code{family = "mgaussian"}. Default: \code{y.dim = 3}.}
+
+\item{class.num}{The number of class. It works only when \code{family = "multinomial"}. Default: \code{class.num = 3}.}
+
+\item{seed}{random seed. Default: \code{seed = 1}.}
 }
 \value{
 A \code{list} object comprising:
@@ -112,7 +120,6 @@ p <- 20
 support.size <- 5
 dataset <- generate.data(n, p, support.size)
 str(dataset)
-
 
 }
 \author{

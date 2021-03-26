@@ -62,5 +62,6 @@
         "eigen": "cpp",
         "dense": "cpp",
         "cinttypes": "cpp"
-    }
+    }, 
+    "C_Cpp.dimInactiveRegions": false
 }

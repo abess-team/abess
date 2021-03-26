@@ -9,7 +9,7 @@
 \method{abess}{default}(
   x,
   y,
-  family = c("gaussian", "binomial", "poisson", "cox"),
+  family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
   tune.path = c("sequence", "gsection"),
   tune.type = c("gic", "ebic", "bic", "aic", "cv"),
   weight = rep(1, nrow(x)),
@@ -39,13 +39,20 @@
 vector and each column is a predictor/feature/variable.}
 
 \item{y}{The response variable, of \code{n} observations. 
-For \code{family = "binomial"} should have two levels.}
+For \code{family = "binomial"} should have two levels. 
+For \code{family="poisson"}, \code{y} should be a vector with positive integer. 
+For \code{family = "cox"}, \code{y} should be a two-column matrix with columns named \code{time} and \code{status}.
+For \code{family = "mgaussian"}, \code{y} should be a matrix of quantitative responses.
+For \code{family = "multinomial"}, \code{y} should be a factor of at least three levels.
+Note that, for either \code{"binomial"} or \code{"multinomial"}, 
+if y is presented as a numerical vector, it will be coerced into a factor.}
 
 \item{family}{One of the following models: 
 \code{"gaussian"} (continuous response), 
 \code{"binomial"} (binary response), 
 \code{"poisson"} (non-negative count), 
-and \code{"cox"} (left-censored response).
+\code{"cox"} (left-censored response), 
+\code{"mgaussian"} (multivariate continuous response).
 Depending on the response. Any unambiguous substring can be given.}
 
 \item{tune.path}{The method to be used to select the optimal support size. For
@@ -139,8 +146,10 @@ Defaults to \code{getOption("na.action")}.}
 }
 \value{
 A \code{abess} class object, which is a \code{list} with the following components:
-\item{beta}{A \eqn{p}-by-\code{length(support.size)} matrix of coefficients, stored in column format.}
-\item{intercept}{An intercept vector of length \code{length(support.size)}.}
+\item{beta}{A \eqn{p}-by-\code{length(support.size)} matrix of coefficients for univariate family, stored in column format;
+while a list of \code{length(support.size)} coefficients matrix (with size \eqn{p}-by-\code{ncol(y)}) for multivariate family.}
+\item{intercept}{An intercept vector of length \code{length(support.size)} for univariate family; 
+while a list of \code{length(support.size)} intercept vector (with size \code{ncol(y)}) for multivariate family.}
 \item{dev}{the deviance of length \code{length(support.size)}.}
 \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
 \item{nobs}{The number of sample used for training.}
@@ -171,10 +180,12 @@ support.size <- 3
 ################ linear model ################
 dataset <- generate.data(n, p, support.size)
 abess_fit <- abess(dataset[["x"]], dataset[["y"]])
+## helpful generic functions:
 print(abess_fit)
 coef(abess_fit, support.size = 3)
 predict(abess_fit, newx = dataset[["x"]][1:10, ], 
         support.size = c(3, 4))
+str(extract(abess_fit))
 deviance(abess_fit)
 
 ################ logistic model ################
@@ -196,7 +207,8 @@ p <- 1000
 dataset <- generate.data(n, p, support.size)
 abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
                    screening.num = 100)
-abess_fit
+extract(abess_fit)
+
 ################  Formula interface  ################
 data("trim32")
 abess_fit <- abess(y ~ ., data = trim32)
@@ -215,5 +227,5 @@ Sure independence screening for ultrahigh dimensional feature space. Fan, J. and
 \code{\link{deviance.abess}}.
 }
 \author{
-Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang
+Jin Zhu, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang
 }

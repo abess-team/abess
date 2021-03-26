@@ -24,7 +24,7 @@ Authors:
   \item Kangkang Jiang \email{jiangkk3@mail2.sysu.edu.cn}
   \item Junxian Zhu \email{zhujunx@mail2.sysu.edu.cn}
   \item Canhong Wen \email{wencanhong@gmail.com}
-  \item Heping Zhang \email{heping.zhang@yale.edu}
+  \item Heping Zhang \email{heping.zhang@yale.edu} (\href{https://orcid.org/0000-0002-0688-4076}{ORCID})
   \item Xueqin Wang \email{wangxq20@ustc.edu.cn} (\href{https://orcid.org/0000-0001-5205-9950}{ORCID})
 }
 

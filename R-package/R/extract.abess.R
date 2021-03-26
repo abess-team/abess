@@ -34,6 +34,7 @@ extract <- function(object, support.size = NULL, ...) UseMethod("extract")
 #' @inherit abess.default seealso
 #' 
 #' @export
+#' 
 extract.abess <- function(object, 
                           support.size = NULL, 
                           ...) 

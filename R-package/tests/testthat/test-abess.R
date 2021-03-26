@@ -9,7 +9,7 @@ test_batch <- function(abess_fit, dataset, family) {
   expect_equal(fit_s_size, support_size)
   
   ## subset
-  coef_value <- coef(abess_fit, support.size = 3)
+  coef_value <- coef(abess_fit, support.size = fit_s_size)
   est_index <- coef_value@i[-1]
   true_index <- which(dataset[["beta"]] != 0)
   expect_equal(est_index, true_index)
@@ -41,6 +41,70 @@ test_batch <- function(abess_fit, dataset, family) {
     oracle_dev <- deviance(oracle_est) / 2
   }
   expect_equal(oracle_dev, abess_fit[["dev"]][fit_s_size + 1])
+}
+
+test_batch_multivariate <- function(abess_fit, dataset, gaussian = TRUE) {
+  true_index <- which(apply(dataset[["beta"]], 1, function(x) {
+    all(x != 0)
+  }))
+  support_size <- length(true_index)
+  
+  ## support size
+  fit_s_size <- abess_fit[["best.size"]]
+  expect_equal(fit_s_size, support_size)
+  
+  ## subset
+  coef_value <- coef(abess_fit, support.size = fit_s_size)[[1]]
+  est_index <- unique(coef_value@i)[-1]
+  expect_equal(est_index, true_index)
+  
+  ## estimation ##
+  
+  # estimation by abess:
+  est_beta <- as.matrix(coef_value[1 + est_index, ])
+  est_coef0 <- coef_value[1, , drop = TRUE]
+  names(est_beta) <- NULL
+  names(est_coef0) <- NULL
+  
+  if (para_est) {
+    # oracle estimation by lm function:
+    dat <- cbind.data.frame(dataset[["y"]], 
+                            dataset[["x"]][, true_index])
+    
+    oracle_est <- lm(cbind(y1, y2, y3) ~ ., data = dat)
+    oracle_est <- as.matrix(coef(oracle_est))
+    oracle_beta <- oracle_est[-1, ]
+    oracle_coef0 <- oracle_est[1, , drop = TRUE]
+    names(oracle_beta) <- NULL
+    names(oracle_coef0) <- NULL
+
+    
+    expect_equal(oracle_beta, est_beta, tolerance = 1e-5)
+    expect_equal(oracle_coef0, est_coef0, tolerance = 1e-5)
+  } else {
+    require(nnet)
+    # oracle estimation by nnet function:
+    dat <- cbind.data.frame("y" = 2 - dataset[["y"]], 
+                            dataset[["x"]][, true_index])
+    set.seed(1); 
+    suppressMessages(multinom_model <- multinom(y ~ ., data = dat, maxit = 15, trace = FALSE))
+    oracle_est <- as.matrix(coef(multinom_model))
+    oracle_est <- t(oracle_est[2:1, ])
+    oracle_beta <- oracle_est[-1, ]
+    oracle_coef0 <- oracle_est[1, , drop = TRUE]
+    
+    expect_lt(mean(oracle_beta - est_beta[, 1:2]), 0.1)
+    expect_lt(mean(oracle_coef0 - est_coef0[1:2]), 1)
+  }
+  
+  ## deviance
+  # f <- family()
+  # if (f[["family"]] == "gaussian") {
+  #   oracle_dev <- mean((oracle_est[["residuals"]])^2)
+  # } else {
+  #   oracle_dev <- deviance(oracle_est) / 2
+  # }
+  # expect_equal(oracle_dev, abess_fit[["dev"]][fit_s_size + 1])
 }
 
 test_that("abess (gaussian) works", {
@@ -86,7 +150,7 @@ test_that("abess (cox) works", {
   t <- system.time(abess_fit <- abess(
     dataset[["x"]], dataset[["y"]], 
     family = "cox", tune.type = "cv", 
-    newton = "exact", max.newton.iter = 10)
+    newton = "exact", max.newton.iter = 10, num.threads = 8)
   )
   
   ## support size
@@ -126,8 +190,37 @@ test_that("abess (poisson) works", {
   dataset <- generate.data(n, p, support.size, 
                            family = "poisson", seed = 1)
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                     family = "poisson", tune.type = "cv")
+                     family = "poisson", tune.type = "cv", num.threads = 8)
   test_batch(abess_fit, dataset, poisson)
+})
+
+test_that("abess (mgaussian) works", {
+  n <- 30
+  p <- 10
+  support_size <- 3
+  
+  ## default interface
+  dataset <- generate.data(n, p, support_size, seed = 1, family = "mgaussian")
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                     family = "mgaussian", tune.type = "cv")
+  test_batch_multivariate(abess_fit, dataset)
+  
+  ## formula interface
+  dat <- cbind.data.frame(dataset[["x"]], dataset[["y"]])
+  abess_fit <- abess(cbind(y1, y2, y3) ~ ., data = dat, family = "mgaussian", tune.type = "cv")
+  test_batch_multivariate(abess_fit, dataset)
+})
+
+test_that("abess (multinomial) works", {
+  skip()
+  n <- 200
+  p <- 500
+  support_size <- 3
+  
+  dataset <- generate.data(n, p, support_size, seed = 1, family = "multinomial")
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                     family = "multinomial", tune.type = "cv")
+  test_batch_multivariate(abess_fit, dataset, FALSE)
 })
 
 test_that("Covariance update works", {
@@ -179,10 +272,11 @@ test_that("Fast than Lasso (gaussian) works", {
   
   dataset <- generate.data(n, p, support_size, seed = 1)
   t1 <- system.time(abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                                       tune.type = "cv", nfolds = 10))
+                                       tune.type = "cv", nfolds = 10, num.threads = 8))
   tune_num <- length(abess_fit[["support.size"]])
   glmnet_fit <- glmnet::glmnet(dataset[["x"]], dataset[["y"]], nlambda = tune_num)
   t2 <- system.time(glmnet_fit <- glmnet::cv.glmnet(dataset[["x"]], dataset[["y"]], 
                                                     lambda = glmnet_fit[["lambda"]], nfolds = 10))
   expect_lt(t1[3], t2[3])
 })
+

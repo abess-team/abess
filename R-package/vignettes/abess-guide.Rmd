@@ -38,10 +38,10 @@ where $\epsilon$ is a standard normal random variable.
 library(abess)
 synthetic_data <- generate.data(n = 300, p = 1000, 
                                 beta = c(3, 1.5, 0, 0, 2, rep(0, 995)))
-dat <- cbind.data.frame("y" = synthetic_data[["y"]], 
-                        synthetic_data[["x"]])
 dim(synthetic_data[["x"]])
 head(synthetic_data[["y"]])
+dat <- cbind.data.frame("y" = synthetic_data[["y"]], 
+                        synthetic_data[["x"]])
 ```
 
 Then, we use the main function `abess` in the package to fit this dataset. 

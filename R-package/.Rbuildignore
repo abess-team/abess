@@ -12,3 +12,4 @@
 ^.*\.zip$
 ^tests/testthat\.R$
 ^\.github$
+^src/\.vscode$

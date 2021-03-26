@@ -686,3 +686,9 @@ python2/src/test.cpp
 python2/src/test.exe
 python2/src/utilities.cpp
 python2/src/utilities.h
+python/src/tmp/coxph.cpp
+python/src/tmp/coxph.h
+python/src/tmp/logistic.cpp
+python/src/tmp/logistic.h
+python/src/tmp/poisson.cpp
+python/src/tmp/poisson.h

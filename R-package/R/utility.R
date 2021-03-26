@@ -9,9 +9,11 @@
 #' model. Can be omitted if \code{beta} is supplied.
 #' @param rho A parameter used to characterize the pairwise correlation in
 #' predictors. Default is \code{0}.
-#' @param family The distribution of the simulated data. \code{"gaussian"} for
-#' gaussian data.\code{"binomial"} for binary data. 
-#' \code{"poisson"} for count data. \code{"cox"} for survival data.
+#' @param family The distribution of the simulated response. \code{"gaussian"} for
+#' univariate quantitative response, \code{"binomial"} for binary classification response,  
+#' \code{"poisson"} for counting response, \code{"cox"} for left-censored response, 
+#' \code{"mgaussian"} for multivariate quantitative response, 
+#' \code{"mgaussian"} for multi-classification response.
 #' @param beta The coefficient values in the underlying regression model. 
 #' If it is supplied, \code{support.size} would be omitted.
 #' @param cortype The correlation structure. 
@@ -41,7 +43,9 @@
 # it is the error variance \eqn{\sigma^2}. For logistic regression,
 # the larger the value of sigma, the higher the signal-to-noise ratio. 
 # Valid only for \code{cortype = 3}.
-#' @param seed random seed. Default: \code{seed = 1}.#' 
+#' @param y.dim Response's Dimension. It works only when \code{family = "mgaussian"}. Default: \code{y.dim = 3}.
+#' @param class.num The number of class. It works only when \code{family = "multinomial"}. Default: \code{class.num = 3}.
+#' @param seed random seed. Default: \code{seed = 1}.
 #' @return A \code{list} object comprising:
 #' \item{x}{Design matrix of predictors.} 
 #' \item{y}{Response variable.}
@@ -102,21 +106,33 @@
 #' dataset <- generate.data(n, p, support.size)
 #' str(dataset)
 #' 
-#'
 generate.data <- function(n,
                           p,
                           support.size = NULL,
                           rho = 0,
-                          family = c("gaussian", "binomial", "poisson", "cox"),
+                          family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
                           beta = NULL,
                           cortype = 1,
                           snr = 10,
                           weibull.shape = 1,
                           uniform.max = 1, 
+                          y.dim = 3, 
+                          class.num = 3, 
                           seed = 1) 
 {
+  if (family == "mgaussian") {
+    y_dim <- y.dim
+  } else if (family == "multinomial") {
+    y_dim <- class.num
+  } else {
+    y_dim <- 1
+  }
+  y_cor <- diag(y_dim)
   sigma <- 1
+  
+  
   family <- match.arg(family)
+  
   set.seed(seed)
   # if(is.null(beta)){
   #   beta <- rep(0, p)
@@ -124,8 +140,22 @@ generate.data <- function(n,
   # } else{
   #   beta <- beta
   # }
+  
+  multi_y <- FALSE
+  if (family %in% c("mgaussian", "multinomial")) {
+    multi_y <- TRUE
+  }
+  
   if (!is.null(beta)) {
-    support.size = sum(abs(beta) > 1e-5)
+    
+    if (multi_y) {
+      stopifnot(is.matrix(beta))
+      support.size <- sum(apply(abs(beta) > 1e-5, 1, sum) != 0)
+    } else {
+      stopifnot(is.vector(beta))
+      support.size <- sum(abs(beta) > 1e-5)
+    }
+    
     beta[abs(beta) <= 1e-5] <- 0
   } else {
     if (is.null(support.size)) {
@@ -148,33 +178,42 @@ generate.data <- function(n,
   } else {
     x <- MASS::mvrnorm(n, rep(0, p), Sigma)
   }
+  
+  ### pre-treatment for beta ###
   input_beta <- beta
-  beta = rep(0, p)
-  nonzero = sample(1:p, support.size)
+  if (multi_y) {
+    beta <- matrix(0, p, y_dim)
+  } else {
+    beta <- rep(0, p)
+  }
+  ### pre-treatment for beta ###
+  nonzero <- sample(1:p, support.size)
   if (family == "gaussian") {
     m <- 5 * sqrt(2 * log(p) / n)
     M <- 100 * m
     if (is.null(input_beta)) {
-      beta[nonzero] = stats::runif(support.size, m, M)
+      beta[nonzero] <- stats::runif(support.size, m, M)
     } else {
-      beta = input_beta
+      beta <- input_beta
     }
     sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     
     y <- x %*% beta + rnorm(n, 0, sigma)
-  } else if (family == "binomial") {
+  } 
+  if (family == "binomial") {
     m <- 5 * sqrt(2 * log(p) / n)
     if (is.null(input_beta)) {
-      beta[nonzero] = stats::runif(support.size, 2 * m, 10 * m)
+      beta[nonzero] <- stats::runif(support.size, 2 * m, 10 * m)
     } else {
-      beta = input_beta
+      beta <- input_beta
     }
     sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     
     eta <- x %*% beta + rnorm(n, 0, sigma)
     PB <- apply(eta, 1, generatedata2)
     y <- stats::rbinom(n, 1, PB)
-  } else if (family == "cox") {
+  }
+  if (family == "cox") {
     m <- 5 * sqrt(2 * log(p) / n)
     if (is.null(input_beta)) {
       beta[nonzero] <- stats::runif(support.size, 2 * m, 10 * m)
@@ -191,10 +230,11 @@ generate.data <- function(n,
     cat("censoring rate:", censoringrate, "\n")
     time <- pmin(time, ctime)
     y <- cbind(time = time, status = status)
-  } else if (family == "poisson") {
+  }
+  if (family == "poisson") {
     m <- sigma * sqrt(2 * log(p) / n) / 3
     if (is.null(input_beta)) {
-      beta[nonzero] = stats::runif(support.size, 2 * m, 10 * m)
+      beta[nonzero] <- stats::runif(support.size, 2 * m, 10 * m)
     } else {
       beta <- input_beta
     }
@@ -207,8 +247,42 @@ generate.data <- function(n,
     # eta[eta<0.0001] <- 0.0001
     # eta[eta>1e5] <- 1e5
     y <- stats::rpois(n, eta)
-  } else {
-    
+  }
+  if (family == "mgaussian") {
+    m <- 5 * sqrt(2 * log(p) / n)
+    M <- 100 * m
+    if (is.null(input_beta)) {
+      beta[nonzero, ] <- matrix(stats::runif(support.size * y_dim, m, M), 
+                                ncol = y_dim)
+    } else {
+      beta <- input_beta
+    }
+    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    sigma <- diag(sigma)
+    sigma <- sigma * y_cor
+    epsilon <- MASS::mvrnorm(n = n, mu = rep(0, y_dim), Sigma = sigma)
+    y <- x %*% beta + epsilon
+    colnames(y) <- paste0("y", 1:y_dim)
+  }
+  if (family == "multinomial") {
+    m <- 5 * sqrt(2 * log(p) / n)
+    M <- 100 * m
+    if (is.null(input_beta)) {
+      beta[nonzero, ] <- matrix(stats::runif(support.size * y_dim, m, M), 
+                                ncol = y_dim)
+    } else {
+      beta <- input_beta
+    }
+    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    sigma <- diag(sigma)
+    sigma <- sigma * y_cor
+    epsilon <- MASS::mvrnorm(n, rep(0, y_dim), sigma)
+    prob_y <- x %*% beta
+    prob_y <- exp(prob_y)
+    prob_y <- sweep(prob_y, MARGIN = 1, STATS = rowSums(prob_y), FUN = "/")
+    y <- apply(prob_y, 1, function(x) {
+      sample(0:2, size = 1, prob = x)
+    })
   }
   set.seed(NULL)
   
@@ -300,6 +374,8 @@ abess_model_matrix <- function(object, data = environment(object),
   }
   data
 }
+
+MULTIVARIATE_RESPONSE <- c("mgaussian", "multinomial")
 
 .onUnload <- function (libpath)
 {

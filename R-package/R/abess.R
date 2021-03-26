@@ -9,14 +9,18 @@ abess <- function(x, ...) UseMethod("abess")
 #' 
 #' @aliases abess
 #' 
-#' @author Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang
+#' @author Jin Zhu, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang
 #'
 #' @param x Input matrix, of dimension \eqn{n \times p}; each row is an observation
 #' vector and each column is a predictor/feature/variable.
 #' @param y The response variable, of \code{n} observations. 
 #' For \code{family = "binomial"} should have two levels. 
-# For \code{family="poisson"}, \code{y} should be a vector with positive integer. 
-# For \code{family = "cox"}, \code{y} should be a two-column matrix with columns named \code{time} and \code{status}.
+#' For \code{family="poisson"}, \code{y} should be a vector with positive integer. 
+#' For \code{family = "cox"}, \code{y} should be a two-column matrix with columns named \code{time} and \code{status}.
+#' For \code{family = "mgaussian"}, \code{y} should be a matrix of quantitative responses.
+#' For \code{family = "multinomial"}, \code{y} should be a factor of at least three levels.
+#' Note that, for either \code{"binomial"} or \code{"multinomial"}, 
+#' if y is presented as a numerical vector, it will be coerced into a factor.
 # @param type One of the two types of problems.
 # \code{type = "bss"} for the best subset selection,
 # and \code{type = "bsrr"} for the best subset ridge regression.
@@ -24,7 +28,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' \code{"gaussian"} (continuous response), 
 #' \code{"binomial"} (binary response), 
 #' \code{"poisson"} (non-negative count), 
-#' and \code{"cox"} (left-censored response).
+#' \code{"cox"} (left-censored response), 
+#' \code{"mgaussian"} (multivariate continuous response).
 #' Depending on the response. Any unambiguous substring can be given.
 #' @param tune.path The method to be used to select the optimal support size. For
 #' \code{method = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
@@ -112,8 +117,10 @@ abess <- function(x, ...) UseMethod("abess")
 #  3. \code{support.index}: an index vector of best model's support set; 4. \code{support.size}: the support size of the best model; 
 #  5. \code{dev}: the deviance of the model; 6. \code{tune.value}: the tune value of the model.
 # }
-#' \item{beta}{A \eqn{p}-by-\code{length(support.size)} matrix of coefficients, stored in column format.}
-#' \item{intercept}{An intercept vector of length \code{length(support.size)}.}
+#' \item{beta}{A \eqn{p}-by-\code{length(support.size)} matrix of coefficients for univariate family, stored in column format;
+#' while a list of \code{length(support.size)} coefficients matrix (with size \eqn{p}-by-\code{ncol(y)}) for multivariate family.}
+#' \item{intercept}{An intercept vector of length \code{length(support.size)} for univariate family; 
+#' while a list of \code{length(support.size)} intercept vector (with size \code{ncol(y)}) for multivariate family.}
 #' \item{dev}{the deviance of length \code{length(support.size)}.}
 #' \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
 # \item{best.model}{The best fitted model for \code{type = "bss"}.}
@@ -185,10 +192,12 @@ abess <- function(x, ...) UseMethod("abess")
 #' ################ linear model ################
 #' dataset <- generate.data(n, p, support.size)
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]])
+#' ## helpful generic functions:
 #' print(abess_fit)
 #' coef(abess_fit, support.size = 3)
 #' predict(abess_fit, newx = dataset[["x"]][1:10, ], 
 #'         support.size = c(3, 4))
+#' str(extract(abess_fit))
 #' deviance(abess_fit)
 #' 
 #' ################ logistic model ################
@@ -210,10 +219,11 @@ abess <- function(x, ...) UseMethod("abess")
 #' dataset <- generate.data(n, p, support.size)
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
 #'                    screening.num = 100)
-#' abess_fit
+#' extract(abess_fit)
+#' 
 abess.default <- function(x, 
                           y,
-                          family = c("gaussian", "binomial", "poisson", "cox"),
+                          family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
                           tune.path = c("sequence", "gsection"),
                           tune.type = c("gic", "ebic", "bic", "aic", "cv"),
                           weight = rep(1, nrow(x)),
@@ -274,7 +284,9 @@ abess.default <- function(x,
     "gaussian" = 1,
     "binomial" = 2,
     "poisson" = 3,
-    "cox" = 4
+    "cox" = 4, 
+    "mgaussian" = 5, 
+    "multinomial" = 6
   )
   
   ## check predictors:
@@ -305,18 +317,45 @@ abess.default <- function(x,
   if (anyNA(y)) {
     stop("y has missing value!")
   }
-  if (family == "binomial")
+  if (any(is.infinite(y))) {
+    stop("y has infinite value!")
+  }
+  if (family == "gaussian") {
+    if (is.matrix(y)) {
+      if (dim(y)[2] > 1) {
+        stop("The dimension of y should not exceed 1 when family = 'gaussian'!")
+      }
+    } 
+  }
+  if (family == "binomial" || family == "multinomial")
   {
-    if (is.factor(y)) {
-      y <- as.character(y)
+    if (length(unique(y)) == 2 && family == "multinomial") {
+      warning("y is a binary variable and is not match to family = 'multinomial'. 
+              We change to family = 'binomial'")
+      model_type <- 2
+      family <- "binomial"
     }
-    if (length(unique(y)) != 2) {
-      stop("Please input binary variable!")
-    } else if (setequal(y_names <- unique(y), c(0, 1)) == FALSE)
-    {
-      y[which(y == unique(y)[1])] = 0
-      y[which(y == unique(y)[2])] = 1
-      y <- as.numeric(y)
+    if (length(unique(y)) > 2 && family == "binomial") {
+      stop("Input binary y when setting family = 'binomial'; otherwise, 
+           change the option for family to 'multinomial'. ")
+    }
+    if (!is.factor(y)) {
+      y <- as.factor(y)
+    }
+    class.name <- levels(y)
+    y_vn <- class.name
+    
+    if (family == "binomial") {
+      y <- as.numeric(y) - 1
+    }
+    if (family == "multinomial") {
+      y <- model.matrix(~factor(as.numeric(y) - 1) + 0)
+      colnames(y) <- NULL
+    }
+  }
+  if (family == "poisson") {
+    if (any(y < 0)) {
+      stop("y must be positive integer value when family = 'poisson'.")
     }
   }
   if (family == "cox")
@@ -333,6 +372,17 @@ abess.default <- function(x,
     x <- x[sort_y, ]
     y <- y[, 2]
   }
+  if (family == "mgaussian") {
+    if (!is.matrix(y) || dim(y)[2] <= 1) {
+      stop("y must be a n-by-q matrix (q >= 1) when family = 'mgaussian'!")
+    }
+    y_vn <- colnames(y)
+    if (is.null(y_vn)) {
+      y_vn <- colnames("y", 1:dim(y)[2])
+    }
+  }
+  y <- as.matrix(y)
+  multi_y <- family %in% MULTIVARIATE_RESPONSE
   
   # check whether x and y are matching:
   if (is.vector(y)) {
@@ -468,7 +518,9 @@ abess.default <- function(x,
       "gaussian" = 1,
       "binomial" = 2,
       "poisson" = 2,
-      "cox" = 3
+      "cox" = 3, 
+      "mgaussian" = 1, 
+      "multinomial" = 2
     )
   } else {
     stopifnot(normalize %in% 0:3)
@@ -541,7 +593,7 @@ abess.default <- function(x,
   }
   
   t1 <- proc.time()
-  result <- abessCpp(
+  result <- abessCpp2(
     x = x,
     y = y,
     data_type = normalize,
@@ -627,17 +679,31 @@ abess.default <- function(x,
   names(result)[which(names(result) == 'beta_all')] <- "beta"
   # names(result)[which(names(result) == 'screening_A')] <- "screening.index"
   # result[["screening.index"]] <- result[["screening.index"]] + 1
-  result[["beta"]] <- do.call("cbind", result[["beta"]])
-  if (screening) {
-    beta_all <- matrix(0, nrow = nvars, 
-                       ncol = length(s_list))
-    beta_all[result[["screening_A"]] + 1, ] <- result[["beta"]]
-    result[["beta"]] <- beta_all
+  
+  if (multi_y) {
+    if (screening) {
+      for (i in 1:length(result[["beta"]])) {
+        beta_all <- matrix(0, nrow = nvars, ncol = length(s_list))
+        beta_all[result[["screening_A"]] + 1, ] <- result[["beta"]][i]
+        result[["beta"]][i] <- beta_all 
+      }
+    }
+    names(result[["beta"]]) <- as.character(s_list)
+    result[["beta"]] <- lapply(result[["beta"]], Matrix::Matrix, 
+                               sparse = TRUE, dimnames = list(vn, y_vn))
+  } else {
+    result[["beta"]] <- do.call("cbind", result[["beta"]])
+    if (screening) {
+      beta_all <- matrix(0, nrow = nvars, 
+                         ncol = length(s_list))
+      beta_all[result[["screening_A"]] + 1, ] <- result[["beta"]]
+      result[["beta"]] <- beta_all
+    }
+    result[["beta"]] <- Matrix::Matrix(result[["beta"]], 
+                                       sparse = TRUE, 
+                                       dimnames = list(vn, as.character(s_list)))
   }
-  result[["beta"]] <- Matrix::Matrix(result[["beta"]], 
-                                     sparse = TRUE, 
-                                     dimnames = list(vn, 
-                                                     as.character(s_list)))
+  
   result[["screening.vars"]] <- vn[result[["screening_A"]] + 1]
   result[["screening_A"]] <- NULL
   
