@@ -12,9 +12,10 @@
 
 #include "Data.h"
 #include "utilities.h"
-#include "logistic.h"
-#include "poisson.h"
-#include "coxph.h"
+// #include "logistic.h"
+// #include "poisson.h"
+// #include "coxph.h"
+#include "model_fit.h"
 #include <iostream>
 
 #include <time.h>

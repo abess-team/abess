@@ -295,10 +295,10 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
   Eigen::VectorXi screening_A;
 
   // to do
-  // if (is_screening)
-  // {
-  //   screening_A = screening(x, y, weight, model_type, screening_size, g_index, always_select);
-  // }
+  if (is_screening)
+  {
+    screening_A = screening(x, y, weight, model_type, screening_size, g_index, always_select, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon);
+  }
 
   Data<T1, T2, T3> data(x, y, data_type, weight, is_normal, g_index, status);
 
@@ -341,7 +341,7 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
           sequential_path_cv<T1, T2, T3>(data, algorithm_list[i], metric, sequence, lambda_seq, early_stop, i, result_list[i]);
         }
 
-        cout << "parallel cv end" << endl;
+        // cout << "parallel cv end" << endl;
       }
       else
       {
@@ -437,9 +437,9 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
           int s_index = i / lambda_seq.size();
           int lambda_index = i % lambda_seq.size();
           int algorithm_index = omp_get_thread_num();
-          cout << "algorithm_index : ____________________" << algorithm_index << endl;
-          cout << "s_index : ____________________" << s_index << endl;
-          cout << "lambda_index : ____________________" << lambda_index << endl;
+          // cout << "algorithm_index : ____________________" << algorithm_index << endl;
+          // cout << "s_index : ____________________" << s_index << endl;
+          // cout << "lambda_index : ____________________" << lambda_index << endl;
 
           T2 beta_init;
           T3 coef0_init;
@@ -467,7 +467,7 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
           coef0_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_coef0();
           train_loss_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_train_loss();
           ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.g_num, algorithm_list[algorithm_index]);
-          cout << "111111111" << endl;
+          // cout << "111111111" << endl;
         }
 
         cout << "parallel cv 2 end--------" << endl;
@@ -642,29 +642,29 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
   // to do
   if (is_screening)
   {
-    Eigen::VectorXd beta_screening_A;
-    Eigen::VectorXd beta = Eigen::VectorXd::Zero(p);
+    cout << "screening_A: " << screening_A << endl;
+    T2 beta_screening_A;
+    T2 beta;
+    T3 coef0;
+    coef_set_zero(p, M, beta, coef0);
 
 #ifndef R_BUILD
     out_result.get_value_by_name("beta", beta_screening_A);
-    for (unsigned int i = 0; i < screening_A.size(); i++)
-    {
-      beta(screening_A(i)) = beta_screening_A(i);
-    }
+    slice_restore(beta_screening_A, screening_A, beta);
+    // for (unsigned int i = 0; i < screening_A.size(); i++)
+    // {
+    //   beta(screening_A(i)) = beta_screening_A(i);
+    // }
     out_result.add("beta", beta);
     out_result.add("screening_A", screening_A);
 #else
     beta_screening_A = out_result["beta"];
-    for (int i = 0; i < screening_A.size(); i++)
-    {
-      beta(screening_A(i)) = beta_screening_A(i);
-    }
+    slice_restore(beta_screening_A, screening_A, beta);
     out_result["beta"] = beta;
     out_result.push_back(screening_A, "screening_A");
 #endif
   }
 
-  // delete algorithm;
   delete metric;
   // cout << "abess 8" << endl;
   return out_result;

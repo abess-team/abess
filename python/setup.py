@@ -14,33 +14,33 @@ if sys.platform.startswith('win32'):
     path2 = "-L" + python_path + "\\libs"
     os.system('bash pre.sh ' + python_path + ' ' + version)
 
-    cbess_module = Extension(name='abess._cabess',
-                             sources=['src/abess.cpp', 'src/List.cpp', 'src/utilities.cpp', 'src/normalize.cpp', 'src/abess.i',
-                                      'src/Algorithm.cpp', 'src/Data.cpp', 'src/Metric.cpp', 'src/path.cpp',
-                                      'src/logistic.cpp', 'src/coxph.cpp', 'src/poisson.cpp', 'src/screening.cpp'],
-                             language='c++',
-                             extra_compile_args=["-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-mavx", "-mfma", "-march=native",
-                                                 "-std=c++11", "-mtune=generic", "-D%s" % os_type, path1, path2],
-                             extra_link_args=['-lgomp'],
-                             libraries=["vcruntime140"],
-                             include_dirs=[numpy.get_include(), 'include'],
-                             swig_opts=["-c++"]
-                             )
+    cabess_module = Extension(name='abess._cabess',
+                              sources=['src/abess.cpp', 'src/List.cpp', 'src/utilities.cpp', 'src/normalize.cpp', 'src/abess.i',
+                                       'src/Algorithm.cpp', 'src/Data.cpp', 'src/Metric.cpp', 'src/path.cpp',
+                                       'src/screening.cpp', 'src/model_fit.cpp'],
+                              language='c++',
+                              extra_compile_args=["-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-mavx", "-mfma", "-march=native",
+                                                  "-std=c++11", "-mtune=generic", "-D%s" % os_type, path1, path2],
+                              extra_link_args=['-lgomp'],
+                              libraries=["vcruntime140"],
+                              include_dirs=[numpy.get_include(), 'include'],
+                              swig_opts=["-c++"]
+                              )
 else:
     eigen_path = CURRENT_DIR + "/include"
     print(eigen_path)
     # eigen_path = "/usr/local/include/eigen3/Eigen"
-    cbess_module = Extension(name='abess._cabess',
-                             sources=['src/abess.cpp', 'src/List.cpp', 'src/utilities.cpp', 'src/normalize.cpp', 'src/abess.i',
-                                      'src/Algorithm.cpp', 'src/Data.cpp', 'src/Metric.cpp', 'src/path.cpp',
-                                      'src/logistic.cpp', 'src/coxph.cpp', 'src/poisson.cpp', 'src/screening.cpp'],
-                             language='c++',
-                             extra_compile_args=[
-                                 "-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native"],
-                             extra_link_args=['-lgomp'],
-                             include_dirs=[numpy.get_include(), eigen_path],
-                             swig_opts=["-c++"]
-                             )
+    cabess_module = Extension(name='abess._cabess',
+                              sources=['src/abess.cpp', 'src/List.cpp', 'src/utilities.cpp', 'src/normalize.cpp', 'src/abess.i',
+                                       'src/Algorithm.cpp', 'src/Data.cpp', 'src/Metric.cpp', 'src/path.cpp',
+                                       'src/screening.cpp', 'src/model_fit.cpp'],
+                              language='c++',
+                              extra_compile_args=[
+                                  "-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native"],
+                              extra_link_args=['-lgomp'],
+                              include_dirs=[numpy.get_include(), eigen_path],
+                              swig_opts=["-c++"]
+                              )
 this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, 'README.md')) as f:
     long_description = f.read()
@@ -68,5 +68,5 @@ setup(name='abess',
           "Programming Language :: Python :: 3.8",
       ],
       python_requires='>=3.5',
-      ext_modules=[cbess_module]
+      ext_modules=[cabess_module]
       )

@@ -554,6 +554,7 @@ void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nu
         }
     }
 }
+
 void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nums, int axis)
 {
     if (axis == 0)
