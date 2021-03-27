@@ -200,72 +200,69 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <pre><code>## Call:
 ## abess.formula(formula = y ~ ., data = crime, screening.num = 1000)
 ## 
-##    support.size      dev      GIC
-## 1             0 381863.4 6426.409
-## 2             1 176877.0 6054.225
-## 3             2 160154.7 6017.187
-## 4             3 155760.1 6015.895
-## 5             4 149554.8 6008.188
-## 6             5 144292.5 6002.898
-## 7             6 141826.1 6006.897
-## 8             7 139823.9 6012.408
-## 9             8 137658.6 6017.224
-## 10            9 136176.8 6024.433
-## 11           10 132091.7 6021.824
-## 12           11 130337.2 6027.758
-## 13           12 128236.0 6032.251
-## 14           13 124487.0 6030.036
-## 15           14 123705.5 6039.507
-## 16           15 122511.7 6047.278
-## 17           16 120037.3 6049.696
-## 18           17 119118.2 6058.472
-## 19           18 116451.5 6059.772
-## 20           19 114904.8 6065.706
-## 21           20 113929.3 6074.063
-## 22           21 112618.7 6080.897
-## 23           22 111412.4 6088.133
-## 24           23 109945.8 6094.127
-## 25           24 108382.1 6099.584
-## 26           25 106211.0 6102.087
-## 27           26 105504.4 6111.369
-## 28           27 104984.7 6121.519
-## 29           28 104348.3 6131.099
-## 30           29 103850.7 6141.329
-## 31           30 103201.8 6150.815
-## 32           31 102793.8 6161.454
-## 33           32 100724.1 6163.904</code></pre>
+##    support.size       dev      GIC
+## 1             0 381863.43 6426.409
+## 2             1 172846.92 6042.701
+## 3             2 157891.50 6010.071
+## 4             3 150564.34 5998.932
+## 5             4 145875.14 5995.732
+## 6             5 143959.48 6001.743
+## 7             6 141093.79 6004.309
+## 8             7 137034.02 6002.331
+## 9             8 134730.51 6006.474
+## 10            9 131299.15 6006.195
+## 11           10 129568.78 6012.182
+## 12           11 127750.78 6017.736
+## 13           12 126724.47 6026.323
+## 14           13 124704.30 6030.908
+## 15           14 123437.56 6038.422
+## 16           15 122327.23 6046.524
+## 17           16 110973.36 6010.439
+## 18           17 110083.99 6019.036
+## 19           18 109213.22 6027.685
+## 20           19 108576.37 6037.381
+## 21           20 106758.35 6041.557
+## 22           21 105499.13 6048.245
+## 23           22 104176.21 6054.555
+## 24           23 103320.05 6063.049
+## 25           24 102754.60 6072.925
+## 26           25 102353.19 6083.587
+## 27           26 101993.47 6094.447
+## 28           27  99079.86 6092.575
+## 29           28  98741.98 6103.487
+## 30           29  97826.42 6111.449
+## 31           30  97432.72 6122.053
+## 32           31  97084.54 6132.882
+## 33           32  96353.52 6141.723</code></pre>
 <p>The returned object of <code>abess</code> includes the features selected by screening. We exhibit six variables of them:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">[[</span><span class="st">"screening.vars"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "perHoush" "pctBlack" "pctWhite" "pctAsian" "pctHisp"  "pct12"</code></pre>
+<pre><code>## [1] "pop"      "perHoush" "pctBlack" "pctWhite" "pctAsian" "pctHisp"</code></pre>
 <p>Then, by the generic <code>extract</code> function, we can obtain the best model detected by <code>ABESS</code> algorithm, and get the variables in the best model:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best_model</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of 7
 ##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:5] 304 1005 1033 3248 3950
-##   .. ..@ p       : int [1:2] 0 5
+##   .. ..@ i       : int [1:4] 249 374 442 490
+##   .. ..@ p       : int [1:2] 0 4
 ##   .. ..@ Dim     : int [1:2] 5253 1
 ##   .. ..@ Dimnames:List of 2
 ##   .. .. ..$ : chr [1:5253] "pop" "perHoush" "pctBlack" "pctWhite" ...
-##   .. .. ..$ : chr "5"
-##   .. ..@ x       : num [1:5] 1.34 1.43 2.63 7.07 3.26
+##   .. .. ..$ : chr "4"
+##   .. ..@ x       : num [1:4] -2.64028 1.09755 -0.19438 0.00935
 ##   .. ..@ factors : list()
-##  $ intercept   : num -43
-##  $ support.size: int 5
-##  $ support.vars: chr [1:5] "pctBlack:pctAsian" "pct65up:pctFemDivorc" "pct65up:pctPopDenseHous" "pctMaleDivorc:pctKidsBornNevrMarr" ...
-##  $ support.beta: num [1:5] 1.34 1.43 2.63 7.07 3.26
-##  $ dev         : num 144293
-##  $ tune.value  : num 6003</code></pre>
+##  $ intercept   : num 2200
+##  $ support.size: int 4
+##  $ support.vars: chr [1:4] "perHoush:pctWorkMom.1" "pctBlack:pctVacantBoarded" "pctWhite:pctKids2Par" "pctWhite:persHomeless"
+##  $ support.beta: num [1:4] -2.64028 1.09755 -0.19438 0.00935
+##  $ dev         : num 145875
+##  $ tune.value  : num 5996</code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_vars</span> <span class="op">&lt;-</span> <span class="va">best_model</span><span class="op">[[</span><span class="st">"support.vars"</span><span class="op">]</span><span class="op">]</span>
 <span class="va">best_vars</span></code></pre></div>
-<pre><code>## [1] "pctBlack:pctAsian"                   
-## [2] "pct65up:pctFemDivorc"                
-## [3] "pct65up:pctPopDenseHous"             
-## [4] "pctMaleDivorc:pctKidsBornNevrMarr"   
-## [5] "pctKidsBornNevrMarr:pctVacantBoarded"</code></pre>
+<pre><code>## [1] "perHoush:pctWorkMom.1"     "pctBlack:pctVacantBoarded"
+## [3] "pctWhite:pctKids2Par"      "pctWhite:persHomeless"</code></pre>
 <p>From the linear model based on the selected features, we see that the two predictors, ‘pctMaleDivorc:pctKidsBornNevrMarr’ (i.e., the linear interaction between the percentage of divorced males and the percentage of kids born to never married) and ‘pct65up:pctPopDenseHous’ (i.e., the linear interaction between the percentage of population that is 65 at least in age and the percent of persons in dense housing that have more than 1 person per room), have the most significant impact on the response:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lm_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind.data.frame</a></span><span class="op">(</span><span class="va">crime</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"y"</span>, <span class="va">best_vars</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
@@ -277,22 +274,21 @@ The pre-processed dataset can be freely downloaded by running:</p>
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -1455.59  -201.16   -46.73   109.82  2362.47 
+## -1539.86  -203.32   -47.58   120.46  2098.72 
 ## 
 ## Coefficients:
-##                                        Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                            -43.0368    41.0664  -1.048    0.295    
-## `pctBlack:pctAsian`                      1.3386     0.3154   4.245 2.62e-05 ***
-## `pct65up:pctFemDivorc`                   1.4339     0.2654   5.403 1.02e-07 ***
-## `pct65up:pctPopDenseHous`                2.6327     0.4095   6.430 3.02e-10 ***
-## `pctMaleDivorc:pctKidsBornNevrMarr`      7.0693     0.7471   9.462  &lt; 2e-16 ***
-## `pctKidsBornNevrMarr:pctVacantBoarded`   3.2568     0.6534   4.985 8.61e-07 ***
+##                               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                  2.200e+03  1.413e+02  15.574  &lt; 2e-16 ***
+## `perHoush:pctWorkMom.1`     -2.640e+00  6.619e-01  -3.989 7.64e-05 ***
+## `pctBlack:pctVacantBoarded`  1.098e+00  1.415e-01   7.756 5.02e-14 ***
+## `pctWhite:pctKids2Par`      -1.944e-01  1.153e-02 -16.855  &lt; 2e-16 ***
+## `pctWhite:persHomeless`      9.347e-03  2.005e-03   4.663 4.02e-06 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 382.2 on 494 degrees of freedom
-## Multiple R-squared:  0.6221, Adjusted R-squared:  0.6183 
-## F-statistic: 162.7 on 5 and 494 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 383.9 on 495 degrees of freedom
+## Multiple R-squared:  0.618,  Adjusted R-squared:  0.6149 
+## F-statistic: 200.2 on 4 and 495 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p>We visualize the relationship between the response and the two most significant selected predictors: <img src="crime.jpg"></p>
 </div>
 </div>
