@@ -7,15 +7,13 @@
 #include <RcppEigen.h>
 //[[Rcpp::depends(RcppEigen)]]
 using namespace Rcpp;
-
 #else
-
 #include <Eigen/Eigen>
 #include "List.h"
+#endif
+
 #include "utilities.h"
 #include <cfloat>
-
-#endif
 
 Eigen::VectorXd pi(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &coef, int n);
 Eigen::MatrixXd pi(Eigen::MatrixXd &X, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0);

@@ -2,7 +2,7 @@
 // Created by Mamba on 2020/2/18.
 //
 // #define R_BUILD
-// #define TEST
+#define TEST
 
 #ifdef R_BUILD
 #include <Rcpp.h>

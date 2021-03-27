@@ -2512,10 +2512,14 @@ public:
 
           // Eigen::VectorXd XTonecoef0 = ;
           Eigen::MatrixXd d = (this->XTy - XTXbeta - array_product(this->XTone, coef0)) / double(n);
+#ifdef TEST
           cout << d.rows() << " " << d.cols() << endl;
           std::cout << "d 1" << endl;
+#endif
           d_I = matrix_slice(d, I_ind, 0);
+#ifdef TEST
           std::cout << "d 2" << endl;
+#endif
           // d_I = XI.adjoint() * (y - XA * beta - coef0 * one) / double(n);
         }
         else
@@ -2581,9 +2585,11 @@ public:
 
     Eigen::VectorXi I_ind = find_ind(I, g_index, g_size, p, N);
     Eigen::MatrixXd d_I = this->dual(X, X_A, y, beta_A, coef0, weights, n, h, A_ind, I_ind);
+#ifdef TEST
     cout << "3" << endl;
     cout << d_I.rows() << " " << d_I.cols() << endl;
     cout << I_ind.size() << endl;
+#endif
 
     for (int k = 0; k < I_ind.size(); k++)
     {

@@ -1,3 +1,12 @@
+//
+// Created by jk on 2020/3/18.
+//
+
+#ifndef SRC_MODELFIT_H
+#define SRC_MODELFIT_H
+#endif
+
+
 #ifdef R_BUILD
 
 #include <Rcpp.h>
@@ -9,10 +18,13 @@ using namespace Rcpp;
 
 #include <Eigen/Eigen>
 #include "List.h"
-#include "utilities.h"
-#include <cfloat>
 
 #endif
+
+#include <cfloat>
+#include "utilities.h"
+#include <iostream>
+using namespace std;
 
 Eigen::VectorXd pi(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &coef, int n)
 {
@@ -406,7 +418,7 @@ void multinomial_fit(Eigen::MatrixXd &x, Eigen::MatrixXd &y, Eigen::VectorXd &we
 
 void multigaussian_fit(Eigen::MatrixXd &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
 {
-    ConjugateGradient<MatrixXd, Lower | Upper> cg;
+    Eigen::ConjugateGradient<Eigen::MatrixXd, Eigen::Lower | Eigen::Upper> cg;
     cg.compute(x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols()));
     beta = cg.solveWithGuess(x.adjoint() * y, beta);
 }
@@ -674,11 +686,13 @@ void lm_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Ei
     // }
 
     // CG
-    ConjugateGradient<MatrixXd, Lower | Upper> cg;
+    Eigen::ConjugateGradient<Eigen::MatrixXd, Eigen::Lower | Eigen::Upper> cg;
     cg.compute(x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols()));
     beta = cg.solveWithGuess(x.adjoint() * y, beta);
+#ifdef TEST
     cout << "xx: " << x.adjoint() * x << endl;
     cout << "xy: " << x.adjoint() * y << endl;
+#endif
 };
 
 void poisson_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)

@@ -7,7 +7,7 @@
 
 #include "Data.h"
 #include "Algorithm.h"
-#include "coxph.h"
+#include "model_fit.h"
 #include <vector>
 #include <random>
 #include <algorithm>
@@ -140,28 +140,28 @@ public:
     this->test_mask_list = test_mask_list_tmp;
   };
 
-  void cal_cv_group_XTX(Data<T1, T2, T3> &data)
-  {
-    int p = data.p;
-    Eigen::VectorXi index = data.g_index;
-    Eigen::VectorXi gsize = data.g_size;
-    int N = data.g_num;
+  // void cal_cv_group_XTX(Data<T1, T2, T3> &data)
+  // {
+  //   int p = data.p;
+  //   Eigen::VectorXi index = data.g_index;
+  //   Eigen::VectorXi gsize = data.g_size;
+  //   int N = data.g_num;
 
-    std::vector<std::vector<Eigen::MatrixXd>> group_XTX_list_tmp(this->Kfold);
+  //   std::vector<std::vector<Eigen::MatrixXd>> group_XTX_list_tmp(this->Kfold);
 
-    for (int k = 0; k < this->Kfold; k++)
-    {
-      int train_size = this->train_mask_list[k].size();
-      Eigen::MatrixXd train_x(train_size, p);
+  //   for (int k = 0; k < this->Kfold; k++)
+  //   {
+  //     int train_size = this->train_mask_list[k].size();
+  //     Eigen::MatrixXd train_x(train_size, p);
 
-      for (int i = 0; i < train_size; i++)
-      {
-        train_x.row(i) = data.x.row(this->train_mask_list[k](i));
-      };
-      group_XTX_list_tmp[k] = group_XTX(train_x, index, gsize, train_size, p, N, 1);
-    }
-    this->group_XTX_list = group_XTX_list_tmp;
-  }
+  //     for (int i = 0; i < train_size; i++)
+  //     {
+  //       train_x.row(i) = data.x.row(this->train_mask_list[k](i));
+  //     };
+  //     group_XTX_list_tmp[k] = group_XTX(train_x, index, gsize, train_size, p, N, 1);
+  //   }
+  //   this->group_XTX_list = group_XTX_list_tmp;
+  // }
 
   double ic(int train_n, int N, Algorithm<T1, T2, T3> *algorithm)
   {
