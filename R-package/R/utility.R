@@ -120,6 +120,9 @@ generate.data <- function(n,
                           class.num = 3, 
                           seed = 1) 
 {
+  sigma <- 1
+  
+  family <- match.arg(family)
   if (family == "mgaussian") {
     y_dim <- y.dim
   } else if (family == "multinomial") {
@@ -128,10 +131,6 @@ generate.data <- function(n,
     y_dim <- 1
   }
   y_cor <- diag(y_dim)
-  sigma <- 1
-  
-  
-  family <- match.arg(family)
   
   set.seed(seed)
   # if(is.null(beta)){
