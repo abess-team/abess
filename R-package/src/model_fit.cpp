@@ -686,9 +686,17 @@ void lm_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Ei
     // }
 
     // CG
-    Eigen::ConjugateGradient<Eigen::MatrixXd, Eigen::Lower | Eigen::Upper> cg;
-    cg.compute(x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols()));
-    beta = cg.solveWithGuess(x.adjoint() * y, beta);
+    // Eigen::ConjugateGradient<Eigen::MatrixXd, Eigen::Lower | Eigen::Upper> cg;
+    // cg.compute(x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols()));
+    // beta = cg.solveWithGuess(x.adjoint() * y, beta);
+
+    // colPivHouseholderQr
+    if (lambda == 0.0) {
+        beta = x.colPivHouseholderQr().solve(y);
+    } else {
+        beta = (x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols())).colPivHouseholderQr().solve(x.adjoint() * y);
+    }
+
 #ifdef TEST
     cout << "xx: " << x.adjoint() * x << endl;
     cout << "xy: " << x.adjoint() * y << endl;

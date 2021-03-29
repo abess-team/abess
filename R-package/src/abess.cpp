@@ -290,18 +290,15 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
 
   bool is_parallel = thread != 1;
 
-  int p = x.cols();
-  // int n = x.rows();
-  int M = y.cols();
-  Eigen::VectorXi screening_A;
+  Data<T1, T2, T3> data(x, y, data_type, weight, is_normal, g_index, status);
 
-  // to do
+  Eigen::VectorXi screening_A;
   if (is_screening)
   {
-    screening_A = screening(x, y, weight, model_type, screening_size, g_index, always_select, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon);
+    screening_A = screening(data, model_type, screening_size, always_select, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon);
   }
 
-  Data<T1, T2, T3> data(x, y, data_type, weight, is_normal, g_index, status);
+  int M = data.y.cols();
 
   Metric<T1, T2, T3> *metric = new Metric<T1, T2, T3>(ic_type, ic_coef, is_cv, Kfold);
 
@@ -309,19 +306,15 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
   // 1:mask
   // 2:warm start save
   // 3:group_XTX
-  // vector<Algorithm<T1, T2, T3> *> algorithm_list(max(Kfold, thread));
   if (is_cv)
   {
     metric->set_cv_train_test_mask(data.get_n());
-
     // metric->set_cv_initial_model_param(Kfold, data.get_p());
     metric->set_cv_initial_A(Kfold, data.get_p());
     // metric->set_cv_initial_coef0(Kfold, data.get_p());
-
     // if (model_type == 1)
     //   metric->cal_cv_group_XTX(data);
   }
-  // t2 = clock();
 
   // calculate loss for each parameter parameter combination
 #ifdef TEST
@@ -391,15 +384,11 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
   {
     if (is_cv)
     {
-      // cout << "abess 1" << endl;
       Eigen::MatrixXd test_loss_tmp;
       for (int i = 0; i < Kfold; i++)
       {
-        // cout << "abess 2" << endl;
         test_loss_tmp = result_list[i].test_loss_matrix;
-        // cout << "abess 2.1" << endl;
         test_loss_sum = test_loss_sum + test_loss_tmp / Kfold;
-        // cout << "abess 2.2" << endl;
       }
       test_loss_sum.minCoeff(&min_loss_index_row, &min_loss_index_col);
 
@@ -410,7 +399,6 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
       T1 XTone;
       if (covariance_update)
       {
-        // covariance = data.x.transpose() * data.x;
         XTy = data.x.transpose() * data.y;
         XTone = data.x.transpose() * Eigen::MatrixXd::Ones(data.n, data.M);
       }
@@ -438,13 +426,10 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
           int s_index = i / lambda_seq.size();
           int lambda_index = i % lambda_seq.size();
           int algorithm_index = omp_get_thread_num();
-          // cout << "algorithm_index : ____________________" << algorithm_index << endl;
-          // cout << "s_index : ____________________" << s_index << endl;
-          // cout << "lambda_index : ____________________" << lambda_index << endl;
 
           T2 beta_init;
           T3 coef0_init;
-          coef_set_zero(p, M, beta_init, coef0_init);
+          coef_set_zero(data.p, M, beta_init, coef0_init);
           Eigen::VectorXd bd_init = Eigen::VectorXd::Zero(data.p);
 
           for (int j = 0; j < Kfold; j++)
@@ -460,15 +445,12 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
           algorithm_list[algorithm_index]->update_coef0_init(coef0_init);
           algorithm_list[algorithm_index]->update_bd_init(bd_init);
 
-          // cout << "abess 5" << endl;
-
           algorithm_list[algorithm_index]->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, data.status);
 
           beta_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_beta();
           coef0_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_coef0();
           train_loss_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_train_loss();
           ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.g_num, algorithm_list[algorithm_index]);
-          // cout << "111111111" << endl;
         }
 #ifdef TEST
         std::cout << "parallel cv 2 end--------" << std::endl;
@@ -486,18 +468,14 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
         algorithm->update_group_XTX(full_group_XTX);
 
         algorithm->PhiG = Eigen::Matrix<Eigen::MatrixXd, -1, -1>(0, 0);
-
-        // cout << "cv not parallel" << endl;
         for (int i = 0; i < sequence.size() * lambda_seq.size(); i++)
         {
           int s_index = i / lambda_seq.size();
           int lambda_index = i % lambda_seq.size();
-          // cout << "s_index: " << s_index;
-          // cout << " lambda_index: " << lambda_index << endl;
 
           T2 beta_init;
           T3 coef0_init;
-          coef_set_zero(p, M, beta_init, coef0_init);
+          coef_set_zero(data.p, M, beta_init, coef0_init);
           Eigen::VectorXd bd_init = Eigen::VectorXd::Zero(data.p);
 
           for (int j = 0; j < Kfold; j++)
@@ -642,24 +620,20 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
 #endif
 
   // Restore best_fit_result for screening
-  // to do
   if (is_screening)
   {
-#ifdef TEST    
+#ifdef TEST
     cout << "screening_A: " << screening_A << endl;
 #endif
     T2 beta_screening_A;
     T2 beta;
     T3 coef0;
-    coef_set_zero(p, M, beta, coef0);
+    cout << "p: " << x.cols() << endl;
+    coef_set_zero(x.cols(), M, beta, coef0);
 
 #ifndef R_BUILD
     out_result.get_value_by_name("beta", beta_screening_A);
     slice_restore(beta_screening_A, screening_A, beta);
-    // for (unsigned int i = 0; i < screening_A.size(); i++)
-    // {
-    //   beta(screening_A(i)) = beta_screening_A(i);
-    // }
     out_result.add("beta", beta);
     out_result.add("screening_A", screening_A);
 #else
@@ -671,7 +645,6 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
   }
 
   delete metric;
-  // cout << "abess 8" << endl;
   return out_result;
 }
 
