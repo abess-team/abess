@@ -382,6 +382,7 @@ abess.default <- function(x,
     }
   }
   y <- as.matrix(y)
+  y_dim <- ncol(y)
   multi_y <- family %in% MULTIVARIATE_RESPONSE
   
   # check whether x and y are matching:
@@ -418,6 +419,9 @@ abess.default <- function(x,
   #     newton <- "auto"
   #   }
   # }
+  if (family %in% c("gaussian", "mgaussian", "poisson")) {
+    newton <- "exact"
+  }
   newton_type <- switch(
     newton,
     "exact" = 0,
@@ -683,9 +687,9 @@ abess.default <- function(x,
   if (multi_y) {
     if (screening) {
       for (i in 1:length(result[["beta"]])) {
-        beta_all <- matrix(0, nrow = nvars, ncol = length(s_list))
-        beta_all[result[["screening_A"]] + 1, ] <- result[["beta"]][i]
-        result[["beta"]][i] <- beta_all 
+        beta_all <- matrix(0, nrow = nvars, ncol = y_dim)
+        beta_all[result[["screening_A"]] + 1, ] <- result[["beta"]][[i]]
+        result[["beta"]][[i]] <- beta_all 
       }
     }
     names(result[["beta"]]) <- as.character(s_list)

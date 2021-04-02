@@ -66,7 +66,7 @@ test_batch_multivariate <- function(abess_fit, dataset, gaussian = TRUE) {
   names(est_beta) <- NULL
   names(est_coef0) <- NULL
   
-  if (para_est) {
+  if (gaussian) {
     # oracle estimation by lm function:
     dat <- cbind.data.frame(dataset[["y"]], 
                             dataset[["x"]][, true_index])
@@ -213,6 +213,17 @@ test_that("abess (mgaussian) works", {
 
 test_that("abess (multinomial) works", {
   skip()
+  ## not pass:
+  n <- 600
+  p <- 100
+  support_size <- 3
+  dataset <- generate.data(n, p, support_size, seed = 1, family = "multinomial")
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                     family = "multinomial", tune.type = "cv", 
+                     newton = "approx")
+  test_batch_multivariate(abess_fit, dataset, FALSE)
+
+  ## pass:
   n <- 200
   p <- 500
   support_size <- 3

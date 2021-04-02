@@ -418,9 +418,17 @@ void multinomial_fit(Eigen::MatrixXd &x, Eigen::MatrixXd &y, Eigen::VectorXd &we
 
 void multigaussian_fit(Eigen::MatrixXd &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
 {
-    Eigen::ConjugateGradient<Eigen::MatrixXd, Eigen::Lower | Eigen::Upper> cg;
-    cg.compute(x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols()));
-    beta = cg.solveWithGuess(x.adjoint() * y, beta);
+    // CG:
+    // Eigen::ConjugateGradient<Eigen::MatrixXd, Eigen::Lower | Eigen::Upper> cg;
+    // cg.compute(x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols()));
+    // beta = cg.solveWithGuess(x.adjoint() * y, beta);
+
+    // colPivHouseholderQr
+    if (lambda == 0.0) {
+        beta = x.colPivHouseholderQr().solve(y);
+    } else {
+        beta = (x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols())).colPivHouseholderQr().solve(x.adjoint() * y);
+    }
 }
 
 Eigen::VectorXd logit_fit(Eigen::MatrixXd x, Eigen::VectorXd y, int n, int p, Eigen::VectorXd weights)
