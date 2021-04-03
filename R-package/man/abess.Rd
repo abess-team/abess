@@ -185,8 +185,9 @@ print(abess_fit)
 coef(abess_fit, support.size = 3)
 predict(abess_fit, newx = dataset[["x"]][1:10, ], 
         support.size = c(3, 4))
-str(extract(abess_fit))
+str(extract(abess_fit, 3))
 deviance(abess_fit)
+plot(abess_fit)
 
 ################ logistic model ################
 dataset <- generate.data(n, p, support.size, family = "binomial")
@@ -198,16 +199,27 @@ abess_fit
 ################ Cox model ################
 dataset <- generate.data(n, p, support.size, family = "cox")
 abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                   family = "cox", tune.type = "cv", 
-                   newton = "approx")
-abess_fit
+                   family = "cox", tune.type = "cv")
+
+################ Multivariate gaussian model ################
+dataset <- generate.data(n, p, support.size, family = "mgaussian")
+abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                   family = "mgaussian", tune.type = "cv")
+plot(abess_fit, type = "l2norm")
+
+################ Multinomial model (multi-classification) ################
+dataset <- generate.data(n, p, support.size, family = "multinomial")
+abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                   family = "multinomial", tune.type = "cv")
+predict(abess_fit, newx = dataset[["x"]][1:10, ], 
+        support.size = c(3, 4), type = "response")
 
 ################ Feature screening ################
 p <- 1000
 dataset <- generate.data(n, p, support.size)
 abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
                    screening.num = 100)
-extract(abess_fit)
+str(extract(abess_fit))
 
 ################  Formula interface  ################
 data("trim32")

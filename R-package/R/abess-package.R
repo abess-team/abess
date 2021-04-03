@@ -20,6 +20,7 @@
 #' @importFrom stats model.response
 #' @importFrom methods rbind2
 #' @importFrom Matrix Matrix
+#' @importFrom Matrix rowSums
 ## usethis namespace: end
 NULL
 

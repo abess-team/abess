@@ -33,7 +33,7 @@ plot.abess <- function (x,
                         type = c("coef", "l2norm", 
                                  "dev", "dev.ratio", "tune"), 
                         label = FALSE, 
-                        ...) 
+                        ...)
 {
   stopifnot(is.logical(label))
   
@@ -46,11 +46,11 @@ plot.abess <- function (x,
     y_value <- x[["beta"]]
     if (type == "l2norm") {
       if (class(y_value) == "list") {
-        y_value_tmp <- y_value[[1]]^2
-        for (i in 2:length(y_value)) {
-          y_value_tmp <- y_value_tmp + y_value[[i]]^2
+        for (i in 1:length(y_value)) {
+          y_value[[i]] <- Matrix::rowSums(y_value[[i]]^2)
         }
-        y_value <- sqrt(y_value_tmp)
+        y_value <- do.call("cbind", y_value)
+        y_value <- sqrt(y_value)
       } else {
         y_value <- abs(y_value)
       }
@@ -93,14 +93,11 @@ plot_loss <- function(loss, df,
   graphics::par(oldpar)
 }
 
-
-plot_solution <- function (beta, df, 
-                           mar = c(3, 4, 0, 4), 
-                           label = FALSE) {
+plot_solution_one <- function(beta, df, 
+                              mar, label) {
   beta <- as.matrix(beta)
   p <- nrow(beta)
   graphics::plot.new()                            # empty plot
-  
   graphics::plot.window(range(df), range(beta), xaxs="i")
   
   oldpar <- graphics::par(mar = mar, lend = "square") # square line ends
@@ -128,6 +125,25 @@ plot_solution <- function (beta, df,
   graphics::grid()
   graphics::axis(2)
   graphics::box()                             # outer box
-  
   graphics::par(oldpar)
+}
+
+
+plot_solution <- function(beta, df, 
+                          mar = c(3, 4, 0, 4), 
+                          label = FALSE) {
+  if (is.list(beta)) {
+    dim_y <- ncol(beta[[1]])
+    size_df <- length(df)
+    beta_plot <- lapply(1:dim_y, function(i) {
+      sapply(1:size_df, function(j) {
+        beta[[j]][, i]
+      })
+    })
+    for (i in 1:length(beta_plot)) {
+      plot_solution_one(beta_plot[[i]], df, mar, label)
+    }
+  } else {
+    plot_solution_one(beta, df, mar, label)
+  }
 }

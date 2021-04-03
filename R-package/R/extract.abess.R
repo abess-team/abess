@@ -42,24 +42,46 @@ extract.abess <- function(object,
   if (is.null(support.size)) {
     s_value <- object[["best.size"]]
   } else {
-    stopifnot(length(support.size) != 1)
-    stopifnot(is.integer(support.size))
+    stopifnot(length(support.size) == 1)
+    stopifnot(is.numeric(support.size))
     s_value <- support.size
   }
   
   support_size_index <- match(s_value, object[["support.size"]])
   best_coef <- coef.abess(object, s_value)
   
-  beta <- best_coef[-1, , drop = FALSE]
-  intercept <- best_coef[1, 1]
-  vars_name <- best_coef@Dimnames[[1]][-1]
-  if (intercept != 0.0) {
-    support_index <- best_coef@i[-1]
-    support_beta <- best_coef@x[-1]
+  multi_y <- object[["family"]] %in% MULTIVARIATE_RESPONSE
+  
+  if (multi_y) {
+    best_coef <- best_coef[[1]]
+    beta <- best_coef[-1, , drop = FALSE]
+    intercept <- best_coef[1, , drop = TRUE]
   } else {
-    support_index <- best_coef@i
-    support_beta <- best_coef@x
+    beta <- best_coef[-1, , drop = FALSE]
+    intercept <- best_coef[1, 1]
   }
+  vars_name <- best_coef@Dimnames[[1]][-1]
+  
+  if (multi_y) {
+    best_coef_sum <- Matrix::rowSums(best_coef, sparseResult = TRUE)
+    if (any(intercept != 0)) {
+      support_index <- best_coef_sum@i[-1]
+      support_beta <- as.matrix(best_coef[support_index, , drop = FALSE])
+      support_index <- support_index - 1
+    } else {
+      support_index <- best_coef_sum@i
+      support_beta <- as.matrix(best_coef_sum@x[support_index, , drop = FALSE])
+    }
+  } else {
+    if (intercept != 0.0) {
+      support_index <- best_coef@i[-1]
+      support_beta <- best_coef@x[-1]
+    } else {
+      support_index <- best_coef@i
+      support_beta <- best_coef@x
+    }
+  }
+  
   support_vars <- vars_name[support_index]
   support_size <- s_value
   dev <- object[["dev"]][support_size_index]

@@ -197,8 +197,9 @@ abess <- function(x, ...) UseMethod("abess")
 #' coef(abess_fit, support.size = 3)
 #' predict(abess_fit, newx = dataset[["x"]][1:10, ], 
 #'         support.size = c(3, 4))
-#' str(extract(abess_fit))
+#' str(extract(abess_fit, 3))
 #' deviance(abess_fit)
+#' plot(abess_fit)
 #' 
 #' ################ logistic model ################
 #' dataset <- generate.data(n, p, support.size, family = "binomial")
@@ -210,16 +211,27 @@ abess <- function(x, ...) UseMethod("abess")
 #' ################ Cox model ################
 #' dataset <- generate.data(n, p, support.size, family = "cox")
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-#'                    family = "cox", tune.type = "cv", 
-#'                    newton = "approx")
-#' abess_fit
+#'                    family = "cox", tune.type = "cv")
+#' 
+#' ################ Multivariate gaussian model ################
+#' dataset <- generate.data(n, p, support.size, family = "mgaussian")
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+#'                    family = "mgaussian", tune.type = "cv")
+#' plot(abess_fit, type = "l2norm")
+#' 
+#' ################ Multinomial model (multi-classification) ################
+#' dataset <- generate.data(n, p, support.size, family = "multinomial")
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+#'                    family = "multinomial", tune.type = "cv")
+#' predict(abess_fit, newx = dataset[["x"]][1:10, ], 
+#'         support.size = c(3, 4), type = "response")
 #' 
 #' ################ Feature screening ################
 #' p <- 1000
 #' dataset <- generate.data(n, p, support.size)
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
 #'                    screening.num = 100)
-#' extract(abess_fit)
+#' str(extract(abess_fit))
 #' 
 abess.default <- function(x, 
                           y,
@@ -411,6 +423,11 @@ abess.default <- function(x,
   
   ## check parameters for sub-optimization:
   # 1:
+  if (length(newton) == 2) {
+    if (family %in% c("binomial", "cox", "multinomial")) {
+      newton <- "approx"
+    }
+  }
   newton <- match.arg(newton)
   # if (newton == "auto") {
   #   if (family == "cox") {
@@ -680,6 +697,11 @@ abess.default <- function(x,
   result[["best.size"]] <- s_list[which.min(result[["tune.value"]])]
   names(result)[which(names(result) == "coef0_all")] <- "intercept"
   result[["intercept"]] <- result[["intercept"]][, 1]
+  if (family == "multinomial") {
+    result[["intercept"]] <- lapply(result[["intercept"]], function(x) {
+      x <- x[-y_dim]
+    })
+  }
   names(result)[which(names(result) == 'beta_all')] <- "beta"
   # names(result)[which(names(result) == 'screening_A')] <- "screening.index"
   # result[["screening.index"]] <- result[["screening.index"]] + 1
@@ -693,8 +715,14 @@ abess.default <- function(x,
       }
     }
     names(result[["beta"]]) <- as.character(s_list)
-    result[["beta"]] <- lapply(result[["beta"]], Matrix::Matrix, 
-                               sparse = TRUE, dimnames = list(vn, y_vn))
+    if (family == "mgaussian") {
+      result[["beta"]] <- lapply(result[["beta"]], Matrix::Matrix, 
+                                 sparse = TRUE, dimnames = list(vn, y_vn))
+    } else {
+      result[["beta"]] <- lapply(result[["beta"]], function(x) { 
+        Matrix::Matrix(x[, -y_dim], sparse = TRUE, dimnames = list(vn, y_vn[-1]))
+      })
+    }
   } else {
     result[["beta"]] <- do.call("cbind", result[["beta"]])
     if (screening) {
