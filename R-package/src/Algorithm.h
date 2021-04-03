@@ -2502,14 +2502,17 @@ public:
           clock_t t1 = clock();
 
           this->covariance_update_f(X, A_ind);
+#ifdef TEST
           clock_t t2 = clock();
           std::cout << "covariance_update_f: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
           std::cout << "this->covariance_update_flag sum: " << this->covariance_update_flag.sum() << endl;
           t1 = clock();
+#endif
           Eigen::MatrixXd XTXbeta = X_seg(this->covariance, this->covariance.rows(), A_ind) * beta;
+#ifdef TEST
           t2 = clock();
           std::cout << "X beta time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-
+#endif
           // Eigen::VectorXd XTonecoef0 = ;
           Eigen::MatrixXd d = (this->XTy - XTXbeta - array_product(this->XTone, coef0)) / double(n);
 #ifdef TEST

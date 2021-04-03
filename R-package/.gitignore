@@ -3,3 +3,4 @@ docs/*.html
 docs/
 docs
 src/tmp/*
+..pdf

@@ -42,5 +42,6 @@ predictors, coefficient estimation, and so on.
 \code{\link{predict.abess}}, 
 \code{\link{coef.abess}}, 
 \code{\link{extract.abess}},
+\code{\link{plot.abess}},
 \code{\link{deviance.abess}}.
 }
