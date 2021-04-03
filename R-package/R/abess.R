@@ -111,7 +111,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' Default is \code{seed = 1}.
 #' @param ... further arguments to be passed to or from methods.
 #'
-#' @return A \code{abess} class object, which is a \code{list} with the following components:
+#' @return A S3 \code{abess} class object, which is a \code{list} with the following components:
 # \item{best.model}{The best model chosen by algorithm. It is a \code{list} object comprising the following sub-components:
 #  1. \code{beta}: a fitted \eqn{p}-dimensional coefficients vector; 2. \code{coef0}: a numeric fitted intercept; 
 #  3. \code{support.index}: an index vector of best model's support set; 4. \code{support.size}: the support size of the best model; 
@@ -172,19 +172,45 @@ abess <- function(x, ...) UseMethod("abess")
 #' \item{call}{The original call to \code{abess}.}
 # \item{type}{Either \code{"bss"} or \code{"bsrr"}.}
 #'
+#' @details Best-subset selection aims to find a small subset of predictors, 
+#' so that the resulting model is expected to have the most desirable prediction accuracy. 
+#' Best-subset selection problem under the support size \eqn{s} is
+#' \deqn{\min_\beta -2 \log L(\beta) \;\;{\rm s.t.}\;\; \|\beta\|_0 \leq s,}
+#' where \eqn{L(\beta)} is arbitrary convex functions. In
+#' the GLM case, \eqn{\log L(\beta)} is the log-likelihood function; in the Cox
+#' model, \eqn{\log L(\beta)} is the log partial-likelihood function. 
+#' 
+#' #' For each candidate model size and \eqn{\lambda}, the best subset selection and the best subset ridge regression
+#' problems are solved by the primal-dual active set (PDAS) algorithm, see Wen et
+#' al (2020) for details. This algorithm
+#' utilizes an active set updating strategy via primal and dual variables and
+#' fits the sub-model by exploiting the fact that their support sets are
+#' non-overlap and complementary. For the case of \code{method = "sequential"}
+#' if \code{warm.start = "TRUE"}, we run the PDAS algorithm for a list of
+#' sequential model sizes and use the estimate from the last iteration as a
+#' warm start. For the case of \code{method = "gsection"} of the best subset
+#' selection problem, a golden section search technique is adopted to
+#' determine the optimal model size efficiently. And for the case of
+#' \code{ method = "psequential"} and \code{method = "pgsection"}of the best ridge regression problem, the Powell method
+#' using a sequential line search method or a golden section search technique is
+#' used for parameters determination.
+#'
 #' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
 #' @references Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x
+#' @references Qiang Sun & Heping Zhang (2020) Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079
 #' 
 #' @seealso \code{\link{print.abess}}, 
 #' \code{\link{predict.abess}}, 
 #' \code{\link{coef.abess}}, 
 #' \code{\link{extract.abess}},
+#' \code{\link{plot.abess}},
 #' \code{\link{deviance.abess}}. 
 #' 
 #' @export
 #' @rdname abess
 #' @method abess default
 #' @examples
+#' \dontrun{
 #' n <- 100
 #' p <- 20
 #' support.size <- 3
@@ -232,7 +258,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
 #'                    screening.num = 100)
 #' str(extract(abess_fit))
-#' 
+#' }
 abess.default <- function(x, 
                           y,
                           family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),

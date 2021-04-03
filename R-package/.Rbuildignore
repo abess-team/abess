@@ -13,3 +13,5 @@
 ^tests/testthat\.R$
 ^\.github$
 ^src/\.vscode$
+^cran-comments\.md$
+^\.\.pdf$

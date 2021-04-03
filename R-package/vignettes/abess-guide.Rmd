@@ -82,14 +82,14 @@ communities-and-crime dataset}](https://archive.ics.uci.edu/ml/datasets/communit
 Here, without the loss of generality, per capita violent crimes is chosen as the response variable, and 102 numerical variables as well as their pairwise interactions is considered as predictors.
 <!-- Note that, the numerical variables with at least 50\% percentages missing observations are excluded,  -->
 <!-- and 200 observations without missing records are randomly picked out from the pool.  -->
-The pre-processed dataset for statistical modeling has 200 observations and 5253 predictors, and the code for pre-processing are openly shared in [\color{blue}{https://github.com/Mamba413/abess/tree/master/R-package/data-raw/DATASET\_VIGNETTES.R}](https://github.com/Mamba413/abess/tree/master/R-package/data-raw/DATASET_VIGNETTES.R).   
+The pre-processed dataset for statistical modeling has 200 observations and 5253 predictors, and the code for pre-processing are openly shared in [\color{blue}{https://github.com/abess-team/abess/tree/master/R-package/data-raw/DATASET\_VIGNETTES.R}](https://github.com/abess-team/abess/tree/master/R-package/data-raw/DATASET_VIGNETTES.R).   
 The pre-processed dataset can be freely downloaded by running:
 ```{r}
 working_directory <- getwd()
 if (file.exists("crime.rda")) {
   load("crime.rda")
 } else {
-  crime_data_url <- "https://github.com/Mamba413/abess/raw/master/R-package/data-raw/crime.rda"
+  crime_data_url <- "https://github.com/abess-team/abess/raw/master/R-package/data-raw/crime.rda"
   download.file(crime_data_url, "crime.rda")
   load(file.path(working_directory, "crime.rda"))
 }

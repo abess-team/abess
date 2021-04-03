@@ -11,8 +11,8 @@ A polynomial algorithm for best-subset selection problem for linear and logistic
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/Mamba413/abess}
-  \item Report bugs at \url{https://github.com/Mamba413/abess/issues}
+  \item \url{https://github.com/abess-team/abess}
+  \item Report bugs at \url{https://github.com/abess-team/abess/issues}
 }
 
 }
