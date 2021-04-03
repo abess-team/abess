@@ -64,7 +64,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/Mamba413/abess/">
+  <a href="https://github.com/abess-team/abess/">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -87,7 +87,7 @@
                         <h4 class="author">Jin Zhu</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/Mamba413/abess/blob/master/../vignettes/abess-guide.Rmd"><code>../vignettes/abess-guide.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/blob/master/../vignettes/abess-guide.Rmd"><code>../vignettes/abess-guide.Rmd</code></a></small>
       <div class="hidden name"><code>abess-guide.Rmd</code></div>
 
     </div>
@@ -107,7 +107,7 @@
 <a href="#fixed-support-size-best-subset-selection" class="anchor"></a>Fixed support size best subset selection</h3>
 <p>We generate a design matrix <span class="math inline">\(X\)</span> containing 300 observation and each observation has 1000 predictors. The response variable <span class="math inline">\(y\)</span> is linearly related to the first, second, and fifth predictors in <span class="math inline">\(X\)</span>: <span class="math display">\[y = 3X_1 + 1.5X_2 + 2X_5 + \epsilon,\]</span> where <span class="math inline">\(\epsilon\)</span> is a standard normal random variable.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Mamba413/abess">abess</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
 <span class="va">synthetic_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">300</span>, p <span class="op">=</span> <span class="fl">1000</span>, 
                                 beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">995</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
@@ -178,14 +178,14 @@
 <div id="feature-screening-for-ultra-high-dimensional-dataset" class="section level3">
 <h3 class="hasAnchor">
 <a href="#feature-screening-for-ultra-high-dimensional-dataset" class="anchor"></a>Feature screening for ultra-high dimensional dataset</h3>
-<p>The <a href="https://archive.ics.uci.edu/ml/datasets/communities+and+crime"></a> consists of 18 variables about crime from the 1995 FBI UCR (e.g., per capita arson crimes and per capita violent crimes), communities information in the U.S. (e.g., the percent of the population considered urban), socio-economic data from the 90s census (e.g., the median family income), and law enforcement data from the 1990 law enforcement management and admin stats survey (e.g., per capita number of police officers). It would be appropriate if any of the crime state in community can be modeled by the basic community information, socio-economic and law enforcement state in community. Here, without the loss of generality, per capita violent crimes is chosen as the response variable, and 102 numerical variables as well as their pairwise interactions is considered as predictors. <!-- Note that, the numerical variables with at least 50\% percentages missing observations are excluded,  --> <!-- and 200 observations without missing records are randomly picked out from the pool.  --> The pre-processed dataset for statistical modeling has 200 observations and 5253 predictors, and the code for pre-processing are openly shared in <a href="https://github.com/Mamba413/abess/tree/master/R-package/data-raw/DATASET_VIGNETTES.R"></a>.<br>
+<p>The <a href="https://archive.ics.uci.edu/ml/datasets/communities+and+crime"></a> consists of 18 variables about crime from the 1995 FBI UCR (e.g., per capita arson crimes and per capita violent crimes), communities information in the U.S. (e.g., the percent of the population considered urban), socio-economic data from the 90s census (e.g., the median family income), and law enforcement data from the 1990 law enforcement management and admin stats survey (e.g., per capita number of police officers). It would be appropriate if any of the crime state in community can be modeled by the basic community information, socio-economic and law enforcement state in community. Here, without the loss of generality, per capita violent crimes is chosen as the response variable, and 102 numerical variables as well as their pairwise interactions is considered as predictors. <!-- Note that, the numerical variables with at least 50\% percentages missing observations are excluded,  --> <!-- and 200 observations without missing records are randomly picked out from the pool.  --> The pre-processed dataset for statistical modeling has 200 observations and 5253 predictors, and the code for pre-processing are openly shared in <a href="https://github.com/abess-team/abess/tree/master/R-package/data-raw/DATASET_VIGNETTES.R"></a>.<br>
 The pre-processed dataset can be freely downloaded by running:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">working_directory</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html">getwd</a></span><span class="op">(</span><span class="op">)</span>
 <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="st">"crime.rda"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="st">"crime.rda"</span><span class="op">)</span>
 <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-  <span class="va">crime_data_url</span> <span class="op">&lt;-</span> <span class="st">"https://github.com/Mamba413/abess/raw/master/R-package/data-raw/crime.rda"</span>
+  <span class="va">crime_data_url</span> <span class="op">&lt;-</span> <span class="st">"https://github.com/abess-team/abess/raw/master/R-package/data-raw/crime.rda"</span>
   <span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="va">crime_data_url</span>, <span class="st">"crime.rda"</span><span class="op">)</span>
   <span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">working_directory</span>, <span class="st">"crime.rda"</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
