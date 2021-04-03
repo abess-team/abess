@@ -226,7 +226,7 @@ generate.data <- function(n,
     ctime <- stats::runif(n, max = uniform.max)
     status <- (time < ctime) * 1
     censoringrate <- 1 - mean(status)
-    cat("censoring rate:", censoringrate, "\n")
+    # cat("censoring rate:", censoringrate, "\n")
     time <- pmin(time, ctime)
     y <- cbind(time = time, status = status)
   }

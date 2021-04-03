@@ -212,7 +212,7 @@ test_that("abess (mgaussian) works", {
 })
 
 test_that("abess (multinomial) works", {
-  skip()
+  skip("Skip multinomial now!")
   ## not pass:
   n <- 600
   p <- 100
