@@ -1,4 +1,7 @@
 //  #define R_BUILD
+
+// #define TEST
+
 #ifdef R_BUILD
 #include <Rcpp.h>
 #include <RcppEigen.h>
@@ -13,9 +16,6 @@ using namespace Rcpp;
 #include <vector>
 #include <cmath>
 #include "screening.h"
-// #include "logistic.h"
-// #include "poisson.h"
-// #include "coxph.h"
 #include "model_fit.h"
 #include "utilities.h"
 #include "Data.h"
