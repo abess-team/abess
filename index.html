@@ -88,7 +88,7 @@
 
 <p>Best-subset selection aims to find a small subset of predictors such that the resulting linear model is expected to have the most desirable prediction accuracy. This project implements a polynomial algorithm proposed by Zhu et al (2020) to solve the problem. More over, the softwares includes helpful features for high-dimensional data analysis:</p>
 <ul>
-<li>binary-classification, censored-response modeling</li>
+<li>Linear regression, classification, counting-response modeling, censored-response modeling, multi-response modeling (multi-tasks learning)</li>
 <li>sure independence screening</li>
 <li>nuisance penalized regression</li>
 </ul>
@@ -97,15 +97,7 @@
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the newest version of abess from <a href="https://github.com/">github</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"abess"</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
-<span class="co">## basic example code</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"abess-team/abess"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="reference" class="section level2">
 <h2 class="hasAnchor">
@@ -163,7 +155,7 @@ Fan, J. and Lv, J. (2008), Sure independence screening for ultrahigh dimensional
 <ul class="list-unstyled">
 <li><a href="https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abess-team/abess&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76" alt="Codacy Badge"></a></li>
 <li><a href="https://travis-ci.com/abess-team/abess"><img src="https://travis-ci.com/abess-team/abess.svg?branch=master" alt="Travis build status"></a></li>
-<li><a href="https://codecov.io/gh/Mamba413/abess?branch=master"><img src="https://codecov.io/gh/Mamba413/abess/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://codecov.io/gh/abess-team/abess"><img src="https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00" alt="codecov"></a></li>
 </ul>
 </div>
 </div>
