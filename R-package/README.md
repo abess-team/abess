@@ -3,12 +3,12 @@
 <!-- badges: start -->
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76)](https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abess-team/abess&amp;utm_campaign=Badge_Grade)
 [![Travis build status](https://travis-ci.com/abess-team/abess.svg?branch=master)](https://travis-ci.com/abess-team/abess)
-[![Codecov test coverage](https://codecov.io/gh/Mamba413/abess/branch/master/graph/badge.svg)](https://codecov.io/gh/Mamba413/abess?branch=master)
+[![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://codecov.io/gh/abess-team/abess)
 <!-- badges: end -->
 
 Best-subset selection aims to find a small subset of predictors such that the resulting linear model is expected to have the most desirable prediction accuracy. This project implements a polynomial algorithm proposed by Zhu et al (2020) to solve the problem. More over, the softwares includes helpful features for high-dimensional data analysis:
 
-- binary-classification, censored-response modeling
+- Linear regression, classification, counting-response modeling, censored-response modeling, multi-response modeling (multi-tasks learning)
 - sure independence screening
 - nuisance penalized regression
 
@@ -17,16 +17,7 @@ Best-subset selection aims to find a small subset of predictors such that the re
 You can install the newest version of abess from [github](https://github.com/) with:
 
 ``` r
-install.packages("abess")
-```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(abess)
-## basic example code
+remotes::install_github("abess-team/abess")
 ```
 
 ## Reference
