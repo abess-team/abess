@@ -231,6 +231,8 @@ generate.data <- function(n,
     y <- cbind(time = time, status = status)
   }
   if (family == "poisson") {
+    # x <-  x / 16
+    # m <- 5 * sigma * sqrt(2 * log(p) / n)
     m <- sigma * sqrt(2 * log(p) / n) / 3
     if (is.null(input_beta)) {
       beta[nonzero] <- stats::runif(support.size, 2 * m, 10 * m)

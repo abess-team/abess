@@ -186,11 +186,16 @@ test_that("abess (poisson) works", {
   n <- 500
   p <- 1500
   support.size <- 3
+
+  n <- 1000
+  p <- 200
+  support.size <- 20
   
   dataset <- generate.data(n, p, support.size, 
                            family = "poisson", seed = 1)
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                     family = "poisson", tune.type = "cv", num.threads = 8)
+                     family = "poisson", tune.type = "ebic", 
+                     num.threads = 5, max.newton.iter = 80)
   test_batch(abess_fit, dataset, poisson)
 })
 
