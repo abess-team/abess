@@ -8,4 +8,4 @@ before_install:
 cache: packages
 
 after_success:
-  - travis_wait 30 Rscript -e 'covr::codecov(path = ".", quiet = FALSE)'
+  - travis_wait 30 Rscript -e 'covr::codecov(path = ".", quiet = FALSE, type = "vignettes")'
