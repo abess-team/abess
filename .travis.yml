@@ -2,12 +2,10 @@
 
 language: R
 
-install: travis_wait 30 mvn install
-
 before_install:
   - cd R-package
 
 cache: packages
 
 after_success:
-  - Rscript -e 'covr::codecov(path = ".", quiet = FALSE)'
+  - travis_wait 30 Rscript -e 'covr::codecov(path = ".", quiet = FALSE)'
