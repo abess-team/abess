@@ -8,5 +8,4 @@ before_install:
 cache: packages
 
 after_success:
-  # - cd R-package
-  - Rscript -e 'covr::codecov(path = "R-package/test")'
+  - Rscript -e 'covr::codecov(path = "./R-package")'
