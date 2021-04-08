@@ -367,25 +367,17 @@ $$\min_\beta -2 \log L(\beta) \;\;{\rm s.t.}\;\; \|\beta\|_0 \leq s,$$
 where \(L(\beta)\) is arbitrary convex functions. In
 the GLM case, \(\log L(\beta)\) is the log-likelihood function; in the Cox
 model, \(\log L(\beta)\) is the log partial-likelihood function.</p>
-<p>#' For each candidate model size and \(\lambda\), the best subset selection and the best subset ridge regression
-problems are solved by the primal-dual active set (PDAS) algorithm, see Wen et
-al (2020) for details. This algorithm
-utilizes an active set updating strategy via primal and dual variables and
-fits the sub-model by exploiting the fact that their support sets are
-non-overlap and complementary. For the case of <code>method = "sequential"</code>
-if <code>warm.start = "TRUE"</code>, we run the PDAS algorithm for a list of
-sequential model sizes and use the estimate from the last iteration as a
-warm start. For the case of <code>method = "gsection"</code> of the best subset
-selection problem, a golden section search technique is adopted to
-determine the optimal model size efficiently. And for the case of
-<code> method = "psequential"</code> and <code>method = "pgsection"</code>of the best ridge regression problem, the Powell method
-using a sequential line search method or a golden section search technique is
-used for parameters determination.</p>
+<p>The best subset selection problem is solved by the "abess" algorithm in this package, see Zhu (2020) for details. 
+Under mild conditions, the algorithm exactly solve this problem in polynomial time. 
+This algorithm exploits the idea of sequencing and splicing to reach a stable solution in finite steps
+when \(s\) is fixed. 
+To find the optimal support size \(s\), 
+we provide various criterion like GIC, AIC, BIC and cross-validation error to determine it.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117</p>
 <p>Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x</p>
-<p>Qiang Sun &amp; Heping Zhang (2020) Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079</p>
+<p>Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun &amp; Heping Zhang (2020). Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='print.abess.html'>print.abess</a></code>, 
@@ -480,7 +472,7 @@ used for parameters determination.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jin Zhu, Kangkang Jiang, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p>Developed by Jin Zhu, Kangkang Jiang, Yanhang Zhang, Liyuan Hu, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">
