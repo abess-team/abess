@@ -16,36 +16,51 @@ test_batch <- function(n, p, support_size, family, formula) {
   }
   if (family %in% c("gaussian", "mgaussian")) {
     abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = family, 
-                       tune.type = "gic", screening.num = n)
+                       tune.type = "gic", screening.num = n, support.size = 0:1)
     if (formula) {
       if (family == "mgaussian") {
         abess_fit <- abess(cbind(y1, y2, y3) ~ ., data = dat, 
                            family = "mgaussian", tune.type = "gic", 
-                           screening.num = n)
+                           screening.num = n, support.size = 0:1)
       } else {
         abess_fit <- abess(y ~ ., data = dat, 
                            tune.type = "gic", 
                            screening.num = n, 
-                           family = family)
+                           family = family, support.size = 0:1)
       }
     }
   } else {
-    abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = family, 
-                       tune.type = "gic", screening.num = n, 
-                       newton = "approx")  
+    if (family == "poisson") {
+      abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = family, 
+                         tune.type = "gic", screening.num = n, 
+                         max.newton.iter = 50, support.size = 0:1, newton.thresh = 1e-8)      
+    } else {
+      abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = family, 
+                         tune.type = "gic", screening.num = n, 
+                         newton = "approx", support.size = 0:1)
+    }
+
+
     if (formula) {
       if (family == "cox") {
         abess_fit <- abess(cbind(time, status) ~ ., data = dat, 
                            tune.type = "gic", 
                            screening.num = n, 
                            family = family, 
-                           newton = "approx")
+                           newton = "approx", support.size = 0:1)
+      } else if (family == "poisson") {
+        abess_fit <- abess(y ~ ., data = dat, 
+                           tune.type = "gic", 
+                           screening.num = n, 
+                           family = family, 
+                           support.size = 0:1, 
+                           max.newton.iter = 50)
       } else {
         abess_fit <- abess(y ~ ., data = dat, 
                            tune.type = "gic", 
                            screening.num = n, 
                            family = family, 
-                           newton = "approx")
+                           newton = "approx", support.size = 0:1)
       }
     }
   }
@@ -88,8 +103,9 @@ test_that("screening (binomial) works", {
 })
 
 test_that("screening (cox) works", {
-  n <- 200
-  p <- 2000
+  skip("skip cox now!")
+  n <- 300
+  p <- 1000
   support_size <- 3
   
   ## default interface
@@ -100,10 +116,10 @@ test_that("screening (cox) works", {
 })
 
 test_that("screening (poisson) works", {
-  skip("Skip poisson now!")
+  # skip("Skip poisson now!")
   n <- 200
-  p <- 2000
-  support_size <- 3
+  p <- 2500
+  support_size <- 4
   
   ## default interface
   test_batch(n, p, support_size, "poisson", FALSE)

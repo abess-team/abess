@@ -179,12 +179,12 @@ test_that("abess (binomial) works", {
 })
 
 test_that("abess (cox) works", {
-  # skip("skip cox now")
+  skip("skip cox now!")
   if (!require("survival")) {
     install.packages("survival")
   }
   n <- 500
-  p <- 500
+  p <- 1000
   support.size <- 3
   
   dataset <- generate.data(n, p, support.size, 
@@ -226,14 +226,14 @@ test_that("abess (cox) works", {
 test_that("abess (poisson) works", {
   skip("Skip poisson now!")
   n <- 500
-  p <- 1500
+  p <- 1000
   support.size <- 3
   
   dataset <- generate.data(n, p, support.size, 
                            family = "poisson", seed = 1)
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                     family = "poisson", tune.type = "ebic", 
-                     num.threads = 5, max.newton.iter = 80)
+                     family = "poisson", tune.type = "cv", 
+                     newton.thresh = 1e-8)
   test_batch(abess_fit, dataset, poisson)
 })
 
@@ -266,7 +266,7 @@ test_that("abess (multinomial) works", {
                      newton = "approx")
   test_batch_multivariate(abess_fit, dataset, FALSE)
 
-  ## pass:
+  ## not pass:
   n <- 200
   p <- 500
   support_size <- 3

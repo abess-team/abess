@@ -229,6 +229,12 @@ abess <- function(x, ...) UseMethod("abess")
 #'                    family = "binomial", tune.type = "cv")
 #' abess_fit
 #' 
+#' ################ poisson model ################
+#' dataset <- generate.data(n, p, support.size, family = "poisson")
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+#'                    family = "poisson", tune.type = "cv")
+#' abess_fit
+#' 
 #' ################ Cox model ################
 #' dataset <- generate.data(n, p, support.size, family = "cox")
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
