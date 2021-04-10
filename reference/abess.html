@@ -415,6 +415,12 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
                    family <span class='op'>=</span> <span class='st'>"binomial"</span>, tune.type <span class='op'>=</span> <span class='st'>"cv"</span><span class='op'>)</span>
 <span class='va'>abess_fit</span>
 
+<span class='co'>################ poisson model ################</span>
+<span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span>, family <span class='op'>=</span> <span class='st'>"poisson"</span><span class='op'>)</span>
+<span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span>, <span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"y"</span><span class='op'>]</span><span class='op'>]</span>, 
+                   family <span class='op'>=</span> <span class='st'>"poisson"</span>, tune.type <span class='op'>=</span> <span class='st'>"cv"</span><span class='op'>)</span>
+<span class='va'>abess_fit</span>
+
 <span class='co'>################ Cox model ################</span>
 <span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span>, family <span class='op'>=</span> <span class='st'>"cox"</span><span class='op'>)</span>
 <span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span>, <span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"y"</span><span class='op'>]</span><span class='op'>]</span>, 
