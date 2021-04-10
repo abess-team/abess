@@ -107,6 +107,46 @@ test_batch_multivariate <- function(abess_fit, dataset, gaussian = TRUE) {
   # expect_equal(oracle_dev, abess_fit[["dev"]][fit_s_size + 1])
 }
 
+test_that("Covariance update works", {
+  skip('Skip Covariance update!')
+  n <- 1000
+  p <- 500
+  support_size <- 3
+  
+  dataset <- generate.data(n, p, support_size, seed = 1)
+  t1 <- system.time(abess_fit1 <- abess(dataset[["x"]], 
+                                        dataset[["y"]],
+                                        cov.update = FALSE, 
+                                        num.threads = 1))
+  t2 <- system.time(abess_fit2 <- abess(dataset[["x"]], 
+                                        dataset[["y"]], 
+                                        num.threads = 1))
+  
+  expect_lt(t2[3], t1[3])
+  abess_fit1[["call"]] <- NULL
+  abess_fit2[["call"]] <- NULL
+  expect_true(all.equal(abess_fit1, abess_fit2))
+  
+  
+  # n <- 100
+  # p <- 5000
+  # support_size <- 3
+  # 
+  # dataset <- generate.data(n, p, support_size, seed = 1)
+  # t1 <- system.time(abess_fit1 <- abess(dataset[["x"]], 
+  #                                       dataset[["y"]],
+  #                                       cov.update = FALSE, 
+  #                                       num.threads = 1))
+  # t2 <- system.time(abess_fit2 <- abess(dataset[["x"]], 
+  #                                       dataset[["y"]], 
+  #                                       num.threads = 1))
+  # 
+  # expect_gt(t2[3], t1[3])
+  # abess_fit1[["call"]] <- NULL
+  # abess_fit2[["call"]] <- NULL
+  # expect_true(all.equal(abess_fit1, abess_fit2))
+})
+
 test_that("abess (gaussian) works", {
   n <- 500
   p <- 1500
@@ -139,10 +179,12 @@ test_that("abess (binomial) works", {
 })
 
 test_that("abess (cox) works", {
-  # skip("skip cox now")
-  require(survival)
+  skip("skip cox now!")
+  if (!require("survival")) {
+    install.packages("survival")
+  }
   n <- 500
-  p <- 500
+  p <- 1000
   support.size <- 3
   
   dataset <- generate.data(n, p, support.size, 
@@ -184,13 +226,14 @@ test_that("abess (cox) works", {
 test_that("abess (poisson) works", {
   skip("Skip poisson now!")
   n <- 500
-  p <- 1500
+  p <- 1000
   support.size <- 3
   
   dataset <- generate.data(n, p, support.size, 
                            family = "poisson", seed = 1)
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                     family = "poisson", tune.type = "cv", num.threads = 8)
+                     family = "poisson", tune.type = "cv", 
+                     newton.thresh = 1e-8)
   test_batch(abess_fit, dataset, poisson)
 })
 
@@ -223,7 +266,7 @@ test_that("abess (multinomial) works", {
                      newton = "approx")
   test_batch_multivariate(abess_fit, dataset, FALSE)
 
-  ## pass:
+  ## not pass:
   n <- 200
   p <- 500
   support_size <- 3
@@ -234,49 +277,11 @@ test_that("abess (multinomial) works", {
   test_batch_multivariate(abess_fit, dataset, FALSE)
 })
 
-test_that("Covariance update works", {
-  skip('Skip Covariance update!')
-  n <- 1000
-  p <- 500
-  support_size <- 3
-  
-  dataset <- generate.data(n, p, support_size, seed = 1)
-  t1 <- system.time(abess_fit1 <- abess(dataset[["x"]], 
-                                        dataset[["y"]],
-                                        cov.update = FALSE, 
-                                        num.threads = 1))
-  t2 <- system.time(abess_fit2 <- abess(dataset[["x"]], 
-                                        dataset[["y"]], 
-                                        num.threads = 1))
-  
-  expect_lt(t2[3], t1[3])
-  abess_fit1[["call"]] <- NULL
-  abess_fit2[["call"]] <- NULL
-  expect_true(all.equal(abess_fit1, abess_fit2))
-  
-  
-  # n <- 100
-  # p <- 5000
-  # support_size <- 3
-  # 
-  # dataset <- generate.data(n, p, support_size, seed = 1)
-  # t1 <- system.time(abess_fit1 <- abess(dataset[["x"]], 
-  #                                       dataset[["y"]],
-  #                                       cov.update = FALSE, 
-  #                                       num.threads = 1))
-  # t2 <- system.time(abess_fit2 <- abess(dataset[["x"]], 
-  #                                       dataset[["y"]], 
-  #                                       num.threads = 1))
-  # 
-  # expect_gt(t2[3], t1[3])
-  # abess_fit1[["call"]] <- NULL
-  # abess_fit2[["call"]] <- NULL
-  # expect_true(all.equal(abess_fit1, abess_fit2))
-})
-
 test_that("Fast than Lasso (gaussian) works", {
-  # skip("Skip comparison with glmnet now!")
-  require(glmnet)
+  skip("Skip comparison with glmnet now!")
+  if (!require("glmnet")) {
+    install.packages("glmnet")
+  }
   n <- 500
   p <- 1500
   support_size <- 3

@@ -231,21 +231,24 @@ generate.data <- function(n,
     y <- cbind(time = time, status = status)
   }
   if (family == "poisson") {
-    m <- sigma * sqrt(2 * log(p) / n) / 3
+    m <- 5 * sqrt(2 * log(p) / n)
+    # m <- sigma * sqrt(2 * log(p) / n) / 3
     if (is.null(input_beta)) {
-      beta[nonzero] <- stats::runif(support.size, 2 * m, 10 * m)
+      beta[nonzero] <- stats::runif(support.size, -2 * m, 2 * m)
+      # beta[nonzero] <- stats::rnorm(support.size, sd = m)
     } else {
       beta <- input_beta
     }
     sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
-    
+    sigma <- 0
     eta <- x %*% beta + stats::rnorm(n, 0, sigma)
     eta <- ifelse(eta > 30, 30, eta)
     eta <- ifelse(eta < -30, -30, eta)
     eta <- exp(eta)
     # eta[eta<0.0001] <- 0.0001
     # eta[eta>1e5] <- 1e5
-    y <- stats::rpois(n, eta)
+    # y <- stats::rpois(n, eta)
+    y <- sapply(eta, stats::rpois, n = 1)
   }
   if (family == "mgaussian") {
     m <- 5 * sqrt(2 * log(p) / n)

@@ -1,4 +1,5 @@
 //  #define R_BUILD
+// #define TEST
 #ifdef R_BUILD
 #include <Rcpp.h>
 #include <RcppEigen.h>
@@ -47,7 +48,8 @@ Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::VectorXd, double> &data, 
         Eigen::MatrixXd x_tmp = data.x.middleCols(g_index(i), g_size(i));
         Eigen::VectorXd beta;
         double coef0;
-        coef_set_zero(p, M, beta, coef0);
+        coef_set_zero(g_size(i), M, beta, coef0);
+        // cout << "model type" << model_type<<endl;
         if (model_type == 1)
         {
             lm_fit(x_tmp, data.y, data.weight, beta, coef0, DBL_MAX, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon, 0., 0.);
@@ -58,11 +60,11 @@ Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::VectorXd, double> &data, 
         }
         else if (model_type == 3)
         {
-            cox_fit(x_tmp, data.y, data.weight, beta, coef0, DBL_MAX, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon, 0., 0.);
+            poisson_fit(x_tmp, data.y, data.weight, beta, coef0, DBL_MAX, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon, 0., 0.);
         }
         else if (model_type == 4)
         {
-            poisson_fit(x_tmp, data.y, data.weight, beta, coef0, DBL_MAX, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon, 0., 0.);
+            cox_fit(x_tmp, data.y, data.weight, beta, coef0, DBL_MAX, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon, 0., 0.);
         }
         coef_norm(i) = beta.squaredNorm() / g_size(i);
 #ifdef TEST
@@ -71,8 +73,8 @@ Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::VectorXd, double> &data, 
 #endif
     }
 #ifdef TEST
-    cout << "x_tmp" << data.x.middleCols(0, 1) << endl;
-    cout << "data.y" << data.y << endl;
+    std::cout << "x_tmp" << data.x.middleCols(0, 1) << endl;
+    std::cout << "data.y" << data.y << endl;
 #endif
     // cout << "coef_norm: " << coef_norm << endl;
 

@@ -27,5 +27,6 @@ void lm_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Ei
 void poisson_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda);
 double loglik_cox(Eigen::MatrixXd &X, Eigen::VectorXd &status, Eigen::VectorXd &beta, Eigen::VectorXd &weights);
 void cox_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd &beta, double &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda);
+double loglik_poiss(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &coef, int n, Eigen::VectorXd &weights);
 
 #endif
