@@ -6,9 +6,15 @@
 [![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://codecov.io/gh/abess-team/abess)
 <!-- badges: end -->
 
-Best-subset selection aims to find a small subset of predictors such that the resulting linear model is expected to have the most desirable prediction accuracy. This project implements a polynomial algorithm proposed by Zhu et al (2020) to solve the problem. More over, the softwares includes helpful features for high-dimensional data analysis:
+Best-subset selection aims to find a small subset of predictors such that the resulting linear model is expected to have the most desirable prediction accuracy. This project implements a polynomial algorithm proposed by Zhu et al (2020) to solve the problem. It supports:
+<!-- Moreover, the softwares includes helpful features for high-dimensional data analysis. -->
 
-- Linear regression, classification, counting-response modeling, censored-response modeling, multi-response modeling (multi-tasks learning)
+- various model:
+  - linear regression
+  - classification (binary or multi-class)
+  - counting-response modeling
+  - censored-response modeling
+  - multi-response modeling (multi-tasks learning)
 - sure independence screening
 - nuisance penalized regression
 
