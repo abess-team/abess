@@ -142,7 +142,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>Output from the <code>abess</code> function.</p></td>
+      <td><p>An "<code>abess</code>" project.</p></td>
     </tr>
     <tr>
       <th>newx</th>
@@ -158,8 +158,11 @@ fitted values. <code>type = "response"</code> gives the fitted probabilities for
     </tr>
     <tr>
       <th>support.size</th>
-      <td><p>An integer vector specify 
-the model size used for prediction.</p></td>
+      <td><p>An integer value specifies
+the model size fitted at given <code>support.size</code>. 
+If <code>support.size = NULL</code>, then the model with 
+the best tuning value would be returned. 
+Default: <code>support.size = NULL</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>

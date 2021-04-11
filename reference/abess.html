@@ -235,7 +235,8 @@ Only used for <code>method = "sequence"</code>. Default is <code>0:min(n, round(
       <th>gs.range</th>
       <td><p>A integer vector with two elements. 
 The first element is the minimum model size considered by golden-section, 
-the later one is the maximum one. Default is <code>gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))</code>.</p></td>
+the later one is the maximum one. Default is <code>gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))</code>.
+Not available now.</p></td>
     </tr>
     <tr>
       <th>always.include</th>
@@ -282,7 +283,7 @@ and can be faster (especially when <code>family = "cox"</code>).</p></td>
     </tr>
     <tr>
       <th>newton.thresh</th>
-      <td><p>a numerica value for controlling positive convergence tolerance. 
+      <td><p>a numeric value for controlling positive convergence tolerance. 
 The Newton's iterations converge when \(|dev - dev_{old}|/(|dev| + 0.1)&lt;\) <code>newton.thresh</code>.</p></td>
     </tr>
     <tr>
@@ -292,7 +293,7 @@ Default is <code>max.newton.iter = 10</code> if <code>newton = "exact"</code>, a
     </tr>
     <tr>
       <th>early.stop</th>
-      <td><p>A boolean value decide whether early stoping. 
+      <td><p>A boolean value decide whether early stopping. 
 If <code>early.stop = TRUE</code>, algorithm will stop if the last tuning value less than the existing one. 
 Default: <code>early.stop = FALSE</code>.</p></td>
     </tr>
