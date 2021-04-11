@@ -9,6 +9,7 @@
 #' the coefficient fitted at given \code{support.size}. 
 #' If \code{support.size = NULL}, then all coefficients would be returned. 
 #' Default: \code{support.size = NULL}.
+#' 
 #' @param sparse A logical value, specifying whether the coefficients should be
 #' presented as sparse matrix or not. Default: \code{sparse = TRUE}.
 #' @param ... Other arguments.

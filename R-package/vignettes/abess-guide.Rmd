@@ -117,20 +117,20 @@ str(best_model)
 best_vars <- best_model[["support.vars"]]
 best_vars
 ```
-From the linear model based on the selected features, we see that the two predictors, 
-'pctMaleDivorc:pctKidsBornNevrMarr' 
-(i.e., the linear interaction between the percentage of divorced males and the percentage of kids born to never married) 
-and 'pct65up:pctPopDenseHous' 
-(i.e., the linear interaction between the percentage of population that is 65 at least in age and the percent of persons in dense housing that have more than 1 person per room), have the most significant impact on the response: 
-```{r}
+<!-- From the linear model based on the selected features, we see that the two predictors,  -->
+<!-- 'pctMaleDivorc:pctKidsBornNevrMarr'  -->
+<!-- (i.e., the linear interaction between the percentage of divorced males and the percentage of kids born to never married)  -->
+<!-- and 'pct65up:pctPopDenseHous'  -->
+<!-- (i.e., the linear interaction between the percentage of population that is 65 at least in age and the percent of persons in dense housing that have more than 1 person per room), have the most significant impact on the response:  -->
+```{r, eval=FALSE, echo=FALSE}
 lm_dat <- cbind.data.frame(crime[, c("y", best_vars)])
 lm_fit <- lm(y ~ ., data = lm_dat)
 summary(lm_fit)
 ```
-We visualize the relationship between the response and the 
-two most significant
-selected predictors:
-![](./crime.jpg)
+<!-- We visualize the relationship between the response and the  -->
+<!-- two most significant -->
+<!-- selected predictors: -->
+<!-- ![](./crime.jpg) -->
 ```{r, fig.height=3, fig.width=6, echo=FALSE, eval=FALSE}
 library(reshape2)
 library(ggplot2)

@@ -1,4 +1,4 @@
-#' print method for a "bess" object
+#' print method for a "abess" object
 #'
 #' Print the primary elements of the "\code{abess}" object.
 #'

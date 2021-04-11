@@ -7,7 +7,7 @@
 \method{predict}{abess}(object, newx, type = c("link", "response"), support.size = NULL, ...)
 }
 \arguments{
-\item{object}{Output from the \code{abess} function.}
+\item{object}{An "\code{abess}" project.}
 
 \item{newx}{New data used for prediction. If omitted, the fitted linear predictors are used.}
 
@@ -17,8 +17,11 @@ fitted values. \code{type = "response"} gives the fitted probabilities for
 \code{"binomial"}, fitted mean for \code{"poisson"} and the fitted relative-risk for
 \code{"cox"}; for \code{"gaussian"}, \code{type = "response"} is equivalent to \code{type = "link"}}
 
-\item{support.size}{An integer vector specify 
-the model size used for prediction.}
+\item{support.size}{An integer value specifies
+the model size fitted at given \code{support.size}. 
+If \code{support.size = NULL}, then the model with 
+the best tuning value would be returned. 
+Default: \code{support.size = NULL}.}
 
 \item{...}{Additional arguments affecting the predictions produced.}
 }

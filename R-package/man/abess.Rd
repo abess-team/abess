@@ -81,7 +81,8 @@ Only used for \code{method = "sequence"}. Default is \code{0:min(n, round(n/(log
 
 \item{gs.range}{A integer vector with two elements. 
 The first element is the minimum model size considered by golden-section, 
-the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.}
+the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
+Not available now.}
 
 \item{always.include}{An integer vector containing the indexes of variables that should always be included in the model.}
 
@@ -112,13 +113,13 @@ If \code{newton = "exact"}, then the exact hessian is used,
 while \code{newton = "approx"} uses diagonal entry of the hessian, 
 and can be faster (especially when \code{family = "cox"}).}
 
-\item{newton.thresh}{a numerica value for controlling positive convergence tolerance. 
+\item{newton.thresh}{a numeric value for controlling positive convergence tolerance. 
 The Newton's iterations converge when \eqn{|dev - dev_{old}|/(|dev| + 0.1)<} \code{newton.thresh}.}
 
 \item{max.newton.iter}{a integer giving the maximal number of Newton's iteration iterations.
 Default is \code{max.newton.iter = 10} if \code{newton = "exact"}, and \code{max.newton.iter = 60} if \code{newton = "approx"}.}
 
-\item{early.stop}{A boolean value decide whether early stoping. 
+\item{early.stop}{A boolean value decide whether early stopping. 
 If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one. 
 Default: \code{early.stop = FALSE}.}
 

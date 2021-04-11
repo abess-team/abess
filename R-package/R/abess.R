@@ -52,6 +52,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param gs.range A integer vector with two elements. 
 #' The first element is the minimum model size considered by golden-section, 
 #' the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
+#' Not available now.
 # @param lambda.list A lambda sequence for \code{"bsrr"}. Default is
 # \code{exp(seq(log(100), log(0.01), length.out = 100))}.
 # @param s.min The minimum value of support sizes. Only used for \code{method =
@@ -96,11 +97,11 @@ abess <- function(x, ...) UseMethod("abess")
 #' If \code{newton = "exact"}, then the exact hessian is used, 
 #' while \code{newton = "approx"} uses diagonal entry of the hessian, 
 #' and can be faster (especially when \code{family = "cox"}).
-#' @param newton.thresh a numerica value for controlling positive convergence tolerance. 
+#' @param newton.thresh a numeric value for controlling positive convergence tolerance. 
 #' The Newton's iterations converge when \eqn{|dev - dev_{old}|/(|dev| + 0.1)<} \code{newton.thresh}.
 #' @param max.newton.iter a integer giving the maximal number of Newton's iteration iterations.
 #' Default is \code{max.newton.iter = 10} if \code{newton = "exact"}, and \code{max.newton.iter = 60} if \code{newton = "approx"}.
-#' @param early.stop A boolean value decide whether early stoping. 
+#' @param early.stop A boolean value decide whether early stopping. 
 #' If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one. 
 #' Default: \code{early.stop = FALSE}.
 #' @param num.threads An integer decide the number of threads to be 
