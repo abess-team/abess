@@ -14,7 +14,10 @@ using namespace Rcpp;
 
 #endif
 
+#ifdef TEST
 #include <iostream>
+#endif
+
 #include "Data.h"
 #include "Algorithm.h"
 #include "Metric.h"
@@ -41,10 +44,6 @@ inline int omp_get_num_procs() { return 1; }
 inline void omp_set_num_threads(int nthread) {}
 inline void omp_set_dynamic(int flag) {}
 #endif
-
-// #ifdef OTHER_ALGORITHM2
-// #include "PrincipalBallAlgorithm.h"
-// #endif
 
 using namespace Eigen;
 using namespace std;
@@ -367,7 +366,7 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
 
 #ifdef TEST
   t2 = clock();
-  std::cout << "path time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+  cout << "path time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
   // Get bestmodel index && fit bestmodel
   ////////////////////////////put in abess.cpp///////////////////////////////////////
@@ -453,7 +452,7 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
           ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.g_num, algorithm_list[algorithm_index]);
         }
 #ifdef TEST
-        std::cout << "parallel cv 2 end--------" << std::endl;
+        cout << "parallel cv 2 end--------" << endl;
 #endif
       }
       else
@@ -508,15 +507,15 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
       train_loss_matrix = result.train_loss_matrix;
       ic_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
 #ifdef TEST
-      std::cout << "train_loss: " << std::endl;
-      std::cout << train_loss_matrix << std::endl;
-      std::cout << "ic: " << std::endl;
-      std::cout << ic_matrix << std::endl;
+      cout << "train_loss: " << endl;
+      cout << train_loss_matrix << endl;
+      cout << "ic: " << endl;
+      cout << ic_matrix << endl;
 #endif
     }
   }
 #ifdef TEST
-  std::cout << "abesscpp 3 end --------" << std::endl;
+  cout << "abesscpp 3 end --------" << endl;
 #endif
   // fit best model
   // int best_s = sequence(min_loss_index_row);
@@ -624,11 +623,11 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
   {
 #ifdef TEST
     cout << "screening_A: " << screening_A << endl;
+    cout << "p: " << x.cols() << endl;
 #endif
     T2 beta_screening_A;
     T2 beta;
     T3 coef0;
-    cout << "p: " << x.cols() << endl;
     coef_set_zero(x.cols(), M, beta, coef0);
 
 #ifndef R_BUILD
@@ -694,7 +693,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   lambda_sequence_Vec = Pointer2VectorXd(lambda_sequence, lambda_sequence_len);
   always_select_Vec = Pointer2VectorXi(always_select, always_select_len);
   // t2 = clock();
-  // std::cout << "pointer to data: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+  // cout << "pointer to data: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #ifdef TEST
   t1 = clock();
 #endif
@@ -718,7 +717,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
 
 #ifdef TEST
   t2 = clock();
-  std::cout << "get result : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+  cout << "get result : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
 
   // t1 = clock();
@@ -771,6 +770,6 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   }
 
   // t2 = clock();
-  // std::cout << "result to pointer: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+  // cout << "result to pointer: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 }
 #endif

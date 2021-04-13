@@ -6,6 +6,7 @@
 #define SRC_MODELFIT_H
 #endif
 
+// #define TEST
 
 #ifdef R_BUILD
 
@@ -418,9 +419,17 @@ void multinomial_fit(Eigen::MatrixXd &x, Eigen::MatrixXd &y, Eigen::VectorXd &we
 
 void multigaussian_fit(Eigen::MatrixXd &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
 {
-    Eigen::ConjugateGradient<Eigen::MatrixXd, Eigen::Lower | Eigen::Upper> cg;
-    cg.compute(x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols()));
-    beta = cg.solveWithGuess(x.adjoint() * y, beta);
+    // CG:
+    // Eigen::ConjugateGradient<Eigen::MatrixXd, Eigen::Lower | Eigen::Upper> cg;
+    // cg.compute(x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols()));
+    // beta = cg.solveWithGuess(x.adjoint() * y, beta);
+
+    // colPivHouseholderQr
+    if (lambda == 0.0) {
+        beta = x.colPivHouseholderQr().solve(y);
+    } else {
+        beta = (x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols())).colPivHouseholderQr().solve(x.adjoint() * y);
+    }
 }
 
 Eigen::VectorXd logit_fit(Eigen::MatrixXd x, Eigen::VectorXd y, int n, int p, Eigen::VectorXd weights)
@@ -675,9 +684,9 @@ void logistic_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weigh
 
 void lm_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
 {
-    // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
+    // beta = (X.adjoint() * X + lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
 
-    // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).ldlt().solve(X.adjoint() * y);
+    // beta = (X.adjoint() * X + lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).ldlt().solve(X.adjoint() * y);
 
     // if (X.cols() == 0)
     // {
@@ -686,9 +695,17 @@ void lm_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Ei
     // }
 
     // CG
-    Eigen::ConjugateGradient<Eigen::MatrixXd, Eigen::Lower | Eigen::Upper> cg;
-    cg.compute(x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols()));
-    beta = cg.solveWithGuess(x.adjoint() * y, beta);
+    // Eigen::ConjugateGradient<Eigen::MatrixXd, Eigen::Lower | Eigen::Upper> cg;
+    // cg.compute(x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols()));
+    // beta = cg.solveWithGuess(x.adjoint() * y, beta);
+
+    // colPivHouseholderQr
+    if (lambda == 0.0) {
+        beta = x.colPivHouseholderQr().solve(y);
+    } else {
+        beta = (x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols())).colPivHouseholderQr().solve(x.adjoint() * y);
+    }
+
 #ifdef TEST
     cout << "xx: " << x.adjoint() * x << endl;
     cout << "xy: " << x.adjoint() * y << endl;
@@ -699,11 +716,11 @@ void poisson_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weight
 {
 #ifdef TEST
     clock_t t1 = clock();
+    std::cout << "primary_fit-----------" << endl;
 #endif
-    // cout << "primary_fit-----------" << endl;
     if (x.cols() == 0)
     {
-        coef0 = -log(1 / y.mean() - 1);
+        coef0 = log(y.mean());
         return;
     }
 
@@ -711,123 +728,47 @@ void poisson_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weight
     int p = x.cols();
     Eigen::MatrixXd X = Eigen::MatrixXd::Ones(n, p + 1);
     X.rightCols(p) = x;
-    Eigen::MatrixXd X_new = Eigen::MatrixXd::Zero(n, p + 1);
-    Eigen::MatrixXd X_new_transpose = Eigen::MatrixXd::Zero(p + 1, n);
+    Eigen::MatrixXd X_trans = X.transpose();
+    Eigen::MatrixXd temp = Eigen::MatrixXd::Zero(p + 1, n);
     Eigen::VectorXd beta0 = Eigen::VectorXd::Zero(p + 1);
-    beta0(0) = coef0;
     beta0.tail(p) = beta;
-    Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-    Eigen::VectorXd Pi = pi(X, y, beta0, n);
-    Eigen::VectorXd log_Pi = Pi.array().log();
-    Eigen::VectorXd log_1_Pi = (one - Pi).array().log();
-    double loglik1 = DBL_MAX, loglik0 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
-    Eigen::VectorXd W = Pi.cwiseProduct(one - Pi);
-    for (int i = 0; i < n; i++)
-    {
-        if (W(i) < 0.001)
-            W(i) = 0.001;
-    }
-    Eigen::VectorXd Z = X * beta0 + (y - Pi).cwiseQuotient(W);
-
-    // cout << "l0 loglik: " << loglik0 << endl;
+    beta0(0) = coef0;
+    Eigen::VectorXd eta = X * beta0;
+    Eigen::VectorXd expeta = eta.array().exp();
+    Eigen::VectorXd z = Eigen::VectorXd::Zero(n);
+    double loglik0 = (y.cwiseProduct(eta) - expeta).dot(weights);
+    double loglik1;
 
     int j;
-    double step = 1;
-    Eigen::VectorXd g(p + 1);
-    Eigen::VectorXd beta1;
-    for (j = 0; j < primary_model_fit_max_iter; j++)
-    {
-        // To do: Approximate Newton method
-        if (approximate_Newton)
+    for (j = 0; j < primary_model_fit_max_iter; j++) {
+        for (int i = 0; i < n; i++)
         {
-            Eigen::VectorXd h_diag(p + 1);
-            for (int i = 0; i < p + 1; i++)
-            {
-                h_diag(i) = 1.0 / X.col(i).cwiseProduct(W).cwiseProduct(weights).dot(X.col(i));
-            }
-            g = X.transpose() * ((y - Pi).cwiseProduct(weights));
-            beta1 = beta0 + step * g.cwiseProduct(h_diag);
-            Pi = pi(X, y, beta1, n);
-            log_Pi = Pi.array().log();
-            log_1_Pi = (one - Pi).array().log();
-            loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
-
-            while (loglik1 < loglik0 && step > primary_model_fit_epsilon)
-            {
-                step = step / 2;
-                beta1 = beta0 + step * g.cwiseProduct(h_diag);
-                Pi = pi(X, y, beta1, n);
-                log_Pi = Pi.array().log();
-                log_1_Pi = (one - Pi).array().log();
-                loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
-            }
-
-            // cout << "j=" << j << " loglik: " << loglik1 << endl;
-            // cout << "j=" << j << " loglik diff: " << loglik1 - loglik0 << endl;
-            bool condition1 = -(loglik1 + (primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + tau > loss0;
-            // bool condition1 = false;
-            if (condition1)
-                break;
-
-            if (loglik1 > loglik0)
-            {
-                beta0 = beta1;
-                loglik0 = loglik1;
-                W = Pi.cwiseProduct(one - Pi);
-                for (int i = 0; i < n; i++)
-                {
-                    if (W(i) < 0.001)
-                        W(i) = 0.001;
-                }
-            }
-
-            if (step < primary_model_fit_epsilon)
-            {
-                break;
-            }
+            temp.col(i) = X_trans.col(i) * expeta(i) * weights(i);
         }
-        else
+        z = eta + (y - expeta).cwiseQuotient(expeta);
+        beta0 = (temp * X).ldlt().solve(temp * z);
+        eta = X * beta0;
+        for (int i = 0; i < n; i++)
         {
-            for (int i = 0; i < p + 1; i++)
-            {
-                X_new.col(i) = X.col(i).cwiseProduct(W).cwiseProduct(weights);
-            }
-            X_new_transpose = X_new.transpose();
-
-            beta0 = (X_new_transpose * X).ldlt().solve(X_new_transpose * Z);
-
-            // CG
-            // ConjugateGradient<MatrixXd, Lower | Upper> cg;
-            // cg.compute(X_new_transpose * X);
-            // beta0 = cg.solveWithGuess(X_new_transpose * Z, beta0);
-
-            Pi = pi(X, y, beta0, n);
-            log_Pi = Pi.array().log();
-            log_1_Pi = (one - Pi).array().log();
-            loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
-            // cout << "j=" << j << " loglik: " << loglik1 << endl;
-            // cout << "j=" << j << " loglik diff: " << loglik0 - loglik1 << endl;
-            bool condition1 = -(loglik1 + (primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + tau > loss0;
-            // bool condition1 = false;
-            bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < primary_model_fit_epsilon;
-            bool condition3 = abs(loglik1) < min(1e-3, tau);
-            if (condition1 || condition2 || condition3)
-            {
-                // cout << "condition1:" << condition1 << endl;
-                // cout << "condition2:" << condition2 << endl;
-                // cout << "condition3:" << condition3 << endl;
-                break;
-            }
-
-            loglik0 = loglik1;
-            W = Pi.cwiseProduct(one - Pi);
-            for (int i = 0; i < n; i++)
-            {
-                if (W(i) < 0.001)
-                    W(i) = 0.001;
-            }
-            Z = X * beta0 + (y - Pi).cwiseQuotient(W);
+            if (eta(i) < -30.0)
+                eta(i) = -30.0;
+            if (eta(i) > 30.0)
+                eta(i) = 30.0;
         }
+        expeta = eta.array().exp();
+        loglik1 = (y.cwiseProduct(eta) - expeta).dot(weights);
+        bool condition1 = -(loglik1 + (primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + tau > loss0;
+        // bool condition1 = false;
+        bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < primary_model_fit_epsilon;
+        bool condition3 = abs(loglik1) < min(1e-3, tau);
+        if (condition1 || condition2 || condition3)
+        {
+            // cout << "condition1:" << condition1 << endl;
+            // cout << "condition2:" << condition2 << endl;
+            // cout << "condition3:" << condition3 << endl;
+            break;
+        }
+        loglik0 = loglik1;
     }
 #ifdef TEST
     clock_t t2 = clock();
@@ -868,6 +809,7 @@ void cox_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Ei
 {
 #ifdef TEST
     clock_t t1 = clock();
+    std::cout << "primary_fit-----------" << std::endl;
 #endif
     if (x.cols() == 0)
     {
@@ -875,7 +817,6 @@ void cox_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Ei
         return;
     }
 
-    // cout << "primary_fit-----------" << endl;
     int n = x.rows();
     int p = x.cols();
     Eigen::VectorXd theta(n);
@@ -899,7 +840,6 @@ void cox_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Ei
     int l;
     for (l = 1; l <= primary_model_fit_max_iter; l++)
     {
-
         eta = x * beta0;
         for (int i = 0; i <= n - 1; i++)
         {
@@ -961,8 +901,8 @@ void cox_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Ei
         if (condition1)
         {
             loss0 = -loglik0;
-            beta = beta0;
-            return;
+            // beta = beta0;
+            break;
         }
 
         if (loglik1 > loglik0)
@@ -974,9 +914,8 @@ void cox_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Ei
         if (step < primary_model_fit_epsilon)
         {
             loss0 = -loglik0;
-            beta = beta0;
             // cout << "condition2" << endl;
-            return;
+            break;
         }
     }
 #ifdef TEST
@@ -987,3 +926,20 @@ void cox_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Ei
 
     beta = beta0;
 };
+
+double loglik_poiss(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &coef, int n, Eigen::VectorXd &weights)
+{
+    int p = x.cols();
+    Eigen::MatrixXd X = Eigen::MatrixXd::Ones(n, p + 1);
+    X.rightCols(p) = x;
+    Eigen::VectorXd eta = X * coef;
+    for (int i = 0; i <= n - 1; i++)
+    {
+        if (eta(i) < -30.0)
+            eta(i) = -30.0;
+        if (eta(i) > 30.0)
+            eta(i) = 30.0;
+    }
+    Eigen::VectorXd expeta = eta.array().exp();
+    return (y.cwiseProduct(eta) - expeta).dot(weights);
+}
