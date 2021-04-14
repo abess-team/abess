@@ -8,11 +8,10 @@
 #ifndef R_BUILD
 
 #include <Eigen/Eigen>
+#include <unsupported/Eigen/MatrixFunctions>
 
 #else
-
 #include <RcppEigen.h>
-
 #endif
 
 #include <iostream>
@@ -29,21 +28,83 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x);
 void VectorXi2Pointer(Eigen::VectorXi x_vector, int *x);
 
 Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N);
-Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind);
-Eigen::Matrix<Eigen::MatrixXd, -1, -1> Phi(Eigen::MatrixXd &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, double lambda, Eigen::Matrix<Eigen::MatrixXd, -1, -1> group_XTX);
-Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &Phi, int N);
-Eigen::Matrix<Eigen::MatrixXd, -1, -1> group_XTX(Eigen::MatrixXd &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type);
 
+template <class T4>
+T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind)
+{
+    if (ind.size() == X.cols())
+    {
+        return X;
+    }
+    else
+    {
+        T4 X_new(n, ind.size());
+        for (int k = 0; k < ind.size(); k++)
+        {
+            X_new.col(k) = X.col(ind(k));
+        }
+        return X_new;
+    }
+};
+
+template <class T4>
+void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
+{
+    if (ind.size() == X.cols())
+    {
+        X_seg = X;
+    }
+    else
+    {
+        X_seg.resize(n, ind.size());
+        for (int k = 0; k < ind.size(); k++)
+        {
+            X_seg.col(k) = X.col(ind(k));
+        }
+    }
+};
+
+template <class T4>
+Eigen::Matrix<T4, -1, -1> group_XTX(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)
+{
+    cout << "1" << endl;
+    Eigen::Matrix<T4, -1, -1> XTX(N, 1);
+    cout << "2" << endl;
+    if (model_type == 1 || model_type == 5)
+    {
+        cout << "3" << endl;
+        for (int i = 0; i < N; i++)
+        {
+            T4 X_ind = X.block(0, index(i), n, gsize(i));
+            XTX(i, 0) = X_ind.transpose() * X_ind;
+        }
+    }
+    cout << "4" << endl;
+    return XTX;
+}
+
+template <class T4>
+Eigen::Matrix<Eigen::MatrixXd, -1, -1> Phi(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, double lambda, Eigen::Matrix<T4, -1, -1> group_XTX)
+{
+    Eigen::Matrix<Eigen::MatrixXd, -1, -1> phi(N, 1);
+    for (int i = 0; i < N; i++)
+    {
+        Eigen::MatrixXd lambda_XtX = 2 * lambda * Eigen::MatrixXd::Identity(gsize(i), gsize(i)) + group_XTX(i, 0) / double(n);
+        lambda_XtX.sqrt().evalTo(phi(i, 0));
+    }
+    return phi;
+}
+
+Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &Phi, int N);
 // void max_k(Eigen::VectorXd &vec, int k, Eigen::VectorXi &result);
 void slice_assignment(Eigen::VectorXd &nums, Eigen::VectorXi &ind, double value);
-
 Eigen::VectorXi get_value_index(Eigen::VectorXd &nums, double value);
 Eigen::VectorXd vector_slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind);
 Eigen::VectorXi vector_slice(Eigen::VectorXi &nums, Eigen::VectorXi &ind);
 Eigen::MatrixXd row_slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind);
 Eigen::MatrixXd matrix_slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, int axis);
 
-Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind);
+// Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind);
 Eigen::VectorXi Ac(Eigen::VectorXi &A, int N);
 Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U);
 Eigen::VectorXi diff_union(Eigen::VectorXi A, Eigen::VectorXi &B, Eigen::VectorXi &C);
@@ -55,6 +116,7 @@ Eigen::VectorXi max_k_2(Eigen::VectorXd &vec, int k);
 // to do
 void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int axis = 0);
 void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int axis = 0);
+void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::SparseMatrix<double> &A, int axis = 0);
 
 void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nums, int axis = 0);
 void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nums, int axis = 0);
@@ -71,4 +133,18 @@ void array_quotient(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis = 0);
 double matrix_dot(Eigen::VectorXd &A, Eigen::VectorXd &B);
 Eigen::VectorXd matrix_dot(Eigen::MatrixXd &A, Eigen::VectorXd &B);
 
+void matrix_sqrt(Eigen::MatrixXd &A, Eigen::MatrixXd &B);
+void matrix_sqrt(Eigen::SparseMatrix<double> &A, Eigen::MatrixXd &B);
+
+void add_constant_column(Eigen::MatrixXd &X);
+void add_constant_column(Eigen::SparseMatrix<double> &X);
+
+void set_nonzeros(Eigen::MatrixXd &X, Eigen::MatrixXd &x);
+void set_nonzeros(Eigen::SparseMatrix<double> &X, Eigen::SparseMatrix<double> &x);
+
+void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::VectorXd &Z, Eigen::VectorXd &beta);
+void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::VectorXd &Z, Eigen::VectorXd &beta);
+
+void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta);
+void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta);
 #endif //BESS_UTILITIES_H

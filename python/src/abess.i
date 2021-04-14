@@ -29,6 +29,7 @@ void pywrap_abess(double* IN_ARRAY2, int DIM1, int DIM2, double* IN_ARRAY2, int 
                  bool early_stop, bool approximate_Newton,
                  int thread,
                  bool covariance_update,
+                 bool sparse_matrix,
                  double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* OUTPUT, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, int* ARGOUT_ARRAY1, int DIM1, int*OUTPUT);
 
 // .i文件里面不能加默认变量

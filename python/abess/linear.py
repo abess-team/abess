@@ -92,7 +92,8 @@ class bess_base:
                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-8,
                  early_stop=False, approximate_Newton=False,
                  thread=1,
-                 covariance_update=False):
+                 covariance_update=False,
+                 sparse_matrix=False):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
         self.path_type = path_type
@@ -132,6 +133,7 @@ class bess_base:
         self.approximate_Newton = approximate_Newton
         self.thread = thread
         self.covariance_update = covariance_update
+        self.sparse_matrix = sparse_matrix
 
         self.beta = None
         self.coef0 = None
@@ -395,6 +397,7 @@ class bess_base:
                               self.early_stop, self.approximate_Newton,
                               self.thread,
                               self.covariance_update,
+                              self.sparse_matrix,
                               p * M,
                               1 * M, 1, 1, 1, 1, 1, p
                               )
@@ -500,7 +503,8 @@ class abessLogistic(bess_base):
                  always_select=[], tau=0.,
                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-8,
                  early_stop=False, approximate_Newton=False,
-                 thread=1
+                 thread=1,
+                 sparse_matrix=False
                  ):
         super(abessLogistic, self).__init__(
             algorithm_type="abess", model_type="Logistic", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -509,7 +513,8 @@ class abessLogistic(bess_base):
             always_select=always_select, tau=tau,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
             early_stop=early_stop, approximate_Newton=approximate_Newton,
-            thread=thread
+            thread=thread,
+            sparse_matrix=sparse_matrix
         )
         self.data_type = 2
 
@@ -549,7 +554,8 @@ class abessLm(bess_base):
                  always_select=[], tau=0.,
                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-8,
                  early_stop=False, approximate_Newton=False,
-                 thread=1, covariance_update=False
+                 thread=1, covariance_update=False,
+                 sparse_matrix=False
                  ):
         super(abessLm, self).__init__(
             algorithm_type="abess", model_type="Lm", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -558,7 +564,8 @@ class abessLm(bess_base):
             always_select=always_select, tau=tau,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
             early_stop=early_stop, approximate_Newton=approximate_Newton,
-            thread=thread, covariance_update=covariance_update
+            thread=thread, covariance_update=covariance_update,
+            sparse_matrix=sparse_matrix
         )
         self.data_type = 1
 
@@ -646,7 +653,8 @@ class abessPoisson(bess_base):
                  always_select=[], tau=0.,
                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-8,
                  early_stop=False, approximate_Newton=False,
-                 thread=1
+                 thread=1,
+                 sparse_matrix=False
                  ):
         super(abessPoisson, self).__init__(
             algorithm_type="abess", model_type="Poisson", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -655,7 +663,8 @@ class abessPoisson(bess_base):
             always_select=always_select, tau=tau,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
             early_stop=early_stop, approximate_Newton=approximate_Newton,
-            thread=thread
+            thread=thread,
+            sparse_matrix=sparse_matrix
         )
         self.data_type = 2
 
@@ -695,7 +704,8 @@ class abessMLm(bess_base):
                  always_select=[], tau=0.,
                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-8,
                  early_stop=False, approximate_Newton=False,
-                 thread=1, covariance_update=False
+                 thread=1, covariance_update=False,
+                 sparse_matrix=False
                  ):
         super(abessMLm, self).__init__(
             algorithm_type="abess", model_type="MLm", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -704,7 +714,8 @@ class abessMLm(bess_base):
             always_select=always_select, tau=tau,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
             early_stop=early_stop, approximate_Newton=approximate_Newton,
-            thread=thread, covariance_update=covariance_update
+            thread=thread, covariance_update=covariance_update,
+            sparse_matrix=sparse_matrix
         )
         self.data_type = 1
 
@@ -743,7 +754,8 @@ class abessMultinomial(bess_base):
                  always_select=[], tau=0.,
                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-8,
                  early_stop=False, approximate_Newton=False,
-                 thread=1, covariance_update=False
+                 thread=1,
+                 sparse_matrix=False
                  ):
         super(abessMultinomial, self).__init__(
             algorithm_type="abess", model_type="Multinomial", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -752,7 +764,8 @@ class abessMultinomial(bess_base):
             always_select=always_select, tau=tau,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
             early_stop=early_stop, approximate_Newton=approximate_Newton,
-            thread=thread
+            thread=thread,
+            sparse_matrix=sparse_matrix
         )
         self.data_type = 2
 
