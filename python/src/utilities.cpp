@@ -440,6 +440,7 @@ void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::Spars
         clock_t t1, t2;
         t1 = clock();
 #endif
+        Eigen::SparseMatrix<double, Eigen::RowMajor> nums_row(nums);
         Eigen::SparseMatrix<double, Eigen::RowMajor> A_row(ind.size(), nums.cols());
         A_row.reserve(nums.nonZeros());
 #ifdef TEST
@@ -451,7 +452,7 @@ void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::Spars
         {
             for (int i = 0; i < ind.size(); i++)
             {
-                A_row.row(i) = nums.row(ind(i));
+                A_row.row(i) = nums_row.row(ind(i));
             }
         }
 #ifdef TEST
