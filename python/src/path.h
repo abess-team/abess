@@ -27,6 +27,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
 {
 #ifdef TEST
     clock_t t0, t1, t2;
+
 #endif
     int p = data.get_p();
     int N = data.g_num;
@@ -43,7 +44,9 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
     Eigen::VectorXd train_weight, test_weight;
     T4 train_x, test_x;
     int train_n = 0, test_n = 0;
-
+#ifdef TEST
+    t1 = clock();
+#endif
     // train & test data
     if (!metric->is_cv)
     {
@@ -70,13 +73,11 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
         test_n = test_mask.size();
     }
 #ifdef TEST
+    t2 = clock();
+    std::cout << "train_x time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
     cout << "path 1" << endl;
 #endif
-
     Eigen::Matrix<T4, -1, -1> train_group_XTX = group_XTX<T4>(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
-#ifdef TEST
-    cout << "path 1.5" << endl;
-#endif
     algorithm->update_group_XTX(train_group_XTX);
 
 #ifdef TEST
@@ -103,11 +104,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
     Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(sequence_size, lambda_size);
     // Eigen::Matrix<VectorXi, Dynamic, Dynamic> A_matrix(sequence_size, lambda_size);
 
-#ifdef TEST
-    cout << "path 2" << endl;
-#endif
-
-    // to ensure
     T2 beta_init;
     T3 coef0_init;
     coef_set_zero(p, M, beta_init, coef0_init);

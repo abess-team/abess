@@ -61,7 +61,8 @@
         "iterativelinearsolvers": "cpp",
         "eigen": "cpp",
         "dense": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "cfloat": "cpp"
     }, 
     "C_Cpp.dimInactiveRegions": false
 }

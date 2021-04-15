@@ -67,19 +67,15 @@ void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
 template <class T4>
 Eigen::Matrix<T4, -1, -1> group_XTX(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)
 {
-    cout << "1" << endl;
     Eigen::Matrix<T4, -1, -1> XTX(N, 1);
-    cout << "2" << endl;
     if (model_type == 1 || model_type == 5)
     {
-        cout << "3" << endl;
         for (int i = 0; i < N; i++)
         {
             T4 X_ind = X.block(0, index(i), n, gsize(i));
             XTX(i, 0) = X_ind.transpose() * X_ind;
         }
     }
-    cout << "4" << endl;
     return XTX;
 }
 

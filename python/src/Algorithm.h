@@ -1747,8 +1747,8 @@ public:
   };
 };
 
-/*
-class abessCox : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, class T4>
+template <class T4>
+class abessCox : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>
 {
 public:
   abessCox(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0)) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select){};
@@ -1779,7 +1779,7 @@ public:
       // calculate beta & d & h
       // cout << "inital_screening 1" << endl;
       Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
-      Eigen::MatrixXd X_A = X_seg(X, n, A_ind);
+      T4 X_A = X_seg(X, n, A_ind);
       Eigen::VectorXd beta_A(A_ind.size());
       for (int k = 0; k < A_ind.size(); k++)
       {
@@ -1791,18 +1791,19 @@ public:
       std::cout << "inital_screening beta: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
       cout << "2" << endl;
 #endif
-      Eigen::VectorXd d = Eigen::VectorXd::Zero(p);
+      // Eigen::VectorXd d = Eigen::VectorXd::Zero(p);
       Eigen::MatrixXd h;
 
       Eigen::VectorXi I_ind = find_ind(I, g_index, g_size, p, N);
-      Eigen::MatrixXd X_I = X_seg(X, n, I_ind);
-      Eigen::VectorXd d_I = this->dual(X_I, X_A, y, beta_A, coef0, weights, n, h);
+      // Eigen::MatrixXd X_I = X_seg(X, n, I_ind);
+      Eigen::VectorXd d;
+      this->dual(X, X_A, y, beta_A, coef0, weights, n, h, d);
 
       // cout << "d_I: " << d_I << endl;
-      for (int k = 0; k < I_ind.size(); k++)
-      {
-        d(I_ind(k)) = d_I(k);
-      }
+      // for (int k = 0; k < I_ind.size(); k++)
+      // {
+      //   d(I_ind(k)) = d_I(k);
+      // }
 
       // calculate group bd
 #ifdef TEST
@@ -1810,7 +1811,7 @@ public:
 #endif
       for (int i = 0; i < N; i++)
       {
-        Eigen::MatrixXd XG = X.middleCols(g_index(i), g_size(i));
+        T4 XG = X.middleCols(g_index(i), g_size(i));
         // Eigen::MatrixXd XG_new = XG;
         // for (int j = 0; j < g_size(i); j++)
         // {
@@ -1997,7 +1998,7 @@ public:
         loglik1 = -neg_loglik_loss(x, y, weight, beta1, coef0);
       }
 
-      bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - l - 1) * (loglik1 - loglik0)) + tau > loss0;
+      bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - l - 1) * (loglik1 - loglik0)) + this->tau > loss0;
       if (condition1)
       {
         loss0 = -loglik0;
@@ -2041,7 +2042,7 @@ public:
     return -loglik_cox(X, y, beta, weights);
   }
 
-  Eigen::VectorXd dual(T4 &XI, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &weight, int n, Eigen::MatrixXd &h)
+  void dual(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &weight, int n, Eigen::MatrixXd &h, Eigen::VectorXd &d)
   {
     Eigen::VectorXd g;
     if (this->cox_g.size() != 0)
@@ -2092,7 +2093,7 @@ public:
       g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
     }
 
-    return XI.transpose() * g;
+    d = X.transpose() * g;
   }
 
   void get_A(T4 &X, Eigen::VectorXd &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXd &bd, int T0, Eigen::VectorXd &weights,
@@ -2107,7 +2108,7 @@ public:
     t1 = clock();
 #endif
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
-    Eigen::MatrixXd X_A = X_seg(X, n, A_ind);
+    T4 X_A = X_seg(X, n, A_ind);
     Eigen::VectorXd beta_A(A_ind.size());
     for (int k = 0; k < A_ind.size(); k++)
     {
@@ -2130,32 +2131,25 @@ public:
 
     Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
-    Eigen::VectorXd d = Eigen::VectorXd::Zero(p);
+    // Eigen::VectorXd d = Eigen::VectorXd::Zero(p);
     // h -> h_matrix
     Eigen::MatrixXd h;
-    Eigen::VectorXi I_ind = find_ind(I, g_index, g_size, p, N);
-    Eigen::MatrixXd X_I = X_seg(X, n, I_ind);
-    Eigen::VectorXd d_I = this->dual(X_I, X_A, y, beta_A, coef0, weights, n, h);
-    for (int k = 0; k < I_ind.size(); k++)
-    {
-      d(I_ind(k)) = d_I(k);
-    }
+    // Eigen::VectorXi I_ind = find_ind(I, g_index, g_size, p, N);
+    // Eigen::MatrixXd X_I = X_seg(X, n, I_ind);
+    Eigen::VectorXd d;
+    this->dual(X, X_A, y, beta_A, coef0, weights, n, h, d);
+    // for (int k = 0; k < I_ind.size(); k++)
+    // {
+    //   d(I_ind(k)) = d_I(k);
+    // }
 
     Eigen::VectorXd beta_A_group = Eigen::VectorXd::Zero(A_size);
     Eigen::VectorXd d_I_group = Eigen::VectorXd::Zero(I_size);
     for (int i = 0; i < N; i++)
     {
-      Eigen::MatrixXd XGbar;
-      if (g_size(i) != 1)
-      {
-        Eigen::MatrixXd XG = X.middleCols(g_index(i), g_size(i));
-        XGbar.noalias() = XG.transpose() * h * XG;
-      }
-      else
-      {
-        Eigen::VectorXd XG = X.middleCols(g_index(i), g_size(i));
-        XGbar.noalias() = XG.transpose() * h * XG;
-      }
+
+      T4 XG = X.middleCols(g_index(i), g_size(i));
+      Eigen::MatrixXd XGbar = XG.transpose() * h * XG;
 
       Eigen::MatrixXd phiG;
       XGbar.sqrt().evalTo(phiG);
@@ -2205,7 +2199,7 @@ public:
     // cout << "get A 5" << endl;
     Eigen::VectorXi A_exchange(A_size);
     Eigen::VectorXi A_ind_exchage;
-    Eigen::MatrixXd X_A_exchage;
+    T4 X_A_exchage;
     Eigen::VectorXd beta_A_exchange;
     double coef0_A_exchange;
 
@@ -2270,8 +2264,6 @@ public:
 #endif
   };
 };
-
-*/
 
 template <class T4>
 class abessMLm : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>

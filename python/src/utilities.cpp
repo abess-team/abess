@@ -2,6 +2,8 @@
 // Created by jiangkangkang on 2020/3/9.
 //
 
+#define TEST
+
 #ifndef R_BUILD
 #include <Eigen/Eigen>
 #include <unsupported/Eigen/MatrixFunctions>
@@ -16,6 +18,7 @@
 #include <algorithm>
 #include <vector>
 #include <iostream>
+#include <time.h>
 
 using namespace std;
 
@@ -433,9 +436,17 @@ void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::Spars
 {
     if (axis == 0)
     {
-        // to do !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // return;
+#ifdef TEST
+        clock_t t1, t2;
+        t1 = clock();
+#endif
         Eigen::SparseMatrix<double, Eigen::RowMajor> A_row(ind.size(), nums.cols());
+        A_row.reserve(nums.nonZeros());
+#ifdef TEST
+        t2 = clock();
+        std::cout << "slice 1 : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+        t1 = clock();
+#endif
         if (ind.size() != 0)
         {
             for (int i = 0; i < ind.size(); i++)
@@ -443,12 +454,21 @@ void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::Spars
                 A_row.row(i) = nums.row(ind(i));
             }
         }
+#ifdef TEST
+        t2 = clock();
+        std::cout << "slice 2 : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+        t1 = clock();
+#endif
         A = A_row;
+#ifdef TEST
+        t2 = clock();
+        std::cout << "slice 3 : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+#endif
     }
     else
     {
-        // A = Eigen::MatrixXd::Zero(nums.rows(), ind.size());
         A.resize(nums.rows(), ind.size());
+        A.reserve(nums.nonZeros());
         if (ind.size() != 0)
         {
             for (int i = 0; i < ind.size(); i++)

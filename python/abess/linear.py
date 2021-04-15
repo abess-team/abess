@@ -2,6 +2,9 @@ from abess.cabess import pywrap_abess
 import numpy as np
 import math
 import types
+from scipy.sparse import coo_matrix
+
+from time import time
 
 # def fix_docs(cls):
 #     for name, func in vars(cls).items():
@@ -243,10 +246,10 @@ class bess_base:
             The group index for each variable. 
             Default: \code{group} = \code{numpy.ones(p)}.
         """
-
         self.p = X.shape[1]
         n = X.shape[0]
         p = X.shape[1]
+
         if y.ndim == 1:
             M = 1
         else:
@@ -372,15 +375,47 @@ class bess_base:
         # print("self.powell_path: " + str(self.powell_path))
         # print("self.tau: " + str(self.tau))
 
-        # print(X[:10, :10])
-        # print(y)
         if y.ndim == 1:
             y = y.reshape(len(y), 1)
-        # print(y.shape)
-        # print(y)
         print("linear.py fit")
 
-        result = pywrap_abess(X, y, self.data_type, weight,
+        start = time()
+        if self.sparse_matrix:
+            print(type(X))
+            if type(X) != type(coo_matrix((1, 1))):
+                print("sparse matrix 1")
+                nonzero = 0
+                tmp = np.zeros([X.shape[0] * X.shape[1], 3])
+                for j in range(X.shape[1]):
+                    for i in range(X.shape[0]):
+                        if X[i, j] != 0.:
+                            tmp[nonzero, :] = np.array([X[i, j], i, j])
+                            nonzero += 1
+                X = tmp[:nonzero, :]
+
+                print("nonzeros num: " + str(nonzero))
+                # coo = coo_matrix(X)
+                # X = np.zeros([len(coo.data), 3])
+                # print(X[:, 0])
+                # print(coo.data)
+                # X[:, 0] = coo.data.reshape(-1)
+                # X[:, 1] = coo.row.reshape(-1)
+                # X[:, 2] = coo.col.reshape(-1)
+                print(X)
+            else:
+                print("sparse matrix 2")
+                tmp = np.zeros([len(X.data), 3])
+                tmp[:, 1] = X.row
+                tmp[:, 2] = X.col
+                tmp[:, 0] = X.data
+
+                X = tmp
+                print(X)
+
+        stop = time()
+        print("sparse x: " + str(stop-start))
+
+        result = pywrap_abess(X, y, n, p, self.data_type, weight,
                               is_normal,
                               self.algorithm_type_int, self.model_type_int, self.max_iter, self.exchange_num,
                               self.path_type_int, self.is_warm_start,
@@ -605,7 +640,8 @@ class abessCox(bess_base):
                  always_select=[], tau=0.,
                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-8,
                  early_stop=False, approximate_Newton=False,
-                 thread=1
+                 thread=1,
+                 sparse_matrix=False
                  ):
         super(abessCox, self).__init__(
             algorithm_type="abess", model_type="Cox", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -614,11 +650,13 @@ class abessCox(bess_base):
             always_select=always_select, tau=tau,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
             early_stop=early_stop, approximate_Newton=approximate_Newton,
-            thread=thread
+            thread=thread,
+            sparse_matrix=sparse_matrix
         )
         self.data_type = 3
 
 
+@fix_docs
 class abessPoisson(bess_base):
     """
     Examples
@@ -720,6 +758,7 @@ class abessMLm(bess_base):
         self.data_type = 1
 
 
+@fix_docs
 class abessMultinomial(bess_base):
     """
     Examples

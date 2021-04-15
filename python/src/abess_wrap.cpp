@@ -3444,49 +3444,49 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
   int arg5 ;
   int arg6 ;
   int arg7 ;
-  double *arg8 = (double *) 0 ;
+  int arg8 ;
   int arg9 ;
-  bool arg10 ;
+  double *arg10 = (double *) 0 ;
   int arg11 ;
-  int arg12 ;
+  bool arg12 ;
   int arg13 ;
   int arg14 ;
   int arg15 ;
-  bool arg16 ;
+  int arg16 ;
   int arg17 ;
-  double arg18 ;
-  bool arg19 ;
-  int arg20 ;
-  int *arg21 = (int *) 0 ;
+  bool arg18 ;
+  int arg19 ;
+  double arg20 ;
+  bool arg21 ;
   int arg22 ;
   int *arg23 = (int *) 0 ;
   int arg24 ;
   int *arg25 = (int *) 0 ;
   int arg26 ;
-  double *arg27 = (double *) 0 ;
+  int *arg27 = (int *) 0 ;
   int arg28 ;
-  int arg29 ;
+  double *arg29 = (double *) 0 ;
   int arg30 ;
   int arg31 ;
-  double arg32 ;
-  double arg33 ;
+  int arg32 ;
+  int arg33 ;
   double arg34 ;
-  int arg35 ;
-  bool arg36 ;
+  double arg35 ;
+  double arg36 ;
   int arg37 ;
-  int arg38 ;
-  int *arg39 = (int *) 0 ;
+  bool arg38 ;
+  int arg39 ;
   int arg40 ;
-  double arg41 ;
+  int *arg41 = (int *) 0 ;
   int arg42 ;
   double arg43 ;
-  bool arg44 ;
-  bool arg45 ;
-  int arg46 ;
+  int arg44 ;
+  double arg45 ;
+  bool arg46 ;
   bool arg47 ;
-  bool arg48 ;
-  double *arg49 = (double *) 0 ;
-  int arg50 ;
+  int arg48 ;
+  bool arg49 ;
+  bool arg50 ;
   double *arg51 = (double *) 0 ;
   int arg52 ;
   double *arg53 = (double *) 0 ;
@@ -3494,28 +3494,30 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
   double *arg55 = (double *) 0 ;
   int arg56 ;
   double *arg57 = (double *) 0 ;
-  double *arg58 = (double *) 0 ;
-  int arg59 ;
+  int arg58 ;
+  double *arg59 = (double *) 0 ;
   double *arg60 = (double *) 0 ;
   int arg61 ;
   double *arg62 = (double *) 0 ;
   int arg63 ;
-  int *arg64 = (int *) 0 ;
+  double *arg64 = (double *) 0 ;
   int arg65 ;
   int *arg66 = (int *) 0 ;
+  int arg67 ;
+  int *arg68 = (int *) 0 ;
   PyArrayObject *array1 = NULL ;
   int is_new_object1 = 0 ;
   PyArrayObject *array4 = NULL ;
   int is_new_object4 = 0 ;
   int val7 ;
   int ecode7 = 0 ;
-  PyArrayObject *array8 = NULL ;
-  int is_new_object8 = 0 ;
-  bool val10 ;
-  int ecode10 = 0 ;
-  int val11 ;
-  int ecode11 = 0 ;
-  int val12 ;
+  int val8 ;
+  int ecode8 = 0 ;
+  int val9 ;
+  int ecode9 = 0 ;
+  PyArrayObject *array10 = NULL ;
+  int is_new_object10 = 0 ;
+  bool val12 ;
   int ecode12 = 0 ;
   int val13 ;
   int ecode13 = 0 ;
@@ -3523,79 +3525,83 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
   int ecode14 = 0 ;
   int val15 ;
   int ecode15 = 0 ;
-  bool val16 ;
+  int val16 ;
   int ecode16 = 0 ;
   int val17 ;
   int ecode17 = 0 ;
-  double val18 ;
+  bool val18 ;
   int ecode18 = 0 ;
-  bool val19 ;
+  int val19 ;
   int ecode19 = 0 ;
-  int val20 ;
+  double val20 ;
   int ecode20 = 0 ;
-  PyArrayObject *array21 = NULL ;
-  int is_new_object21 = 0 ;
+  bool val21 ;
+  int ecode21 = 0 ;
+  int val22 ;
+  int ecode22 = 0 ;
   PyArrayObject *array23 = NULL ;
   int is_new_object23 = 0 ;
   PyArrayObject *array25 = NULL ;
   int is_new_object25 = 0 ;
   PyArrayObject *array27 = NULL ;
   int is_new_object27 = 0 ;
-  int val29 ;
-  int ecode29 = 0 ;
-  int val30 ;
-  int ecode30 = 0 ;
+  PyArrayObject *array29 = NULL ;
+  int is_new_object29 = 0 ;
   int val31 ;
   int ecode31 = 0 ;
-  double val32 ;
+  int val32 ;
   int ecode32 = 0 ;
-  double val33 ;
+  int val33 ;
   int ecode33 = 0 ;
   double val34 ;
   int ecode34 = 0 ;
-  int val35 ;
+  double val35 ;
   int ecode35 = 0 ;
-  bool val36 ;
+  double val36 ;
   int ecode36 = 0 ;
   int val37 ;
   int ecode37 = 0 ;
-  int val38 ;
+  bool val38 ;
   int ecode38 = 0 ;
-  PyArrayObject *array39 = NULL ;
-  int is_new_object39 = 0 ;
-  double val41 ;
-  int ecode41 = 0 ;
-  int val42 ;
-  int ecode42 = 0 ;
+  int val39 ;
+  int ecode39 = 0 ;
+  int val40 ;
+  int ecode40 = 0 ;
+  PyArrayObject *array41 = NULL ;
+  int is_new_object41 = 0 ;
   double val43 ;
   int ecode43 = 0 ;
-  bool val44 ;
+  int val44 ;
   int ecode44 = 0 ;
-  bool val45 ;
+  double val45 ;
   int ecode45 = 0 ;
-  int val46 ;
+  bool val46 ;
   int ecode46 = 0 ;
   bool val47 ;
   int ecode47 = 0 ;
-  bool val48 ;
+  int val48 ;
   int ecode48 = 0 ;
-  PyObject *array49 = NULL ;
+  bool val49 ;
+  int ecode49 = 0 ;
+  bool val50 ;
+  int ecode50 = 0 ;
   PyObject *array51 = NULL ;
   PyObject *array53 = NULL ;
   PyObject *array55 = NULL ;
-  double temp57 ;
-  int res57 = SWIG_TMPOBJ ;
-  PyObject *array58 = NULL ;
+  PyObject *array57 = NULL ;
+  double temp59 ;
+  int res59 = SWIG_TMPOBJ ;
   PyObject *array60 = NULL ;
   PyObject *array62 = NULL ;
   PyObject *array64 = NULL ;
-  int temp66 ;
-  int res66 = SWIG_TMPOBJ ;
-  PyObject *swig_obj[46] ;
+  PyObject *array66 = NULL ;
+  int temp68 ;
+  int res68 = SWIG_TMPOBJ ;
+  PyObject *swig_obj[48] ;
   
-  arg57 = &temp57;
-  arg66 = &temp66;
-  if (!SWIG_Python_UnpackTuple(args, "pywrap_abess", 46, 46, swig_obj)) SWIG_fail;
+  arg59 = &temp59;
+  arg68 = &temp68;
+  if (!SWIG_Python_UnpackTuple(args, "pywrap_abess", 48, 48, swig_obj)) SWIG_fail;
   {
     npy_intp size[2] = {
       -1, -1 
@@ -3625,33 +3631,33 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
     SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "pywrap_abess" "', argument " "7"" of type '" "int""'");
   } 
   arg7 = static_cast< int >(val7);
+  ecode8 = SWIG_AsVal_int(swig_obj[3], &val8);
+  if (!SWIG_IsOK(ecode8)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode8), "in method '" "pywrap_abess" "', argument " "8"" of type '" "int""'");
+  } 
+  arg8 = static_cast< int >(val8);
+  ecode9 = SWIG_AsVal_int(swig_obj[4], &val9);
+  if (!SWIG_IsOK(ecode9)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode9), "in method '" "pywrap_abess" "', argument " "9"" of type '" "int""'");
+  } 
+  arg9 = static_cast< int >(val9);
   {
     npy_intp size[1] = {
       -1 
     };
-    array8 = obj_to_array_contiguous_allow_conversion(swig_obj[3],
+    array10 = obj_to_array_contiguous_allow_conversion(swig_obj[5],
       NPY_DOUBLE,
-      &is_new_object8);
-    if (!array8 || !require_dimensions(array8, 1) ||
-      !require_size(array8, size, 1)) SWIG_fail;
-    arg8 = (double*) array_data(array8);
-    arg9 = (int) array_size(array8,0);
+      &is_new_object10);
+    if (!array10 || !require_dimensions(array10, 1) ||
+      !require_size(array10, size, 1)) SWIG_fail;
+    arg10 = (double*) array_data(array10);
+    arg11 = (int) array_size(array10,0);
   }
-  ecode10 = SWIG_AsVal_bool(swig_obj[4], &val10);
-  if (!SWIG_IsOK(ecode10)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode10), "in method '" "pywrap_abess" "', argument " "10"" of type '" "bool""'");
-  } 
-  arg10 = static_cast< bool >(val10);
-  ecode11 = SWIG_AsVal_int(swig_obj[5], &val11);
-  if (!SWIG_IsOK(ecode11)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode11), "in method '" "pywrap_abess" "', argument " "11"" of type '" "int""'");
-  } 
-  arg11 = static_cast< int >(val11);
-  ecode12 = SWIG_AsVal_int(swig_obj[6], &val12);
+  ecode12 = SWIG_AsVal_bool(swig_obj[6], &val12);
   if (!SWIG_IsOK(ecode12)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode12), "in method '" "pywrap_abess" "', argument " "12"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode12), "in method '" "pywrap_abess" "', argument " "12"" of type '" "bool""'");
   } 
-  arg12 = static_cast< int >(val12);
+  arg12 = static_cast< bool >(val12);
   ecode13 = SWIG_AsVal_int(swig_obj[7], &val13);
   if (!SWIG_IsOK(ecode13)) {
     SWIG_exception_fail(SWIG_ArgError(ecode13), "in method '" "pywrap_abess" "', argument " "13"" of type '" "int""'");
@@ -3667,48 +3673,46 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
     SWIG_exception_fail(SWIG_ArgError(ecode15), "in method '" "pywrap_abess" "', argument " "15"" of type '" "int""'");
   } 
   arg15 = static_cast< int >(val15);
-  ecode16 = SWIG_AsVal_bool(swig_obj[10], &val16);
+  ecode16 = SWIG_AsVal_int(swig_obj[10], &val16);
   if (!SWIG_IsOK(ecode16)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode16), "in method '" "pywrap_abess" "', argument " "16"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode16), "in method '" "pywrap_abess" "', argument " "16"" of type '" "int""'");
   } 
-  arg16 = static_cast< bool >(val16);
+  arg16 = static_cast< int >(val16);
   ecode17 = SWIG_AsVal_int(swig_obj[11], &val17);
   if (!SWIG_IsOK(ecode17)) {
     SWIG_exception_fail(SWIG_ArgError(ecode17), "in method '" "pywrap_abess" "', argument " "17"" of type '" "int""'");
   } 
   arg17 = static_cast< int >(val17);
-  ecode18 = SWIG_AsVal_double(swig_obj[12], &val18);
+  ecode18 = SWIG_AsVal_bool(swig_obj[12], &val18);
   if (!SWIG_IsOK(ecode18)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode18), "in method '" "pywrap_abess" "', argument " "18"" of type '" "double""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode18), "in method '" "pywrap_abess" "', argument " "18"" of type '" "bool""'");
   } 
-  arg18 = static_cast< double >(val18);
-  ecode19 = SWIG_AsVal_bool(swig_obj[13], &val19);
+  arg18 = static_cast< bool >(val18);
+  ecode19 = SWIG_AsVal_int(swig_obj[13], &val19);
   if (!SWIG_IsOK(ecode19)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode19), "in method '" "pywrap_abess" "', argument " "19"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode19), "in method '" "pywrap_abess" "', argument " "19"" of type '" "int""'");
   } 
-  arg19 = static_cast< bool >(val19);
-  ecode20 = SWIG_AsVal_int(swig_obj[14], &val20);
+  arg19 = static_cast< int >(val19);
+  ecode20 = SWIG_AsVal_double(swig_obj[14], &val20);
   if (!SWIG_IsOK(ecode20)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode20), "in method '" "pywrap_abess" "', argument " "20"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode20), "in method '" "pywrap_abess" "', argument " "20"" of type '" "double""'");
   } 
-  arg20 = static_cast< int >(val20);
+  arg20 = static_cast< double >(val20);
+  ecode21 = SWIG_AsVal_bool(swig_obj[15], &val21);
+  if (!SWIG_IsOK(ecode21)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode21), "in method '" "pywrap_abess" "', argument " "21"" of type '" "bool""'");
+  } 
+  arg21 = static_cast< bool >(val21);
+  ecode22 = SWIG_AsVal_int(swig_obj[16], &val22);
+  if (!SWIG_IsOK(ecode22)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode22), "in method '" "pywrap_abess" "', argument " "22"" of type '" "int""'");
+  } 
+  arg22 = static_cast< int >(val22);
   {
     npy_intp size[1] = {
       -1 
     };
-    array21 = obj_to_array_contiguous_allow_conversion(swig_obj[15],
-      NPY_INT,
-      &is_new_object21);
-    if (!array21 || !require_dimensions(array21, 1) ||
-      !require_size(array21, size, 1)) SWIG_fail;
-    arg21 = (int*) array_data(array21);
-    arg22 = (int) array_size(array21,0);
-  }
-  {
-    npy_intp size[1] = {
-      -1 
-    };
-    array23 = obj_to_array_contiguous_allow_conversion(swig_obj[16],
+    array23 = obj_to_array_contiguous_allow_conversion(swig_obj[17],
       NPY_INT,
       &is_new_object23);
     if (!array23 || !require_dimensions(array23, 1) ||
@@ -3720,7 +3724,7 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
     npy_intp size[1] = {
       -1 
     };
-    array25 = obj_to_array_contiguous_allow_conversion(swig_obj[17],
+    array25 = obj_to_array_contiguous_allow_conversion(swig_obj[18],
       NPY_INT,
       &is_new_object25);
     if (!array25 || !require_dimensions(array25, 1) ||
@@ -3732,148 +3736,128 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
     npy_intp size[1] = {
       -1 
     };
-    array27 = obj_to_array_contiguous_allow_conversion(swig_obj[18],
-      NPY_DOUBLE,
+    array27 = obj_to_array_contiguous_allow_conversion(swig_obj[19],
+      NPY_INT,
       &is_new_object27);
     if (!array27 || !require_dimensions(array27, 1) ||
       !require_size(array27, size, 1)) SWIG_fail;
-    arg27 = (double*) array_data(array27);
+    arg27 = (int*) array_data(array27);
     arg28 = (int) array_size(array27,0);
   }
-  ecode29 = SWIG_AsVal_int(swig_obj[19], &val29);
-  if (!SWIG_IsOK(ecode29)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode29), "in method '" "pywrap_abess" "', argument " "29"" of type '" "int""'");
-  } 
-  arg29 = static_cast< int >(val29);
-  ecode30 = SWIG_AsVal_int(swig_obj[20], &val30);
-  if (!SWIG_IsOK(ecode30)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode30), "in method '" "pywrap_abess" "', argument " "30"" of type '" "int""'");
-  } 
-  arg30 = static_cast< int >(val30);
+  {
+    npy_intp size[1] = {
+      -1 
+    };
+    array29 = obj_to_array_contiguous_allow_conversion(swig_obj[20],
+      NPY_DOUBLE,
+      &is_new_object29);
+    if (!array29 || !require_dimensions(array29, 1) ||
+      !require_size(array29, size, 1)) SWIG_fail;
+    arg29 = (double*) array_data(array29);
+    arg30 = (int) array_size(array29,0);
+  }
   ecode31 = SWIG_AsVal_int(swig_obj[21], &val31);
   if (!SWIG_IsOK(ecode31)) {
     SWIG_exception_fail(SWIG_ArgError(ecode31), "in method '" "pywrap_abess" "', argument " "31"" of type '" "int""'");
   } 
   arg31 = static_cast< int >(val31);
-  ecode32 = SWIG_AsVal_double(swig_obj[22], &val32);
+  ecode32 = SWIG_AsVal_int(swig_obj[22], &val32);
   if (!SWIG_IsOK(ecode32)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode32), "in method '" "pywrap_abess" "', argument " "32"" of type '" "double""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode32), "in method '" "pywrap_abess" "', argument " "32"" of type '" "int""'");
   } 
-  arg32 = static_cast< double >(val32);
-  ecode33 = SWIG_AsVal_double(swig_obj[23], &val33);
+  arg32 = static_cast< int >(val32);
+  ecode33 = SWIG_AsVal_int(swig_obj[23], &val33);
   if (!SWIG_IsOK(ecode33)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode33), "in method '" "pywrap_abess" "', argument " "33"" of type '" "double""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode33), "in method '" "pywrap_abess" "', argument " "33"" of type '" "int""'");
   } 
-  arg33 = static_cast< double >(val33);
+  arg33 = static_cast< int >(val33);
   ecode34 = SWIG_AsVal_double(swig_obj[24], &val34);
   if (!SWIG_IsOK(ecode34)) {
     SWIG_exception_fail(SWIG_ArgError(ecode34), "in method '" "pywrap_abess" "', argument " "34"" of type '" "double""'");
   } 
   arg34 = static_cast< double >(val34);
-  ecode35 = SWIG_AsVal_int(swig_obj[25], &val35);
+  ecode35 = SWIG_AsVal_double(swig_obj[25], &val35);
   if (!SWIG_IsOK(ecode35)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode35), "in method '" "pywrap_abess" "', argument " "35"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode35), "in method '" "pywrap_abess" "', argument " "35"" of type '" "double""'");
   } 
-  arg35 = static_cast< int >(val35);
-  ecode36 = SWIG_AsVal_bool(swig_obj[26], &val36);
+  arg35 = static_cast< double >(val35);
+  ecode36 = SWIG_AsVal_double(swig_obj[26], &val36);
   if (!SWIG_IsOK(ecode36)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode36), "in method '" "pywrap_abess" "', argument " "36"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode36), "in method '" "pywrap_abess" "', argument " "36"" of type '" "double""'");
   } 
-  arg36 = static_cast< bool >(val36);
+  arg36 = static_cast< double >(val36);
   ecode37 = SWIG_AsVal_int(swig_obj[27], &val37);
   if (!SWIG_IsOK(ecode37)) {
     SWIG_exception_fail(SWIG_ArgError(ecode37), "in method '" "pywrap_abess" "', argument " "37"" of type '" "int""'");
   } 
   arg37 = static_cast< int >(val37);
-  ecode38 = SWIG_AsVal_int(swig_obj[28], &val38);
+  ecode38 = SWIG_AsVal_bool(swig_obj[28], &val38);
   if (!SWIG_IsOK(ecode38)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode38), "in method '" "pywrap_abess" "', argument " "38"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode38), "in method '" "pywrap_abess" "', argument " "38"" of type '" "bool""'");
   } 
-  arg38 = static_cast< int >(val38);
+  arg38 = static_cast< bool >(val38);
+  ecode39 = SWIG_AsVal_int(swig_obj[29], &val39);
+  if (!SWIG_IsOK(ecode39)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode39), "in method '" "pywrap_abess" "', argument " "39"" of type '" "int""'");
+  } 
+  arg39 = static_cast< int >(val39);
+  ecode40 = SWIG_AsVal_int(swig_obj[30], &val40);
+  if (!SWIG_IsOK(ecode40)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode40), "in method '" "pywrap_abess" "', argument " "40"" of type '" "int""'");
+  } 
+  arg40 = static_cast< int >(val40);
   {
     npy_intp size[1] = {
       -1 
     };
-    array39 = obj_to_array_contiguous_allow_conversion(swig_obj[29],
+    array41 = obj_to_array_contiguous_allow_conversion(swig_obj[31],
       NPY_INT,
-      &is_new_object39);
-    if (!array39 || !require_dimensions(array39, 1) ||
-      !require_size(array39, size, 1)) SWIG_fail;
-    arg39 = (int*) array_data(array39);
-    arg40 = (int) array_size(array39,0);
+      &is_new_object41);
+    if (!array41 || !require_dimensions(array41, 1) ||
+      !require_size(array41, size, 1)) SWIG_fail;
+    arg41 = (int*) array_data(array41);
+    arg42 = (int) array_size(array41,0);
   }
-  ecode41 = SWIG_AsVal_double(swig_obj[30], &val41);
-  if (!SWIG_IsOK(ecode41)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode41), "in method '" "pywrap_abess" "', argument " "41"" of type '" "double""'");
-  } 
-  arg41 = static_cast< double >(val41);
-  ecode42 = SWIG_AsVal_int(swig_obj[31], &val42);
-  if (!SWIG_IsOK(ecode42)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode42), "in method '" "pywrap_abess" "', argument " "42"" of type '" "int""'");
-  } 
-  arg42 = static_cast< int >(val42);
   ecode43 = SWIG_AsVal_double(swig_obj[32], &val43);
   if (!SWIG_IsOK(ecode43)) {
     SWIG_exception_fail(SWIG_ArgError(ecode43), "in method '" "pywrap_abess" "', argument " "43"" of type '" "double""'");
   } 
   arg43 = static_cast< double >(val43);
-  ecode44 = SWIG_AsVal_bool(swig_obj[33], &val44);
+  ecode44 = SWIG_AsVal_int(swig_obj[33], &val44);
   if (!SWIG_IsOK(ecode44)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode44), "in method '" "pywrap_abess" "', argument " "44"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode44), "in method '" "pywrap_abess" "', argument " "44"" of type '" "int""'");
   } 
-  arg44 = static_cast< bool >(val44);
-  ecode45 = SWIG_AsVal_bool(swig_obj[34], &val45);
+  arg44 = static_cast< int >(val44);
+  ecode45 = SWIG_AsVal_double(swig_obj[34], &val45);
   if (!SWIG_IsOK(ecode45)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode45), "in method '" "pywrap_abess" "', argument " "45"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode45), "in method '" "pywrap_abess" "', argument " "45"" of type '" "double""'");
   } 
-  arg45 = static_cast< bool >(val45);
-  ecode46 = SWIG_AsVal_int(swig_obj[35], &val46);
+  arg45 = static_cast< double >(val45);
+  ecode46 = SWIG_AsVal_bool(swig_obj[35], &val46);
   if (!SWIG_IsOK(ecode46)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode46), "in method '" "pywrap_abess" "', argument " "46"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode46), "in method '" "pywrap_abess" "', argument " "46"" of type '" "bool""'");
   } 
-  arg46 = static_cast< int >(val46);
+  arg46 = static_cast< bool >(val46);
   ecode47 = SWIG_AsVal_bool(swig_obj[36], &val47);
   if (!SWIG_IsOK(ecode47)) {
     SWIG_exception_fail(SWIG_ArgError(ecode47), "in method '" "pywrap_abess" "', argument " "47"" of type '" "bool""'");
   } 
   arg47 = static_cast< bool >(val47);
-  ecode48 = SWIG_AsVal_bool(swig_obj[37], &val48);
+  ecode48 = SWIG_AsVal_int(swig_obj[37], &val48);
   if (!SWIG_IsOK(ecode48)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode48), "in method '" "pywrap_abess" "', argument " "48"" of type '" "bool""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode48), "in method '" "pywrap_abess" "', argument " "48"" of type '" "int""'");
   } 
-  arg48 = static_cast< bool >(val48);
-  {
-    npy_intp dims[1];
-    if (!PyInt_Check(swig_obj[38]))
-    {
-      const char* typestring = pytype_string(swig_obj[38]);
-      PyErr_Format(PyExc_TypeError,
-        "Int dimension expected.  '%s' given.",
-        typestring);
-      SWIG_fail;
-    }
-    arg50 = (int) PyInt_AsLong(swig_obj[38]);
-    dims[0] = (npy_intp) arg50;
-    array49 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
-    if (!array49) SWIG_fail;
-    arg49 = (double*) array_data(array49);
-  }
-  {
-    npy_intp dims[1];
-    if (!PyInt_Check(swig_obj[39]))
-    {
-      const char* typestring = pytype_string(swig_obj[39]);
-      PyErr_Format(PyExc_TypeError,
-        "Int dimension expected.  '%s' given.",
-        typestring);
-      SWIG_fail;
-    }
-    arg52 = (int) PyInt_AsLong(swig_obj[39]);
-    dims[0] = (npy_intp) arg52;
-    array51 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
-    if (!array51) SWIG_fail;
-    arg51 = (double*) array_data(array51);
-  }
+  arg48 = static_cast< int >(val48);
+  ecode49 = SWIG_AsVal_bool(swig_obj[38], &val49);
+  if (!SWIG_IsOK(ecode49)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode49), "in method '" "pywrap_abess" "', argument " "49"" of type '" "bool""'");
+  } 
+  arg49 = static_cast< bool >(val49);
+  ecode50 = SWIG_AsVal_bool(swig_obj[39], &val50);
+  if (!SWIG_IsOK(ecode50)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode50), "in method '" "pywrap_abess" "', argument " "50"" of type '" "bool""'");
+  } 
+  arg50 = static_cast< bool >(val50);
   {
     npy_intp dims[1];
     if (!PyInt_Check(swig_obj[40]))
@@ -3884,11 +3868,11 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
         typestring);
       SWIG_fail;
     }
-    arg54 = (int) PyInt_AsLong(swig_obj[40]);
-    dims[0] = (npy_intp) arg54;
-    array53 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
-    if (!array53) SWIG_fail;
-    arg53 = (double*) array_data(array53);
+    arg52 = (int) PyInt_AsLong(swig_obj[40]);
+    dims[0] = (npy_intp) arg52;
+    array51 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+    if (!array51) SWIG_fail;
+    arg51 = (double*) array_data(array51);
   }
   {
     npy_intp dims[1];
@@ -3900,11 +3884,11 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
         typestring);
       SWIG_fail;
     }
-    arg56 = (int) PyInt_AsLong(swig_obj[41]);
-    dims[0] = (npy_intp) arg56;
-    array55 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
-    if (!array55) SWIG_fail;
-    arg55 = (double*) array_data(array55);
+    arg54 = (int) PyInt_AsLong(swig_obj[41]);
+    dims[0] = (npy_intp) arg54;
+    array53 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+    if (!array53) SWIG_fail;
+    arg53 = (double*) array_data(array53);
   }
   {
     npy_intp dims[1];
@@ -3916,11 +3900,11 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
         typestring);
       SWIG_fail;
     }
-    arg59 = (int) PyInt_AsLong(swig_obj[42]);
-    dims[0] = (npy_intp) arg59;
-    array58 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
-    if (!array58) SWIG_fail;
-    arg58 = (double*) array_data(array58);
+    arg56 = (int) PyInt_AsLong(swig_obj[42]);
+    dims[0] = (npy_intp) arg56;
+    array55 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+    if (!array55) SWIG_fail;
+    arg55 = (double*) array_data(array55);
   }
   {
     npy_intp dims[1];
@@ -3932,11 +3916,11 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
         typestring);
       SWIG_fail;
     }
-    arg61 = (int) PyInt_AsLong(swig_obj[43]);
-    dims[0] = (npy_intp) arg61;
-    array60 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
-    if (!array60) SWIG_fail;
-    arg60 = (double*) array_data(array60);
+    arg58 = (int) PyInt_AsLong(swig_obj[43]);
+    dims[0] = (npy_intp) arg58;
+    array57 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+    if (!array57) SWIG_fail;
+    arg57 = (double*) array_data(array57);
   }
   {
     npy_intp dims[1];
@@ -3948,11 +3932,11 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
         typestring);
       SWIG_fail;
     }
-    arg63 = (int) PyInt_AsLong(swig_obj[44]);
-    dims[0] = (npy_intp) arg63;
-    array62 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
-    if (!array62) SWIG_fail;
-    arg62 = (double*) array_data(array62);
+    arg61 = (int) PyInt_AsLong(swig_obj[44]);
+    dims[0] = (npy_intp) arg61;
+    array60 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+    if (!array60) SWIG_fail;
+    arg60 = (double*) array_data(array60);
   }
   {
     npy_intp dims[1];
@@ -3964,17 +3948,46 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
         typestring);
       SWIG_fail;
     }
-    arg65 = (int) PyInt_AsLong(swig_obj[45]);
-    dims[0] = (npy_intp) arg65;
-    array64 = PyArray_SimpleNew(1, dims, NPY_INT);
-    if (!array64) SWIG_fail;
-    arg64 = (int*) array_data(array64);
+    arg63 = (int) PyInt_AsLong(swig_obj[45]);
+    dims[0] = (npy_intp) arg63;
+    array62 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+    if (!array62) SWIG_fail;
+    arg62 = (double*) array_data(array62);
   }
-  pywrap_abess(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15,arg16,arg17,arg18,arg19,arg20,arg21,arg22,arg23,arg24,arg25,arg26,arg27,arg28,arg29,arg30,arg31,arg32,arg33,arg34,arg35,arg36,arg37,arg38,arg39,arg40,arg41,arg42,arg43,arg44,arg45,arg46,arg47,arg48,arg49,arg50,arg51,arg52,arg53,arg54,arg55,arg56,arg57,arg58,arg59,arg60,arg61,arg62,arg63,arg64,arg65,arg66);
-  resultobj = SWIG_Py_Void();
   {
-    resultobj = SWIG_Python_AppendOutput(resultobj,(PyObject*)array49);
+    npy_intp dims[1];
+    if (!PyInt_Check(swig_obj[46]))
+    {
+      const char* typestring = pytype_string(swig_obj[46]);
+      PyErr_Format(PyExc_TypeError,
+        "Int dimension expected.  '%s' given.",
+        typestring);
+      SWIG_fail;
+    }
+    arg65 = (int) PyInt_AsLong(swig_obj[46]);
+    dims[0] = (npy_intp) arg65;
+    array64 = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+    if (!array64) SWIG_fail;
+    arg64 = (double*) array_data(array64);
   }
+  {
+    npy_intp dims[1];
+    if (!PyInt_Check(swig_obj[47]))
+    {
+      const char* typestring = pytype_string(swig_obj[47]);
+      PyErr_Format(PyExc_TypeError,
+        "Int dimension expected.  '%s' given.",
+        typestring);
+      SWIG_fail;
+    }
+    arg67 = (int) PyInt_AsLong(swig_obj[47]);
+    dims[0] = (npy_intp) arg67;
+    array66 = PyArray_SimpleNew(1, dims, NPY_INT);
+    if (!array66) SWIG_fail;
+    arg66 = (int*) array_data(array66);
+  }
+  pywrap_abess(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12,arg13,arg14,arg15,arg16,arg17,arg18,arg19,arg20,arg21,arg22,arg23,arg24,arg25,arg26,arg27,arg28,arg29,arg30,arg31,arg32,arg33,arg34,arg35,arg36,arg37,arg38,arg39,arg40,arg41,arg42,arg43,arg44,arg45,arg46,arg47,arg48,arg49,arg50,arg51,arg52,arg53,arg54,arg55,arg56,arg57,arg58,arg59,arg60,arg61,arg62,arg63,arg64,arg65,arg66,arg67,arg68);
+  resultobj = SWIG_Py_Void();
   {
     resultobj = SWIG_Python_AppendOutput(resultobj,(PyObject*)array51);
   }
@@ -3984,14 +3997,14 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
   {
     resultobj = SWIG_Python_AppendOutput(resultobj,(PyObject*)array55);
   }
-  if (SWIG_IsTmpObj(res57)) {
-    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg57)));
-  } else {
-    int new_flags = SWIG_IsNewObj(res57) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
-    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg57), SWIGTYPE_p_double, new_flags));
-  }
   {
-    resultobj = SWIG_Python_AppendOutput(resultobj,(PyObject*)array58);
+    resultobj = SWIG_Python_AppendOutput(resultobj,(PyObject*)array57);
+  }
+  if (SWIG_IsTmpObj(res59)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_double((*arg59)));
+  } else {
+    int new_flags = SWIG_IsNewObj(res59) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg59), SWIGTYPE_p_double, new_flags));
   }
   {
     resultobj = SWIG_Python_AppendOutput(resultobj,(PyObject*)array60);
@@ -4002,11 +4015,14 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
   {
     resultobj = SWIG_Python_AppendOutput(resultobj,(PyObject*)array64);
   }
-  if (SWIG_IsTmpObj(res66)) {
-    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_int((*arg66)));
+  {
+    resultobj = SWIG_Python_AppendOutput(resultobj,(PyObject*)array66);
+  }
+  if (SWIG_IsTmpObj(res68)) {
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_From_int((*arg68)));
   } else {
-    int new_flags = SWIG_IsNewObj(res66) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
-    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg66), SWIGTYPE_p_int, new_flags));
+    int new_flags = SWIG_IsNewObj(res68) ? (SWIG_POINTER_OWN |  0 ) :  0 ;
+    resultobj = SWIG_Python_AppendOutput(resultobj, SWIG_NewPointerObj((void*)(arg68), SWIGTYPE_p_int, new_flags));
   }
   {
     if (is_new_object1 && array1)
@@ -4021,15 +4037,9 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
     }
   }
   {
-    if (is_new_object8 && array8)
+    if (is_new_object10 && array10)
     {
-      Py_DECREF(array8); 
-    }
-  }
-  {
-    if (is_new_object21 && array21)
-    {
-      Py_DECREF(array21); 
+      Py_DECREF(array10); 
     }
   }
   {
@@ -4051,9 +4061,15 @@ SWIGINTERN PyObject *_wrap_pywrap_abess(PyObject *SWIGUNUSEDPARM(self), PyObject
     }
   }
   {
-    if (is_new_object39 && array39)
+    if (is_new_object29 && array29)
     {
-      Py_DECREF(array39); 
+      Py_DECREF(array29); 
+    }
+  }
+  {
+    if (is_new_object41 && array41)
+    {
+      Py_DECREF(array41); 
     }
   }
   return resultobj;
@@ -4071,15 +4087,9 @@ fail:
     }
   }
   {
-    if (is_new_object8 && array8)
+    if (is_new_object10 && array10)
     {
-      Py_DECREF(array8); 
-    }
-  }
-  {
-    if (is_new_object21 && array21)
-    {
-      Py_DECREF(array21); 
+      Py_DECREF(array10); 
     }
   }
   {
@@ -4101,9 +4111,15 @@ fail:
     }
   }
   {
-    if (is_new_object39 && array39)
+    if (is_new_object29 && array29)
     {
-      Py_DECREF(array39); 
+      Py_DECREF(array29); 
+    }
+  }
+  {
+    if (is_new_object41 && array41)
+    {
+      Py_DECREF(array41); 
     }
   }
   return NULL;

@@ -470,32 +470,6 @@ void lm_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Ei
 #endif
 };
 
-double loglik_cox(Eigen::MatrixXd &X, Eigen::VectorXd &status, Eigen::VectorXd &beta, Eigen::VectorXd &weights)
-{
-    int n = X.rows();
-    Eigen::VectorXd eta = X * beta;
-    for (int i = 0; i < n; i++)
-    {
-        if (eta(i) > 30)
-        {
-            eta(i) = 30;
-        }
-        else if (eta(i) < -30)
-        {
-            eta(i) = -30;
-        }
-    }
-    Eigen::VectorXd expeta = eta.array().exp();
-    Eigen::VectorXd cum_expeta(n);
-    cum_expeta(n - 1) = expeta(n - 1);
-    for (int i = n - 2; i >= 0; i--)
-    {
-        cum_expeta(i) = cum_expeta(i + 1) + expeta(i);
-    }
-    Eigen::VectorXd ratio = (expeta.cwiseQuotient(cum_expeta)).array().log();
-    return (ratio.cwiseProduct(status)).dot(weights);
-}
-
 void cox_fit(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd &beta, double &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
 {
 #ifdef TEST
