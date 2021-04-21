@@ -1,4 +1,4 @@
-#' @title plot from a "abess" object
+#' @title Creat plot from a fitted "abess" object
 #' 
 #' @description Produces a coefficient/deviance/tuning-value plot 
 #' for a fitted "abess" object.
@@ -14,11 +14,15 @@
 #' If \code{label = TRUE} (the default), 
 #' label the curves with variable sequence numbers. 
 #' @param ... Other graphical parameters to plot
+#' 
+#' @return No return value, called for side effects.
 #'
 #' @note 
 #' If \code{family = "mgaussian"} or \code{family = "multinomial"}, 
 #' a coefficient plot is produced for 
 #' each dimension of multivariate response.
+#' 
+#' @inherit abess.default seealso
 #' 
 #' @export
 #' 
@@ -35,6 +39,9 @@ plot.abess <- function (x,
                         label = FALSE, 
                         ...)
 {
+  user_default_par <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(user_default_par))
+  
   stopifnot(is.logical(label))
   
   type <- match.arg(type)
@@ -76,8 +83,7 @@ plot_loss <- function(loss, df,
   
   graphics::plot.new()                            # empty plot
   graphics::plot.window(range(df), range(loss), xaxs="i")
-  oldpar <- graphics::par(mar = mar, 
-                          lend="square")          # square line ends
+  oldpar <- graphics::par(mar = mar, lend="square")          # square line ends
   graphics::par(new = TRUE)                         # add to the plot
   graphics::plot(df, loss, type = "b", 
                  ylab = ifelse(ic.type == "cv", 
@@ -93,8 +99,7 @@ plot_loss <- function(loss, df,
   graphics::par(oldpar)
 }
 
-plot_solution_one <- function(beta, df, 
-                              mar, label) {
+plot_solution_one <- function(beta, df, mar, label) {
   beta <- as.matrix(beta)
   p <- nrow(beta)
   graphics::plot.new()                            # empty plot
@@ -129,9 +134,7 @@ plot_solution_one <- function(beta, df,
 }
 
 
-plot_solution <- function(beta, df, 
-                          mar = c(3, 4, 0, 4), 
-                          label = FALSE) {
+plot_solution <- function(beta, df, mar = c(3, 4, 0, 4), label = FALSE) {
   if (is.list(beta)) {
     dim_y <- ncol(beta[[1]])
     size_df <- length(df)

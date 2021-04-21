@@ -170,7 +170,7 @@ It would a empty character vector if \code{screening.num = 0}.}
 }
 \description{
 Adaptive best-subset selection for regression, 
-binary classification and censored-response modeling 
+classification, counting-response, censored-response, multi-response modeling 
 in polynomial times.
 }
 \details{
@@ -190,7 +190,7 @@ To find the optimal support size \eqn{s},
 we provide various criterion like GIC, AIC, BIC and cross-validation error to determine it.
 }
 \examples{
-\dontrun{
+\donttest{
 n <- 100
 p <- 20
 support.size <- 3
@@ -245,10 +245,12 @@ abess_fit <- abess(dataset[["x"]], dataset[["y"]],
                    screening.num = 100)
 str(extract(abess_fit))
 }
+\donttest{
 ################  Formula interface  ################
 data("trim32")
 abess_fit <- abess(y ~ ., data = trim32)
 abess_fit
+}
 }
 \references{
 A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117

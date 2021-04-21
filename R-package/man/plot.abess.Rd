@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.abess.R
 \name{plot.abess}
 \alias{plot.abess}
-\title{plot from a "abess" object}
+\title{Creat plot from a fitted "abess" object}
 \usage{
 \method{plot}{abess}(
   x,
@@ -27,6 +27,9 @@ label the curves with variable sequence numbers.}
 
 \item{...}{Other graphical parameters to plot}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Produces a coefficient/deviance/tuning-value plot 
 for a fitted "abess" object.
@@ -43,4 +46,12 @@ plot(abess_fit)
 plot(abess_fit, type = "l2norm")
 plot(abess_fit, type = "dev")
 plot(abess_fit, type = "tune")
+}
+\seealso{
+\code{\link{print.abess}}, 
+\code{\link{predict.abess}}, 
+\code{\link{coef.abess}}, 
+\code{\link{extract.abess}},
+\code{\link{plot.abess}},
+\code{\link{deviance.abess}}.
 }
