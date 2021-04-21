@@ -1,5 +1,5 @@
 // #define R_BUILD
-#define TEST
+// #define TEST
 #ifdef R_BUILD
 
 #include <Rcpp.h>
@@ -250,20 +250,11 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     if (y.cols() == 1)
     {
 #ifdef TEST
-      cout << "abesscpp2 3" << endl;
-#endif
-      Eigen::VectorXd y_vec = y.col(0);
-      // Eigen::VectorXd::Zero(y.rows());
-      // for (int i = 0; i < y.rows(); i++)
-      // {
-      //   y_vec(i) = y(i, 0);
-      // }
-#ifdef TEST
-      // cout << "y_vec: " << endl;
-      // cout << y_vec << endl;
       cout << "abesscpp2 4" << endl;
       cout << "uni_dense" << endl;
 #endif
+      Eigen::VectorXd y_vec = y.col(0);
+
       out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p,
                                                                                        data_type, weight,
                                                                                        is_normal,
@@ -291,8 +282,6 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     }
     else
     {
-      // cout << "y: " << endl;
-      // cout << y << endl;
 #ifdef TEST
       cout << "abesscpp2 5" << endl;
       cout << "mul_dense" << endl;
@@ -360,7 +349,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 
 #ifdef TEST
     clock_t t2 = clock();
-    std::cout << "sparse X beta: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    std::cout << "sparse X time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
 
     if (y.cols() == 1)
@@ -621,7 +610,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
         // cout << "cv parallel" << endl;
         for (int i = 0; i < max(Kfold, thread); i++)
         {
-          if (algorithm->covariance_update)
+          if (covariance_update)
           {
             algorithm_list[i]->covariance_update_flag = Eigen::VectorXi::Zero(data.p);
             algorithm_list[i]->XTy = XTy;
@@ -629,7 +618,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           }
 
           algorithm_list[i]->update_group_XTX(full_group_XTX);
-
           algorithm_list[i]->PhiG = Eigen::Matrix<Eigen::MatrixXd, -1, -1>(0, 0);
         }
 // to do
@@ -663,7 +651,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           beta_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_beta();
           coef0_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_coef0();
           train_loss_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_train_loss();
-          ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.g_num, algorithm_list[algorithm_index]);
+          ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.M, data.g_num, algorithm_list[algorithm_index]);
         }
 #ifdef TEST
         std::cout << "parallel cv 2 end--------" << std::endl;
@@ -709,9 +697,12 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           beta_matrix(s_index, lambda_index) = algorithm->get_beta();
           coef0_matrix(s_index, lambda_index) = algorithm->get_coef0();
           train_loss_matrix(s_index, lambda_index) = algorithm->get_train_loss();
-          ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.g_num, algorithm);
+          ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.M, data.g_num, algorithm);
         }
       }
+#ifdef TEST
+      cout << "test_loss: " << test_loss_sum << endl;
+#endif
     }
     else
     {
@@ -728,8 +719,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 #endif
     }
   }
-
-  cout << "test_loss: " << test_loss_sum << endl;
 
 #ifdef TEST
   std::cout << "abesscpp 3 end --------" << std::endl;

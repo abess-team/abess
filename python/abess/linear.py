@@ -377,7 +377,6 @@ class bess_base:
 
         if y.ndim == 1:
             y = y.reshape(len(y), 1)
-        print("linear.py fit")
 
         start = time()
         if self.sparse_matrix:
@@ -413,7 +412,8 @@ class bess_base:
                 print(X)
 
         stop = time()
-        print("sparse x: " + str(stop-start))
+        print("sparse x time : " + str(stop-start))
+        print("linear.py fit")
 
         result = pywrap_abess(X, y, n, p, self.data_type, weight,
                               is_normal,

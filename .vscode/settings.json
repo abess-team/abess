@@ -62,7 +62,8 @@
         "eigen": "cpp",
         "dense": "cpp",
         "cinttypes": "cpp",
-        "cfloat": "cpp"
+        "cfloat": "cpp",
+        "matrixfunctions": "cpp"
     }, 
     "C_Cpp.dimInactiveRegions": false
 }

@@ -163,10 +163,10 @@ public:
   //   this->group_XTX_list = group_XTX_list_tmp;
   // }
 
-  double ic(int train_n, int N, Algorithm<T1, T2, T3, T4> *algorithm)
+  double ic(int train_n, int M, int N, Algorithm<T1, T2, T3, T4> *algorithm)
   {
     double loss;
-    if (algorithm->model_type == 1)
+    if (algorithm->model_type == 1 || algorithm->model_type == 5)
     {
       loss = train_n * log(algorithm->get_train_loss());
     }

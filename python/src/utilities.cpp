@@ -2,7 +2,7 @@
 // Created by jiangkangkang on 2020/3/9.
 //
 
-#define TEST
+// #define TEST
 
 #ifndef R_BUILD
 #include <Eigen/Eigen>
@@ -661,11 +661,11 @@ void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<doubl
     // Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
     // solver.compute(X_new.transpose() * X);
     // beta = solver.solve(X_new.transpose() * Z);
-    cout << "overload ldlt 1" << endl;
+    // cout << "overload ldlt 1" << endl;
     Eigen::MatrixXd XTX = X_new.transpose() * X;
-    cout << "overload ldlt 2" << endl;
+    // cout << "overload ldlt 2" << endl;
     beta = (XTX).ldlt().solve(X_new.transpose() * Z);
-    cout << "overload ldlt 3" << endl;
+    // cout << "overload ldlt 3" << endl;
 }
 
 void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::VectorXd &Z, Eigen::VectorXd &beta)

@@ -1,7 +1,7 @@
 //
 // Created by jk on 2020/3/18.
 //
-#define TEST
+// #define TEST
 
 #ifndef SRC_ALGORITHM_H
 #define SRC_ALGORITHM_H
@@ -2404,7 +2404,7 @@ public:
   {
     int n = X.rows();
     Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, y.cols());
-    return (y - X * beta - array_product(one, coef0)).array().square().sum() / n;
+    return (y - X * beta - array_product(one, coef0)).array().square().sum() / n / 2.0;
   }
 
   void covariance_update_f(T4 &X, Eigen::VectorXi &A_ind)
@@ -2461,7 +2461,9 @@ public:
       // {
       if (beta.size() != 0)
       {
+#ifdef TEST
         clock_t t1 = clock();
+#endif
 
         this->covariance_update_f(X, A_ind);
 #ifdef TEST

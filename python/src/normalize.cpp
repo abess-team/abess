@@ -47,7 +47,7 @@ void Normalize(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &weights,
 
 void Normalize(Eigen::MatrixXd &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &meanx, Eigen::VectorXd &meany, Eigen::VectorXd &normx)
 {
-    cout << "multigaussian normal" << endl;
+    // cout << "multigaussian normal" << endl;
     int n = X.rows();
     int p = X.cols();
     Eigen::VectorXd tmp(n);
@@ -56,7 +56,7 @@ void Normalize(Eigen::MatrixXd &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights,
         meanx(i) = weights.dot(X.col(i)) / double(n);
     }
     meany = y.transpose() * weights / double(n);
-    cout << "meany: " << meany << endl;
+    // cout << "meany: " << meany << endl;
     for (int i = 0; i < p; i++)
     {
         X.col(i) = X.col(i).array() - meanx(i);
