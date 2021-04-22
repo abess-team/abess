@@ -1,4 +1,4 @@
-#' Extract the deviance from a "abess" object.
+#' Extract the deviance from a fitted "abess" object.
 #'
 #' Similar to other deviance methods, 
 #' which returns deviance from a fitted "\code{abess}" object.
@@ -11,7 +11,9 @@
 #' Default is \code{"standard"}.
 #' @param ... additional arguments
 #' 
-#' @seealso \code{\link{abess}}.
+#' @return A numeric vector.
+#' 
+#' @inherit abess.default seealso
 #' 
 #' @export
 deviance.abess <- function(object, 

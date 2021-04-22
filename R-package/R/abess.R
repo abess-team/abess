@@ -4,7 +4,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' @title Adaptive Best-Subset Selection via Splicing
 #'
 #' @description Adaptive best-subset selection for regression, 
-#' binary classification and censored-response modeling 
+#' classification, counting-response, censored-response, multi-response modeling 
 #' in polynomial times.
 #' 
 #' @aliases abess
@@ -189,8 +189,6 @@ abess <- function(x, ...) UseMethod("abess")
 #' To find the optimal support size \eqn{s}, 
 #' we provide various criterion like GIC, AIC, BIC and cross-validation error to determine it. 
 #' 
-#' 
-#'
 #' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
 #' @references Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x
 #' @references Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun & Heping Zhang (2020). Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079
@@ -206,7 +204,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' @rdname abess
 #' @method abess default
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' n <- 100
 #' p <- 20
 #' support.size <- 3
@@ -807,10 +805,12 @@ abess.default <- function(x,
 #' @method abess formula
 #' @export
 #' @examples
+#' \donttest{
 #' ################  Formula interface  ################
 #' data("trim32")
 #' abess_fit <- abess(y ~ ., data = trim32)
 #' abess_fit
+#' }
 abess.formula <- function(formula, data, subset, na.action, ...) {
   contrasts <- NULL   ## for sparse X matrix
   cl <- match.call()

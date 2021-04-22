@@ -1,4 +1,4 @@
-#' Provides estimated coefficients from a fitted "abess" object.
+#' Extract Model Coefficients from a fitted "abess" object.
 #'
 #' This function provides estimated
 #' coefficients from a fitted "\code{abess}" object.
@@ -13,6 +13,10 @@
 #' @param sparse A logical value, specifying whether the coefficients should be
 #' presented as sparse matrix or not. Default: \code{sparse = TRUE}.
 #' @param ... Other arguments.
+#' 
+#' @return A coefficient matrix when fitting an univariate model including gaussian, binomial, poisson, and cox; 
+#' otherwise, a list containing coefficient matrices. 
+#' For a coefficient matrix, each row is a variable, and each column is a support size. 
 #' 
 #' @inherit abess.default seealso
 #' 

@@ -2,7 +2,10 @@
 % Please edit documentation in R/predict.abess.R
 \name{predict.abess}
 \alias{predict.abess}
-\title{make predictions from a "abess" object.}
+\title{Make predictions from a fitted"abess" object.
+
+Returns predictions from a fitted
+"\code{abess}" object.}
 \usage{
 \method{predict}{abess}(object, newx, type = c("link", "response"), support.size = NULL, ...)
 }
@@ -29,9 +32,16 @@ Default: \code{support.size = NULL}.}
 The object returned depends on the types of family.
 }
 \description{
+Make predictions from a fitted"abess" object.
+
 Returns predictions from a fitted
 "\code{abess}" object.
 }
 \seealso{
-\code{\link{abess}}.
+\code{\link{print.abess}}, 
+\code{\link{predict.abess}}, 
+\code{\link{coef.abess}}, 
+\code{\link{extract.abess}},
+\code{\link{plot.abess}},
+\code{\link{deviance.abess}}.
 }

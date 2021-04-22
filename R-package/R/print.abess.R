@@ -1,22 +1,19 @@
-#' print method for a "abess" object
+#' @title Print method for a fitted "abess" object
 #'
-#' Print the primary elements of the "\code{abess}" object.
-#'
-#' prints the fitted model and returns it invisibly.
+#' @description Prints the fitted model and returns it invisibly.
 #'
 #' @param x A "\code{abess}" object.
 #' @param digits Minimum number of significant digits to be used.
 #' @param ... additional print arguments
 #' 
-#' @return print a \code{data.frame} with three columns:
-#' \item{support.size}{Support size of model} 
-#' \item{dev}{deviance of model}
-# \item 2. the percentage of deviance explained, which is defined as 
-# \eqn{1 - dev / nulldev}, where \eqn{nulldev} is deviance of 
-# the intercept model.
-#' \item{tune.type}{The tuning value of the certain tuning type}
+#' @details Print a \code{data.frame} with three columns:
+#' the first column is support size of model; 
+#' the second column is deviance of model;
+#' the last column is the tuning value of the certain tuning type.
 #' 
-#' @seealso \code{\link{abess}}, \code{\link{coef.abess}}, 
+#' @return No return value, called for side effects
+#' 
+#' @inherit abess.default seealso
 #' 
 #' @export
 #'

@@ -1,4 +1,4 @@
-#' make predictions from a "abess" object.
+#' @title Make predictions from a fitted"abess" object.
 #'
 #' Returns predictions from a fitted
 #' "\code{abess}" object.
@@ -14,7 +14,7 @@
 #' 
 #' @return The object returned depends on the types of family.
 #' 
-#' @seealso \code{\link{abess}}.
+#' @inherit abess.default seealso
 #' 
 #' @export
 #'
