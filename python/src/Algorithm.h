@@ -2977,51 +2977,23 @@ public:
       t1 = clock();
       cout << "3" << endl;
 #endif
+      // for (int i = 0; i < N; i++)
+      // {
+      //   T4 XG = X.middleCols(g_index(i), g_size(i));
+      //   T4 XG_new(h.rows(), h.cols());
+      //   for (int m = 0; m < M - 1; m++)
+      //   {
+      //     XG_new.col(m) = h.col(m).cwiseProduct(XG);
+      //   }
+      //   Eigen::MatrixXd XGbar = -XG_new.transpose() * XG_new;
+      //   XGbar.diagonal() = Eigen::VectorXd(XG_new.transpose() * XG) + XGbar.diagonal();
+      //   Eigen::MatrixXd invXGbar = XGbar.ldlt().solve(Eigen::MatrixXd::Identity(M - 1, M - 1));
+      //   Eigen::MatrixXd temp = d.block(g_index(i), 0, g_size(i), M - 1) * invXGbar + beta.block(g_index(i), 0, g_size(i), M - 1);
+      //   bd(i) = (temp * XGbar * temp.transpose()).squaredNorm() / g_size(i);
+      // }
+
       for (int i = 0; i < N; i++)
       {
-        // T4 XG = X.middleCols(g_index(i), g_size(i));
-        // T4 XG_new(h.rows(), h.cols());
-        // for (int m = 0; m < M; m++)
-        // {
-        //   XG_new.col(m) = h.col(m).cwiseProduct(XG);
-        // }
-        // Eigen::MatrixXd XGbar = -XG_new.transpose() * XG_new;
-        // // cout << "h: " << h << endl;
-        // // cout << "XGbar: " << XGbar << endl;
-        // // cout << "XG.shape: " << XG.rows() << " " << XG.cols() << endl;
-        // // cout << "XGNEW.shape: " << XG_new.rows() << " " << XG_new.cols() << endl;
-        // // cout << "XGbar.diagonal(): " << XGbar.diagonal() << endl;
-        // XGbar.diagonal() = Eigen::VectorXd(XG.transpose() * XG_new.eval()) + XGbar.diagonal();
-        // // cout << "XGbar.diagonal(): " << XGbar.diagonal() << endl;
-        // // cout << "XGbar: " << XGbar << endl;
-        // Eigen::MatrixXd phiG;
-        // XGbar.sqrt().evalTo(phiG);
-
-        // // cout << "phiG: " << phiG << endl;
-        // Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(M, M));
-        // betabar.block(g_index(i), 0, g_size(i), M) = phiG * beta.block(g_index(i), 0, g_size(i), M);
-        // dbar.block(g_index(i), 0, g_size(i), M) = invphiG * d.block(g_index(i), 0, g_size(i), M);
-
-        // T4 XG = X.middleCols(g_index(i), g_size(i));
-        // T4 XG_new(h.rows(), h.cols());
-        // for (int m = 0; m < M; m++)
-        // {
-        //   XG_new.col(m) = h.col(m).cwiseProduct(XG);
-        // }
-        // Eigen::MatrixXd XGbar = -XG_new.transpose() * XG_new;
-        // if (i <= 3)
-        // {
-        //   cout << "XGbar: " << XGbar << endl;
-        //   cout << "444: " << XG.transpose() * XG_new << endl;
-        // }
-        // // cout << "h: " << h << endl;
-        // XGbar.diagonal() = Eigen::VectorXd(XG_new.transpose() * XG) + XGbar.diagonal();
-        // Eigen::MatrixXd phiG;
-        // XGbar.sqrt().evalTo(phiG);
-        // Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(M, M));
-        // betabar.block(g_index(i), 0, g_size(i), M) = phiG * beta.block(g_index(i), 0, g_size(i), M);
-        // dbar.block(g_index(i), 0, g_size(i), M) = invphiG * d.block(g_index(i), 0, g_size(i), M);
-
         T4 XG = X.middleCols(g_index(i), g_size(i));
         T4 XG_new(h.rows(), h.cols());
         for (int m = 0; m < M - 1; m++)
@@ -3029,33 +3001,11 @@ public:
           XG_new.col(m) = h.col(m).cwiseProduct(XG);
         }
         Eigen::MatrixXd XGbar = -XG_new.transpose() * XG_new;
-        // if (i <= 3)
-        // {
-        //   cout << "XGbar: " << XGbar << endl;
-        //   cout << "444: " << XG.transpose() * XG_new << endl;
-        // }
-        // cout << "h: " << h << endl;
         XGbar.diagonal() = Eigen::VectorXd(XG_new.transpose() * XG) + XGbar.diagonal();
-        // Eigen::MatrixXd phiG;
-        // XGbar.sqrt().evalTo(phiG);
         Eigen::MatrixXd invXGbar = XGbar.ldlt().solve(Eigen::MatrixXd::Identity(M - 1, M - 1));
         Eigen::MatrixXd temp = d.block(g_index(i), 0, g_size(i), M - 1) * invXGbar + beta.block(g_index(i), 0, g_size(i), M - 1);
-        // betabar.block(g_index(i), 0, g_size(i), M) = phiG * beta.block(g_index(i), 0, g_size(i), M);
         bd(i) = (temp * XGbar * temp.transpose()).squaredNorm() / g_size(i);
-        // if (i <= 3)
-        // {
-        //   cout << "XGbar: " << XGbar << endl;
-        //   cout << "invXGbar: " << invXGbar << endl;
-        //   cout << "temp: " << temp << endl;
-        //   // cout << "phiG: " << phiG << endl;
-        //   // cout << "XG_new: " << XG_new << endl;
-        // }
       }
-      // Eigen::MatrixXd temp = betabar + dbar;
-      // for (int i = 0; i < N; i++)
-      // {
-      //   bd(i) = (temp.block(g_index(i), 0, g_size(i), M)).squaredNorm() / g_size(i);
-      // }
 #ifdef TEST
       t4 = clock();
       std::cout << "inital_screening bd: " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << endl;
@@ -3435,14 +3385,58 @@ public:
     int M = y.cols();
     Eigen::MatrixXd pr;
     pi(XA, y, beta, coef0, pr);
-    Eigen::MatrixXd res = (y.leftCols(M - 1) - pr.leftCols(M - 1));
+    Eigen::MatrixXd Pi = pr.leftCols(M - 1);
+    Eigen::MatrixXd res = (y.leftCols(M - 1) - Pi);
     for (int i = 0; i < n; i++)
     {
       res.row(i) = res.row(i) * weights(i);
     }
     d = X.transpose() * res;
 
-    h = pr.leftCols(M - 1);
+    // // non-group
+    h = Pi;
+
+    // group
+    // Eigen::MatrixXd h(M, M * n);
+    // Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
+    // for (int m1 = 0; m1 < M; m1++)
+    // {
+    //   for (int m2 = m1; m2 < M; m2++)
+    //   {
+    //     if (m1 == m2)
+    //     {
+    //       // W.block(m1, m2 * n, 1, n) = Eigen::MatrixXd::Zero(1, n);
+    //       Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
+    //       // cout << "PiPj: " << PiPj << endl;
+    //       for (int i = 0; i < PiPj.size(); i++)
+    //       {
+    //         if (PiPj(i) < 0.001)
+    //         {
+    //           PiPj(i) = 0.001;
+    //         }
+    //       }
+    //       h.block(m1, m2 * n, 1, n) = PiPj;
+    //     }
+    //     else
+    //     {
+    //       // W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
+    //       Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array();
+    //       // cout << "PiPj: " << PiPj << endl;
+    //       for (int i = 0; i < PiPj.size(); i++)
+    //       {
+    //         if (PiPj(i) < 0.001)
+    //         {
+    //           PiPj(i) = 0.001;
+    //         }
+    //       }
+    //       h.block(m1 * 1, m2 * n, 1, n) = -PiPj;
+    //       h.block(m2 * 1, m1 * n, 1, n) = h.block(m1, m2 * n, 1, n);
+
+    //       // cout << "W m1 m2: " << W.block(m1 * n, m2 * n, n, n) << endl;
+    //     }
+    //   }
+    // }
+
     // return d_I;
   }
 
