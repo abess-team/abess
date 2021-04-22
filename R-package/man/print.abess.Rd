@@ -2,7 +2,7 @@
 % Please edit documentation in R/print.abess.R
 \name{print.abess}
 \alias{print.abess}
-\title{print method for a "abess" object}
+\title{Print method for a fitted "abess" object}
 \usage{
 \method{print}{abess}(x, digits = max(5, getOption("digits") - 5), ...)
 }
@@ -14,17 +14,22 @@
 \item{...}{additional print arguments}
 }
 \value{
-print a \code{data.frame} with three columns:
-\item{support.size}{Support size of model} 
-\item{dev}{deviance of model}
-\item{tune.type}{The tuning value of the certain tuning type}
+No return value, called for side effects
 }
 \description{
-Print the primary elements of the "\code{abess}" object.
+Prints the fitted model and returns it invisibly.
 }
 \details{
-prints the fitted model and returns it invisibly.
+Print a \code{data.frame} with three columns:
+the first column is support size of model; 
+the second column is deviance of model;
+the last column is the tuning value of the certain tuning type.
 }
 \seealso{
-\code{\link{abess}}, \code{\link{coef.abess}},
+\code{\link{print.abess}}, 
+\code{\link{predict.abess}}, 
+\code{\link{coef.abess}}, 
+\code{\link{extract.abess}},
+\code{\link{plot.abess}},
+\code{\link{deviance.abess}}.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/deviance.abess.R
 \name{deviance.abess}
 \alias{deviance.abess}
-\title{Extract the deviance from a "abess" object.}
+\title{Extract the deviance from a fitted "abess" object.}
 \usage{
 \method{deviance}{abess}(object, type = c("standard", "gic", "ebic", "bic", "aic"), ...)
 }
@@ -16,10 +16,18 @@ Default is \code{"standard"}.}
 
 \item{...}{additional arguments}
 }
+\value{
+A numeric vector.
+}
 \description{
 Similar to other deviance methods, 
 which returns deviance from a fitted "\code{abess}" object.
 }
 \seealso{
-\code{\link{abess}}.
+\code{\link{print.abess}}, 
+\code{\link{predict.abess}}, 
+\code{\link{coef.abess}}, 
+\code{\link{extract.abess}},
+\code{\link{plot.abess}},
+\code{\link{deviance.abess}}.
 }

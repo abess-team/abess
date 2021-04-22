@@ -2,7 +2,7 @@
 % Please edit documentation in R/coef.abess.R
 \name{coef.abess}
 \alias{coef.abess}
-\title{Provides estimated coefficients from a fitted "abess" object.}
+\title{Extract Model Coefficients from a fitted "abess" object.}
 \usage{
 \method{coef}{abess}(object, support.size = NULL, sparse = TRUE, ...)
 }
@@ -18,6 +18,11 @@ Default: \code{support.size = NULL}.}
 presented as sparse matrix or not. Default: \code{sparse = TRUE}.}
 
 \item{...}{Other arguments.}
+}
+\value{
+A coefficient matrix when fitting an univariate model including gaussian, binomial, poisson, and cox; 
+otherwise, a list containing coefficient matrices. 
+For a coefficient matrix, each row is a variable, and each column is a support size.
 }
 \description{
 This function provides estimated
