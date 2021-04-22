@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>print method for a "abess" object — print.abess • abess</title>
+<title>Print method for a fitted "abess" object — print.abess • abess</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="print method for a "abess" object — print.abess" />
-<meta property="og:description" content="Print the primary elements of the &quot;abess&quot; object." />
+<meta property="og:title" content="Print method for a fitted "abess" object — print.abess" />
+<meta property="og:description" content="Prints the fitted model and returns it invisibly." />
 
 
 
@@ -123,13 +123,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>print method for a "abess" object</h1>
+    <h1>Print method for a fitted "abess" object</h1>
     <small class="dont-index">Source: <a href='https://github.com/abess-team/abess/blob/master/R/print.abess.R'><code>R/print.abess.R</code></a></small>
     <div class="hidden name"><code>print.abess.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Print the primary elements of the "<code>abess</code>" object.</p>
+    <p>Prints the fitted model and returns it invisibly.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for abess</span>
@@ -154,17 +154,21 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>print a <code>data.frame</code> with three columns:</p>
-<dt>support.size</dt><dd><p>Support size of model</p></dd> 
-<dt>dev</dt><dd><p>deviance of model</p></dd>
-<dt>tune.type</dt><dd><p>The tuning value of the certain tuning type</p></dd>
-
+    <p>No return value, called for side effects</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>prints the fitted model and returns it invisibly.</p>
+    <p>Print a <code>data.frame</code> with three columns:
+the first column is support size of model; 
+the second column is deviance of model;
+the last column is the tuning value of the certain tuning type.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='abess.default.html'>abess</a></code>, <code><a href='coef.abess.html'>coef.abess</a></code>,</p></div>
+    <div class='dont-index'><p><code>print.abess</code>, 
+<code><a href='predict.abess.html'>predict.abess</a></code>, 
+<code><a href='coef.abess.html'>coef.abess</a></code>, 
+<code><a href='extract.html'>extract.abess</a></code>,
+<code><a href='plot.abess.html'>plot.abess</a></code>,
+<code><a href='deviance.abess.html'>deviance.abess</a></code>.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

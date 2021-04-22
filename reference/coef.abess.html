@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Provides estimated coefficients from a fitted "abess" object. — coef.abess • abess</title>
+<title>Extract Model Coefficients from a fitted "abess" object. — coef.abess • abess</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Provides estimated coefficients from a fitted "abess" object. — coef.abess" />
+<meta property="og:title" content="Extract Model Coefficients from a fitted "abess" object. — coef.abess" />
 <meta property="og:description" content="This function provides estimated
 coefficients from a fitted &quot;abess&quot; object." />
 
@@ -124,7 +124,7 @@ coefficients from a fitted &quot;abess&quot; object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Provides estimated coefficients from a fitted "abess" object.</h1>
+    <h1>Extract Model Coefficients from a fitted "abess" object.</h1>
     <small class="dont-index">Source: <a href='https://github.com/abess-team/abess/blob/master/R/coef.abess.R'><code>R/coef.abess.R</code></a></small>
     <div class="hidden name"><code>coef.abess.Rd</code></div>
     </div>
@@ -162,6 +162,11 @@ presented as sparse matrix or not. Default: <code>sparse = TRUE</code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A coefficient matrix when fitting an univariate model including gaussian, binomial, poisson, and cox; 
+otherwise, a list containing coefficient matrices. 
+For a coefficient matrix, each row is a variable, and each column is a support size.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='print.abess.html'>print.abess</a></code>, 
