@@ -4,7 +4,7 @@
 #ifndef SRC_PATH_H
 #define SRC_PATH_H
 
-// #define Test
+#define Test
 
 #ifdef R_BUILD
 #include <RcppEigen.h>

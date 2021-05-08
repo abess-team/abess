@@ -1,5 +1,5 @@
 // #define R_BUILD
-// #define TEST
+#define TEST
 #ifdef R_BUILD
 
 #include <Rcpp.h>
