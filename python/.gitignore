@@ -5,4 +5,4 @@ test/*
 dist/*
 abess/__pycache__/*
 
-# docs/build/*
+docs/build/*

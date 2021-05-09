@@ -44,4 +44,7 @@ Reference
    :target: https://travis-ci.com/abess-team/abess
 .. |codecov| image:: https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00
    :target: https://codecov.io/gh/abess-team/abess
+.. image:: https://readthedocs.org/projects/abess-test/badge/?version=master
+   :target: https://abess-test.readthedocs.io/en/master/?badge=master
+   :alt: Documentation Status
 
