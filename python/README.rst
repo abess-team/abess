@@ -5,7 +5,7 @@ abess: An R & Python package for Best-Subset Selection in Polynomial Time
 
    <!-- badges: start -->
 
-|Travis build status| |codecov|
+|Travis build status| |codecov| |docs|
 
 Best-subset selection aims to find a small subset of predictors such
 that the resulting linear model is expected to have the most desirable
@@ -44,7 +44,7 @@ Reference
    :target: https://travis-ci.com/abess-team/abess
 .. |codecov| image:: https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00
    :target: https://codecov.io/gh/abess-team/abess
-.. image:: https://readthedocs.org/projects/abess-test/badge/?version=master
+.. |docs| image:: https://readthedocs.org/projects/abess-test/badge/?version=master
    :target: https://abess-test.readthedocs.io/en/master/?badge=master
    :alt: Documentation Status
 
