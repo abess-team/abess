@@ -26,3 +26,5 @@
 .. toctree::
    :maxdepth: 2
    :caption: About
+
+   new_page

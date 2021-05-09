@@ -1,6 +1,5 @@
 build/*
 bess.egg-info/*
-build/*
 test/*
 dist/*
 abess/__pycache__/*
