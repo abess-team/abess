@@ -19,8 +19,10 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Samples
+   :caption: New page
 
+   new_page
+   
 .. toctree::
    :maxdepth: 2
    :caption: About

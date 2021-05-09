@@ -1,5 +1,5 @@
-abess: An R package for Best-Subset Selection in Polynomial Time
-================================================================
+abess: An R & Python package for Best-Subset Selection in Polynomial Time
+==========================================================================
 
 .. raw:: html
 
