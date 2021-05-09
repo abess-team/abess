@@ -5,6 +5,6 @@ test/*
 dist/*
 abess/__pycache__/*
 
-doc/build/*
-docs/build/*
+# doc/build/*
+# docs/build/*
 
