@@ -28,3 +28,9 @@
    :caption: About
 
    new_page
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Something else
+
+   new_page
