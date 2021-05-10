@@ -16,7 +16,7 @@ import sys
 # libpath = os.path.join(curr_path, '../python/')
 # sys.path.insert(0, libpath)
 # sys.path.insert(0, curr_path)
-sys.path.insert(0, sys.path.insert(0, "../python/abess"))
+# sys.path.insert(0, sys.path.insert(0, "../python/abess"))
 
 # -- Project information -----------------------------------------------------
 
