@@ -1,16 +1,6 @@
-abess package
-=============
+Python package
+==============
 
-Submodules
-----------
-
-abess.cabess module
--------------------
-
-.. automodule:: abess.cabess
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 abess.gen\_data module
 ----------------------
@@ -28,11 +18,3 @@ abess.linear module
    :undoc-members:
    :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: abess
-   :members:
-   :undoc-members:
-   :show-inheritance:
