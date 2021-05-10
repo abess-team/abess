@@ -12,7 +12,10 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../python/abess'))
+curr_path = os.path.dirname(os.path.abspath(os.path.expanduser(__file__)))
+libpath = os.path.join(curr_path, '../abess/')
+sys.path.insert(0, libpath)
+sys.path.insert(0, curr_path)
 
 
 # -- Project information -----------------------------------------------------
