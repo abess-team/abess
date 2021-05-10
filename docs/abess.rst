@@ -10,7 +10,7 @@ abess.gen\_data module
 abess.linear module
 -------------------
 
-.. autoclass:: abess.linear.Lm
+.. autoclass:: abess.linear.abessLm
     :members:
     :inherited-members:
     :show-inheritance:
