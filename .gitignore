@@ -1,8 +1,4 @@
-python/abess.egg-info/dependency_links.txt
-python/abess.egg-info/PKG-INFO
-python/abess.egg-info/requires.txt
-python/abess.egg-info/SOURCES.txt
-python/abess.egg-info/top_level.txt
+python/abess.egg-info/*
 python/src/test.cpp
 python/src/test.exe
 R-package/.Rproj.user/
@@ -29,3 +25,5 @@ python/src/tmp/logistic.cpp
 python/src/tmp/logistic.h
 python/src/tmp/poisson.cpp
 python/src/tmp/poisson.h
+docs/build/*
+
