@@ -7,7 +7,7 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Installation & Reference
+   :caption: Installation Reference
 
    installation
 

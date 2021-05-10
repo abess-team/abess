@@ -6,9 +6,6 @@ abess.gen\_data module
 ----------------------
 
 .. autofunction:: abess.gen_data.gen_data
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 abess.linear module
 -------------------
