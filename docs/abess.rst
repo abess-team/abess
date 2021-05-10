@@ -5,7 +5,7 @@ Python package
 abess.gen\_data module
 ----------------------
 
-.. automodule:: abess.gen_data
+.. autofunction:: abess.gen_data.gen_data
    :members:
    :undoc-members:
    :show-inheritance:
@@ -13,8 +13,23 @@ abess.gen\_data module
 abess.linear module
 -------------------
 
-.. automodule:: abess.linear
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. autoclass:: abess.linear.Lm
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+.. autoclass:: abess.linear.abessLogistic
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+.. autoclass:: abess.linear.abessCox
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+.. autoclass:: abess.linear.abessPoisson
+    :members:
+    :inherited-members:
+    :show-inheritance:    
 
