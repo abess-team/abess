@@ -25,5 +25,6 @@ python/src/tmp/logistic.cpp
 python/src/tmp/logistic.h
 python/src/tmp/poisson.cpp
 python/src/tmp/poisson.h
-docs/build/*
+docs/_build/*
+docs2/_build/*
 
