@@ -28,3 +28,4 @@ python/src/tmp/poisson.h
 docs/_build/*
 docs2/_build/*
 
+docs/abess.egg-info/*

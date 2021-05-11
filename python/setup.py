@@ -6,10 +6,6 @@ from os import path
 
 os_type = 'MS_WIN64'
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
-print("111")
-sys.path.insert(0, CURRENT_DIR)
-print("222")
-
 if sys.platform.startswith('win32'):
     python_path = sys.base_prefix
     temp = python_path.split("\\")
@@ -19,15 +15,18 @@ if sys.platform.startswith('win32'):
     os.system('bash pre.sh ' + python_path + ' ' + version)
 
     cabess_module = Extension(name='abess._cabess',
-                              sources=['src/abess.cpp', 'src/List.cpp', 'src/utilities.cpp', 'src/normalize.cpp', 'src/abess.i',
-                                       'src/Algorithm.cpp', 'src/Data.cpp', 'src/Metric.cpp', 'src/path.cpp',
-                                       'src/screening.cpp', 'src/model_fit.cpp'],
+                              sources=[CURRENT_DIR + '/src/abess.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
+                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/abess.i',
+                                       CURRENT_DIR + '/src/Algorithm.cpp', CURRENT_DIR + '/src/Data.cpp',
+                                       CURRENT_DIR + '/src/Metric.cpp', CURRENT_DIR + '/src/path.cpp',
+                                       CURRENT_DIR + '/src/screening.cpp', CURRENT_DIR + '/src/model_fit.cpp'],
                               language='c++',
                               extra_compile_args=["-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-mavx", "-mfma", "-march=native",
                                                   "-std=c++11", "-mtune=generic", "-D%s" % os_type, path1, path2],
                               extra_link_args=['-lgomp'],
                               libraries=["vcruntime140"],
-                              include_dirs=[numpy.get_include(), 'include'],
+                              include_dirs=[
+                                  numpy.get_include(), CURRENT_DIR + '/include'],
                               swig_opts=["-c++"]
                               )
 else:
@@ -35,9 +34,11 @@ else:
     print(eigen_path)
     # eigen_path = "/usr/local/include/eigen3/Eigen"
     cabess_module = Extension(name='abess._cabess',
-                              sources=['src/abess.cpp', 'src/List.cpp', 'src/utilities.cpp', 'src/normalize.cpp', 'src/abess.i',
-                                       'src/Algorithm.cpp', 'src/Data.cpp', 'src/Metric.cpp', 'src/path.cpp',
-                                       'src/screening.cpp', 'src/model_fit.cpp'],
+                              sources=[CURRENT_DIR + '/src/abess.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
+                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/abess.i',
+                                       CURRENT_DIR + '/src/Algorithm.cpp', CURRENT_DIR + '/src/Data.cpp',
+                                       CURRENT_DIR + '/src/Metric.cpp', CURRENT_DIR + '/src/path.cpp',
+                                       CURRENT_DIR + '/src/screening.cpp', CURRENT_DIR + '/src/model_fit.cpp'],
                               language='c++',
                               extra_compile_args=[
                                   "-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native"],
