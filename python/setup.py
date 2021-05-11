@@ -6,7 +6,9 @@ from os import path
 
 os_type = 'MS_WIN64'
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
+print("111")
 sys.path.insert(0, CURRENT_DIR)
+print("222")
 
 if sys.platform.startswith('win32'):
     python_path = sys.base_prefix
