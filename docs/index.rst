@@ -11,7 +11,7 @@
 
    Python package <Python-package/index.rst>
    R package <R-package/index.rst>
-   About
+   About <about.rst>
 
 .. .. toctree::
 ..    :maxdepth: 4
