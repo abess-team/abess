@@ -253,7 +253,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
       cout << "abesscpp2 4" << endl;
       cout << "uni_dense" << endl;
 #endif
-      Eigen::VectorXd y_vec = y.col(0);
+      Eigen::VectorXd y_vec = y.col(0).eval();
 
       out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p,
                                                                                        data_type, weight,
@@ -579,7 +579,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   Eigen::Matrix<T3, Dynamic, Dynamic> coef0_matrix(s_size, lambda_size);
   Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(s_size, lambda_size);
   Eigen::MatrixXd ic_matrix(s_size, lambda_size);
-  Eigen::MatrixXd test_loss_sum = Eigen::MatrixXd::Zero(sequence.size(), lambda_seq.size());
+  Eigen::MatrixXd test_loss_sum = Eigen::MatrixXd::Zero(s_size, lambda_size);
   Eigen::MatrixXd train_loss_matrix(s_size, lambda_size);
 
   if (path_type == 1)
