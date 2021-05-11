@@ -6,31 +6,20 @@
 .. include:: ../README.rst 
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Installation Reference
-
-   installation
-
-.. toctree::
    :maxdepth: 4
    :caption: Python package
 
-   autoapi/index.rst
+   Python-package/index.rst
+
 
 .. toctree::
    :maxdepth: 2
-   :caption: New page
+   :caption: R package
 
-   new_page
+   R-package/index.rst
    
 .. toctree::
    :maxdepth: 2
    :caption: About
-
-   new_page
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Something else
 
    new_page
