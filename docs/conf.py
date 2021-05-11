@@ -16,10 +16,9 @@ import sys
 # libpath = os.path.join(curr_path, '../python/')
 # sys.path.insert(0, libpath)
 # sys.path.insert(0, curr_path)
-# sys.path.insert(0, sys.path.insert(0, "../python/abess"))
+sys.path.insert(0, sys.path.insert(0, os.path.abspath("../python/")))
 
 # -- Project information -----------------------------------------------------
-
 project = 'abess'
 copyright = '2021, Kangkang Jiang'
 author = 'Kangkang Jiang'
@@ -59,9 +58,10 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 autoapi_type = 'python'
 autoapi_dirs = ['../python/abess']
-autoapi_keep_files = True
-autodoc_typehints = 'description'
-autoapi_add_toctree_entry = False
+# autoapi_keep_files = False
+# autodoc_typehints = 'description'
+# autoapi_add_toctree_entry = False
+# autoapi_generate_api_docs = False
 
 
 # -- Options for HTML output -------------------------------------------------

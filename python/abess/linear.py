@@ -82,8 +82,8 @@ class bess_base:
 
     References
     ----------
-    - Wen, C. , Zhang, A. , Quan, S. , & Wang, X. . (2017). [Bess: an r package for best subset selection in linear,
-        logistic and coxph models]
+    - Wen, C. , Zhang, A. , Quan, S. , & Wang, X. . (2017). [Bess: an r package for best subset selection in linear , logistic and coxph models]
+
 
     """
 
@@ -508,7 +508,7 @@ class abessLogistic(bess_base):
     """
     Examples
     --------
-    ### Sparsity known
+    >>> ### Sparsity known
     >>> from bess.linear import *
     >>> import numpy as np
     >>> np.random.seed(12345)
@@ -521,7 +521,7 @@ class abessLogistic(bess_base):
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
 
-    ### Sparsity unknown
+    >>> ### Sparsity unknown
     >>> # path_type="seq", Default:sequence=[1,2,...,min(x.shape[0], x.shape[1])]
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
@@ -559,7 +559,7 @@ class abessLm(bess_base):
     """
     Examples
     --------
-    ### Sparsity known
+    >>> ### Sparsity known
     >>> from bess.linear import *
     >>> import numpy as np
     >>> np.random.seed(12345)
@@ -572,7 +572,7 @@ class abessLm(bess_base):
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
 
-    ### Sparsity unknown
+    >>> ### Sparsity unknown
     >>> # path_type="seq", Default:sequence=[1,2,...,min(x.shape[0], x.shape[1])]
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
@@ -610,7 +610,7 @@ class abessCox(bess_base):
     """
     Examples
     --------
-    ### Sparsity known
+    >>> ### Sparsity known
     >>> from bess.linear import *
     >>> import numpy as np
     >>> np.random.seed(12345)
@@ -623,7 +623,7 @@ class abessCox(bess_base):
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
 
-    ### Sparsity unknown
+    >>> ### Sparsity unknown
     >>> # path_type="seq", Default:sequence=[1,2,...,min(x.shape[0], x.shape[1])]
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
@@ -661,7 +661,7 @@ class abessPoisson(bess_base):
     """
     Examples
     --------
-    ### Sparsity known
+    >>> ### Sparsity known
     >>> from bess.linear import *
     >>> import numpy as np
     >>> np.random.seed(12345)
@@ -674,7 +674,7 @@ class abessPoisson(bess_base):
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
 
-    ### Sparsity unknown
+    >>> ### Sparsity unknown
     >>> # path_type="seq", Default:sequence=[1,2,...,min(x.shape[0], x.shape[1])]
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
@@ -712,7 +712,7 @@ class abessMLm(bess_base):
     """
     Examples
     --------
-    ### Sparsity known
+    >>> ### Sparsity known
     >>> from bess.linear import *
     >>> import numpy as np
     >>> np.random.seed(12345)
@@ -725,7 +725,7 @@ class abessMLm(bess_base):
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
 
-    ### Sparsity unknown
+    >>> ### Sparsity unknown
     >>> # path_type="seq", Default:sequence=[1,2,...,min(x.shape[0], x.shape[1])]
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
@@ -763,7 +763,7 @@ class abessMultinomial(bess_base):
     """
     Examples
     --------
-    ### Sparsity known
+    >>> ### Sparsity known
     >>> from bess.linear import *
     >>> import numpy as np
     >>> np.random.seed(12345)
@@ -776,7 +776,7 @@ class abessMultinomial(bess_base):
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
 
-    ### Sparsity unknown
+    >>> ### Sparsity unknown
     >>> # path_type="seq", Default:sequence=[1,2,...,min(x.shape[0], x.shape[1])]
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
