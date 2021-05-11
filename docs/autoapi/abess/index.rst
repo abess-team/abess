@@ -9,8 +9,7 @@ Submodules
 .. toctree::
    :titlesonly:
    :maxdepth: 1
-
-   cabess/index.rst
+   
    gen_data/index.rst
    linear/index.rst
 
