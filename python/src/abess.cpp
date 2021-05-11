@@ -358,7 +358,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
       cout << "abesscpp2 3" << endl;
       cout << "uni_sparse" << endl;
 #endif
-      Eigen::VectorXd y_vec = y.col(0);
+      Eigen::VectorXd y_vec = y.col(0).eval();
       // Eigen::VectorXd::Zero(y.rows());
       // for (int i = 0; i < y.rows(); i++)
       // {

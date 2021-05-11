@@ -40,7 +40,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.coverage',
               'sphinx.ext.mathjax',
               'sphinx.ext.napoleon',
-              'sphinx.ext.githubpages']
+              'sphinx.ext.githubpages',
+              'autoapi.extension']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -49,6 +50,12 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+
+
+autoapi_type = 'python'
+autoapi_dirs = ['../python/abess']
+autoapi_keep_files = True
+autodoc_typehints = 'description'
 
 
 # -- Options for HTML output -------------------------------------------------

@@ -13,9 +13,9 @@
 
 .. toctree::
    :maxdepth: 4
-   :caption: abess package
+   :caption: Python package
 
-   abess
+   autoapi/index.rst
 
 .. toctree::
    :maxdepth: 2
