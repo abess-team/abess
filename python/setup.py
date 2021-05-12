@@ -6,6 +6,7 @@ from os import path
 
 os_type = 'MS_WIN64'
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
+
 if sys.platform.startswith('win32'):
     python_path = sys.base_prefix
     temp = python_path.split("\\")
