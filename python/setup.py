@@ -50,13 +50,18 @@ this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, 'README.md')) as f:
     long_description = f.read()
 
+print(find_packages())
+print(CURRENT_DIR + '/abess/')
+
+
 setup(name='abess',
       version='0.0.1',
-      author="Kangkang Jiang, Jin Zhu, Yanhang Zhang, Shijie Quan, Xueqin Wang",
+      author="Kangkang Jiang, Jin Zhu, Yanhang Zhang, Xueqin Wang",
       author_email="jiangkk3@mail2.sysu.edu.cn",
       maintainer="Kangkang Jiang",
       maintainer_email="jiangkk3@mail2.sysu.edu.cn",
-      packages=find_packages(),
+      package_dir={'': CURRENT_DIR},
+      packages=find_packages(CURRENT_DIR),
       description="abess Python Package",
       long_description=long_description,
       long_description_content_type="text/markdown",

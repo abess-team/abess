@@ -65,6 +65,5 @@
         "cfloat": "cpp",
         "matrixfunctions": "cpp"
     }, 
-    "C_Cpp.dimInactiveRegions": false,
-    "restructuredtext.confPath": "${workspaceFolder}\\python\\docs\\source"
+    "C_Cpp.dimInactiveRegions": false
 }

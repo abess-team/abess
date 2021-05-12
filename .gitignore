@@ -30,3 +30,5 @@ docs2/_build/*
 
 docs/abess.egg-info/*
 python/src/_cabess.cp37-win_amd64.def
+docs/build/*
+docs/dist/abess-0.0.1-py3.7-win-amd64.egg
