@@ -10,7 +10,7 @@ from pytest import approx
 
 from sklearn import linear_model
 # sklearn.linear_model.LogisticRegression
-from lifelines import CoxPHFitter
+# from lifelines import CoxPHFitter
 
 
 class TestClass:
