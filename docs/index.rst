@@ -5,29 +5,12 @@
 
 .. include:: ../README.rst 
 
+*********
+Contents
+*********
 .. toctree::
-   :maxdepth: 2
-   :titlesonly:
-
    Python package <Python-package/index.rst>
    R package <R-package/index.rst>
    About <about.rst>
 
-.. .. toctree::
-..    :maxdepth: 4
-..    :caption: Python package
 
-..    Python-package/index.rst
-
-
-.. .. toctree::
-..    :maxdepth: 2
-..    :caption: R package
-
-..    R-package/index.rst
-   
-.. .. toctree::
-..    :maxdepth: 2
-..    :caption: About
-
-..    new_page

@@ -29,3 +29,4 @@ docs/_build/*
 docs2/_build/*
 
 docs/abess.egg-info/*
+python/src/_cabess.cp37-win_amd64.def

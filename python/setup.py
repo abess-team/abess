@@ -12,7 +12,7 @@ if sys.platform.startswith('win32'):
     version = str(sys.version_info.major) + str(sys.version_info.minor)
     path1 = "-I" + python_path + "\\include"
     path2 = "-L" + python_path + "\\libs"
-    os.system('bash pre.sh ' + python_path + ' ' + version)
+    os.system('bash ' + CURRENT_DIR + '/pre.sh ' + python_path + ' ' + version)
 
     cabess_module = Extension(name='abess._cabess',
                               sources=[CURRENT_DIR + '/src/abess.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',

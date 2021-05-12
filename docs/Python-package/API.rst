@@ -1,17 +1,29 @@
-API Reference
-=============
+Python API Reference
+====================
 
-Model
-=============
+.. contents::
+    :backlinks: none
+    :local:
 
-.. autoapiclass:: abess.linear.abessLm
-.. autoapiclass:: abess.linear.abessLogistic
-.. autoapiclass:: abess.linear.abessPoisson
-.. autoapiclass:: abess.linear.abessCox
+abessLm
+-------
+.. autoclass:: abess.linear.abessLm
+
+abessLogistic
+-------------
+.. autoclass:: abess.linear.abessLogistic
+
+abessPoisson
+------------
+.. autoclass:: abess.linear.abessPoisson
+
+abessCox
+--------
+.. autoclass:: abess.linear.abessCox
 
 
 gen\_data
-=============
+---------
 
-.. autoapifunction:: abess.gen_data.gen_data
+.. autofunction:: abess.gen_data.gen_data
 
