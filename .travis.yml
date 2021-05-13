@@ -52,7 +52,7 @@ matrix:
 
       # command to install dependencies
       install:
-        - pip install python/requirements.txt
+        - pip install -r ./python/requirements.txt
         - pip install pytest
         - pip install pytest-cov
         - python ../python/setup.py install
