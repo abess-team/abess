@@ -1,3 +1,4 @@
 Sphinx==2.2.2
 sphinxcontrib-phpdomain
 scipy
+numpy

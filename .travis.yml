@@ -60,6 +60,7 @@ matrix:
         - pip install -r ./python/requirements.txt
         - pip install pytest
         - pip install pytest-cov
+        - pip install scikit-learn
         - python ./python/setup.py install
 
       # command to run tests
