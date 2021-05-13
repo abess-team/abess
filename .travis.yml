@@ -55,7 +55,7 @@ matrix:
         - pip install -r ./python/requirements.txt
         - pip install pytest
         - pip install pytest-cov
-        - python ../python/setup.py install
+        - python ./python/setup.py install
 
       # command to run tests
       script:  
