@@ -1,11 +1,11 @@
 matrix:
   include:
-    - language: R
-      before_install:
-        - cd R-package
-      cache: packages
-      after_success:
-        - travis_wait 40 Rscript -e 'covr::codecov(path = ".", quiet = FALSE, type = c("vignettes", "examples", "tests"))'
+    # - language: R
+    #   before_install:
+    #     - cd R-package
+    #   cache: packages
+    #   after_success:
+    #     - travis_wait 40 Rscript -e 'covr::codecov(path = ".", quiet = FALSE, type = c("vignettes", "examples", "tests"))'
 
     - dist: xenial
       language: python
@@ -27,7 +27,7 @@ matrix:
 
       # command to run tests
       script:  
-        - pytest python/ --cov=./ --cov-report=xml
+        - travis_wait 40 pytest python/ --cov=./ --cov-report=xml
         
       after_success:
         - codecov # run codecov
