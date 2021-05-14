@@ -23,6 +23,7 @@ matrix:
         - pip install pytest
         - pip install pytest-cov
         - pip install scikit-learn
+        - pip install codecov
         - python ./python/setup.py install
 
       # command to run tests
