@@ -42,44 +42,44 @@ class TestClass:
         assert model.beta[nonzero_fit] == approx(reg.coef_, rel=1e-5, abs=1e-5)
         assert (nonzero_true == nonzero_fit).all()
 
-    def test_binomial(self):
-        n = 1000
-        p = 400
-        k = 20
-        family = "binomial"
-        rho = 0.5
-        sigma = 1
-        np.random.seed(3)
-        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        sequence = range(0, int(n/np.log(np.log(n)) / np.log(p)))
-        print("logistic abess")
+    # def test_binomial(self):
+    #     n = 1000
+    #     p = 400
+    #     k = 20
+    #     family = "binomial"
+    #     rho = 0.5
+    #     sigma = 1
+    #     np.random.seed(3)
+    #     data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+    #     sequence = range(0, int(n/np.log(np.log(n)) / np.log(p)))
+    #     print("logistic abess")
 
-        # model = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
-        #                       K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-        #                       exchange_num=2, tau=0.1 * np.log(n*p) / n,
-        #                       primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5)
-        # group = np.linspace(1, p, p)
-        # model.fit(data.x, data.y, group=group)
+    #     # model = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
+    #     #                       K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+    #     #                       exchange_num=2, tau=0.1 * np.log(n*p) / n,
+    #     #                       primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5)
+    #     # group = np.linspace(1, p, p)
+    #     # model.fit(data.x, data.y, group=group)
 
-        model2 = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
-                               K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
-                               exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                               primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
-        group = np.linspace(1, p, p)
-        model2.fit(data.x, data.y, group=group)
+    #     model2 = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
+    #                            K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+    #                            exchange_num=2, tau=0.1 * np.log(n*p) / n,
+    #                            primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
+    #     group = np.linspace(1, p, p)
+    #     model2.fit(data.x, data.y, group=group)
 
-        nonzero_true = np.nonzero(data.beta)[0]
-        nonzero_fit = np.nonzero(model2.beta)[0]
-        print(nonzero_true)
-        print(nonzero_fit)
-        # new_x = data.x[:, nonzero_fit]
-        # reg = linear_model.LogisticRegression(penalty="none")
-        # reg.fit(new_x, data.y)
-        # print(model2.beta[nonzero_fit])
-        # print(reg.coef_)
-        assert (nonzero_true == nonzero_fit).all()
-        # assert model2.beta[nonzero_fit] == approx(
-        #     reg.coef_[0], rel=1e-2, abs=1e-2)
+    #     nonzero_true = np.nonzero(data.beta)[0]
+    #     nonzero_fit = np.nonzero(model2.beta)[0]
+    #     print(nonzero_true)
+    #     print(nonzero_fit)
+    #     # new_x = data.x[:, nonzero_fit]
+    #     # reg = linear_model.LogisticRegression(penalty="none")
+    #     # reg.fit(new_x, data.y)
+    #     # print(model2.beta[nonzero_fit])
+    #     # print(reg.coef_)
+    #     assert (nonzero_true == nonzero_fit).all()
+    #     # assert model2.beta[nonzero_fit] == approx(
+    #     #     reg.coef_[0], rel=1e-2, abs=1e-2)
 
     # def test_cox(self):
     #     n = 1000
@@ -132,42 +132,42 @@ class TestClass:
     #     assert model2.beta[nonzero_fit] == approx(
     #         cph.params_.values, rel=2e-1, abs=2e-1)
 
-    def test_poisson(self):
-        # to do
-        n = 1000
-        p = 400
-        k = 20
-        family = "binomial"
-        rho = 0.5
-        sigma = 1
-        np.random.seed(3)
-        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        sequence = range(0, int(n/np.log(np.log(n)) / np.log(p)))
+    # def test_poisson(self):
+    #     # to do
+    #     n = 1000
+    #     p = 400
+    #     k = 20
+    #     family = "binomial"
+    #     rho = 0.5
+    #     sigma = 1
+    #     np.random.seed(3)
+    #     data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+    #     sequence = range(0, int(n/np.log(np.log(n)) / np.log(p)))
 
-        # model = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
-        #                       K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-        #                       exchange_num=2, tau=0.1 * np.log(n*p) / n,
-        #                       primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5)
-        # group = np.linspace(1, p, p)
-        # model.fit(data.x, data.y, group=group)
+    #     # model = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
+    #     #                       K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+    #     #                       exchange_num=2, tau=0.1 * np.log(n*p) / n,
+    #     #                       primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5)
+    #     # group = np.linspace(1, p, p)
+    #     # model.fit(data.x, data.y, group=group)
 
-        model2 = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
-                               K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
-                               exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                               primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
-        group = np.linspace(1, p, p)
-        model2.fit(data.x, data.y, group=group)
+    #     model2 = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
+    #                            K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+    #                            exchange_num=2, tau=0.1 * np.log(n*p) / n,
+    #                            primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
+    #     group = np.linspace(1, p, p)
+    #     model2.fit(data.x, data.y, group=group)
 
-        nonzero_true = np.nonzero(data.beta)[0]
-        nonzero_fit = np.nonzero(model2.beta)[0]
-        print(nonzero_true)
-        print(nonzero_fit)
-        # new_x = data.x[:, nonzero_fit]
-        # reg = linear_model.LogisticRegression(
-        #     penalty="none", tol=1e-6, max_iter=200)
-        # reg.fit(new_x, data.y)
-        # print(model2.beta[nonzero_fit])
-        # print(reg.coef_)
-        assert (nonzero_true == nonzero_fit).all()
-        # assert model2.beta[nonzero_fit] == approx(
-        #     reg.coef_[0], rel=1e-2, abs=1e-2)
+    #     nonzero_true = np.nonzero(data.beta)[0]
+    #     nonzero_fit = np.nonzero(model2.beta)[0]
+    #     print(nonzero_true)
+    #     print(nonzero_fit)
+    #     # new_x = data.x[:, nonzero_fit]
+    #     # reg = linear_model.LogisticRegression(
+    #     #     penalty="none", tol=1e-6, max_iter=200)
+    #     # reg.fit(new_x, data.y)
+    #     # print(model2.beta[nonzero_fit])
+    #     # print(reg.coef_)
+    #     assert (nonzero_true == nonzero_fit).all()
+    #     # assert model2.beta[nonzero_fit] == approx(
+    #     #     reg.coef_[0], rel=1e-2, abs=1e-2)
