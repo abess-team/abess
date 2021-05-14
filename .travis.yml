@@ -27,7 +27,7 @@ matrix:
 
       # command to run tests
       script:  
-        - pytest python/ --cov=./ --cov-report=xml
+        - travis_wait 40 pytest python/ --cov=./ --cov-report=xml
         
       after_success:
         - codecov # run codecov
