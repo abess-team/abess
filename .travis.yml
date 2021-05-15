@@ -26,14 +26,12 @@ matrix:
         - pip install codecov
         - pip install gcovr
         - export CFLAGS="--coverage"
-        - python ./python/setup.py build_ext --inplace
+        - python ./python/setup.py install --inplace
 
       # command to run tests
       script:  
         - ls
-        - cd python 
-        - travis_wait 40 pytest ./ --cov=../ --cov-report=xml
-        - cd ..
+        - travis_wait 40 pytest ./ --cov=./ --cov-report=xml
         - gcovr ./python/src/ --xml
         - ls
         
