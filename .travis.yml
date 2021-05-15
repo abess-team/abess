@@ -24,11 +24,15 @@ matrix:
         - pip install pytest-cov
         - pip install scikit-learn
         - pip install codecov
-        - python ./python/setup.py install
+        - pip install gcovr
+        - export CFLAGS="--coverage"
+        - python ./python/setup.py build_ext --inplace
 
       # command to run tests
       script:  
         - travis_wait 40 pytest python/ --cov=./ --cov-report=xml
+        - gcovr ./python/src/ --xml
+        - list
         
       after_success:
         - codecov -F Python # run codecov
