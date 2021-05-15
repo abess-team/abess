@@ -32,7 +32,7 @@ matrix:
       script:  
         - travis_wait 40 pytest python/ --cov=./ --cov-report=xml
         - gcovr ./python/src/ --xml
-        - list
+        - ls
         
       after_success:
         - codecov -F Python # run codecov
