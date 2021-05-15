@@ -31,7 +31,7 @@ matrix:
       # command to run tests
       script:  
         - ls *
-        - travis_wait 80 pytest ./ --cov=./ --cov-report=xml
+        - travis_wait 120 pytest ./ --cov=./ --cov-report=xml
         - gcovr ./python/src/ --xml
         - ls *
         
