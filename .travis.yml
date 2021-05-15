@@ -30,10 +30,10 @@ matrix:
 
       # command to run tests
       script:  
-        - ls
+        - ls *
         - travis_wait 40 pytest ./ --cov=./ --cov-report=xml
         - gcovr ./python/src/ --xml
-        - ls
+        - ls *
         
       after_success:
         - codecov -F Python # run codecov
