@@ -32,7 +32,7 @@ matrix:
       script:  
         - ls *
         - travis_wait 120 pytest ./ --cov=./ --cov-report=xml
-        - gcovr ./python/src/ --xml
+        - gcovr ./python/src/ --exclude-directories=./python/include/* --xml 
         - ls *
         
       after_success:
