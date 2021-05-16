@@ -34,3 +34,12 @@ docs/build/*
 docs/dist/abess-0.0.1-py3.7-win-amd64.egg
 coverage.xml
 .coverage
+__pycache__/conftest.cpython-37-pytest-6.2.2.pyc
+build/lib.win-amd64-3.7/abess/__init__.py
+build/lib.win-amd64-3.7/abess/_cabess.cp37-win_amd64.pyd
+build/lib.win-amd64-3.7/abess/cabess.py
+build/lib.win-amd64-3.7/abess/gen_data.py
+build/lib.win-amd64-3.7/abess/linear.py
+dist/abess-0.0.1-py3.7-win-amd64.egg
+docs/__pycache__/conf.cpython-37-pytest-6.2.2.pyc
+python/docs/source/__pycache__/conf.cpython-37-pytest-6.2.2.pyc
