@@ -9,8 +9,9 @@
 Contents
 *********
 .. toctree::
+   Tutorial <Tutorial/index.rst>
    Python package <Python-package/index.rst>
    R package <R-package/index.rst>
-   About <about.rst>
+   About <About/index.rst>
 
 
