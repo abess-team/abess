@@ -1,2 +1,4 @@
 ignore:
-  - "python/include/"  # ignore folders and all its contents
+  # ignore folders and all its contents 
+  - "python/include/"
+  - "python/src/abess_wrap.cpp" 
