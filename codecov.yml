@@ -1,0 +1,2 @@
+ignore:
+  - "python/include/"  # ignore folders and all its contents
