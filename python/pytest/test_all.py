@@ -23,7 +23,7 @@ class TestClass:
         sigma = 1
         np.random.seed(1)
         data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        sequence = range(0, int(n/np.log(np.log(n)) / np.log(p)))
+        sequence = range(0, 50)
 
         model = abessLm(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=50,
                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
