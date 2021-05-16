@@ -36,6 +36,6 @@ matrix:
         - ls *
         
       after_success:
-        - codecov -F Python -g ./python/include/* # run codecov
+        - codecov -F Python -a -g ./python/include/* # run codecov
 
 
