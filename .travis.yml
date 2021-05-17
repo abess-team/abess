@@ -36,6 +36,7 @@ matrix:
         - travis_wait 120 pytest ./python --cov=abess --cov-report=xml
         - gcovr ./python/src/ --xml 
         - ls *
+        - codecov -F Python
         
       after_success:
         - codecov -F Python # run codecov
