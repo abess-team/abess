@@ -250,6 +250,14 @@ class bess_base:
         n = X.shape[0]
         p = X.shape[1]
 
+        if self.model_type_int == 4:
+            X = X[y[:, 0].argsort()]
+            y = y[y[:, 0].argsort()]
+            # print(X[104, 252])
+            # print(X[:5, :5])
+            # print(y)
+            y = y[:, 1].reshape(-1)
+
         if y.ndim == 1:
             M = 1
         else:
@@ -273,14 +281,6 @@ class bess_base:
                     g_index.append(j)
         else:
             g_index = range(p)
-
-        if self.model_type_int == 4:
-            X = X[y[:, 0].argsort()]
-            y = y[y[:, 0].argsort()]
-            # print(X[104, 252])
-            # print(X[:5, :5])
-            # print(y)
-            y = y[:, 1].reshape(-1)
 
         if n != y.shape[0]:
             raise ValueError("X.shape(0) should be equal to y.size")
@@ -414,6 +414,7 @@ class bess_base:
         stop = time()
         print("sparse x time : " + str(stop-start))
         print("linear.py fit")
+        print(y.shape)
 
         result = pywrap_abess(X, y, n, p, self.data_type, weight,
                               is_normal,

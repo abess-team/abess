@@ -23,6 +23,7 @@ matrix:
         - pip install pytest
         - pip install pytest-cov
         - pip install scikit-learn
+        - pip install lifelines
         - pip install codecov
         - pip install gcovr
         - export CFLAGS="--coverage"

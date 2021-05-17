@@ -181,6 +181,13 @@ def gen_data_splicing(family="gaussian", n=100, p=100, k=10, SNR=1, rho=0.5, bet
             y[i, int(j[0])] = 1
             # y2[i] = j
         return data(X, y, Tbeta)
+    elif family == "poisson":
+        eta = np.matmul(X, Tbeta)
+        eta[eta > 30] = 30
+        eta[eta < -30] = -30
+        lam = np.exp(eta)
+        y = np.random.poisson(lam=lam)
+        return data(X, y, Tbeta)
     else:
         raise ValueError(
             "Family should be \'gaussian\', \'multigaussian\', or \'multinomial\'")
