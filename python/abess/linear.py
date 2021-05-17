@@ -177,7 +177,7 @@ class bess_base:
             self.model_type_int = 3
         elif self.model_type == "Cox":
             self.model_type_int = 4
-        elif self.model_type == "MLm":
+        elif self.model_type == "Multigaussian":
             self.model_type_int = 5
         elif self.model_type == "Multinomial":
             self.model_type_int = 6
@@ -708,7 +708,7 @@ class abessPoisson(bess_base):
 
 
 @fix_docs
-class abessMLm(bess_base):
+class abessMultigaussian(bess_base):
     """
     Examples
     --------
@@ -745,8 +745,8 @@ class abessMLm(bess_base):
                  thread=1, covariance_update=False,
                  sparse_matrix=False
                  ):
-        super(abessMLm, self).__init__(
-            algorithm_type="abess", model_type="MLm", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+        super(abessMultigaussian, self).__init__(
+            algorithm_type="abess", model_type="Multigaussian", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, sequence=sequence, lambda_sequence=lambda_sequence, s_min=s_min, s_max=s_max, K_max=K_max,
             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
             always_select=always_select, tau=tau,
