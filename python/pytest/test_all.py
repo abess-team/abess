@@ -209,7 +209,7 @@ class TestClass:
         family = "multinomial"
         rho = 0.5
         M = 3
-        np.random.seed(3)
+        np.random.seed(5)
         data = gen_data_splicing(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         sequence = range(0, 20)
