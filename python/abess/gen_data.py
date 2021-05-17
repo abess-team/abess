@@ -128,10 +128,6 @@ def beta_generator(k, M):
     weak_signal = np.random.normal(0, 2, weak_num * M).reshape(weak_num, M)
     beta_value = np.concatenate((strong_signal, moderate_signal, weak_signal))
 
-    # print(beta_value)
-    for i in range(M):
-        beta_value[:, i] = beta_value[:, i] - beta_value[:, M-1]
-
     beta_value = beta_value[sample(k, k), :]
 
     # beta_value = np.random.normal(size=(k, M))
