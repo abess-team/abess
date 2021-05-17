@@ -31,16 +31,22 @@ class TestClass:
         model.predict(data.x)
 
         model2 = abessLm(path_type="seq", sequence=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
                          exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=False)
+                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=1, covariance_update=True)
         model2.fit(data.x, data.y)
 
         model3 = abessLm(path_type="seq", sequence=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
+                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                         exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=False, sparse_matrix=True)
+        model3.fit(data.x, data.y)
+
+        model4 = abessLm(path_type="seq", sequence=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
                          K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
                          exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=False, sparse_matrix=True)
-        model3.fit(data.x, data.y)
+                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=True)
+        model4.fit(data.x, data.y)
 
         nonzero_true = np.nonzero(data.beta)[0]
         nonzero_fit = np.nonzero(model.beta)[0]
@@ -74,7 +80,7 @@ class TestClass:
         model2 = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
                                K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
                                exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                               primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
+                               primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
         model2.predict(data.x)
@@ -113,9 +119,9 @@ class TestClass:
         model.predict(data.x)
 
         model2 = abessCox(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
-                          K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+                          K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
                           exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                          primary_model_fit_max_iter=60, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
+                          primary_model_fit_max_iter=60, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
@@ -154,12 +160,12 @@ class TestClass:
         data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         sequence = range(0, 20)
 
-        # model = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
-        #                       K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-        #                       exchange_num=2, tau=0.1 * np.log(n*p) / n,
-        #                       primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5)
-        # group = np.linspace(1, p, p)
-        # model.fit(data.x, data.y, group=group)
+        model = abessPoisson(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
+                             K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+                             exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                             primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
+        group = np.linspace(1, p, p)
+        model.fit(data.x, data.y, group=group)
 
         model2 = abessPoisson(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
                               K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
@@ -202,12 +208,12 @@ class TestClass:
         group = np.linspace(1, p, p)
         model.fit(data.x, data.y, group=group)
 
-        model = abessMultigaussian(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
-                                   K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-                                   exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                                   primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True, sparse_matrix=True)
+        model2 = abessMultigaussian(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
+                                    K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                                    exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                                    primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True, sparse_matrix=True)
         group = np.linspace(1, p, p)
-        model.fit(data.x, data.y, group=group)
+        model2.fit(data.x, data.y, group=group)
 
         nonzero_true = np.nonzero(data.beta)[0]
         nonzero_fit = np.nonzero(model.beta)[0]
@@ -246,7 +252,7 @@ class TestClass:
         model2.fit(data.x, data.y, group=group)
 
         model3 = abessMultinomial(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
-                                  K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+                                  K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
                                   exchange_num=2, tau=0.1 * np.log(n*p) / n,
                                   primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5, sparse_matrix=True)
         group = np.linspace(1, p, p)

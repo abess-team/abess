@@ -14,6 +14,7 @@ using namespace Rcpp;
 
 #include "utilities.h"
 #include <cfloat>
+#include <time.h>
 
 template <class T4>
 Eigen::VectorXd pi(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &coef)
