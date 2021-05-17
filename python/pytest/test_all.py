@@ -12,28 +12,35 @@ from lifelines import CoxPHFitter
 
 class TestClass:
     def test_gaussian(self):
-        n = 1000
-        p = 200
-        k = 20
+        n = 100
+        p = 20
+        k = 3
         family = "gaussian"
         rho = 0.5
         sigma = 1
         M = 1
         np.random.seed(2)
         data = gen_data_splicing(family=family, n=n, p=p, k=k, rho=rho, M=M)
-        s_max = int(n/np.log(np.log(n)) / np.log(p))
+        s_max = 20
 
-        model = abessLm(path_type="seq", sequence=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=200,
+        model = abessLm(path_type="seq", sequence=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
                         exchange_num=2, tau=0.1 * np.log(n*p) / n,
                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True)
         model.fit(data.x, data.y)
+        model.predict(data.x)
 
-        model2 = abessLm(path_type="seq", sequence=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=200,
+        model2 = abessLm(path_type="seq", sequence=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
                          K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
                          exchange_num=2, tau=0.1 * np.log(n*p) / n,
                          primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=False)
         model2.fit(data.x, data.y)
+
+        model3 = abessLm(path_type="seq", sequence=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
+                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+                         exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=False, sparse_matrix=True)
+        model3.fit(data.x, data.y)
 
         nonzero_true = np.nonzero(data.beta)[0]
         nonzero_fit = np.nonzero(model.beta)[0]
@@ -70,6 +77,7 @@ class TestClass:
                                primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
+        model2.predict(data.x)
 
         nonzero_true = np.nonzero(data.beta)[0]
         nonzero_fit = np.nonzero(model2.beta)[0]
@@ -102,6 +110,7 @@ class TestClass:
                          primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model.fit(data.x, data.y, group=group)
+        model.predict(data.x)
 
         model2 = abessCox(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
                           K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
@@ -158,6 +167,7 @@ class TestClass:
                               primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
+        model2.predict(data.x)
 
         nonzero_true = np.nonzero(data.beta)[0]
         nonzero_fit = np.nonzero(model2.beta)[0]
@@ -174,9 +184,9 @@ class TestClass:
             reg.coef_, rel=1e-2, abs=1e-2)
 
     def test_mulgaussian(self):
-        n = 1000
-        p = 200
-        k = 20
+        n = 100
+        p = 20
+        k = 3
         family = "multigaussian"
         rho = 0.5
         M = 3
@@ -185,10 +195,17 @@ class TestClass:
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         sequence = range(0, int(n/np.log(np.log(n)) / np.log(p)))
 
-        model = abessMultigaussian(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=200,
+        model = abessMultigaussian(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
                                    K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
                                    exchange_num=2, tau=0.1 * np.log(n*p) / n,
                                    primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=False)
+        group = np.linspace(1, p, p)
+        model.fit(data.x, data.y, group=group)
+
+        model = abessMultigaussian(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
+                                   K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                                   exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                                   primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model.fit(data.x, data.y, group=group)
 
@@ -227,6 +244,13 @@ class TestClass:
                                   primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
+
+        model3 = abessMultinomial(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
+                                  K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+                                  exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5, sparse_matrix=True)
+        group = np.linspace(1, p, p)
+        model3.fit(data.x, data.y, group=group)
 
         nonzero_true = np.nonzero(data.beta)[0]
         nonzero_fit = np.nonzero(model.beta)[0]
