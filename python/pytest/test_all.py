@@ -21,6 +21,9 @@ class TestClass:
         M = 1
         np.random.seed(2)
         data = gen_data_splicing(family=family, n=n, p=p, k=k, rho=rho, M=M)
+        data2 = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data3 = gen_data_splicing(
+            family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
 
         model = abessLm(path_type="seq", sequence=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
@@ -156,8 +159,11 @@ class TestClass:
         family = "poisson"
         rho = 0.5
         sigma = 1
+        M = 1
         np.random.seed(3)
         data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data2 = gen_data_splicing(
+            family=family, n=n, p=p,  k=k, rho=rho, M=M)
         sequence = range(0, 20)
 
         model = abessPoisson(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
