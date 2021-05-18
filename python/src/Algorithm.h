@@ -26,8 +26,10 @@ bool quick_sort_pair_max(std::pair<int, double> x, std::pair<int, double> y);
 //  T2 for beta
 //  T3 for coef0
 //  T4 for X
-//  <Eigen::VectorXd, Eigen::VectorXd, double> for Univariate
-//  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd> for Multivariable
+//  <Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> for Univariate Dense
+//  <Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double> > for Univariate Sparse
+//  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> for Multivariable Dense
+//  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double> > for Multivariable Sparse
 template <class T1, class T2, class T3, class T4>
 class Algorithm
 {
@@ -629,10 +631,6 @@ public:
       log_Pi = Pi.array().log();
       log_1_Pi = (one - Pi).array().log();
       loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
-      // #ifdef TEST
-      //         t2 = clock();
-      //         std::cout << "primary fit iter 3 time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-      // #endif
       // cout << "j=" << j << " loglik: " << loglik1 << endl;
       // cout << "j=" << j << " loglik diff: " << loglik0 - loglik1 << endl;
       bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
@@ -1020,7 +1018,6 @@ public:
       Eigen::MatrixXd XGbar;
       XGbar = XG_new.transpose() * XG;
 
-      // Eigen::MatrixXd XGbar = XG_new.transpose() * XG;
       Eigen::MatrixXd phiG;
       XGbar.sqrt().evalTo(phiG);
       Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
