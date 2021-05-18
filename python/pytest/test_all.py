@@ -70,12 +70,12 @@ class TestClass:
         sequence = range(0, 20)
         print("logistic abess")
 
-        # model = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
-        #                       K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-        #                       exchange_num=2, tau=0.1 * np.log(n*p) / n,
-        #                       primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5)
-        # group = np.linspace(1, p, p)
-        # model.fit(data.x, data.y, group=group)
+        model = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
+                              K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                              exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
+        group = np.linspace(1, p, p)
+        model.fit(data.x, data.y, group=group)
 
         model2 = abessLogistic(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
                                K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
@@ -156,19 +156,19 @@ class TestClass:
         family = "poisson"
         rho = 0.5
         sigma = 1
-        np.random.seed(1)
+        np.random.seed(3)
         data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         sequence = range(0, 20)
 
-        model = abessPoisson(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=False, screening_size=30,
-                             K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+        model = abessPoisson(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
+                             K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
                              exchange_num=2, tau=0.1 * np.log(n*p) / n,
                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model.fit(data.x, data.y, group=group)
 
         model2 = abessPoisson(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
-                              K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+                              K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
                               exchange_num=2, tau=0.1 * np.log(n*p) / n,
                               primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
@@ -254,7 +254,7 @@ class TestClass:
         model3 = abessMultinomial(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
                                   K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
                                   exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5, sparse_matrix=True)
+                                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
 
