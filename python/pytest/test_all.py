@@ -24,7 +24,7 @@ class TestClass:
         data2 = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         data3 = gen_data_splicing(
             family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
-        s_max = 20
+        s_max = 21
 
         model = abessLm(path_type="seq", sequence=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
@@ -111,7 +111,7 @@ class TestClass:
 
         np.random.seed(2)
         data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        sequence = range(1, 20)
+        sequence = range(0, 20)
 
         model = abessCox(path_type="seq", sequence=sequence, ic_type='ebic', is_screening=True, screening_size=20,
                          K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,

@@ -12,41 +12,6 @@ class List
 public:
 	List(){};
 	~List(){};
-	// List(const List &mylist)
-	// {
-	// 	if (mylist.vector_int.size() != 0)
-	// 	{
-	// 		for (int i = 0; i < mylist.vector_int.size(); i++)
-	// 		{
-	// 			this->vector_int.push_back(mylist.vector_int[i]);
-	// 			this->vector_int_name.push_back(mylist.vector_int_name[i]);
-	// 		}
-	// 	}
-	// 	if (mylist.vector_Matrix_VectorXi.size() != 0)
-	// 	{
-	// 		for (int i = 0; i < mylist.vector_Matrix_VectorXi.size(); i++)
-	// 		{
-	// 			this->vector_Matrix_VectorXi.push_back(vector_Matrix_VectorXi[i]);
-	// 			this->vector_Matrix_VectorXi_name.push_back(vector_Matrix_VectorXi_name[i]);
-	// 		}
-	// 	}
-	// 	if (mylist.vector_Matrix_VectorXd.size() != 0)
-	// 	{
-	// 		for (int i = 0; i < mylist.vector_Matrix_VectorXd.size(); i++)
-	// 		{
-	// 			this->vector_Matrix_VectorXd.push_back(vector_Matrix_VectorXd[i]);
-	// 			this->vector_Matrix_VectorXd_name.push_back(vector_Matrix_VectorXd_name[i]);
-	// 		}
-	// 	}
-	// 	if (mylist.vector_MatrixXd.size() != 0)
-	// 	{
-	// 		for (int i = 0; i < mylist.vector_MatrixXd.size(); i++)
-	// 		{
-	// 			this->vector_MatrixXd.push_back(vector_MatrixXd[i]);
-	// 			this->vector_MatrixXd_name.push_back(vector_Matrix_VectorXd_name[i]);
-	// 		}
-	// 	}
-	// }
 	void add(string name, int value);
 	void get_value_by_name(string name, int &value);
 	void add(string name, double value);

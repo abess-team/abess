@@ -36,19 +36,19 @@ Eigen::MatrixXd Pointer2MatrixXd(double *x, int x_row, int x_col)
     return x_matrix;
 }
 
-Eigen::MatrixXi Pointer2MatrixXi(int *x, int x_row, int x_col)
-{
-    Eigen::MatrixXi x_matrix(x_row, x_col);
-    int i, j;
-    for (i = 0; i < x_row; i++)
-    {
-        for (j = 0; j < x_col; j++)
-        {
-            x_matrix(i, j) = x[i * x_col + j];
-        }
-    }
-    return x_matrix;
-}
+// Eigen::MatrixXi Pointer2MatrixXi(int *x, int x_row, int x_col)
+// {
+//     Eigen::MatrixXi x_matrix(x_row, x_col);
+//     int i, j;
+//     for (i = 0; i < x_row; i++)
+//     {
+//         for (j = 0; j < x_col; j++)
+//         {
+//             x_matrix(i, j) = x[i * x_col + j];
+//         }
+//     }
+//     return x_matrix;
+// }
 
 Eigen::VectorXd Pointer2VectorXd(double *x, int x_len)
 {
@@ -86,19 +86,19 @@ void MatrixXd2Pointer(Eigen::MatrixXd x_matrix, double *x)
     }
 }
 
-void MatrixXi2Pointer(Eigen::MatrixXi x_matrix, int *x)
-{
-    int x_matrix_row, x_matrix_col, i, j;
-    x_matrix_row = x_matrix.rows();
-    x_matrix_col = x_matrix.cols();
-    for (i = 0; i < x_matrix_row; i++)
-    {
-        for (j = 0; j < x_matrix_col; j++)
-        {
-            x[i * x_matrix_col + j] = x_matrix(i, j);
-        }
-    }
-}
+// void MatrixXi2Pointer(Eigen::MatrixXi x_matrix, int *x)
+// {
+//     int x_matrix_row, x_matrix_col, i, j;
+//     x_matrix_row = x_matrix.rows();
+//     x_matrix_col = x_matrix.cols();
+//     for (i = 0; i < x_matrix_row; i++)
+//     {
+//         for (j = 0; j < x_matrix_col; j++)
+//         {
+//             x[i * x_matrix_col + j] = x_matrix(i, j);
+//         }
+//     }
+// }
 
 void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x)
 {
@@ -111,16 +111,16 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x)
     }
 }
 
-void VectorXi2Pointer(Eigen::VectorXi x_vector, int *x)
-{
-    int x_matrix_len, i;
-    x_matrix_len = x_vector.size();
+// void VectorXi2Pointer(Eigen::VectorXi x_vector, int *x)
+// {
+//     int x_matrix_len, i;
+//     x_matrix_len = x_vector.size();
 
-    for (i = 0; i < x_matrix_len; i++)
-    {
-        x[i] = x_vector[i];
-    }
-}
+//     for (i = 0; i < x_matrix_len; i++)
+//     {
+//         x[i] = x_vector[i];
+//     }
+// }
 
 Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N)
 {
@@ -164,18 +164,18 @@ void slice_assignment(Eigen::VectorXd &nums, Eigen::VectorXi &ind, double value)
     }
 }
 
-Eigen::VectorXd vector_slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind)
-{
-    Eigen::VectorXd sub_nums(ind.size());
-    if (ind.size() != 0)
-    {
-        for (int i = 0; i < ind.size(); i++)
-        {
-            sub_nums(i) = nums(ind(i));
-        }
-    }
-    return sub_nums;
-}
+// Eigen::VectorXd vector_slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind)
+// {
+//     Eigen::VectorXd sub_nums(ind.size());
+//     if (ind.size() != 0)
+//     {
+//         for (int i = 0; i < ind.size(); i++)
+//         {
+//             sub_nums(i) = nums(ind(i));
+//         }
+//     }
+//     return sub_nums;
+// }
 
 Eigen::VectorXi vector_slice(Eigen::VectorXi &nums, Eigen::VectorXi &ind)
 {
@@ -190,61 +190,61 @@ Eigen::VectorXi vector_slice(Eigen::VectorXi &nums, Eigen::VectorXi &ind)
     return sub_nums;
 }
 
-Eigen::MatrixXd matrix_slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, int axis)
-{
-    if (axis == 0)
-    {
-        Eigen::MatrixXd sub_nums(ind.size(), nums.cols());
-        if (ind.size() != 0)
-        {
-            for (int i = 0; i < ind.size(); i++)
-            {
-                sub_nums.row(i) = nums.row(ind(i));
-            }
-        }
-        return sub_nums;
-    }
-    else
-    {
-        Eigen::MatrixXd sub_nums(nums.rows(), ind.size());
-        if (ind.size() != 0)
-        {
-            for (int i = 0; i < ind.size(); i++)
-            {
-                sub_nums.col(i) = nums.col(ind(i));
-            }
-        }
-        return sub_nums;
-    }
-}
+// Eigen::MatrixXd matrix_slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, int axis)
+// {
+//     if (axis == 0)
+//     {
+//         Eigen::MatrixXd sub_nums(ind.size(), nums.cols());
+//         if (ind.size() != 0)
+//         {
+//             for (int i = 0; i < ind.size(); i++)
+//             {
+//                 sub_nums.row(i) = nums.row(ind(i));
+//             }
+//         }
+//         return sub_nums;
+//     }
+//     else
+//     {
+//         Eigen::MatrixXd sub_nums(nums.rows(), ind.size());
+//         if (ind.size() != 0)
+//         {
+//             for (int i = 0; i < ind.size(); i++)
+//             {
+//                 sub_nums.col(i) = nums.col(ind(i));
+//             }
+//         }
+//         return sub_nums;
+//     }
+// }
 
-Eigen::MatrixXd row_slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind)
-{
-    Eigen::MatrixXd sub_nums(ind.size(), nums.cols());
-    if (ind.size() != 0)
-    {
-        for (int i = 0; i < ind.size(); i++)
-        {
-            sub_nums.row(i) = nums.row(ind(i));
-        }
-    }
-    return sub_nums;
-}
+// Eigen::MatrixXd row_slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind)
+// {
+//     Eigen::MatrixXd sub_nums(ind.size(), nums.cols());
+//     if (ind.size() != 0)
+//     {
+//         for (int i = 0; i < ind.size(); i++)
+//         {
+//             sub_nums.row(i) = nums.row(ind(i));
+//         }
+//     }
+//     return sub_nums;
+// }
 
-Eigen::VectorXi get_value_index(Eigen::VectorXd &nums, double value)
-{
-    Eigen::VectorXi ind(nums.size());
-    int cur_index = 0;
-    for (int i = 0; i < nums.size(); i++)
-    {
-        if (nums(i) == value)
-        {
-            ind(cur_index) = i;
-            cur_index += 1;
-        }
-    }
-    return ind.head(cur_index).eval();
-}
+// Eigen::VectorXi get_value_index(Eigen::VectorXd &nums, double value)
+// {
+//     Eigen::VectorXi ind(nums.size());
+//     int cur_index = 0;
+//     for (int i = 0; i < nums.size(); i++)
+//     {
+//         if (nums(i) == value)
+//         {
+//             ind(cur_index) = i;
+//             cur_index += 1;
+//         }
+//     }
+//     return ind.head(cur_index).eval();
+// }
 
 // replace B by C in A
 // to do : binary search
@@ -355,40 +355,40 @@ Eigen::VectorXi Ac(Eigen::VectorXi &A, int N)
 }
 
 // Ac
-Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U)
-{
-    int A_size = A.size();
-    int N = U.size();
-    if (A_size == 0)
-    {
-        return U;
-    }
-    else if (A_size == N)
-    {
-        Eigen::VectorXi I(0);
-        return I;
-    }
-    else
-    {
-        Eigen::VectorXi I(N - A_size);
-        int cur_index = 0;
-        int A_index = 0;
-        for (int i = 0; i < N; i++)
-        {
-            if (A_index < A.size() && U(i) == A(A_index))
-            {
-                A_index += 1;
-                continue;
-            }
-            else
-            {
-                I(cur_index) = U(i);
-                cur_index += 1;
-            }
-        }
-        return I;
-    }
-}
+// Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U)
+// {
+//     int A_size = A.size();
+//     int N = U.size();
+//     if (A_size == 0)
+//     {
+//         return U;
+//     }
+//     else if (A_size == N)
+//     {
+//         Eigen::VectorXi I(0);
+//         return I;
+//     }
+//     else
+//     {
+//         Eigen::VectorXi I(N - A_size);
+//         int cur_index = 0;
+//         int A_index = 0;
+//         for (int i = 0; i < N; i++)
+//         {
+//             if (A_index < A.size() && U(i) == A(A_index))
+//             {
+//                 A_index += 1;
+//                 continue;
+//             }
+//             else
+//             {
+//                 I(cur_index) = U(i);
+//                 cur_index += 1;
+//             }
+//         }
+//         return I;
+//     }
+// }
 
 void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int axis)
 {
@@ -534,11 +534,12 @@ void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0)
     coef0 = Eigen::VectorXd::Zero(M);
 }
 
-Eigen::VectorXd array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis)
-{
-    A = A.array() * B.array();
-    return A;
-}
+// Eigen::VectorXd array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis)
+// {
+//     A = A.array() * B.array();
+//     return A;
+// }
+
 Eigen::MatrixXd array_product(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis)
 {
     if (axis == 0)
@@ -590,33 +591,33 @@ Eigen::VectorXd matrix_dot(Eigen::MatrixXd &A, Eigen::VectorXd &B)
     return A.transpose() * B;
 }
 
-void matrix_sqrt(Eigen::MatrixXd &A, Eigen::MatrixXd &B)
-{
-    A.sqrt().evalTo(B);
-}
+// void matrix_sqrt(Eigen::MatrixXd &A, Eigen::MatrixXd &B)
+// {
+//     A.sqrt().evalTo(B);
+// }
 
-void matrix_sqrt(Eigen::SparseMatrix<double> &A, Eigen::MatrixXd &B)
-{
-    if (A.rows() == 1)
-    {
-        B = Eigen::MatrixXd::Ones(1, 1) * A.cwiseSqrt();
-    }
-    else
-    {
-        Eigen::SelfAdjointEigenSolver<Eigen::SparseMatrix<double>>
-            adjoint_eigen_solver(A);
-        // const auto &eigenvalues = adjoint_eigen_solver.eigenvalues();
-        // CHECK_GT(eigenvalues.minCoeff(), -1e-5) //R.minCoeff() 意思是 min(R(:))最小值
-        //     << "MatrixSqrt failed with negative eigenvalues: "
-        //     << eigenvalues.transpose();
+// void matrix_sqrt(Eigen::SparseMatrix<double> &A, Eigen::MatrixXd &B)
+// {
+//     if (A.rows() == 1)
+//     {
+//         B = Eigen::MatrixXd::Ones(1, 1) * A.cwiseSqrt();
+//     }
+//     else
+//     {
+//         Eigen::SelfAdjointEigenSolver<Eigen::SparseMatrix<double>>
+//             adjoint_eigen_solver(A);
+//         // const auto &eigenvalues = adjoint_eigen_solver.eigenvalues();
+//         // CHECK_GT(eigenvalues.minCoeff(), -1e-5) //R.minCoeff() 意思是 min(R(:))最小值
+//         //     << "MatrixSqrt failed with negative eigenvalues: "
+//         //     << eigenvalues.transpose();
 
-        B = adjoint_eigen_solver.eigenvectors() * (adjoint_eigen_solver.eigenvalues().cwiseSqrt().asDiagonal()) * adjoint_eigen_solver.eigenvectors().transpose();
-        //    .cwiseMax(Eigen::Matrix<FloatType, N, 1>::Zero()) //R.cwiseMax(P) 的意思是max(R, P) 对应取大
-        //    .cwiseSqrt()  // R.cwiseSqrt() 意思是sqrt(P)
-        //    .asDiagonal() * // x.asDiagonal()意思是 diag(x)对角阵(没有重载<<)
-        //    adjoint_eigen_solver.eigenvectors().transpose();
-    }
-}
+//         B = adjoint_eigen_solver.eigenvectors() * (adjoint_eigen_solver.eigenvalues().cwiseSqrt().asDiagonal()) * adjoint_eigen_solver.eigenvectors().transpose();
+//         //    .cwiseMax(Eigen::Matrix<FloatType, N, 1>::Zero()) //R.cwiseMax(P)
+//         //    .cwiseSqrt()  // R.cwiseSqrt()
+//         //    .asDiagonal() * // x.asDiagonal()
+//         //    adjoint_eigen_solver.eigenvectors().transpose();
+//     }
+// }
 
 void add_constant_column(Eigen::MatrixXd &X)
 {
