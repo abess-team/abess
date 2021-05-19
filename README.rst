@@ -5,7 +5,7 @@ Welcome to abess's documentation!
 
    <!-- badges: start -->
 
-|Travis build status| |codecov| |docs| |cran| |pypi| |pyversions|
+|Travis build status| |codecov| |docs| |cran| |pypi| |pyversions| |License|
 
 **abess** (Adaptive BEst Subset Selection) aims to find a small subset of predictors such
 that the resulting linear model is expected to have the most desirable
@@ -61,5 +61,7 @@ Reference
 .. |pypi| image:: https://badge.fury.io/py/abess.svg
    :target: https://badge.fury.io/py/abess
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/abess
+.. |License| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg 
+   :target: http://www.gnu.org/licenses/gpl-3.0
 
     
