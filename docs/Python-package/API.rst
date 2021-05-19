@@ -21,7 +21,6 @@ abessCox
 --------
 .. autoclass:: abess.linear.abessCox
 
-
 abessMultigaussian
 ------------------
 .. autoclass:: abess.linear.abessMultigaussian
@@ -31,8 +30,8 @@ abessMultinomial
 .. autoclass:: abess.linear.abessMultinomial
 
 
+
 gen\_data
 ---------
-
 .. autofunction:: abess.gen_data.gen_data
 

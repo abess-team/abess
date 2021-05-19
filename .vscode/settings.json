@@ -66,5 +66,5 @@
         "matrixfunctions": "cpp"
     }, 
     "C_Cpp.dimInactiveRegions": false,
-    "restructuredtext.confPath": "${workspaceFolder}\\docs"
+    "restructuredtext.confPath": ""
 }
