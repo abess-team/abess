@@ -1,16 +1,15 @@
-abess: An R & Python package for Best-Subset Selection in Polynomial Time
+abess: A Python package for Best-Subset Selection in Polynomial Time
 ==========================================================================
 
 .. raw:: html
 
    <!-- badges: start -->
 
-|Travis build status| |codecov| |docs|
+|Travis build status| |codecov| |docs| |cran|
 
-Best-subset selection aims to find a small subset of predictors such
+**abess** (Adaptive BEst Subset Selection) aims to find a small subset of predictors such
 that the resulting linear model is expected to have the most desirable
-prediction accuracy. This project implements a polynomial algorithm
-proposed by Zhu et al (2020) to solve the problem. It supports:
+prediction accuracy. This project implements a polynomial algorithm proposed to solve these problems. It supports:
 
 -  various model:
 -  linear regression
@@ -21,7 +20,7 @@ proposed by Zhu et al (2020) to solve the problem. It supports:
 -  sure independence screening
 -  nuisance penalized regression
 
-Installation
+Quick Start
 ============
 
 You can install the newest version of abess from
@@ -30,6 +29,12 @@ You can install the newest version of abess from
 .. code-block:: console
 
     $pip install abess
+
+Import abess in a Python project:
+
+.. code-block:: console
+
+    import abess
 
 Reference
 =========
@@ -47,4 +52,5 @@ Reference
 .. |docs| image:: https://readthedocs.org/projects/abess/badge/?version=latest
    :target: https://abess.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-
+.. |cran| image:: https://img.shields.io/cran/v/abess?logo=R
+   :target: https://cran.r-project.org/package=abess

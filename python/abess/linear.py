@@ -4,7 +4,7 @@ import math
 import types
 from scipy.sparse import coo_matrix
 
-from time import time
+# from time import time
 
 # def fix_docs(cls):
 #     for name, func in vars(cls).items():
@@ -31,7 +31,6 @@ def fix_docs(cls):
             for parent in cls.__bases__:
                 parfunc = getattr(parent, name, None)
                 if parfunc and getattr(parfunc, '__doc__', None):
-                    print(name)
                     func.__doc__ = parfunc.__doc__ + func.__doc__
     return cls
 
@@ -378,11 +377,11 @@ class bess_base:
         if y.ndim == 1:
             y = y.reshape(len(y), 1)
 
-        start = time()
+        # start = time()
         if self.sparse_matrix:
-            print(type(X))
+            # print(type(X))
             if type(X) != type(coo_matrix((1, 1))):
-                print("sparse matrix 1")
+                # print("sparse matrix 1")
                 nonzero = 0
                 tmp = np.zeros([X.shape[0] * X.shape[1], 3])
                 for j in range(X.shape[1]):
@@ -392,7 +391,7 @@ class bess_base:
                             nonzero += 1
                 X = tmp[:nonzero, :]
 
-                print("nonzeros num: " + str(nonzero))
+                # print("nonzeros num: " + str(nonzero))
                 # coo = coo_matrix(X)
                 # X = np.zeros([len(coo.data), 3])
                 # print(X[:, 0])
@@ -400,21 +399,21 @@ class bess_base:
                 # X[:, 0] = coo.data.reshape(-1)
                 # X[:, 1] = coo.row.reshape(-1)
                 # X[:, 2] = coo.col.reshape(-1)
-                print(X)
+                # print(X)
             else:
-                print("sparse matrix 2")
+                # print("sparse matrix 2")
                 tmp = np.zeros([len(X.data), 3])
                 tmp[:, 1] = X.row
                 tmp[:, 2] = X.col
                 tmp[:, 0] = X.data
 
                 X = tmp
-                print(X)
+                # print(X)
 
-        stop = time()
-        print("sparse x time : " + str(stop-start))
-        print("linear.py fit")
-        print(y.shape)
+        # stop = time()
+        # print("sparse x time : " + str(stop-start))
+        # print("linear.py fit")
+        # print(y.shape)
 
         result = pywrap_abess(X, y, n, p, self.data_type, weight,
                               is_normal,

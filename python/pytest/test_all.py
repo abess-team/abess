@@ -3,11 +3,15 @@ from abess.linear import *
 from abess.gen_data import gen_data, gen_data_splicing
 import pandas as pd
 from pytest import approx
+import sys
 
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LogisticRegression
-from sklearn.linear_model import PoissonRegressor
-from lifelines import CoxPHFitter
+
+# For Python >=3.6
+if sys.version_info[0] == 3 and sys.version_info[1] >= 6:
+    from sklearn.linear_model import PoissonRegressor
+    from lifelines import CoxPHFitter
 
 
 class TestClass:
@@ -92,24 +96,26 @@ class TestClass:
         nonzero_fit = np.nonzero(model2.beta)[0]
         print(nonzero_true)
         print(nonzero_fit)
-        new_x = data.x[:, nonzero_fit]
-        reg = LogisticRegression(penalty="none")
-        reg.fit(new_x, data.y)
-        print(model2.beta[nonzero_fit])
-        print(reg.coef_)
         assert (nonzero_true == nonzero_fit).all()
-        assert model2.beta[nonzero_fit] == approx(
-            reg.coef_[0], rel=1e-2, abs=1e-2)
+
+        if sys.version_info[1] >= 6:
+            new_x = data.x[:, nonzero_fit]
+            reg = LogisticRegression(penalty="none")
+            reg.fit(new_x, data.y)
+            print(model2.beta[nonzero_fit])
+            print(reg.coef_)
+            assert model2.beta[nonzero_fit] == approx(
+                reg.coef_[0], rel=1e-2, abs=1e-2)
 
     def test_cox(self):
         n = 100
         p = 20
-        k = 5
+        k = 3
         family = "cox"
         rho = 0.5
         sigma = 1
 
-        np.random.seed(2)
+        np.random.seed(3)
         data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         sequence = range(0, 20)
 
@@ -132,24 +138,22 @@ class TestClass:
         nonzero_fit = np.nonzero(model2.beta)[0]
         print(nonzero_true)
         print(nonzero_fit)
+        assert (nonzero_true == nonzero_fit).all()
 
-        new_x = data.x[:, nonzero_fit]
+        if sys.version_info[1] >= 6:
+            new_x = data.x[:, nonzero_fit]
+            survival = pd.DataFrame()
+            for i in range(new_x.shape[1]):
+                survival["Var" + str(i)] = new_x[:, i]
+            survival["T"] = data.y[:, 0]
+            survival["E"] = data.y[:, 1]
+            cph = CoxPHFitter(penalizer=0, l1_ratio=0)
+            cph.fit(survival, 'T', event_col='E')
+            print(model2.beta[nonzero_fit])
+            print(cph.params_.values)
 
-        survival = pd.DataFrame()
-        for i in range(new_x.shape[1]):
-            survival["Var" + str(i)] = new_x[:, i]
-
-        survival["T"] = data.y[:, 0]
-        survival["E"] = data.y[:, 1]
-
-        cph = CoxPHFitter(penalizer=0, l1_ratio=0)
-
-        cph.fit(survival, 'T', event_col='E')
-        print(model2.beta[nonzero_fit])
-        print(cph.params_.values)
-
-        assert model2.beta[nonzero_fit] == approx(
-            cph.params_.values, rel=5e-1, abs=5e-1)
+            assert model2.beta[nonzero_fit] == approx(
+                cph.params_.values, rel=5e-1, abs=5e-1)
 
     def test_poisson(self):
         # to do
@@ -185,15 +189,17 @@ class TestClass:
         nonzero_fit = np.nonzero(model2.beta)[0]
         print(nonzero_true)
         print(nonzero_fit)
-        new_x = data.x[:, nonzero_fit]
-        reg = PoissonRegressor(
-            alpha=0, tol=1e-6, max_iter=200)
-        reg.fit(new_x, data.y)
-        print(model2.beta[nonzero_fit])
-        print(reg.coef_)
         assert (nonzero_true == nonzero_fit).all()
-        assert model2.beta[nonzero_fit] == approx(
-            reg.coef_, rel=1e-2, abs=1e-2)
+
+        if sys.version_info[1] >= 6:
+            new_x = data.x[:, nonzero_fit]
+            reg = PoissonRegressor(
+                alpha=0, tol=1e-6, max_iter=200)
+            reg.fit(new_x, data.y)
+            print(model2.beta[nonzero_fit])
+            print(reg.coef_)
+            assert model2.beta[nonzero_fit] == approx(
+                reg.coef_, rel=1e-2, abs=1e-2)
 
     def test_mulgaussian(self):
         n = 100

@@ -32,7 +32,7 @@ if sys.platform.startswith('win32'):
                               )
 else:
     eigen_path = CURRENT_DIR + "/include"
-    print(eigen_path)
+    # print(eigen_path)
     # eigen_path = "/usr/local/include/eigen3/Eigen"
     cabess_module = Extension(name='abess._cabess',
                               sources=[CURRENT_DIR + '/src/abess.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
@@ -47,17 +47,13 @@ else:
                               include_dirs=[numpy.get_include(), eigen_path],
                               swig_opts=["-c++"]
                               )
-this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, 'README.md')) as f:
+
+with open(path.join(CURRENT_DIR, 'README.md')) as f:
     long_description = f.read()
 
-print(find_packages())
-print(CURRENT_DIR + '/abess/')
-
-
 setup(name='abess',
-      version='0.0.1',
-      author="Kangkang Jiang, Jin Zhu, Yanhang Zhang, Xueqin Wang",
+      version='0.0.2',
+      author="Kangkang Jiang, Jin Zhu, Yanhang Zhang, Junxian Zhu, Xueqin Wang",
       author_email="jiangkk3@mail2.sysu.edu.cn",
       maintainer="Kangkang Jiang",
       maintainer_email="jiangkk3@mail2.sysu.edu.cn",
@@ -67,16 +63,18 @@ setup(name='abess',
       long_description=long_description,
       long_description_content_type="text/markdown",
       install_requires=[
-          'numpy'
+          "numpy",
+          "scipy"
       ],
       license="GPL-3",
-      url="https://github.com/Mamba413/abess",
+      url="https://abess.readthedocs.io",
       classifiers=[
           "Programming Language :: Python",
           "Programming Language :: Python :: 3.5",
           "Programming Language :: Python :: 3.6",
           "Programming Language :: Python :: 3.7",
           "Programming Language :: Python :: 3.8",
+          "Programming Language :: Python :: 3.9",
       ],
       python_requires='>=3.5',
       ext_modules=[cabess_module]

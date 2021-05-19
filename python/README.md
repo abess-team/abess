@@ -11,13 +11,6 @@ Best-subset selection aims to find a small subset of predictors such that the re
 
 ## Installation
 
-### R-package
-You can install the stable version of R-package from [CRAN](https://cran.r-project.org/web/packages/abess):
-
-``` r
-install.packages("abess")
-```
-
 ### Python-package
 Install the stable version of Python-package from [Pypi](https://pypi.org/project/abess/) with:
 ```shell

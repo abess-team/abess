@@ -59,11 +59,8 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
     {
         train_mask = metric->train_mask_list[k];
         test_mask = metric->test_mask_list[k];
-
-        // TO DO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         slice(data.x, train_mask, train_x);
         slice(data.x, test_mask, test_x);
-
         slice(data.y, train_mask, train_y);
         slice(data.y, test_mask, test_y);
         slice(data.weight, train_mask, train_weight);
@@ -89,8 +86,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
     {
         algorithm->covariance_update_flag = Eigen::VectorXi::Zero(p);
         algorithm->XTy = train_x.transpose() * train_y;
-
-        // to do : add ifelse
         algorithm->XTone = train_x.transpose() * Eigen::MatrixXd::Ones(train_n, M);
     }
 #ifdef TEST
@@ -103,7 +98,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
     Eigen::MatrixXd ic_matrix(sequence_size, lambda_size);
     Eigen::MatrixXd test_loss_matrix(sequence_size, lambda_size);
     Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(sequence_size, lambda_size);
-    // Eigen::Matrix<VectorXi, Dynamic, Dynamic> A_matrix(sequence_size, lambda_size);
 
     T2 beta_init;
     T3 coef0_init;
@@ -141,7 +135,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
             {
                 beta_init = algorithm->get_beta();
                 coef0_init = algorithm->get_coef0();
-                // A_init = algorithm->get_A_out();
                 bd_init = algorithm->get_bd();
             }
 #ifdef TEST
@@ -169,7 +162,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
             beta_matrix(i, j) = algorithm->beta;
             coef0_matrix(i, j) = algorithm->coef0;
             train_loss_matrix(i, j) = algorithm->get_train_loss();
-            // A_matrix(i, j) = algorithm->A_out;
             bd_matrix(i, j) = algorithm->bd;
 
 #ifdef TEST
@@ -202,7 +194,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
     result.coef0_matrix = coef0_matrix;
     result.train_loss_matrix = train_loss_matrix;
     result.bd_matrix = bd_matrix;
-    // result.A_matrix = A_matrix;
     result.ic_matrix = ic_matrix;
     result.test_loss_matrix = test_loss_matrix;
 }

@@ -43,3 +43,9 @@ build/lib.win-amd64-3.7/abess/linear.py
 dist/abess-0.0.1-py3.7-win-amd64.egg
 docs/__pycache__/conf.cpython-37-pytest-6.2.2.pyc
 python/docs/source/__pycache__/conf.cpython-37-pytest-6.2.2.pyc
+python/pytest/__pycache__/*
+python/src/__pycache__/*
+python/src/*.def
+
+python/build_whl.sh
+python/python_all_test.sh
