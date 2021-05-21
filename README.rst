@@ -5,7 +5,7 @@ Welcome to abess's documentation!
 
    <!-- badges: start -->
 
-|Travis build status| |codecov| |docs| |cran| |pypi| |pyversions| |License|
+|Codacy| |Travis build status| |codecov| |docs| |cran| |pypi| |pyversions| |License|
 
 **abess** (Adaptive BEst Subset Selection) aims to find a small subset of predictors such
 that the resulting linear model is expected to have the most desirable
@@ -49,6 +49,9 @@ Reference
 
 | Qiang Sun & Heping Zhang (2020) Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079
 
+
+.. |Codacy| image:: https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76 
+   :target: https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abess-team/abess&amp;utm_campaign=Badge_Grade
 .. |Travis build status| image:: https://travis-ci.com/abess-team/abess.svg?branch=master
    :target: https://travis-ci.com/abess-team/abess
 .. |codecov| image:: https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00
