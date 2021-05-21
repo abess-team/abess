@@ -3,6 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. .. role:: raw
+..    :format: html latex 
+
 .. include:: ../README.rst 
 
 *********
@@ -13,5 +16,7 @@ Contents
    Python package <Python-package/index.rst>
    R package <R-package/index.rst>
    About <About/index.rst>
+
+
 
 
