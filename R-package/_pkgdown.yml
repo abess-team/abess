@@ -1,5 +1,7 @@
 destination: docs
 
+url: https://abess.readthedocs.io/en/latest/R-package/
+
 template:
   params:
     bootswatch: cerulean
