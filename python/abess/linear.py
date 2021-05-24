@@ -40,38 +40,42 @@ class bess_base:
     Parameters
     ----------
     max_iter : int, optional
-        Max iteration time in PDAS.
+        Maximum number of iterations taken for the splicing algorithm to converge. 
+        Due to the limitation of loss reduction, the splicing algorithm must be able to converge. 
+        The number of iterations is only to simplify the implementation. 
         Default: max_iter = 20.
     is_warm_start : bool, optional
-        When search the best sparsity,whether use the last parameter as the initial parameter for the next search.
-        Default:is_warm_start = False.
+        When tuning the optimal parameter combination, whether to use the last solution as a warm start to accelerate the iterative convergence of the splicing algorithm.
+        Default:is_warm_start = True.
     path_type : {"seq", "pgs"}
-        The method we use to search the sparsity。
+        The method to be used to select the optimal support size. 
+        For path_type = "seq", we solve the best subset selection problem for each size in sequence. 
+        For path_type = "gs", we solve the best subset selection problem with support size ranged in (s_min, s_max), where the specific support size to be considered is determined by golden section.
     sequence : array_like, optional
-        The  sparsity list for searching. If choose path_type = "seq", we prefer you to give the sequence.If not
-        given, we will search all the sparsity([1,2,...,p],p=min(X.shape[0], X.shape[1])).
-        Default: sequence = None.
+        An integer vector representing the alternative support sizes. Only used for path_type = "seq". 
+        Default is 0:min(n, round(n/(log(log(n))log(p)))).
     s_min : int, optional
-        The lower bound of golden-section-search for sparsity searching.If not given, we will set s_min = 1.
-        Default: s_min = None.
+        The lower bound of golden-section-search for sparsity searching. 
+        Default: s_min = 1.
     s_max : int, optional
-        The higher bound of golden-section-search for sparsity searching.If not given, we will set s_max = p(p = X.shape[1]).
-        Default: s_max = None.
+        The higher bound of golden-section-search for sparsity searching. 
+        Default: s_max = min(n, round(n/(log(log(n))log(p)))).
     K_max : int, optional
-        The search times of golden-section-search for sparsity searching.If not given, we will set K_max = int(log(p, 2/(math.sqrt(5) - 1))).
-        Default: K_max = None.
+        The max search time of golden-section-search for sparsity searching.
+        Default: K_max = int(log(p, 2/(math.sqrt(5) - 1))).
     epsilon : double, optional
         The stop condition of golden-section-search for sparsity searching.
         Default: epsilon = 0.0001.
     ic_type : {'aic', 'bic', 'gic', 'ebic'}, optional
-        The metric when choose the best sparsity.
-        Input must be one of the set above. Default: ic_type = 'ebic'.
+        The type of criterion for choosing the support size. Available options are "gic", "ebic", "bic", "aic".
+        Default: ic_type = 'ebic'.
     is_cv : bool, optional
-        Use the Cross-validation method to caculate the loss.
+        Use the Cross-validation method to choose the support size.
         Default: is_cv = False.
     K : int optional
-        The folds number when Use the Cross-validation method to caculate the loss.
+        The folds number when Use the Cross-validation method.
         Default: K = 5.
+
 
     Atrributes
     ----------
@@ -81,7 +85,7 @@ class bess_base:
 
     References
     ----------
-    - Wen, C. , Zhang, A. , Quan, S. , & Wang, X. . (2017). [Bess: an r package for best subset selection in linear , logistic and coxph models]
+    - Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang. A polynomial algorithm for best-subset selection problem. Proceedings of the National Academy of Sciences, 117(52):33117-33123, 2020.
 
 
     """
@@ -222,7 +226,7 @@ class bess_base:
             raise ValueError(
                 "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
 
-    def fit(self, X, y, is_weight=False, is_normal=True, weight=None, state=None, group=None):
+    def fit(self, X, y, is_weight=False, is_normal=True, weight=None, state=None, group=None, always_select=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -231,19 +235,26 @@ class bess_base:
         X : array-like of shape (n_samples, n_features)
             Training data
         y :  array-like of shape (n_samples,) or (n_samples, n_targets)
-            Target values. Will be cast to X's dtype if necessary. For linear regression problem, y should be a n time 1 numpy array with type \code{double}. For classification problem, \code{y} should be a $n \time 1$ numpy array with values \code{0} or \code{1}. For count data, \code{y} should be a $n \time 1$ numpy array of non-negative integer.
+            Target values. Will be cast to X's dtype if necessary. 
+            For linear regression problem, y should be a n time 1 numpy array with type \code{double}. 
+            For classification problem, \code{y} should be a $n \time 1$ numpy array with values \code{0} or \code{1}. 
+            For count data, \code{y} should be a $n \time 1$ numpy array of non-negative integer.
         is_weight : bool 
             whether to weight sample yourself. 
             Default: is$\_$weight = False.
         is_normal : bool, optional
             whether normalize the variables array before fitting the algorithm. 
             Default: is$\_$normal=True.
-        weight : array-like of shape (n_samples,), default=None
-            Individual weights for each sample. If set is$\_$weight = True, weight should be given. 
-            Default: \code{weight} = \code{numpy.ones(n)}.
+        weight : array-like of shape (n_samples,)
+            Individual weights for each sample. Only used for is_weight=True.
+            Default is 1 for each observation.
         group : int, optional
             The group index for each variable. 
             Default: \code{group} = \code{numpy.ones(p)}.
+        always_select : array-like
+            An integer vector containing the indexes of variables that should always be included in the model.
+            Default: None
+
         """
         self.p = X.shape[1]
         n = X.shape[0]
@@ -506,6 +517,8 @@ class bess_base:
 @fix_docs
 class abessLogistic(bess_base):
     """
+    Adaptive Best-Subset Selection(ABESS) algorithm for logistic regression.
+
     Examples
     --------
     >>> ### Sparsity known
@@ -557,6 +570,8 @@ class abessLogistic(bess_base):
 @fix_docs
 class abessLm(bess_base):
     """
+    Adaptive Best-Subset Selection(ABESS) algorithm for linear regression.
+
     Examples
     --------
     >>> ### Sparsity known
@@ -608,6 +623,8 @@ class abessLm(bess_base):
 @fix_docs
 class abessCox(bess_base):
     """
+    Adaptive Best-Subset Selection(ABESS) algorithm for COX proportional hazards model.
+
     Examples
     --------
     >>> ### Sparsity known
@@ -659,6 +676,9 @@ class abessCox(bess_base):
 @fix_docs
 class abessPoisson(bess_base):
     """
+    Adaptive Best-Subset Selection(ABESS) algorithm for Poisson regression.
+
+
     Examples
     --------
     >>> ### Sparsity known
@@ -710,6 +730,8 @@ class abessPoisson(bess_base):
 @fix_docs
 class abessMultigaussian(bess_base):
     """
+    Adaptive Best-Subset Selection(ABESS) algorithm for multitasklearning.
+
     Examples
     --------
     >>> ### Sparsity known
@@ -761,6 +783,9 @@ class abessMultigaussian(bess_base):
 @fix_docs
 class abessMultinomial(bess_base):
     """
+    Adaptive Best-Subset Selection(ABESS) algorithm for multiclassification problem.
+
+
     Examples
     --------
     >>> ### Sparsity known

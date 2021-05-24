@@ -51,3 +51,4 @@ python/build_whl.sh
 python/python_all_test.sh
 docs/R-package/docs/*
 
+python/download_package.py
