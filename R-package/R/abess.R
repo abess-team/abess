@@ -32,39 +32,39 @@ abess <- function(x, ...) UseMethod("abess")
 #' \code{"mgaussian"} (multivariate continuous response).
 #' Depending on the response. Any unambiguous substring can be given.
 #' @param tune.path The method to be used to select the optimal support size. For
-#' \code{method = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
-#' For \code{method = "gsection"}, we solve the best subset selection problem with support size ranged in \code{gs.range},
+#' \code{tune.path = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
+#' For \code{tune.path = "gsection"}, we solve the best subset selection problem with support size ranged in \code{gs.range},
 #' where the specific support size to be considered is determined by golden section. 
 # @param method The method to be used to select the optimal support size and \eqn{L_2} shrinkage. For
-# \code{method = "sequence"}, we solve the best subset selection and the best subset ridge regression
+# \code{tune.path = "sequence"}, we solve the best subset selection and the best subset ridge regression
 # problem for each \code{s} in \code{1,2,...,s.max} and \eqn{\lambda} in \code{lambda.list}. 
-# For \code{method = "gsection"}, which is only valid for \code{type = "bss"},
+# For \code{tune.path = "gsection"}, which is only valid for \code{type = "bss"},
 # we solve the best subset selection problem with the range support size \code{gs.range},
 # where the specific support size to be considered is determined by golden section. we
 # solve the best subset selection problem with a range of non-continuous model
-# sizes. For \code{method = "pgsection"} and \code{"psequence"}, the Powell method is used to
+# sizes. For \code{tune.path = "pgsection"} and \code{"psequence"}, the Powell method is used to
 # solve the best subset ridge regression problem. Any unambiguous substring can be given.
 #' @param tune.type The type of criterion for choosing the support size. 
 #' Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
 #' Default is \code{"gic"}.
 #' @param support.size An integer vector representing the alternative support sizes. 
-#' Only used for \code{method = "sequence"}. Default is \code{0:min(n, round(n/(log(log(n))log(p))))}.
+#' Only used for \code{tune.path = "sequence"}. Default is \code{0:min(n, round(n/(log(log(n))log(p))))}.
 #' @param gs.range A integer vector with two elements. 
 #' The first element is the minimum model size considered by golden-section, 
 #' the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
 #' Not available now.
 # @param lambda.list A lambda sequence for \code{"bsrr"}. Default is
 # \code{exp(seq(log(100), log(0.01), length.out = 100))}.
-# @param s.min The minimum value of support sizes. Only used for \code{method =
+# @param s.min The minimum value of support sizes. Only used for \code{tune.path =
 # "gsection"}, \code{"psequence"} and \code{"pgsection"}. Default is 1.
-# @param s.max The maximum value of support sizes. Only used for \code{method =
+# @param s.max The maximum value of support sizes. Only used for \code{tune.path =
 # "gsection"}, \code{"psequence"} and \code{"pgsection"}. Default is \code{min(p, round(n/log(n)))}.
-# @param lambda.min The minimum value of lambda. Only used for \code{method =
+# @param lambda.min The minimum value of lambda. Only used for \code{tune.path =
 # "powell"}. Default is \code{0.001}.
-# @param lambda.max The maximum value of lambda. Only used for \code{method =
+# @param lambda.max The maximum value of lambda. Only used for \code{tune.path =
 # "powell"}. Default is \code{100}.
 # @param nlambda The number of \eqn{\lambda}s for the Powell path with sequence line search method.
-# Only valid for \code{method = "psequence"}.
+# Only valid for \code{tune.path = "psequence"}.
 #' @param always.include An integer vector containing the indexes of variables that should always be included in the model.
 #' @param screening.num An integer number. Preserve \code{screening.num} number of predictors with the largest 
 #' marginal maximum likelihood estimator before running algorithm.
