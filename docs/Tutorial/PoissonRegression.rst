@@ -14,3 +14,8 @@ Then, we call the `abess` function.
     abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
                    family = "poisson", tune.type = "cv")
     abess_fit
+    
+.. code-block:: console
+
+    $ pip install <path to the repo/path to the tarball>
+
