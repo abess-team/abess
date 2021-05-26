@@ -17,7 +17,3 @@ Then, we call the `abess` function.
                    family = "poisson", tune.type = "cv")
     abess_fit
 
-.. code-block:: console
-
-    $ pip install <path to the repo/path to the tarball>
-
