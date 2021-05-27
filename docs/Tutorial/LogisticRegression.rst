@@ -5,7 +5,8 @@ Logistic Regression
 Titanic Dataset
 ------------------
 
-We are going to apply best subset selection to the Titanic dataset obtained here https://www.kaggle.com/c/titanic/data. The training dataset consists of data about 889 passengers, and the goal of the competition is to predict the survival based on features including the class of service, the sex, the age etc. First, let's have a look at the dataset and exam if there is any missing data.
+We are going to apply best subset selection to the Titanic dataset obtained here https://www.kaggle.com/c/titanic/data. This dataset consists of data about 889 passengers, and the goal of the competition is to predict the survival based on features including the class of service, the sex, the age etc.
+ First, let's have a look at the dataset and exam if there is any missing data.
 
 .. code-block:: r
 
@@ -44,7 +45,7 @@ By default, the `abess` function implements the ABESS algorithm with the support
 
 .. code-block:: r
 
-    abess_fit.gs <- abess(Survived~., data = train, family = "binomial", tune = "bic", tune.path = "gs")
+    > abess_fit.gs <- abess(Survived~., data = train, family = "binomial", tune.type = "bic", tune.path = "gs")
 
 Interprate the Result
 -----------------------
@@ -118,7 +119,7 @@ We can also generate a graph about the tuning value. Remember that we used the d
  :scale: 50 %
  :alt: map to buried treasure
 
-The tuning value reaches the lowest point at 4. And We might choose the estimated model with support size equals 6 as our final model. 
+The tuning value reaches the lowest point at 4. And We might choose the estimated model with support size equals 4 as our final model. 
 
 To extract any model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.
 .. code-block:: r
@@ -131,7 +132,7 @@ The return is a list containing the basic information of the estimated model.
 Make a Prediction
 ------------------
 
-Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value. The `predict.abess()` can provide both `link`, stands for the linear predictors, and the `response`, stands for the fitted probability. Here We will predict the probablity of survival on the `test.csv` data.
+Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value. The `predict.abess()` can provide both `link`, stands for the linear predictors, and the `response`, stands for the fitted probability. Here We will predict the probablity of survival on the test data.
 
 .. code-block:: r
     
