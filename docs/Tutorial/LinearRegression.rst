@@ -2,28 +2,89 @@
 LinearRegression
 ================
 
-First, we generate some simulated data.
+
+Best Subset Selection for Regression
+--------------
+
+In this tutorial, we are going to demonstrate how to use the `abess` package to carry out best subset selection on the `Hitters` dataset. 
+We hope to use sevral predictors related to the performance of the baseball atheltes last year to predict their salary.
+
+Hitters Dataset
+>>>>>>>>>
+
+First, let's have a look at this dataset. There are 19 variables except `Salary` and 322 observations.
 
 .. code-block:: r
+    data("Hitters", package = 'ISLR')
+    head(Hitters)
+    dim(Hitters)
+    sum(is.na(Hitters))
 
-    n <- 100
-    p <- 20
-    support.size <- 3
-    dataset <- generate.data(n, p, support.size)
+Note that this dataset contains some missing data. So we use the `na.omit()` function to delete rows that have incomplete information. After that, we have 263 observations remains.
+.. code-block:: r
+    Hitters = na.omit(Hitters)
+    dim(Hitters)
+    sum(is.na(Hitters))
 
-Then, we call the `abess` function. By default, the support size is tuned from 0 to `min(n, round(n/(log(log(n))log(p))))` sequentially according to general information criterion (GIC).
+Then we change the factors into dummy variables with the `model.matrix()` function. Note that the `abess` function will automatically include the intercept.
 
 .. code-block:: r
+    Hitters <- model.matrix(~., Hitters)[, -1]
+    Hitters <- as.data.frame(Hitters)
 
-    abess_fit <- abess(dataset[["x"]], dataset[["y"]])
 
-Followings are some helpful generic functions to draw information from the `abess` estimator.
-'' code-block:: r
+Best subset selection
+>>>>>>>>>
 
-    print(abess_fit)
-    coef(abess_fit, support.size = 3)
-    predict(abess_fit, newx = dataset[["x"]][1:10, ], 
-        support.size = c(3, 4))
-    str(extract(abess_fit, 3))
+The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. You can call the `abess()` funtion using formula just like what you do with `lm()`. Or you can specify the design matrix `x` and the response `y`. The `system.time` function records the run time.
+.. code-block:: r
+    library(abess)
+    t.seq = system.time(abess_fit <- abess(Salary~., Hitters))[3]
+    abess_fit = abess(Hitters[, -which(colnames(Hitters) == "Salary")], Hitters$Salary)
+    class(abess_fit)
+
+By default, the `abess` function implements the ABESS algorithm with the support size changing from 0 to $\min\{p,n/log(n)p \}$ and the best support size is determined by the Generalized Informatoin Criterion (GIC). You can change the tunging criterion by specifying the argument `tune.type`. The available tuning criterion now are `gic`, `aic`, `bic`, `ebic` and `cv`. For a quicker solution, you can change the tuning strategy to a golden section path which trys to find the elbow point of the tuning criterion over the hyperparameter space. Here we give an example.
+.. code-block:: r
+    t.gs <- system.time(abess_fit.gs <- abess(Salary~., Hitters, tune = "bic", tune.path = "gs"))[3]
+
+
+Interprate the Result
+>>>>>>>>>
+
+Hold on, we aren't finished yet. After get the estimator, we can further do more exploring work.
+The output of `abess()` function contains the best model for all the candidate support size in the `support.size`. You can use some generic function to quickly draw some information of those estimators.
+.. code-block:: r
+    # draw the estimated coefficients on all candidate support size
+    coef(abess_fit)
+
+    # get the deviance of the estimated model on all candidate support size
     deviance(abess_fit)
-    plot(abess_fit)
+
+    # print the fitted model
+    print(abess_fit)
+
+
+Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value.
+.. code-block:: r
+    predict(abess_fit, newx = Hitters[, -which(colnames(Hitters)=="Salary")], 
+        support.size = c(3, 4))
+
+
+The `plot.abess()` function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including `coef` for the coefficeint value, `l2norm` for the L2-norm of the coefficients, `dev` for the deviance and `tune` for the tuning value. Default if `coef`.
+.. code-block:: r
+    plot(abess_fit, label=T)
+
+The graph shows that, begining from the most dense model, the 15th variable (Division, A factor with levels E and W indicating player's division at the end of 1986) is included in the active set until the support size reaches 3.
+
+We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size. 
+.. code-block:: r
+    plot(abess_fit, type="tune")
+
+The tuning value reaches the lowest point at 6. And We might choose the estimated model with support size equals 6 as our final model. 
+
+To extract any model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.
+.. code-block:: r
+    best.model = extract(abess_fit, support.size = 6)
+    str(best.model)
+
+The return is a list containing the basic information of the estimated model.
