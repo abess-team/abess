@@ -1,5 +1,5 @@
 ================
-LinearRegression
+Linear Regression
 ================
 
 
