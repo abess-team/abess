@@ -2,7 +2,7 @@
 Logistic Regression
 ==================
 
-Smarket Dataset
+Titanic Dataset
 ------------------
 
 We are going to apply best subset selection to the Titanic dataset obtained here https://www.kaggle.com/c/titanic/data. The training dataset consists of data about 889 passengers, and the goal of the competition is to predict the survival based on features including the class of service, the sex, the age etc. First, let's have a look at the dataset and exam if there is any missing data.
