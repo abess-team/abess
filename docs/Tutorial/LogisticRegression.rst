@@ -97,15 +97,6 @@ The output of `abess()` function contains the best model for all the candidate s
     8            7 316.2912 659.9801
     9            8 316.1715 659.7408
 
-Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value. Here We will make predition on the `test.csv` data.
-
-.. code-block:: r
-
-    test <- read.csv('test.csv', header = T)
-    test <- test[, c(2,4,5,6,7,9,11)]
-    test <- model.matrix(~., test)[, -1]
-    predict(abess_fit, newx = test, support.size = c(3, 4))
-
 The `plot.abess()` function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including `coef` for the coefficeint value, `l2norm` for the L2-norm of the coefficients, `dev` for the deviance and `tune` for the tuning value. Default if `coef`.
 
 .. code-block:: r
@@ -137,3 +128,37 @@ str(best.model)
 
 The return is a list containing the basic information of the estimated model.
 
+Make a Prediction
+------------------
+
+Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value. The `predict.abess()` can provide both `link`, stands for the linear predictors, and the `response`, stands for the fitted probability. Here We will predict the probablity of survival on the `test.csv` data.
+
+.. code-block:: r
+    
+    > fitted.results <- predict(abess_fit, newx = test, type = 'response')
+
+If we chose 0.5 as the cut point, i.e, we predict the person survived the sinking of the Titanic if the fitted probablity is greater than 0.5, the accuracy will be 0.80.
+.. code-block:: r
+
+    > fitted.results <- ifelse(fitted.results > 0.5,1,0)
+    > misClasificError <- mean(fitted.results != test$Survived)
+    > print(paste('Accuracy',1-misClasificError))
+    [1] "Accuracy 0.798319327731092"
+
+We can also generate an ROC curve and calculate tha AUC value. On this dataset, the AUC is 0.87, which is quite close to 1.
+
+.. code-block:: r
+
+    > library(ROCR)
+    > fitted.results <- predict(abess_fit, newx = test, type = 'response')
+    > pr <- prediction(fitted.results, test$Survived)
+    > prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+    > plot(prf)
+    > auc <- performance(pr, measure = "auc")
+    > auc <- auc@y.values[[1]]
+    > auc
+    [1] 0.8748139
+
+.. figure:: fig/logiROC.png
+ :scale: 50 %
+ :alt: map to buried treasure

@@ -213,6 +213,12 @@ We can also generate a graph about the tuning value. Remember that we used the d
  :alt: map to buried treasure
 
 The tuning value reaches the lowest point at 6. And We might choose the estimated model with support size equals 6 as our final model. 
+In fact, the tuning values of different model sizes are provided in `tune.value` of the `abess` object. You can get the best model size through the following call.
+
+.. code-block:: r
+
+    > abess_fit$support.size[which.min(abess_fit$tune.value)]
+    [1] 6
 
 To extract any model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.
 
