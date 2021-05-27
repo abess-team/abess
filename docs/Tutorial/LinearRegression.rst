@@ -52,7 +52,7 @@ Then we change the factors into dummy variables with the `model.matrix()` functi
     > Hitters <- as.data.frame(Hitters)
 
 
-Best subset selection
+Best Subset Selection for Linear Regression
 -----------------------
 
 The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. You can call the `abess()` funtion using formula just like what you do with `lm()`. Or you can specify the design matrix `x` and the response `y`. 
