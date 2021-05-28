@@ -17,6 +17,7 @@
   c.max = 2,
   support.size = NULL,
   gs.range = NULL,
+  lambda = 0,
   always.include = NULL,
   max.splicing.iter = 20,
   screening.num = NULL,
@@ -56,8 +57,8 @@ if y is presented as a numerical vector, it will be coerced into a factor.}
 Depending on the response. Any unambiguous substring can be given.}
 
 \item{tune.path}{The method to be used to select the optimal support size. For
-\code{method = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
-For \code{method = "gsection"}, we solve the best subset selection problem with support size ranged in \code{gs.range},
+\code{tune.path = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
+For \code{tune.path = "gsection"}, we solve the best subset selection problem with support size ranged in \code{gs.range},
 where the specific support size to be considered is determined by golden section.}
 
 \item{tune.type}{The type of criterion for choosing the support size. 
@@ -77,12 +78,14 @@ If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gau
 \item{c.max}{an integer splicing size. Default is: \code{c.max = 2}.}
 
 \item{support.size}{An integer vector representing the alternative support sizes. 
-Only used for \code{method = "sequence"}. Default is \code{0:min(n, round(n/(log(log(n))log(p))))}.}
+Only used for \code{tune.path = "sequence"}. Default is \code{0:min(n, round(n/(log(log(n))log(p))))}.}
 
 \item{gs.range}{A integer vector with two elements. 
 The first element is the minimum model size considered by golden-section, 
 the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
 Not available now.}
+
+\item{lambda}{A single lambda value for regulaized best subset selection. Default is 0.}
 
 \item{always.include}{An integer vector containing the indexes of variables that should always be included in the model.}
 

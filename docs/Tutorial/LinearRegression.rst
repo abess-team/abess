@@ -69,7 +69,7 @@ By default, the `abess` function implements the ABESS algorithm with the support
 
 .. code-block:: r
 
-    > abess_fit.gs <- abess(Salary~., Hitters, tune = "bic", tune.path = "gs")
+    > abess_fit.gs <- abess(Salary~., Hitters, tune.type = "bic", tune.path = "gs")
 
 
 Interprate the Result

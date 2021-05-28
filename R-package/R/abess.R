@@ -53,8 +53,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' The first element is the minimum model size considered by golden-section, 
 #' the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
 #' Not available now.
-# @param lambda.list A lambda sequence for \code{"bsrr"}. Default is
-# \code{exp(seq(log(100), log(0.01), length.out = 100))}.
+#' @param lambda A single lambda value for regulaized best subset selection. Default is 0.
+# 0.
 # @param s.min The minimum value of support sizes. Only used for \code{tune.path =
 # "gsection"}, \code{"psequence"} and \code{"pgsection"}. Default is 1.
 # @param s.max The maximum value of support sizes. Only used for \code{tune.path =
@@ -269,6 +269,7 @@ abess.default <- function(x,
                           c.max = 2,
                           support.size = NULL,
                           gs.range = NULL, 
+                          lambda = 0,
                           always.include = NULL,
                           max.splicing.iter = 20,
                           screening.num = NULL, 
@@ -286,14 +287,22 @@ abess.default <- function(x,
   tau <- NULL
   group.index <- NULL
   ## TODO:
-  type <- c("bss", "bsrr")
+  # type <- c("bss", "bsrr")
   # type <- match.arg(type)
-  type <- type[1]
+  # type <- type[1]
+  if(length(lambda) > 1){
+    stop("only a single lambda value is allowed.")
+  }
+  if(length(lambda)==1 && lambda == 0){
+    type <- "bss"
+  }else{
+    type <- "bsrr"
+  }
   algorithm_type = switch(type,
                           "bss" = "GPDAS",
                           "bsrr" = "GL0L2")
   
-  lambda.list <- 0
+  lambda.list <- lambda
   lambda.min <- 0.001
   lambda.max <- 100
   nlambda <- 100
@@ -592,7 +601,7 @@ abess.default <- function(x,
       normalize <- 0
     }
   }
-
+  
   if (is.null(screening.num)) {
     screening <- FALSE
     screening_num <- nvars
@@ -658,7 +667,7 @@ abess.default <- function(x,
     Kfold = nfolds,
     status = c(0),
     sequence = s_list,
-    lambda_seq = 0,
+    lambda_seq = lambda,
     s_min = s_min,
     s_max = s_max,
     K_max = as.integer(20),
@@ -786,7 +795,7 @@ abess.default <- function(x,
   
   result[["call"]] <- match.call()
   class(result) <- "abess"
-
+  
   set.seed(NULL)
   
   return(result)
