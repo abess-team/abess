@@ -15,3 +15,4 @@
 ^src/\.vscode$
 ^cran-comments\.md$
 ^\.\.pdf$
+^vignettes/test\.Rmd$
