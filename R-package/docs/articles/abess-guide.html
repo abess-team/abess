@@ -56,6 +56,9 @@
 <li>
       <a href="../articles/abess-guide.html">An Introduction to `abess`</a>
     </li>
+    <li>
+      <a href="../articles/test.html">test</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -98,7 +101,7 @@
 <div id="briey-introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#briey-introduction" class="anchor"></a>Briey introduction</h2>
-<p>The R package <code>abess</code> implement a polynomial algorithm in the <a href="https://www.pnas.org/content/early/2020/12/14/2014241117"></a> for best-subset selection problem: <span class="math display">\[\min_{\beta \in \mathbb{R}^p} \frac{1}{2n} \| y - X\beta\|_2^2, \text{ subject to } \|\beta\|_0 \leq s,\]</span> where <span class="math inline">\(\| \cdot \|_2\)</span> is the <span class="math inline">\(\ell_2\)</span> norm, <span class="math inline">\(\|\beta\|_0=\sum_{i=1}^pI( \beta_i\neq 0)\)</span> is the <span class="math inline">\(\ell_0\)</span> norm of <span class="math inline">\(\beta\)</span>, and the sparsity level <span class="math inline">\(s\)</span> is usually an unknown non-negative integer. Next, we present an example to show how to use the <strong>abess</strong> package to solve a simple problem.</p>
+<p>The R package <code>abess</code> implement a polynomial algorithm in the <a href="https://www.pnas.org/content/117/52/33117"></a> for best-subset selection problem: <span class="math display">\[\min_{\beta \in \mathbb{R}^p} \frac{1}{2n} \| y - X\beta\|_2^2, \text{ subject to } \|\beta\|_0 \leq s,\]</span> where <span class="math inline">\(\| \cdot \|_2\)</span> is the <span class="math inline">\(\ell_2\)</span> norm, <span class="math inline">\(\|\beta\|_0=\sum_{i=1}^pI( \beta_i\neq 0)\)</span> is the <span class="math inline">\(\ell_0\)</span> norm of <span class="math inline">\(\beta\)</span>, and the sparsity level <span class="math inline">\(s\)</span> is usually an unknown non-negative integer. Next, we present an example to show how to use the <strong>abess</strong> package to solve a simple problem.</p>
 </div>
 <div id="quick-example" class="section level2">
 <h2 class="hasAnchor">
@@ -108,7 +111,7 @@
 <a href="#fixed-support-size-best-subset-selection" class="anchor"></a>Fixed support size best subset selection</h3>
 <p>We generate a design matrix <span class="math inline">\(X\)</span> containing 300 observation and each observation has 1000 predictors. The response variable <span class="math inline">\(y\)</span> is linearly related to the first, second, and fifth predictors in <span class="math inline">\(X\)</span>: <span class="math display">\[y = 3X_1 + 1.5X_2 + 2X_5 + \epsilon,\]</span> where <span class="math inline">\(\epsilon\)</span> is a standard normal random variable.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Mamba413/abess">abess</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
 <span class="va">synthetic_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">300</span>, p <span class="op">=</span> <span class="fl">1000</span>, 
                                 beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">995</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
@@ -125,7 +128,7 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind.data.frame</a></span><span class="op">(</span><span class="st">"y"</span> <span class="op">=</span> <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, 
                         <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<p>Then, we use the main function <code>abess</code> in the package to fit this dataset. By setting the arguments <code>support.size = s</code>, <code>abess</code> function conducts <strong>Algorithm 1</strong> in the <a href="https://www.pnas.org/content/early/2020/12/14/2014241117"></a> for best-subset selection with a sparsity level <code>s</code>. In our example, we set the options: <code>support.size = 3</code>, and we run <strong>Algorithm 1</strong> with the following command:</p>
+<p>Then, we use the main function <code>abess</code> in the package to fit this dataset. By setting the arguments <code>support.size = s</code>, <code>abess</code> function conducts <strong>Algorithm 1</strong> in the <a href="https://www.pnas.org/content/117/52/33117"></a> for best-subset selection with a sparsity level <code>s</code>. In our example, we set the options: <code>support.size = 3</code>, and we run <strong>Algorithm 1</strong> with the following command:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <p>The output of <code>abess</code> comprises the selected best model:</p>
@@ -153,7 +156,7 @@
 <div id="adaptive-best-subset-selection" class="section level3">
 <h3 class="hasAnchor">
 <a href="#adaptive-best-subset-selection" class="anchor"></a>Adaptive best subset selection</h3>
-<p>Imaging we are unknown about the true sparsity level in real world data, and thus, we need to determine the most proper one. The <strong>Algorithm 3</strong> in the <a href="https://www.pnas.org/content/early/2020/12/14/2014241117"></a> is designed for this scenario. <code>abess</code> is capable of performing this algorithm:</p>
+<p>Imaging we are unknown about the true sparsity level in real world data, and thus, we need to determine the most proper one. The <strong>Algorithm 3</strong> in the <a href="https://www.pnas.org/content/117/52/33117"></a> is designed for this scenario. <code>abess</code> is capable of performing this algorithm:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></code></pre></div>
 <p>The output of <code>abess</code> also comprises the selected best model:</p>
@@ -179,7 +182,7 @@
 <div id="feature-screening-for-ultra-high-dimensional-dataset" class="section level3">
 <h3 class="hasAnchor">
 <a href="#feature-screening-for-ultra-high-dimensional-dataset" class="anchor"></a>Feature screening for ultra-high dimensional dataset</h3>
-<p>The <a href="https://archive.ics.uci.edu/ml/datasets/communities+and+crime"></a> consists of 18 variables about crime from the 1995 FBI UCR (e.g., per capita arson crimes and per capita violent crimes), communities information in the U.S. (e.g., the percent of the population considered urban), socio-economic data from the 90s census (e.g., the median family income), and law enforcement data from the 1990 law enforcement management and admin stats survey (e.g., per capita number of police officers). It would be appropriate if any of the crime state in community can be modeled by the basic community information, socio-economic and law enforcement state in community. Here, without the loss of generality, per capita violent crimes is chosen as the response variable, and 102 numerical variables as well as their pairwise interactions is considered as predictors. <!-- Note that, the numerical variables with at least 50\% percentages missing observations are excluded,  --> <!-- and 200 observations without missing records are randomly picked out from the pool.  --> The pre-processed dataset for statistical modeling has 200 observations and 5253 predictors, and the code for pre-processing are openly shared in <a href="https://github.com/abess-team/abess/tree/master/R-package/data-raw/DATASET_VIGNETTES.R"></a>.<br>
+<p>The <a href="https://archive.ics.uci.edu/ml/datasets/communities+and+crime"></a> consists of 18 variables about crime from the 1995 FBI UCR (e.g., per capita arson crimes and per capita violent crimes), communities information in the U.S. (e.g., the percent of the population considered urban), socio-economic data from the 90s census (e.g., the median family income), and law enforcement data from the 1990 law enforcement management and admin stats survey (e.g., per capita number of police officers). It would be appropriate if any of the crime state in community can be modeled by the basic community information, socio-economic and law enforcement state in community. Here, without the loss of generality, per capita violent crimes is chosen as the response variable, and 102 numerical variables as well as their pairwise interactions is considered as predictors. <!-- Note that, the numerical variables with at least 50\% percentages missing observations are excluded,  --> <!-- and 200 observations without missing records are randomly picked out from the pool.  --> The pre-processed dataset for statistical modeling has 200 observations and 5253 predictors, and the code for pre-processing are openly shared in <a href="https://github.com/abess-team/abess/blob/master/R-package/data-raw/DATASET_VIGNETTES.R"></a>.<br>
 The pre-processed dataset can be freely downloaded by running:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">working_directory</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html">getwd</a></span><span class="op">(</span><span class="op">)</span>
@@ -271,47 +274,15 @@ The pre-processed dataset can be freely downloaded by running:</p>
 ## [6] "pctEmployMfg:pctVacantBoarded"       
 ## [7] "pctMaleDivorc:pctSmallHousUnits"     
 ## [8] "pctKidsBornNevrMarr:pctVacantBoarded"</code></pre>
-<p>From the linear model based on the selected features, we see that the two predictors, ‘pctMaleDivorc:pctKidsBornNevrMarr’ (i.e., the linear interaction between the percentage of divorced males and the percentage of kids born to never married) and ‘pct65up:pctPopDenseHous’ (i.e., the linear interaction between the percentage of population that is 65 at least in age and the percent of persons in dense housing that have more than 1 person per room), have the most significant impact on the response:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">lm_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind.data.frame</a></span><span class="op">(</span><span class="va">crime</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"y"</span>, <span class="va">best_vars</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-<span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">lm_dat</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">lm_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-## Call:
-## lm(formula = y ~ ., data = lm_dat)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -1550.4  -198.6   -44.4   116.9  2205.3 
-## 
-## Coefficients:
-##                                          Estimate Std. Error t value Pr(&gt;|t|)
-## (Intercept)                             5.302e+02  1.763e+02   3.007 0.002775
-## `pctBlack:pctWhite`                     3.073e-01  4.364e-02   7.041 6.47e-12
-## `pctBlack:pctCollGrad`                 -4.573e-01  8.912e-02  -5.132 4.14e-07
-## `pctBlack:pctPopDenseHous`              5.372e-01  1.399e-01   3.838 0.000140
-## `pctWhite:pctKids2Par`                 -7.251e-02  2.022e-02  -3.586 0.000369
-## `pctPubAsst:ownHousQrange`              4.390e-04  7.308e-05   6.007 3.67e-09
-## `pctEmployMfg:pctVacantBoarded`        -1.682e+00  3.588e-01  -4.689 3.57e-06
-## `pctMaleDivorc:pctSmallHousUnits`       4.890e-01  9.211e-02   5.309 1.67e-07
-## `pctKidsBornNevrMarr:pctVacantBoarded`  6.562e+00  6.901e-01   9.509  &lt; 2e-16
-##                                           
-## (Intercept)                            ** 
-## `pctBlack:pctWhite`                    ***
-## `pctBlack:pctCollGrad`                 ***
-## `pctBlack:pctPopDenseHous`             ***
-## `pctWhite:pctKids2Par`                 ***
-## `pctPubAsst:ownHousQrange`             ***
-## `pctEmployMfg:pctVacantBoarded`        ***
-## `pctMaleDivorc:pctSmallHousUnits`      ***
-## `pctKidsBornNevrMarr:pctVacantBoarded` ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 355 on 491 degrees of freedom
-## Multiple R-squared:  0.676,  Adjusted R-squared:  0.6707 
-## F-statistic:   128 on 8 and 491 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>We visualize the relationship between the response and the two most significant selected predictors: <img src="crime.jpg"></p>
+<!-- From the linear model based on the selected features, we see that the two predictors,  -->
+<!-- 'pctMaleDivorc:pctKidsBornNevrMarr'  -->
+<!-- (i.e., the linear interaction between the percentage of divorced males and the percentage of kids born to never married)  -->
+<!-- and 'pct65up:pctPopDenseHous'  -->
+<!-- (i.e., the linear interaction between the percentage of population that is 65 at least in age and the percent of persons in dense housing that have more than 1 person per room), have the most significant impact on the response:  -->
+<!-- We visualize the relationship between the response and the  -->
+<!-- two most significant -->
+<!-- selected predictors: -->
+<!-- ![](./crime.jpg) -->
 </div>
 </div>
   </div>
@@ -326,7 +297,7 @@ The pre-processed dataset can be freely downloaded by running:</p>
 
 
       <footer><div class="copyright">
-  <p>Developed by Jin Zhu, Kangkang Jiang, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p>Developed by Jin Zhu, Kangkang Jiang, Yanhang Zhang, Liyuan Hu, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">
