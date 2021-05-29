@@ -3,8 +3,6 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   abess-guide: abess-guide.html
-last_built: 2021-05-28T11:57Z
-urls:
-  reference: https://abess.readthedocs.io/en/latest/R-package//reference
-  article: https://abess.readthedocs.io/en/latest/R-package//articles
+  test: test.html
+last_built: 2021-05-29T15:28Z
 
