@@ -9,3 +9,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 ```
 
+## Group Selection
+
+Group selection focuses on situations where varibles prossess certain group structures. For
+instance, in the multifactor analysis-of-variance (ANOVA), a factor with several levels is often
+represented by a group of dummy variables and in the genomic data analysis, in
+which the genes belonging to the same biological pathway can be considered as a group. Thus
+when the data potentially possesses group structures , we are natrually interested in selecting
+a group of variables rather than an individual variable.
+
