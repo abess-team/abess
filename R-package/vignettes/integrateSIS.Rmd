@@ -1,0 +1,28 @@
+---
+title: "Integrate SIS"
+author: "Liyuan Hu"
+date: "2021/5/31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+```
+
+## Integrate SIS
+
+In the case of ultra high-dimensional data, it is more effective to do feature screening first befor carrying out feature selection. The `abess` package allowed users to perform the sure independent screening to pre-exclude some features according to the marginal likelihood.
+
+## Integrate SIS in `abess` package
+
+In the `abess()` function, to carrying out the Integrate SIS, you need to passed an integer smaller than the number of the preditors to the `screening.num`. Then the `abess()` function will first calculate the marginal likelihood of each predictor and reserve those predictors with the `screening.num` largest marginal likelihood. Then, the ABESS algorithm is conducted only on this screened subset. Here is an example.
+
+```{r}
+library(abess)
+n <- 100
+p <- 1000
+support.size <- 3
+dataset <- generate.data(n, p, support.size)
+abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                   screening.num = 100)
+```

@@ -15,4 +15,15 @@
 ^src/\.vscode$
 ^cran-comments\.md$
 ^\.\.pdf$
+^vignettes/MultiClassification\.Rmd$
+^vignettes/coxreg\.Rmd$
+^vignettes/groupselection\.Rmd$
+^vignettes/logisticreg\.Rmd$
+^vignettes/regularizedbess\.Rmd$
+^vignettes/MultiTaskLearning\.Rmd$
+^vignettes/crime\.jpg$
+^vignettes/integrateSIS\.Rmd$
+^vignettes/nuisancereg\.Rmd$
 ^vignettes/test\.Rmd$
+^vignettes/linearreg\.Rmd$
+^vignettes/poissonregression\.Rmd$
