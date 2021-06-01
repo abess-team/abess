@@ -11,13 +11,14 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 
 ## Nuisance Regression
 
-Nuisance regression refers to best subset selection with some prior information that some varibales are required to stay in the active set. For example, if we are interested in a certain gene and want to find out what other genes are associated with the response when this particular gene shows effect.
+Nuisance regression refers to best subset selection with some prior information that some variables are required to stay in the active set. For example, if we are interested in a certain gene and want to find out what other genes are associated with the response when this particular gene shows effect.
 
 ## Carrying Out the Nuisance Regression with abess
 
 In the `abess()` function, the argument `always.include` is designed to realize this goal. You can pass a vector containing the indexes of the target variables to `always.include`. Here is an example.
 
 ```{r}
+library(abess)
 n <- 100
 p <- 20
 support.size <- 3
