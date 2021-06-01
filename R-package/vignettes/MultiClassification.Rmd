@@ -11,12 +11,12 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 
 ## Multi-class Classification
 
-When the reponse falls into only two classes, we have logistic regression, When the number of classes is more than 2, we call it Multi-class Classification. 
+When the response falls into only two classes, we have logistic regression, When the number of classes is more than 2, we call it Multi-class Classification. 
 
 
-## MultiClassification with abess Package
+## Multi-class Classification with abess Package
 
-We shall conduct MultiClassification on an artifitial dataset for demonstration. The `generate.data()` function provides a simple way to generate suitable for this task. The assumpltion behind is the response vector following a multinomial distribution.
+We shall conduct Multi-class Classification on an artificial dataset for demonstration. The `generate.data()` function provides a simple way to generate suitable for this task. The assumption behind is the response vector following a multinomial distribution.
 ```{r}
 library(abess)
 n <- 100
@@ -26,7 +26,7 @@ dataset <- generate.data(n, p, support.size, family = "multinomial")
 head(dataset$y)
 dataset$beta
 ```
-To carry out sparse mutli-task learning, you can call the `abess()` function with `family` sepecified to `mguassian`. Here is an example.
+To carry out sparse mutli-task learning, you can call the `abess()` function with `family` specified to `mguassian`. Here is an example.
 
 ```{r}
 abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
