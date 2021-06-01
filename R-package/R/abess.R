@@ -53,7 +53,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' The first element is the minimum model size considered by golden-section, 
 #' the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
 #' Not available now.
-#' @param lambda A single lambda value for regulaized best subset selection. Default is 0.
+#' @param lambda A single lambda value for regularized best subset selection. Default is 0.
 # 0.
 # @param s.min The minimum value of support sizes. Only used for \code{tune.path =
 # "gsection"}, \code{"psequence"} and \code{"pgsection"}. Default is 1.
