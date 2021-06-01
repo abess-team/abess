@@ -1,5 +1,5 @@
 ================
-RegularizedBeSS
+Regularized BeSS
 ================
 
 This is content.
