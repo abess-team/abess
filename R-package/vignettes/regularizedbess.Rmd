@@ -1,5 +1,5 @@
 ---
-stitle: "Regularized BeSS"
+title: "Regularized BeSS"
 author: "Liyuan Hu"
 date: "2021/5/31"
 output: html_document
@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 
 ## Regularized Bess
 
-In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vallina type of $L_0$ contrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the `abess` pakcage provides option of best subset selection with $L_2$ norm regularization called the regularized bess. The model has this following form:
+In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vallina type of $L_0$ constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the `abess` pakcage provides option of best subset selection with $L_2$ norm regularization called the regularized bess. The model has this following form:
 
 $$
 \begin{aligned}
@@ -22,7 +22,7 @@ $$
 
 ## Carrying out the Regularized Bess
 
-To implement the regularized bess, you need to specify a value to the `lambda` in the `abess()` function. This `lambda` value correspondes to the penalization parameter in the model above. Here we give an example.
+To implement the regularized bess, you need to specify a value to the `lambda` in the `abess()` function. This `lambda` value corresponds to the penalization parameter in the model above. Here we give an example.
 ```{r}
 library(abess)
 n <- 100

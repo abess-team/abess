@@ -1,6 +1,6 @@
 ---
-title: "coxreg"
-author: "胡励元 17306030"
+title: "CoxPH Regression"
+author: "Liyuan Hu"
 date: "2021/5/27"
 output: html_document
 ---
@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 
 ## Lung Cancer Dataset
 
-We are going to apply best subset selection to the NCCTG Lung Cancer Dataset in the `survival` package. This dataset consists of survival informatoin of patients with advanced lung cancer from the North Central Cancer Treatment Group. The proportional hazards model allows the analysis of survival data by regression modeling.
+We are going to apply best subset selection to the NCCTG Lung Cancer Dataset in the `survival` package. This dataset consists of survival information of patients with advanced lung cancer from the North Central Cancer Treatment Group. The proportional hazards model allows the analysis of survival data by regression modeling.
 Linearity is assumed on the log scale of the hazard. The hazard ratio in Cox proportional hazard model
  is assumed constant. First, we load the data. 
  
@@ -47,12 +47,12 @@ library(abess)
 abess_fit <- abess(x = train[, -(1:2)], y = train[, 1:2], family = "cox")
 ```
 
-<!-- By default, the `abess` function implements the ABESS algorithm with the support size changing from 0 to $\min\{p,n/log(n)p \}$ and the best support size is determined by the Generalized Informatoin Criterion (GIC). You can change the tunging criterion by specifying the argument `tune.type`. The available tuning criterion now are `gic`, `aic`, `bic`, `ebic` and `cv`. Here we give an example. -->
+<!-- By default, the `abess` function implements the ABESS algorithm with the support size changing from 0 to $\min\{p,n/log(n)p \}$ and the best support size is determined by the Generalized information Criterion (GIC). You can change the tunging criterion by specifying the argument `tune.type`. The available tuning criterion now are `gic`, `aic`, `bic`, `ebic` and `cv`. Here we give an example. -->
 
 <!-- ```{r} -->
 <!-- abess_fit.gs <- abess(x = train[, -(1:2)], y = train[, 1:2], family = "cox", tune.type = "bic") -->
 <!-- ``` -->
-## Interprate the Result
+## Interpret the Result
 
 Hold on, we aren't finished yet. After get the estimator, we can further do more exploring work.
 The output of `abess()` function contains the best model for all the candidate support size in the `support.size`. You can use some generic function to quickly draw some information of those estimators.
@@ -67,11 +67,11 @@ deviance(abess_fit)
 print(abess_fit)
 ```
 
-The `plot.abess()` function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including `coef` for the coefficeint value, `l2norm` for the L2-norm of the coefficients, `dev` for the deviance and `tune` for the tuning value. Default if `coef`.
+The `plot.abess()` function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including `coef` for the coefficient value, `l2norm` for the L2-norm of the coefficients, `dev` for the deviance and `tune` for the tuning value. Default if `coef`.
 ```{r}
 plot(abess_fit, label=T)
 ```
-The graph shows that, begining from the most dense model, the 4th variable (`ph.ecog2`) is included in the active set until the support size reaches 0.
+The graph shows that, beginning from the most dense model, the 4th variable (`ph.ecog2`) is included in the active set until the support size reaches 0.
 
 We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size. 
 ```{r}
@@ -95,7 +95,7 @@ Prediction is allowed for all the estimated model. Just call `predict.abess()` f
 fitted.results <- predict(abess_fit, newx = test, type = 'response')
 ```
 
-We now calulate the C-index, i.e., the probability that, for a pair of randomly chosen comparable samples, the sample with the higher risk prediction will experience an event before the other sample or belongs to a higher binary class. On this dataset, the C-index is 0.64.
+We now calculate the C-index, i.e., the probability that, for a pair of randomly chosen comparable samples, the sample with the higher risk prediction will experience an event before the other sample or belong to a higher binary class. On this dataset, the C-index is 0.64.
 ```{r}
 library(Hmisc)
 Cindex <- max(1-rcorr.cens(fitted.results, Surv(test[, 1], test[,2]))[1],rcorr.cens(fitted.results, Surv(test[, 1], test[,2]))[1])

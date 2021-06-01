@@ -11,11 +11,11 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 
 ## Multi-Task Learning
 
-Multi-Task Learning aims at predicting multiple responses at the same time. Under the high-dimensional data setting, it is meaningful to use a small amount of predictors to conduct multi-task learning. For example, understanding the relationship between gene expresion and symptoms of a disease have significant importance in identifying potential biomakers. Many diseases usually involve multiple manifestations and those manifestations are usually related. In some cases, it makes sense to predict those manifestations using the same set of predictors. 
+Multi-Task Learning aims at predicting multiple responses at the same time. Under the high-dimensional data setting, it is meaningful to use a small amount of predictors to conduct multi-task learning. For example, understanding the relationship between gene expression and symptoms of a disease have significant importance in identifying potential makers. Many diseases usually involve multiple manifestations and those manifestations are usually related. In some cases, it makes sense to predict those manifestations using the same set of predictors. 
 
 ## Sparse Multi-Task Learning With abess Package
 
-Here we're going to implememt the multi-task learning on an artifitial dataset. The `generate.data()` function provides a simple way to generate suitable for this task. The assumpltion behind is the response vector following a multigaussian distribution whose mean vector is linear to `x`.
+Here we're going to implement the multi-task learning on an artificial dataset. The `generate.data()` function provides a simple way to generate suitable for this task. The assumption behind is the response vector following a multivariate gaussian distribution whose mean vector is linear to `x`.
 ```{r}
 library(abess)
 n <- 100
@@ -26,7 +26,7 @@ head(dataset$y)
 dataset$beta
 ```
 
-To carry out sparse mutli-task learning, you can call the `abess()` function with `family` sepecified to `mguassian`. Here is an example.
+To carry out sparse mutli-task learning, you can call the `abess()` function with `family` specified to `mguassian`. Here is an example.
 
 ```{r}
 abess_fit <- abess(dataset[["x"]], dataset[["y"]],

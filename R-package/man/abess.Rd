@@ -85,7 +85,7 @@ The first element is the minimum model size considered by golden-section,
 the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
 Not available now.}
 
-\item{lambda}{A single lambda value for regulaized best subset selection. Default is 0.}
+\item{lambda}{A single lambda value for regularized best subset selection. Default is 0.}
 
 \item{always.include}{An integer vector containing the indexes of variables that should always be included in the model.}
 

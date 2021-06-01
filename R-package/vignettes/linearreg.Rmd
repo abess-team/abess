@@ -1,6 +1,6 @@
 ---
-title: "linearregression"
-author: "胡励元 17306030"
+title: "Linear Regression"
+author: "Liyuan Hu"
 date: "2021/5/26"
 output: html_document
 ---
@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 In this tutorial, we are going to demonstrate how to use the `abess` package to carry out best subset selection on the `Hitters` dataset. 
-We hope to use sevral predictors related to the performance of the baseball atheltes last year to predict their salary.
+We hope to use several predictors related to the performance of the baseball athletes last year to predict their salary.
 
 ## Hitters Dataset
 
@@ -37,7 +37,7 @@ Hitters <- as.data.frame(Hitters)
 
 ## Best subset selection
 
-The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. You can call the `abess()` funtion using formula just like what you do with `lm()`. Or you can specify the design matrix `x` and the response `y`. The `system.time` function records the run time.
+The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. You can call the `abess()` function using formula just like what you do with `lm()`. Or you can specify the design matrix `x` and the response `y`. The `system.time` function records the run time.
 ```{r}
 library(abess)
 t.seq = system.time(abess_fit <- abess(Salary~., Hitters))[3]
@@ -50,7 +50,7 @@ class(abess_fit)
 <!-- abess_fit.gs <- abess(Salary~., Hitters, tune = "bic", tune.path = "gs") -->
 <!-- ``` -->
 
-## Interprate the Result
+## Interpret the Result
 
 Hold on, we aren't finished yet. After get the estimator, we can further do more exploring work.
 The output of `abess()` function contains the best model for all the candidate support size in the `support.size`. You can use some generic function to quickly draw some information of those estimators.
@@ -72,11 +72,11 @@ predict(abess_fit, newx = Hitters[, -which(colnames(Hitters)=="Salary")],
 ```
 
 
-The `plot.abess()` function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including `coef` for the coefficeint value, `l2norm` for the L2-norm of the coefficients, `dev` for the deviance and `tune` for the tuning value. Default if `coef`.
+The `plot.abess()` function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including `coef` for the coefficient value, `l2norm` for the L2-norm of the coefficients, `dev` for the deviance and `tune` for the tuning value. Default if `coef`.
 ```{r}
 plot(abess_fit, label=T)
 ```
-The graph shows that, begining from the most dense model, the 15th variable (Division, A factor with levels E and W indicating player's division at the end of 1986) is included in the active set until the support size reaches 3.
+The graph shows that, beginning from the most dense model, the 15th variable (Division, A factor with levels E and W indicating player's division at the end of 1986) is included in the active set until the support size reaches 3.
 
 We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size. 
 ```{r}

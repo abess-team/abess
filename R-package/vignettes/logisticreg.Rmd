@@ -1,5 +1,5 @@
 ---
-title: "logisticreg"
+title: "Logistic Regression"
 author: "胡励元 17306030"
 date: "2021/5/27"
 output: html_document
@@ -38,7 +38,7 @@ test <- dat[-(1:round((712*2)/3)), ]
 
 ## Best Subset Selection for Logistic Regression
 
-The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. You can call the `abess()` funtion using formula just like what you do with `lm()`. Or you can specify the design matrix `x` and the response `y`.
+The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. You can call the `abess()` function using formula just like what you do with `lm()`. Or you can specify the design matrix `x` and the response `y`.
 
 ```{r}
 library(abess)
@@ -52,7 +52,7 @@ abess_fit <- abess(x = train[, -1], y = train$Survived, family = "binomial")
 <!-- abess_fit.gs <- abess(Survived~., data = train, family = "binomial", tune = "bic", tune.path = "gs") -->
 <!-- ``` -->
 
-## Interprate the Result
+## Interpret the Result
 
 Hold on, we aren't finished yet. After get the estimator, we can further do more exploring work.
 The output of `abess()` function contains the best model for all the candidate support size in the `support.size`. You can use some generic function to quickly draw some information of those estimators.
@@ -67,11 +67,11 @@ deviance(abess_fit)
 print(abess_fit)
 ```
 
-The `plot.abess()` function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including `coef` for the coefficeint value, `l2norm` for the L2-norm of the coefficients, `dev` for the deviance and `tune` for the tuning value. Default if `coef`.
+The `plot.abess()` function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including `coef` for the coefficient value, `l2norm` for the L2-norm of the coefficients, `dev` for the deviance and `tune` for the tuning value. Default if `coef`.
 ```{r}
 plot(abess_fit, label=T)
 ```
-The graph shows that, begining from the most dense model, the second variable (`Sex`) is included in the active set until the support size reaches 0.
+The graph shows that, beginning from the most dense model, the second variable (`Sex`) is included in the active set until the support size reaches 0.
 
 We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size. 
 ```{r}
@@ -90,12 +90,12 @@ The return is a list containing the basic information of the estimated model.
 
 ## Make a Prediction
 
-Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value. The `predict.abess()` can provide both `link`, stands for the linear predictors, and the `response`, stands for the fitted probability. Here We will predict the probablity of survival on the `test.csv` data.
+Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value. The `predict.abess()` can provide both `link`, stands for the linear predictors, and the `response`, stands for the fitted probability. Here We will predict the probability of survival on the `test.csv` data.
 ```{r}
 fitted.results <- predict(abess_fit, newx = test, type = 'response')
 ```
 
-If we chose 0.5 as the cut point, i.e, we predict the person survived the sinking of the Titanic if the fitted probablity is greater than 0.5, the accuracy will be 0.80.
+If we chose 0.5 as the cut point, i.e, we predict the person survived the sinking of the Titanic if the fitted probability is greater than 0.5, the accuracy will be 0.80.
 
 ```{r}
 fitted.results <- ifelse(fitted.results > 0.5,1,0)
