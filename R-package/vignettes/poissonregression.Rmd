@@ -1,0 +1,98 @@
+---
+title: "Poisson Regression"
+author: "Liyuan Hu"
+date: "2021/5/30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+```
+
+## The Poisson Regression
+
+Poisson Regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of costumers in line at a  reception desk. The expectation of the response variables is assumed to follow a Poisson distribution.
+
+The general mathematical equation for Poisson regression is
+$$
+\log(E(y)) = \beta_0 + \beta_1 X_1+\beta_2 X_2+\dots, \beta_p X_p.
+$$
+We generate some artifitial data using this logic.
+Consider a dataset containing the information of complain calls about 100 companies over a period of 10 years. `count` gives the number of complains, and the dataset also have other variables like `age`, `sex`, `job`, `education`, `region`, `marry`. The `generate.data()` function allow you to generate simulated data. By sepeciying `support.size = 3`, here we set only 3 of the 5 above mentioned variable have effect on the expectation of the response `count`. 
+
+```{r}
+library(abess)
+dat <- generate.data(n = 100, p = 6, support.size = 3,family = "poisson")
+colnames(dat$x) <- c("age", "sex", "job", 
+                     "education", "region", "marry")
+dat$beta
+head(dat$x)
+complain <- data.frame('count'=dat$y, dat$x)
+```
+
+## Best Subset Selection for Poisson Regression
+
+The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. You can call the `abess()` funtion using formula just like what you do with `lm()`. Or you can specify the design matrix `x` and the response `y`. To carry out a poisson regression, we should set the `family` `poisson`.
+
+```{r}
+library(abess)
+abess_fit <- abess(x = dat$x, y = dat$y, family = "poisson")
+abess_fit <- abess(count~., complain, family = "poisson")
+class(abess_fit)
+```
+
+<!-- By default, the `abess` function implements the ABESS algorithm with the support size changing from 0 to $\min\{p,n/log(n)p \}$ and the best support size is determined by the Generalized Informatoin Criterion (GIC). You can change the tunging criterion by specifying the argument `tune.type`. The available tuning criterion now are `gic`, `aic`, `bic`, `ebic` and `cv`. For a quicker solution, you can change the tuning strategy to a golden section path which trys to find the elbow point of the tuning criterion over the hyperparameter space. Here we give an example. -->
+<!-- ```{r} -->
+<!-- abess_fit.gs <- abess(Salary~., Hitters, family = "poisson", tune.type = "bic", tune.path = "gs") -->
+<!-- ``` -->
+
+## Interprate the Result
+
+Hold on, we aren't finished yet. After get the estimator, we can further do more exploring work.
+The output of `abess()` function contains the best model for all the candidate support size in the `support.size`. You can use some generic function to quickly draw some information of those estimators.
+```{r}
+# draw the estimated coefficients on all candidate support size
+coef(abess_fit)
+
+# get the deviance of the estimated model on all candidate support size
+deviance(abess_fit)
+
+# print the fitted model
+print(abess_fit)
+```
+
+Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value.
+
+```{r}
+predict(abess_fit, newx = dat$x, support.size = c(3, 4))
+```
+
+
+The `plot.abess()` function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including `coef` for the coefficeint value, `l2norm` for the L2-norm of the coefficients, `dev` for the deviance and `tune` for the tuning value. Default if `coef`.
+
+```{r}
+plot(abess_fit, label=T)
+```
+The graph shows that, begining from the most dense model, the 3th variable (job) is included in the active set until the support size reaches 0.
+
+We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size. 
+```{r}
+plot(abess_fit, type="tune")
+```
+
+The tuning value reaches the lowest point at 3. And We might choose the estimated model with support size equals 6 as our final model. 
+In fact, the tuning values of different model sizes are provided in `tune.value` of the `abess` object. You can get the best model size through the following call.
+
+```{r}
+abess_fit$support.size[which.min(abess_fit$tune.value)]
+```
+To extract any model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.
+```{r}
+best.model = extract(abess_fit, support.size = 3)
+str(best.model)
+best.model$beta
+```
+
+The return is a list containing the basic information of the estimated model. The best model has estimated coefficients every close to the true coefficients and it successfully recovers the correct support.
+
+
