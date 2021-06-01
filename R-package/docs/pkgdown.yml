@@ -3,5 +3,15 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   abess-guide: abess-guide.html
-last_built: 2021-04-03T10:58Z
+  coxreg: coxreg.html
+  groupselection: groupselection.html
+  integrateSIS: integrateSIS.html
+  linearreg: linearreg.html
+  logisticreg: logisticreg.html
+  MultiClassification: MultiClassification.html
+  MultiTaskLearning: MultiTaskLearning.html
+  nuisancereg: nuisancereg.html
+  poissonregression: poissonregression.html
+  regularizedbess: regularizedbess.html
+last_built: 2021-06-01T02:41Z
 
