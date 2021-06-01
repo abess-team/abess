@@ -1,5 +1,5 @@
 =================
-PoissonRegression
+Poisson Regression
 =================
 
 First, we generate some simulated data.
