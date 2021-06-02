@@ -1,6 +1,9 @@
 destination: docs
 
-url: https://abess.readthedocs.io/en/latest/R-package/
+home:
+  links:
+  - text: Learn more
+    href: https://abess.readthedocs.io
 
 template:
   params:
