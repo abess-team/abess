@@ -37,6 +37,7 @@ jobs:
           remotes::install_deps("R-package", dependencies = TRUE)
           install.packages("pkgdown", type = "binary")
           install.packages("survival", type = "binary")
+          install.packages("Hmisc", type = "binary")
         shell: Rscript {0}
 
       - name: Install package
