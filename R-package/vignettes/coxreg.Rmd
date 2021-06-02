@@ -11,12 +11,12 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 
 ## Lung Cancer Dataset
 
-We are going to apply best subset selection to the NCCTG Lung Cancer Dataset in the `survival` package. This dataset consists of survival information of patients with advanced lung cancer from the North Central Cancer Treatment Group. The proportional hazards model allows the analysis of survival data by regression modeling.
+We are going to apply best subset selection to the NCCTG Lung Cancer Dataset. This dataset consists of survival information of patients with advanced lung cancer from the North Central Cancer Treatment Group. The proportional hazards model allows the analysis of survival data by regression modeling.
 Linearity is assumed on the log scale of the hazard. The hazard ratio in Cox proportional hazard model
  is assumed constant. First, we load the data. 
  
 ```{r}
-data(lung, package = 'survival')
+lung = read.csv("lung.csv", header = T)
 head(lung)
 sum(is.na(lung))
 ```
