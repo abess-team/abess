@@ -498,6 +498,7 @@ abess.default <- function(x,
   } else {
     stopifnot(any(is.numeric(support.size) & support.size >= 0))
     stopifnot(max(support.size) < nvars)
+    stopifnot(max(support.size) < nobs)
     support.size <- sort(support.size)
     support.size <- unique(support.size)
     s_list <- support.size
@@ -666,7 +667,7 @@ abess.default <- function(x,
     is_cv = is_cv,
     Kfold = nfolds,
     status = c(0),
-    sequence = s_list,
+    sequence = as.vector(s_list),
     lambda_seq = lambda,
     s_min = s_min,
     s_max = s_max,
