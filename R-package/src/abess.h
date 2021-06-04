@@ -30,7 +30,7 @@ struct Result
     Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> bd_matrix;
 };
 
-List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
+List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                int data_type, Eigen::VectorXd weight,
                bool is_normal,
                int algorithm_type, int model_type, int max_iter, int exchange_num,
@@ -48,10 +48,11 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y,
                int primary_model_fit_max_iter, double primary_model_fit_epsilon,
                bool early_stop, bool approximate_Newton,
                int thread,
-               bool covariance_update);
+               bool covariance_update,
+               bool sparse_matrix);
 
-template <class T1, class T2, class T3>
-List abessCpp(Eigen::MatrixXd &x, T1 &y,
+template <class T1, class T2, class T3, class T4>
+List abessCpp(T4 &x, T1 &y, int n, int p,
               int data_type, Eigen::VectorXd weight,
               bool is_normal,
               int algorithm_type, int model_type, int max_iter, int exchange_num,
@@ -70,10 +71,11 @@ List abessCpp(Eigen::MatrixXd &x, T1 &y,
               bool early_stop, bool approximate_Newton,
               int thread,
               bool covariance_update,
-              Algorithm<T1, T2, T3> *algorithm, vector<Algorithm<T1, T2, T3> *> algorithm_list);
+              bool sparse_matrix,
+              Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list);
 
 #ifndef R_BUILD
-void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_col, int data_type, double *weight, int weight_len,
+void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, int p, int y_col, int data_type, double *weight, int weight_len,
                   bool is_normal,
                   int algorithm_type, int model_type, int max_iter, int exchange_num,
                   int path_type, bool is_warm_start,
@@ -90,6 +92,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                   bool early_stop, bool approximate_Newton,
                   int thread,
                   bool covariance_update,
+                  bool sparse_matrix,
                   double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,

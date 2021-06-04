@@ -18,11 +18,11 @@
 using namespace std;
 using namespace Eigen;
 
-template <class T1, class T2, class T3>
+template <class T1, class T2, class T3, class T4>
 class Data
 {
 public:
-    Eigen::MatrixXd x;
+    T4 x;
     T1 y;
     Eigen::VectorXd weight;
     Eigen::VectorXd x_mean;
@@ -41,7 +41,7 @@ public:
 
     Data() = default;
 
-    Data(Eigen::MatrixXd &x, T1 &y, int data_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, Eigen::VectorXi &status)
+    Data(T4 &x, T1 &y, int data_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, Eigen::VectorXi &status, bool sparse_matrix)
     {
         this->x = x;
         this->y = y;
@@ -57,7 +57,8 @@ public:
 
         this->status = status;
 
-        if (is_normal)
+        // to do !!!!!!!!!!!!!!!!!!!!!!!!!
+        if (is_normal && !sparse_matrix)
         {
             this->normalize();
         }
