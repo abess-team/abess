@@ -4,7 +4,7 @@
 \alias{print.abess}
 \title{Print method for a fitted "abess" object}
 \usage{
-\method{print}{abess}(x, digits = max(5, getOption("digits") - 5), ...)
+print.abess(x, digits = max(5, getOption("digits") - 5), ...)
 }
 \arguments{
 \item{x}{A "\code{abess}" object.}

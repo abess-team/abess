@@ -24,9 +24,6 @@
   warm.start = TRUE,
   nfolds = 5,
   cov.update = TRUE,
-  n = NULL,
-  p = NULL,
-  sparse.matrix = FALSE,
   newton = c("exact", "approx"),
   newton.thresh = 1e-06,
   max.newton.iter = NULL,
@@ -40,9 +37,8 @@
 }
 \arguments{
 \item{x}{Input matrix, of dimension \eqn{n \times p}; each row is an observation
-vector and each column is a predictor/feature/variable. Could be a sparse matrix in triplet form. 
-The first element of each line is the value of a nonzero entry. 
-The second and the third elements contain the row index and column index of that nonzero entry.}
+vector and each column is a predictor/feature/variable. 
+Can be in sparse matrix format (inherit from class \code{"dgCMatrix"} in package \code{Matrix}).}
 
 \item{y}{The response variable, of \code{n} observations. 
 For \code{family = "binomial"} should have two levels. 
@@ -114,12 +110,6 @@ please set \code{group.index = NULL}. Default is \code{NULL}.}
 use a covariance-based implementation; otherwise, a naive implementation. 
 The naive method is more efficient than covariance-based method only when \eqn{p >> n}. 
 Default: \code{cov.update = TRUE}.}
-
-\item{n}{The number of rows of the design matrix. A must if \code{x} in triplet form.}
-
-\item{p}{The number of columns of the design matrix. A must if \code{x} in triplet form.}
-
-\item{sparse.matrix}{A logical value indicating whether the input is a sparse matrix.}
 
 \item{newton}{A character specify the Newton's method for fitting generalized linear models, 
 it should be either \code{newton = "exact"} or \code{newton = "approx"}.

@@ -19,6 +19,7 @@
 #' @importFrom stats model.frame
 #' @importFrom stats model.response
 #' @importFrom methods rbind2
+#' @import Matrix
 #' @importFrom Matrix Matrix
 #' @importFrom Matrix rowSums
 ## usethis namespace: end
