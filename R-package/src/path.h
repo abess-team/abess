@@ -4,7 +4,7 @@
 #ifndef SRC_PATH_H
 #define SRC_PATH_H
 
-// #define Test
+// #define TEST
 
 #ifdef R_BUILD
 #include <RcppEigen.h>
@@ -22,11 +22,12 @@ using namespace Eigen;
 #include "Metric.h"
 #include "abess.h"
 
-template <class T1, class T2, class T3>
-void sequential_path_cv(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm, Metric<T1, T2, T3> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3> &result)
+template <class T1, class T2, class T3, class T4>
+void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, Metric<T1, T2, T3, T4> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3> &result)
 {
 #ifdef TEST
     clock_t t0, t1, t2;
+
 #endif
     int p = data.get_p();
     int N = data.g_num;
@@ -41,9 +42,11 @@ void sequential_path_cv(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm
     Eigen::VectorXi train_mask, test_mask;
     T1 train_y, test_y;
     Eigen::VectorXd train_weight, test_weight;
-    Eigen::MatrixXd train_x, test_x;
+    T4 train_x, test_x;
     int train_n = 0, test_n = 0;
-
+#ifdef TEST
+    t1 = clock();
+#endif
     // train & test data
     if (!metric->is_cv)
     {
@@ -66,18 +69,28 @@ void sequential_path_cv(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm
         train_n = train_mask.size();
         test_n = test_mask.size();
     }
-
-    Eigen::Matrix<Eigen::MatrixXd, -1, -1> train_group_XTX = group_XTX(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
+#ifdef TEST
+    t2 = clock();
+    std::cout << "train_x time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    cout << "path 1" << endl;
+#endif
+    Eigen::Matrix<T4, -1, -1> train_group_XTX = group_XTX<T4>(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
     algorithm->update_group_XTX(train_group_XTX);
+    algorithm->PhiG.resize(0, 0);
+
+#ifdef TEST
+    cout << "path 2" << endl;
+#endif
 
     if (algorithm->covariance_update)
     {
         algorithm->covariance_update_flag = Eigen::VectorXi::Zero(p);
         algorithm->XTy = train_x.transpose() * train_y;
-
-        // to do : add ifelse
         algorithm->XTone = train_x.transpose() * Eigen::MatrixXd::Ones(train_n, M);
     }
+#ifdef TEST
+    cout << "path 3" << endl;
+#endif
 
     Eigen::Matrix<T2, Dynamic, Dynamic> beta_matrix(sequence_size, lambda_size);
     Eigen::Matrix<T3, Dynamic, Dynamic> coef0_matrix(sequence_size, lambda_size);
@@ -85,9 +98,7 @@ void sequential_path_cv(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm
     Eigen::MatrixXd ic_matrix(sequence_size, lambda_size);
     Eigen::MatrixXd test_loss_matrix(sequence_size, lambda_size);
     Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(sequence_size, lambda_size);
-    // Eigen::Matrix<VectorXi, Dynamic, Dynamic> A_matrix(sequence_size, lambda_size);
 
-    // to ensure
     T2 beta_init;
     T3 coef0_init;
     coef_set_zero(p, M, beta_init, coef0_init);
@@ -124,7 +135,6 @@ void sequential_path_cv(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm
             {
                 beta_init = algorithm->get_beta();
                 coef0_init = algorithm->get_coef0();
-                // A_init = algorithm->get_A_out();
                 bd_init = algorithm->get_bd();
             }
 #ifdef TEST
@@ -140,7 +150,7 @@ void sequential_path_cv(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm
             }
             else
             {
-                ic_matrix(i, j) = metric->ic(train_n, N, algorithm);
+                ic_matrix(i, j) = metric->ic(train_n, M, N, algorithm);
             }
 #ifdef TEST
             t2 = clock();
@@ -152,7 +162,6 @@ void sequential_path_cv(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm
             beta_matrix(i, j) = algorithm->beta;
             coef0_matrix(i, j) = algorithm->coef0;
             train_loss_matrix(i, j) = algorithm->get_train_loss();
-            // A_matrix(i, j) = algorithm->A_out;
             bd_matrix(i, j) = algorithm->bd;
 
 #ifdef TEST
@@ -185,7 +194,6 @@ void sequential_path_cv(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm
     result.coef0_matrix = coef0_matrix;
     result.train_loss_matrix = train_loss_matrix;
     result.bd_matrix = bd_matrix;
-    // result.A_matrix = A_matrix;
     result.ic_matrix = ic_matrix;
     result.test_loss_matrix = test_loss_matrix;
 }

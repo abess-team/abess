@@ -12,7 +12,9 @@ abess <- function(x, ...) UseMethod("abess")
 #' @author Jin Zhu, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang
 #'
 #' @param x Input matrix, of dimension \eqn{n \times p}; each row is an observation
-#' vector and each column is a predictor/feature/variable.
+#' vector and each column is a predictor/feature/variable. Could be a sparse matrix in triplet form. 
+#' The first element of each line is the value of a nonzero entry. 
+#' The second and the third elements contain the row index and column index of that nonzero entry.
 #' @param y The response variable, of \code{n} observations. 
 #' For \code{family = "binomial"} should have two levels. 
 #' For \code{family="poisson"}, \code{y} should be a vector with positive integer. 
@@ -92,6 +94,9 @@ abess <- function(x, ...) UseMethod("abess")
 #' use a covariance-based implementation; otherwise, a naive implementation. 
 #' The naive method is more efficient than covariance-based method only when \eqn{p >> n}. 
 #' Default: \code{cov.update = TRUE}. 
+#' @param n The number of rows of the design matrix. A must if \code{x} in triplet form.
+#' @param p The number of columns of the design matrix. A must if \code{x} in triplet form.
+#' @param sparse.matrix A logical value indicating whether the input is a sparse matrix.
 #' @param newton A character specify the Newton's method for fitting generalized linear models, 
 #' it should be either \code{newton = "exact"} or \code{newton = "approx"}.
 #' If \code{newton = "exact"}, then the exact hessian is used, 
@@ -276,6 +281,9 @@ abess.default <- function(x,
                           warm.start = TRUE,
                           nfolds = 5, 
                           cov.update = TRUE, 
+                          n = NULL,
+                          p = NULL,
+                          sparse.matrix = FALSE,
                           newton = c("exact", "approx"), 
                           newton.thresh = 1e-6, 
                           max.newton.iter = NULL, 
@@ -648,11 +656,20 @@ abess.default <- function(x,
     }
     always_include <- always.include
   }
+  # sparse matrix input
+  if(!sparse.matrix){
+    n = nrow(x)
+    p = ncol(x)
+  }else{
+    if(is.null(n) | is.null(p)) stop("The dimensions (n & p) of the design matrix is needed for sparse.matrix.")
+  }
   
   t1 <- proc.time()
   result <- abessCpp2(
     x = x,
     y = y,
+    n = n,
+    p = p,
     data_type = normalize,
     weight = weight,
     is_normal = is_normal,
@@ -687,7 +704,8 @@ abess.default <- function(x,
     early_stop = early_stop,
     approximate_Newton = approximate_newton,
     thread = num_threads, 
-    covariance_update = covariance_update
+    covariance_update = covariance_update,
+    sparse_matrix = sparse.matrix
   )
   t2 <- proc.time()
   # print(t2 - t1)
