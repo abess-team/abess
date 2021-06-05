@@ -12,7 +12,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' @author Jin Zhu, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang
 #'
 #' @param x Input matrix, of dimension \eqn{n \times p}; each row is an observation
-#' vector and each column is a predictor/feature/variable.
+#' vector and each column is a predictor/feature/variable. 
+#' Can be in sparse matrix format (inherit from class \code{"dgCMatrix"} in package \code{Matrix}).
 #' @param y The response variable, of \code{n} observations. 
 #' For \code{family = "binomial"} should have two levels. 
 #' For \code{family="poisson"}, \code{y} should be a vector with positive integer. 
@@ -92,6 +93,9 @@ abess <- function(x, ...) UseMethod("abess")
 #' use a covariance-based implementation; otherwise, a naive implementation. 
 #' The naive method is more efficient than covariance-based method only when \eqn{p >> n}. 
 #' Default: \code{cov.update = TRUE}. 
+# @param n The number of rows of the design matrix. A must if \code{x} in triplet form.
+# @param p The number of columns of the design matrix. A must if \code{x} in triplet form.
+# @param sparse.matrix A logical value indicating whether the input is a sparse matrix.
 #' @param newton A character specify the Newton's method for fitting generalized linear models, 
 #' it should be either \code{newton = "exact"} or \code{newton = "approx"}.
 #' If \code{newton = "exact"}, then the exact hessian is used, 
@@ -258,6 +262,15 @@ abess <- function(x, ...) UseMethod("abess")
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
 #'                    screening.num = 100)
 #' str(extract(abess_fit))
+#' 
+#' ################ Sparse predictor ################
+#' require(Matrix)
+#' p <- 1000
+#' dataset <- generate.data(n, p, support.size)
+#' dataset[["x"]][abs(dataset[["x"]]) < 1] <- 0
+#' dataset[["x"]] <- Matrix(dataset[["x"]])
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]])
+#' str(extract(abess_fit))
 #' }
 abess.default <- function(x, 
                           y,
@@ -336,23 +349,43 @@ abess.default <- function(x,
     "multinomial" = 6
   )
   
+  # check weight
+  nobs <- nrow(x)
+  stopifnot(is.vector(weight))
+  if (length(weight) != nobs) {
+    stop("Rows of x must be the same as length of weight!")
+  }
+  stopifnot(all(is.numeric(weight)), all(weight >= 0))
+  
   ## check predictors:
   # if (anyNA(x)) {
   #   stop("x has missing value!")
   # }
-  if (!is.matrix(x)) {
-    x <- as.matrix(x)
-  }
   nvars <- ncol(x)
-  nobs <- nrow(x)
-  if (nvars == 1) {
-    stop("x should have two columns at least!")
-  }
   vn <- colnames(x)
   if (is.null(vn)) {
     vn <- paste0("x", 1:nvars)
   }
   
+  sparse_X <- ifelse(class(x)[1] %in% c("matrix", "data.frame"), FALSE, TRUE)
+  if (sparse_X) {
+    if (class(x) == "dgCMatrix") {
+      x <- summary(x)
+      x[, 1:2] <- x[, 1:2] - 1
+      x <- as.matrix(x)
+      x <- x[, c(3, 1, 2)]
+    } else {
+      stop("Must be a dgCMatrix matrix!")
+    }
+  } else {
+    if (!is.matrix(x)) {
+      x <- as.matrix(x)
+    }    
+  }
+  if (nvars == 1) {
+    stop("x should have at least two columns!")
+  }
+
   ## check C-max:
   stopifnot(is.numeric(c.max) & c.max >= 1)
   if (c.max >= nvars) {
@@ -434,19 +467,12 @@ abess.default <- function(x,
   
   # check whether x and y are matching:
   if (is.vector(y)) {
-    if (nrow(x) != length(y))
+    if (nobs != length(y))
       stop("Rows of x must be the same as length of y!")
   } else {
-    if (nrow(x) != nrow(y))
+    if (nobs != nrow(y))
       stop("Rows of x must be the same as rows of y!")
   }
-  
-  # check weight
-  stopifnot(is.vector(weight))
-  if (length(weight) != nobs) {
-    stop("Rows of x must be the same as length of weight!")
-  }
-  stopifnot(all(is.numeric(weight)), all(weight >= 0))
   
   ## check covariance update
   stopifnot(is.logical(cov.update))
@@ -653,6 +679,8 @@ abess.default <- function(x,
   result <- abessCpp2(
     x = x,
     y = y,
+    n = nobs,
+    p = nvars,
     data_type = normalize,
     weight = weight,
     is_normal = is_normal,
@@ -687,7 +715,8 @@ abess.default <- function(x,
     early_stop = early_stop,
     approximate_Newton = approximate_newton,
     thread = num_threads, 
-    covariance_update = covariance_update
+    covariance_update = covariance_update,
+    sparse_matrix = sparse_X
   )
   t2 <- proc.time()
   # print(t2 - t1)

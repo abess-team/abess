@@ -37,7 +37,8 @@
 }
 \arguments{
 \item{x}{Input matrix, of dimension \eqn{n \times p}; each row is an observation
-vector and each column is a predictor/feature/variable.}
+vector and each column is a predictor/feature/variable. 
+Can be in sparse matrix format (inherit from class \code{"dgCMatrix"} in package \code{Matrix}).}
 
 \item{y}{The response variable, of \code{n} observations. 
 For \code{family = "binomial"} should have two levels. 

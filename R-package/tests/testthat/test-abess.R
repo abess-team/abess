@@ -296,3 +296,18 @@ test_that("Fast than Lasso (gaussian) works", {
   expect_lt(t1[3], t2[3])
 })
 
+test_that("Sparse matrix works", {
+  require(Matrix)
+  n <- 100
+  p <- 20
+  support.size <- 3
+  dataset <- generate.data(n, p, support.size)
+  dataset[["x"]][abs(dataset[["x"]]) < 1] <- 0
+  dataset[["x"]] <- Matrix(dataset[["x"]])
+  abess_fit1 <- abess(dataset[["x"]], dataset[["y"]])
+  abess_fit2 <- abess(as.matrix(dataset[["x"]]), dataset[["y"]], normalize = 0)
+  
+  abess_fit1[["call"]] <- NULL
+  abess_fit2[["call"]] <- NULL
+  expect_true(all.equal(abess_fit1, abess_fit2))
+})
