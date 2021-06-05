@@ -52,3 +52,5 @@ python/python_all_test.sh
 docs/R-package/docs/*
 
 python/download_package.py
+python/abess/__pycache__/__init__.cpython-37.pyc
+python/abess/__pycache__/linear.cpython-37.pyc

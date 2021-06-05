@@ -30,7 +30,7 @@ class TestClass:
             family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 21
 
-        model = abessLm(path_type="seq", sequence=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
+        model = abessLm(path_type="seq", sequence=[20], ic_type='ebic', is_screening=True, screening_size=20,
                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
                         exchange_num=2, tau=0.1 * np.log(n*p) / n,
                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True)
@@ -55,14 +55,15 @@ class TestClass:
                          primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=True)
         model4.fit(data.x, data.y)
 
-        nonzero_true = np.nonzero(data.beta)[0]
-        nonzero_fit = np.nonzero(model.beta)[0]
+        nonzero_true = np.nonzero(data.coef_)[0]
+        nonzero_fit = np.nonzero(model.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         new_x = data.x[:, nonzero_fit]
         reg = LinearRegression()
         reg.fit(new_x, data.y.reshape(-1))
-        assert model.beta[nonzero_fit] == approx(reg.coef_, rel=1e-5, abs=1e-5)
+        assert model.coef_[nonzero_fit] == approx(
+            reg.coef_, rel=1e-5, abs=1e-5)
         assert (nonzero_true == nonzero_fit).all()
 
     def test_binomial(self):
@@ -92,8 +93,8 @@ class TestClass:
         model2.fit(data.x, data.y, group=group)
         model2.predict(data.x)
 
-        nonzero_true = np.nonzero(data.beta)[0]
-        nonzero_fit = np.nonzero(model2.beta)[0]
+        nonzero_true = np.nonzero(data.coef_)[0]
+        nonzero_fit = np.nonzero(model2.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         assert (nonzero_true == nonzero_fit).all()
@@ -102,9 +103,9 @@ class TestClass:
             new_x = data.x[:, nonzero_fit]
             reg = LogisticRegression(penalty="none")
             reg.fit(new_x, data.y)
-            print(model2.beta[nonzero_fit])
+            print(model2.coef_[nonzero_fit])
             print(reg.coef_)
-            assert model2.beta[nonzero_fit] == approx(
+            assert model2.coef_[nonzero_fit] == approx(
                 reg.coef_[0], rel=1e-2, abs=1e-2)
 
     def test_cox(self):
@@ -115,6 +116,7 @@ class TestClass:
         rho = 0.5
         sigma = 1
 
+        # np.random.seed(3)
         np.random.seed(3)
         data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         sequence = range(0, 20)
@@ -134,8 +136,8 @@ class TestClass:
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-        nonzero_true = np.nonzero(data.beta)[0]
-        nonzero_fit = np.nonzero(model2.beta)[0]
+        nonzero_true = np.nonzero(data.coef_)[0]
+        nonzero_fit = np.nonzero(model2.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         assert (nonzero_true == nonzero_fit).all()
@@ -149,10 +151,10 @@ class TestClass:
             survival["E"] = data.y[:, 1]
             cph = CoxPHFitter(penalizer=0, l1_ratio=0)
             cph.fit(survival, 'T', event_col='E')
-            print(model2.beta[nonzero_fit])
+            print(model2.coef_[nonzero_fit])
             print(cph.params_.values)
 
-            assert model2.beta[nonzero_fit] == approx(
+            assert model2.coef_[nonzero_fit] == approx(
                 cph.params_.values, rel=5e-1, abs=5e-1)
 
     def test_poisson(self):
@@ -185,8 +187,8 @@ class TestClass:
         model2.fit(data.x, data.y, group=group)
         model2.predict(data.x)
 
-        nonzero_true = np.nonzero(data.beta)[0]
-        nonzero_fit = np.nonzero(model2.beta)[0]
+        nonzero_true = np.nonzero(data.coef_)[0]
+        nonzero_fit = np.nonzero(model2.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         assert (nonzero_true == nonzero_fit).all()
@@ -196,9 +198,9 @@ class TestClass:
             reg = PoissonRegressor(
                 alpha=0, tol=1e-6, max_iter=200)
             reg.fit(new_x, data.y)
-            print(model2.beta[nonzero_fit])
+            print(model2.coef_[nonzero_fit])
             print(reg.coef_)
-            assert model2.beta[nonzero_fit] == approx(
+            assert model2.coef_[nonzero_fit] == approx(
                 reg.coef_, rel=1e-2, abs=1e-2)
 
     def test_mulgaussian(self):
@@ -227,14 +229,14 @@ class TestClass:
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-        nonzero_true = np.nonzero(data.beta)[0]
-        nonzero_fit = np.nonzero(model.beta)[0]
+        nonzero_true = np.nonzero(data.coef_)[0]
+        nonzero_fit = np.nonzero(model.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         # new_x = data.x[:, nonzero_fit]
         # reg = linear_model.LinearRegression()
         # reg.fit(new_x, data.y)
-        # assert model.beta[nonzero_fit] == approx(reg.coef_, rel=1e-5, abs=1e-5)
+        # assert model.coef_[nonzero_fit] == approx(reg.coef_, rel=1e-5, abs=1e-5)
         assert (nonzero_true == nonzero_fit).all()
 
     def test_mulnomial(self):
@@ -270,12 +272,12 @@ class TestClass:
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
 
-        nonzero_true = np.nonzero(data.beta)[0]
-        nonzero_fit = np.nonzero(model.beta)[0]
+        nonzero_true = np.nonzero(data.coef_)[0]
+        nonzero_fit = np.nonzero(model.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         # new_x = data.x[:, nonzero_fit]
         # reg = linear_model.LinearRegression()
         # reg.fit(new_x, data.y)
-        # assert model.beta[nonzero_fit] == approx(reg.coef_, rel=1e-5, abs=1e-5)
+        # assert model.coef_[nonzero_fit] == approx(reg.coef_, rel=1e-5, abs=1e-5)
         assert (nonzero_true == nonzero_fit).all()

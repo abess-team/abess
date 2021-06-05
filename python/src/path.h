@@ -4,7 +4,7 @@
 #ifndef SRC_PATH_H
 #define SRC_PATH_H
 
-// #define TEST
+#define TEST
 
 #ifdef R_BUILD
 #include <RcppEigen.h>
@@ -75,6 +75,9 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
     cout << "path 1" << endl;
 #endif
     Eigen::Matrix<T4, -1, -1> train_group_XTX = group_XTX<T4>(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
+#ifdef TEST
+    cout << "path 1.5" << endl;
+#endif
     algorithm->update_group_XTX(train_group_XTX);
     algorithm->PhiG.resize(0, 0);
 

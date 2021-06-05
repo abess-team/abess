@@ -2,10 +2,10 @@ import numpy as np
 
 
 class data:
-    def __init__(self, x, y, beta):
+    def __init__(self, x, y, coef_):
         self.x = x
         self.y = y
-        self.beta = beta
+        self.coef_ = coef_
 
 
 def sample(p, k):
@@ -15,7 +15,7 @@ def sample(p, k):
     return select
 
 
-def gen_data(n, p, family, k, rho=0, sigma=1, beta=None, censoring=True, c=1, scal=10):
+def gen_data(n, p, family, k, rho=0, sigma=1, coef_=None, censoring=True, c=1, scal=10):
     zero = np.zeros([n, 1])
     ones = np.ones([n, 1])
     X = np.random.normal(0, 1, n*p).reshape(n, p)
@@ -33,20 +33,20 @@ def gen_data(n, p, family, k, rho=0, sigma=1, beta=None, censoring=True, c=1, sc
     if family == "gaussian":
         m = 5 * np.sqrt(2 * np.log(p) / n)
         M = 100 * m
-        if beta is None:
+        if coef_ is None:
             Tbeta[nonzero] = np.random.uniform(m, M, k)
         else:
-            Tbeta = beta
+            Tbeta = coef_
 
         y = np.matmul(x, Tbeta) + sigma * np.random.normal(0, 1, n)
         return data(x, y, Tbeta)
 
     elif family == "binomial":
         m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
-        if beta is None:
+        if coef_ is None:
             Tbeta[nonzero] = np.random.uniform(2*m, 10*m, k)
         else:
-            Tbeta = beta
+            Tbeta = coef_
 
         xbeta = np.matmul(x, Tbeta)
         xbeta[xbeta > 30] = 30
@@ -59,11 +59,11 @@ def gen_data(n, p, family, k, rho=0, sigma=1, beta=None, censoring=True, c=1, sc
     elif family == "poisson":
         x = x / 16
         m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
-        if beta is None:
+        if coef_ is None:
             Tbeta[nonzero] = np.random.uniform(2*m, 10*m, k)
             # Tbeta[nonzero] = np.random.normal(0, 4*m, k)
         else:
-            Tbeta = beta
+            Tbeta = coef_
 
         xbeta = np.matmul(x, Tbeta)
         xbeta[xbeta > 30] = 30
@@ -75,10 +75,10 @@ def gen_data(n, p, family, k, rho=0, sigma=1, beta=None, censoring=True, c=1, sc
 
     elif family == "cox":
         m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
-        if beta is None:
+        if coef_ is None:
             Tbeta[nonzero] = np.random.uniform(2*m, 10*m, k)
         else:
-            Tbeta = beta
+            Tbeta = coef_
 
         time = np.power(-np.log(np.random.uniform(0, 1, n)) /
                         np.exp(np.matmul(x, Tbeta)), 1/scal)
@@ -134,7 +134,7 @@ def beta_generator(k, M):
     return beta_value
 
 
-def gen_data_splicing(family="gaussian", n=100, p=100, k=10, SNR=1, rho=0.5, beta=None, M=1, sparse_ratio=None):
+def gen_data_splicing(family="gaussian", n=100, p=100, k=10, SNR=1, rho=0.5, coef_=None, M=1, sparse_ratio=None):
     Sigma = np.ones(p*p).reshape(p, p) * rho
     ones = np.ones([n, 1])
     for i in range(p):
@@ -158,10 +158,10 @@ def gen_data_splicing(family="gaussian", n=100, p=100, k=10, SNR=1, rho=0.5, bet
     Nonzero = sample(p, k)
     # Nonzero = np.array([0, 1, 2])
     # Nonzero[:k] = 1
-    if beta is None:
+    if coef_ is None:
         Tbeta = sparse_beta_generator(p, Nonzero, k, M)
     else:
-        Tbeta = beta
+        Tbeta = coef_
 
     if family == "multigaussian" or family == "gaussian":
         eta = np.matmul(X, Tbeta)
