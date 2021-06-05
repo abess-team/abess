@@ -263,12 +263,12 @@ class bess_base(BaseEstimator):
             print(1)
             y = np.zeros(n)
 
-        print("y: ")
-        print(y)
+        # print("y: ")
+        # print(y)
 
-        print("X: ")
-        print(X)
-        print(X.dtype)
+        # print("X: ")
+        # print(X)
+        # print(X.dtype)
 
         if self.algorithm_type == "Pdas":
             algorithm_type_int = 1
@@ -610,21 +610,28 @@ class bess_base(BaseEstimator):
             y = np.zeros(xbeta.size)
             y[xbeta > 0] = 1
 
-            xbeta[xbeta > 25] = 25
-            xbeta[xbeta < -25] = -25
-            xbeta_exp = np.exp(xbeta)
-            pr = xbeta_exp / (xbeta_exp + 1)
+            # xbeta[xbeta > 25] = 25
+            # xbeta[xbeta < -25] = -25
+            # xbeta_exp = np.exp(xbeta)
+            # pr = xbeta_exp / (xbeta_exp + 1)
 
-            result = dict()
-            result["Y"] = y
-            result["pr"] = pr
-            return result
+            # result = dict()
+            # result["Y"] = y
+            # result["pr"] = pr
+            return y
         elif self.model_type == "Poisson":
             intercept_ = np.ones(X.shape[0]) * self.intercept_
             xbeta_exp = np.exp(np.dot(X, self.coef_) + intercept_)
-            result = dict()
-            result["lam"] = xbeta_exp
-            return result
+            # result = dict()
+            # result["lam"] = xbeta_exp
+            return xbeta_exp
+        elif self.model_type == "Multigaussian":
+            intercept_ = np.ones(X.shape[0]) * self.intercept_
+            return np.dot(X, self.coef_) + intercept_
+        elif self.model_type == "Multinomial":
+            intercept_ = np.ones(X.shape[0]) * self.intercept_
+            xbeta = np.dot(X, self.coef_) + intercept_
+            return np.argmax(xbeta)
 
     def score(self, X, y, sample_weight=None):
         # Check is fit had been called
@@ -647,8 +654,8 @@ class bess_base(BaseEstimator):
             y = np.zeros(xbeta.size)
             y[xbeta > 0] = 1
 
-            xbeta[xbeta > 25] = 25
-            xbeta[xbeta < -25] = -25
+            # xbeta[xbeta > 25] = 25
+            # xbeta[xbeta < -25] = -25
             xbeta_exp = np.exp(xbeta)
             pr = xbeta_exp / (xbeta_exp + 1)
 
