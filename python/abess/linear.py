@@ -7,6 +7,7 @@ import numbers
 
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
+from .metrics import concordance_index_censored
 
 # from time import time
 
@@ -643,32 +644,38 @@ class bess_base(BaseEstimator):
         if X.shape[1] != self.n_features_in_:
             raise ValueError("X.shape[1] should be " + str(self._p))
 
-        if self.model_type == "Lm":
+        if self.model_type == "Lm" or self.model_type == "Multigaussian":
             intercept_ = np.ones(X.shape[0]) * self.intercept_
             y_pre = np.dot(X, self.coef_) + intercept_
             return ((y - y_pre)*(y - y_pre)).sum()
+
         elif self.model_type == "Logistic":
             intercept_ = np.ones(X.shape[0]) * self.intercept_
             xbeta = np.dot(X, self.coef_) + intercept_
+            eta = np.exp(xbeta)
+            pr = np.exp(xbeta)
+            return (y * np.log(pr) + (np.ones(X.shape[0]) - y) * np.log(np.ones(X.shape[0]) - pr)).sum()
 
-            y = np.zeros(xbeta.size)
-            y[xbeta > 0] = 1
+        elif self.model_type == "Multinomial":
+            intercept_ = np.ones(X.shape[0]) * self.intercept_
+            xbeta = np.dot(X, self.coef_) + intercept_
+            eta = np.exp(xbeta)
+            for i in range(X.shape[0]):
+                pr = eta[i, :] / np.sum(eta[i, :])
+            return np.sum(y * np.log(pr))
 
-            # xbeta[xbeta > 25] = 25
-            # xbeta[xbeta < -25] = -25
-            xbeta_exp = np.exp(xbeta)
-            pr = xbeta_exp / (xbeta_exp + 1)
-
-            result = dict()
-            result["Y"] = y
-            result["pr"] = pr
-            return result
         elif self.model_type == "Poisson":
             intercept_ = np.ones(X.shape[0]) * self.intercept_
             xbeta_exp = np.exp(np.dot(X, self.coef_) + intercept_)
             result = dict()
             result["lam"] = xbeta_exp
             return result
+
+        elif self.model_type == "Cox":
+            risk_score = np.dot(X, self.coef_)
+            result = concordance_index_censored(
+                np.array(y[:, 1], np.bool_), y[:, 0], risk_score)
+            return result[0]
 
 
 @ fix_docs
