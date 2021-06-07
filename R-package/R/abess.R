@@ -67,6 +67,12 @@ abess <- function(x, ...) UseMethod("abess")
 # @param nlambda The number of \eqn{\lambda}s for the Powell path with sequence line search method.
 # Only valid for \code{tune.path = "psequence"}.
 #' @param always.include An integer vector containing the indexes of variables that should always be included in the model.
+#' @param group.index A vector of integers indicating the which group each variable is in.
+#' For variables in the same group, they should be located in adjacent columns of \code{x}
+#' and their corresponding index in \code{group.index} should be the same.
+#' Denote the first group as \code{1}, the second \code{2}, etc.
+#' If you do not fit a model with a group structure,
+#' please set \code{group.index = NULL} (the default).
 #' @param screening.num An integer number. Preserve \code{screening.num} number of predictors with the largest 
 #' marginal maximum likelihood estimator before running algorithm.
 #' @param normalize Options for normalization. \code{normalize = 0} for no normalization. 
@@ -83,12 +89,6 @@ abess <- function(x, ...) UseMethod("abess")
 #' Default is \code{max.splicing.iter = 20}.
 #' @param warm.start Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.
 #' @param nfolds The number of folds in cross-validation. Default is \code{nfolds = 5}.
-# @param group.index A vector of integers indicating the which group each variable is in.
-#' For variables in the same group, they should be located in adjacent columns of \code{x}
-#' and their corresponding index in \code{group.index} should be the same.
-#' Denote the first group as \code{1}, the second \code{2}, etc.
-#' If you do not fit a model with a group structure,
-#' please set \code{group.index = NULL}. Default is \code{NULL}.
 #' @param cov.update A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE}, 
 #' use a covariance-based implementation; otherwise, a naive implementation. 
 #' The naive method is more efficient than covariance-based method only when \eqn{p >> n}. 
@@ -166,14 +166,17 @@ abess <- function(x, ...) UseMethod("abess")
 #' \item{family}{Type of the model.}
 #' \item{tune.path}{The path type for tuning parameters.}
 #' \item{support.size}{The actual \code{support.size} values used. 
-#' Note that it is not necessary the same as the input 
+#' Note that it is not necessary the same as the input  
 #' if the later have non-integer values or duplicated values.}
+# \item{support.df}{The degree of freedom in each support set, 
+# in other words, the number of predictors in each group. 
+# Particularly, it would be a all one vector with length \code{nvars} when \code{group.index = NULL}.}
 #' \item{best.size}{The best support size selected by the tuning value.} 
 #' \item{tune.type}{The criterion type for tuning parameters.}
 #' \item{tune.path}{The strategy for tuning parameters.}
 #' \item{screening.vars}{The character vector specify the feature 
 #' selected by feature screening. 
-#' It would a empty character vector if \code{screening.num = 0}.}
+#' It would be an empty character vector if \code{screening.num = 0}.}
 #' \item{call}{The original call to \code{abess}.}
 # \item{type}{Either \code{"bss"} or \code{"bsrr"}.}
 #'
@@ -256,6 +259,13 @@ abess <- function(x, ...) UseMethod("abess")
 #' predict(abess_fit, newx = dataset[["x"]][1:10, ], 
 #'         support.size = c(3, 4), type = "response")
 #' 
+#' ########## Best group subset selection #############
+#' dataset <- generate.data(n, p, support.size)
+#' group_index <- rep(1:10, each = 2)
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+#'                    group.index = group_index)
+#' str(extract(abess_fit))
+#' 
 #' ################ Feature screening ################
 #' p <- 1000
 #' dataset <- generate.data(n, p, support.size)
@@ -284,6 +294,7 @@ abess.default <- function(x,
                           gs.range = NULL, 
                           lambda = 0,
                           always.include = NULL,
+                          group.index = NULL, 
                           max.splicing.iter = 20,
                           screening.num = NULL, 
                           warm.start = TRUE,
@@ -298,11 +309,6 @@ abess.default <- function(x,
                           ...)
 {
   tau <- NULL
-  group.index <- NULL
-  ## TODO:
-  # type <- c("bss", "bsrr")
-  # type <- match.arg(type)
-  # type <- type[1]
   if(length(lambda) > 1){
     stop("only a single lambda value is allowed.")
   }
@@ -474,6 +480,78 @@ abess.default <- function(x,
       stop("Rows of x must be the same as rows of y!")
   }
   
+  ## strategy for tunning
+  tune.path <- match.arg(tune.path)
+  if (tune.path == "pgsection") {
+    path_type <- 2
+  } else if (tune.path == "psequence") {
+    path_type <- 2
+  } else if (tune.path == "sequence") {
+    path_type <- 1
+  } else {
+    path_type <- 2
+  }
+  
+  ## group variable:
+  if (is.null(group.index)) {
+    g_index <- 1:nvars - 1
+    # g_df <- rep(1, nvars)
+  } else {
+    gi <- unique(group.index)
+    g_index <- match(gi, group.index) - 1
+    g_df <- c(diff(g_index), nvars - max(g_index))
+    ngroup <- length(g_index)
+    max_group_size <- max(g_df)
+  }
+  
+  # sparse level list (sequence):
+  if (is.null(support.size)) {
+    if (is.null(group.index)) {
+      s_list <- 0:min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
+    } else {
+      s_list <- 0:min(c(ngroup, round(nobs / max_group_size / log(ngroup))))
+    }
+  } else {
+    stopifnot(any(is.numeric(support.size) & support.size >= 0))
+    stopifnot(max(support.size) < nvars)
+    stopifnot(max(support.size) < nobs)
+    support.size <- sort(support.size)
+    support.size <- unique(support.size)
+    s_list <- support.size
+    # if (s_list[1] == 0) {
+    #   zero_size <- TRUE
+    # } else {
+    #   zero_size <- FALSE
+    #   s_list <- c(0, s_list)
+    # }
+  }
+  
+  # sparse range (golden-section):
+  if (is.null(gs.range)) {
+    s_min <- 0
+    if (is.null(group.index)) {
+      s_max <- min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
+    } else {
+      s_max <- min(c(ngroup, round(nobs / max_group_size / log(ngroup))))
+    }
+  } else {
+    stopifnot(length(gs.range) == 2)
+    stopifnot(any(is.numeric(gs.range) & gs.range > 0))
+    stopifnot(as.integer(gs.range)[1] != as.integer(gs.range)[2])
+    stopifnot(as.integer(max(gs.range)) <= nvars)
+    gs.range <- as.integer(gs.range)
+    s_min <- min(gs.range)
+    s_max <- max(gs.range)
+  }
+  
+  ## check compatible between group selection and support size
+  if (!is.null(group.index)) {
+    if (path_type == 1 & max(s_list) > length(gi))
+      stop("The maximum one support.size should not be larger than the number of groups!")
+    if (path_type == 2 & s_max > length(gi))
+      stop("max(gs.range) is too large. Should be smaller than the number of groups!")
+  }
+  
   ## check covariance update
   stopifnot(is.logical(cov.update))
   if (model_type == 1) {
@@ -518,38 +596,6 @@ abess.default <- function(x,
   stopifnot(is.numeric(newton.thresh) & newton.thresh > 0)
   newton_thresh <- as.double(newton.thresh)
   
-  # sparse level list (sequence):
-  if (is.null(support.size)) {
-    s_list <- 0:min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
-  } else {
-    stopifnot(any(is.numeric(support.size) & support.size >= 0))
-    stopifnot(max(support.size) < nvars)
-    stopifnot(max(support.size) < nobs)
-    support.size <- sort(support.size)
-    support.size <- unique(support.size)
-    s_list <- support.size
-    # if (s_list[1] == 0) {
-    #   zero_size <- TRUE
-    # } else {
-    #   zero_size <- FALSE
-    #   s_list <- c(0, s_list)
-    # }
-  }
-  
-  # sparse range (golden-section):
-  if (is.null(gs.range)) {
-    s_min <- 1
-    s_max <- min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
-  } else {
-    stopifnot(length(gs.range) == 2)
-    stopifnot(any(is.numeric(gs.range) & gs.range > 0))
-    stopifnot(as.integer(gs.range)[1] != as.integer(gs.range)[2])
-    stopifnot(as.integer(max(gs.range)) <= nvars)
-    gs.range <- as.integer(gs.range)
-    s_min <- min(gs.range)
-    s_max <- max(gs.range)
-  }
-  
   # tune support size method:
   tune.type <- match.arg(tune.type)
   ic_type <- switch(
@@ -564,33 +610,6 @@ abess.default <- function(x,
   if (is_cv) {
     stopifnot(is.numeric(nfolds) & nfolds >= 2)
     nfolds <- as.integer(nfolds)
-  }
-  
-  ## strategy for tunning
-  tune.path <- match.arg(tune.path)
-  if (tune.path == "pgsection") {
-    path_type <- 2
-  } else if (tune.path == "psequence") {
-    path_type <- 2
-  } else if (tune.path == "sequence") {
-    path_type <- 1
-  } else {
-    path_type <- 2
-  }
-  
-  ## group variable:
-  if (!is.null(group.index)) {
-    if (path_type == 1 & max(s_list) > length(group.index))
-      stop("The maximum one support.size should not be larger than the number of groups!")
-    if (path_type == 2 & s_max > length(group.index))
-      stop("max(gs.range) is too large. Should be smaller than the number of groups!")
-    
-    gi <- unique(group.index)
-    g_index <- match(gi, group.index) - 1
-    g_df <- c(diff(g_index), 
-              length(group.index) - g_index[length(g_index)])
-  } else {
-    g_index <- 1:nvars - 1
   }
   
   ## normalize strategy: 
@@ -745,6 +764,7 @@ abess.default <- function(x,
   result[["family"]] <- family
   result[["tune.path"]] <- tune.path
   result[["support.size"]] <- s_list
+  # result[["support.df"]] <- g_df
   result[["tune.type"]] <- ifelse(is_cv == TRUE, "cv", 
                                   c("AIC", "BIC", "GIC", "EBIC")[ic_type])  
   result[["gs.range"]] <- gs.range
