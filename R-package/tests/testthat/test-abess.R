@@ -311,3 +311,5 @@ test_that("Sparse matrix works", {
   abess_fit2[["call"]] <- NULL
   expect_true(all.equal(abess_fit1, abess_fit2))
 })
+
+

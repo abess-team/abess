@@ -177,19 +177,19 @@ public:
 
     if (ic_type == 1)
     {
-      return loss + 2.0 * algorithm->get_group_df();
+      return loss + 2.0 * algorithm->get_effective_number();
     }
     else if (ic_type == 2)
     {
-      return loss + this->ic_coef * (double(train_n)) * algorithm->get_group_df();
+      return loss + this->ic_coef * (double(train_n)) * algorithm->get_effective_number();
     }
     else if (ic_type == 3)
     {
-      return loss + this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_group_df();
+      return loss + this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
     }
     else if (ic_type == 4)
     {
-      return loss + this->ic_coef * (log(double(train_n)) + 2 * log(double(N))) * algorithm->get_group_df();
+      return loss + this->ic_coef * (log(double(train_n)) + 2 * log(double(N))) * algorithm->get_effective_number();
     }
     else
       return 0;

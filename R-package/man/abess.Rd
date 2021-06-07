@@ -19,6 +19,7 @@
   gs.range = NULL,
   lambda = 0,
   always.include = NULL,
+  group.index = NULL,
   max.splicing.iter = 20,
   screening.num = NULL,
   warm.start = TRUE,
@@ -90,6 +91,13 @@ Not available now.}
 
 \item{always.include}{An integer vector containing the indexes of variables that should always be included in the model.}
 
+\item{group.index}{A vector of integers indicating the which group each variable is in.
+For variables in the same group, they should be located in adjacent columns of \code{x}
+and their corresponding index in \code{group.index} should be the same.
+Denote the first group as \code{1}, the second \code{2}, etc.
+If you do not fit a model with a group structure,
+please set \code{group.index = NULL} (the default).}
+
 \item{max.splicing.iter}{The maximum number of performing splicing algorithm. 
 In most of the case, only a few times of splicing iteration can guarantee the convergence. 
 Default is \code{max.splicing.iter = 20}.}
@@ -99,12 +107,7 @@ marginal maximum likelihood estimator before running algorithm.}
 
 \item{warm.start}{Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.}
 
-\item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.
-For variables in the same group, they should be located in adjacent columns of \code{x}
-and their corresponding index in \code{group.index} should be the same.
-Denote the first group as \code{1}, the second \code{2}, etc.
-If you do not fit a model with a group structure,
-please set \code{group.index = NULL}. Default is \code{NULL}.}
+\item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.}
 
 \item{cov.update}{A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE}, 
 use a covariance-based implementation; otherwise, a naive implementation. 
@@ -162,14 +165,14 @@ while a list of \code{length(support.size)} intercept vector (with size \code{nc
 \item{family}{Type of the model.}
 \item{tune.path}{The path type for tuning parameters.}
 \item{support.size}{The actual \code{support.size} values used. 
-Note that it is not necessary the same as the input 
+Note that it is not necessary the same as the input  
 if the later have non-integer values or duplicated values.}
 \item{best.size}{The best support size selected by the tuning value.} 
 \item{tune.type}{The criterion type for tuning parameters.}
 \item{tune.path}{The strategy for tuning parameters.}
 \item{screening.vars}{The character vector specify the feature 
 selected by feature screening. 
-It would a empty character vector if \code{screening.num = 0}.}
+It would be an empty character vector if \code{screening.num = 0}.}
 \item{call}{The original call to \code{abess}.}
 }
 \description{
@@ -242,11 +245,27 @@ abess_fit <- abess(dataset[["x"]], dataset[["y"]],
 predict(abess_fit, newx = dataset[["x"]][1:10, ], 
         support.size = c(3, 4), type = "response")
 
+########## Best group subset selection #############
+dataset <- generate.data(n, p, support.size)
+group_index <- rep(1:10, each = 2)
+abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                   group.index = group_index)
+str(extract(abess_fit))
+
 ################ Feature screening ################
 p <- 1000
 dataset <- generate.data(n, p, support.size)
 abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
                    screening.num = 100)
+str(extract(abess_fit))
+
+################ Sparse predictor ################
+require(Matrix)
+p <- 1000
+dataset <- generate.data(n, p, support.size)
+dataset[["x"]][abs(dataset[["x"]]) < 1] <- 0
+dataset[["x"]] <- Matrix(dataset[["x"]])
+abess_fit <- abess(dataset[["x"]], dataset[["y"]])
 str(extract(abess_fit))
 }
 \donttest{
