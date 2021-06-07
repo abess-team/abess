@@ -281,3 +281,33 @@ class TestClass:
         # reg.fit(new_x, data.y)
         # assert model.coef_[nonzero_fit] == approx(reg.coef_, rel=1e-5, abs=1e-5)
         assert (nonzero_true == nonzero_fit).all()
+
+    def test_SPCA(self):
+        n = 2000
+        p = 10
+        s = 2
+
+        model = abessSPCA(path_type="seq", support_size=range(0, s + 1), ic_type='ebic', is_screening=False, screening_size=20,
+                    K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                    exchange_num=2, tau=0.01 * np.log(n*p) / n, 
+                    primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=1)
+        
+        np.random.seed(2)
+        x1 = np.random.randn(n, 1)
+        x1 /= np.linalg.norm(x1)
+        test_x = x1.dot(np.random.randn(1, p)) + 0.01 * np.random.randn(n, p)
+        test_x = test_x - test_x.mean(axis = 0)
+        test_y = np.ones(n)   # any with length n
+
+        g_index = list(range(0, p)) # group information
+    
+        model.fit(test_x, test_y, is_normal = False, group = g_index)
+
+        print(model.coef_)
+
+        xb = test_x.dot(model.coef_)
+        explain = xb.T.dot(xb)
+        print( 'explained ratio: ', explain / sum(np.diagonal(test_x.T.dot(test_x))) )
+
+        print( 'non-zero = ', np.count_nonzero(model.coef_) )
+

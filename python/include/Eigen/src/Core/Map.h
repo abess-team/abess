@@ -11,7 +11,7 @@
 #ifndef EIGEN_MAP_H
 #define EIGEN_MAP_H
 
-namespace Eigen { 
+namespace Eigen {
 
 namespace internal {
 template<typename PlainObjectType, int MapOptions, typename StrideType>
@@ -20,11 +20,17 @@ struct traits<Map<PlainObjectType, MapOptions, StrideType> >
 {
   typedef traits<PlainObjectType> TraitsBase;
   enum {
+    PlainObjectTypeInnerSize = ((traits<PlainObjectType>::Flags&RowMajorBit)==RowMajorBit)
+                             ? PlainObjectType::ColsAtCompileTime
+                             : PlainObjectType::RowsAtCompileTime,
+
     InnerStrideAtCompileTime = StrideType::InnerStrideAtCompileTime == 0
                              ? int(PlainObjectType::InnerStrideAtCompileTime)
                              : int(StrideType::InnerStrideAtCompileTime),
     OuterStrideAtCompileTime = StrideType::OuterStrideAtCompileTime == 0
-                             ? int(PlainObjectType::OuterStrideAtCompileTime)
+                             ? (InnerStrideAtCompileTime==Dynamic || PlainObjectTypeInnerSize==Dynamic
+                                ? Dynamic
+                                : int(InnerStrideAtCompileTime) * int(PlainObjectTypeInnerSize))
                              : int(StrideType::OuterStrideAtCompileTime),
     Alignment = int(MapOptions)&int(AlignedMask),
     Flags0 = TraitsBase::Flags & (~NestByRefBit),
@@ -98,19 +104,20 @@ template<typename PlainObjectType, int MapOptions, typename StrideType> class Ma
     EIGEN_DEVICE_FUNC
     inline PointerType cast_to_pointer_type(PointerArgType ptr) { return ptr; }
 
-    EIGEN_DEVICE_FUNC
+    EIGEN_DEVICE_FUNC EIGEN_CONSTEXPR
     inline Index innerStride() const
     {
       return StrideType::InnerStrideAtCompileTime != 0 ? m_stride.inner() : 1;
     }
 
-    EIGEN_DEVICE_FUNC
+    EIGEN_DEVICE_FUNC EIGEN_CONSTEXPR
     inline Index outerStride() const
     {
       return StrideType::OuterStrideAtCompileTime != 0 ? m_stride.outer()
-           : IsVectorAtCompileTime ? this->size()
-           : int(Flags)&RowMajorBit ? this->cols()
-           : this->rows();
+           : internal::traits<Map>::OuterStrideAtCompileTime != Dynamic ? Index(internal::traits<Map>::OuterStrideAtCompileTime)
+           : IsVectorAtCompileTime ? (this->size() * innerStride())
+           : int(Flags)&RowMajorBit ? (this->cols() * innerStride())
+           : (this->rows() * innerStride());
     }
 
     /** Constructor in the fixed-size case.

@@ -4,11 +4,11 @@
 #ifndef SRC_PATH_H
 #define SRC_PATH_H
 
-#define TEST
+// #define TEST
 
 #ifdef R_BUILD
 #include <RcppEigen.h>
-// [[Rcpp::depends(RcppEigen)]]
+// [[Rcpp::depends(RcppEigen)]s]
 using namespace Eigen;
 #else
 
