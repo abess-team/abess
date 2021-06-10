@@ -124,6 +124,35 @@
 
     
     
+<div id="coxph-regression" class="section level2">
+<h2 class="hasAnchor">
+<a href="#coxph-regression" class="anchor"></a>CoxPH Regression</h2>
+<p>Cox Proportional Hazrds (CoxPH) regression is to describe the survival according to several corvariates. The model is as follow: <span class="math display">\[
+h(t) = h_0(t)\exp(\eta).
+\]</span> where,</p>
+<ul>
+<li><span class="math inline">\(\eta = x\beta.\)</span></li>
+<li>
+<span class="math inline">\(t\)</span> is the survival time.</li>
+<li>
+<span class="math inline">\(h(t)\)</span> is the hazard function which evaluate the risk of dying at time <span class="math inline">\(t\)</span>.</li>
+<li>
+<span class="math inline">\(h_0(t)\)</span> is called the baseline hazard. It describes value of the hazard if all the predictors are zero.</li>
+<li>
+<span class="math inline">\(\beta\)</span> measures the impact of covariates.</li>
+</ul>
+<p>Consider two case <span class="math inline">\(i\)</span> and <span class="math inline">\(i'\)</span> that have different x values. Their hazard function can be simply written as follow</p>
+<p><span class="math display">\[
+h_i(t) = h_0(t)\exp(\eta_i) = h_0(t)\exp(x_i\beta)
+\]</span> and <span class="math display">\[
+h_{i'}(t) = h_0(t)\exp(\eta_{i'}) = h_0(t)\exp(x_{i'}\beta).
+\]</span> The hazard ratio for these two cases is</p>
+<p><span class="math display">\[\begin{align*}
+\frac{h_i(t)}{h_{i'}(t)} &amp; = \frac{h_0(t)\exp(\eta_i)}{h_0(t)\exp(\eta_{i'})} \\
+                         &amp; = \frac{\exp(\eta_i)}{\exp(\eta_{i'})}
+\end{align*}\]</span></p>
+<p>which is independent of time.</p>
+</div>
 <div id="lung-cancer-dataset" class="section level2">
 <h2 class="hasAnchor">
 <a href="#lung-cancer-dataset" class="anchor"></a>Lung Cancer Dataset</h2>
