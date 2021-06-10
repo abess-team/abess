@@ -1254,7 +1254,9 @@ public:
         // d = (x.transpose() * h * x + 2 * this->lambda_level * lambdamat).ldlt().solve(g);
         d = (x.transpose() * h * x).ldlt().solve(x.transpose() * g - 2 * this->lambda_level * beta0);
       }
+#ifdef TEST
       cout << "d: " << d << endl;
+#endif
 
       // theta = x * beta0;
       // for (int i = 0; i < n; i++)
