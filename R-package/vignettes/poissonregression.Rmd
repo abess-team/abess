@@ -64,7 +64,7 @@ print(abess_fit)
 Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value.
 
 ```{r}
-predict(abess_fit, newx = dat$x, support.size = c(3, 4))
+head(predict(abess_fit, newx = dat$x, support.size = c(3, 4)))
 ```
 
 

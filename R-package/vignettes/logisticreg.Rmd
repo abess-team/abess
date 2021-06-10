@@ -1,12 +1,12 @@
 ---
 title: "Logistic Regression"
-author: "胡励元 17306030"
+author: "Liyuan Hu"
 date: "2021/5/27"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 ```
 
 ## Titanic Dataset
@@ -71,6 +71,7 @@ The `plot.abess()` function helps to visualize the change of models with the cha
 ```{r}
 plot(abess_fit, label=T)
 ```
+
 The graph shows that, beginning from the most dense model, the second variable (`Sex`) is included in the active set until the support size reaches 0.
 
 We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size. 
