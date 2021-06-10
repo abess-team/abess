@@ -826,11 +826,11 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   {
 #ifdef TEST
     cout << "screening_A: " << screening_A << endl;
+    cout << "p: " << x.cols() << endl;
 #endif
     T2 beta_screening_A;
     T2 beta;
     T3 coef0;
-    cout << "p: " << x.cols() << endl;
     coef_set_zero(x.cols(), M, beta, coef0);
 
 #ifndef R_BUILD
