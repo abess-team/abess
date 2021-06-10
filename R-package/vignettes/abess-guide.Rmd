@@ -104,7 +104,7 @@ Suppose we are interested in retaining 1000 variables with the largest marginal 
 
 ```{r}
 abess_fit <- abess(y ~ ., data = crime, screening.num = 1000)
-abess_fit
+str(abess_fit)
 ```
 The returned object of `abess` includes the features selected by screening. We exhibit six variables of them:
 ```{r}
