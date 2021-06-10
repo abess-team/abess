@@ -2,7 +2,16 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
+  MultiClassification: MultiClassification.html
+  MultiTaskLearning: MultiTaskLearning.html
   abess-guide: abess-guide.html
-  test: test.html
-last_built: 2021-05-29T15:28Z
+  coxreg: coxreg.html
+  groupselection: groupselection.html
+  integrateSIS: integrateSIS.html
+  linearreg: linearreg.html
+  logisticreg: logisticreg.html
+  nuisancereg: nuisancereg.html
+  poissonregression: poissonregression.html
+  regularizedbess: regularizedbess.html
+last_built: 2021-06-10T08:41Z
 

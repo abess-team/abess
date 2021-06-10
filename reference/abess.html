@@ -97,10 +97,37 @@ in polynomial times." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/MultiClassification.html">Multi-class Classification</a>
+    </li>
+    <li>
+      <a href="../articles/MultiTaskLearning.html">Multi-Task Learning</a>
+    </li>
+    <li>
       <a href="../articles/abess-guide.html">An Introduction to `abess`</a>
     </li>
     <li>
-      <a href="../articles/test.html">test</a>
+      <a href="../articles/coxreg.html">CoxPH Regression</a>
+    </li>
+    <li>
+      <a href="../articles/groupselection.html">Group Selection</a>
+    </li>
+    <li>
+      <a href="../articles/integrateSIS.html">Integrate SIS</a>
+    </li>
+    <li>
+      <a href="../articles/linearreg.html">Linear Regression</a>
+    </li>
+    <li>
+      <a href="../articles/logisticreg.html">Logistic Regression</a>
+    </li>
+    <li>
+      <a href="../articles/nuisancereg.html">Nuisance Regression</a>
+    </li>
+    <li>
+      <a href="../articles/poissonregression.html">Poisson Regression</a>
+    </li>
+    <li>
+      <a href="../articles/regularizedbess.html">Regularized BeSS</a>
     </li>
   </ul>
 </li>
@@ -153,6 +180,7 @@ in polynomial times.</p>
   gs.range <span class='op'>=</span> <span class='cn'>NULL</span>,
   lambda <span class='op'>=</span> <span class='fl'>0</span>,
   always.include <span class='op'>=</span> <span class='cn'>NULL</span>,
+  group.index <span class='op'>=</span> <span class='cn'>NULL</span>,
   max.splicing.iter <span class='op'>=</span> <span class='fl'>20</span>,
   screening.num <span class='op'>=</span> <span class='cn'>NULL</span>,
   warm.start <span class='op'>=</span> <span class='cn'>TRUE</span>,
@@ -176,7 +204,8 @@ in polynomial times.</p>
     <tr>
       <th>x</th>
       <td><p>Input matrix, of dimension \(n \times p\); each row is an observation
-vector and each column is a predictor/feature/variable.</p></td>
+vector and each column is a predictor/feature/variable. 
+Can be in sparse matrix format (inherit from class <code>"dgCMatrix"</code> in package <code>Matrix</code>).</p></td>
     </tr>
     <tr>
       <th>y</th>
@@ -244,11 +273,20 @@ Not available now.</p></td>
     </tr>
     <tr>
       <th>lambda</th>
-      <td><p>A single lambda value for regulaized best subset selection. Default is 0.</p></td>
+      <td><p>A single lambda value for regularized best subset selection. Default is 0.</p></td>
     </tr>
     <tr>
       <th>always.include</th>
       <td><p>An integer vector containing the indexes of variables that should always be included in the model.</p></td>
+    </tr>
+    <tr>
+      <th>group.index</th>
+      <td><p>A vector of integers indicating the which group each variable is in.
+For variables in the same group, they should be located in adjacent columns of <code>x</code>
+and their corresponding index in <code>group.index</code> should be the same.
+Denote the first group as <code>1</code>, the second <code>2</code>, etc.
+If you do not fit a model with a group structure,
+please set <code>group.index = NULL</code> (the default).</p></td>
     </tr>
     <tr>
       <th>max.splicing.iter</th>
@@ -267,12 +305,7 @@ marginal maximum likelihood estimator before running algorithm.</p></td>
     </tr>
     <tr>
       <th>nfolds</th>
-      <td><p>The number of folds in cross-validation. Default is <code>nfolds = 5</code>.
-For variables in the same group, they should be located in adjacent columns of <code>x</code>
-and their corresponding index in <code>group.index</code> should be the same.
-Denote the first group as <code>1</code>, the second <code>2</code>, etc.
-If you do not fit a model with a group structure,
-please set <code>group.index = NULL</code>. Default is <code>NULL</code>.</p></td>
+      <td><p>The number of folds in cross-validation. Default is <code>nfolds = 5</code>.</p></td>
     </tr>
     <tr>
       <th>cov.update</th>
@@ -357,14 +390,14 @@ while a list of <code><a href='https://rdrr.io/r/base/length.html'>length(suppor
 <dt>family</dt><dd><p>Type of the model.</p></dd>
 <dt>tune.path</dt><dd><p>The path type for tuning parameters.</p></dd>
 <dt>support.size</dt><dd><p>The actual <code>support.size</code> values used. 
-Note that it is not necessary the same as the input 
+Note that it is not necessary the same as the input  
 if the later have non-integer values or duplicated values.</p></dd>
 <dt>best.size</dt><dd><p>The best support size selected by the tuning value.</p></dd> 
 <dt>tune.type</dt><dd><p>The criterion type for tuning parameters.</p></dd>
 <dt>tune.path</dt><dd><p>The strategy for tuning parameters.</p></dd>
 <dt>screening.vars</dt><dd><p>The character vector specify the feature 
 selected by feature screening. 
-It would a empty character vector if <code>screening.num = 0</code>.</p></dd>
+It would be an empty character vector if <code>screening.num = 0</code>.</p></dd>
 <dt>call</dt><dd><p>The original call to <code>abess</code>.</p></dd>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -410,31 +443,137 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
 <span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span>, <span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"y"</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span>
 <span class='co'>## helpful generic functions:</span>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>abess_fit</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Call:
+</div><div class='output co'>#&gt; $beta
+#&gt; 20 x 21 sparse Matrix of class "dgCMatrix"</div><div class='output co'>#&gt; <span class='message'>   [[ suppressing 21 column names ‘0’, ‘1’, ‘2’ ... ]]</span></div><div class='output co'>#&gt;                                                                            
+#&gt; x1  .  .        .        .         .         .          .          .       
+#&gt; x2  .  .        .        .         .         .          .          .       
+#&gt; x3  .  .        .        .         .         .          .          .       
+#&gt; x4  .  .        .        .         .         .          .          .       
+#&gt; x5  .  .        .        .         .         .          .          .       
+#&gt; x6  . 90.93675 88.46201 83.27080  82.42412  82.269182  80.894323  81.413653
+#&gt; x7  .  .        .        .         .         .          .          .       
+#&gt; x8  .  .        .        .         .         .          .          .       
+#&gt; x9  .  .        .        .         .         .          7.083253   5.705741
+#&gt; x10 .  .        .        .         .         .          .          5.140141
+#&gt; x11 .  .        .        .         .         .          .          .       
+#&gt; x12 .  .        .        .         .         .          .          .       
+#&gt; x13 .  .        .        .         .         .          .          .       
+#&gt; x14 .  .       88.39802 89.68994  89.03169  89.154925  90.810618  90.502757
+#&gt; x15 .  .        .        .         .         .          .          .       
+#&gt; x16 .  .        .        .       -12.62258 -13.099060 -13.053154 -14.121241
+#&gt; x17 .  .        .        .         .         .          .          .       
+#&gt; x18 .  .        .       43.41085  43.34325  44.693972  45.724909  45.766481
+#&gt; x19 .  .        .        .         .        -8.249936 -10.360267  -9.377665
+#&gt; x20 .  .        .        .         .         .          .          .       
+#&gt;                                                                      
+#&gt; x1    .         -4.311383  -4.305357  -4.758293  -4.787077  -4.833293
+#&gt; x2    .          .          .          .          .         -3.069055
+#&gt; x3    .          .          .          .          .          .       
+#&gt; x4    4.737632   4.436829   4.694393   5.231382   5.362894   5.132237
+#&gt; x5    .          .          .          .          .          .       
+#&gt; x6   81.890227  81.362902  80.969031  81.797825  82.011974  81.912508
+#&gt; x7    .          .          .          .          .          .       
+#&gt; x8    .          .          .          .          2.897936   3.136912
+#&gt; x9    4.926231   5.315610   5.754848   5.409376   5.577577   5.718250
+#&gt; x10   5.004529   5.233370   4.513066   4.635759   4.392895   4.184935
+#&gt; x11   .          .          .          .          .          .       
+#&gt; x12   .          .          .          .          .          .       
+#&gt; x13   .          .          .          .          .          .       
+#&gt; x14  91.103624  90.767235  90.560128  90.414093  90.195028  90.023473
+#&gt; x15   .          .         -3.553687  -4.295910  -5.095257  -5.432426
+#&gt; x16 -15.246701 -15.438971 -15.334359 -15.306378 -15.897497 -15.811214
+#&gt; x17   .          .          .          .          .          .       
+#&gt; x18  45.999770  46.032097  46.471515  46.697461  47.128934  46.812479
+#&gt; x19  -9.860829 -10.288967 -10.174049  -9.592866  -9.602514  -9.799319
+#&gt; x20   .          .          .          3.737737   3.226034   3.051706
+#&gt;                                                                      
+#&gt; x1   -5.170359  -4.932314  -4.890362  -4.814024  -5.059872  -5.048278
+#&gt; x2   -3.386495  -3.184265  -3.152089  -3.284260  -3.456571  -3.603829
+#&gt; x3    .          .          .          .          .          .       
+#&gt; x4    5.031552   5.070695   5.057045   4.920843   4.686339   4.843479
+#&gt; x5    1.906360   1.839260   1.879375   1.938095   1.924508   1.846454
+#&gt; x6   82.113501  82.109334  82.137921  82.183669  82.214359  82.076130
+#&gt; x7    .          .          .         -1.108874  -1.357990  -1.536650
+#&gt; x8    3.003697   3.016994   3.052819   3.169453   3.357563   3.453579
+#&gt; x9    5.413335   5.684770   5.856564   5.844679   5.799269   5.925383
+#&gt; x10   4.497630   4.354313   4.363362   4.322132   4.135582   3.829576
+#&gt; x11   .          1.554792   1.452349   1.470901   1.471137   1.473565
+#&gt; x12   .          .          1.367504   1.378761   1.248055   1.333718
+#&gt; x13   .          .          .          .          .          1.093250
+#&gt; x14  89.752709  89.650176  89.545367  89.393302  89.252100  89.048076
+#&gt; x15  -5.517211  -5.694537  -5.654501  -5.582737  -5.526921  -5.558094
+#&gt; x16 -15.808811 -15.893498 -15.978236 -16.130170 -15.989344 -15.955020
+#&gt; x17   .          .          .          .          1.229932   1.316791
+#&gt; x18  46.737771  47.016097  47.103683  47.057764  46.876621  47.185611
+#&gt; x19  -9.611167  -9.789502  -9.840679  -9.815986  -9.730511  -9.892417
+#&gt; x20   2.970208   2.909876   3.008402   3.067062   3.167831   3.251992
+#&gt;                
+#&gt; x1   -5.0654818
+#&gt; x2   -3.5631837
+#&gt; x3    0.3832451
+#&gt; x4    4.7885206
+#&gt; x5    1.8338942
+#&gt; x6   82.1163834
+#&gt; x7   -1.5131138
+#&gt; x8    3.4512069
+#&gt; x9    5.9271002
+#&gt; x10   3.9212066
+#&gt; x11   1.4706635
+#&gt; x12   1.3544628
+#&gt; x13   1.0550544
+#&gt; x14  89.0892560
+#&gt; x15  -5.4741095
+#&gt; x16 -15.9063760
+#&gt; x17   1.2850703
+#&gt; x18  47.1838950
+#&gt; x19  -9.9318512
+#&gt; x20   3.3080552
+#&gt; 
+#&gt; $intercept
+#&gt;  [1] -27.441242 -23.392796  -8.197212  -4.369861  -4.767241  -3.536711
+#&gt;  [7]  -3.007812  -3.193331  -3.240146  -2.785152  -2.551805  -2.220082
+#&gt; [13]  -2.203540  -2.324845  -2.288048  -2.259092  -2.054467  -2.313102
+#&gt; [19]  -2.276569  -2.556880  -2.535965
+#&gt; 
+#&gt; $dev
+#&gt;  [1] 17805.684 10163.270  4407.395  1842.745  1667.015  1594.016  1543.874
+#&gt;  [8]  1518.615  1500.112  1486.034  1473.749  1460.411  1452.290  1444.224
+#&gt; [15]  1439.776  1437.522  1435.833  1434.539  1433.386  1432.351  1432.225
+#&gt; 
+#&gt; $tune.value
+#&gt;  [1] 978.7273 927.2286 848.2540 765.6262 760.1791 760.2763 761.6551 764.5805
+#&gt;  [9] 767.9297 771.5618 775.3067 778.9725 782.9899 787.0080 791.2745 795.6929
+#&gt; [17] 800.1504 804.6352 809.1298 813.6327 813.6239
+#&gt; 
+#&gt; $nobs
+#&gt; [1] 100
+#&gt; 
+#&gt; $nvars
+#&gt; [1] 20
+#&gt; 
+#&gt; $family
+#&gt; [1] "gaussian"
+#&gt; 
+#&gt; $tune.path
+#&gt; [1] "sequence"
+#&gt; 
+#&gt; $support.size
+#&gt;  [1]  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+#&gt; 
+#&gt; $tune.type
+#&gt; [1] "GIC"
+#&gt; 
+#&gt; $best.size
+#&gt; [1] 4
+#&gt; 
+#&gt; $screening.vars
+#&gt; character(0)
+#&gt; 
+#&gt; $call
 #&gt; abess.default(x = dataset[["x"]], y = dataset[["y"]])
 #&gt; 
-#&gt;    support.size       dev      GIC
-#&gt; 1             0 17805.684 978.7273
-#&gt; 2             1 10163.270 927.2286
-#&gt; 3             2  4407.395 848.2540
-#&gt; 4             3  1842.745 765.6262
-#&gt; 5             4  1667.015 760.1791
-#&gt; 6             5  1594.016 760.2763
-#&gt; 7             6  1543.874 761.6551
-#&gt; 8             7  1518.615 764.5805
-#&gt; 9             8  1500.112 767.9297
-#&gt; 10            9  1486.034 771.5618
-#&gt; 11           10  1473.749 775.3067
-#&gt; 12           11  1460.411 778.9725
-#&gt; 13           12  1452.290 782.9899
-#&gt; 14           13  1444.224 787.0080
-#&gt; 15           14  1439.776 791.2745
-#&gt; 16           15  1437.522 795.6929
-#&gt; 17           16  1435.833 800.1504
-#&gt; 18           17  1434.539 804.6352
-#&gt; 19           18  1433.386 809.1298
-#&gt; 20           19  1432.351 813.6327
-#&gt; 21           20  1432.225 813.6239</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>abess_fit</span>, support.size <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+#&gt; attr(,"class")
+#&gt; [1] "abess"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>abess_fit</span>, support.size <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 21 x 1 sparse Matrix of class "dgCMatrix"
 #&gt;                     3
 #&gt; (intercept) -4.369861
@@ -496,63 +635,257 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
 <span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span>, <span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"y"</span><span class='op'>]</span><span class='op'>]</span>, 
                    family <span class='op'>=</span> <span class='st'>"binomial"</span>, tune.type <span class='op'>=</span> <span class='st'>"cv"</span><span class='op'>)</span>
 <span class='va'>abess_fit</span>
-</div><div class='output co'>#&gt; Call:
+</div><div class='output co'>#&gt; $beta
+#&gt; 20 x 21 sparse Matrix of class "dgCMatrix"</div><div class='output co'>#&gt; <span class='message'>   [[ suppressing 21 column names ‘0’, ‘1’, ‘2’ ... ]]</span></div><div class='output co'>#&gt;                                                                              
+#&gt; x1  . .        .        .         .          .           .           .       
+#&gt; x2  . .        .        .         .          .           .           .       
+#&gt; x3  . .        .        .         .          .          -0.6262163   .       
+#&gt; x4  . .        .        .         .          .           .           .       
+#&gt; x5  . .        .        .         .          .           .           .       
+#&gt; x6  . 1.960001 3.697052 4.312354  4.3909398  4.6671273 158.4224523 145.989656
+#&gt; x7  . .        .        .         .          .           .           .       
+#&gt; x8  . .        .        .         .          .           .          -8.721979
+#&gt; x9  . .        .        .         .          .           .          21.851788
+#&gt; x10 . .        .        .         .          .           .           .       
+#&gt; x11 . .        .        .         .          .           .           .       
+#&gt; x12 . .        .        .         .          .           .           .       
+#&gt; x13 . .        .        .         .          .           .           .       
+#&gt; x14 . .        3.334981 4.025376  4.1903911  4.3703640 121.7748476 127.916089
+#&gt; x15 . .        .        .         .          0.3850722  39.2772700   .       
+#&gt; x16 . .        .        .        -0.5816844 -0.6070002 -24.7496161   .       
+#&gt; x17 . .        .        .         .          .           .         -40.522160
+#&gt; x18 . .        .        1.248509  1.3822084  1.4489915  50.5167870  31.090399
+#&gt; x19 . .        .        .         .          .           .         -27.924328
+#&gt; x20 . .        .        .         .          .           .           .       
+#&gt;                                                                                
+#&gt; x1  -65.200637   7.055349 -19.22196 -50.651085 -54.458453 -59.52695 -81.5209266
+#&gt; x2    .          .          .         .          .          .         .        
+#&gt; x3    .         17.878612  17.97695  30.057418  36.299921  21.26106   .        
+#&gt; x4    .          .          .         .          .          .         .        
+#&gt; x5    .          .          .         .          .          .         .        
+#&gt; x6  139.614302 107.771713 232.16959 250.207457 234.299378 295.69526 265.8881640
+#&gt; x7  -27.461622   .          .         .          .          .         6.4068270
+#&gt; x8    .        -30.316896 -41.71627 -66.979464 -24.584569 -51.26924 -54.6625590
+#&gt; x9   17.552651  40.197429  14.15904  53.383737  56.542284  43.69829  81.5223466
+#&gt; x10   .        -15.325139  28.89778   .          1.219127  36.54042  32.3874534
+#&gt; x11   7.735533   .          .         .         66.380546  38.96180  72.9708644
+#&gt; x12   .          .          .         .          .          .        -0.5646739
+#&gt; x13   .          .          .        35.580548   .          .         .        
+#&gt; x14 144.396450 144.068095 234.04787 254.995943 221.539577 268.96029 290.6563866
+#&gt; x15   .        -14.138926   2.42748  29.181521   .         60.26425  27.7459636
+#&gt; x16   .          .          .         .        -29.084353 -93.30666 -53.9791862
+#&gt; x17   .          .          .        -1.352729 -16.034322 -10.83715   0.7406790
+#&gt; x18  40.659324   .         94.18109  96.156342 101.316369  66.77833 122.9810187
+#&gt; x19  11.754333 -23.097637 -46.04599 -87.096184 -93.577870 -18.89432 -76.0615319
+#&gt; x20   .          .          .         .          .          .         .        
+#&gt;                                                                         
+#&gt; x1   -55.39036   .        -50.44687   -7.994213  -44.289645  -22.8482936
+#&gt; x2     .       -31.64566    .        -31.849387   -7.179617  -46.3852707
+#&gt; x3    50.64270  41.00193   63.49774   56.020924   55.091950  110.7955131
+#&gt; x4   -49.58250 -12.97172  -35.34380  -26.430352    9.716217  -44.4677617
+#&gt; x5     .         .         20.89356    .           .          -9.2659321
+#&gt; x6   292.85154 292.85325  265.86797  318.422352  319.213578  350.6026547
+#&gt; x7     .         .          .          .          26.703603   33.6405780
+#&gt; x8   -46.37887 -25.97653  -50.87188  -44.662820  -58.786188  -69.2094046
+#&gt; x9   115.24375  79.11920  115.29815   79.314890   91.490639   80.4460181
+#&gt; x10   71.02796   .         53.98498   60.442226   77.468041   47.1677674
+#&gt; x11   70.31430  51.44441   64.66230   54.685496   35.496225   72.7721549
+#&gt; x12    .       -29.82889    .         27.870408   14.470780  -22.7402635
+#&gt; x13   31.68519  87.04419   52.71110   60.593343   65.893145   51.8733805
+#&gt; x14  309.44196 315.76866  297.70562  350.484385  380.737086  385.5429142
+#&gt; x15   58.43603  25.94080   60.67423   71.977973   92.248477   91.0026967
+#&gt; x16  -31.72647 -67.84567  -57.55429  -72.625270 -120.971847  -48.7112808
+#&gt; x17  -75.18280 -89.19745 -104.60320  -82.536134  -98.310162  -67.9232501
+#&gt; x18  127.99341 176.62433  140.76187  160.604674  161.576843  152.6889038
+#&gt; x19 -125.73860 -99.46943 -160.96302 -106.267670 -127.320763 -143.8545294
+#&gt; x20    .       -19.52181  -21.76979    6.390858  -11.889163   -0.8878139
+#&gt; 
+#&gt; $intercept
+#&gt;  [1]  -0.24116206  -0.33010975  -0.03427413  -0.21920579  -0.25439872
+#&gt;  [6]  -0.32596416   7.34913903 -10.87516173 -27.35787106   8.89556446
+#&gt; [11]  -8.84590591 -11.92833969  -0.97934089 -21.29647933   1.73137404
+#&gt; [16] -29.63365001 -74.88157622 -52.88471389 -52.16474239 -21.99595359
+#&gt; [21] -62.13610806
+#&gt; 
+#&gt; $dev
+#&gt;  [1]  68.59298  46.69364  22.31417  17.60334  16.86618  16.15675 233.15206
+#&gt;  [8] 207.31665 195.19859 254.11086 185.26512 113.86185 102.55145 161.15186
+#&gt; [15] 154.05620  90.60221 171.54659 155.09793  91.13829  95.02055 176.73201
+#&gt; 
+#&gt; $tune.value
+#&gt;  [1] 13.888785  9.467560  4.795569  5.453128  9.348024 14.748842 40.167095
+#&gt;  [8] 45.498779 55.460595 71.431879 73.733246 80.906253 81.789855 84.576775
+#&gt; [15] 84.303964 85.743672 87.080871 87.686199 88.334593 88.585575 88.764208
+#&gt; 
+#&gt; $nobs
+#&gt; [1] 100
+#&gt; 
+#&gt; $nvars
+#&gt; [1] 20
+#&gt; 
+#&gt; $family
+#&gt; [1] "binomial"
+#&gt; 
+#&gt; $tune.path
+#&gt; [1] "sequence"
+#&gt; 
+#&gt; $support.size
+#&gt;  [1]  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+#&gt; 
+#&gt; $tune.type
+#&gt; [1] "cv"
+#&gt; 
+#&gt; $best.size
+#&gt; [1] 2
+#&gt; 
+#&gt; $screening.vars
+#&gt; character(0)
+#&gt; 
+#&gt; $call
 #&gt; abess.default(x = dataset[["x"]], y = dataset[["y"]], family = "binomial", 
 #&gt;     tune.type = "cv")
 #&gt; 
-#&gt;    support.size        dev        cv
-#&gt; 1             0 68.5929800 13.888785
-#&gt; 2             1 46.6936375  9.467560
-#&gt; 3             2 22.3141723  4.795584
-#&gt; 4             3 17.6033381  5.452508
-#&gt; 5             4 16.8661842  9.270334
-#&gt; 6             5 16.0697220 13.509915
-#&gt; 7             6 15.1608532 17.795735
-#&gt; 8             7 14.1872758 26.610685
-#&gt; 9             8 12.9892184 38.748405
-#&gt; 10            9 11.2437201 48.029347
-#&gt; 11           10 12.3667740 57.115879
-#&gt; 12           11 10.7118325 64.300185
-#&gt; 13           12  8.4023364 74.978391
-#&gt; 14           13  8.7144054 82.435364
-#&gt; 15           14  4.5835895 83.065965
-#&gt; 16           15  3.7399385 87.066022
-#&gt; 17           16  1.9392920 91.483922
-#&gt; 18           17  1.4312907 93.209038
-#&gt; 19           18  1.2425096 93.125856
-#&gt; 20           19  0.9024661 93.556740
-#&gt; 21           20  1.8066905 94.249021</div><div class='input'>
+#&gt; attr(,"class")
+#&gt; [1] "abess"</div><div class='input'>
 <span class='co'>################ poisson model ################</span>
 <span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span>, family <span class='op'>=</span> <span class='st'>"poisson"</span><span class='op'>)</span>
 <span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span>, <span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"y"</span><span class='op'>]</span><span class='op'>]</span>, 
                    family <span class='op'>=</span> <span class='st'>"poisson"</span>, tune.type <span class='op'>=</span> <span class='st'>"cv"</span><span class='op'>)</span>
 <span class='va'>abess_fit</span>
-</div><div class='output co'>#&gt; Call:
+</div><div class='output co'>#&gt; $beta
+#&gt; 20 x 21 sparse Matrix of class "dgCMatrix"</div><div class='output co'>#&gt; <span class='message'>   [[ suppressing 21 column names ‘0’, ‘1’, ‘2’ ... ]]</span></div><div class='output co'>#&gt;                                                                                
+#&gt; x1  . .         .         .          .          .          .          .        
+#&gt; x2  . .         .         .          .          .          .          .        
+#&gt; x3  . .         .         .          .          .          .          .        
+#&gt; x4  . .         .         .          .          .          .          .        
+#&gt; x5  . .         .         .          .          .          .          .        
+#&gt; x6  . 0.9551205 1.005793  0.8792586  0.8968826  0.9146181  0.9293622  0.9562740
+#&gt; x7  . .         .         .          .          .          .          .        
+#&gt; x8  . .         .         .          .          .          .          .        
+#&gt; x9  . .         .         .          .          .          .          .        
+#&gt; x10 . .         .         .          .          .          .          0.1173818
+#&gt; x11 . .         .         .          0.1802877  0.1974705  0.1726311  0.1980238
+#&gt; x12 . .         .         .          .          0.1665855  0.1943982  0.2438241
+#&gt; x13 . .         .         .          .          .          .          .        
+#&gt; x14 . .         0.931444  0.9519021  0.8698076  0.8355865  0.8688774  0.8494283
+#&gt; x15 . .         .         .          .          .          0.1494963  0.1438122
+#&gt; x16 . .         .         .          .          .          .          .        
+#&gt; x17 . .         .         .          .          .          .          .        
+#&gt; x18 . .         .        -0.6216879 -0.6099195 -0.6426196 -0.6572175 -0.6841171
+#&gt; x19 . .         .         .          .          .          .          .        
+#&gt; x20 . .         .         .          .          .          .          .        
+#&gt;                                                                        
+#&gt; x1  -0.1534133 -0.1595431 -0.14728927 -0.1934011 -0.2219553 -0.20845983
+#&gt; x2   .          .          .           .          .          .         
+#&gt; x3   .          .          .           .          .          .         
+#&gt; x4   .          .          .           .          .          .         
+#&gt; x5   .          .          .           0.1417584  0.1152871  0.13525130
+#&gt; x6   0.9590439  0.9698946  0.95800931  0.9491700  1.0040938  0.98323777
+#&gt; x7   .          .          .           .          .          .         
+#&gt; x8   .          .         -0.09533661 -0.1089231  .         -0.12243620
+#&gt; x9   .          .          .           .          .          .         
+#&gt; x10  0.1600867  0.1678321  0.17758095  0.2264453  0.2437560  0.25402580
+#&gt; x11  0.1918284  0.2048115  0.21752176  0.2263389  0.1959966  0.20910525
+#&gt; x12  0.2514337  0.2518456  0.24484085  0.2575952  0.2839997  0.27444521
+#&gt; x13  .          0.1148487  0.12244591  0.1451935  0.1372608  0.15123550
+#&gt; x14  0.8507449  0.8388477  0.83116481  0.7571052  0.8149340  0.79706362
+#&gt; x15  0.1479140  0.1502753  0.17859157  .          0.1060559  0.12866225
+#&gt; x16  .          .          .           .         -0.1018328 -0.08712701
+#&gt; x17  .          .          .           .          .          .         
+#&gt; x18 -0.7225513 -0.7183951 -0.72095904 -0.6794381 -0.7271289 -0.72349499
+#&gt; x19  .          .          .           .          .          .         
+#&gt; x20  .          .          .           0.1033249  0.1099820  0.11576744
+#&gt;                                                                             
+#&gt; x1  -0.19834112 -0.20216875 -0.21479885 -0.21504856 -0.21177952 -0.215856806
+#&gt; x2  -0.06983676 -0.07185111 -0.07255764 -0.07278119 -0.06999014 -0.078189796
+#&gt; x3   .           .           .           .           .           0.004677829
+#&gt; x4   .           .           .           0.03277084  0.03711069  0.035366443
+#&gt; x5   0.14223363  0.13189116  0.13650413  0.13501008  0.12976141  0.132768823
+#&gt; x6   0.97262953  0.95835149  0.97142028  0.97390844  0.97312852  0.965513340
+#&gt; x7   .           .           .           .           0.01844566  .          
+#&gt; x8  -0.11581921 -0.10680173 -0.09795164 -0.08375047 -0.08200839 -0.080457009
+#&gt; x9   .           0.06538979  0.05755120  0.06074544  0.06689471  0.060977145
+#&gt; x10  0.24144018  0.22932281  0.23873532  0.23023415  0.22781800  0.223140926
+#&gt; x11  0.18727466  0.19590904  0.18939711  0.19993183  0.19988292  0.194632429
+#&gt; x12  0.26882904  0.26706349  0.26539700  0.26936274  0.26692630  0.268457749
+#&gt; x13  0.15722532  0.16544481  0.16604959  0.16588402  0.15997777  0.166538204
+#&gt; x14  0.79068249  0.81286624  0.80590366  0.80259755  0.80621418  0.803988355
+#&gt; x15  0.12435572  0.11256911  0.11011461  0.09947180  0.10179575  0.100987192
+#&gt; x16 -0.07300799 -0.07386993 -0.07447000 -0.08462719 -0.08530733 -0.082275819
+#&gt; x17  .           .           .           .           .           0.020973975
+#&gt; x18 -0.71184758 -0.69447317 -0.70242366 -0.68902492 -0.68826703 -0.689500459
+#&gt; x19  .           .           0.04098152  0.04115208  0.03897846  0.038415072
+#&gt; x20  0.10565936  0.10633051  0.11531461  0.12372137  0.11917041  0.125620345
+#&gt;                 
+#&gt; x1  -0.213805274
+#&gt; x2  -0.075099009
+#&gt; x3   0.007924426
+#&gt; x4   0.038362412
+#&gt; x5   0.130027608
+#&gt; x6   0.967593002
+#&gt; x7   0.014285792
+#&gt; x8  -0.081851543
+#&gt; x9   0.065286961
+#&gt; x10  0.224679198
+#&gt; x11  0.195485679
+#&gt; x12  0.267179264
+#&gt; x13  0.161949881
+#&gt; x14  0.808038096
+#&gt; x15  0.103185766
+#&gt; x16 -0.082882484
+#&gt; x17  0.013765593
+#&gt; x18 -0.689174448
+#&gt; x19  0.036029090
+#&gt; x20  0.122741897
+#&gt; 
+#&gt; $intercept
+#&gt;  [1]  0.797507196  0.454067775  0.248853968  0.009229067 -0.003149768
+#&gt;  [6] -0.024652802 -0.046453938 -0.079984063 -0.095287596 -0.160845833
+#&gt; [11] -0.162423445 -0.122027615 -0.181379303 -0.175588588 -0.166231608
+#&gt; [16] -0.168678400 -0.177889070 -0.171596808 -0.164911628 -0.165710364
+#&gt; [21] -0.162530751
+#&gt; 
+#&gt; $dev
+#&gt;  [1]   44.95340  -31.62397 -100.57515 -157.18472 -160.75596 -163.01916
+#&gt;  [7] -164.82977 -166.39686 -167.33059 -168.30048 -168.98526 -169.76250
+#&gt; [13] -170.25995 -171.31745 -171.54370 -171.74975 -171.85325 -171.91807
+#&gt; [19] -171.94049 -171.94879 -171.95969
+#&gt; 
+#&gt; $tune.value
+#&gt;  [1]  10.19365   3.28437 -10.57295 -30.45472 -31.01768 -30.63952 -30.13028
+#&gt;  [8] -26.74170 -27.33824 -27.42207 -27.25688 -26.64811 -27.38531 -28.11082
+#&gt; [15] -28.38129 -28.63368 -28.08725 -27.93866 -28.14687 -27.96197 -27.89558
+#&gt; 
+#&gt; $nobs
+#&gt; [1] 100
+#&gt; 
+#&gt; $nvars
+#&gt; [1] 20
+#&gt; 
+#&gt; $family
+#&gt; [1] "poisson"
+#&gt; 
+#&gt; $tune.path
+#&gt; [1] "sequence"
+#&gt; 
+#&gt; $support.size
+#&gt;  [1]  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+#&gt; 
+#&gt; $tune.type
+#&gt; [1] "cv"
+#&gt; 
+#&gt; $best.size
+#&gt; [1] 4
+#&gt; 
+#&gt; $screening.vars
+#&gt; character(0)
+#&gt; 
+#&gt; $call
 #&gt; abess.default(x = dataset[["x"]], y = dataset[["y"]], family = "poisson", 
 #&gt;     tune.type = "cv")
 #&gt; 
-#&gt;    support.size        dev        cv
-#&gt; 1             0   44.95340  10.19365
-#&gt; 2             1  -31.62397   3.28437
-#&gt; 3             2 -100.57515 -10.57295
-#&gt; 4             3 -157.18472 -30.45472
-#&gt; 5             4 -160.75596 -31.01768
-#&gt; 6             5 -163.01916 -30.49635
-#&gt; 7             6 -164.82977 -30.14524
-#&gt; 8             7 -166.39686 -29.89842
-#&gt; 9             8 -167.33059 -27.52286
-#&gt; 10            9 -167.89126 -27.42207
-#&gt; 11           10 -168.57627 -27.41791
-#&gt; 12           11 -169.76250 -26.72979
-#&gt; 13           12 -170.25995 -27.59068
-#&gt; 14           13 -171.31745 -28.00142
-#&gt; 15           14 -171.54370 -28.25885
-#&gt; 16           15 -171.69699 -28.63367
-#&gt; 17           16 -171.85325 -28.08725
-#&gt; 18           17 -171.91807 -27.93866
-#&gt; 19           18 -171.94049 -28.14687
-#&gt; 20           19 -171.94879 -27.96197
-#&gt; 21           20 -171.95969 -27.89558</div><div class='input'>
+#&gt; attr(,"class")
+#&gt; [1] "abess"</div><div class='input'>
 <span class='co'>################ Cox model ################</span>
 <span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span>, family <span class='op'>=</span> <span class='st'>"cox"</span><span class='op'>)</span>
 <span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span>, <span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"y"</span><span class='op'>]</span><span class='op'>]</span>, 
@@ -572,30 +905,52 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
         support.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>4</span><span class='op'>)</span>, type <span class='op'>=</span> <span class='st'>"response"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $`3`
 #&gt;                  1            2             
-#&gt;  [1,] 1.671158e-01 8.328713e-01 1.285320e-05
-#&gt;  [2,] 9.911077e-01 7.651279e-07 8.891513e-03
-#&gt;  [3,] 1.875828e-08 3.725013e-07 9.999996e-01
-#&gt;  [4,] 5.740829e-09 1.000000e+00 9.338053e-11
-#&gt;  [5,] 9.957995e-01 2.468808e-08 4.200496e-03
-#&gt;  [6,] 7.875129e-01 1.578442e-01 5.464291e-02
-#&gt;  [7,] 1.032360e-04 8.793776e-01 1.205192e-01
-#&gt;  [8,] 1.563076e-05 9.916664e-01 8.317938e-03
-#&gt;  [9,] 1.071193e-03 2.623974e-02 9.726891e-01
-#&gt; [10,] 2.169558e-03 5.297457e-08 9.978304e-01
+#&gt;  [1,] 1.671671e-01 8.328200e-01 1.287189e-05
+#&gt;  [2,] 9.911159e-01 7.642165e-07 8.883312e-03
+#&gt;  [3,] 1.872056e-08 3.729703e-07 9.999996e-01
+#&gt;  [4,] 5.729829e-09 1.000000e+00 9.354748e-11
+#&gt;  [5,] 9.958075e-01 2.464085e-08 4.192443e-03
+#&gt;  [6,] 7.875359e-01 1.578117e-01 5.465246e-02
+#&gt;  [7,] 1.029619e-04 8.793505e-01 1.205466e-01
+#&gt;  [8,] 1.559240e-05 9.916642e-01 8.320255e-03
+#&gt;  [9,] 1.070042e-03 2.624924e-02 9.726807e-01
+#&gt; [10,] 2.169661e-03 5.300874e-08 9.978303e-01
 #&gt; 
 #&gt; $`4`
 #&gt;                  1            2             
-#&gt;  [1,] 1.290407e-01 8.709577e-01 1.602366e-06
-#&gt;  [2,] 9.970856e-01 1.946156e-08 2.914374e-03
-#&gt;  [3,] 7.382796e-10 1.120969e-08 1.000000e+00
-#&gt;  [4,] 7.154828e-11 1.000000e+00 1.316020e-12
-#&gt;  [5,] 9.994014e-01 3.353029e-10 5.986242e-04
-#&gt;  [6,] 7.880367e-01 1.094665e-01 1.024968e-01
-#&gt;  [7,] 2.745874e-05 9.595629e-01 4.040966e-02
-#&gt;  [8,] 1.803124e-06 9.924693e-01 7.528875e-03
-#&gt;  [9,] 5.369757e-04 2.019407e-02 9.792690e-01
-#&gt; [10,] 7.945592e-04 7.520979e-10 9.992054e-01
+#&gt;  [1,] 1.519011e-01 8.480973e-01 1.651999e-06
+#&gt;  [2,] 9.995554e-01 2.537617e-08 4.446060e-04
+#&gt;  [3,] 6.512419e-09 7.648814e-08 9.999999e-01
+#&gt;  [4,] 1.560530e-10 1.000000e+00 2.877017e-12
+#&gt;  [5,] 9.776994e-01 2.401934e-09 2.230056e-02
+#&gt;  [6,] 8.981233e-01 9.788248e-02 3.994230e-03
+#&gt;  [7,] 4.574281e-05 9.272144e-01 7.273983e-02
+#&gt;  [8,] 2.845467e-06 9.969577e-01 3.039405e-03
+#&gt;  [9,] 2.003835e-04 1.235827e-02 9.874413e-01
+#&gt; [10,] 2.127882e-03 3.456984e-09 9.978721e-01
 #&gt; </div><div class='input'>
+<span class='co'>########## Best group subset selection #############</span>
+<span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span><span class='op'>)</span>
+<span class='va'>group_index</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, each <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span>, <span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"y"</span><span class='op'>]</span><span class='op'>]</span>, 
+                   group.index <span class='op'>=</span> <span class='va'>group_index</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='fu'><a href='extract.html'>extract</a></span><span class='op'>(</span><span class='va'>abess_fit</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; List of 7
+#&gt;  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
+#&gt;   .. ..@ i       : int [1:8] 4 5 12 13 14 15 16 17
+#&gt;   .. ..@ p       : int [1:2] 0 8
+#&gt;   .. ..@ Dim     : int [1:2] 20 1
+#&gt;   .. ..@ Dimnames:List of 2
+#&gt;   .. .. ..$ : chr [1:20] "x1" "x2" "x3" "x4" ...
+#&gt;   .. .. ..$ : chr "4"
+#&gt;   .. ..@ x       : num [1:8] 1.992 82.397 -0.735 88.545 -4.368 ...
+#&gt;   .. ..@ factors : list()
+#&gt;  $ intercept   : num -4.07
+#&gt;  $ support.size: int 4
+#&gt;  $ support.vars: chr [1:8] "x5" "x6" "x13" "x14" ...
+#&gt;  $ support.beta: num [1:8] 1.992 82.397 -0.735 88.545 -4.368 ...
+#&gt;  $ dev         : num 1639
+#&gt;  $ tune.value  : num 768</div><div class='input'>
 <span class='co'>################ Feature screening ################</span>
 <span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fl'>1000</span>
 <span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span><span class='op'>)</span>
@@ -617,29 +972,1584 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
 #&gt;  $ support.vars: chr [1:3] "x289" "x643" "x781"
 #&gt;  $ support.beta: num [1:3] 145.3 51.9 160.1
 #&gt;  $ dev         : num 3643
-#&gt;  $ tune.value  : num 841</div><div class='input'><span class='co'># }</span>
+#&gt;  $ tune.value  : num 841</div><div class='input'>
+<span class='co'>################ Sparse predictor ################</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>require</a></span><span class='op'>(</span><span class='va'><a href='http://Matrix.R-forge.R-project.org/'>Matrix</a></span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Loading required package: Matrix</span></div><div class='input'><span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fl'>1000</span>
+<span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span><span class='op'>)</span>
+<span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>abs</a></span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span> <span class='op'>&lt;</span> <span class='fl'>1</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fl'>0</span>
+<span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/Matrix/man/Matrix.html'>Matrix</a></span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span>
+<span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span>, <span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"y"</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='fu'><a href='extract.html'>extract</a></span><span class='op'>(</span><span class='va'>abess_fit</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; List of 7
+#&gt;  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
+#&gt;   .. ..@ i       : int [1:3] 23 288 780
+#&gt;   .. ..@ p       : int [1:2] 0 3
+#&gt;   .. ..@ Dim     : int [1:2] 1000 1
+#&gt;   .. ..@ Dimnames:List of 2
+#&gt;   .. .. ..$ : chr [1:1000] "x1" "x2" "x3" "x4" ...
+#&gt;   .. .. ..$ : chr "3"
+#&gt;   .. ..@ x       : num [1:3] 41.9 151.4 173.7
+#&gt;   .. ..@ factors : list()
+#&gt;  $ intercept   : num -51.3
+#&gt;  $ support.size: int 3
+#&gt;  $ support.vars: chr [1:3] "x24" "x289" "x781"
+#&gt;  $ support.beta: num [1:3] 41.9 151.4 173.7
+#&gt;  $ dev         : num 14483
+#&gt;  $ tune.value  : num 990</div><div class='input'><span class='co'># }</span>
 <span class='co'># \donttest{</span>
 <span class='co'>################  Formula interface  ################</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"trim32"</span><span class='op'>)</span>
 <span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>trim32</span><span class='op'>)</span>
 <span class='va'>abess_fit</span>
-</div><div class='output co'>#&gt; Call:
+</div><div class='output co'>#&gt; $beta
+#&gt; 500 x 13 sparse Matrix of class "dgCMatrix"</div><div class='output co'>#&gt; <span class='message'>   [[ suppressing 13 column names ‘0’, ‘1’, ‘2’ ... ]]</span></div><div class='output co'>#&gt;                                                                              
+#&gt; 1367539_at   . .         .         .         .          .          .         
+#&gt; 1367566_at   . .         .         .         .          .          .         
+#&gt; 1368099_at   . .         .         .         .          .          .         
+#&gt; 1368114_at   . .         .         .         .          .          .         
+#&gt; 1368136_at   . .         .         .         .          .          .         
+#&gt; 1368175_at   . .         .         .         .          .          .         
+#&gt; 1368177_at   . .         .         .         .          .          .         
+#&gt; 1368216_at   . .         .         .         .          .          .         
+#&gt; 1368225_at   . .         .         .         .          .          .         
+#&gt; 1368229_at   . .         .         .         .          .          .         
+#&gt; 1368476_at   . .         .         .         .          .          .         
+#&gt; 1368898_at   . .         .         .         .          .          .         
+#&gt; 1369018_at   . .         .         .         .          .          .         
+#&gt; 1369210_at   . .         .         .         .          .          .         
+#&gt; 1369237_at   . .         .         .         .          .          .         
+#&gt; 1370205_at   . .         .         .         .          .          .         
+#&gt; 1370354_at   . .         .         .         .          .          .         
+#&gt; 1370429_at   . .         .         .         .          .          .         
+#&gt; 1370437_at   . .         .         .         .          .          .         
+#&gt; 1370439_a_at . .         .         .         .          .          .         
+#&gt; 1370551_a_at . .         .         .         .          .          .         
+#&gt; 1370555_at   . .         .         .         .          .          .         
+#&gt; 1370827_at   . .         .         .         .          .          .         
+#&gt; 1371072_at   . .         .         .         .          .          .         
+#&gt; 1371133_a_at . .         .         .         .          .          .         
+#&gt; 1371610_at   . .         .         .         .          .          .         
+#&gt; 1371614_at   . .         .         .         .          .          .         
+#&gt; 1371661_at   . .         .         .         .          .          .         
+#&gt; 1371828_at   . .         .         .         .          .          .         
+#&gt; 1371953_at   . .         .         .         .          .          .         
+#&gt; 1371963_at   . .         .         .         .          .          .         
+#&gt; 1372022_at   . .         .         .         .          .          .         
+#&gt; 1372046_at   . .         .         .         .          .          .         
+#&gt; 1372072_at   . .         .         .         .          .          .         
+#&gt; 1372078_at   . .         .         .         .          .          .         
+#&gt; 1372081_at   . .         .         .         .          .          .         
+#&gt; 1372104_at   . .         .         .         .          .          .         
+#&gt; 1372121_at   . .         .         .         .          .          .         
+#&gt; 1372143_at   . .         .         .         .          .          .         
+#&gt; 1372189_at   . .         .         .         .          .          .         
+#&gt; 1372192_at   . .         .         .         .          .          .         
+#&gt; 1372202_at   . .         .         .         .          .          .         
+#&gt; 1372248_at   . .         .         .         .          .          .         
+#&gt; 1372266_at   . .         .         .         .          .          .         
+#&gt; 1372329_at   . .         .         .         .          .          .         
+#&gt; 1372445_at   . .         .         .         .          .          .         
+#&gt; 1372449_at   . .         .         .         .          .          .         
+#&gt; 1372453_at   . .         .         .         .          .          .         
+#&gt; 1372463_at   . .         .         .         .          .          .         
+#&gt; 1372497_at   . .         .         .         .          .          .         
+#&gt; 1372538_at   . .         .         .         .          .          .         
+#&gt; 1372544_at   . .         .         .         .          .          .         
+#&gt; 1372563_at   . .         .         .         .          .          .         
+#&gt; 1372582_at   . .         .         .         .          .          .         
+#&gt; 1372594_at   . .         .         .         .          .          .         
+#&gt; 1372633_at   . .         .         .         .          .          .         
+#&gt; 1372674_at   . .         .         .         .          .          .         
+#&gt; 1372675_at   . .         .         .         .          .          .         
+#&gt; 1372710_at   . .         .         .         .          .          .         
+#&gt; 1372713_at   . .         .         .         .          .          .         
+#&gt; 1372715_at   . .         .         .         .          .          .         
+#&gt; 1372733_at   . .         .         .         .          .          .         
+#&gt; 1372768_at   . .         .         .         .          .          .         
+#&gt; 1372816_at   . .         .         .         .          .          .         
+#&gt; 1372817_at   . .         .         .         .          .          .         
+#&gt; 1372830_at   . .         .         .         .          .          .         
+#&gt; 1372867_at   . .         .         .         .          .          .         
+#&gt; 1372921_at   . .         .         .         .          .          .         
+#&gt; 1372928_at   . .         .         .         .          .          .         
+#&gt; 1372953_at   . .         .         .         .          .          .         
+#&gt; 1373039_at   . .         .         .         .          .          .         
+#&gt; 1373083_at   . .         .         .         .          .          .         
+#&gt; 1373136_at   . .         .         .         .          .          .         
+#&gt; 1373163_at   . .         .         .         .          .          .         
+#&gt; 1373165_at   . .         .         .         .          .          .         
+#&gt; 1373194_at   . .         .         .         .          .          .         
+#&gt; 1373200_at   . .         .         .         .          .          .         
+#&gt; 1373272_at   . .         .         .         .          .          .         
+#&gt; 1373326_at   . .         .         .         .          .          .         
+#&gt; 1373327_at   . .         .         .         .          .          .         
+#&gt; 1373333_at   . .         .         .         .          .          .         
+#&gt; 1373336_at   . .         .         .         .          .          .         
+#&gt; 1373381_at   . .         .         .         .          .          .         
+#&gt; 1373398_at   . .         .         .         .          .          .         
+#&gt; 1373431_at   . .         .         .         .          .          .         
+#&gt; 1373441_at   . .         .         .         .          .          .         
+#&gt; 1373450_at   . .         .         .         .          .          .         
+#&gt; 1373472_at   . .         .         .         .          .          .         
+#&gt; 1373519_at   . .         .         .         .          .          .         
+#&gt; 1373534_at   . .         .         .         .          .          .         
+#&gt; 1373545_at   . .         .         .         .          .          .         
+#&gt; 1373569_at   . .         .         .         .          .          .         
+#&gt; 1373621_at   . .         .         .         .          .          .         
+#&gt; 1373643_at   . .         .         .         .          .          .         
+#&gt; 1373677_at   . .         .         .         .          .          .         
+#&gt; 1373683_at   . .         .         .         .          .          .         
+#&gt; 1373707_at   . .         .         .         .          .          .         
+#&gt; 1373771_at   . .         .         .         .          .          .         
+#&gt; 1373784_at   . .         .         .         .          .          .         
+#&gt; 1373813_at   . .         .         .         .          .          .         
+#&gt; 1373835_at   . .         .         .         .          .          .         
+#&gt; 1373843_at   . .         .         .         .          .          .         
+#&gt; 1373859_at   . .         .         .         .          .          .         
+#&gt; 1373887_at   . .         .         .         .          .          .         
+#&gt; 1373912_at   . .         .         .         .          .          .         
+#&gt; 1373941_at   . .         .         .         .          .          .         
+#&gt; 1373944_at   . .         .         .         .          .          .         
+#&gt; 1374010_at   . .         .         .         .          .          .         
+#&gt; 1374027_at   . .         .         .         .          .          .         
+#&gt; 1374074_at   . .         .         .         .          .          .         
+#&gt; 1374094_at   . .         .         .         .          .          .         
+#&gt; 1374106_at   . .         .         .         .          .          .         
+#&gt; 1374150_at   . .         .         .         .          .          .         
+#&gt; 1374151_at   . .         .         .         .          .          .         
+#&gt; 1374187_at   . .         .         .         .          .          .         
+#&gt; 1374233_at   . .         .         .         .          .          .         
+#&gt; 1374401_at   . .         .         .         .          .          .         
+#&gt; 1374423_at   . .         .         .         .          .          .         
+#&gt; 1374519_at   . .         .         .         .          .          .         
+#&gt; 1374542_at   . .         .         .         .          .          .         
+#&gt; 1374548_at   . .         .         .         .          .          .         
+#&gt; 1374574_at   . .         .         .         .          .          .         
+#&gt; 1374581_at   . .         .         .         .          .          .         
+#&gt; 1374628_at   . .         .         .         .          .          .         
+#&gt; 1374645_at   . .         .         .         .          .          .         
+#&gt; 1374647_at   . .         .         .         .          .          .         
+#&gt; 1374669_at   . .         .         .         .          .          .         
+#&gt; 1374766_at   . .         .         .         .          .          .         
+#&gt; 1374792_at   . .         .         .         .          .          .         
+#&gt; 1374809_at   . .         .         .         .          .          .         
+#&gt; 1374890_at   . .         .         .         .          .          .         
+#&gt; 1375035_at   . .         .         .         .          .          .         
+#&gt; 1375036_at   . .         .         .         .          .          .         
+#&gt; 1375056_at   . .         .         .         .          .          .         
+#&gt; 1375129_at   . .         .         .         .          .          .         
+#&gt; 1375389_at   . .         .         .         .          .          .         
+#&gt; 1375431_at   . .         .         .         .          .          .         
+#&gt; 1375510_x_at . .         .         .         .          .          .         
+#&gt; 1375638_at   . .         .         .         .          .          .         
+#&gt; 1375743_at   . .         .         .         .          .          .         
+#&gt; 1375832_at   . .         .         .         .          .          .         
+#&gt; 1375833_at   . .         .         .         .          .          .         
+#&gt; 1375841_at   . .         .         .         .          .          .         
+#&gt; 1375894_at   . .         .         .         .          .          .         
+#&gt; 1375965_at   . .         .         .         .          .          .         
+#&gt; 1376004_at   . .         .         .         .          .          .         
+#&gt; 1376086_at   . .         .         .         .          .          .         
+#&gt; 1376121_at   . .         .         .         .          .          .         
+#&gt; 1376125_at   . .         .         .         .          .          .         
+#&gt; 1376159_at   . .         .         .         .          .          .         
+#&gt; 1376261_at   . .         .         .         .          .          .         
+#&gt; 1376306_at   . .         .         .         .          .          .         
+#&gt; 1376336_at   . .         .         .         .          .          .         
+#&gt; 1376374_at   . .         .         .         .          .          .         
+#&gt; 1376376_at   . .         .         .         .          .          .         
+#&gt; 1376551_at   . .         .         .         .          .          .         
+#&gt; 1376584_at   . .         .         .         .          .          .         
+#&gt; 1376587_at   . .         .         .         .          .          .         
+#&gt; 1376637_at   . .         .         .         .          .          .         
+#&gt; 1376641_at   . .         .         .         .          .          .         
+#&gt; 1376683_at   . .         .         .         .          .          .         
+#&gt; 1376686_at   . .         .         .         .          .          .         
+#&gt; 1376687_at   . .         .         .         .          .          .         
+#&gt; 1376714_at   . .         .         .         .          .          .         
+#&gt; 1376747_at   . .         .         .         .          .          .         
+#&gt; 1376773_at   . .         .         .         .          .          .         
+#&gt; 1376832_at   . .         .         .         .          .          .         
+#&gt; 1376842_at   . .         .         .         .          .          .         
+#&gt; 1376945_at   . .         .         .         .          .          .         
+#&gt; 1376984_at   . .         .         .         .          .          .         
+#&gt; 1377005_at   . .         .         .         .          .          .         
+#&gt; 1377043_at   . .         .         .         .          .          .         
+#&gt; 1377127_at   . .         .         .         .          .          .         
+#&gt; 1377128_at   . .         .         .         .          .          .         
+#&gt; 1377141_at   . .         .         .         .          .          .         
+#&gt; 1377157_at   . .         .         .         .          .          .         
+#&gt; 1377162_at   . .         .         .         .          .          .         
+#&gt; 1377194_a_at . .         .         .         .          .          .         
+#&gt; 1377236_at   . .         .         .         .          .          .         
+#&gt; 1377254_a_at . .         .         .         .          .          .         
+#&gt; 1377273_at   . .         .         .         .          .          .         
+#&gt; 1377281_at   . .         .         .         .          .          .         
+#&gt; 1377327_at   . .         .         .         .          .          .         
+#&gt; 1377469_at   . .         .         .         .          .          .         
+#&gt; 1377836_at   . .         .         .         .          .          .         
+#&gt; 1379451_at   . .         .         .         .          .          .         
+#&gt; 1379580_at   . .         .         .         .          .          .         
+#&gt; 1380466_at   . .         .         .         .          .          .         
+#&gt; 1382223_at   . 0.8078507 0.5715478 0.3595695 0.2764187  0.2831415  0.22888792
+#&gt; 1382345_at   . .         .         .         .          .          .         
+#&gt; 1383192_at   . .         .         .         .          .          .         
+#&gt; 1383383_at   . .         .         .         .          .          .         
+#&gt; 1383561_at   . .         .         .         .          .          .         
+#&gt; 1383649_a_at . .         .         .         .          .          .         
+#&gt; 1384065_at   . .         .         .         .          .          .         
+#&gt; 1384584_at   . .         .         .         .          .          .         
+#&gt; 1385697_at   . .         .         .         .          .          .         
+#&gt; 1385826_at   . .         .         .         .          .          .         
+#&gt; 1386358_at   . .         .         .         .          .          .         
+#&gt; 1387142_at   . .         .         .         .          .          .         
+#&gt; 1387262_at   . .         .         .         .          .          .         
+#&gt; 1387501_at   . .         .         .         .          .          .         
+#&gt; 1387527_at   . .         .         .         .          .          .         
+#&gt; 1387781_at   . .         .         .         .          .          .         
+#&gt; 1387977_at   . .         .         .         .          .          .         
+#&gt; 1388087_at   . .         .         .         .          .          .         
+#&gt; 1388135_at   . .         .         .         .          .          .         
+#&gt; 1388383_at   . .         .         .         .          .          .         
+#&gt; 1388491_at   . .         0.3555834 0.2773406 0.2654914  0.3948990  0.42328188
+#&gt; 1388656_at   . .         .         .         .          .          .         
+#&gt; 1388743_at   . .         .         .         .          .          .         
+#&gt; 1388796_at   . .         .         .         .          .          .         
+#&gt; 1388799_at   . .         .         .         .          .          .         
+#&gt; 1388830_at   . .         .         .         .          .          .         
+#&gt; 1388929_at   . .         .         .         .          .          .         
+#&gt; 1388996_at   . .         .         .         .          .          .         
+#&gt; 1388999_at   . .         .         .         .          .          .         
+#&gt; 1389049_at   . .         .         .         .          .          .         
+#&gt; 1389057_at   . .         .         .         0.1729987  0.2572256  0.25287180
+#&gt; 1389082_at   . .         .         .         .          .          .         
+#&gt; 1389133_at   . .         .         .         .          .          .         
+#&gt; 1389153_at   . .         .         .         .          .          .         
+#&gt; 1389205_at   . .         .         .         .          .          .         
+#&gt; 1389225_at   . .         .         .         .          .          .         
+#&gt; 1389226_at   . .         .         .         .          .          .         
+#&gt; 1389229_at   . .         .         .         .          .          .         
+#&gt; 1389241_at   . .         .         .         .          .          .         
+#&gt; 1389254_at   . .         .         .         .          .          .         
+#&gt; 1389275_at   . .         .         .         .          .          .         
+#&gt; 1389329_at   . .         .         .         .          .          .         
+#&gt; 1389357_at   . .         .         .         .          .          .         
+#&gt; 1389388_at   . .         .         .         .          .          .         
+#&gt; 1389428_at   . .         .         .         .          .          .         
+#&gt; 1389457_at   . .         .         .         .          .          .         
+#&gt; 1389460_at   . .         .         .         .          .          .         
+#&gt; 1389539_at   . .         .         .         .          .          .         
+#&gt; 1389549_at   . .         .         .         .          .          .         
+#&gt; 1389584_at   . .         .         .         .          .          .         
+#&gt; 1389607_at   . .         .         .         .          .          .         
+#&gt; 1389730_at   . .         .         .         .          .          .         
+#&gt; 1389763_at   . .         .         .         .          .          .         
+#&gt; 1389781_at   . .         .         .         .          .          .         
+#&gt; 1389910_at   . .         .         0.4637857 0.3906916  0.4850447  0.42928781
+#&gt; 1389915_at   . .         .         .         .          .          .         
+#&gt; 1389968_at   . .         .         .         .          .          .         
+#&gt; 1389978_at   . .         .         .         .          .          .         
+#&gt; 1389981_at   . .         .         .         .          .          .         
+#&gt; 1390142_at   . .         .         .         .          .          .         
+#&gt; 1390272_at   . .         .         .         .          .          .         
+#&gt; 1390301_at   . .         .         .         .          .          .         
+#&gt; 1390323_at   . .         .         .         .          .          .         
+#&gt; 1390394_at   . .         .         .         .          .          .         
+#&gt; 1390427_at   . .         .         .         .          .          .         
+#&gt; 1390439_at   . .         .         .         .          .          .         
+#&gt; 1390456_at   . .         .         .         .          .          .         
+#&gt; 1390539_at   . .         .         .         .          .          .         
+#&gt; 1390574_at   . .         .         .         .          .          .         
+#&gt; 1390599_at   . .         .         .         .          .          .         
+#&gt; 1390709_at   . .         .         .         .          .          .         
+#&gt; 1391096_at   . .         .         .         .          .          .         
+#&gt; 1391408_a_at . .         .         .         .          .          .         
+#&gt; 1391412_at   . .         .         .         .          .          .         
+#&gt; 1391454_at   . .         .         .         .          .          .         
+#&gt; 1391484_at   . .         .         .         .          .          .         
+#&gt; 1392749_at   . .         .         .         .          .          .         
+#&gt; 1392958_at   . .         .         .         .          .          .         
+#&gt; 1393251_at   . .         .         .         .          .          .         
+#&gt; 1398308_at   . .         .         .         .          .          .         
+#&gt; 1398337_at   . .         .         .         .          .          .         
+#&gt; 1398340_at   . .         .         .         .          .          .         
+#&gt; 1398370_at   . .         .         .         .          .          .         
+#&gt; 1398384_at   . .         .         .         .          .          .         
+#&gt; 1398395_at   . .         .         .         .          .          .         
+#&gt; 1398396_at   . .         .         .         .          .          .         
+#&gt; 1398405_at   . .         .         .         .          .          .         
+#&gt; 1398409_at   . .         .         .         .          .          .         
+#&gt; 1398447_at   . .         .         .         .          .          .         
+#&gt; 1398448_at   . .         .         .         .          .          .         
+#&gt; 1398988_at   . .         .         .         .          .          .         
+#&gt; 1399061_at   . .         .         .         .          .          .         
+#&gt; 1399114_at   . .         .         .         .          .          .         
+#&gt; 1399134_at   . .         .         .         .          .          .         
+#&gt; 1399154_at   . .         .         .         .          .          .         
+#&gt; 1377569_at   . .         .         .         .          .          .         
+#&gt; 1377596_a_at . .         .         .         .          .          .         
+#&gt; 1377637_at   . .         .         .         .          .          .         
+#&gt; 1377644_at   . .         .         .         .          .          .         
+#&gt; 1377681_at   . .         .         .         .          .          .         
+#&gt; 1377701_at   . .         .         .         .          .          .         
+#&gt; 1377745_at   . .         .         .         .          .          .         
+#&gt; 1377755_at   . .         .         .         .          .          .         
+#&gt; 1377757_at   . .         .         .         .          .          .         
+#&gt; 1377786_at   . .         .         .         .          .          .         
+#&gt; 1377791_at   . .         .         .         .          .          .         
+#&gt; 1377880_at   . .         .         .         .          .          .         
+#&gt; 1377883_at   . .         .         .         .          .          .         
+#&gt; 1377919_at   . .         .         .         .          .          .         
+#&gt; 1378022_at   . .         .         .         .          .          .         
+#&gt; 1378036_at   . .         .         .         .          .          .         
+#&gt; 1378125_at   . .         .         .         .          .          .         
+#&gt; 1378185_at   . .         .         .         .          .          .         
+#&gt; 1378316_at   . .         .         .         .          .          .         
+#&gt; 1378578_at   . .         .         .         .          .          .         
+#&gt; 1378590_at   . .         .         .         .          .          .         
+#&gt; 1378620_at   . .         .         .         .          .          .         
+#&gt; 1378680_at   . .         .         .         .          .          .         
+#&gt; 1378741_at   . .         .         .         .          .          .         
+#&gt; 1378819_at   . .         .         .         .          .          .         
+#&gt; 1378928_at   . .         .         .         .          .          .         
+#&gt; 1379029_at   . .         .         .         .          .          .         
+#&gt; 1379094_at   . .         .         .         .          .          .         
+#&gt; 1379121_at   . .         .         .         .          .          .         
+#&gt; 1379169_at   . .         .         .         .          .          .         
+#&gt; 1379187_at   . .         .         .         .          .          .         
+#&gt; 1379279_at   . .         .         .         .          .          .         
+#&gt; 1379283_at   . .         .         .         .          .          .         
+#&gt; 1379290_at   . .         .         .         .          .          .         
+#&gt; 1379476_at   . .         .         .         .          .          .         
+#&gt; 1379495_at   . .         .         .         .          .          .         
+#&gt; 1379600_at   . .         .         .         .          .          .         
+#&gt; 1379625_at   . .         .         .         .          .          .         
+#&gt; 1379693_at   . .         .         .         .          .          .         
+#&gt; 1379699_at   . .         .         .         .          .          .         
+#&gt; 1379728_at   . .         .         .         .          .          .         
+#&gt; 1379971_at   . .         .         .         .          .          .         
+#&gt; 1379982_at   . .         .         .         .          .          .         
+#&gt; 1380058_at   . .         .         .         .          .          .         
+#&gt; 1380174_at   . .         .         .         .          .          .         
+#&gt; 1380185_at   . .         .         .         .          .          .         
+#&gt; 1380214_at   . .         .         .         .          .          .         
+#&gt; 1380233_x_at . .         .         .         .          .          .         
+#&gt; 1380402_at   . .         .         .         .          .          .         
+#&gt; 1380463_at   . .         .         .         .          .          .         
+#&gt; 1380477_at   . .         .         .         .          .          .         
+#&gt; 1380553_at   . .         .         .         .          .          .         
+#&gt; 1380794_at   . .         .         .         .          .          .         
+#&gt; 1380811_at   . .         .         .         .          .          .         
+#&gt; 1380815_at   . .         .         .         .          .          .         
+#&gt; 1380852_at   . .         .         .         .          .          .         
+#&gt; 1380890_at   . .         .         .         .          .          .         
+#&gt; 1380932_at   . .         .         .         .          .          .         
+#&gt; 1381077_at   . .         .         .         .          .          .         
+#&gt; 1381481_at   . .         .         .         .          .          .         
+#&gt; 1381755_x_at . .         .         .         .          .          .         
+#&gt; 1381849_at   . .         .         .         .          .          .         
+#&gt; 1381902_at   . .         .         .         .          .          .         
+#&gt; 1381914_at   . .         .         .         .          .          .         
+#&gt; 1381926_at   . .         .         .         .          .          .         
+#&gt; 1381930_at   . .         .         .         .          .          .         
+#&gt; 1381963_at   . .         .         .         .          .          .         
+#&gt; 1381976_at   . .         .         .         .          .          .         
+#&gt; 1381998_at   . .         .         .         .          .          .         
+#&gt; 1382045_at   . .         .         .         .          .          .         
+#&gt; 1382065_at   . .         .         .         .          .          .         
+#&gt; 1382114_at   . .         .         .         .          .          .         
+#&gt; 1382132_at   . .         .         .         .          .          .         
+#&gt; 1382139_at   . .         .         .         .          .          .         
+#&gt; 1382154_at   . .         .         .         .          .          .         
+#&gt; 1382271_at   . .         .         .         .          .          .         
+#&gt; 1382290_at   . .         .         .         .          .          .         
+#&gt; 1382379_at   . .         .         .         .          .          .         
+#&gt; 1382517_at   . .         .         .         .          .          .         
+#&gt; 1382579_at   . .         .         .         .          .          .         
+#&gt; 1382651_at   . .         .         .         .          .          .         
+#&gt; 1382779_at   . .         .         .         .          .          .         
+#&gt; 1383081_at   . .         .         .         .          .          .         
+#&gt; 1383084_at   . .         .         .         .          .          .         
+#&gt; 1383110_at   . .         .         .         .          .          .         
+#&gt; 1383167_at   . .         .         .         .          .          .         
+#&gt; 1383172_at   . .         .         .         .          .          .         
+#&gt; 1383226_at   . .         .         .         .          .          .         
+#&gt; 1383236_at   . .         .         .         .          .          .         
+#&gt; 1383249_at   . .         .         .         .          .          .         
+#&gt; 1383254_at   . .         .         .         .          .          .         
+#&gt; 1383257_at   . .         .         .         .          .          .         
+#&gt; 1383299_at   . .         .         .         .          .          .         
+#&gt; 1383374_at   . .         .         .         .          .          .         
+#&gt; 1383431_at   . .         .         .         .          .          .         
+#&gt; 1383433_at   . .         .         .         .          .          .         
+#&gt; 1383504_at   . .         .         .         .          .          .         
+#&gt; 1383533_at   . .         .         .         .          .          .         
+#&gt; 1383607_at   . .         .         .         .          .          .         
+#&gt; 1383611_at   . .         .         .         .          .          .         
+#&gt; 1383673_at   . .         .         .         .          .          .         
+#&gt; 1383720_at   . .         .         .         .          .          .         
+#&gt; 1383731_at   . .         .         .         .          .          .         
+#&gt; 1383783_at   . .         .         .         .          .          .         
+#&gt; 1383998_at   . .         .         .         .          .          .         
+#&gt; 1384007_at   . .         .         .         .          .          .         
+#&gt; 1384035_at   . .         .         .         .          .          .         
+#&gt; 1384150_at   . .         .         .         .          .          .         
+#&gt; 1384205_at   . .         .         .         .          .          .         
+#&gt; 1384222_at   . .         .         .         .          .          .         
+#&gt; 1384247_at   . .         .         .         .          .          .         
+#&gt; 1384296_at   . .         .         .         .          .          .         
+#&gt; 1384320_at   . .         .         .         .          .          .         
+#&gt; 1384352_at   . .         .         .         .          .          .         
+#&gt; 1384368_at   . .         .         .         .          .          .         
+#&gt; 1384382_at   . .         .         .         .          .          .         
+#&gt; 1384387_at   . .         .         .         .          .          .         
+#&gt; 1384542_at   . .         .         .         .          .          .         
+#&gt; 1384565_at   . .         .         .         .          .          .         
+#&gt; 1384860_at   . .         .         .         .          .          .         
+#&gt; 1384940_at   . .         .         .         .          .          .         
+#&gt; 1385030_at   . .         .         .         .          .          .         
+#&gt; 1385106_at   . .         .         .         .          .          .         
+#&gt; 1385168_at   . .         .         .         .          .          .         
+#&gt; 1385261_s_at . .         .         .         .          .          .         
+#&gt; 1385501_at   . .         .         .         .          .          .         
+#&gt; 1385559_at   . .         .         .         .          .          .         
+#&gt; 1385597_at   . .         .         .         .          .          .         
+#&gt; 1385776_at   . .         .         .         .          .          .         
+#&gt; 1385798_at   . .         .         .         .          .          .         
+#&gt; 1385883_at   . .         .         .         .          .          .         
+#&gt; 1386248_at   . .         .         .         .          .          .         
+#&gt; 1386683_at   . .         .         .         .          .          .         
+#&gt; 1390779_at   . .         .         .         .          .          .         
+#&gt; 1390799_at   . .         .         .         .          .          .         
+#&gt; 1390814_at   . .         .         .         .          .          .         
+#&gt; 1390836_at   . .         .         .         .          .          .         
+#&gt; 1390856_at   . .         .         .         .          .          .         
+#&gt; 1390864_at   . .         .         .         .          .          .         
+#&gt; 1390868_at   . .         .         .         .          .          .         
+#&gt; 1390874_at   . .         .         .         .         -0.1893770 -0.23941552
+#&gt; 1390875_a_at . .         .         .         .          .          .         
+#&gt; 1390945_at   . .         .         .         .          .          .         
+#&gt; 1391005_at   . .         .         .         .          .          .         
+#&gt; 1391013_at   . .         .         .         .          .          .         
+#&gt; 1391085_at   . .         .         .         .          .          .         
+#&gt; 1391092_at   . .         .         .         .          .          .         
+#&gt; 1391101_at   . .         .         .         .          .          .         
+#&gt; 1391155_at   . .         .         .         .          .          .         
+#&gt; 1391183_at   . .         .         .         .          .          .         
+#&gt; 1391212_at   . .         .         .         .          .          .         
+#&gt; 1391271_at   . .         .         .         .          .          .         
+#&gt; 1391308_at   . .         .         .         .          .          .         
+#&gt; 1391415_at   . .         .         .         .          .          .         
+#&gt; 1391443_at   . .         .         .         .          .          .         
+#&gt; 1391464_at   . .         .         .         .          .          .         
+#&gt; 1391475_at   . .         .         .         .          .          .         
+#&gt; 1391564_at   . .         .         .         .          .          .         
+#&gt; 1391727_at   . .         .         .         .          .          .         
+#&gt; 1391928_at   . .         .         .         .          .          .         
+#&gt; 1392199_at   . .         .         .         .          .          .         
+#&gt; 1392313_at   . .         .         .         .          .          .         
+#&gt; 1392470_at   . .         .         .         .          .          .         
+#&gt; 1392573_at   . .         .         .         .          .          .         
+#&gt; 1392599_at   . .         .         .         .          .          .         
+#&gt; 1392601_at   . .         .         .         .          .          .         
+#&gt; 1392610_at   . .         .         .         .          .          .         
+#&gt; 1392698_a_at . .         .         .         .          .          .         
+#&gt; 1392772_at   . .         .         .         .          .          .         
+#&gt; 1392911_at   . .         .         .         .          .          .         
+#&gt; 1392918_at   . .         .         .         .          .          .         
+#&gt; 1392982_at   . .         .         .         .          .          .         
+#&gt; 1392997_at   . .         .         .         .          .          .         
+#&gt; 1393019_at   . .         .         .         .          .          .         
+#&gt; 1393027_at   . .         .         .         .          .          .         
+#&gt; 1393051_at   . .         .         .         .          .          .         
+#&gt; 1393149_at   . .         .         .         .          .          .         
+#&gt; 1393218_at   . .         .         .         .          .          .         
+#&gt; 1393258_at   . .         .         .         .          .          .         
+#&gt; 1393366_at   . .         .         .         .          .          .         
+#&gt; 1393510_at   . .         .         .         .          .          .         
+#&gt; 1393666_at   . .         .         .         .          .          .         
+#&gt; 1393736_at   . .         .         .         .          .          0.08521551
+#&gt; 1393794_at   . .         .         .         .          .          .         
+#&gt; 1393803_at   . .         .         .         .          .          .         
+#&gt; 1393817_at   . .         .         .         .          .          .         
+#&gt; 1393977_at   . .         .         .         .          .          .         
+#&gt; 1394095_at   . .         .         .         .          .          .         
+#&gt; 1394192_at   . .         .         .         .          .          .         
+#&gt; 1394455_at   . .         .         .         .          .          .         
+#&gt; 1394505_at   . .         .         .         .          .          .         
+#&gt; 1394884_s_at . .         .         .         .          .          .         
+#&gt; 1394897_at   . .         .         .         .          .          .         
+#&gt; 1395285_at   . .         .         .         .          .          .         
+#&gt; 1395455_at   . .         .         .         .          .          .         
+#&gt; 1395469_at   . .         .         .         .          .          .         
+#&gt; 1395479_at   . .         .         .         .          .          .         
+#&gt; 1395504_at   . .         .         .         .          .          .         
+#&gt; 1395647_at   . .         .         .         .          .          .         
+#&gt; 1395779_at   . .         .         .         .          .          .         
+#&gt; 1395791_at   . .         .         .         .          .          .         
+#&gt; 1396123_at   . .         .         .         .          .          .         
+#&gt; 1396476_at   . .         .         .         .          .          .         
+#&gt; 1396678_at   . .         .         .         .          .          .         
+#&gt; 1396853_at   . .         .         .         .          .          .         
+#&gt; 1396920_at   . .         .         .         .          .          .         
+#&gt; 1397227_at   . .         .         .         .          .          .         
+#&gt; 1397325_at   . .         .         .         .          .          .         
+#&gt; 1397363_at   . .         .         .         .          .          .         
+#&gt; 1397438_at   . .         .         .         .          .          .         
+#&gt; 1397554_at   . .         .         .         .          .          .         
+#&gt; 1397932_at   . .         .         .         .          .          .         
+#&gt; 1397946_at   . .         .         .         .          .          .         
+#&gt; 1397995_at   . .         .         .         .          .          .         
+#&gt; 1398601_at   . .         .         .         .          .          .         
+#&gt; 1398639_at   . .         .         .         .          .          .         
+#&gt; 1398663_at   . .         .         .         .          .          .         
+#&gt;                                                                     
+#&gt; 1367539_at    .          .           .          .          .        
+#&gt; 1367566_at    .          .           .          .          .        
+#&gt; 1368099_at    .          .           .          .          .        
+#&gt; 1368114_at    .          .           .          .          .        
+#&gt; 1368136_at    .          .           .          .          .        
+#&gt; 1368175_at    .          .           .          .          .        
+#&gt; 1368177_at    .          .           .          .          .        
+#&gt; 1368216_at    .          .           .          .          .        
+#&gt; 1368225_at    .          .           .          .          .        
+#&gt; 1368229_at    .          .           .          .          .        
+#&gt; 1368476_at    .          .           .          .          .        
+#&gt; 1368898_at    .          .           .          .          .        
+#&gt; 1369018_at    .          .           .          .          .        
+#&gt; 1369210_at    .          .           .          .          .        
+#&gt; 1369237_at    .          .           .          .          .        
+#&gt; 1370205_at    .          .           .          .          .        
+#&gt; 1370354_at    .          .           .          .          .        
+#&gt; 1370429_at    .          .           .          .          .        
+#&gt; 1370437_at    .          .           .          .          .        
+#&gt; 1370439_a_at  .          .           .          .          .        
+#&gt; 1370551_a_at  .          .           .          .          .        
+#&gt; 1370555_at    .          .           .          .          .        
+#&gt; 1370827_at    .          .           .          .          .        
+#&gt; 1371072_at    .          .           .          .          .        
+#&gt; 1371133_a_at  .          .           .          .          .        
+#&gt; 1371610_at    .          .           .          .          .        
+#&gt; 1371614_at    0.1869994  0.20075646  0.2668780  0.2426834  0.2560981
+#&gt; 1371661_at    .          .           .          .          .        
+#&gt; 1371828_at    .          .           .          .          .        
+#&gt; 1371953_at    .          .           .          .          .        
+#&gt; 1371963_at    .          .           .          .          .        
+#&gt; 1372022_at    .          .           .          .          .        
+#&gt; 1372046_at    .          .           .          .          .        
+#&gt; 1372072_at    .          .           .          .          .        
+#&gt; 1372078_at    .          .           .          .          .        
+#&gt; 1372081_at    .          .           .          .          .        
+#&gt; 1372104_at    .          .           .          .          .        
+#&gt; 1372121_at    .          .           .          .          .        
+#&gt; 1372143_at    .          .           .          .          .        
+#&gt; 1372189_at    .          .           .          .          .        
+#&gt; 1372192_at    .          .           .          .          .        
+#&gt; 1372202_at    .          .           .          .          .        
+#&gt; 1372248_at    .          .           .          .          .        
+#&gt; 1372266_at    .          .           .          .          .        
+#&gt; 1372329_at    .          .           .          .          .        
+#&gt; 1372445_at    .          .           .          .          .        
+#&gt; 1372449_at    .          .           .          .          .        
+#&gt; 1372453_at    .          .           .          .          .        
+#&gt; 1372463_at    .          .           .          .          .        
+#&gt; 1372497_at    .          .           .          .          .        
+#&gt; 1372538_at    .          .           .          .          .        
+#&gt; 1372544_at    .          .           .          .          .        
+#&gt; 1372563_at    .          .           .          .          .        
+#&gt; 1372582_at    .          .           .          .          .        
+#&gt; 1372594_at    .          .           .          .          .        
+#&gt; 1372633_at    .          .           .          .          .        
+#&gt; 1372674_at    .          .           .          .          .        
+#&gt; 1372675_at    .          .           .          .          .        
+#&gt; 1372710_at    .          .           .          .          .        
+#&gt; 1372713_at    .          .           .          .          .        
+#&gt; 1372715_at    .          .           .          .          .        
+#&gt; 1372733_at    .          .           .          .          .        
+#&gt; 1372768_at    .          .           .          .          .        
+#&gt; 1372816_at    .          .           .          .          .        
+#&gt; 1372817_at    .          .           .          .          .        
+#&gt; 1372830_at    .          .           .          .          .        
+#&gt; 1372867_at    .          .           .          .          .        
+#&gt; 1372921_at    .          .           .          .          .        
+#&gt; 1372928_at    .          .           .          .          .        
+#&gt; 1372953_at    .          .           .          .          .        
+#&gt; 1373039_at    .          .           .          .          .        
+#&gt; 1373083_at    .          .           .          .          .        
+#&gt; 1373136_at    .          .           .          .          .        
+#&gt; 1373163_at    .          .           .          .          .        
+#&gt; 1373165_at    .          .           .          .          .        
+#&gt; 1373194_at    .          .           .          .          .        
+#&gt; 1373200_at    .          .           .          .          .        
+#&gt; 1373272_at    .          .           .          .          .        
+#&gt; 1373326_at    .          .           .          .          .        
+#&gt; 1373327_at    .          .           .          .          .        
+#&gt; 1373333_at    .          .           .          .          .        
+#&gt; 1373336_at    .          .           .          .          .        
+#&gt; 1373381_at    .          .           .          .          .        
+#&gt; 1373398_at    .          .           .          .          .        
+#&gt; 1373431_at    .          .           .          .          .        
+#&gt; 1373441_at    .          .           .          .          .        
+#&gt; 1373450_at    .          .           .          .          .        
+#&gt; 1373472_at    .          .           .          .          .        
+#&gt; 1373519_at    .          .           .          .          .        
+#&gt; 1373534_at    .          .           .          .          .        
+#&gt; 1373545_at    .          .           .          .          .        
+#&gt; 1373569_at    .          .           .          .          .        
+#&gt; 1373621_at    .          .           .          .          .        
+#&gt; 1373643_at    .          .           .          .          .        
+#&gt; 1373677_at    .          .           .          .          .        
+#&gt; 1373683_at    .          .           .          .          .        
+#&gt; 1373707_at    .          .           .          .          .        
+#&gt; 1373771_at    .          .           .          .          .        
+#&gt; 1373784_at    .          .           .          .          .        
+#&gt; 1373813_at    .          .           .          .          .        
+#&gt; 1373835_at    .          .           .          .          .        
+#&gt; 1373843_at    .          .           .          .          .        
+#&gt; 1373859_at    .          .           .          .          .        
+#&gt; 1373887_at    .          .           .          .          .        
+#&gt; 1373912_at    .          .           .          .          .        
+#&gt; 1373941_at    .          .           .          .          .        
+#&gt; 1373944_at    .          .           .          .          .        
+#&gt; 1374010_at    .          .           .          .          .        
+#&gt; 1374027_at    .          .           .          .          .        
+#&gt; 1374074_at    .          .           .          .          .        
+#&gt; 1374094_at    .          .           .          .          .        
+#&gt; 1374106_at    .          .           .          .          .        
+#&gt; 1374150_at    .          .           .          .          .        
+#&gt; 1374151_at    .          .           .          .          .        
+#&gt; 1374187_at    .          .           .          .          .        
+#&gt; 1374233_at    .          .           .          .          .        
+#&gt; 1374401_at    .          .           .          .          .        
+#&gt; 1374423_at    .          .           .          .          .        
+#&gt; 1374519_at    .          .           .          .          .        
+#&gt; 1374542_at    .          .           .          .          .        
+#&gt; 1374548_at    .          .           .          .          .        
+#&gt; 1374574_at    .          .           .          .          .        
+#&gt; 1374581_at    .          .           .          .          .        
+#&gt; 1374628_at    .          .           .          .          .        
+#&gt; 1374645_at    .          .           .          .          .        
+#&gt; 1374647_at    .          .           .          .          .        
+#&gt; 1374669_at    .          .           .          .          .        
+#&gt; 1374766_at    .          .           .          .          .        
+#&gt; 1374792_at    .          .           .          .          .        
+#&gt; 1374809_at    .          .           .          .          .        
+#&gt; 1374890_at    .          .           .          .          .        
+#&gt; 1375035_at    .          .           .          .          .        
+#&gt; 1375036_at    .          .           .          .          .        
+#&gt; 1375056_at    .          .           .          .          .        
+#&gt; 1375129_at    .          .           .          .          .        
+#&gt; 1375389_at    .          .           .          .          .        
+#&gt; 1375431_at    .          .           .          .          .        
+#&gt; 1375510_x_at  .          .           .          .          .        
+#&gt; 1375638_at    .          .           .          .          .        
+#&gt; 1375743_at    .          .           .          .          .        
+#&gt; 1375832_at    .          .           .          .          .        
+#&gt; 1375833_at    .         -0.11911949 -0.1394072 -0.1518537 -0.1240674
+#&gt; 1375841_at    .          .           .          .          .        
+#&gt; 1375894_at    .          .           .          .          .        
+#&gt; 1375965_at    .          .           .          .          .        
+#&gt; 1376004_at    .          .           .          .          .        
+#&gt; 1376086_at    .          .           .          .          .        
+#&gt; 1376121_at    .          .           .          .          .        
+#&gt; 1376125_at    .          .           .          .          .        
+#&gt; 1376159_at    .          .           .          .          .        
+#&gt; 1376261_at    .          .           .          .          .        
+#&gt; 1376306_at    .          .           .          .          .        
+#&gt; 1376336_at    .          .           .          .          .        
+#&gt; 1376374_at    .          .           .          .          .        
+#&gt; 1376376_at    .          .           .          .          .        
+#&gt; 1376551_at    .          .           .          .          .        
+#&gt; 1376584_at    .          .           .          .          .        
+#&gt; 1376587_at    .          .           .          .          .        
+#&gt; 1376637_at    .          .           .          .          .        
+#&gt; 1376641_at    .          .           .          .          .        
+#&gt; 1376683_at    .          .           .          .          .        
+#&gt; 1376686_at    .          .           .          .          .        
+#&gt; 1376687_at    .          .           .          .          .        
+#&gt; 1376714_at    .          .           .          .          .        
+#&gt; 1376747_at    .          .           .          .          .        
+#&gt; 1376773_at    .          .           .          .          .        
+#&gt; 1376832_at    .          .           .          .          .        
+#&gt; 1376842_at    .          .           .          .          .        
+#&gt; 1376945_at    .          .           .          .          .        
+#&gt; 1376984_at    .          .           .          .          .        
+#&gt; 1377005_at    .          .           .          .          .        
+#&gt; 1377043_at    .          .           .          .          .        
+#&gt; 1377127_at    .          .           .          .          .        
+#&gt; 1377128_at    .          .           .          .          .        
+#&gt; 1377141_at    .          .           .          .          .        
+#&gt; 1377157_at    .          .           .          .          .        
+#&gt; 1377162_at    .          .           .          .          .        
+#&gt; 1377194_a_at  .          .           .          .          .        
+#&gt; 1377236_at    .          .           .          .          .        
+#&gt; 1377254_a_at  .          .           .          .          .        
+#&gt; 1377273_at    .          .           .          .          .        
+#&gt; 1377281_at    .          .           .          .          .        
+#&gt; 1377327_at    .          .           .          .          .        
+#&gt; 1377469_at    .          .           .          .          .        
+#&gt; 1377836_at    .          .           .          0.1477883  0.1818710
+#&gt; 1379451_at    .          .           .          .          .        
+#&gt; 1379580_at    .          .           .          .          .        
+#&gt; 1380466_at    .          .           .          .          .        
+#&gt; 1382223_at    0.1855453  0.14228057  0.1612558  0.1138574  0.1193008
+#&gt; 1382345_at    .          .           .          .          .        
+#&gt; 1383192_at    .          .           .          .          .        
+#&gt; 1383383_at    .          .           .          .          .        
+#&gt; 1383561_at    .          .           .          .          .        
+#&gt; 1383649_a_at  .          .           .          .          .        
+#&gt; 1384065_at    .          .           .          .          .        
+#&gt; 1384584_at    .          .           .          .          .        
+#&gt; 1385697_at    .          .           .          .          .        
+#&gt; 1385826_at    .          .           .          .          .        
+#&gt; 1386358_at    .          .           .          .          .        
+#&gt; 1387142_at    .          .           .          .          .        
+#&gt; 1387262_at    .          .           .          .          .        
+#&gt; 1387501_at    .          .           .          .          .        
+#&gt; 1387527_at    .          .           .          .          .        
+#&gt; 1387781_at    .          .           .          .          .        
+#&gt; 1387977_at    .          .           .          .          .        
+#&gt; 1388087_at    .          .           .          .          .        
+#&gt; 1388135_at    .          .           .          .          .        
+#&gt; 1388383_at    .          .           .          .          .        
+#&gt; 1388491_at    0.4148951  0.37679453  0.3485107  0.2712674  0.2541501
+#&gt; 1388656_at    .          .           .          .          .        
+#&gt; 1388743_at    .          .           .          .          .        
+#&gt; 1388796_at    .          .           .          .          .        
+#&gt; 1388799_at    .          .           .          .          .        
+#&gt; 1388830_at    .          .           .          .          .        
+#&gt; 1388929_at    .          .           .          .          .        
+#&gt; 1388996_at    .          .           .          .          .        
+#&gt; 1388999_at    .          .           .          .          .        
+#&gt; 1389049_at    .          .           .          .          .        
+#&gt; 1389057_at    0.1911351  0.16305180  0.2031229  0.1877731  0.1799319
+#&gt; 1389082_at    .          .           .          .          .        
+#&gt; 1389133_at    .          .           .          .          0.1432774
+#&gt; 1389153_at    .          .           .          .          .        
+#&gt; 1389205_at    .          .           .          .          .        
+#&gt; 1389225_at    .          .           .          .          .        
+#&gt; 1389226_at    .          .           .          .          .        
+#&gt; 1389229_at    .          .           .          .          .        
+#&gt; 1389241_at    .          .          -0.1873927 -0.2547515 -0.3107826
+#&gt; 1389254_at    .          .           .          .          .        
+#&gt; 1389275_at    .          .           .          .          .        
+#&gt; 1389329_at    .          .           .          .          .        
+#&gt; 1389357_at    .          .           .          .          .        
+#&gt; 1389388_at    .          .           .          .          .        
+#&gt; 1389428_at    .          .           .          .          .        
+#&gt; 1389457_at    .          .           .          .          .        
+#&gt; 1389460_at    .          .           .          .          .        
+#&gt; 1389539_at    .          .           .          .          .        
+#&gt; 1389549_at    .          .           .          .          .        
+#&gt; 1389584_at    .          .           .          .          .        
+#&gt; 1389607_at    .          .           .          .          .        
+#&gt; 1389730_at    .          .           .          .          .        
+#&gt; 1389763_at    .          .           .          .          .        
+#&gt; 1389781_at    .          .           .          .          .        
+#&gt; 1389910_at    0.4281663  0.41579741  0.4348122  0.4641414  0.4230337
+#&gt; 1389915_at    .          .           .          .          .        
+#&gt; 1389968_at    .          .           .          .          .        
+#&gt; 1389978_at    .          .           .          .          .        
+#&gt; 1389981_at    .          .           .          .          .        
+#&gt; 1390142_at    .          .           .          .          .        
+#&gt; 1390272_at    .          .           .          .          .        
+#&gt; 1390301_at    .          .           .          .          .        
+#&gt; 1390323_at    .          .           .          .          .        
+#&gt; 1390394_at    .          .           .          .          .        
+#&gt; 1390427_at    .          .           .          .          .        
+#&gt; 1390439_at    .          .           .          .          .        
+#&gt; 1390456_at    .          .           .          .          .        
+#&gt; 1390539_at    .          .           .          .          .        
+#&gt; 1390574_at    .          .           .          .          .        
+#&gt; 1390599_at    .          .           .          .          .        
+#&gt; 1390709_at    .          .           .          .          .        
+#&gt; 1391096_at    .          .           .          .          .        
+#&gt; 1391408_a_at  .          .           .          .          .        
+#&gt; 1391412_at    .          .           .          .          .        
+#&gt; 1391454_at    .          .           .          .          .        
+#&gt; 1391484_at    .          .           .          .          .        
+#&gt; 1392749_at    .          .           .          .          .        
+#&gt; 1392958_at    .          .           .          .          .        
+#&gt; 1393251_at    .          .           .          .          .        
+#&gt; 1398308_at    .          .           .          .          .        
+#&gt; 1398337_at    .          .           .          .          .        
+#&gt; 1398340_at    .          .           .          .          .        
+#&gt; 1398370_at    .          .           .          .          .        
+#&gt; 1398384_at    .          .           .          .          .        
+#&gt; 1398395_at    .          .           .          .          .        
+#&gt; 1398396_at    .          .           .          .          .        
+#&gt; 1398405_at    .          .           .          .          .        
+#&gt; 1398409_at    .          .           .          .          .        
+#&gt; 1398447_at    .          .           .          .          .        
+#&gt; 1398448_at    .          .           .          .          .        
+#&gt; 1398988_at    .          .           .          .          .        
+#&gt; 1399061_at    .          .           .          .          .        
+#&gt; 1399114_at    .          .           .          .          .        
+#&gt; 1399134_at    .          .           .          .          .        
+#&gt; 1399154_at    .          .           .          .          .        
+#&gt; 1377569_at    .          .           .          .          .        
+#&gt; 1377596_a_at  .          .           .          .          .        
+#&gt; 1377637_at    .          .           .          .          .        
+#&gt; 1377644_at    .          .           .          .          .        
+#&gt; 1377681_at    .          .           .          .          .        
+#&gt; 1377701_at    .          .           .          .          .        
+#&gt; 1377745_at    .          .           .          .          .        
+#&gt; 1377755_at    .          .           .          .          .        
+#&gt; 1377757_at    .          .           .          .          .        
+#&gt; 1377786_at    .          .           .          .          .        
+#&gt; 1377791_at    .          .           .          .          .        
+#&gt; 1377880_at    .          .           .          .          .        
+#&gt; 1377883_at    .          .           .          .          .        
+#&gt; 1377919_at    .          .           .          .          .        
+#&gt; 1378022_at    .          .           .          .          .        
+#&gt; 1378036_at    .          .           .          .          .        
+#&gt; 1378125_at    .          .           .          .          .        
+#&gt; 1378185_at    .          .           .          .          .        
+#&gt; 1378316_at    .          .           .          .          .        
+#&gt; 1378578_at    .          .           .          .          .        
+#&gt; 1378590_at    .          .           .          .          .        
+#&gt; 1378620_at    .          .           .          .          .        
+#&gt; 1378680_at    .          .           .          .          .        
+#&gt; 1378741_at    .          .           .          .          .        
+#&gt; 1378819_at    .          .           .          .          .        
+#&gt; 1378928_at    .          .           .          .          .        
+#&gt; 1379029_at    .          .           .          .          .        
+#&gt; 1379094_at    .          .           .          .          .        
+#&gt; 1379121_at    .          .           .          .          .        
+#&gt; 1379169_at    .          .           .          .          .        
+#&gt; 1379187_at    .          .           .          .          .        
+#&gt; 1379279_at    .          .           .          .          .        
+#&gt; 1379283_at    .          .           .          .          .        
+#&gt; 1379290_at    .          .           .          .          .        
+#&gt; 1379476_at    .          .           .          .          .        
+#&gt; 1379495_at    .          .           .          .          .        
+#&gt; 1379600_at    .          .           .          .          .        
+#&gt; 1379625_at    .          .           .          .          .        
+#&gt; 1379693_at    .          .           .          .          .        
+#&gt; 1379699_at    .          .           .          .          .        
+#&gt; 1379728_at    .          .           .          .          .        
+#&gt; 1379971_at    .          .           .          .          .        
+#&gt; 1379982_at    .          .           .          .          .        
+#&gt; 1380058_at    .          .           .          .          .        
+#&gt; 1380174_at    .          .           .          .          .        
+#&gt; 1380185_at    .          .           .          .          .        
+#&gt; 1380214_at    .          .           .          .          .        
+#&gt; 1380233_x_at  .          .           .          .          .        
+#&gt; 1380402_at    .          .           .          .          .        
+#&gt; 1380463_at    .          .           .          .          .        
+#&gt; 1380477_at    .          .           .          .          .        
+#&gt; 1380553_at    .          .           .          .          .        
+#&gt; 1380794_at    .          .           .          .          .        
+#&gt; 1380811_at    .          .           .          .          .        
+#&gt; 1380815_at    .          .           .          .          .        
+#&gt; 1380852_at    .          .           .          .          .        
+#&gt; 1380890_at    .          .           .          .          .        
+#&gt; 1380932_at    .          .           .          .          .        
+#&gt; 1381077_at    .          .           .          .          .        
+#&gt; 1381481_at    .          .           .          .          .        
+#&gt; 1381755_x_at  .          .           .          .          .        
+#&gt; 1381849_at    .          .           .          .          .        
+#&gt; 1381902_at    .          .           .          .          .        
+#&gt; 1381914_at    .          .           .          .          .        
+#&gt; 1381926_at    .          .           .          .          .        
+#&gt; 1381930_at    .          .           .          .          .        
+#&gt; 1381963_at    .          .           .          .          .        
+#&gt; 1381976_at    .          .           .          .          .        
+#&gt; 1381998_at    .          .           .          .          .        
+#&gt; 1382045_at    .          .           .          .          .        
+#&gt; 1382065_at    .          .           .          .          .        
+#&gt; 1382114_at    .          .           .          .          .        
+#&gt; 1382132_at    .          .           .          .          .        
+#&gt; 1382139_at    .          .           .          .          .        
+#&gt; 1382154_at    .          .           .          .          .        
+#&gt; 1382271_at    .          .           .          .          .        
+#&gt; 1382290_at    .          .           .          .          .        
+#&gt; 1382379_at    .          .           .          .          .        
+#&gt; 1382517_at    .          .           .          .          .        
+#&gt; 1382579_at    .          .           .          .          .        
+#&gt; 1382651_at    .          .           .          .          .        
+#&gt; 1382779_at    .          .           .          .          .        
+#&gt; 1383081_at    .          .           .          .          .        
+#&gt; 1383084_at    .          .           .          .          .        
+#&gt; 1383110_at    .          .           .          .          .        
+#&gt; 1383167_at    .          .           .          .          .        
+#&gt; 1383172_at    .          .           .          .          .        
+#&gt; 1383226_at    .          .           .          .          .        
+#&gt; 1383236_at    .          .           .          .          .        
+#&gt; 1383249_at    .          .           .          .          .        
+#&gt; 1383254_at    .          .           .          .          .        
+#&gt; 1383257_at    .          .           .          .          .        
+#&gt; 1383299_at    .          .           .          .          .        
+#&gt; 1383374_at    .          .           .          .          .        
+#&gt; 1383431_at    .          .           .          .          .        
+#&gt; 1383433_at    .          .           .          .          .        
+#&gt; 1383504_at    .          .           .          .          .        
+#&gt; 1383533_at    .          .           .          .          .        
+#&gt; 1383607_at    .          .           .          .          .        
+#&gt; 1383611_at    .          .           .          .          .        
+#&gt; 1383673_at    .          .           .          .          .        
+#&gt; 1383720_at    .          .           .          .          .        
+#&gt; 1383731_at    .          .           .          .          .        
+#&gt; 1383783_at    .          .           .          .          .        
+#&gt; 1383998_at    .          .           .          .          .        
+#&gt; 1384007_at    .          .           .          .          .        
+#&gt; 1384035_at    .          .           .          .          .        
+#&gt; 1384150_at    .          .           .          .          .        
+#&gt; 1384205_at    .          .           .          .          .        
+#&gt; 1384222_at    .          .           .          .          .        
+#&gt; 1384247_at    .          .           .          .          .        
+#&gt; 1384296_at    .          .           .          .          .        
+#&gt; 1384320_at    .          .           .          .          .        
+#&gt; 1384352_at    .          .           .          .          .        
+#&gt; 1384368_at    .          .           .          .          .        
+#&gt; 1384382_at    .          .           .          .          .        
+#&gt; 1384387_at    .          .           .          .          .        
+#&gt; 1384542_at    .          .           .          .          .        
+#&gt; 1384565_at    .          .           .          .          .        
+#&gt; 1384860_at    .          .           .          .          .        
+#&gt; 1384940_at    .          .           .          .          .        
+#&gt; 1385030_at    .          .           .          .          .        
+#&gt; 1385106_at    .          .           .          .          .        
+#&gt; 1385168_at    .          .           .          .          .        
+#&gt; 1385261_s_at  .          .           .          .          .        
+#&gt; 1385501_at    .          .           .          .          .        
+#&gt; 1385559_at    .          .           .          .          .        
+#&gt; 1385597_at    .          .           .          .          .        
+#&gt; 1385776_at    .          .           .          .          .        
+#&gt; 1385798_at    .          .           .          .          .        
+#&gt; 1385883_at    .          .           .          .          .        
+#&gt; 1386248_at    .          .           .          .          .        
+#&gt; 1386683_at    .          .           .          .          .        
+#&gt; 1390779_at    .          .           .          .          .        
+#&gt; 1390799_at    .          .           .          .          .        
+#&gt; 1390814_at    .          .           .          .          .        
+#&gt; 1390836_at    .          .           .          .          .        
+#&gt; 1390856_at    .          .           .          .          .        
+#&gt; 1390864_at    .          .           .          .          .        
+#&gt; 1390868_at    .          .           .          .          .        
+#&gt; 1390874_at   -0.2664021 -0.25946566 -0.2004838 -0.1795276 -0.2114619
+#&gt; 1390875_a_at  .          .           .          .          .        
+#&gt; 1390945_at    .          .           .          .          .        
+#&gt; 1391005_at    .          .           .          .          .        
+#&gt; 1391013_at    .          .           .          .          .        
+#&gt; 1391085_at    .          .           .          .          .        
+#&gt; 1391092_at    .          .           .          .          .        
+#&gt; 1391101_at    .          .           .          .          .        
+#&gt; 1391155_at    .          .           .          .          .        
+#&gt; 1391183_at    .          .           .          .          .        
+#&gt; 1391212_at    .          .           .          .          .        
+#&gt; 1391271_at    .          .           .          .          .        
+#&gt; 1391308_at    .          .           .          .          .        
+#&gt; 1391415_at    .          .           .          .          .        
+#&gt; 1391443_at    .          .           .          .          .        
+#&gt; 1391464_at    .          .           .          .          .        
+#&gt; 1391475_at    .          .           .          .          .        
+#&gt; 1391564_at    .          .           .          .          .        
+#&gt; 1391727_at    .          .           .          .          .        
+#&gt; 1391928_at    .          .           .          .          .        
+#&gt; 1392199_at    .          .           .          .          .        
+#&gt; 1392313_at    .          .           .          .          .        
+#&gt; 1392470_at    .          .           .          .          .        
+#&gt; 1392573_at    .          .           .          .          .        
+#&gt; 1392599_at    .          .           .          .          .        
+#&gt; 1392601_at    .          .           .          .          .        
+#&gt; 1392610_at    .          .           .          .          .        
+#&gt; 1392698_a_at  .          .           .          .          .        
+#&gt; 1392772_at    .          .           .          .          .        
+#&gt; 1392911_at    .          .           .          .          .        
+#&gt; 1392918_at    .          .           .          .          .        
+#&gt; 1392982_at    .          .           .          .          .        
+#&gt; 1392997_at    .          .           .          .          .        
+#&gt; 1393019_at    .          .           .          .          .        
+#&gt; 1393027_at    .          .           .          .          .        
+#&gt; 1393051_at    .          .           .          .          .        
+#&gt; 1393149_at    .          .           .          .          .        
+#&gt; 1393218_at    .          .           .          .          .        
+#&gt; 1393258_at    .          .           .          .          .        
+#&gt; 1393366_at    .          .           .          .          .        
+#&gt; 1393510_at    .          .           .          .          .        
+#&gt; 1393666_at    .          .           .          .          .        
+#&gt; 1393736_at    0.0907471  0.08054991  0.1007118  0.1098132  0.1017367
+#&gt; 1393794_at    .          .           .          .          .        
+#&gt; 1393803_at    .          .           .          .          .        
+#&gt; 1393817_at    .          .           .          .          .        
+#&gt; 1393977_at    .          .           .          .          .        
+#&gt; 1394095_at    .          .           .          .          .        
+#&gt; 1394192_at    .          .           .          .          .        
+#&gt; 1394455_at    .          .           .          .          .        
+#&gt; 1394505_at    .          .           .          .          .        
+#&gt; 1394884_s_at  .          .           .          .          .        
+#&gt; 1394897_at    .          .           .          .          .        
+#&gt; 1395285_at    .          .           .          .          .        
+#&gt; 1395455_at    .          .           .          .          .        
+#&gt; 1395469_at    .          .           .          .          .        
+#&gt; 1395479_at    .          .           .          .          .        
+#&gt; 1395504_at    .          .           .          .          .        
+#&gt; 1395647_at    .          .           .          .          .        
+#&gt; 1395779_at    .          .           .          .          .        
+#&gt; 1395791_at    .          .           .          .          .        
+#&gt; 1396123_at    .          .           .          .          .        
+#&gt; 1396476_at    .          .           .          .          .        
+#&gt; 1396678_at    .          .           .          .          .        
+#&gt; 1396853_at    .          .           .          .          .        
+#&gt; 1396920_at    .          .           .          .          .        
+#&gt; 1397227_at    .          .           .          .          .        
+#&gt; 1397325_at    .          .           .          .          .        
+#&gt; 1397363_at    .          .           .          .          .        
+#&gt; 1397438_at    .          .           .          .          .        
+#&gt; 1397554_at    .          .           .          .          .        
+#&gt; 1397932_at    .          .           .          .          .        
+#&gt; 1397946_at    .          .           .          .          .        
+#&gt; 1397995_at    .          .           .          .          .        
+#&gt; 1398601_at    .          .           .          .          .        
+#&gt; 1398639_at    .          .           .          .          .        
+#&gt; 1398663_at    .          .           .          .          .        
+#&gt;                         
+#&gt; 1367539_at    .         
+#&gt; 1367566_at    .         
+#&gt; 1368099_at    .         
+#&gt; 1368114_at    .         
+#&gt; 1368136_at    .         
+#&gt; 1368175_at    .         
+#&gt; 1368177_at    .         
+#&gt; 1368216_at    .         
+#&gt; 1368225_at    .         
+#&gt; 1368229_at    .         
+#&gt; 1368476_at    .         
+#&gt; 1368898_at    .         
+#&gt; 1369018_at    .         
+#&gt; 1369210_at    .         
+#&gt; 1369237_at    .         
+#&gt; 1370205_at    .         
+#&gt; 1370354_at    .         
+#&gt; 1370429_at    .         
+#&gt; 1370437_at    .         
+#&gt; 1370439_a_at  .         
+#&gt; 1370551_a_at  .         
+#&gt; 1370555_at    .         
+#&gt; 1370827_at    .         
+#&gt; 1371072_at    .         
+#&gt; 1371133_a_at  .         
+#&gt; 1371610_at    .         
+#&gt; 1371614_at    0.27048825
+#&gt; 1371661_at    .         
+#&gt; 1371828_at    .         
+#&gt; 1371953_at    .         
+#&gt; 1371963_at    .         
+#&gt; 1372022_at    .         
+#&gt; 1372046_at    .         
+#&gt; 1372072_at    .         
+#&gt; 1372078_at    .         
+#&gt; 1372081_at    .         
+#&gt; 1372104_at    .         
+#&gt; 1372121_at    .         
+#&gt; 1372143_at    .         
+#&gt; 1372189_at    .         
+#&gt; 1372192_at    .         
+#&gt; 1372202_at    .         
+#&gt; 1372248_at    .         
+#&gt; 1372266_at    .         
+#&gt; 1372329_at    .         
+#&gt; 1372445_at    .         
+#&gt; 1372449_at    .         
+#&gt; 1372453_at    .         
+#&gt; 1372463_at    .         
+#&gt; 1372497_at    .         
+#&gt; 1372538_at    .         
+#&gt; 1372544_at    .         
+#&gt; 1372563_at    .         
+#&gt; 1372582_at    .         
+#&gt; 1372594_at    .         
+#&gt; 1372633_at    .         
+#&gt; 1372674_at    .         
+#&gt; 1372675_at    .         
+#&gt; 1372710_at    .         
+#&gt; 1372713_at    .         
+#&gt; 1372715_at    .         
+#&gt; 1372733_at    .         
+#&gt; 1372768_at    .         
+#&gt; 1372816_at    .         
+#&gt; 1372817_at    .         
+#&gt; 1372830_at    .         
+#&gt; 1372867_at    .         
+#&gt; 1372921_at    .         
+#&gt; 1372928_at    .         
+#&gt; 1372953_at    .         
+#&gt; 1373039_at    .         
+#&gt; 1373083_at    .         
+#&gt; 1373136_at    .         
+#&gt; 1373163_at    .         
+#&gt; 1373165_at    .         
+#&gt; 1373194_at    .         
+#&gt; 1373200_at    .         
+#&gt; 1373272_at    .         
+#&gt; 1373326_at    .         
+#&gt; 1373327_at    .         
+#&gt; 1373333_at    .         
+#&gt; 1373336_at    .         
+#&gt; 1373381_at    .         
+#&gt; 1373398_at    .         
+#&gt; 1373431_at    .         
+#&gt; 1373441_at    .         
+#&gt; 1373450_at    .         
+#&gt; 1373472_at    .         
+#&gt; 1373519_at    .         
+#&gt; 1373534_at    .         
+#&gt; 1373545_at    .         
+#&gt; 1373569_at    .         
+#&gt; 1373621_at    .         
+#&gt; 1373643_at    .         
+#&gt; 1373677_at    .         
+#&gt; 1373683_at    .         
+#&gt; 1373707_at    .         
+#&gt; 1373771_at    .         
+#&gt; 1373784_at    .         
+#&gt; 1373813_at    .         
+#&gt; 1373835_at    .         
+#&gt; 1373843_at    .         
+#&gt; 1373859_at    .         
+#&gt; 1373887_at    .         
+#&gt; 1373912_at    .         
+#&gt; 1373941_at    .         
+#&gt; 1373944_at    .         
+#&gt; 1374010_at    .         
+#&gt; 1374027_at    .         
+#&gt; 1374074_at    .         
+#&gt; 1374094_at    .         
+#&gt; 1374106_at    .         
+#&gt; 1374150_at    .         
+#&gt; 1374151_at    .         
+#&gt; 1374187_at    .         
+#&gt; 1374233_at    .         
+#&gt; 1374401_at    .         
+#&gt; 1374423_at    .         
+#&gt; 1374519_at    .         
+#&gt; 1374542_at    .         
+#&gt; 1374548_at    .         
+#&gt; 1374574_at    .         
+#&gt; 1374581_at    .         
+#&gt; 1374628_at    .         
+#&gt; 1374645_at    .         
+#&gt; 1374647_at    .         
+#&gt; 1374669_at    .         
+#&gt; 1374766_at    .         
+#&gt; 1374792_at    .         
+#&gt; 1374809_at    .         
+#&gt; 1374890_at    .         
+#&gt; 1375035_at    .         
+#&gt; 1375036_at    .         
+#&gt; 1375056_at    .         
+#&gt; 1375129_at    .         
+#&gt; 1375389_at    .         
+#&gt; 1375431_at    .         
+#&gt; 1375510_x_at  .         
+#&gt; 1375638_at    .         
+#&gt; 1375743_at    .         
+#&gt; 1375832_at    .         
+#&gt; 1375833_at   -0.10770636
+#&gt; 1375841_at    .         
+#&gt; 1375894_at    .         
+#&gt; 1375965_at    .         
+#&gt; 1376004_at    .         
+#&gt; 1376086_at    .         
+#&gt; 1376121_at    .         
+#&gt; 1376125_at    .         
+#&gt; 1376159_at    .         
+#&gt; 1376261_at    .         
+#&gt; 1376306_at    .         
+#&gt; 1376336_at    .         
+#&gt; 1376374_at    .         
+#&gt; 1376376_at    .         
+#&gt; 1376551_at    .         
+#&gt; 1376584_at    .         
+#&gt; 1376587_at    .         
+#&gt; 1376637_at    .         
+#&gt; 1376641_at    .         
+#&gt; 1376683_at    .         
+#&gt; 1376686_at    .         
+#&gt; 1376687_at    .         
+#&gt; 1376714_at    .         
+#&gt; 1376747_at    .         
+#&gt; 1376773_at    .         
+#&gt; 1376832_at    .         
+#&gt; 1376842_at    .         
+#&gt; 1376945_at    .         
+#&gt; 1376984_at    .         
+#&gt; 1377005_at    .         
+#&gt; 1377043_at    .         
+#&gt; 1377127_at    .         
+#&gt; 1377128_at    .         
+#&gt; 1377141_at    .         
+#&gt; 1377157_at    .         
+#&gt; 1377162_at    .         
+#&gt; 1377194_a_at  .         
+#&gt; 1377236_at    .         
+#&gt; 1377254_a_at  .         
+#&gt; 1377273_at    .         
+#&gt; 1377281_at    .         
+#&gt; 1377327_at    .         
+#&gt; 1377469_at    .         
+#&gt; 1377836_at    0.18620659
+#&gt; 1379451_at    .         
+#&gt; 1379580_at    .         
+#&gt; 1380466_at    .         
+#&gt; 1382223_at    0.11591516
+#&gt; 1382345_at    .         
+#&gt; 1383192_at    .         
+#&gt; 1383383_at    .         
+#&gt; 1383561_at    .         
+#&gt; 1383649_a_at  .         
+#&gt; 1384065_at    .         
+#&gt; 1384584_at    .         
+#&gt; 1385697_at    .         
+#&gt; 1385826_at    .         
+#&gt; 1386358_at    .         
+#&gt; 1387142_at    .         
+#&gt; 1387262_at    .         
+#&gt; 1387501_at    .         
+#&gt; 1387527_at    .         
+#&gt; 1387781_at    .         
+#&gt; 1387977_at    .         
+#&gt; 1388087_at    .         
+#&gt; 1388135_at    .         
+#&gt; 1388383_at    .         
+#&gt; 1388491_at    0.25293428
+#&gt; 1388656_at    .         
+#&gt; 1388743_at    .         
+#&gt; 1388796_at    .         
+#&gt; 1388799_at    .         
+#&gt; 1388830_at    .         
+#&gt; 1388929_at    .         
+#&gt; 1388996_at    .         
+#&gt; 1388999_at    .         
+#&gt; 1389049_at    .         
+#&gt; 1389057_at    0.17073422
+#&gt; 1389082_at    .         
+#&gt; 1389133_at    0.14743532
+#&gt; 1389153_at    .         
+#&gt; 1389205_at    .         
+#&gt; 1389225_at    .         
+#&gt; 1389226_at    .         
+#&gt; 1389229_at    .         
+#&gt; 1389241_at   -0.32472133
+#&gt; 1389254_at    .         
+#&gt; 1389275_at    .         
+#&gt; 1389329_at    .         
+#&gt; 1389357_at    .         
+#&gt; 1389388_at    .         
+#&gt; 1389428_at    .         
+#&gt; 1389457_at    .         
+#&gt; 1389460_at    .         
+#&gt; 1389539_at    .         
+#&gt; 1389549_at    .         
+#&gt; 1389584_at    .         
+#&gt; 1389607_at    .         
+#&gt; 1389730_at    .         
+#&gt; 1389763_at    .         
+#&gt; 1389781_at    .         
+#&gt; 1389910_at    0.40753236
+#&gt; 1389915_at    .         
+#&gt; 1389968_at    .         
+#&gt; 1389978_at    .         
+#&gt; 1389981_at    .         
+#&gt; 1390142_at    .         
+#&gt; 1390272_at    .         
+#&gt; 1390301_at    .         
+#&gt; 1390323_at    .         
+#&gt; 1390394_at    .         
+#&gt; 1390427_at    .         
+#&gt; 1390439_at    .         
+#&gt; 1390456_at    .         
+#&gt; 1390539_at    .         
+#&gt; 1390574_at    .         
+#&gt; 1390599_at    .         
+#&gt; 1390709_at    .         
+#&gt; 1391096_at    .         
+#&gt; 1391408_a_at  .         
+#&gt; 1391412_at    .         
+#&gt; 1391454_at    .         
+#&gt; 1391484_at    .         
+#&gt; 1392749_at    .         
+#&gt; 1392958_at    .         
+#&gt; 1393251_at    .         
+#&gt; 1398308_at    .         
+#&gt; 1398337_at    .         
+#&gt; 1398340_at    .         
+#&gt; 1398370_at    .         
+#&gt; 1398384_at    .         
+#&gt; 1398395_at    .         
+#&gt; 1398396_at    .         
+#&gt; 1398405_at    .         
+#&gt; 1398409_at    .         
+#&gt; 1398447_at    .         
+#&gt; 1398448_at    0.05737624
+#&gt; 1398988_at    .         
+#&gt; 1399061_at    .         
+#&gt; 1399114_at    .         
+#&gt; 1399134_at    .         
+#&gt; 1399154_at    .         
+#&gt; 1377569_at    .         
+#&gt; 1377596_a_at  .         
+#&gt; 1377637_at    .         
+#&gt; 1377644_at    .         
+#&gt; 1377681_at    .         
+#&gt; 1377701_at    .         
+#&gt; 1377745_at    .         
+#&gt; 1377755_at    .         
+#&gt; 1377757_at    .         
+#&gt; 1377786_at    .         
+#&gt; 1377791_at    .         
+#&gt; 1377880_at    .         
+#&gt; 1377883_at    .         
+#&gt; 1377919_at    .         
+#&gt; 1378022_at    .         
+#&gt; 1378036_at    .         
+#&gt; 1378125_at    .         
+#&gt; 1378185_at    .         
+#&gt; 1378316_at    .         
+#&gt; 1378578_at    .         
+#&gt; 1378590_at    .         
+#&gt; 1378620_at    .         
+#&gt; 1378680_at    .         
+#&gt; 1378741_at    .         
+#&gt; 1378819_at    .         
+#&gt; 1378928_at    .         
+#&gt; 1379029_at    .         
+#&gt; 1379094_at    .         
+#&gt; 1379121_at    .         
+#&gt; 1379169_at    .         
+#&gt; 1379187_at    .         
+#&gt; 1379279_at    .         
+#&gt; 1379283_at    .         
+#&gt; 1379290_at    .         
+#&gt; 1379476_at    .         
+#&gt; 1379495_at    .         
+#&gt; 1379600_at    .         
+#&gt; 1379625_at    .         
+#&gt; 1379693_at    .         
+#&gt; 1379699_at    .         
+#&gt; 1379728_at    .         
+#&gt; 1379971_at    .         
+#&gt; 1379982_at    .         
+#&gt; 1380058_at    .         
+#&gt; 1380174_at    .         
+#&gt; 1380185_at    .         
+#&gt; 1380214_at    .         
+#&gt; 1380233_x_at  .         
+#&gt; 1380402_at    .         
+#&gt; 1380463_at    .         
+#&gt; 1380477_at    .         
+#&gt; 1380553_at    .         
+#&gt; 1380794_at    .         
+#&gt; 1380811_at    .         
+#&gt; 1380815_at    .         
+#&gt; 1380852_at    .         
+#&gt; 1380890_at    .         
+#&gt; 1380932_at    .         
+#&gt; 1381077_at    .         
+#&gt; 1381481_at    .         
+#&gt; 1381755_x_at  .         
+#&gt; 1381849_at    .         
+#&gt; 1381902_at    .         
+#&gt; 1381914_at    .         
+#&gt; 1381926_at    .         
+#&gt; 1381930_at    .         
+#&gt; 1381963_at    .         
+#&gt; 1381976_at    .         
+#&gt; 1381998_at    .         
+#&gt; 1382045_at    .         
+#&gt; 1382065_at    .         
+#&gt; 1382114_at    .         
+#&gt; 1382132_at    .         
+#&gt; 1382139_at    .         
+#&gt; 1382154_at    .         
+#&gt; 1382271_at    .         
+#&gt; 1382290_at    .         
+#&gt; 1382379_at    .         
+#&gt; 1382517_at    .         
+#&gt; 1382579_at    .         
+#&gt; 1382651_at    .         
+#&gt; 1382779_at    .         
+#&gt; 1383081_at    .         
+#&gt; 1383084_at    .         
+#&gt; 1383110_at    .         
+#&gt; 1383167_at    .         
+#&gt; 1383172_at    .         
+#&gt; 1383226_at    .         
+#&gt; 1383236_at    .         
+#&gt; 1383249_at    .         
+#&gt; 1383254_at    .         
+#&gt; 1383257_at    .         
+#&gt; 1383299_at    .         
+#&gt; 1383374_at    .         
+#&gt; 1383431_at    .         
+#&gt; 1383433_at    .         
+#&gt; 1383504_at    .         
+#&gt; 1383533_at    .         
+#&gt; 1383607_at    .         
+#&gt; 1383611_at    .         
+#&gt; 1383673_at    .         
+#&gt; 1383720_at    .         
+#&gt; 1383731_at    .         
+#&gt; 1383783_at    .         
+#&gt; 1383998_at    .         
+#&gt; 1384007_at    .         
+#&gt; 1384035_at    .         
+#&gt; 1384150_at    .         
+#&gt; 1384205_at    .         
+#&gt; 1384222_at    .         
+#&gt; 1384247_at    .         
+#&gt; 1384296_at    .         
+#&gt; 1384320_at    .         
+#&gt; 1384352_at    .         
+#&gt; 1384368_at    .         
+#&gt; 1384382_at    .         
+#&gt; 1384387_at    .         
+#&gt; 1384542_at    .         
+#&gt; 1384565_at    .         
+#&gt; 1384860_at    .         
+#&gt; 1384940_at    .         
+#&gt; 1385030_at    .         
+#&gt; 1385106_at    .         
+#&gt; 1385168_at    .         
+#&gt; 1385261_s_at  .         
+#&gt; 1385501_at    .         
+#&gt; 1385559_at    .         
+#&gt; 1385597_at    .         
+#&gt; 1385776_at    .         
+#&gt; 1385798_at    .         
+#&gt; 1385883_at    .         
+#&gt; 1386248_at    .         
+#&gt; 1386683_at    .         
+#&gt; 1390779_at    .         
+#&gt; 1390799_at    .         
+#&gt; 1390814_at    .         
+#&gt; 1390836_at    .         
+#&gt; 1390856_at    .         
+#&gt; 1390864_at    .         
+#&gt; 1390868_at    .         
+#&gt; 1390874_at   -0.23409174
+#&gt; 1390875_a_at  .         
+#&gt; 1390945_at    .         
+#&gt; 1391005_at    .         
+#&gt; 1391013_at    .         
+#&gt; 1391085_at    .         
+#&gt; 1391092_at    .         
+#&gt; 1391101_at    .         
+#&gt; 1391155_at    .         
+#&gt; 1391183_at    .         
+#&gt; 1391212_at    .         
+#&gt; 1391271_at    .         
+#&gt; 1391308_at    .         
+#&gt; 1391415_at    .         
+#&gt; 1391443_at    .         
+#&gt; 1391464_at    .         
+#&gt; 1391475_at    .         
+#&gt; 1391564_at    .         
+#&gt; 1391727_at    .         
+#&gt; 1391928_at    .         
+#&gt; 1392199_at    .         
+#&gt; 1392313_at    .         
+#&gt; 1392470_at    .         
+#&gt; 1392573_at    .         
+#&gt; 1392599_at    .         
+#&gt; 1392601_at    .         
+#&gt; 1392610_at    .         
+#&gt; 1392698_a_at  .         
+#&gt; 1392772_at    .         
+#&gt; 1392911_at    .         
+#&gt; 1392918_at    .         
+#&gt; 1392982_at    .         
+#&gt; 1392997_at    .         
+#&gt; 1393019_at    .         
+#&gt; 1393027_at    .         
+#&gt; 1393051_at    .         
+#&gt; 1393149_at    .         
+#&gt; 1393218_at    .         
+#&gt; 1393258_at    .         
+#&gt; 1393366_at    .         
+#&gt; 1393510_at    .         
+#&gt; 1393666_at    .         
+#&gt; 1393736_at    0.08693319
+#&gt; 1393794_at    .         
+#&gt; 1393803_at    .         
+#&gt; 1393817_at    .         
+#&gt; 1393977_at    .         
+#&gt; 1394095_at    .         
+#&gt; 1394192_at    .         
+#&gt; 1394455_at    .         
+#&gt; 1394505_at    .         
+#&gt; 1394884_s_at  .         
+#&gt; 1394897_at    .         
+#&gt; 1395285_at    .         
+#&gt; 1395455_at    .         
+#&gt; 1395469_at    .         
+#&gt; 1395479_at    .         
+#&gt; 1395504_at    .         
+#&gt; 1395647_at    .         
+#&gt; 1395779_at    .         
+#&gt; 1395791_at    .         
+#&gt; 1396123_at    .         
+#&gt; 1396476_at    .         
+#&gt; 1396678_at    .         
+#&gt; 1396853_at    .         
+#&gt; 1396920_at    .         
+#&gt; 1397227_at    .         
+#&gt; 1397325_at    .         
+#&gt; 1397363_at    .         
+#&gt; 1397438_at    .         
+#&gt; 1397554_at    .         
+#&gt; 1397932_at    .         
+#&gt; 1397946_at    .         
+#&gt; 1397995_at    .         
+#&gt; 1398601_at    .         
+#&gt; 1398639_at    .         
+#&gt; 1398663_at    .         
+#&gt; 
+#&gt; $intercept
+#&gt;  [1]  8.39085833  1.77350432  0.80547854 -1.12583266 -1.01472638 -2.13738960
+#&gt;  [7] -1.46835505 -2.08078245 -0.51823594 -0.31664488  0.12251733 -0.09052887
+#&gt; [13] -0.10823182
+#&gt; 
+#&gt; $dev
+#&gt;  [1] 0.020738622 0.008176953 0.006186442 0.004791180 0.004418203 0.003928650
+#&gt;  [7] 0.003616324 0.003363741 0.003169559 0.002856742 0.002594231 0.002375152
+#&gt; [13] 0.002274280
+#&gt; 
+#&gt; $tune.value
+#&gt;  [1] -465.0909 -567.0402 -590.7832 -611.7211 -611.7142 -616.0745 -616.2830
+#&gt;  [8] -615.2394 -612.6426 -615.3798 -617.2147 -618.0700 -613.5456
+#&gt; 
+#&gt; $nobs
+#&gt; [1] 120
+#&gt; 
+#&gt; $nvars
+#&gt; [1] 500
+#&gt; 
+#&gt; $family
+#&gt; [1] "gaussian"
+#&gt; 
+#&gt; $tune.path
+#&gt; [1] "sequence"
+#&gt; 
+#&gt; $support.size
+#&gt;  [1]  0  1  2  3  4  5  6  7  8  9 10 11 12
+#&gt; 
+#&gt; $tune.type
+#&gt; [1] "GIC"
+#&gt; 
+#&gt; $best.size
+#&gt; [1] 11
+#&gt; 
+#&gt; $screening.vars
+#&gt; character(0)
+#&gt; 
+#&gt; $call
 #&gt; abess.formula(formula = y ~ ., data = trim32)
 #&gt; 
-#&gt;    support.size         dev       GIC
-#&gt; 1             0 0.020738622 -465.0909
-#&gt; 2             1 0.008176953 -567.0402
-#&gt; 3             2 0.006186442 -590.7832
-#&gt; 4             3 0.004791180 -611.7211
-#&gt; 5             4 0.004418203 -611.7142
-#&gt; 6             5 0.003928650 -616.0745
-#&gt; 7             6 0.003616324 -616.2830
-#&gt; 8             7 0.003363741 -615.2394
-#&gt; 9             8 0.003169559 -612.6426
-#&gt; 10            9 0.002856742 -615.3798
-#&gt; 11           10 0.002594231 -617.2147
-#&gt; 12           11 0.002375152 -618.0700
-#&gt; 13           12 0.002274280 -613.5456</div><div class='input'><span class='co'># }</span>
+#&gt; attr(,"class")
+#&gt; [1] "abess"</div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
