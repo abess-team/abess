@@ -9,6 +9,39 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 ```
 
+## CoxPH Regression
+
+Cox Proportional Hazrds (CoxPH) regression is to describe the survival according to several corvariates. The model is as follow:
+$$
+h(t) = h_0(t)\exp(\eta).
+$$
+where,
+
+* $\eta = x\beta.$
+* $t$ is the survival time.
+* $h(t)$ is the hazard function which evaluate the risk of dying at time $t$.
+* $h_0(t)$ is called the baseline hazard. It describes value of the hazard if all the predictors are zero.
+* $\beta$ measures the impact of covariates.
+
+
+Consider two case $i$ and $i'$ that have different x values. Their hazard function can be simply written as follow
+
+$$
+h_i(t) = h_0(t)\exp(\eta_i) = h_0(t)\exp(x_i\beta)
+$$
+and
+$$
+h_{i'}(t) = h_0(t)\exp(\eta_{i'}) = h_0(t)\exp(x_{i'}\beta).
+$$
+The hazard ratio for these two cases is
+
+\begin{align*}
+\frac{h_i(t)}{h_{i'}(t)} & = \frac{h_0(t)\exp(\eta_i)}{h_0(t)\exp(\eta_{i'})} \\
+                         & = \frac{\exp(\eta_i)}{\exp(\eta_{i'})}
+\end{align*}
+
+which is independent of time.
+
 ## Lung Cancer Dataset
 
 We are going to apply best subset selection to the NCCTG Lung Cancer Dataset. This dataset consists of survival information of patients with advanced lung cancer from the North Central Cancer Treatment Group. The proportional hazards model allows the analysis of survival data by regression modeling.

@@ -13,24 +13,95 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 
 In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vallina type of $L_0$ constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the `abess` pakcage provides option of best subset selection with $L_2$ norm regularization called the regularized bess. The model has this following form:
 
-$$
-\begin{aligned}
+
+\begin{align}
+
 \min_\beta L(\beta) + \lambda \|\beta\|_2^2
 
-\end{aligned}
-$$
+\end{align}
+
 
 ## Carrying out the Regularized Bess
 
 To implement the regularized bess, you need to specify a value to the `lambda` in the `abess()` function. This `lambda` value corresponds to the penalization parameter in the model above. Here we give an example.
+
 ```{r}
 library(abess)
 n <- 100
-p <- 20
-support.size <- 3
-dataset <- generate.data(n, p, support.size, snr = 1)
-dataset$beta
+p <- 30
+snr <- 0.05
+dataset <- generate.data(n, p, snr = snr, seed = 1, beta = rep(c(1, rep(0 ,5)), each = 5), rho = 0.8, cortype = 3)
+data.test <- generate.data(n, p, snr = snr, beta = dataset$beta, seed = 100)
 
-abess_fit <- abess(dataset[["x"]], dataset[["y"]], lambda = 0.5)
-coef(abess_fit, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)])
+abess_fit <- abess(dataset[["x"]], dataset[["y"]], lambda = 0.7)
 ```
+
+Let's test the regularized best subset selection against the no-regularized one over 100 replicas in terms of prediction performance.
+```{r}
+M=100
+err.l0 = rep(0, M)
+err.l0l2 = rep(0, M)
+for(i in 1:M){
+  dataset <- generate.data(n, p, snr = snr, seed = i, beta = rep(c(1, rep(0 ,5)), each = 5), rho = 0.8, cortype = 3)
+  data.test <- generate.data(n, p, snr = snr, beta = dataset$beta, seed = i+100)
+  
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], lambda = 0.7)
+  coef(abess_fit, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)])
+  pe.l0l2 <-  norm(data.test$y - predict(abess_fit, newx = data.test$x),'2')
+  err.l0[i]=pe.l0l2
+  
+  abess_l0 <- abess(dataset[["x"]], dataset[["y"]])
+  coef(abess_l0, support.size = abess_l0$support.size[which.min(abess_l0$tune.value)])
+  pe.l0 <- norm(data.test$y -predict(abess_l0, newx = data.test$x), '2')
+  err.l0l2[i] = pe.l0
+}
+
+mean(err.l0)
+mean(err.l0l2)
+boxplot(list(L0=err.l0, L0L2=err.l0l2))
+```
+
+We see that the regularized best subset select indeed reduces the prediction error.
+<!-- ```{r} -->
+
+<!-- snr = 0.05 -->
+<!-- dataset <- generate.data(n, p, snr = snr, seed = 1, beta = rep(c(1, rep(0 ,5)), each = 5), rho = 0.8, cortype = 3) -->
+<!-- dataset$beta -->
+
+<!-- data.test <- generate.data(n, p, beta = dataset$beta, seed = 100, snr = snr) -->
+
+<!-- tpr.l0l2 <- rep(0, M) -->
+<!-- fpr.l0l2 <- rep(0, M) -->
+
+<!-- abess_l0 <- abess(dataset[["x"]], dataset[["y"]]) -->
+<!-- beta.l0 = coef(abess_l0, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)]) -->
+<!-- tpr.l0 <-length(which(dataset$beta!=0 & beta.l0[-1] !=0)) -->
+<!-- fpr.l0 <-length(which(dataset$beta==0 & beta.l0[-1] !=0)) -->
+<!-- err.l0l2 = rep(0, M) -->
+<!-- err.l0=norm(data.test$y -predict(abess_l0, newx = data.test$x), '2') -->
+<!-- # tpr <- rep(0, M) -->
+<!-- M=100 -->
+<!-- lambda_list = exp(seq(log(5) ,log(0.001), length.out = M)) -->
+<!-- # dataset <- generate.data(n, p, support.size, snr = 0.5, seed = 123) -->
+<!-- # dataset$beta -->
+<!-- # -->
+<!-- # data.test <- generate.data(n, p, beta = dataset$beta, seed = 100, snr = snr) -->
+
+<!-- for(i in 1:M){ -->
+
+<!--   abess_fit <- abess(dataset[["x"]], dataset[["y"]], lambda = lambda_list[i]) -->
+<!--   beta.fit = coef(abess_fit, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)]) -->
+<!--   tpr.l0l2[i] = length(which(dataset$beta !=0 & beta.fit[-1] !=0)) -->
+<!--   fpr.l0l2[i] = length(which(dataset$beta ==0 & beta.fit[-1] !=0)) -->
+<!--   # coef(abess_fit, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)]) -->
+<!--   # -->
+<!--   err.l0l2[i] = norm(data.test$y - predict(abess_fit, newx = data.test$x),'2') -->
+
+
+<!--   # abess_l0 <- abess(dataset[["x"]], dataset[["y"]]) -->
+<!--   # beta.l0 = coef(abess_l0, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)]) -->
+<!--   # tpr.l0[i] =length(which(dataset$beta!=0 & beta.l0[-1] !=0)) -->
+<!--   # fpr.l0[i] = length(which(dataset$beta==0 & beta.l0[-1] !=0)) -->
+<!--   # err.l0 = norm(data.test$y -predict(abess_l0, newx = data.test$x), '2') -->
+<!-- } -->
+<!-- ``` -->
