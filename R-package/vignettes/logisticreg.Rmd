@@ -9,6 +9,18 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 ```
 
+## Logistic Regression
+
+Logistic regression is used to predict binary results. Logistic regression function is an s-shaped curve modeling the posterior probability $p$ via a linear combination of the predictors. The curve is dedined as $p = \frac{1}{1+\exp(-\eta)}$ where $\eta = \beta_0+x\beta_1$. 
+
+The logistic regression model has this form:
+$$
+\log(p/(1-p)) = \beta_0 + x\beta.
+$$
+
+The quantity $\log(p/(1-p))$ is called the logarithm of the odd, also called log-odd or logit. 
+
+
 ## Titanic Dataset
 
 We are going to apply best subset selection to the Titanic dataset obtained here https://www.kaggle.com/c/titanic/data. The training dataset consists of data about 889 passengers, and the goal of the competition is to predict the survival based on features including the class of service, the sex, the age etc. First, let's have a look at the dataset and exam if there is any missing data.

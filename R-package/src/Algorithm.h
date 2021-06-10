@@ -1234,12 +1234,12 @@ public:
       // g = g - 2 * this->lambda_level * beta0;
 
       g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
-      cout << "g: " << g << endl;
-      cout << "this->lambda_level: " << this->lambda_level << endl;
-      cout << "g.rows(): " << g.rows() << endl;
-      cout << "g.cols(): " << g.cols() << endl;
-      cout << "beta0.rows(): " << beta0.rows() << endl;
-      cout << "beta0.cols(): " << beta0.cols() << endl;
+      // cout << "g: " << g << endl;
+      // cout << "this->lambda_level: " << this->lambda_level << endl;
+      // cout << "g.rows(): " << g.rows() << endl;
+      // cout << "g.cols(): " << g.cols() << endl;
+      // cout << "beta0.rows(): " << beta0.rows() << endl;
+      // cout << "beta0.cols(): " << beta0.cols() << endl;
 
       if (this->approximate_Newton)
       {
@@ -1251,7 +1251,7 @@ public:
         // d = (x.transpose() * h * x + 2 * this->lambda_level * lambdamat).ldlt().solve(g);
         d = (x.transpose() * h * x).ldlt().solve(x.transpose() * g - 2 * this->lambda_level * beta0);
       }
-      cout << "d: " << d << endl;
+      // cout << "d: " << d << endl;
 
       // theta = x * beta0;
       // for (int i = 0; i < n; i++)
