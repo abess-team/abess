@@ -1234,12 +1234,15 @@ public:
       // g = g - 2 * this->lambda_level * beta0;
 
       g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
-      cout << "g: " << g << endl;
-      cout << "this->lambda_level: " << this->lambda_level << endl;
-      cout << "g.rows(): " << g.rows() << endl;
-      cout << "g.cols(): " << g.cols() << endl;
-      cout << "beta0.rows(): " << beta0.rows() << endl;
-      cout << "beta0.cols(): " << beta0.cols() << endl;
+
+#ifdef TEST
+      std::cout << "g: " << g << endl;
+      std::cout << "this->lambda_level: " << this->lambda_level << endl;
+      std::cout << "g.rows(): " << g.rows() << endl;
+      std::cout << "g.cols(): " << g.cols() << endl;
+      std::cout << "beta0.rows(): " << beta0.rows() << endl;
+      std::cout << "beta0.cols(): " << beta0.cols() << endl;
+#endif
 
       if (this->approximate_Newton)
       {
