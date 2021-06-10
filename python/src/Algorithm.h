@@ -172,7 +172,7 @@ public:
 
   int get_l() { return this->l; }
 
-  void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::VectorXi &status)
+  void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::VectorXi &status, Eigen::MatrixXd sigma)
   {
     // std::cout << "fit" << endl;
     int T0 = this->sparsity_level;
@@ -187,7 +187,10 @@ public:
 
     if (this->model_type == 7)
     {
-      this->Sigma = train_x.transpose() * train_x; 
+      if (sigma.cols() == 1 && sigma(0, 0) == -1)
+        this->Sigma = train_x.transpose() * train_x; 
+      else
+        this->Sigma = sigma;
     }
 
     if (N == T0)
