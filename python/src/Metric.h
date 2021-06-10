@@ -213,7 +213,7 @@ public:
     // {
     //   beta_A(k) = beta(A_ind(k));
     // }
-    double L0 = algorithm->neg_loglik_loss(X_A, train_y, train_weight, beta_A, coef0);
+    double L0 = algorithm->neg_loglik_loss(X_A, train_y, train_weight, beta_A, coef0, A, g_index, g_size);
     // clock_t t2 = clock();
     // std::cout << "ic loss time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 

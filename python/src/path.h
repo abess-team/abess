@@ -23,7 +23,7 @@ using namespace Eigen;
 #include "abess.h"
 
 template <class T1, class T2, class T3, class T4>
-void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, Metric<T1, T2, T3, T4> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3> &result)
+void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algorithm<T1, T2, T3, T4> *algorithm, Metric<T1, T2, T3, T4> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3> &result)
 {
 #ifdef TEST
     clock_t t0, t1, t2;
@@ -127,7 +127,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
             algorithm->update_coef0_init(coef0_init);
             algorithm->update_A_init(A_init, N);
 
-            algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N, status);
+            algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N, status, sigma);
 #ifdef TEST
             t2 = clock();
             std::cout << "fit time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;

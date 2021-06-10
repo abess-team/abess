@@ -105,7 +105,8 @@ class bess_base(BaseEstimator):
                  thread=1,
                  covariance_update=False,
                  sparse_matrix=False,
-                 splicing_type=0):
+                 splicing_type=0,
+                 input_type=0):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
         self.data_type = data_type
@@ -148,6 +149,7 @@ class bess_base(BaseEstimator):
         self.covariance_update = covariance_update
         self.sparse_matrix = sparse_matrix
         self.splicing_type = splicing_type
+        self.input_type = input_type
 
     def _arg_check(self):
         """
@@ -221,7 +223,7 @@ class bess_base(BaseEstimator):
         #     raise ValueError(
         #         "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
 
-    def fit(self, X, y=None, is_weight=False, is_normal=True, weight=None, state=None, group=None, always_select=None):
+    def fit(self, X=None, y=None, is_weight=False, is_normal=True, weight=None, state=None, group=None, always_select=None, Sigma=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -253,18 +255,53 @@ class bess_base(BaseEstimator):
         """
         # self._arg_check()
 
-        # Check that X and y have correct shape
-        # accept_sparse
-        X, y = check_X_y(X, y, ensure_2d=True,
-                         accept_sparse=False, multi_output=True, y_numeric=True)
 
-        self.n_features_in_ = X.shape[1]
-        n = X.shape[0]
-        p = X.shape[1]
+        if X is not None:   # input_type=0
+            X = np.array(X)
+            if (X.dtype != 'int' and X.dtype != 'float'):
+                raise ValueError("X should be numeric matrix.")
+            elif len(X.shape) != 2:
+                raise ValueError("X should be 2-dimension matrix.")
 
-        if y is None:
-            print(1)
-            y = np.zeros(n)
+            n = X.shape[0]
+            p = X.shape[1]
+            if (self.model_type == "SPCA" and y is None):
+                y = np.zeros(n)
+            else:
+                raise ValueError("y should be given in "+str(self.algorithm_type))
+
+            Sigma = np.matrix(-1)
+
+            # Check that X and y have correct shape
+            # accept_sparse
+            X, y = check_X_y(X, y, ensure_2d=True,
+                            accept_sparse=False, multi_output=True, y_numeric=True)
+
+            self.n_features_in_ = X.shape[1]
+            self.input_type = 0 
+        elif (self.model_type == "SPCA"):   
+            if (Sigma is not None):     # input_type=1
+                Sigma = np.array(Sigma)
+                if (Sigma.dtype != 'int' and Sigma.dtype != 'float'):
+                    raise ValueError("Sigma should be numeric matrix.")
+                elif (len(Sigma.shape) != 2):
+                    raise ValueError("Sigma should be 2-dimension matrix.")
+                elif (Sigma.shape[0] != Sigma.shape[1] or np.any(Sigma.T != Sigma)):
+                    raise ValueError("Sigma should be symmetrical matrix.")
+                elif not np.all(np.linalg.eigvals(Sigma) >= 0):
+                    raise ValueError("Sigma should be semi-positive definite.")
+                
+                n = 1
+                p = Sigma.shape[0]
+                X = np.zeros((1, p))
+                y = np.zeros(1)
+                self.n_features_in_ = p
+                self.input_type = 1
+            else:
+                raise ValueError("X or Sigma should be given in SPCA")
+        else:
+            raise ValueError("X should be given in "+str(self.algorithm_type))
+        
 
         # print("y: ")
         # print(y)
@@ -351,24 +388,26 @@ class bess_base(BaseEstimator):
         else:
             M = y.shape[1]
 
-        if algorithm_type_int == 2:
-            if group is None:
-                raise ValueError(
-                    "When you choose GroupPdas algorithm, the group information should be given")
-            elif len(group) != p:
-                raise ValueError(
-                    "The length of group should be equal to the number of variables")
-            else:
-                g_index = []
-                group.sort()
-                group_set = list(set(group))
-                j = 0
-                for i in group_set:
-                    while(group[j] != i):
-                        j += 1
-                    g_index.append(j)
-        else:
+        # if self.algorithm_type_int == 2:
+        if group is None:
             g_index = range(p)
+
+            # raise ValueError(
+            #     "When you choose GroupPdas algorithm, the group information should be given")
+        elif len(group) != p:
+            raise ValueError(
+                "The length of group should be equal to the number of variables")
+        else:
+            g_index = []
+            group.sort()
+            group_set = list(set(group))
+            j = 0
+            for i in group_set:
+                while(group[j] != i):
+                    j += 1
+                g_index.append(j)
+        # else:
+        #     g_index = range(p)
 
         if is_weight:
             if weight is None:
@@ -535,7 +574,7 @@ class bess_base(BaseEstimator):
         # print("linear.py fit")
         # print(y.shape)
 
-        result = pywrap_abess(X, y, n, p, self.data_type, weight,
+        result = pywrap_abess(X, y, n, p, self.data_type, weight, Sigma,
                               is_normal,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
@@ -1023,7 +1062,7 @@ class abessMultinomial(bess_base):
 
         
 @fix_docs
-class abessSPCA(bess_base):
+class abessPCA(bess_base):
     """
     Adaptive Best-Subset Selection(ABESS) algorithm for COX proportional hazards model.
 
@@ -1065,7 +1104,7 @@ class abessSPCA(bess_base):
                  sparse_matrix=False,
                  splicing_type=1
                  ):
-        super(abessSPCA, self).__init__(
+        super(abessPCA, self).__init__(
             algorithm_type="abess", model_type="SPCA", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, n_lambda=n_lambda, ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
