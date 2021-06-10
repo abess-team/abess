@@ -17,7 +17,7 @@ We hope to use several predictors related to the performance of the baseball ath
 First, let's have a look at this dataset. There are 19 variables except `Salary` and 322 observations.
 
 ```{r}
-data("Hitters", package = 'ISLR')
+Hitters = read.csv("Hitters.csv", header = T)
 head(Hitters)
 dim(Hitters)
 sum(is.na(Hitters))
@@ -41,6 +41,7 @@ The `abess()` function in the `abess` package allows you to perform best subset 
 ```{r}
 library(abess)
 t.seq = system.time(abess_fit <- abess(Salary~., Hitters))[3]
+t.seq
 abess_fit = abess(Hitters[, -which(colnames(Hitters) == "Salary")], Hitters$Salary)
 class(abess_fit)
 ```
@@ -67,8 +68,8 @@ print(abess_fit)
 
 Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value.
 ```{r}
-predict(abess_fit, newx = Hitters[, -which(colnames(Hitters)=="Salary")], 
-        support.size = c(3, 4))
+head(predict(abess_fit, newx = Hitters[, -which(colnames(Hitters)=="Salary")], 
+        support.size = c(3, 4)))
 ```
 
 
@@ -76,6 +77,7 @@ The `plot.abess()` function helps to visualize the change of models with the cha
 ```{r}
 plot(abess_fit, label=T)
 ```
+
 The graph shows that, beginning from the most dense model, the 15th variable (Division, A factor with levels E and W indicating player's division at the end of 1986) is included in the active set until the support size reaches 3.
 
 We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size. 
@@ -95,3 +97,4 @@ str(best.model)
 ```
 
 The return is a list containing the basic information of the estimated model.
+
