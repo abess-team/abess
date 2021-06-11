@@ -265,10 +265,11 @@ class bess_base(BaseEstimator):
 
             n = X.shape[0]
             p = X.shape[1]
-            if (self.model_type == "SPCA" and y is None):
-                y = np.zeros(n)
-            else:
-                raise ValueError("y should be given in "+str(self.algorithm_type))
+            if (y is None):
+                if (self.model_type == "SPCA"):
+                    y = np.zeros(n)
+                else:
+                    raise ValueError("y should be given in "+str(self.algorithm_type))
 
             Sigma = np.matrix(-1)
 
@@ -297,6 +298,7 @@ class bess_base(BaseEstimator):
                 y = np.zeros(1)
                 self.n_features_in_ = p
                 self.input_type = 1
+                is_normal = False # automatically ignore
             else:
                 raise ValueError("X or Sigma should be given in SPCA")
         else:
