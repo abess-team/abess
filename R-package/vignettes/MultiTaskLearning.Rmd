@@ -1,6 +1,6 @@
 ---
-title: "Multi-Task Learning"
-author: "Liyuan Hu"
+title: "Multi-Response Linear Regression"
+author: "Jin Zhu, Liyuan Hu"
 date: "2021/5/31"
 output: html_document
 ---
@@ -9,13 +9,33 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 ```
 
-## Multi-Task Learning
+## Briey Introduction
 
-Multi-Task Learning aims at predicting multiple responses at the same time. Under the high-dimensional data setting, it is meaningful to use a small amount of predictors to conduct multi-task learning. For example, understanding the relationship between gene expression and symptoms of a disease have significant importance in identifying potential makers. Many diseases usually involve multiple manifestations and those manifestations are usually related. In some cases, it makes sense to predict those manifestations using the same set of predictors. 
+Multivariate multi-response linear regression (a.k.a., multi-task learning) aims at predicting multiple responses at the same time, and thus, it is a natural extension for classical linear regression where the response is univariate. 
+Multivariate multi-response linear regression (MMLR) is very helpful for the analysis of correlated response such as chemical measurements for soil samples and 
+microRNAs associated with Glioblastoma multiforme cancer. 
+Let $y$ is $m$-dimensional response variable, 
+$x$ is $p$-dimensional predictors, 
+$B \in R^{m \times p}$ is coefficient matrix, 
+the MMLR model for the multivariate response is given by
+$$y = B x + \epsilon,$$
+where $\epsilon$ is $m$-dimensional random noise variable with zero mean. 
 
-## Sparse Multi-Task Learning With abess Package
+Due to the Occam's razor principal or the high-dimensionality of predictors, it is meaningful to use a small amount of predictors to conduct multi-task learning. For example, understanding the relationship between gene expression and symptoms of a disease have significant importance in identifying potential makers. Many diseases usually involve multiple manifestations and those manifestations are usually related. In some cases, it makes sense to predict those manifestations using a small but the same set of predictors. The best subset selection problem under the MMLR model is formulated as 
+$$\frac{1}{2n} \| Y - XB \|_{2}^2, \text{ subject to: } \| B \|_{0, 2} \leq s,$$
+where, $Y \in R^{n \times m}$ and $X \in R^{n \times p}$ record 
+$n$ observations' response and predictors, respectively. 
+Here $\| B \|_{0, 2} = \sum_{i = 1}^{p} I(B_{i\cdot} = {\bf 0})$, 
+where $B_{i\cdot}$ is the $i$-th row of coefficient matrix $B$ and 
+${\bf 0} \in R^{m}$ is an all zero vector. 
 
-Here we're going to implement the multi-task learning on an artificial dataset. The `generate.data()` function provides a simple way to generate suitable for this task. The assumption behind is the response vector following a multivariate gaussian distribution whose mean vector is linear to `x`.
+## Quick example
+
+We use an artificial dataset to demonstrate how to solve best subset selection problem for MMLR with **abess** package. 
+The `generate.data()` function provides a simple way to generate suitable for this task. 
+The synthetic data have 100 observations with 3-dimensional responses and 20-dimensional predictors. Note that there are three predictors have an impact on the responses.
+<!-- The assumption behind is the response vector following a multivariate gaussian distribution whose mean vector is linear to `x`. -->
+
 ```{r}
 library(abess)
 n <- 100
@@ -31,5 +51,8 @@ To carry out sparse mutli-task learning, you can call the `abess()` function wit
 ```{r}
 abess_fit <- abess(dataset[["x"]], dataset[["y"]],
                    family = "mgaussian", tune.type = "cv")
-coef(abess_fit, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)])
+extract(abess_fit)
 ```
+
+## Real data example
+
