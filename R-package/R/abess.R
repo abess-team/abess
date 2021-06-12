@@ -73,6 +73,11 @@ abess <- function(x, ...) UseMethod("abess")
 #' Denote the first group as \code{1}, the second \code{2}, etc.
 #' If you do not fit a model with a group structure,
 #' please set \code{group.index = NULL} (the default).
+#' @param splicing.type Optional type for splicing. 
+#' If \code{splicing.type = 1}, the number of variables to be spliced is 
+#' \code{c.max}, ..., \code{1}; if \code{splicing.type = 2}, 
+#' the number of variables to be spliced is \code{c.max}, \code{c.max/2}, ..., \code{1}.
+#' (Default: \code{splicing.type = 2}.)
 #' @param screening.num An integer number. Preserve \code{screening.num} number of predictors with the largest 
 #' marginal maximum likelihood estimator before running algorithm.
 #' @param normalize Options for normalization. \code{normalize = 0} for no normalization. 
@@ -199,7 +204,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
 #' @references Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x
 #' @references Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun & Heping Zhang (2020). Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079
-#' @references Certifiably 
+#' @references Certifiably Polynomial Algorithm for Best Group Subset Selection. Zhang, Yanhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). arXiv preprint arXiv:2104.12576. 
 #' 
 #' @seealso \code{\link{print.abess}}, 
 #' \code{\link{predict.abess}}, 
@@ -296,7 +301,7 @@ abess.default <- function(x,
                           lambda = 0,
                           always.include = NULL,
                           group.index = NULL, 
-                          splicing.type = c(1, 2), 
+                          splicing.type = 2, 
                           max.splicing.iter = 20,
                           screening.num = NULL, 
                           warm.start = TRUE,
@@ -345,8 +350,9 @@ abess.default <- function(x,
   stopifnot(is.logical(warm.start))
   
   ## check splicing type
-  splicing_type <- match.arg(splicing.type)
-  splicing_type <- as.integer(splicing_type)
+  stopifnot(length(splicing.type) == 1)
+  stopifnot(splicing.type %in% c(1, 2))
+  splicing_type <- as.integer(splicing.type)
   
   ## check max splicing iteration
   stopifnot(is.numeric(max.splicing.iter) & max.splicing.iter >= 1)
@@ -505,6 +511,8 @@ abess.default <- function(x,
   group_select <- FALSE
   if (is.null(group.index)) {
     g_index <- 1:nvars - 1
+    ngroup <- 1
+    max_group_size <- 1
     # g_df <- rep(1, nvars)
   } else {
     group_select <- TRUE

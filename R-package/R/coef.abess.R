@@ -20,6 +20,8 @@
 #' 
 #' @inherit abess.default seealso
 #' 
+#' @method coef abess
+#' 
 #' @export
 #'
 coef.abess <- function(object, 

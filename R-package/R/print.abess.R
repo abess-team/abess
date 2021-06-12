@@ -1,6 +1,8 @@
-#' @title Print method for a fitted "abess" object
-#'
-#' @description Prints the fitted model and returns it invisibly.
+#' Print method for a fitted "\code{abess}" object
+#' 
+#' Prints the fitted model and returns it invisibly.
+#' 
+#' @rdname print.abess
 #'
 #' @param x A "\code{abess}" object.
 #' @param digits Minimum number of significant digits to be used.
@@ -15,8 +17,10 @@
 #' 
 #' @inherit abess.default seealso
 #' 
+#' @method print abess
+#' 
 #' @export
-#'
+#' 
 print.abess <- function(x,
                         digits = max(5, getOption("digits") - 5),
                         ...)
