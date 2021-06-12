@@ -5,12 +5,39 @@
 #' a predictor or the sample covariance/correlation matrix. 
 #' @param type If \code{type = "predictor"}, \code{x} is considered as the predictor matrix. 
 #' If \code{type = "gram"}, \code{x} is considered as a sample covariance or correlation matrix.
+#' @param cor A logical value. If \code{cor = TRUE}, perform PCA on the correlation matrix; 
+#' otherwise, the covariance matrix. 
+#' This option is available only if \code{type = "predictor"}. 
+#' Default: \code{cor = FALSE}.
+#' @param support.size An integer vector representing the alternative support sizes.
+#' @param support.num A integer specifies the number of support size to be consider.  
+#' This arguments is ignored if \code{support.size} is supplied. 
+#' Default: \code{support.num = min(ncol(x), 100)} if \code{group.index = NULL};
+#' otherwise, \code{support.num = min(length(unique(group.index)), 100)}.
+#' @param splicing.type Optional type for splicing. 
+#' If \code{splicing.type = 1}, the number of variables to be spliced is 
+#' \code{c.max}, ..., \code{1}; if \code{splicing.type = 2}, 
+#' the number of variables to be spliced is \code{c.max}, \code{c.max/2}, ..., \code{1}.
+#' Default: \code{splicing.type = 1}.
+#' 
+#' @details Adaptive best subset selection for principal component analysis aim 
+#' to solve the non-convex optimization problem:
+#' \deqn{\arg\max_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
+#' where \eqn{s} is support size. A generic splicing technique is implemented to 
+#' solve this problem. 
+#' By exploiting the warm-start initialization, the non-convex optimization 
+#' problem at different support size (specified by \code{support.size}) 
+#' can be efficiently solved.
+#' 
 #' 
 #' @return A S3 \code{abesspca} class object, which is a \code{list} with the following components:
 #' \item{loadings}{A \eqn{p}-by-\code{length(support.size)} loading matrix of sparse principal components (PC), 
 #' where each row is a variable and each column is a support size;}
+#' \item{nvars}{The number of variables.}
+#' \item{support.size}{The actual support.size values used. Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.}
 #' \item{ev}{A vector with size \code{length(support.size)}. It records the explained variance at each support size.}
-#' \item{var.all}{Total variance of the predictors.}
+#' \item{pev}{A vector with the same length as \code{ev}. It records the percentage of explained variance at each support size.}
+#' \item{var.all}{Total variance of the explained by first principal component.}
 #' \item{call}{The original call to \code{abess}.}
 #' 
 #' @author Jin Zhu, Junxian Zhu, Ruihuang Liu, Xueqin Wang 
@@ -108,6 +135,7 @@ abesspca <- function(x,
   group_select <- FALSE
   if (is.null(group.index)) {
     g_index <- 1:nvars - 1
+    ngroup <- 1
   } else {
     group_select <- TRUE
     gi <- unique(group.index)

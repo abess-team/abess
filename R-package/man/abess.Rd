@@ -20,7 +20,7 @@
   lambda = 0,
   always.include = NULL,
   group.index = NULL,
-  splicing.type = c(1, 2),
+  splicing.type = 2,
   max.splicing.iter = 20,
   screening.num = NULL,
   warm.start = TRUE,
@@ -98,6 +98,12 @@ and their corresponding index in \code{group.index} should be the same.
 Denote the first group as \code{1}, the second \code{2}, etc.
 If you do not fit a model with a group structure,
 please set \code{group.index = NULL} (the default).}
+
+\item{splicing.type}{Optional type for splicing. 
+If \code{splicing.type = 1}, the number of variables to be spliced is 
+\code{c.max}, ..., \code{1}; if \code{splicing.type = 2}, 
+the number of variables to be spliced is \code{c.max}, \code{c.max/2}, ..., \code{1}.
+(Default: \code{splicing.type = 2}.)}
 
 \item{max.splicing.iter}{The maximum number of performing splicing algorithm. 
 In most of the case, only a few times of splicing iteration can guarantee the convergence. 
@@ -283,7 +289,7 @@ Sure independence screening for ultrahigh dimensional feature space. Fan, J. and
 
 Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun & Heping Zhang (2020). Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079
 
-Certifiably
+Certifiably Polynomial Algorithm for Best Group Subset Selection. Zhang, Yanhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). arXiv preprint arXiv:2104.12576.
 }
 \seealso{
 \code{\link{print.abess}}, 
