@@ -199,6 +199,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
 #' @references Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x
 #' @references Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun & Heping Zhang (2020). Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079
+#' @references Certifiably 
 #' 
 #' @seealso \code{\link{print.abess}}, 
 #' \code{\link{predict.abess}}, 
@@ -295,6 +296,7 @@ abess.default <- function(x,
                           lambda = 0,
                           always.include = NULL,
                           group.index = NULL, 
+                          splicing.type = c(1, 2), 
                           max.splicing.iter = 20,
                           screening.num = NULL, 
                           warm.start = TRUE,
@@ -312,7 +314,7 @@ abess.default <- function(x,
   if(length(lambda) > 1){
     stop("only a single lambda value is allowed.")
   }
-  if(length(lambda)==1 && lambda == 0){
+  if(length(lambda) == 1 && lambda == 0){
     type <- "bss"
   }else{
     type <- "bsrr"
@@ -321,6 +323,9 @@ abess.default <- function(x,
                           "bss" = "GPDAS",
                           "bsrr" = "GL0L2")
   
+  ## check lambda
+  stopifnot(!anyNA(lambda))
+  stopifnot(all(lambda >= 0))
   lambda.list <- lambda
   lambda.min <- 0.001
   lambda.max <- 100
@@ -338,6 +343,10 @@ abess.default <- function(x,
   
   ## check warm start:
   stopifnot(is.logical(warm.start))
+  
+  ## check splicing type
+  splicing_type <- match.arg(splicing.type)
+  splicing_type <- as.integer(splicing_type)
   
   ## check max splicing iteration
   stopifnot(is.numeric(max.splicing.iter) & max.splicing.iter >= 1)
@@ -493,10 +502,12 @@ abess.default <- function(x,
   }
   
   ## group variable:
+  group_select <- FALSE
   if (is.null(group.index)) {
     g_index <- 1:nvars - 1
     # g_df <- rep(1, nvars)
   } else {
+    group_select <- TRUE
     gi <- unique(group.index)
     g_index <- match(gi, group.index) - 1
     g_df <- c(diff(g_index), nvars - max(g_index))
@@ -506,14 +517,18 @@ abess.default <- function(x,
   
   # sparse level list (sequence):
   if (is.null(support.size)) {
-    if (is.null(group.index)) {
-      s_list <- 0:min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
-    } else {
+    if (group_select) {
       s_list <- 0:min(c(ngroup, round(nobs / max_group_size / log(ngroup))))
+    } else {
+      s_list <- 0:min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
     }
   } else {
     stopifnot(any(is.numeric(support.size) & support.size >= 0))
-    stopifnot(max(support.size) < nvars)
+    if (group_select) {
+      stopifnot(max(support.size) < ngroup)
+    } else {
+      stopifnot(max(support.size) < nvars)
+    }    
     stopifnot(max(support.size) < nobs)
     support.size <- sort(support.size)
     support.size <- unique(support.size)
@@ -529,7 +544,7 @@ abess.default <- function(x,
   # sparse range (golden-section):
   if (is.null(gs.range)) {
     s_min <- 0
-    if (is.null(group.index)) {
+    if (group_select) {
       s_max <- min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
     } else {
       s_max <- min(c(ngroup, round(nobs / max_group_size / log(ngroup))))
@@ -545,7 +560,7 @@ abess.default <- function(x,
   }
   
   ## check compatible between group selection and support size
-  if (!is.null(group.index)) {
+  if (group_select) {
     if (path_type == 1 & max(s_list) > length(gi))
       stop("The maximum one support.size should not be larger than the number of groups!")
     if (path_type == 2 & s_max > length(gi))
@@ -670,7 +685,7 @@ abess.default <- function(x,
     screening_num <- screening.num
   }
   
-  # check always included varibles:
+  # check always included variables:
   if (is.null(always.include)) {
     always_include <- numeric(0)
   } else {
@@ -701,7 +716,8 @@ abess.default <- function(x,
     n = nobs,
     p = nvars,
     data_type = normalize,
-    weight = weight,
+    weight = weight, 
+    sigma = matrix(0), 
     is_normal = is_normal,
     algorithm_type = 6,
     model_type = model_type,
@@ -735,7 +751,8 @@ abess.default <- function(x,
     approximate_Newton = approximate_newton,
     thread = num_threads, 
     covariance_update = covariance_update,
-    sparse_matrix = sparse_X
+    sparse_matrix = sparse_X, 
+    splicing_type = splicing_type
   )
   t2 <- proc.time()
   # print(t2 - t1)
