@@ -38,9 +38,9 @@ namespace Eigen {
 namespace internal {
 
 // implements LeftSide op(triangular)^-1 * general
-#define EIGEN_BLAS_TRSM_L(EIGTYPE, BLASTYPE, BLASFUNC) \
+#define EIGEN_BLAS_TRSM_L(EIGTYPE, BLASTYPE, BLASPREFIX) \
 template <typename Index, int Mode, bool Conjugate, int TriStorageOrder> \
-struct triangular_solve_matrix<EIGTYPE,Index,OnTheLeft,Mode,Conjugate,TriStorageOrder,ColMajor,1> \
+struct triangular_solve_matrix<EIGTYPE,Index,OnTheLeft,Mode,Conjugate,TriStorageOrder,ColMajor> \
 { \
   enum { \
     IsLower = (Mode&Lower) == Lower, \
@@ -51,10 +51,8 @@ struct triangular_solve_matrix<EIGTYPE,Index,OnTheLeft,Mode,Conjugate,TriStorage
   static void run( \
       Index size, Index otherSize, \
       const EIGTYPE* _tri, Index triStride, \
-      EIGTYPE* _other, Index otherIncr, Index otherStride, level3_blocking<EIGTYPE,EIGTYPE>& /*blocking*/) \
+      EIGTYPE* _other, Index otherStride, level3_blocking<EIGTYPE,EIGTYPE>& /*blocking*/) \
   { \
-   EIGEN_ONLY_USED_FOR_DEBUG(otherIncr); \
-   eigen_assert(otherIncr == 1); \
    BlasIndex m = convert_index<BlasIndex>(size), n = convert_index<BlasIndex>(otherSize), lda, ldb; \
    char side = 'L', uplo, diag='N', transa; \
    /* Set alpha_ */ \
@@ -82,26 +80,20 @@ struct triangular_solve_matrix<EIGTYPE,Index,OnTheLeft,Mode,Conjugate,TriStorage
    } \
    if (IsUnitDiag) diag='U'; \
 /* call ?trsm*/ \
-   BLASFUNC(&side, &uplo, &transa, &diag, &m, &n, (const BLASTYPE*)&numext::real_ref(alpha), (const BLASTYPE*)a, &lda, (BLASTYPE*)_other, &ldb); \
+   BLASPREFIX##trsm_(&side, &uplo, &transa, &diag, &m, &n, &numext::real_ref(alpha), (const BLASTYPE*)a, &lda, (BLASTYPE*)_other, &ldb); \
  } \
 };
 
-#ifdef EIGEN_USE_MKL
-EIGEN_BLAS_TRSM_L(double,   double, dtrsm)
-EIGEN_BLAS_TRSM_L(dcomplex, MKL_Complex16, ztrsm)
-EIGEN_BLAS_TRSM_L(float,    float,  strsm)
-EIGEN_BLAS_TRSM_L(scomplex, MKL_Complex8, ctrsm)
-#else
-EIGEN_BLAS_TRSM_L(double,   double, dtrsm_)
-EIGEN_BLAS_TRSM_L(dcomplex, double, ztrsm_)
-EIGEN_BLAS_TRSM_L(float,    float,  strsm_)
-EIGEN_BLAS_TRSM_L(scomplex, float,  ctrsm_)
-#endif
+EIGEN_BLAS_TRSM_L(double,   double, d)
+EIGEN_BLAS_TRSM_L(dcomplex, double, z)
+EIGEN_BLAS_TRSM_L(float,    float,  s)
+EIGEN_BLAS_TRSM_L(scomplex, float,  c)
+
 
 // implements RightSide general * op(triangular)^-1
-#define EIGEN_BLAS_TRSM_R(EIGTYPE, BLASTYPE, BLASFUNC) \
+#define EIGEN_BLAS_TRSM_R(EIGTYPE, BLASTYPE, BLASPREFIX) \
 template <typename Index, int Mode, bool Conjugate, int TriStorageOrder> \
-struct triangular_solve_matrix<EIGTYPE,Index,OnTheRight,Mode,Conjugate,TriStorageOrder,ColMajor,1> \
+struct triangular_solve_matrix<EIGTYPE,Index,OnTheRight,Mode,Conjugate,TriStorageOrder,ColMajor> \
 { \
   enum { \
     IsLower = (Mode&Lower) == Lower, \
@@ -112,10 +104,8 @@ struct triangular_solve_matrix<EIGTYPE,Index,OnTheRight,Mode,Conjugate,TriStorag
   static void run( \
       Index size, Index otherSize, \
       const EIGTYPE* _tri, Index triStride, \
-      EIGTYPE* _other, Index otherIncr, Index otherStride, level3_blocking<EIGTYPE,EIGTYPE>& /*blocking*/) \
+      EIGTYPE* _other, Index otherStride, level3_blocking<EIGTYPE,EIGTYPE>& /*blocking*/) \
   { \
-   EIGEN_ONLY_USED_FOR_DEBUG(otherIncr); \
-   eigen_assert(otherIncr == 1); \
    BlasIndex m = convert_index<BlasIndex>(otherSize), n = convert_index<BlasIndex>(size), lda, ldb; \
    char side = 'R', uplo, diag='N', transa; \
    /* Set alpha_ */ \
@@ -143,22 +133,16 @@ struct triangular_solve_matrix<EIGTYPE,Index,OnTheRight,Mode,Conjugate,TriStorag
    } \
    if (IsUnitDiag) diag='U'; \
 /* call ?trsm*/ \
-   BLASFUNC(&side, &uplo, &transa, &diag, &m, &n, (const BLASTYPE*)&numext::real_ref(alpha), (const BLASTYPE*)a, &lda, (BLASTYPE*)_other, &ldb); \
+   BLASPREFIX##trsm_(&side, &uplo, &transa, &diag, &m, &n, &numext::real_ref(alpha), (const BLASTYPE*)a, &lda, (BLASTYPE*)_other, &ldb); \
    /*std::cout << "TRMS_L specialization!\n";*/ \
  } \
 };
 
-#ifdef EIGEN_USE_MKL
-EIGEN_BLAS_TRSM_R(double,   double, dtrsm)
-EIGEN_BLAS_TRSM_R(dcomplex, MKL_Complex16, ztrsm)
-EIGEN_BLAS_TRSM_R(float,    float,  strsm)
-EIGEN_BLAS_TRSM_R(scomplex, MKL_Complex8,  ctrsm)
-#else
-EIGEN_BLAS_TRSM_R(double,   double, dtrsm_)
-EIGEN_BLAS_TRSM_R(dcomplex, double, ztrsm_)
-EIGEN_BLAS_TRSM_R(float,    float,  strsm_)
-EIGEN_BLAS_TRSM_R(scomplex, float,  ctrsm_)
-#endif
+EIGEN_BLAS_TRSM_R(double,   double, d)
+EIGEN_BLAS_TRSM_R(dcomplex, double, z)
+EIGEN_BLAS_TRSM_R(float,    float,  s)
+EIGEN_BLAS_TRSM_R(scomplex, float,  c)
+
 
 } // end namespace internal
 

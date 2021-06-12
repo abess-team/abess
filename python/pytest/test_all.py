@@ -25,12 +25,12 @@ class TestClass:
         rho = 0.5
         sigma = 1
         M = 1
-        np.random.seed(2)
+        # np.random.seed(2)
         data = gen_data_splicing(family=family, n=n, p=p, k=k, rho=rho, M=M)
         data2 = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         data3 = gen_data_splicing(
             family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
-        s_max = 21
+        s_max = 20
 
         model = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
@@ -298,7 +298,7 @@ class TestClass:
         # data3 = gen_data_splicing(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
-        support_size = np.linspace(0,s_max,s_max+1)
+        support_size = np.linspace(0, s_max, s_max+1)
         alpha = [0., 0.1, 0.2, 0.3, 0.4]
 
         model = abessLm()
@@ -485,5 +485,3 @@ class TestClass:
     #     # reg.fit(new_x, data.y)
     #     # assert model.coef_[nonzero_fit] == approx(reg.coef_, rel=1e-5, abs=1e-5)
     #     assert (nonzero_true == nonzero_fit).all()
-
-    # def test_mulnomial(self):

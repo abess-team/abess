@@ -17,6 +17,7 @@ namespace Eigen {
 template<typename Derived>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Derived& DenseBase<Derived>::operator*=(const Scalar& other)
 {
+  typedef typename Derived::PlainObject PlainObject;
   internal::call_assignment(this->derived(), PlainObject::Constant(rows(),cols(),other), internal::mul_assign_op<Scalar,Scalar>());
   return derived();
 }
@@ -24,6 +25,7 @@ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Derived& DenseBase<Derived>::operator*=(co
 template<typename Derived>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Derived& ArrayBase<Derived>::operator+=(const Scalar& other)
 {
+  typedef typename Derived::PlainObject PlainObject;
   internal::call_assignment(this->derived(), PlainObject::Constant(rows(),cols(),other), internal::add_assign_op<Scalar,Scalar>());
   return derived();
 }
@@ -31,6 +33,7 @@ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Derived& ArrayBase<Derived>::operator+=(co
 template<typename Derived>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Derived& ArrayBase<Derived>::operator-=(const Scalar& other)
 {
+  typedef typename Derived::PlainObject PlainObject;
   internal::call_assignment(this->derived(), PlainObject::Constant(rows(),cols(),other), internal::sub_assign_op<Scalar,Scalar>());
   return derived();
 }
@@ -38,6 +41,7 @@ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Derived& ArrayBase<Derived>::operator-=(co
 template<typename Derived>
 EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Derived& DenseBase<Derived>::operator/=(const Scalar& other)
 {
+  typedef typename Derived::PlainObject PlainObject;
   internal::call_assignment(this->derived(), PlainObject::Constant(rows(),cols(),other), internal::div_assign_op<Scalar,Scalar>());
   return derived();
 }
