@@ -258,6 +258,8 @@ class bess_base(BaseEstimator):
 
         if X is not None:   # input_type=0
             X = np.array(X)
+
+            print(X)
             if (X.dtype != 'int' and X.dtype != 'float'):
                 raise ValueError("X should be numeric matrix.")
             elif len(X.shape) != 2:
@@ -267,7 +269,7 @@ class bess_base(BaseEstimator):
             p = X.shape[1]
             if (self.model_type == "SPCA" and y is None):
                 y = np.zeros(n)
-            else:
+            elif y is None:
                 raise ValueError("y should be given in "+str(self.algorithm_type))
 
             Sigma = np.matrix(-1)
@@ -691,7 +693,7 @@ class bess_base(BaseEstimator):
         if self.model_type == "Lm" or self.model_type == "Multigaussian":
             intercept_ = np.ones(X.shape[0]) * self.intercept_
             y_pre = np.dot(X, self.coef_) + intercept_
-            return ((y - y_pre)*(y - y_pre)).sum()
+            return -((y - y_pre)*(y - y_pre)).sum()
 
         elif self.model_type == "Logistic":
             intercept_ = np.ones(X.shape[0]) * self.intercept_
