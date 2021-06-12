@@ -258,6 +258,8 @@ class bess_base(BaseEstimator):
 
         if X is not None:   # input_type=0
             X = np.array(X)
+
+            print(X)
             if (X.dtype != 'int' and X.dtype != 'float'):
                 raise ValueError("X should be numeric matrix.")
             elif len(X.shape) != 2:
