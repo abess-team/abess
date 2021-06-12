@@ -174,7 +174,7 @@
 <span class="va">t.seq</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">Salary</span><span class="op">~</span><span class="va">.</span>, <span class="va">Hitters</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>
 <span class="va">t.seq</span></code></pre></div>
 <pre><code>## elapsed 
-##    0.01</code></pre>
+##   0.011</code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">=</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span> <span class="op">==</span> <span class="st">"Salary"</span><span class="op">)</span><span class="op">]</span>, <span class="va">Hitters</span><span class="op">$</span><span class="va">Salary</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
