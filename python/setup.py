@@ -30,6 +30,22 @@ if sys.platform.startswith('win32'):
                                   numpy.get_include(), CURRENT_DIR + '/include'],
                               swig_opts=["-c++"]
                               )
+elif sys.platform.startswith('darwin'):
+    eigen_path = CURRENT_DIR + "/include"
+    # print(eigen_path)
+    # eigen_path = "/usr/local/include/eigen3/Eigen"
+    cabess_module = Extension(name='abess._cabess',
+                              sources=[CURRENT_DIR + '/src/abess.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
+                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/abess.i',
+                                       CURRENT_DIR + '/src/Algorithm.cpp', CURRENT_DIR + '/src/Data.cpp',
+                                       CURRENT_DIR + '/src/Metric.cpp', CURRENT_DIR + '/src/path.cpp',
+                                       CURRENT_DIR + '/src/screening.cpp', CURRENT_DIR + '/src/model_fit.cpp'],
+                              language='c++',
+                              extra_compile_args=[
+                                  "-DNDEBUG", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native"],
+                              include_dirs=[numpy.get_include(), eigen_path],
+                              swig_opts=["-c++"]
+                              )
 else:
     eigen_path = CURRENT_DIR + "/include"
     # print(eigen_path)
@@ -47,6 +63,7 @@ else:
                               include_dirs=[numpy.get_include(), eigen_path],
                               swig_opts=["-c++"]
                               )
+    pass
 
 with open(path.join(CURRENT_DIR, 'README.md')) as f:
     long_description = f.read()
