@@ -57,7 +57,7 @@
       <a href="../articles/MultiClassification.html">Multi-class Classification</a>
     </li>
     <li>
-      <a href="../articles/MultiTaskLearning.html">Multi-Task Learning</a>
+      <a href="../articles/MultiTaskLearning.html">Multi-Response Linear Regression</a>
     </li>
     <li>
       <a href="../articles/abess-guide.html">An Introduction to `abess`</a>
@@ -235,69 +235,20 @@ h_{i'}(t) = h_0(t)\exp(\eta_{i'}) = h_0(t)\exp(x_{i'}\beta).
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># print the fitted model</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## $beta
-## 9 x 10 sparse Matrix of class "dgCMatrix"
-##                                                                    
-## age       . .          .          .          .           .         
-## sex       . .         -0.3158899 -0.3056506 -0.31215217 -0.37216950
-## ph.ecog1  . .          .          .          .           0.43313467
-## ph.ecog2  . 0.6198472  0.6356454  0.6485151  0.90762595  1.39709205
-## ph.ecog3  . .          .          1.5289440  1.85001610  2.38778405
-## ph.karno  . .          .          .          0.01230716  0.02222591
-## pat.karno . .          .          .          .           .         
-## meal.cal  . .          .          .          .           .         
-## wt.loss   . .          .          .          .           .         
-##                                                               
-## age        .            .            0.009608071  0.0087628223
-## sex       -0.397995667 -0.400493303 -0.404941177 -0.4176181736
-## ph.ecog1   0.491343307  0.499949884  0.544370477  0.5487752876
-## ph.ecog2   1.545513274  1.424131920  1.425800199  1.4055828478
-## ph.ecog3   2.543614482  2.499382520  2.498480073  2.5322886865
-## ph.karno   0.022680364  0.024310342  0.026438213  0.0266007344
-## pat.karno  .           -0.008446641 -0.008262139 -0.0076751166
-## meal.cal   .            .            .           -0.0001728142
-## wt.loss   -0.008627062 -0.010143182 -0.009555062 -0.0097601250
-## 
-## $intercept
-##  [1] 0 0 0 0 0 0 0 0 0 0
-## 
-## $dev
-##  [1] 798.3509 791.3829 788.9978 787.5387 785.8258 783.7560 782.4605 781.7364
-##  [9] 781.1942 780.8985
-## 
-## $tune.value
-##  [1] 1596.702 1586.171 1584.805 1585.292 1585.271 1584.536 1585.350 1587.306
-##  [9] 1589.627 1589.035
-## 
-## $nobs
-## [1] 111
-## 
-## $nvars
-## [1] 9
-## 
-## $family
-## [1] "cox"
-## 
-## $tune.path
-## [1] "sequence"
-## 
-## $support.size
-##  [1] 0 1 2 3 4 5 6 7 8 9
-## 
-## $tune.type
-## [1] "GIC"
-## 
-## $best.size
-## [1] 5
-## 
-## $screening.vars
-## character(0)
-## 
-## $call
+<pre><code>## Call:
 ## abess.default(x = train[, -(1:2)], y = train[, 1:2], family = "cox")
 ## 
-## attr(,"class")
-## [1] "abess"</code></pre>
+##    support.size      dev      GIC
+## 1             0 798.3509 1596.702
+## 2             1 791.3829 1586.171
+## 3             2 788.9978 1584.805
+## 4             3 787.5387 1585.292
+## 5             4 785.8258 1585.271
+## 6             5 783.7560 1584.536
+## 7             6 782.4605 1585.350
+## 8             7 781.7364 1587.306
+## 9             8 781.1942 1589.627
+## 10            9 780.8985 1589.035</code></pre>
 <p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including <code>coef</code> for the coefficient value, <code>l2norm</code> for the L2-norm of the coefficients, <code>dev</code> for the deviance and <code>tune</code> for the tuning value. Default if <code>coef</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>

@@ -57,7 +57,7 @@
       <a href="../articles/MultiClassification.html">Multi-class Classification</a>
     </li>
     <li>
-      <a href="../articles/MultiTaskLearning.html">Multi-Task Learning</a>
+      <a href="../articles/MultiTaskLearning.html">Multi-Response Linear Regression</a>
     </li>
     <li>
       <a href="../articles/abess-guide.html">An Introduction to `abess`</a>
@@ -196,54 +196,17 @@
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># print the fitted model</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## $beta
-## 6 x 7 sparse Matrix of class "dgCMatrix"
-##           0        1         2         3          4           5            6
-## age       . .        .         .         -0.1220316 -0.14952589 -0.150218212
-## sex       . .        .         .          .         -0.05079657 -0.053085872
-## job       . 1.500057 1.3764398 1.3352378  1.3066533  1.31052728  1.310901374
-## education . .        .         0.7481294  0.7402971  0.74962104  0.750016665
-## region    . .        0.5200982 0.6772816  0.7321943  0.73122135  0.733312086
-## marry     . .        .         .          .          .           0.004555512
-## 
-## $intercept
-## [1]  1.5810384  0.4281214  0.2558214 -0.1046758 -0.1048038 -0.1124722 -0.1131763
-## 
-## $dev
-## [1]  -282.3847  -792.8596  -936.6450 -1011.8841 -1013.1902 -1013.6433 -1013.6466
-## 
-## $tune.value
-## [1]  -564.7694 -1582.9829 -1867.8174 -2015.5593 -2015.4350 -2013.6050 -2013.6114
-## 
-## $nobs
-## [1] 100
-## 
-## $nvars
-## [1] 6
-## 
-## $family
-## [1] "poisson"
-## 
-## $tune.path
-## [1] "sequence"
-## 
-## $support.size
-## [1] 0 1 2 3 4 5 6
-## 
-## $tune.type
-## [1] "GIC"
-## 
-## $best.size
-## [1] 3
-## 
-## $screening.vars
-## character(0)
-## 
-## $call
+<pre><code>## Call:
 ## abess.formula(formula = count ~ ., data = complain, family = "poisson")
 ## 
-## attr(,"class")
-## [1] "abess"</code></pre>
+##   support.size        dev        GIC
+## 1            0  -282.3847  -564.7694
+## 2            1  -792.8596 -1582.9829
+## 3            2  -936.6450 -1867.8174
+## 4            3 -1011.8841 -2015.5593
+## 5            4 -1013.1902 -2015.4350
+## 6            5 -1013.6433 -2013.6050
+## 7            6 -1013.6466 -2013.6114</code></pre>
 <p>Prediction is allowed for all the estimated model. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>

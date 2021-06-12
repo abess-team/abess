@@ -57,7 +57,7 @@
       <a href="../articles/MultiClassification.html">Multi-class Classification</a>
     </li>
     <li>
-      <a href="../articles/MultiTaskLearning.html">Multi-Task Learning</a>
+      <a href="../articles/MultiTaskLearning.html">Multi-Response Linear Regression</a>
     </li>
     <li>
       <a href="../articles/abess-guide.html">An Introduction to `abess`</a>
@@ -228,68 +228,19 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># print the fitted model</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## $beta
-## 8 x 9 sparse Matrix of class "dgCMatrix"
-##           0         1          2           3           4           5
-## Pclass    .  .        -0.7952709 -1.01705719 -1.03770029 -1.00849524
-## Sexmale   . -2.545075 -2.5818944 -2.51198922 -2.60544775 -2.59656106
-## Age       .  .         .         -0.02923673 -0.03712932 -0.03672227
-## SibSp     .  .         .          .          -0.36190186 -0.35770162
-## Parch     .  .         .          .           .           .         
-## Fare      .  .         .          .           .           .         
-## EmbarkedQ .  .         .          .           .           .         
-## EmbarkedS .  .         .          .           .          -0.21507577
-##                      6            7            8
-## Pclass    -1.076524938 -1.080872102 -1.088719578
-## Sexmale   -2.610626444 -2.600190152 -2.598294351
-## Age       -0.037469962 -0.037121584 -0.037070490
-## SibSp     -0.339009757 -0.350547520 -0.352463001
-## Parch      .            0.048198941  0.051065970
-## Fare      -0.001998085 -0.002237775 -0.002189826
-## EmbarkedQ  .            .            0.209319312
-## EmbarkedS -0.245365304 -0.255782087 -0.218658734
-## 
-## $intercept
-## [1] -0.3530971  1.1587808  2.9213405  4.2319598  4.7683004  4.8538093  5.1128503
-## [8]  5.1069841  5.0834196
-## 
-## $dev
-## [1] 321.9560 246.5820 229.6078 224.0843 220.4441 220.1834 220.0022 219.9602
-## [9] 219.9189
-## 
-## $tune.value
-## [1] 643.9119 496.9456 466.7791 459.5137 456.0149 459.2754 462.6947 466.3923
-## [9] 466.3097
-## 
-## $nobs
-## [1] 475
-## 
-## $nvars
-## [1] 8
-## 
-## $family
-## [1] "binomial"
-## 
-## $tune.path
-## [1] "sequence"
-## 
-## $support.size
-## [1] 0 1 2 3 4 5 6 7 8
-## 
-## $tune.type
-## [1] "GIC"
-## 
-## $best.size
-## [1] 4
-## 
-## $screening.vars
-## character(0)
-## 
-## $call
+<pre><code>## Call:
 ## abess.default(x = train[, -1], y = train$Survived, family = "binomial")
 ## 
-## attr(,"class")
-## [1] "abess"</code></pre>
+##   support.size      dev      GIC
+## 1            0 321.9560 643.9119
+## 2            1 246.5820 496.9456
+## 3            2 229.6078 466.7791
+## 4            3 224.0843 459.5137
+## 5            4 220.4441 456.0149
+## 6            5 220.1834 459.2754
+## 7            6 220.0022 462.6947
+## 8            7 219.9602 466.3923
+## 9            8 219.9189 466.3097</code></pre>
 <p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including <code>coef</code> for the coefficient value, <code>l2norm</code> for the L2-norm of the coefficients, <code>dev</code> for the deviance and <code>tune</code> for the tuning value. Default if <code>coef</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>

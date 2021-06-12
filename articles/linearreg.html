@@ -57,7 +57,7 @@
       <a href="../articles/MultiClassification.html">Multi-class Classification</a>
     </li>
     <li>
-      <a href="../articles/MultiTaskLearning.html">Multi-Task Learning</a>
+      <a href="../articles/MultiTaskLearning.html">Multi-Response Linear Regression</a>
     </li>
     <li>
       <a href="../articles/abess-guide.html">An Introduction to `abess`</a>
@@ -286,138 +286,33 @@
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># print the fitted model</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## $beta
-## 19 x 20 sparse Matrix of class "dgCMatrix"</code></pre>
-<pre><code>##    [[ suppressing 20 column names '0', '1', '2' ... ]]</code></pre>
-<pre><code>##                                                                     
-## AtBat      . .         .         .            .            .        
-## Hits       . .         3.3008446 2.8038162    2.6757978    2.0467293
-## HmRun      . .         .         .            .            .        
-## Runs       . .         .         .            .            .        
-## RBI        . .         .         .            .            .        
-## Walks      . .         .         .            .            2.5574106
-## Years      . .         .         .            .            .        
-## CAtBat     . .         .         .            .            .        
-## CHits      . .         .         .            .            .        
-## CHmRun     . .         .         .            .            .        
-## CRuns      . .         .         .            .            .        
-## CRBI       . 0.7909536 0.6898994 0.6825275    0.6817790    0.6492007
-## CWalks     . .         .         .            .            .        
-## LeagueN    . .         .         .            .            .        
-## DivisionW  . .         .         .         -139.9538855 -137.3676333
-## PutOuts    . .         .         0.2735814    0.2735002    0.2518721
-## Assists    . .         .         .            .            .        
-## Errors     . .         .         .            .            .        
-## NewLeagueN . .         .         .            .            .        
-##                                                                            
-## AtBat        -1.8685892   -1.8535176   -2.1250564   -2.0803280   -2.2556858
-## Hits          7.6043976    7.6348879    7.6482495    6.8263359    7.0378766
-## HmRun         .            .            .            .            .        
-## Runs          .            .            .            .            .        
-## RBI           .            .            .            .            .        
-## Walks         3.6976468    3.6644212    5.2391412    5.9761215    6.2793246
-## Years         .            .            .          -15.9414459  -16.7414858
-## CAtBat        .            .            .            .            .        
-## CHits         .            .            .            .            .        
-## CHmRun        .            .            .            .            .        
-## CRuns         .            .            .            0.8143029    0.8132079
-## CRBI          0.6430169    0.6445474    0.8959228    0.6000624    0.6508515
-## CWalks        .            .           -0.3487728   -0.7503761   -0.7882990
-## LeagueN       .           35.0926551    .            .            .        
-## DivisionW  -122.9515338 -122.5437635 -126.8503150 -123.4936780 -123.2261893
-## PutOuts       0.2643076    0.2584749    0.2655057    0.2702288    0.2824819
-## Assists       .            .            0.1790809    .            0.1872292
-## Errors        .            .            .            .            .        
-## NewLeagueN    .            .            .            .            .        
-##                                                                            
-## AtBat        -2.2102483   -2.1783358   -2.0120568   -2.0883279   -2.1085651
-## Hits          6.9279436    6.9273744    7.3751935    7.6436454    7.6501026
-## HmRun         .            .            .            2.3406524    2.3654025
-## Runs          .            .           -1.7130320   -2.3580478   -2.3535049
-## RBI           .            .            .            .            .        
-## Walks         6.2243570    6.1667822    5.9906173    6.1794713    6.1730276
-## Years       -17.2542087  -17.0664017    .            .           -4.2321550
-## CAtBat        .            .           -0.1527096   -0.1488074   -0.1341737
-## CHits         .            .            .            .            .        
-## CHmRun        .            .            .            .            .        
-## CRuns         0.8111144    0.8082476    1.5535444    1.5931621    1.5426322
-## CRBI          0.6594949    0.6571221    0.7850103    0.7170767    0.7144063
-## CWalks       -0.7934064   -0.7898841   -0.8404419   -0.8565844   -0.8446970
-## LeagueN       .           29.1474123   41.9165343   44.2352269   42.2835360
-## DivisionW  -123.1231837 -122.8009102 -112.3809790 -112.8079905 -113.9853363
-## PutOuts       0.2883338    0.2830813    0.2896964    0.2876182    0.2859836
-## Assists       0.2795390    0.2732454    0.3312276    0.3677311    0.3643305
-## Errors       -3.0198567   -3.3107203   -2.8685826   -3.1271251   -3.2379385
-## NewLeagueN    .            .            .            .            .        
-##                                                               
-## AtBat        -2.0890552   -2.0302709   -2.0186239   -1.9798729
-## Hits          7.8848050    7.7483580    7.7381465    7.5007675
-## HmRun         3.8223369    4.6470956    4.6127592    4.3308829
-## Runs         -2.5377954   -2.5882384   -2.6272166   -2.3762100
-## RBI          -0.8815425   -1.1165187   -1.1190038   -1.0449620
-## Walks         6.2941910    6.2778803    6.3108843    6.2312863
-## Years        -4.0947594   -3.7490950   -3.8738277   -3.4890543
-## CAtBat       -0.1350897   -0.1526121   -0.1514014   -0.1713405
-## CHits         .            .            .            0.1339910
-## CHmRun        .           -0.3876922   -0.3938397   -0.1728611
-## CRuns         1.5321626    1.5730263    1.5708067    1.4543049
-## CRBI          0.7420886    0.8965235    0.8961782    0.8077088
-## CWalks       -0.8559654   -0.8423839   -0.8467366   -0.8115709
-## LeagueN      42.2286763   41.6482699   61.3012822   62.5994230
-## DivisionW  -116.0422926 -116.4111439 -116.5862127 -116.8492456
-## PutOuts       0.2858651    0.2827595    0.2829156    0.2818925
-## Assists       0.3641325    0.3661464    0.3640952    0.3710692
-## Errors       -3.1409199   -3.1840695   -3.2558249   -3.3607605
-## NewLeagueN    .            .          -22.9788245  -24.7623251
-## 
-## $intercept
-##  [1] 535.925882 274.580386 -47.955902 -71.459220  13.923104  -7.656382
-##  [7]  91.511798  67.943154 114.506723 197.661640 206.567228 218.552733
-## [13] 198.496743 142.909013 144.679318 163.327582 163.006406 162.993203
-## [19] 163.163254 163.103588
-## 
-## $dev
-##  [1] 202734.27 137565.32 116526.84 111214.06 106353.05 104483.91  99600.40
-##  [8]  99303.92  98158.60  94654.62  94081.77  93894.74  93695.85  92354.17
-## [15]  92200.23  92154.67  92106.59  92065.27  92032.81  92017.87
-## 
-## $tune.value
-##  [1] 3213.768 3116.836 3078.241 3071.026 3064.330 3064.725 3057.194 3061.468
-##  [9] 3063.475 3058.972 3062.434 3066.968 3071.469 3072.733 3077.352 3082.280
-## [17] 3087.201 3092.141 3097.106 3097.063
-## 
-## $nobs
-## [1] 263
-## 
-## $nvars
-## [1] 19
-## 
-## $family
-## [1] "gaussian"
-## 
-## $tune.path
-## [1] "sequence"
-## 
-## $support.size
-##  [1]  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19
-## 
-## $tune.type
-## [1] "GIC"
-## 
-## $best.size
-## [1] 6
-## 
-## $screening.vars
-## character(0)
-## 
-## $call
+<pre><code>## Call:
 ## abess.default(x = Hitters[, -which(colnames(Hitters) == "Salary")], 
 ##     y = Hitters$Salary)
 ## 
-## attr(,"class")
-## [1] "abess"</code></pre>
+##    support.size       dev      GIC
+## 1             0 202734.27 3213.768
+## 2             1 137565.32 3116.836
+## 3             2 116526.84 3078.241
+## 4             3 111214.06 3071.026
+## 5             4 106353.05 3064.330
+## 6             5 104483.91 3064.725
+## 7             6  99600.40 3057.194
+## 8             7  99303.92 3061.468
+## 9             8  98158.60 3063.475
+## 10            9  94654.62 3058.972
+## 11           10  94081.77 3062.434
+## 12           11  93894.74 3066.968
+## 13           12  93695.85 3071.469
+## 14           13  92354.17 3072.733
+## 15           14  92200.23 3077.352
+## 16           15  92154.67 3082.280
+## 17           16  92106.59 3087.201
+## 18           17  92065.27 3092.141
+## 19           18  92032.81 3097.106
+## 20           19  92017.87 3097.063</code></pre>
 <p>Prediction is allowed for all the estimated model. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">Hitters</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span><span class="op">==</span><span class="st">"Salary"</span><span class="op">)</span><span class="op">]</span>, 
         support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##           3         4
@@ -428,20 +323,20 @@
 ## 6 708.86493  632.3839
 ## 7  59.21692  139.8497</code></pre>
 <p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including <code>coef</code> for the coefficient value, <code>l2norm</code> for the L2-norm of the coefficients, <code>dev</code> for the deviance and <code>tune</code> for the tuning value. Default if <code>coef</code>.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
 <p><img src="linearreg_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <p>The graph shows that, beginning from the most dense model, the 15th variable (Division, A factor with levels E and W indicating player’s division at the end of 1986) is included in the active set until the support size reaches 3.</p>
 <p>We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type<span class="op">=</span><span class="st">"tune"</span><span class="op">)</span></code></pre></div>
 <p><img src="linearreg_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <p>The tuning value reaches the lowest point at 6. And We might choose the estimated model with support size equals 6 as our final model. In fact, the tuning values of different model sizes are provided in <code>tune.value</code> of the <code>abess</code> object. You can get the best model size through the following call.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">abess_fit</span><span class="op">$</span><span class="va">support.size</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">$</span><span class="va">tune.value</span><span class="op">)</span><span class="op">]</span></code></pre></div>
 <pre><code>## [1] 6</code></pre>
 <p>To extract any model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best.model</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of 7
