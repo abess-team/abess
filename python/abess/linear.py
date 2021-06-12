@@ -266,7 +266,7 @@ class bess_base(BaseEstimator):
             n = X.shape[0]
             p = X.shape[1]
             if (y is None):
-                if (self.model_type == "SPCA"):
+                if (self.model_type == "PCA"):
                     y = np.zeros(n)
                 else:
                     raise ValueError("y should be given in "+str(self.algorithm_type))
@@ -280,7 +280,7 @@ class bess_base(BaseEstimator):
 
             self.n_features_in_ = X.shape[1]
             self.input_type = 0 
-        elif (self.model_type == "SPCA"):   
+        elif (self.model_type == "PCA"):   
             if (Sigma is not None):     # input_type=1
                 Sigma = np.array(Sigma)
                 if (Sigma.dtype != 'int' and Sigma.dtype != 'float'):
@@ -300,7 +300,7 @@ class bess_base(BaseEstimator):
                 self.input_type = 1
                 is_normal = False # automatically ignore
             else:
-                raise ValueError("X or Sigma should be given in SPCA")
+                raise ValueError("X or Sigma should be given in PCA")
         else:
             raise ValueError("X should be given in "+str(self.algorithm_type))
         
@@ -336,7 +336,7 @@ class bess_base(BaseEstimator):
             model_type_int = 5
         elif self.model_type == "Multinomial":
             model_type_int = 6
-        elif self.model_type == "SPCA":
+        elif self.model_type == "PCA":
             model_type_int = 7
         else:
             raise ValueError("model_type should not be " +
@@ -416,9 +416,8 @@ class bess_base(BaseEstimator):
                 raise ValueError(
                     "When you choose is_weight is True, the parameter weight should be given")
             else:
-                if n != weight.size:
-                    raise ValueError(
-                        "X.shape(0) should be equal to weight.size")
+                if len(weight) != n:
+                    raise ValueError("X.shape(0) should be equal to weight.size")
         else:
             weight = np.ones(n)
 
@@ -1107,7 +1106,7 @@ class abessPCA(bess_base):
                  splicing_type=1
                  ):
         super(abessPCA, self).__init__(
-            algorithm_type="abess", model_type="SPCA", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            algorithm_type="abess", model_type="PCA", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, n_lambda=n_lambda, ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
             always_select=always_select, tau=tau,
