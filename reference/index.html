@@ -94,37 +94,31 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/MultiClassification.html">Multi-class Classification</a>
+      <a href="../articles/v01-abess-guide.html">An Introduction to `abess`</a>
     </li>
     <li>
-      <a href="../articles/MultiTaskLearning.html">Multi-Response Linear Regression</a>
+      <a href="../articles/v02-linearreg.html">Linear Regression</a>
     </li>
     <li>
-      <a href="../articles/abess-guide.html">An Introduction to `abess`</a>
+      <a href="../articles/v03-classification.html">Classification: Logistic Regression and Multinomial Extension</a>
     </li>
     <li>
-      <a href="../articles/coxreg.html">CoxPH Regression</a>
+      <a href="../articles/v04-poissonregression.html">Poisson Regression</a>
     </li>
     <li>
-      <a href="../articles/groupselection.html">Group Selection</a>
+      <a href="../articles/v05-coxreg.html">Best Subset Selection for Censored Response</a>
     </li>
     <li>
-      <a href="../articles/integrateSIS.html">Integrate SIS</a>
+      <a href="../articles/v06-MultiTaskLearning.html">Multi-Response Linear Regression</a>
     </li>
     <li>
-      <a href="../articles/linearreg.html">Linear Regression</a>
+      <a href="../articles/v07-advancedFeatures.html">Advanced Features</a>
     </li>
     <li>
-      <a href="../articles/logisticreg.html">Logistic Regression</a>
+      <a href="../articles/v08-pca.html">Principal component analysis</a>
     </li>
     <li>
-      <a href="../articles/nuisancereg.html">Nuisance Regression</a>
-    </li>
-    <li>
-      <a href="../articles/poissonregression.html">Poisson Regression</a>
-    </li>
-    <li>
-      <a href="../articles/regularizedbess.html">Regularized BeSS</a>
+      <a href="../articles/v09-fasterSetting.html">Tips for faster computation</a>
     </li>
   </ul>
 </li>
@@ -166,7 +160,7 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-abess-for-generalized-linear-model" class="hasAnchor"><a href="#section-abess-for-generalized-linear-model" class="anchor"></a>ABESS for generalized linear model</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -184,9 +178,9 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="abesspca.html">abesspca()</a></code> </p>
+          <p><code><a href="print.abess.html">print(<i>&lt;abess&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Adaptive best subset selection for principal component analysis</p></td>
+        <td><p>Print method for a fitted "<code>abess</code>" object</p></td>
       </tr><tr>
         
         <td>
@@ -196,27 +190,9 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="deviance.abess.html">deviance(<i>&lt;abess&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Extract the deviance from a fitted "abess" object.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="extract.abess.html">extract()</a></code> </p>
         </td>
         <td><p>Extract one model from a fitted "abess" object.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="generate.data.html">generate.data()</a></code> </p>
-        </td>
-        <td><p>Generate simulated data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot.abess.html">plot(<i>&lt;abess&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Creat plot from a fitted "abess" object</p></td>
       </tr><tr>
         
         <td>
@@ -229,10 +205,48 @@ Returns predictions from a fitted
       </tr><tr>
         
         <td>
-          <p><code><a href="print.abess.html">print(<i>&lt;abess&gt;</i>)</a></code> </p>
+          <p><code><a href="plot.abess.html">plot(<i>&lt;abess&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Print method for a fitted "<code>abess</code>" object</p></td>
+        <td><p>Creat plot from a fitted "abess" object</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="deviance.abess.html">deviance(<i>&lt;abess&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Extract the deviance from a fitted "abess" object.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-abess-for-principal-component-analysis" class="hasAnchor"><a href="#section-abess-for-principal-component-analysis" class="anchor"></a>ABESS for principal component analysis</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="abesspca.html">abesspca()</a></code> </p>
+        </td>
+        <td><p>Adaptive best subset selection for principal component analysis</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-datasets" class="hasAnchor"><a href="#section-datasets" class="anchor"></a>Datasets</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="trim32.html">trim32</a></code> </p>

@@ -95,37 +95,31 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/MultiClassification.html">Multi-class Classification</a>
+      <a href="../articles/v01-abess-guide.html">An Introduction to `abess`</a>
     </li>
     <li>
-      <a href="../articles/MultiTaskLearning.html">Multi-Response Linear Regression</a>
+      <a href="../articles/v02-linearreg.html">Linear Regression</a>
     </li>
     <li>
-      <a href="../articles/abess-guide.html">An Introduction to `abess`</a>
+      <a href="../articles/v03-classification.html">Classification: Logistic Regression and Multinomial Extension</a>
     </li>
     <li>
-      <a href="../articles/coxreg.html">CoxPH Regression</a>
+      <a href="../articles/v04-poissonregression.html">Poisson Regression</a>
     </li>
     <li>
-      <a href="../articles/groupselection.html">Group Selection</a>
+      <a href="../articles/v05-coxreg.html">Best Subset Selection for Censored Response</a>
     </li>
     <li>
-      <a href="../articles/integrateSIS.html">Integrate SIS</a>
+      <a href="../articles/v06-MultiTaskLearning.html">Multi-Response Linear Regression</a>
     </li>
     <li>
-      <a href="../articles/linearreg.html">Linear Regression</a>
+      <a href="../articles/v07-advancedFeatures.html">Advanced Features</a>
     </li>
     <li>
-      <a href="../articles/logisticreg.html">Logistic Regression</a>
+      <a href="../articles/v08-pca.html">Principal component analysis</a>
     </li>
     <li>
-      <a href="../articles/nuisancereg.html">Nuisance Regression</a>
-    </li>
-    <li>
-      <a href="../articles/poissonregression.html">Poisson Regression</a>
-    </li>
-    <li>
-      <a href="../articles/regularizedbess.html">Regularized BeSS</a>
+      <a href="../articles/v09-fasterSetting.html">Tips for faster computation</a>
     </li>
   </ul>
 </li>
@@ -346,13 +340,13 @@ can be efficiently solved.</p>
 #&gt;   .. ..@ Dimnames:List of 2
 #&gt;   .. .. ..$ : chr [1:4] "Murder" "Assault" "UrbanPop" "Rape"
 #&gt;   .. .. ..$ : chr [1:4] "1" "2" "3" "4"
-#&gt;   .. ..@ x       : num [1:10] 1 -0.997 -0.0772 -0.9948 -0.0658 ...
+#&gt;   .. ..@ x       : num [1:10] 1 -0.9967 -0.081 -0.9937 -0.0775 ...
 #&gt;   .. ..@ factors : list()
-#&gt;  $ ev          : num [1:4] 6575 6614 6642 6655
+#&gt;  $ ev          : num [1:4] 6592 6636 6675 6686
 #&gt;  $ nvars       : int 4
 #&gt;  $ support.size: num [1:4] 1 2 3 4
-#&gt;  $ pev         : num [1:4] 0.988 0.994 0.998 1
-#&gt;  $ var.all     : num 6655
+#&gt;  $ pev         : num [1:4] 0.986 0.992 0.998 1
+#&gt;  $ var.all     : num 6686
 #&gt;  $ call        : language abesspca(x = rob_cov, type = "gram")
 #&gt;  - attr(*, "class")= chr "abesspca"</div><div class='input'>
 </div></pre>
