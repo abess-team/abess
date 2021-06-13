@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 
 ## CoxPH Regression
 
-Cox Proportional Hazrds (CoxPH) regression is to describe the survival according to several corvariates. The model is as follow:
+Cox Proportional Hazrds (CoxPH) regression is to describe the survival according to several corvariates. The difference between CoxPH regression and Kaplan-Meier curves or the logrank tests is that the latter only focus on modeling the survival according to one factor (categorical predictor is best) while the former is able to take into consideration any covariates simultaneouly, regardless of whether they're quantitatrive or categorical. The model is as follow:
 $$
 h(t) = h_0(t)\exp(\eta).
 $$

@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 
 ## Logistic Regression
 
-Logistic regression is used to predict binary results. Logistic regression function is an s-shaped curve modeling the posterior probability $p$ via a linear combination of the predictors. The curve is dedined as $p = \frac{1}{1+\exp(-\eta)}$ where $\eta = \beta_0+x\beta_1$. 
+Logistic regression is used to predict binary results. For example, to predict the tumor is benign (1) or not (0); to predict the email is spam (1) or not (0). Logistic regression function is an s-shaped curve modeling the posterior probability $p$ via a linear combination of the predictors. The curve is dedined as $p = \frac{1}{1+\exp(-\eta)}$ where $\eta = \beta_0+x\beta_1$. 
 
 The logistic regression model has this form:
 $$
