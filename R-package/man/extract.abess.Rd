@@ -3,7 +3,7 @@
 \name{extract}
 \alias{extract}
 \alias{extract.abess}
-\title{Extract one model from a fitted "abess" object.}
+\title{Extract one model from a fitted "\code{abess}" object.}
 \usage{
 extract(object, support.size = NULL, ...)
 

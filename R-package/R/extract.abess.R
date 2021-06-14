@@ -3,7 +3,7 @@
 extract <- function(object, support.size = NULL, ...) UseMethod("extract")
 
 #' 
-#' @title Extract one model from a fitted "abess" object.
+#' @title Extract one model from a fitted "\code{abess}" object.
 #' 
 #' @description Extract the fixed-support-size 
 #' model's information such as the selected 
