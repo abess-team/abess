@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -54,37 +54,28 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/MultiTaskLearning.html">Multi-Response Linear Regression</a>
+    </li>
+    <li>
       <a href="../articles/abess-guide.html">An Introduction to `abess`</a>
     </li>
     <li>
-      <a href="../articles/coxreg.html">coxreg</a>
+      <a href="../articles/advancedFeatures.html">Advanced Features</a>
     </li>
     <li>
-      <a href="../articles/groupselection.html">Group Selection</a>
+      <a href="../articles/classification.html">Classification: logistic regression and multinomial regression</a>
+    </li>
+    <li>
+      <a href="../articles/coxreg.html">CoxPH Regression</a>
     </li>
     <li>
       <a href="../articles/integrateSIS.html">Integrate SIS</a>
     </li>
     <li>
-      <a href="../articles/linearreg.html">linearregression</a>
-    </li>
-    <li>
-      <a href="../articles/logisticreg.html">logisticreg</a>
-    </li>
-    <li>
-      <a href="../articles/MultiClassification.html">Multi-class Classification</a>
-    </li>
-    <li>
-      <a href="../articles/MultiTaskLearning.html">Multi-Task Learning</a>
-    </li>
-    <li>
-      <a href="../articles/nuisancereg.html">Nuisance Regression</a>
+      <a href="../articles/linearreg.html">Linear Regression</a>
     </li>
     <li>
       <a href="../articles/poissonregression.html">Poisson Regression</a>
-    </li>
-    <li>
-      <a href="../articles/regularizedbess.html">UNKNOWN TITLE</a>
     </li>
   </ul>
 </li>
@@ -95,7 +86,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/abess-team/abess/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -109,7 +100,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="abess-guide_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>An Introduction to <code>abess</code>
@@ -226,44 +217,30 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <p>And thus, it would be better to first perform feature screening, which is also supported by the <code>abess</code> function. Suppose we are interested in retaining 1000 variables with the largest marginal utility, then we can conduct the command:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">crime</span>, screening.num <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
-<span class="va">abess_fit</span></code></pre></div>
-<pre><code>## Call:
-## abess.formula(formula = y ~ ., data = crime, screening.num = 1000)
-## 
-##    support.size       dev      GIC
-## 1             0 381863.43 6426.409
-## 2             1 172846.92 6042.701
-## 3             2 155974.89 6003.965
-## 4             3 147047.98 5987.116
-## 5             4 141513.44 5980.554
-## 6             5 135523.59 5971.549
-## 7             6 132507.52 5972.916
-## 8             7 128890.08 5971.696
-## 9             8 123742.00 5963.935
-## 10            9 120870.35 5964.815
-## 11           10 118266.27 5966.545
-## 12           11 116297.21 5970.770
-## 13           12 113114.92 5969.517
-## 14           13 110998.98 5972.696
-## 15           14 109047.24 5976.445
-## 16           15 108012.14 5984.296
-## 17           16 106262.19 5988.749
-## 18           17 105408.98 5997.338
-## 19           18 104432.72 6005.306
-## 20           19 103561.37 6013.736
-## 21           20 103045.98 6023.861
-## 22           21 102150.55 6032.117
-## 23           22 101433.48 6041.215
-## 24           23 100600.07 6049.709
-## 25           24  97994.13 6049.207
-## 26           25  97298.40 6058.264
-## 27           26  96514.02 6066.836
-## 28           27  95857.94 6076.046
-## 29           28  95100.64 6084.700
-## 30           29  94671.51 6095.058
-## 31           30  93423.23 6101.042
-## 32           31  92217.23 6107.165
-## 33           32  91889.75 6118.006</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code>## List of 13
+##  $ beta          :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
+##   .. ..@ i       : int [1:528] 442 442 3950 442 3267 3950 442 1747 3267 3950 ...
+##   .. ..@ p       : int [1:34] 0 0 1 3 6 10 15 21 28 36 ...
+##   .. ..@ Dim     : int [1:2] 5253 33
+##   .. ..@ Dimnames:List of 2
+##   .. .. ..$ : chr [1:5253] "pop" "perHoush" "pctBlack" "pctWhite" ...
+##   .. .. ..$ : chr [1:33] "0" "1" "2" "3" ...
+##   .. ..@ x       : num [1:528] -0.251 -0.204 4.195 -0.161 0.527 ...
+##   .. ..@ factors : list()
+##  $ intercept     : num [1:33] 599 2115 1774 1270 1045 ...
+##  $ dev           : num [1:33] 381863 172847 155975 147048 141513 ...
+##  $ tune.value    : num [1:33] 6426 6043 6004 5987 5981 ...
+##  $ nobs          : int 500
+##  $ nvars         : int 5253
+##  $ family        : chr "gaussian"
+##  $ tune.path     : chr "sequence"
+##  $ support.size  : int [1:33] 0 1 2 3 4 5 6 7 8 9 ...
+##  $ tune.type     : chr "GIC"
+##  $ best.size     : int 12
+##  $ screening.vars: chr [1:1000] "pctBlack" "pctWhite" "medIncome" "pctWdiv" ...
+##  $ call          : language abess.formula(formula = y ~ ., data = crime, screening.num = 1000)
+##  - attr(*, "class")= chr "abess"</code></pre>
 <p>The returned object of <code>abess</code> includes the features selected by screening. We exhibit six variables of them:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">[[</span><span class="st">"screening.vars"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
@@ -275,31 +252,35 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best_model</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of 7
 ##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:8] 303 331 368 442 1747 3014 3267 3950
-##   .. ..@ p       : int [1:2] 0 8
+##   .. ..@ i       : int [1:12] 303 331 368 405 1178 1747 2329 2603 3014 3267 ...
+##   .. ..@ p       : int [1:2] 0 12
 ##   .. ..@ Dim     : int [1:2] 5253 1
 ##   .. ..@ Dimnames:List of 2
 ##   .. .. ..$ : chr [1:5253] "pop" "perHoush" "pctBlack" "pctWhite" ...
-##   .. .. ..$ : chr "8"
-##   .. ..@ x       : num [1:8] 0.307252 -0.457335 0.537162 -0.07251 0.000439 ...
+##   .. .. ..$ : chr "12"
+##   .. ..@ x       : num [1:12] 0.336 -0.444 0.458 -0.134 0.196 ...
 ##   .. ..@ factors : list()
-##  $ intercept   : num 530
-##  $ support.size: int 8
-##  $ support.vars: chr [1:8] "pctBlack:pctWhite" "pctBlack:pctCollGrad" "pctBlack:pctPopDenseHous" "pctWhite:pctKids2Par" ...
-##  $ support.beta: num [1:8] 0.307252 -0.457335 0.537162 -0.07251 0.000439 ...
-##  $ dev         : num 123742
-##  $ tune.value  : num 5964</code></pre>
+##  $ intercept   : num 706
+##  $ support.size: int 12
+##  $ support.vars: chr [1:12] "pctBlack:pctWhite" "pctBlack:pctCollGrad" "pctBlack:pctPopDenseHous" "pctWhite:pct12.1" ...
+##  $ support.beta: num [1:12] 0.336 -0.444 0.458 -0.134 0.196 ...
+##  $ dev         : num 111690
+##  $ tune.value  : num 5963</code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_vars</span> <span class="op">&lt;-</span> <span class="va">best_model</span><span class="op">[[</span><span class="st">"support.vars"</span><span class="op">]</span><span class="op">]</span>
 <span class="va">best_vars</span></code></pre></div>
-<pre><code>## [1] "pctBlack:pctWhite"                   
-## [2] "pctBlack:pctCollGrad"                
-## [3] "pctBlack:pctPopDenseHous"            
-## [4] "pctWhite:pctKids2Par"                
-## [5] "pctPubAsst:ownHousQrange"            
-## [6] "pctEmployMfg:pctVacantBoarded"       
-## [7] "pctMaleDivorc:pctSmallHousUnits"     
-## [8] "pctKidsBornNevrMarr:pctVacantBoarded"</code></pre>
+<pre><code>##  [1] "pctBlack:pctWhite"                   
+##  [2] "pctBlack:pctCollGrad"                
+##  [3] "pctBlack:pctPopDenseHous"            
+##  [4] "pctWhite:pct12.1"                    
+##  [5] "pctUrban:pctUnemploy"                
+##  [6] "pctPubAsst:ownHousQrange"            
+##  [7] "otherPerCap:pctPoverty"              
+##  [8] "pctPoverty:ownHousMed"               
+##  [9] "pctEmployMfg:pctVacantBoarded"       
+## [10] "pctMaleDivorc:pctSmallHousUnits"     
+## [11] "pctKids:medOwnCostPctWO"             
+## [12] "pctKidsBornNevrMarr:pctVacantBoarded"</code></pre>
 <!-- From the linear model based on the selected features, we see that the two predictors,  -->
 <!-- 'pctMaleDivorc:pctKidsBornNevrMarr'  -->
 <!-- (i.e., the linear interaction between the percentage of divorced males and the percentage of kids born to never married)  -->

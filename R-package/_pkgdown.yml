@@ -10,7 +10,11 @@ template:
     bootswatch: cerulean
 
 reference:
-- title: ABESS for generalized linear model
+- title: Overview
+  contents:
+  - abess-package
+
+- title: Generalized linear model
   contents:
   - abess
   - print.abess
@@ -20,11 +24,16 @@ reference:
   - plot.abess
   - deviance.abess
 
-- title: ABESS for principal component analysis
+- title: Principal component analysis
   contents:
   - abesspca
+  - print.abesspca
+  - loadings.abesspca
+  - plot.abesspca
   
 - title: Datasets
   contents:
+  - generate.data
   - trim32
+  
   

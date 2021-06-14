@@ -43,6 +43,10 @@
 #' @author Jin Zhu, Junxian Zhu, Ruihuang Liu, Xueqin Wang 
 #' 
 #' @export
+#' 
+#' @seealso \code{\link{print.abesspca}}, 
+#' \code{\link{loadings.abess}}, 
+#' \code{\link{plot.abessca}}. 
 #'
 #' @examples
 #' library(abess)
@@ -50,17 +54,18 @@
 #' ## predictor matrix input:
 #' head(USArrests)  
 #' pca_fit <- abesspca(USArrests)
-#' str(pca_fit)
+#' pca_fit
 #' 
 #' ## covariance matrix input:
 #' pca_fit <- abesspca(stats::cov(USArrests), type = "gram")
-#' str(pca_fit)
+#' pca_fit
+#' loadings(pca_fit)
 #' 
 #' ## robust covariance matrix input:
 #' rob_cov <- MASS::cov.rob(USArrests)[["cov"]]
 #' rob_cov <- (rob_cov + t(rob_cov)) / 2
 #' pca_fit <- abesspca(rob_cov, type = "gram")
-#' str(pca_fit)
+#' pca_fit
 #' 
 abesspca <- function(x, 
                      type = c("predictor", "gram"), 

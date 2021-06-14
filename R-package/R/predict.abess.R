@@ -1,8 +1,5 @@
-#' @title Make predictions from a fitted"abess" object.
+#' @title Make predictions from a fitted "\code{abess}" object.
 #'
-#' Returns predictions from a fitted
-#' "\code{abess}" object.
-#' 
 #' @inheritParams extract.abess
 #' @param newx New data used for prediction. If omitted, the fitted linear predictors are used.
 #' @param type \code{type = "link"} gives the linear predictors for \code{"binomial"},

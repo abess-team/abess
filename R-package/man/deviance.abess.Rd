@@ -2,7 +2,7 @@
 % Please edit documentation in R/deviance.abess.R
 \name{deviance.abess}
 \alias{deviance.abess}
-\title{Extract the deviance from a fitted "abess" object.}
+\title{Extract the deviance from a fitted "\code{abess}" object.}
 \usage{
 \method{deviance}{abess}(object, type = c("standard", "gic", "ebic", "bic", "aic"), ...)
 }

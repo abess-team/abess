@@ -1,4 +1,4 @@
-#' Extract Model Coefficients from a fitted "abess" object.
+#' Extract Model Coefficients from a fitted "\code{abess}" object.
 #'
 #' This function provides estimated
 #' coefficients from a fitted "\code{abess}" object.
