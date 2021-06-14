@@ -9,22 +9,17 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Introduction
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+The generic splicing technique certifiably guarantees the best subset can be selected in a polynomial time. 
+In practice, the computational efficiency can be improved to handle large scale datasets. 
+The tips for computational improvement include:       
+1. use golden-section to search best support size; 
+2. parallel computing when performing cross validation;         
+3. covariance update for `family = "gaussian"` or `family = "mgaussian"`;         
+4. approximate Newton iteration for `family = "binomial"`, `family = "poisson"`, `family = "cox"`;        
+5. sure independence screening;         
+6. warm-start initialization;         
+7. early-stop scheme;       
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Golden-section       
