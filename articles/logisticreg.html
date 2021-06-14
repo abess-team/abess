@@ -54,37 +54,37 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/MultiClassification.html">Multi-class Classification</a>
-    </li>
-    <li>
-      <a href="../articles/MultiTaskLearning.html">Multi-Response Linear Regression</a>
-    </li>
-    <li>
-      <a href="../articles/abess-guide.html">An Introduction to `abess`</a>
-    </li>
-    <li>
       <a href="../articles/coxreg.html">CoxPH Regression</a>
-    </li>
-    <li>
-      <a href="../articles/groupselection.html">Group Selection</a>
-    </li>
-    <li>
-      <a href="../articles/integrateSIS.html">Integrate SIS</a>
-    </li>
-    <li>
-      <a href="../articles/linearreg.html">Linear Regression</a>
     </li>
     <li>
       <a href="../articles/logisticreg.html">Logistic Regression</a>
     </li>
     <li>
-      <a href="../articles/nuisancereg.html">Nuisance Regression</a>
+      <a href="../articles/v01-abess-guide.html">An Introduction to `abess`</a>
     </li>
     <li>
-      <a href="../articles/poissonregression.html">Poisson Regression</a>
+      <a href="../articles/v02-linearreg.html">Linear Regression</a>
     </li>
     <li>
-      <a href="../articles/regularizedbess.html">Regularized BeSS</a>
+      <a href="../articles/v03-classification.html">Classification: Logistic Regression and Multinomial Extension</a>
+    </li>
+    <li>
+      <a href="../articles/v04-poissonregression.html">Poisson Regression</a>
+    </li>
+    <li>
+      <a href="../articles/v05-coxreg.html">Best Subset Selection for Censored Response</a>
+    </li>
+    <li>
+      <a href="../articles/v06-MultiTaskLearning.html">Multi-Response Linear Regression</a>
+    </li>
+    <li>
+      <a href="../articles/v07-advancedFeatures.html">Advanced Features</a>
+    </li>
+    <li>
+      <a href="../articles/v08-pca.html">Principal component analysis</a>
+    </li>
+    <li>
+      <a href="../articles/v09-fasterSetting.html">Tips for faster computation</a>
     </li>
   </ul>
 </li>
@@ -127,7 +127,7 @@
 <div id="logistic-regression" class="section level2">
 <h2 class="hasAnchor">
 <a href="#logistic-regression" class="anchor"></a>Logistic Regression</h2>
-<p>Logistic regression is used to predict binary results. Logistic regression function is an s-shaped curve modeling the posterior probability <span class="math inline">\(p\)</span> via a linear combination of the predictors. The curve is dedined as <span class="math inline">\(p = \frac{1}{1+\exp(-\eta)}\)</span> where <span class="math inline">\(\eta = \beta_0+x\beta_1\)</span>.</p>
+<p>Logistic regression is used to predict binary results. For example, to predict the tumor is benign (1) or not (0); to predict the email is spam (1) or not (0). Logistic regression function is an s-shaped curve modeling the posterior probability <span class="math inline">\(p\)</span> via a linear combination of the predictors. The curve is dedined as <span class="math inline">\(p = \frac{1}{1+\exp(-\eta)}\)</span> where <span class="math inline">\(\eta = \beta_0+x\beta_1\)</span>.</p>
 <p>The logistic regression model has this form: <span class="math display">\[
 \log(p/(1-p)) = \beta_0 + x\beta.
 \]</span></p>
