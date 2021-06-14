@@ -1,0 +1,205 @@
+---
+title: 'Classification: Logistic Regression and Multinomial Extension'
+author: "Jin Zhu, Liyuan Hu"
+date: "6/12/2021"
+output:
+  html_document: 
+    toc: yes
+    keep_md: yes
+    self_contained: no
+  pdf_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 3
+  word_document: 
+    toc: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+```
+
+## Titanic Dataset and Classification
+
+Consider the Titanic dataset obtained from the Kaggle competition: https://www.kaggle.com/c/titanic/data. 
+The dataset consists of data about 889 passengers, and the goal of the competition is to predict the survival (yes/no) based on features including the class of service, the sex, the age etc. 
+
+```{r}
+dat <- read.csv('train.csv', header = TRUE, na.strings = c(""))
+dim(dat)
+head(dat)
+```
+Logistic regression is one of powerful tool to tackle this problem. 
+In statistics, the logistic regression is used to model the probability of a certain class or event existing such as alive/dead, pass/fail, win/lose, or healthy/sick. 
+<!-- Therefore, logistic regression is capable of predicting binary results. -->
+Logistic regression function is an $s$-shaped curve modeling the posterior probability $p$ via a linear combination of the features. The curve is dedined as $p = \frac{1}{1+\exp(-\eta)}$ where $\eta = \beta_0+x\beta$ and $x$ are predictors, and $\beta_0, \beta$ are coefficients to be learned from data. 
+The logistic regression model has this form:
+$$
+\log(p/(1-p)) = \beta_0 + x\beta.
+$$
+The quantity $\log(p/(1-p))$ is called the logarithm of the odd, also called log-odd or logit. 
+The best subset selection for logistic regression aim to balance model accuracy and model complexity, 
+where the former is achieves by maximizing the log-likelihood function and 
+the latter is characterized by a constriant: $\| \beta \|_0 \leq s$ and $s$ can be determined in a data driven way.
+
+## Best Subset Selection for Logistic Regression
+
+The `abess()` function in the `abess` package allows user to perform best subset selection in a highly efficient way. User can call the `abess()` function using formula just like what users do with `lm()`. Or users can specify the design matrix `x` and the response `y`. As an example, the Titanic dataset is used to demonstrated the usage of `abess` package. 
+
+### Data preprocessing
+
+A glance at the dataset finds there is any missing data.
+The `na.omit()` function allows us to delete the rows that contain any missing data. 
+After that, we get a total of 714 samples left. 
+```{r}
+dat <- na.omit(dat[, c(2, 3, 5, 6, 7, 8, 10, 12)])
+dim(dat)
+```
+Then we change the factors into dummy variables with the `model.matrix()` function. Note that the `abess` function will automatically include the intercept, and thus, we exclude the first column of `dat` object.
+```{r}
+dat <- model.matrix(~., dat)[, -1]
+dat <- as.data.frame(dat)
+```
+
+We split the dataset into a training set and a test set. The model is going to be built on the training set and later We will test the model performance on the test set.
+```{r}
+train_index <- 1:round((712*2)/3)
+train <- dat[train_index, ]
+test <- dat[-train_index, ]
+```
+
+### Analyze Titanic dataset with `abess` package      
+We use `abess` package to perform best subset selection for the preprocessed Titanic dataset by 
+setting `family = "binomial"`. 
+The cross validation technique is employed to tune the support size by setting `tune.type = "cv"`. 
+```{r, eval=TRUE}
+library(abess)
+abess_fit <- abess(x = train[, -1], y = train$Survived, 
+                   family = "binomial", tune.type = "cv")
+```
+
+<!-- ```{r} -->
+<!-- library(abess) -->
+<!-- abess_fit <- abess(Survived ~ ., data = train,  -->
+<!--                    family = "binomial", tune.type = "cv") -->
+<!-- ``` -->
+<!-- or  -->
+
+<!-- By default, the `abess` function implements the ABESS algorithm with the support size changing from 0 to $\min\{p,n/log(n)p \}$ and the best support size is determined by the Generalized Informatoin Criterion (GIC). users can change the tunging criterion by specifying the argument `tune.type`. The available tuning criterion now are `gic`, `aic`, `bic`, `ebic` and `cv`. For a quicker solution, users can change the tuning strategy to a golden section path which trys to find the elbow point of the tuning criterion over the hyperparameter space. Here we give an example. -->
+
+<!-- ```{r} -->
+<!-- abess_fit.gs <- abess(Survived~., data = train, family = "binomial", tune = "bic", tune.path = "gs") -->
+<!-- ``` -->
+
+<!-- Hold on, we aren't finished yet.  -->
+After get the estimator, we can further do more exploring work.
+The output of `abess()` function contains the best model for all the candidate support size in the `support.size`. users can use some generic function to quickly draw some information of those estimators. 
+Typical examples include:       
+i. print the fitted model:
+```{r}
+abess_fit
+```
+(ii) draw the estimated coefficients on all candidate support size by `coef()` function:
+```{r}
+coef(abess_fit)
+```
+(iii) get the deviance of the estimated model on all candidate support size via `deviance()` function:
+```{r}
+deviance(abess_fit)
+```
+(iv) visualize the change of models with the change of support size via `plot()` function: 
+```{r}
+plot(abess_fit, label=T)
+```
+
+The graph shows that, beginning from the most dense model, the second variable (`Sex`) is included in the active set until the support size reaches 0. We can also generate a graph about the tuning value. 
+```{r}
+plot(abess_fit, type = "tune")
+```
+
+The tuning value reaches the lowest point at 4, which implies the best model consists of four variables.  
+<!-- And We might choose the estimated model with support size equals 6 as our final model.  -->
+
+Finally, to extract any model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.
+```{r}
+best.model <- extract(abess_fit, support.size = 4)
+str(best.model)
+```
+
+The return is a list containing the basic information of the estimated model.
+
+### Make a Prediction
+
+Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model users are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value. The `predict.abess()` can provide both `link`, stands for the linear predictors, and the `response`, stands for the fitted probability. Here We will predict the probability of survival on the `test.csv` data.
+```{r}
+fitted.results <- predict(abess_fit, newx = test, type = 'response')
+```
+
+If we chose 0.5 as the cut point, i.e, we predict the person survived the sinking of the Titanic if the fitted probability is greater than 0.5, the accuracy will be 0.80.
+
+```{r}
+fitted.results <- ifelse(fitted.results > 0.5, 1, 0)
+misClasificError <- mean(fitted.results != test$Survived)
+print(paste('Accuracy',1-misClasificError))
+```
+
+We can also generate an ROC curve and calculate tha AUC value. On this dataset, the AUC is 0.87, which is quite close to 1.
+```{r}
+library(ROCR)
+fitted.results <- predict(abess_fit, newx = test, type = 'response')
+pr <- prediction(fitted.results, test$Survived)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf)
+auc <- performance(pr, measure = "auc")
+auc <- auc@y.values[[1]]
+auc
+```
+
+## Extension: Multi-class Classification
+
+### Best subset selection for multinomial logistic regression
+When the number of classes is more than 2, we call it multi-class classification task. 
+Logistic regression can be extended to model several classes of events such as determining whether an image contains a cat, dog, lion, etc. 
+Each object being detected in the image would be assigned a probability between 0 and 1, with a sum of one.
+The extended model is multinomial logistic regression. 
+
+To arrive at the multinomial logistic model, one can imagine, for $K$ possible classes, running $K-1$ independent logistic regression models, in which one class is chosen as a ``pivot'' and then the other $K-1$ classes are separately regressed against the pivot outcome. This would proceed as follows, if class K (the last outcome) is chosen as the pivot:
+$$\ln(\mathbb{P}(y = 1) / \mathbb{P}(y = K)) = x^\top \beta^{(1)}, $$
+$$\cdots \cdots$$
+$$\ln(\mathbb{P}(y = K - 1) / \mathbb{P}(y = K)) = x^\top \beta^{(K - 1)}.$$
+Then, the probability to choose the $j$-th class can be easily derived to be:
+$$\mathbb{P}(y = j) = \frac{\exp{(x^\top \beta^{(j)})}}{1 + \sum_{k=1}^{K-1} \exp{(x^\top \beta^{(k)})}}, $$
+and subsequently, we would predict the $j^{*}$-th class if the $j^* = \arg\max_{j} \mathbb{P}(y = j)$.
+Notice that, for $K$ possible classes case, there are $p \times (K - 1)$ unknown parameters: 
+$\beta^{(1)}, \ldots, \beta^{(K-1)}$ to be estimated. 
+Because the number of parameters increase as $K$, it is even more urge to constrain the model complexity. 
+And the best subset selection for multinomial logistic regression aims to maximize the log-likelihood function 
+and control the model complexity by restricting $B = (\beta^{(1)}, \ldots, \beta^{(K-1)})$ with 
+$\| B \|_{0, 2} \leq s$
+where $\| B \|_{0, 2} = \sum_{i = 1}^{p} I(B_{i\cdot} = {\bf 0})$, 
+$B_{i\cdot}$ is the $i$-th row of coefficient matrix $B$ and 
+${\bf 0} \in R^{K - 1}$ is an all zero vector. 
+In other words, each row of $B$ would be either all zero or all non-zero.
+
+### Multinomial logistic regression with `abess` Package
+
+We shall conduct Multinomial logistic regression on an artificial dataset for demonstration. The `generate.data()` function provides a simple way to generate suitable for this task. The assumption behind is the response vector following a multinomial distribution. The artifical dataset contain 100 observations and 20 predictors
+but only five predictors have influence on the three possible classes.
+```{r}
+library(abess)
+n <- 100
+p <- 20
+support.size <- 5
+dataset <- generate.data(n, p, support.size, family = "multinomial", class.num = 3)
+head(dataset$y)
+dataset$beta
+```
+To carry out best subset selection for multinomial logistic regression, users can call the `abess()` function with `family` specified to `multinomial`. Here is an example.
+
+```{r}
+abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                   family = "multinomial", tune.type = "cv")
+extract(abess_fit)[["support.vars"]]
+```
+Notice that the `abess()` correctly identifies the support set of the ground truth coefficient matrix.
