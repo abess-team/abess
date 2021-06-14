@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extract one model from a fitted "abess" object. — extract • abess</title>
+<title>Print method for a fitted "abesspca" object — print.abesspca • abess</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,8 @@
 
 
 
-<meta property="og:title" content="Extract one model from a fitted "abess" object. — extract" />
-<meta property="og:description" content="Extract the fixed-support-size 
-model's information such as the selected 
-predictors, coefficient estimation, and so on." />
+<meta property="og:title" content="Print method for a fitted "abesspca" object — print.abesspca" />
+<meta property="og:description" content="Prints the fitted model and returns it invisibly." />
 
 
 
@@ -155,64 +153,49 @@ predictors, coefficient estimation, and so on." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Extract one model from a fitted "<code>abess</code>" object.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/abess-team/abess/blob/master/R/extract.abess.R'><code>R/extract.abess.R</code></a></small>
-    <div class="hidden name"><code>extract.abess.Rd</code></div>
+    <h1>Print method for a fitted "<code>abesspca</code>" object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/abess-team/abess/blob/master/R/print.abesspca.R'><code>R/print.abesspca.R</code></a></small>
+    <div class="hidden name"><code>print.abesspca.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Extract the fixed-support-size 
-model's information such as the selected 
-predictors, coefficient estimation, and so on.</p>
+    <p>Prints the fitted model and returns it invisibly.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>extract</span><span class='op'>(</span><span class='va'>object</span>, support.size <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for abess</span>
-<span class='fu'>extract</span><span class='op'>(</span><span class='va'>object</span>, support.size <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for abesspca</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, digits <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"digits"</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>5</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>An "<code>abess</code>" project.</p></td>
+      <th>x</th>
+      <td><p>A "<code>abesspca</code>" object.</p></td>
     </tr>
     <tr>
-      <th>support.size</th>
-      <td><p>An integer value specifies
-the model size fitted at given <code>support.size</code>. 
-If <code>support.size = NULL</code>, then the model with 
-the best tuning value would be returned. 
-Default: <code>support.size = NULL</code>.</p></td>
+      <th>digits</th>
+      <td><p>Minimum number of significant digits to be used.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Other arguments.</p></td>
+      <td><p>additional print arguments</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>list</code> object including the following components:</p>
-<dt>beta</dt><dd><p>A \(p\)-by-1 matrix of sparse matrix, stored in column format.</p></dd>
-<dt>intercept</dt><dd><p>The fitted intercept value.</p></dd>
-<dt>support.size</dt><dd><p>The <code>support.size</code> used in the function.</p></dd>
-<dt>support.beta</dt><dd><p>The <code>support.size</code>-length vector of fitted 
-coefficients on the support set.</p></dd>
-<dt>support.vars</dt><dd><p>The character vector gives 
-variables in the support set.</p></dd>
-<dt>tune.value</dt><dd><p>The tuning value of the model.</p></dd>
-<dt>dev</dt><dd><p>The deviance of the model.</p></dd>
+    <p>No return value, called for side effects</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>Print a <code>data.frame</code> with three columns:
+the first column is support size of model; 
+the second column is the explained variance of model;
+the last column is the percent of explained variance of model.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='print.abess.html'>print.abess</a></code>, 
-<code><a href='predict.abess.html'>predict.abess</a></code>, 
-<code><a href='coef.abess.html'>coef.abess</a></code>, 
-<code>extract.abess</code>,
-<code><a href='plot.abess.html'>plot.abess</a></code>,
-<code><a href='deviance.abess.html'>deviance.abess</a></code>.</p></div>
+    <div class='dont-index'><p><code>print.abesspca</code>, 
+<code>loadings.abess</code>, 
+<code>plot.abessca</code>.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

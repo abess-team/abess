@@ -276,6 +276,11 @@ solve this problem.
 By exploiting the warm-start initialization, the non-convex optimization 
 problem at different support size (specified by <code>support.size</code>) 
 can be efficiently solved.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='print.abesspca.html'>print.abesspca</a></code>, 
+<code>loadings.abess</code>, 
+<code>plot.abessca</code>.</p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Jin Zhu, Junxian Zhu, Ruihuang Liu, Xueqin Wang</p>
@@ -292,69 +297,45 @@ can be efficiently solved.</p>
 #&gt; Arkansas      8.8     190       50 19.5
 #&gt; California    9.0     276       91 40.6
 #&gt; Colorado      7.9     204       78 38.7</div><div class='input'><span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; List of 8
-#&gt;  $ lambda      : num 0
-#&gt;  $ loadings    :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-#&gt;   .. ..@ i       : int [1:10] 1 1 3 1 2 3 0 1 2 3
-#&gt;   .. ..@ p       : int [1:5] 0 1 3 6 10
-#&gt;   .. ..@ Dim     : int [1:2] 4 4
-#&gt;   .. ..@ Dimnames:List of 2
-#&gt;   .. .. ..$ : chr [1:4] "Murder" "Assault" "UrbanPop" "Rape"
-#&gt;   .. .. ..$ : chr [1:4] "1" "2" "3" "4"
-#&gt;   .. ..@ x       : num [1:10] 1 -0.9972 -0.0751 -0.9961 -0.0464 ...
-#&gt;   .. ..@ factors : list()
-#&gt;  $ ev          : num [1:4] 6945 6984 6999 7011
-#&gt;  $ nvars       : int 4
-#&gt;  $ support.size: num [1:4] 1 2 3 4
-#&gt;  $ pev         : num [1:4] 0.991 0.996 0.998 1
-#&gt;  $ var.all     : num 7011
-#&gt;  $ call        : language abesspca(x = USArrests)
-#&gt;  - attr(*, "class")= chr "abesspca"</div><div class='input'>
+<span class='va'>pca_fit</span>
+</div><div class='output co'>#&gt; Call:
+#&gt; abesspca(x = USArrests)
+#&gt; 
+#&gt;   support.size       ev       pev
+#&gt; 1            1 6945.166 0.9905936
+#&gt; 2            2 6984.264 0.9961702
+#&gt; 3            3 6998.933 0.9982624
+#&gt; 4            4 7011.115 1.0000000</div><div class='input'>
 <span class='co'>## covariance matrix input:</span>
 <span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/cor.html'>cov</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span>, type <span class='op'>=</span> <span class='st'>"gram"</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; List of 8
-#&gt;  $ lambda      : num 0
-#&gt;  $ loadings    :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-#&gt;   .. ..@ i       : int [1:10] 1 1 3 1 2 3 0 1 2 3
-#&gt;   .. ..@ p       : int [1:5] 0 1 3 6 10
-#&gt;   .. ..@ Dim     : int [1:2] 4 4
-#&gt;   .. ..@ Dimnames:List of 2
-#&gt;   .. .. ..$ : chr [1:4] "Murder" "Assault" "UrbanPop" "Rape"
-#&gt;   .. .. ..$ : chr [1:4] "1" "2" "3" "4"
-#&gt;   .. ..@ x       : num [1:10] 1 -0.9972 -0.0751 -0.9961 -0.0464 ...
-#&gt;   .. ..@ factors : list()
-#&gt;  $ ev          : num [1:4] 6945 6984 6999 7011
-#&gt;  $ nvars       : int 4
-#&gt;  $ support.size: num [1:4] 1 2 3 4
-#&gt;  $ pev         : num [1:4] 0.991 0.996 0.998 1
-#&gt;  $ var.all     : num 7011
-#&gt;  $ call        : language abesspca(x = stats::cov(USArrests), type = "gram")
-#&gt;  - attr(*, "class")= chr "abesspca"</div><div class='input'>
+<span class='va'>pca_fit</span>
+</div><div class='output co'>#&gt; Call:
+#&gt; abesspca(x = stats::cov(USArrests), type = "gram")
+#&gt; 
+#&gt;   support.size       ev       pev
+#&gt; 1            1 6945.166 0.9905936
+#&gt; 2            2 6984.264 0.9961702
+#&gt; 3            3 6998.933 0.9982624
+#&gt; 4            4 7011.115 1.0000000</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/loadings.html'>loadings</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; 4 x 4 sparse Matrix of class "dgCMatrix"
+#&gt;          1           2           3           4
+#&gt; Murder   .  .           .          -0.04170432
+#&gt; Assault  1 -0.99717739 -0.99608572 -0.99522128
+#&gt; UrbanPop .  .          -0.04643219 -0.04633575
+#&gt; Rape     . -0.07508168 -0.07521497 -0.07515550</div><div class='input'>
 <span class='co'>## robust covariance matrix input:</span>
 <span class='va'>rob_cov</span> <span class='op'>&lt;-</span> <span class='fu'>MASS</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/MASS/man/cov.rob.html'>cov.rob</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span><span class='op'>[[</span><span class='st'>"cov"</span><span class='op'>]</span><span class='op'>]</span>
 <span class='va'>rob_cov</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>rob_cov</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>rob_cov</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>2</span>
 <span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>rob_cov</span>, type <span class='op'>=</span> <span class='st'>"gram"</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; List of 8
-#&gt;  $ lambda      : num 0
-#&gt;  $ loadings    :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-#&gt;   .. ..@ i       : int [1:10] 1 1 3 1 2 3 0 1 2 3
-#&gt;   .. ..@ p       : int [1:5] 0 1 3 6 10
-#&gt;   .. ..@ Dim     : int [1:2] 4 4
-#&gt;   .. ..@ Dimnames:List of 2
-#&gt;   .. .. ..$ : chr [1:4] "Murder" "Assault" "UrbanPop" "Rape"
-#&gt;   .. .. ..$ : chr [1:4] "1" "2" "3" "4"
-#&gt;   .. ..@ x       : num [1:10] 1 -0.997 -0.077 -0.9947 -0.0674 ...
-#&gt;   .. ..@ factors : list()
-#&gt;  $ ev          : num [1:4] 6670 6710 6739 6752
-#&gt;  $ nvars       : int 4
-#&gt;  $ support.size: num [1:4] 1 2 3 4
-#&gt;  $ pev         : num [1:4] 0.988 0.994 0.998 1
-#&gt;  $ var.all     : num 6752
-#&gt;  $ call        : language abesspca(x = rob_cov, type = "gram")
-#&gt;  - attr(*, "class")= chr "abesspca"</div><div class='input'>
+<span class='va'>pca_fit</span>
+</div><div class='output co'>#&gt; Call:
+#&gt; abesspca(x = rob_cov, type = "gram")
+#&gt; 
+#&gt;   support.size       ev       pev
+#&gt; 1            1 5649.911 0.9807296
+#&gt; 2            2 5704.905 0.9902755
+#&gt; 3            3 5753.333 0.9986818
+#&gt; 4            4 5760.927 1.0000000</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
