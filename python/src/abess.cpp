@@ -505,9 +505,10 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   // 3:group_XTX
   if (is_cv)
   {
-    metric->set_cv_train_test_mask(data.get_n());
+    metric->set_cv_train_test_mask(data, data.get_n());
+    metric->set_cv_init_fit_arg(data.p, data.M);
     // metric->set_cv_initial_model_param(Kfold, data.get_p());
-    metric->set_cv_initial_A(Kfold, data.get_p());
+    // metric->set_cv_initial_A(Kfold, data.get_p());
     // metric->set_cv_initial_coef0(Kfold, data.get_p());
     // if (model_type == 1)
     //   metric->cal_cv_group_XTX(data);
@@ -546,20 +547,17 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       sequential_path_cv<T1, T2, T3, T4>(data, sigma, algorithm, metric, sequence, lambda_seq, early_stop, -1, result);
     }
   }
-  // else
-  // {
-  //     if (algorithm_type == 5 || algorithm_type == 3)
-  //     {
-  //         double log_lambda_min = log(max(lambda_min, 1e-5));
-  //         double log_lambda_max = log(max(lambda_max, 1e-5));
+  else
+  {
+    // if (algorithm_type == 5 || algorithm_type == 3)
+    // {
+    //     double log_lambda_min = log(max(lambda_min, 1e-5));
+    //     double log_lambda_max = log(max(lambda_max, 1e-5));
 
-  //         result = pgs_path(data, algorithm, metric, s_min, s_max, log_lambda_min, log_lambda_max, powell_path, nlambda);
-  //     }
-  //     else
-  //     {
-  //         result = gs_path(data, algorithm, metric, s_min, s_max, K_max, epsilon);
-  //     }
-  // }
+    //     result = pgs_path(data, algorithm, metric, s_min, s_max, log_lambda_min, log_lambda_max, powell_path, nlambda);
+    // }
+    gs_path(data, algorithm, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, K_max, epsilon, result);
+  }
 
 #ifdef TEST
   t2 = clock();
@@ -710,6 +708,29 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       std::cout << ic_matrix << std::endl;
 #endif
     }
+  }
+  else
+  {
+    beta_matrix = result.beta_matrix;
+    coef0_matrix = result.coef0_matrix;
+    ic_matrix = result.ic_matrix;
+    train_loss_matrix = result.train_loss_matrix;
+    Eigen::MatrixXd test_loss_matrix = result.test_loss_matrix;
+    if (is_cv)
+    {
+      test_loss_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
+    }
+    else
+    {
+      ic_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
+    }
+
+#ifdef TEST
+    std::cout << "train_loss: " << std::endl;
+    std::cout << train_loss_matrix << std::endl;
+    std::cout << "ic: " << std::endl;
+    std::cout << ic_matrix << std::endl;
+#endif
   }
 
 #ifdef TEST
