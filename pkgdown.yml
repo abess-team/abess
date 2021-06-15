@@ -2,7 +2,6 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  coxreg: coxreg.html
   logisticreg: logisticreg.html
   v01-abess-guide: v01-abess-guide.html
   v02-linearreg: v02-linearreg.html
@@ -13,5 +12,5 @@ articles:
   v07-advancedFeatures: v07-advancedFeatures.html
   v08-pca: v08-pca.html
   v09-fasterSetting: v09-fasterSetting.html
-last_built: 2021-06-14T03:39Z
+last_built: 2021-06-15T02:44Z
 
