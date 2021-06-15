@@ -1,3 +1,7 @@
+#' @rdname loadings.abesspca
+#' @export
+loadings <- function(object, support.size = NULL, sparse = TRUE, ...) UseMethod("loadings")
+
 #' Extract Sparse Loadings from a fitted "\code{abesspca}" object.
 #'
 #' This function provides estimated

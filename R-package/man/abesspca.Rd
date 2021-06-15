@@ -112,8 +112,8 @@ pca_fit
 }
 \seealso{
 \code{\link{print.abesspca}}, 
-\code{\link{loadings.abess}}, 
-\code{\link{plot.abessca}}.
+\code{\link{loadings.abesspca}}, 
+\code{\link{plot.abesspca}}.
 }
 \author{
 Jin Zhu, Junxian Zhu, Ruihuang Liu, Xueqin Wang
