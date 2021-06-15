@@ -45,8 +45,8 @@
 #' @export
 #' 
 #' @seealso \code{\link{print.abesspca}}, 
-#' \code{\link{loadings.abess}}, 
-#' \code{\link{plot.abessca}}. 
+#' \code{\link{loadings.abesspca}}, 
+#' \code{\link{plot.abesspca}}. 
 #'
 #' @examples
 #' library(abess)

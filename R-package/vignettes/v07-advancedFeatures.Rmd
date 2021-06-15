@@ -37,7 +37,7 @@ Nuisance regression refers to best subset selection with some prior information 
 
 ### Carrying Out the Nuisance Regression with abess
 
-In the `abess()` function, the argument `always.include` is designed to realize this goal. You can pass a vector containing the indexes of the target variables to `always.include`. Here is an example.
+In the `abess()` function, the argument `always.include` is designed to realize this goal. user can pass a vector containing the indexes of the target variables to `always.include`. Here is an example.
 
 ```{r}
 library(abess)
@@ -62,7 +62,7 @@ In some cases, especially under low signal-to-noise ratio (SNR) setting or predi
 
 ### Carrying out the Regularized Bess
 
-To implement the regularized bess, you need to specify a value to the `lambda` in the `abess()` function. This `lambda` value corresponds to the penalization parameter in the model above. Here we give an example.
+To implement the regularized bess, user need to specify a value to the `lambda` in the `abess()` function. This `lambda` value corresponds to the penalization parameter in the model above. Here we give an example.
 
 ```{r}
 library(abess)
@@ -191,8 +191,10 @@ the selected variables are matched with the ground truth setting.
 In the case of ultra high-dimensional data, it is more effective to do feature screening first before carrying out feature selection. The `abess` package allowed users to perform the sure independent screening to pre-exclude some features according to the marginal likelihood.
 
 ### Integrate SIS in `abess` package
+Ultra-high dimensional predictors increase computational cost but reduce estimation accuracy for any statistical procedure. To reduce dimensionality from high to a relatively acceptable level, 
+a fairly general asymptotic framework, named feature screening (sure independence screening) is proposed to tackle even exponentially growing dimension. The feature screening can theoretically maintain all effective predictors with a high probability, which is called ``the sure screening property''.
 
-In the `abess()` function, to carrying out the Integrate SIS, you need to passed an integer smaller than the number of the predictors to the `screening.num`. Then the `abess()` function will first calculate the marginal likelihood of each predictor and reserve those predictors with the `screening.num` largest marginal likelihood. Then, the ABESS algorithm is conducted only on this screened subset. Here is an example.
+In the `abess()` function, to carrying out the Integrate SIS, user need to passed an integer smaller than the number of the predictors to the `screening.num`. Then the `abess()` function will first calculate the marginal likelihood of each predictor and reserve those predictors with the `screening.num` largest marginal likelihood. Then, the ABESS algorithm is conducted only on this screened subset. Here is an example.
 
 ```{r}
 library(abess)
