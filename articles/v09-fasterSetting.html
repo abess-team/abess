@@ -121,17 +121,38 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The generic splicing technique certifiably guarantees the best subset can be selected in a polynomial time. In practice, the computational efficiency can be improved to handle large scale datasets. The tips for computational improvement include:<br>
-1. use golden-section to search best support size; 2. parallel computing when performing cross validation;<br>
-3. covariance update for <code>family = "gaussian"</code> or <code>family = "mgaussian"</code>;<br>
-4. approximate Newton iteration for <code>family = "binomial"</code>, <code>family = "poisson"</code>, <code>family = "cox"</code>;<br>
-5. sure independence screening;<br>
-6. warm-start initialization;<br>
-7. early-stop scheme;</p>
+<p>The generic splicing technique certifiably guarantees the best subset can be selected in a polynomial time. In practice, the computational efficiency can be improved to handle large scale datasets. The tips for computational improvement include: - use golden-section to search best support size;<br>
+- parallel computing when performing cross validation;<br>
+- covariance update for <code>family = "gaussian"</code> or <code>family = "mgaussian"</code>;<br>
+- approximate Newton iteration for <code>family = "binomial"</code>, <code>family = "poisson"</code>, <code>family = "cox"</code>;<br>
+- sure independence screening;<br>
+- warm-start initialization;<br>
+- early-stop scheme;</p>
 </div>
 <div id="golden-section" class="section level2">
 <h2 class="hasAnchor">
 <a href="#golden-section" class="anchor"></a>Golden-section</h2>
+<p>The following is a typical ``model size v.s. BGIC’’ plot.<br><img src="sgsplicing.png" style="width:80.0%"></p>
+<p>The <span class="math inline">\(x\)</span>-axis is model size, and the <span class="math inline">\(y\)</span>-axis is BGIC’s value recorded in group splicing algorithm for linear model. The entries of design matrix <span class="math inline">\(X\)</span> are <em>i.i.d.</em> sampled from <span class="math inline">\(\mathcal{N}(0, 1)\)</span>, and the matrix shape is <span class="math inline">\(100 \times 200\)</span>. The error term <span class="math inline">\(\varepsilon\)</span> are <em>i.i.d.</em> <span class="math inline">\(\mathcal{N}(0, \frac{1}{2})\)</span>. Take the two adjacent variables as one group, and set the true coefficients <span class="math inline">\(\beta=(1, 1, 1, 1, 1, 1, -1, -1, -1, -1, 0, \ldots, 0)\)</span>. The orange vertical dash line indicates the true group subset size.</p>
+<p>From this Figure, we see that the BGIC decreases from <span class="math inline">\(T=1\)</span> to <span class="math inline">\(T=5\)</span>, but it increases as <span class="math inline">\(T\)</span> larger than <span class="math inline">\(5\)</span>. In other words, the BGIC path of SGSplicing algorithm is a strictly unimodal function achieving minimum at the true group subset size <span class="math inline">\(T = 5\)</span>. Motivated by this observation, we suggest to recruit a heuristic search based on the golden-section search technique, an efficient method for finding the extremum of a unimodal function, to determine support size that minimizing BGIC. Compared with searching the optimal support size one by one from a candidate set with <span class="math inline">\(O(s_{\max})\)</span> complexity, golden-section reduce the time complexity to <span class="math inline">\(O(\ln{(s_{\max})})\)</span>, giving a significant computational improvement.</p>
+<p>The code below exhibits how to employ the golden search technique with abess package:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: 'abess'</code></pre>
+<pre><code>## The following object is masked from 'package:stats':
+## 
+##     loadings</code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">synthetic_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">300</span>, p <span class="op">=</span> <span class="fl">1000</span>, 
+                                beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">995</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind.data.frame</a></span><span class="op">(</span><span class="st">"y"</span> <span class="op">=</span> <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, 
+                        <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<p>Compare to the sequential searching, the golden section greatly reduce the runtime:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>##    user  system elapsed 
+##   0.190   0.011   0.204</code></pre>
 </div>
   </div>
 

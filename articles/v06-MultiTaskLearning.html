@@ -143,7 +143,7 @@
 ## [5,]  160.4051274   92.082972  138.51176
 ## [6,]  132.9713249  132.500001  119.50803</code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dataset</span><span class="op">$</span><span class="va">beta</span></code></pre></div>
+<code class="sourceCode R"><span class="va">dataset</span><span class="op">[[</span><span class="st">"beta"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <pre><code>##           [,1]     [,2]     [,3]
 ##  [1,]  0.00000  0.00000  0.00000
 ##  [2,]  0.00000  0.00000  0.00000
@@ -215,10 +215,11 @@
 ## 
 ## $tune.value
 ## [1] 119.329</code></pre>
-</div>
-<div id="real-data-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#real-data-example" class="anchor"></a>Real data example</h2>
+<p>The output of <code><a href="../reference/extract.html">extract(abess_fit)</a></code> shows that the support set is correctly identify and the parameter estimation approach to the truth.</p>
+<p>Since there are three responses, we will obtain three solution path plots when calling the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function. The three plots corresponds to <span class="math inline">\(y_1, y_2, y_3\)</span>, respectively.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<p><img src="v06-MultiTaskLearning_files/figure-html/unnamed-chunk-3-1.png" width="700"><img src="v06-MultiTaskLearning_files/figure-html/unnamed-chunk-3-2.png" width="700"><img src="v06-MultiTaskLearning_files/figure-html/unnamed-chunk-3-3.png" width="700"></p>
 </div>
   </div>
 
