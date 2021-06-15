@@ -43,7 +43,7 @@ p <- 20
 support.size <- 3
 dataset <- generate.data(n, p, support.size, family = "mgaussian")
 head(dataset$y)
-dataset$beta
+dataset[["beta"]]
 ```
 
 To carry out sparse mutli-task learning, you can call the `abess()` function with `family` specified to `mguassian`. Here is an example.
@@ -54,5 +54,11 @@ abess_fit <- abess(dataset[["x"]], dataset[["y"]],
 extract(abess_fit)
 ```
 
-## Real data example
+The output of `extract(abess_fit)` shows that the support set is correctly identify and the parameter estimation approach to the truth.    
+
+Since there are three responses, we will obtain three solution path plots when calling the `plot()` function. 
+The three plots corresponds to $y_1, y_2, y_3$, respectively. 
+```{r}
+plot(abess_fit)
+```
 

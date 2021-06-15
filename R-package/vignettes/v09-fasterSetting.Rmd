@@ -3,6 +3,9 @@ title: "Tips for faster computation"
 author: "Jin Zhu"
 date: "6/13/2021"
 output: html_document
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r setup, include=FALSE}
@@ -11,15 +14,43 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-The generic splicing technique certifiably guarantees the best subset can be selected in a polynomial time. 
-In practice, the computational efficiency can be improved to handle large scale datasets. 
-The tips for computational improvement include:       
-1. use golden-section to search best support size; 
-2. parallel computing when performing cross validation;         
-3. covariance update for `family = "gaussian"` or `family = "mgaussian"`;         
-4. approximate Newton iteration for `family = "binomial"`, `family = "poisson"`, `family = "cox"`;        
-5. sure independence screening;         
-6. warm-start initialization;         
-7. early-stop scheme;       
+The generic splicing technique certifiably guarantees the best subset can be selected in a polynomial time.
+In practice, the computational efficiency can be improved to handle large scale datasets.
+The tips for computational improvement include:
+- use golden-section to search best support size;         
+- parallel computing when performing cross validation;        
+- covariance update for `family = "gaussian"` or `family = "mgaussian"`;            
+- approximate Newton iteration for `family = "binomial"`, `family = "poisson"`, `family = "cox"`;      
+- sure independence screening;            
+- warm-start initialization;            
+- early-stop scheme;        
 
-## Golden-section       
+## Golden-section           
+
+The following is a typical ``model size v.s. BGIC'' plot.        
+![](./sgsplicing.png){width=80%}
+      
+The $x$-axis is model size, and the $y$-axis is BGIC's value recorded in group splicing algorithm for linear model.
+The entries of design matrix $X$ are *i.i.d.* sampled from $\mathcal{N}(0, 1)$, and the matrix shape is $100 \times 200$.
+The error term $\varepsilon$ are *i.i.d.* $\mathcal{N}(0, \frac{1}{2})$.
+Take the two adjacent variables as one group, and set the true coefficients $\beta=(1, 1, 1, 1, 1, 1, -1, -1, -1, -1, 0, \ldots, 0)$.
+The orange vertical dash line indicates the true group subset size.
+
+From this Figure, we see that the BGIC decreases from $T=1$ to $T=5$, but it increases as $T$ larger than $5$.
+In other words, the BGIC path of SGSplicing algorithm is a strictly unimodal function achieving minimum at the true group subset size $T = 5$.
+Motivated by this observation, we suggest to recruit a heuristic search based on the golden-section search technique, an efficient method for finding the extremum of a unimodal function, to determine support size that minimizing BGIC. Compared with searching the optimal support size one by one from a candidate set with $O(s_{\max})$ complexity, golden-section reduce the time complexity to $O(\ln{(s_{\max})})$, giving a significant computational improvement. 
+
+The code below exhibits how to employ the golden search technique with abess package: 
+```{r}
+library(abess)
+synthetic_data <- generate.data(n = 300, p = 1000, 
+                                beta = c(3, 1.5, 0, 0, 2, rep(0, 995)))
+dat <- cbind.data.frame("y" = synthetic_data[["y"]], 
+                        synthetic_data[["x"]])
+
+```
+Compare to the sequential searching, the golden section greatly reduce the runtime:
+```{r}
+system.time(abess_fit <- abess(y ~ ., data = dat, support.size = 3))
+```
+
