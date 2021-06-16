@@ -1,5 +1,0 @@
-================
-CodeDeveloping
-================
-
-This is content.
