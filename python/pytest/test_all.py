@@ -312,6 +312,42 @@ class TestClass:
 
         assert gcv.best_params_["support_size"] == k
         assert gcv.best_params_["alpha"] == 0.
+    
+    def test_PCA(self):
+        n = 1000
+        p = 20
+        group_size = 5
+        group_num = 4
+
+        np.random.seed(2)
+        x1 = np.random.randn(n, 1)
+        x1 /= np.linalg.norm(x1)
+        X = x1.dot(np.random.randn(1, p)) + 0.01 * np.random.randn(n, p)
+        X = X - X.mean(axis = 0)
+        g_index = np.arange(group_num)
+        g_index = g_index.repeat(group_size)
+
+        # give X
+        model = abessPCA(support_size = range(0, p + 1))
+        model.fit(X)
+        coef1 = np.nonzero(model.coef_)[0]
+
+        # give Sigma
+        model.fit(Sigma = X.T.dot(X))
+        coef2 = np.nonzero(model.coef_)[0]
+
+        # check1:
+        check1 = (coef1 == coef2).all()
+
+        # group 
+        model = abessPCA(support_size = range(0, 4))
+        model.fit(X, group = g_index, is_normal=False)
+
+        # check2:
+        coef3 = np.unique(g_index[np.nonzero(model.coef_)])
+        check2 = (coef3.size <= 3)
+
+        assert (check1 and check2)
 
     # def test_binomial(self):
     #     n = 100
