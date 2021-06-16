@@ -14,6 +14,7 @@ This page contains links to all the Python related documents on Python package.
     IntegrateSIS
     RegularizedBeSS
     NuisanceRegression
+    PCA.ipynb
     ComputationalImprove
     
 
