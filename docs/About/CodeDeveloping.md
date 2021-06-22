@@ -32,7 +32,7 @@ In `Algorithm.h`, The concrete algorithms are programmed in the subclass of Algo
 
 >  The format of a new algorithm's name is "**abess+your_algorithm**", which means that using abess to solve the problem.
 
-Take PCA as an example, the name should be `abessPCA`. Now we can define a concrete algorithm like: [[code link]]()
+Take PCA as an example, the name should be `abessPCA`. Now we can define a concrete algorithm like: [[code link]](https://github.com/abess-team/abess/blob/master/python/src/Algorithm.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessPCA,-%3A%20public%20Algorithm%3CEigen)
 
 ```Cpp
 template <class T4>
@@ -58,6 +58,7 @@ public:
 		// return effective number of parameter
 }
 ```
+
 Note that `sacrifice` function here would compute "forward/backward sacrifices" and record them in `bd`.
 
 - For active variable, the lower (backward) sacrifice is, the more likely it will be dropped;
@@ -67,7 +68,8 @@ Since it can be quite different to compute sacrifices for different problem, you
 
 
 
-After that, turn to `abess.cpp` and you will find some `new` command like: [[code link]]()
+After that, turn to `abess.cpp` and you will find some `new` command like: [[code link]](https://github.com/abess-team/abess/blob/master/python/src/abess.cpp#:~:text=algorithm_uni_dense%20%3D%20new%20abessLm)
+
 ```Cpp
 if (model_type == 1)
 {
@@ -75,6 +77,7 @@ if (model_type == 1)
 }
 else if ...
 ```
+
 They are used to request memory and call the algorithms in `Algorithm.h`. Here you need to add your own algorithm and give it a unused `model_type` number, e.g. 7.
 
 ```Cpp
@@ -84,7 +87,9 @@ else if (model_type == 7) // indicates PCA
     algorithm_uni_dense = new abessPCA<...>(...);
 }
 ```
+
 Note that there is a small difference between single response variable and multiple response variables question:
+
 ```Cpp
 ...
 else if (model_type == 123) // indicates a multiple response algorithm
@@ -94,7 +99,7 @@ else if (model_type == 123) // indicates a multiple response algorithm
 }
 ```
 
-What is more, the variable named `algorithm_list_uni_dense[i]` or `algorithm_list_mul_dense[i]` is similar to what we said above. They are for parallel computing. [[code link]]()
+What is more, the variable named `algorithm_list_uni_dense[i]` or `algorithm_list_mul_dense[i]` is similar to what we said above. They are for parallel computing. [[code link]](https://github.com/abess-team/abess/blob/master/python/src/abess.cpp#:~:text=algorithm_list_uni_dense%5Bi%5D%20%3D%20new%20abessLm)
 
 Hence, you should also add:
 
@@ -106,7 +111,9 @@ else if (model_type == 7)
     algorithm_list_uni_dense[i] = new abessPCA<...>(...);
 }
 ```
+
 or,
+
 ```Cpp
 ...
 else if (model_type == 123)
@@ -122,11 +129,12 @@ Now your new method has been connected to the whole frame. In the next section, 
 
 ### R Package
 
-
+to be added...
 
 ### Python Package
 
 To make your code available for Python, `cd` into directory `abess/python` and run `python setup.py install`.
+
 > If you receive an error said "*Can't create or remove files in install directory*", this may be caused by permission denied. The step below may help with it.
 >
 > - For Linux: run `sudo python setup.py install`.
@@ -141,6 +149,7 @@ It may take a few minutes to install:
 Now a file named `cabess.py` will be appeared in the directory `abess/python/src`, which help to link Python and C++. You need to move it into directory `abess/python/abess`.
 
 Then open file `abess/python/abess/linear.py` and add a new class like those already exist: [[code link]]()
+
 ```Python
 class abessPCA(bess_base): 
     """
@@ -155,6 +164,7 @@ class abessPCA(bess_base):
 ```
 
 Then, the final step is to link this Python class with the model type number (it has been defined in the [Core C++](#Core C++)). In `linear.py`, you can find somewhere like: 
+
 ```Python
 if self.model_type == "Lm":
     model_type_int = 1
@@ -172,6 +182,7 @@ elif self.model_type == "PCA":
 After finished all changes before, run `python setup.py install` again and this time the installation would be finished quickly. 
 
 Congratulation! Your work can now be used by:
+
 ```Python
 from abess.linear import abessPCA
 ```
