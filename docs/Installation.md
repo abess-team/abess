@@ -17,7 +17,7 @@ After cloning, `cd abess/python` and then run `python setup.py install`. If it f
 Now you can import our package in python:
 
 ```python
-import abess.linear
+import abess
 ```
 
  

@@ -12,7 +12,7 @@
 Contents
 *********
 .. .. toctree::
-..    Installation <Installation.md>
+..    Installation <Installation>
 ..    Tutorial <Tutorial/index.rst>
 ..    Python package <Python-package/index.rst>
 ..    R package <R-package/index.rst>

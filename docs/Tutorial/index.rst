@@ -16,6 +16,7 @@ This page contains links to all the Python related documents on Python package.
     NuisanceRegression
     ComputationalImprove
     PCA
+    work_with_sklearn
     
 
 
