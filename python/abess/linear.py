@@ -766,6 +766,32 @@ class bess_base(BaseEstimator):
             intercept_ = np.ones(X.shape[0]) * self.intercept_
             xbeta = np.dot(X, self.coef_) + intercept_
             return np.argmax(xbeta)
+    
+    def predict_proba(self, X):
+        """
+        The predict_proba function is used to give the probabilities of new data begin assigned to different classes.
+
+        This is meaningful only for classification. 
+        We return an array \code{pr}, where \code{pr} is the probability of response variable is 1. 
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Test data.
+
+        """
+
+        check_is_fitted(self)
+
+        X = check_array(X)
+
+        if self.model_type == "Logistic":
+            intercept_ = np.ones(X.shape[0]) * self.intercept_
+            xbeta = np.dot(X, self.coef_) + intercept_
+
+            return xbeta
+        else:
+            return None
 
     def score(self, X, y, sample_weight=None):
         # Check is fit had been called
