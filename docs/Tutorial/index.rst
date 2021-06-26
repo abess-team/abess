@@ -15,7 +15,8 @@ This page contains links to all the Python related documents on Python package.
     RegularizedBeSS
     NuisanceRegression
     ComputationalImprove
-    PCA.ipynb
+    PCA
+    work_with_sklearn
     
 
 

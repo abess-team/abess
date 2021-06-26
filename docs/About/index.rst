@@ -5,6 +5,6 @@ About
 .. toctree::
     Contributing
     Architecture
-    CodeDeveloping.md
+    CodeDeveloping
     Credits
     History

@@ -1,5 +1,0 @@
-================
-Contributing
-================
-
-This is content.
