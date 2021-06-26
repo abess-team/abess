@@ -1,7 +1,7 @@
 //
 // Created by jk on 2020/3/18.
 //
-// #define TEST
+#define TEST
 
 #ifndef SRC_ALGORITHM_H
 #define SRC_ALGORITHM_H

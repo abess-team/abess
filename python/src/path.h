@@ -4,7 +4,7 @@
 #ifndef SRC_PATH_H
 #define SRC_PATH_H
 
-// #define TEST
+#define TEST
 
 #ifdef R_BUILD
 #include <RcppEigen.h>
@@ -203,7 +203,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
 }
 
 template <class T1, class T2, class T3, class T4>
-void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Metric<T1, T2, T3, T4> *metric, int s_min, int s_max, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, int K_max, double epsilon, Result<T2, T3> &result)
+void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Metric<T1, T2, T3, T4> *metric, int s_min, int s_max, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, int K_max, double epsilon, bool is_parallel, Result<T2, T3> &result)
 {
     int p = data.get_p();
     // int n = data.get_n();
@@ -603,6 +603,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
     result.bd_matrix = bd_matrix.block(0, 0, iter, 1);
     result.ic_matrix = ic_matrix.block(0, 0, iter, 1);
     result.test_loss_matrix = test_loss_matrix.block(0, 0, iter, 1);
+    sequence = sequence.head(iter).eval();
 
     //     if (data.is_normal)
     //     {

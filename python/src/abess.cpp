@@ -1,5 +1,5 @@
 // #define R_BUILD
-// #define TEST
+#define TEST
 #ifdef R_BUILD
 
 #include <Rcpp.h>
@@ -179,76 +179,73 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
   vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>> *> algorithm_list_mul_sparse(max(Kfold, thread));
   if (is_cv)
   {
-    if (is_parallel)
+    for (int i = 0; i < max(Kfold, thread); i++)
     {
-      for (int i = 0; i < max(Kfold, thread); i++)
+      if (!sparse_matrix)
       {
-        if (!sparse_matrix)
+        if (algorithm_type == 6)
         {
-          if (algorithm_type == 6)
+          if (model_type == 1)
           {
-            if (model_type == 1)
-            {
-              algorithm_list_uni_dense[i] = new abessLm<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
-            }
-            else if (model_type == 2)
-            {
-              algorithm_list_uni_dense[i] = new abessLogistic<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 3)
-            {
-              algorithm_list_uni_dense[i] = new abessPoisson<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 4)
-            {
-              algorithm_list_uni_dense[i] = new abessCox<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 5)
-            {
-              algorithm_list_mul_dense[i] = new abessMLm<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
-            }
-            else if (model_type == 6)
-            {
-              algorithm_list_mul_dense[i] = new abessMultinomial<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 7)
-            {
-              algorithm_list_uni_dense[i] = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
+            algorithm_list_uni_dense[i] = new abessLm<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
+          }
+          else if (model_type == 2)
+          {
+            algorithm_list_uni_dense[i] = new abessLogistic<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 3)
+          {
+            algorithm_list_uni_dense[i] = new abessPoisson<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 4)
+          {
+            algorithm_list_uni_dense[i] = new abessCox<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 5)
+          {
+            algorithm_list_mul_dense[i] = new abessMLm<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
+          }
+          else if (model_type == 6)
+          {
+            algorithm_list_mul_dense[i] = new abessMultinomial<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 7)
+          {
+            algorithm_list_uni_dense[i] = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
           }
         }
-        else
+      }
+      else
+      {
+        if (algorithm_type == 6)
         {
-          if (algorithm_type == 6)
+          if (model_type == 1)
           {
-            if (model_type == 1)
-            {
-              algorithm_list_uni_sparse[i] = new abessLm<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
-            }
-            else if (model_type == 2)
-            {
-              algorithm_list_uni_sparse[i] = new abessLogistic<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 3)
-            {
-              algorithm_list_uni_sparse[i] = new abessPoisson<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 4)
-            {
-              algorithm_list_uni_sparse[i] = new abessCox<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 5)
-            {
-              algorithm_list_mul_sparse[i] = new abessMLm<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
-            }
-            else if (model_type == 6)
-            {
-              algorithm_list_mul_sparse[i] = new abessMultinomial<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 7)
-            {
-              algorithm_list_uni_sparse[i] = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
+            algorithm_list_uni_sparse[i] = new abessLm<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
+          }
+          else if (model_type == 2)
+          {
+            algorithm_list_uni_sparse[i] = new abessLogistic<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 3)
+          {
+            algorithm_list_uni_sparse[i] = new abessPoisson<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 4)
+          {
+            algorithm_list_uni_sparse[i] = new abessCox<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 5)
+          {
+            algorithm_list_mul_sparse[i] = new abessMLm<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
+          }
+          else if (model_type == 6)
+          {
+            algorithm_list_mul_sparse[i] = new abessMultinomial<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 7)
+          {
+            algorithm_list_uni_sparse[i] = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
           }
         }
       }
@@ -556,7 +553,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
     //     result = pgs_path(data, algorithm, metric, s_min, s_max, log_lambda_min, log_lambda_max, powell_path, nlambda);
     // }
-    gs_path(data, algorithm, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, K_max, epsilon, result);
+    gs_path(data, algorithm, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, K_max, epsilon, is_parallel, result);
   }
 
 #ifdef TEST
@@ -726,6 +723,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     }
 
 #ifdef TEST
+    std::cout << "test_loss: " << std::endl;
+    std::cout << test_loss_matrix << std::endl;
     std::cout << "train_loss: " << std::endl;
     std::cout << train_loss_matrix << std::endl;
     std::cout << "ic: " << std::endl;
@@ -779,9 +778,9 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   {
     if (data.data_type == 1)
     {
-      for (int j = 0; j < lambda_seq.size(); j++)
+      for (int j = 0; j < beta_matrix.cols(); j++)
       {
-        for (int i = 0; i < sequence.size(); i++)
+        for (int i = 0; i < beta_matrix.rows(); i++)
         {
           array_quotient(beta_matrix(i, j), data.x_norm, 1);
           beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(data.n));
@@ -791,9 +790,9 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     }
     else if (data.data_type == 2)
     {
-      for (int j = 0; j < lambda_seq.size(); j++)
+      for (int j = 0; j < beta_matrix.cols(); j++)
       {
-        for (int i = 0; i < sequence.size(); i++)
+        for (int i = 0; i < beta_matrix.rows(); i++)
         {
           array_quotient(beta_matrix(i, j), data.x_norm, 1);
           beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(data.n));
@@ -803,9 +802,9 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     }
     else
     {
-      for (int j = 0; j < lambda_seq.size(); j++)
+      for (int j = 0; j < beta_matrix.cols(); j++)
       {
-        for (int i = 0; i < sequence.size(); i++)
+        for (int i = 0; i < beta_matrix.rows(); i++)
         {
           array_quotient(beta_matrix(i, j), data.x_norm, 1);
           beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(data.n));

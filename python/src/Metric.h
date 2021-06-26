@@ -339,7 +339,7 @@ public:
           // this->update_cv_initial_coef0(algorithm->get_coef0(), k);
         }
 
-        loss_list(k) = this->neg_loglik_loss(this->test_X_list[k], this->test_y_list[k], this->test_weight_list[k], g_index, g_size, test_n, p, N, algorithm);
+        loss_list(k) = this->neg_loglik_loss(this->test_X_list[k], this->test_y_list[k], this->test_weight_list[k], g_index, g_size, test_n, p, N, algorithm_list[k]);
       }
 
       return loss_list.mean();
