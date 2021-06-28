@@ -1,5 +1,5 @@
 ---
-title: "An Introduction to `abess`"
+title: "Quick start for `abess`: Linear regression"
 author: "Jin Zhu"
 output:
   html_document: 
@@ -74,6 +74,88 @@ print(best_size)
 head(coef(abess_fit, support.size = best_size, sparse = FALSE))
 ```
 The output model accurately detect the true model size, which implies the **Algorithm 3** efficiently find both the optimal sparsity level and true effective predictors.
+
+## Real data example
+### Hitters Dataset
+In this tutorial, we are going to demonstrate how to use the `abess` package to carry out best subset selection on the `Hitters` dataset. 
+We hope to use several predictors related to the performance of the baseball athletes last year to predict their salary.
+First, let's have a look at this dataset. There are 19 variables except `Salary` and 322 observations.
+
+```{r}
+Hitters <- read.csv("Hitters.csv", header = TRUE)
+head(Hitters)
+dim(Hitters)
+sum(is.na(Hitters))
+```
+Note that this dataset contains some missing data. So we use the `na.omit()` function to delete rows that have incomplete information. After that, we have 263 observations remains.
+```{r}
+Hitters <- na.omit(Hitters)
+dim(Hitters)
+sum(is.na(Hitters))
+```
+Then we change the factors into dummy variables with the `model.matrix()` function. Note that the `abess` function will automatically include the intercept.
+
+```{r}
+Hitters <- model.matrix(~., Hitters)[, -1]
+Hitters <- as.data.frame(Hitters)
+```
+
+### Running ABESS
+The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. You can call the `abess()` function using formula just like what you do with `lm()`. Or you can specify the design matrix `x` and the response `y`. The `system.time` function records the run time.
+```{r}
+library(abess)
+abess_fit <- abess(Salary ~ ., Hitters)
+abess_fit <- abess(Hitters[, -which(colnames(Hitters) == "Salary")], Hitters$Salary)
+class(abess_fit)
+```
+
+### Interpret the Result
+
+After get the estimator, we can further do more exploring work.
+The output of `abess()` function contains the best model for all the candidate support size in the `support.size`. You can use some generic function to quickly draw some information of those estimators.
+```{r}
+# draw the estimated coefficients on all candidate support size
+coef(abess_fit)
+
+# get the deviance of the estimated model on all candidate support size
+deviance(abess_fit)
+
+# print the fitted model
+print(abess_fit)
+```
+
+Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value.   
+```{r}
+hitters_pred <- predict(abess_fit, 
+                        newx = Hitters[, -which(colnames(Hitters) == "Salary")], 
+                        support.size = c(3, 4))
+head(hitters_pred)
+```
+
+The `plot.abess()` function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including `coef` for the coefficient value, `l2norm` for the L2-norm of the coefficients, `dev` for the deviance and `tune` for the tuning value. Default if `coef`.
+```{r}
+plot(abess_fit, label = TRUE)
+```
+
+The graph shows that, beginning from the most dense model, the 15th variable (Division, A factor with levels E and W indicating player's division at the end of 1986) is included in the active set until the support size reaches 3.
+
+We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size. 
+```{r}
+plot(abess_fit, type = "tune")
+```
+
+The tuning value reaches the lowest point at 6. And We might choose the estimated model with support size equals 6 as our final model. In fact, the tuning values of different model sizes are provided in `tune.value` of the `abess` object. You can get the best model size through the following call.   
+```{r}
+extract(abess_fit)[["support.size"]]
+```
+
+To extract any model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.
+```{r}
+best.model <- extract(abess_fit, support.size = 6)
+str(best.model)
+```
+
+The return is a list containing the basic information of the estimated model.
 
 ## Advanced features        
 ### Feature screening for ultra-high dimensional dataset       
@@ -162,4 +244,8 @@ p
 working_directory
 file.remove("crime.rda")
 ```
+
+### More features           
+There are plenty features provided by `abess` packages such as logistic regression and group selection. 
+Please the other articles in our website for more details. 
 

@@ -26,6 +26,7 @@ Authors:
   \item Kangkang Jiang \email{jiangkk3@mail2.sysu.edu.cn}
   \item Yanhang Zhang \email{zhangyh98@ruc.edu.cn}
   \item Liyuan Hu \email{huly5@mail2.sysu.edu.cn}
+  \item Junhao Huang \email{huangjh256@mail2.sysu.edu.can}
   \item Junxian Zhu \email{zhujunx@mail2.sysu.edu.cn}
   \item Canhong Wen \email{wencanhong@gmail.com}
   \item Heping Zhang \email{heping.zhang@yale.edu} (\href{https://orcid.org/0000-0002-0688-4076}{ORCID})
