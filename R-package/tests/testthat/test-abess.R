@@ -40,7 +40,7 @@ test_batch <- function(abess_fit, dataset, family) {
   } else {
     oracle_dev <- deviance(oracle_est) / 2
   }
-  expect_equal(oracle_dev, abess_fit[["dev"]][fit_s_size + 1])
+  expect_equal(oracle_dev, extract(abess_fit)[["dev"]])
 }
 
 test_batch_multivariate <- function(abess_fit, dataset, gaussian = TRUE) {
@@ -312,4 +312,11 @@ test_that("Sparse matrix works", {
   expect_true(all.equal(abess_fit1, abess_fit2))
 })
 
-
+test_that("Golden section works", {
+  n <- 500
+  p <- 1500
+  support_size <- 3
+  dataset <- generate.data(n, p, support.size)
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], tune.path = "gsection")
+  test_batch(abess_fit, dataset, gaussian)
+})

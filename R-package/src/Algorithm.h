@@ -20,8 +20,8 @@
 #include <time.h>
 #include <cfloat>
 
-using namespace Spectra;
 using namespace std;
+using namespace Spectra;
 
 bool quick_sort_pair_max(std::pair<int, double> x, std::pair<int, double> y);
 
@@ -188,7 +188,7 @@ public:
     if (this->model_type == 7)
     {
       if (sigma.cols() == 1 && sigma(0, 0) == -1)
-        this->Sigma = train_x.transpose() * train_x; 
+        this->Sigma = train_x.transpose() * train_x;
       else
         this->Sigma = sigma;
     }
@@ -442,9 +442,12 @@ public:
       }
       else
       {
-        if (this->splicing_type == 1){
+        if (this->splicing_type == 1)
+        {
           k = k - 1;
-        }else{
+        }
+        else
+        {
           k = k / 2;
         }
         s1 = s1.head(k).eval();
@@ -2287,54 +2290,55 @@ class abessPCA : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>
 {
 public:
   abessPCA(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 30, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 1) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select, false, splicing_type){};
-  
+
   ~abessPCA(){};
 
   MatrixXd SigmaA(Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
     int len = 0;
-    for (int i = 0; i < A.size(); i++) {
+    for (int i = 0; i < A.size(); i++)
+    {
       len += g_size(A(i));
     }
-    
     int k = 0;
     VectorXd ind(len);
-    for (int i = 0; i < A.size(); i++) {
-      for (int j = 0; j < g_size(A(i)); j++)  {
+    for (int i = 0; i < A.size(); i++)
+      for (int j = 0; j < g_size(A(i)); j++)
         ind(k++) = g_index(A(i)) + j;
-      }
-    }
 
     MatrixXd SA(len, len);
     for (int i = 0; i < len; i++)
-      for (int j = 0; j < i + 1; j++){
+      for (int j = 0; j < i + 1; j++)
+      {
         int di = ind(i), dj = ind(j);
         SA(i, j) = this->Sigma(di, dj);
         SA(j, i) = this->Sigma(dj, di);
       }
-    
+
     return SA;
   }
 
   void primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
 #ifdef TEST
-    cout << "<< SPCA primary_model_fit >>"<< endl;
+    cout << "<< SPCA primary_model_fit >>" << endl;
 #endif
     int p = x.cols();
-    if (p == 0) return;
-    if (p == 1){
+    if (p == 0)
+      return;
+    if (p == 1)
+    {
       beta << 1;
       return;
-    } 
-    
+    }
+
     MatrixXd Y = SigmaA(A, g_index, g_size);
 #ifdef TEST
-    cout << "<< SPCA primary_model_fit 1 >>"<< endl;
+    cout << "<< SPCA primary_model_fit 1 >>" << endl;
 #endif
 
     DenseSymMatProd<double> op(Y);
-    SymEigsSolver< double, LARGEST_ALGE, DenseSymMatProd<double> > eig(&op, 1, 2);
+    SymEigsSolver<double, LARGEST_ALGE, DenseSymMatProd<double>> eig(&op, 1, 2);
     eig.init();
     eig.compute();
     MatrixXd temp;
@@ -2342,10 +2346,10 @@ public:
     {
       temp = eig.eigenvectors(1);
     }
-    
+
     beta = temp.col(0);
 #ifdef TEST
-    cout << "<< SPCA primary_model_fit end>>"<< endl;
+    cout << "<< SPCA primary_model_fit end>>" << endl;
 #endif
     return;
   };
@@ -2353,41 +2357,45 @@ public:
   double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
 #ifdef TEST
-    cout << "<< SPCA Loss >>" <<endl;
+    cout << "<< SPCA Loss >>" << endl;
 #endif
     MatrixXd Y = SigmaA(A, g_index, g_size);
 
 #ifdef TEST
-    cout << "<< SPCA Loss end>>" <<endl;
+    cout << "<< SPCA Loss end>>" << endl;
 #endif
-    return - beta.transpose() * Y * beta;
+    return -beta.transpose() * Y * beta;
   };
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd)
   {
 #ifdef TEST
-    cout << "<< SPCA sacrifice >>"<< endl;
+    cout << "<< SPCA sacrifice >>" << endl;
 #endif
-    VectorXd D = - this->Sigma * beta + beta.transpose() * this->Sigma * beta * beta;
+    VectorXd D = -this->Sigma * beta + beta.transpose() * this->Sigma * beta * beta;
 
-    for (int i = 0; i < A.size(); i++){
+    for (int i = 0; i < A.size(); i++)
+    {
       VectorXd temp = beta.segment(g_index(A(i)), g_size(A(i)));
       bd(A(i)) = temp.squaredNorm();
     }
-    for (int i = 0; i < I.size(); i++){
+    for (int i = 0; i < I.size(); i++)
+    {
       VectorXd temp = D.segment(g_index(I(i)), g_size(I(i)));
       bd(I(i)) = temp.squaredNorm();
-  }
+    }
 
 #ifdef TEST
-    cout << "  --> A : " << endl << A << endl;
-    cout << "  --> I : " << endl << I << endl;
+    cout << "  --> A : " << endl
+         << A << endl;
+    cout << "  --> I : " << endl
+         << I << endl;
     // cout << "  --> bd : " << endl << bd << endl;
 #endif
   };
 
   double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0)
-  {  
+  {
     //  to be added
     return XA.cols();
   }
