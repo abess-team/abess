@@ -218,6 +218,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' @method abess default
 #' @examples
 #' \donttest{
+#' library(abess)
 #' n <- 100
 #' p <- 20
 #' support.size <- 3
@@ -268,9 +269,13 @@ abess <- function(x, ...) UseMethod("abess")
 #' ########## Best group subset selection #############
 #' dataset <- generate.data(n, p, support.size)
 #' group_index <- rep(1:10, each = 2)
-#' abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-#'                    group.index = group_index)
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]], group.index = group_index)
 #' str(extract(abess_fit))
+#' 
+#' ################ Golden section searching ################
+#' dataset <- generate.data(n, p, support.size)
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]], tune.path = "gsection")
+#' abess_fit
 #' 
 #' ################ Feature screening ################
 #' p <- 1000
@@ -497,14 +502,10 @@ abess.default <- function(x,
   
   ## strategy for tunning
   tune.path <- match.arg(tune.path)
-  if (tune.path == "pgsection") {
-    path_type <- 2
-  } else if (tune.path == "psequence") {
+  if (tune.path == "gsection") {
     path_type <- 2
   } else if (tune.path == "sequence") {
     path_type <- 1
-  } else {
-    path_type <- 2
   }
   
   ## group variable:
@@ -551,17 +552,21 @@ abess.default <- function(x,
   
   # sparse range (golden-section):
   if (is.null(gs.range)) {
-    s_min <- 0
+    s_min <- 1
     if (group_select) {
-      s_max <- min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
-    } else {
       s_max <- min(c(ngroup, round(nobs / max_group_size / log(ngroup))))
+    } else {
+      s_max <- min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
     }
   } else {
     stopifnot(length(gs.range) == 2)
     stopifnot(any(is.numeric(gs.range) & gs.range > 0))
     stopifnot(as.integer(gs.range)[1] != as.integer(gs.range)[2])
-    stopifnot(as.integer(max(gs.range)) <= nvars)
+    if (group_select) {
+      stopifnot(max(gs.range) < ngroup)
+    } else {
+      stopifnot(max(gs.range) < nvars)
+    }
     gs.range <- as.integer(gs.range)
     s_min <- min(gs.range)
     s_max <- max(gs.range)
@@ -788,14 +793,38 @@ abess.default <- function(x,
   result[["nvars"]] <- nvars
   result[["family"]] <- family
   result[["tune.path"]] <- tune.path
-  result[["support.size"]] <- s_list
   # result[["support.df"]] <- g_df
   result[["tune.type"]] <- ifelse(is_cv == TRUE, "cv", 
                                   c("AIC", "BIC", "GIC", "EBIC")[ic_type])  
   result[["gs.range"]] <- gs.range
   
+  ## preprocessing result in "gsection"
+  if (tune.path == "gsection") {
+    ## change the order:
+    reserve_order <- length(result[["sequence"]]):1
+    result[["beta_all"]] <- result[["beta_all"]][reserve_order]
+    result[["coef0_all"]] <- result[["coef0_all"]][reserve_order, , drop = FALSE]
+    result[["train_loss_all"]] <- result[["train_loss_all"]][reserve_order, , drop = FALSE]
+    result[["ic_all"]] <- result[["ic_all"]][reserve_order, , drop = FALSE]
+    result[["test_loss_all"]] <- result[["test_loss_all"]][reserve_order, , drop = FALSE]
+    result[["sequence"]] <- result[["sequence"]][reserve_order]
+    gs_unique_index <- match(sort(unique(result[["sequence"]])), result[["sequence"]])
+    
+    ## remove replicate support size:
+    result[["beta_all"]] <- result[["beta_all"]][gs_unique_index]
+    result[["coef0_all"]] <- result[["coef0_all"]][gs_unique_index, , drop = FALSE]
+    result[["train_loss_all"]] <- result[["train_loss_all"]][gs_unique_index, , drop = FALSE]
+    result[["ic_all"]] <- result[["ic_all"]][gs_unique_index, , drop = FALSE]
+    result[["test_loss_all"]] <- result[["test_loss_all"]][gs_unique_index, , drop = FALSE]
+    result[["sequence"]] <- result[["sequence"]][gs_unique_index]
+    result[["support.size"]] <- result[["sequence"]]
+    s_list <- result[["support.size"]]
+    result[["sequence"]] <- NULL
+  } else {
+    result[["support.size"]] <- s_list
+  }
+  
   names(result)[which(names(result) == "train_loss_all")] <- "dev"
-  result[["dev"]] <- result[["dev"]][, 1]
   if (is_cv) {
     names(result)[which(names(result) == "test_loss_all")] <- "tune.value"
     result[["ic_all"]] <- NULL
@@ -803,10 +832,8 @@ abess.default <- function(x,
     names(result)[which(names(result) == "ic_all")] <- "tune.value"
     result[["test_loss_all"]] <- NULL
   }
-  result[["tune.value"]] <- result[["tune.value"]][, 1]
   result[["best.size"]] <- s_list[which.min(result[["tune.value"]])]
   names(result)[which(names(result) == "coef0_all")] <- "intercept"
-  result[["intercept"]] <- result[["intercept"]][, 1]
   if (family == "multinomial") {
     result[["intercept"]] <- lapply(result[["intercept"]], function(x) {
       x <- x[-y_dim]

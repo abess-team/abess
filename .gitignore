@@ -58,3 +58,5 @@ R-package/Rplot.jpeg
 R-package/Rplot01.jpeg
 .DS_Store
 python/include_new/*
+*.gcda
+*.gcno
