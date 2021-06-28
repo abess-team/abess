@@ -96,10 +96,7 @@ coefficients from a fitted &quot;abesspca&quot; object." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/v01-abess-guide.html">An Introduction to `abess`</a>
-    </li>
-    <li>
-      <a href="../articles/v02-linearreg.html">Linear Regression</a>
+      <a href="../articles/v01-abess-guide.html">Quick start for `abess`: Linear regression</a>
     </li>
     <li>
       <a href="../articles/v03-classification.html">Classification: Logistic Regression and Multinomial Extension</a>
@@ -161,7 +158,7 @@ coefficients from a fitted "<code>abesspca</code>" object.</p>
     <pre class="usage"><span class='fu'>loadings</span><span class='op'>(</span><span class='va'>object</span>, support.size <span class='op'>=</span> <span class='cn'>NULL</span>, sparse <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for abesspca</span>
-<span class='fu'>loadings</span><span class='op'>(</span><span class='va'>object</span>, support.size <span class='op'>=</span> <span class='cn'>NULL</span>, sparse <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>loadings</span><span class='op'>(</span><span class='va'>object</span>, support.size <span class='op'>=</span> <span class='cn'>NULL</span>, kpc <span class='op'>=</span> <span class='cn'>NULL</span>, sparse <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,7 +172,8 @@ coefficients from a fitted "<code>abesspca</code>" object.</p>
       <td><p>An integer vector specifies 
 the coefficient fitted at given <code>support.size</code>. 
 If <code>support.size = NULL</code>, then all coefficients would be returned. 
-Default: <code>support.size = NULL</code>.</p></td>
+Default: <code>support.size = NULL</code>. 
+This parameter is omitted if sparse.type = "kpc".</p></td>
     </tr>
     <tr>
       <th>sparse</th>
@@ -185,6 +183,14 @@ presented as sparse matrix or not. Default: <code>sparse = TRUE</code>.</p></td>
     <tr>
       <th>...</th>
       <td><p>Other arguments.</p></td>
+    </tr>
+    <tr>
+      <th>kpc</th>
+      <td><p>An integer vector specifies 
+the coefficient fitted at given principal component. 
+If <code>kpc = NULL</code>, then all coefficients would be returned. 
+Default: <code>kpc = NULL</code>. 
+This parameter is omitted if sparse.type = "fpc".</p></td>
     </tr>
     </table>
 
@@ -197,7 +203,7 @@ where the number of non-zeros entries depends on the <code>support.size</code>.<
 
     <div class='dont-index'><p><code><a href='print.abesspca.html'>print.abesspca</a></code>, 
 <code>loadings.abesspca</code>, 
-<code><a href='plot.abesspca.html'>plot.abesspca</a></code>.</p></div>
+<code>plot.abesspca</code>.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -210,7 +216,7 @@ where the number of non-zeros entries depends on the <code>support.size</code>.<
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jin Zhu, Kangkang Jiang, Yanhang Zhang, Liyuan Hu, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p>Developed by Jin Zhu, Kangkang Jiang, Yanhang Zhang, Liyuan Hu, Junhao Huang, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">

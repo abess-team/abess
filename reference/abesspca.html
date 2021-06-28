@@ -95,10 +95,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/v01-abess-guide.html">An Introduction to `abess`</a>
-    </li>
-    <li>
-      <a href="../articles/v02-linearreg.html">Linear Regression</a>
+      <a href="../articles/v01-abess-guide.html">Quick start for `abess`: Linear regression</a>
     </li>
     <li>
       <a href="../articles/v03-classification.html">Classification: Logistic Regression and Multinomial Extension</a>
@@ -159,9 +156,9 @@
     <pre class="usage"><span class='fu'>abesspca</span><span class='op'>(</span>
   <span class='va'>x</span>,
   type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"predictor"</span>, <span class='st'>"gram"</span><span class='op'>)</span>,
+  sparse.type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"fpc"</span>, <span class='st'>"kpc"</span><span class='op'>)</span>,
   cor <span class='op'>=</span> <span class='cn'>FALSE</span>,
   support.size <span class='op'>=</span> <span class='cn'>NULL</span>,
-  support.num <span class='op'>=</span> <span class='cn'>NULL</span>,
   c.max <span class='op'>=</span> <span class='fl'>2</span>,
   lambda <span class='op'>=</span> <span class='fl'>0</span>,
   always.include <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -186,6 +183,11 @@ a predictor or the sample covariance/correlation matrix.</p></td>
 If <code>type = "gram"</code>, <code>x</code> is considered as a sample covariance or correlation matrix.</p></td>
     </tr>
     <tr>
+      <th>sparse.type</th>
+      <td><p>If <code>sparse.type = "fpc"</code>, then best subset selection performs on the first principal component; 
+If <code>sparse.type = "kpc"</code>, then best subset selection performs on the first \(K\) principal components.</p></td>
+    </tr>
+    <tr>
       <th>cor</th>
       <td><p>A logical value. If <code>cor = TRUE</code>, perform PCA on the correlation matrix; 
 otherwise, the covariance matrix. 
@@ -194,14 +196,15 @@ Default: <code>cor = FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>support.size</th>
-      <td><p>An integer vector representing the alternative support sizes.</p></td>
-    </tr>
-    <tr>
-      <th>support.num</th>
-      <td><p>A integer specifies the number of support size to be consider.
-This arguments is ignored if <code>support.size</code> is supplied. 
-Default: <code>support.num = min(ncol(x), 100)</code> if <code>group.index = NULL</code>;
-otherwise, <code>support.num = min(length(unique(group.index)), 100)</code>.</p></td>
+      <td><p>An integer vector. It represents the alternative support sizes when <code>sparse.type = "fpc"</code>, 
+while each support size controls the sparsity of a principal component when <code>sparse.type = "kpc"</code>. 
+When <code>sparse.type = "fpc"</code> but <code>support.size</code> is not supplied, 
+it is set as <code>support.size = 1:min(ncol(x), 100)</code> if <code>group.index = NULL</code>;
+otherwise, <code>support.size = 1:min(length(unique(group.index)), 100)</code>. 
+When <code>sparse.type = "kpc"</code> but <code>support.size</code> is not supplied, 
+then for 20% principal components, 
+it is set as <code><a href='https://rdrr.io/r/base/Extremes.html'>min(ncol(x), 100)</a></code> if <code>group.index = NULL</code>;
+otherwise, <code><a href='https://rdrr.io/r/base/Extremes.html'>min(length(unique(group.index)), 100)</a></code>.</p></td>
     </tr>
     <tr>
       <th>c.max</th>
@@ -254,10 +257,13 @@ Default is <code>max.splicing.iter = 20</code>.</p></td>
 <dt>loadings</dt><dd><p>A \(p\)-by-<code><a href='https://rdrr.io/r/base/length.html'>length(support.size)</a></code> loading matrix of sparse principal components (PC), 
 where each row is a variable and each column is a support size;</p></dd>
 <dt>nvars</dt><dd><p>The number of variables.</p></dd>
+<dt>sparse.type</dt><dd><p>The same as input.</p></dd>
 <dt>support.size</dt><dd><p>The actual support.size values used. Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.</p></dd>
 <dt>ev</dt><dd><p>A vector with size <code><a href='https://rdrr.io/r/base/length.html'>length(support.size)</a></code>. It records the explained variance at each support size.</p></dd>
 <dt>pev</dt><dd><p>A vector with the same length as <code>ev</code>. It records the percentage of explained variance at each support size.</p></dd>
-<dt>var.all</dt><dd><p>Total variance of the explained by first principal component.</p></dd>
+<dt>var.all</dt><dd><p>If <code>sparse.type = "fpc"</code>, 
+it is the total variance of the explained by first principal component; 
+otherwise, the total standard deviations of all principal components.</p></dd>
 <dt>call</dt><dd><p>The original call to <code>abess</code>.</p></dd>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -274,7 +280,7 @@ can be efficiently solved.</p>
 
     <div class='dont-index'><p><code><a href='print.abesspca.html'>print.abesspca</a></code>, 
 <code><a href='loadings.html'>loadings.abesspca</a></code>, 
-<code><a href='plot.abesspca.html'>plot.abesspca</a></code>.</p></div>
+<code>plot.abesspca</code>.</p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Jin Zhu, Junxian Zhu, Ruihuang Liu, Xueqin Wang</p>
@@ -326,11 +332,21 @@ can be efficiently solved.</p>
 #&gt; abesspca(x = rob_cov, type = "gram")
 #&gt; 
 #&gt;   support.size       ev       pev
-#&gt; 1            1 6622.037 0.9852397
-#&gt; 2            2 6668.427 0.9921416
-#&gt; 3            3 6710.213 0.9983587
-#&gt; 4            4 6721.245 1.0000000</div><div class='input'>
-</div></pre>
+#&gt; 1            1 6217.552 0.9902339
+#&gt; 2            2 6247.233 0.9949611
+#&gt; 3            3 6263.488 0.9975499
+#&gt; 4            4 6278.872 1.0000000</div><div class='input'>
+<span class='co'>## K-component principal component analysis</span>
+<span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span>, sparse.type <span class='op'>=</span> <span class='st'>"kpc"</span>, 
+                    support.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='loadings.html'>loadings</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; 4 x 2 sparse Matrix of class "dgCMatrix"
+#&gt;          1          2
+#&gt; Murder   .  .        
+#&gt; Assault  1  .        
+#&gt; UrbanPop . -0.9320592
+#&gt; Rape     . -0.3623060</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in xy.coords(x, y, xlabel, ylabel, log): 'x' is a list, but does not have components 'x' and 'y'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -342,7 +358,7 @@ can be efficiently solved.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jin Zhu, Kangkang Jiang, Yanhang Zhang, Liyuan Hu, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p>Developed by Jin Zhu, Kangkang Jiang, Yanhang Zhang, Liyuan Hu, Junhao Huang, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">

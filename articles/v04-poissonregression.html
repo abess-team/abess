@@ -54,10 +54,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/v01-abess-guide.html">An Introduction to `abess`</a>
-    </li>
-    <li>
-      <a href="../articles/v02-linearreg.html">Linear Regression</a>
+      <a href="../articles/v01-abess-guide.html">Quick start for `abess`: Linear regression</a>
     </li>
     <li>
       <a href="../articles/v03-classification.html">Classification: Logistic Regression and Multinomial Extension</a>
@@ -107,7 +104,7 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Poisson Regression</h1>
-                        <h4 class="author">Liyuan Hu</h4>
+                        <h4 class="author">Liyuan Hu, Jin Zhu</h4>
             
             <h4 class="date">2021/5/30</h4>
       
@@ -220,11 +217,12 @@
 ## [6,]  4.107201  4.103329</code></pre>
 <p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including <code>coef</code> for the coefficient value, <code>l2norm</code> for the L2-norm of the coefficients, <code>dev</code> for the deviance and <code>tune</code> for the tuning value. Default if <code>coef</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
-<p><img src="v04-poissonregression_files/figure-html/unnamed-chunk-5-1.png" width="700"> The graph shows that, beginning from the most dense model, the 3th variable (job) is included in the active set until the support size reaches 0.</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p><img src="v04-poissonregression_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<p>The graph shows that, beginning from the most dense model, the 3th variable (job) is included in the active set until the support size reaches 0.</p>
 <p>We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type<span class="op">=</span><span class="st">"tune"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></code></pre></div>
 <p><img src="v04-poissonregression_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>The tuning value reaches the lowest point at 3. And We might choose the estimated model with support size equals 6 as our final model. In fact, the tuning values of different model sizes are provided in <code>tune.value</code> of the <code>abess</code> object. You can get the best model size through the following call.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -275,7 +273,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Jin Zhu, Kangkang Jiang, Yanhang Zhang, Liyuan Hu, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p>Developed by Jin Zhu, Kangkang Jiang, Yanhang Zhang, Liyuan Hu, Junhao Huang, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">
