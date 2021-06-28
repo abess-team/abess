@@ -144,15 +144,35 @@
 ## 
 ##     loadings</code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">synthetic_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">300</span>, p <span class="op">=</span> <span class="fl">1000</span>, 
-                                beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">995</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">synthetic_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">500</span>, p <span class="op">=</span> <span class="fl">100</span>, 
+                                beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">95</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind.data.frame</a></span><span class="op">(</span><span class="st">"y"</span> <span class="op">=</span> <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, 
-                        <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<p>Compare to the sequential searching, the golden section greatly reduce the runtime:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##    user  system elapsed 
-##   0.170   0.009   0.179</code></pre>
+                        <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+<span class="va">t1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span>, tune.path <span class="op">=</span> <span class="st">"gsection"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## List of 7
+##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
+##   .. ..@ i       : int [1:3] 0 1 4
+##   .. ..@ p       : int [1:2] 0 3
+##   .. ..@ Dim     : int [1:2] 100 1
+##   .. ..@ Dimnames:List of 2
+##   .. .. ..$ : chr [1:100] "x1" "x2" "x3" "x4" ...
+##   .. .. ..$ : chr "3"
+##   .. ..@ x       : num [1:3] 3.04 1.49 1.91
+##   .. ..@ factors : list()
+##  $ intercept   : num -0.0679
+##  $ support.size: int 3
+##  $ support.vars: chr [1:3] "x1" "x2" "x5"
+##  $ support.beta: num [1:3] 3.04 1.49 1.91
+##  $ dev         : num 1.49
+##  $ tune.value  : num 225</code></pre>
+<p>The output of golden-section strategy suggests the optimal model size is accurately detected. Compare to the sequential searching, the golden section reduce the runtime because it skip some support sizes which are likely to be a non-optimal one:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span></code></pre></div>
+<pre><code>##    user.self sys.self elapsed user.child sys.child
+## t1     0.022    0.001   0.023          0         0
+## t2     0.047    0.008   0.055          0         0</code></pre>
 </div>
   </div>
 
