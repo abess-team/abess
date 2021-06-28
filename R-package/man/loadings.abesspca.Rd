@@ -7,7 +7,7 @@
 \usage{
 loadings(object, support.size = NULL, sparse = TRUE, ...)
 
-\method{loadings}{abesspca}(object, support.size = NULL, sparse = TRUE, ...)
+\method{loadings}{abesspca}(object, support.size = NULL, kpc = NULL, sparse = TRUE, ...)
 }
 \arguments{
 \item{object}{An "\code{abesspca}" project.}
@@ -15,12 +15,19 @@ loadings(object, support.size = NULL, sparse = TRUE, ...)
 \item{support.size}{An integer vector specifies 
 the coefficient fitted at given \code{support.size}. 
 If \code{support.size = NULL}, then all coefficients would be returned. 
-Default: \code{support.size = NULL}.}
+Default: \code{support.size = NULL}. 
+This parameter is omitted if {sparse.type = "kpc"}.}
 
 \item{sparse}{A logical value, specifying whether the coefficients should be
 presented as sparse matrix or not. Default: \code{sparse = TRUE}.}
 
 \item{...}{Other arguments.}
+
+\item{kpc}{An integer vector specifies 
+the coefficient fitted at given principal component. 
+If \code{kpc = NULL}, then all coefficients would be returned. 
+Default: \code{kpc = NULL}. 
+This parameter is omitted if {sparse.type = "fpc"}.}
 }
 \value{
 A matrix with \code{length(support.size)} columns. 

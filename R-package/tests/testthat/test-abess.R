@@ -316,7 +316,7 @@ test_that("Golden section works", {
   n <- 500
   p <- 1500
   support_size <- 3
-  dataset <- generate.data(n, p, support.size)
+  dataset <- generate.data(n, p, support_size)
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], tune.path = "gsection")
   test_batch(abess_fit, dataset, gaussian)
 })

@@ -69,20 +69,34 @@ test_that("generic (multivariate) works", {
 })
 
 
-test_that("generic (univariate) works", {
+test_that("generic (abesspca) works", {
   n <- 100
   p <- 200
   support_size <- 3
   
+  ## F-PCA
   dataset <- generate.data(n, p, support_size, seed = 1)
   abess_fit <- abesspca(dataset[["x"]])
   
   expect_invisible(print(abess_fit))
   
-  expect_invisible(plot(abess_fit))
-  expect_invisible(plot(abess_fit, type = "variance"))
+  # expect_invisible(plot(abess_fit))
+  # expect_invisible(plot(abess_fit, type = "variance"))
   
   expect_visible(loadings(abess_fit))
-  expect_visible(loadings(abess_fit, support.size = 2))
+  expect_visible(loadings(abess_fit, support.size = 3))
+  expect_visible(loadings(abess_fit, sparse = FALSE))
+  
+  ## K-PCA
+  abess_fit <- abesspca(dataset[["x"]], sparse.type = "kpc", 
+                        support.size = c(1, 1, 1))
+  
+  expect_invisible(print(abess_fit))
+  
+  # expect_invisible(plot(abess_fit))
+  # expect_invisible(plot(abess_fit, type = "variance"))
+  
+  expect_visible(loadings(abess_fit))
+  expect_visible(loadings(abess_fit, kpc = 2))
   expect_visible(loadings(abess_fit, sparse = FALSE))
 })
