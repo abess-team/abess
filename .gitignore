@@ -62,3 +62,6 @@ python/include_new/*
 *.gcno
 R-package/R/loadings.abesspca.R
 R-package/vignettes/omit/v02-linearreg.Rmd
+R-package/tests/testthat/Rplots.pdf
+*.pdf
+*.pdf
