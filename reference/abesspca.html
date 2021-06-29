@@ -279,14 +279,14 @@ can be efficiently solved.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='print.abesspca.html'>print.abesspca</a></code>, 
-<code><a href='loadings.html'>loadings.abesspca</a></code>, 
-<code>plot.abesspca</code>.</p></div>
+<code><a href='loadings.html'>loadings.abesspca</a></code>,</p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Jin Zhu, Junxian Zhu, Ruihuang Liu, Xueqin Wang</p>
+    <p>Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/abess-team/abess'>abess</a></span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/abess-team/abess'>abess</a></span><span class='op'>)</span>
 
 <span class='co'>## predictor matrix input:</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span>  
@@ -316,13 +316,7 @@ can be efficiently solved.</p>
 #&gt; 1            1 6945.166 0.9905936
 #&gt; 2            2 6984.264 0.9961702
 #&gt; 3            3 6998.933 0.9982624
-#&gt; 4            4 7011.115 1.0000000</div><div class='input'><span class='fu'><a href='loadings.html'>loadings</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 4 x 4 sparse Matrix of class "dgCMatrix"
-#&gt;          1           2           3           4
-#&gt; Murder   .  .           .          -0.04170432
-#&gt; Assault  1 -0.99717739 -0.99608572 -0.99522128
-#&gt; UrbanPop .  .          -0.04643219 -0.04633575
-#&gt; Rape     . -0.07508168 -0.07521497 -0.07515550</div><div class='input'>
+#&gt; 4            4 7011.115 1.0000000</div><div class='input'>
 <span class='co'>## robust covariance matrix input:</span>
 <span class='va'>rob_cov</span> <span class='op'>&lt;-</span> <span class='fu'>MASS</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/MASS/man/cov.rob.html'>cov.rob</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span><span class='op'>[[</span><span class='st'>"cov"</span><span class='op'>]</span><span class='op'>]</span>
 <span class='va'>rob_cov</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>rob_cov</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>rob_cov</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>2</span>
@@ -332,10 +326,10 @@ can be efficiently solved.</p>
 #&gt; abesspca(x = rob_cov, type = "gram")
 #&gt; 
 #&gt;   support.size       ev       pev
-#&gt; 1            1 6583.765 0.9865449
-#&gt; 2            2 6623.819 0.9925468
-#&gt; 3            3 6662.804 0.9983885
-#&gt; 4            4 6673.559 1.0000000</div><div class='input'>
+#&gt; 1            1 6213.683 0.9901550
+#&gt; 2            2 6242.877 0.9948070
+#&gt; 3            3 6262.284 0.9978996
+#&gt; 4            4 6275.465 1.0000000</div><div class='input'>
 <span class='co'>## K-component principal component analysis</span>
 <span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span>, sparse.type <span class='op'>=</span> <span class='st'>"kpc"</span>, 
                     support.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
@@ -345,8 +339,8 @@ can be efficiently solved.</p>
 #&gt; Murder   .  .        
 #&gt; Assault  1  .        
 #&gt; UrbanPop . -0.9320592
-#&gt; Rape     . -0.3623060</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in xy.coords(x, y, xlabel, ylabel, log): 'x' is a list, but does not have components 'x' and 'y'</span></div></pre>
+#&gt; Rape     . -0.3623060</div><div class='input'><span class='co'># }</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -155,7 +155,7 @@ coefficients from a fitted &quot;abesspca&quot; object." />
 coefficients from a fitted "<code>abesspca</code>" object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>loadings</span><span class='op'>(</span><span class='va'>object</span>, support.size <span class='op'>=</span> <span class='cn'>NULL</span>, sparse <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>loadings</span><span class='op'>(</span><span class='va'>object</span>, support.size <span class='op'>=</span> <span class='cn'>NULL</span>, kpc <span class='op'>=</span> <span class='cn'>NULL</span>, sparse <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for abesspca</span>
 <span class='fu'>loadings</span><span class='op'>(</span><span class='va'>object</span>, support.size <span class='op'>=</span> <span class='cn'>NULL</span>, kpc <span class='op'>=</span> <span class='cn'>NULL</span>, sparse <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
@@ -176,6 +176,14 @@ Default: <code>support.size = NULL</code>.
 This parameter is omitted if sparse.type = "kpc".</p></td>
     </tr>
     <tr>
+      <th>kpc</th>
+      <td><p>An integer vector specifies 
+the coefficient fitted at given principal component. 
+If <code>kpc = NULL</code>, then all coefficients would be returned. 
+Default: <code>kpc = NULL</code>. 
+This parameter is omitted if sparse.type = "fpc".</p></td>
+    </tr>
+    <tr>
       <th>sparse</th>
       <td><p>A logical value, specifying whether the coefficients should be
 presented as sparse matrix or not. Default: <code>sparse = TRUE</code>.</p></td>
@@ -183,14 +191,6 @@ presented as sparse matrix or not. Default: <code>sparse = TRUE</code>.</p></td>
     <tr>
       <th>...</th>
       <td><p>Other arguments.</p></td>
-    </tr>
-    <tr>
-      <th>kpc</th>
-      <td><p>An integer vector specifies 
-the coefficient fitted at given principal component. 
-If <code>kpc = NULL</code>, then all coefficients would be returned. 
-Default: <code>kpc = NULL</code>. 
-This parameter is omitted if sparse.type = "fpc".</p></td>
     </tr>
     </table>
 
@@ -202,8 +202,7 @@ where the number of non-zeros entries depends on the <code>support.size</code>.<
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='print.abesspca.html'>print.abesspca</a></code>, 
-<code>loadings.abesspca</code>, 
-<code>plot.abesspca</code>.</p></div>
+<code>loadings.abesspca</code>,</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
