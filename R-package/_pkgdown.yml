@@ -8,3 +8,32 @@ home:
 template:
   params:
     bootswatch: cerulean
+
+reference:
+- title: Overview
+  contents:
+  - abess-package
+
+- title: Generalized linear model
+  contents:
+  - abess
+  - print.abess
+  - coef.abess
+  - extract.abess
+  - predict.abess
+  - plot.abess
+  - deviance.abess
+
+- title: Principal component analysis
+  contents:
+  - abesspca
+  - print.abesspca
+  - loadings.abesspca
+  - plot.abesspca
+  
+- title: Datasets
+  contents:
+  - generate.data
+  - trim32
+  
+  

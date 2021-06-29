@@ -8,13 +8,14 @@ Authors@R: c(
   person(given = "Kangkang", family = "Jiang", email = "jiangkk3@mail2.sysu.edu.cn", role = c("aut")),
   person(given = "Yanhang", family = "Zhang", email = "zhangyh98@ruc.edu.cn", role = c("aut")),
   person(given = "Liyuan", family = "Hu", email = "huly5@mail2.sysu.edu.cn", role = c("aut")),
+  person(given = "Junhao", family = "Huang", email = "huangjh256@mail2.sysu.edu.can", role = c("aut")),
   person(given = "Junxian", family = "Zhu", email = "zhujunx@mail2.sysu.edu.cn", role = c("aut")),
   person(given = "Canhong", family = "Wen", email = "wencanhong@gmail.com", role = c("aut")),
   person(given = "Heping", family = "Zhang", email = "heping.zhang@yale.edu", role = c("aut"), comment = c(ORCID = "0000-0002-0688-4076")),
   person(given = "Xueqin", family = "Wang", email = "wangxq20@ustc.edu.cn", role = c("aut"), comment = c(ORCID = "0000-0001-5205-9950"))
   )
 Maintainer: Jin Zhu <zhuj37@mail2.sysu.edu.cn>
-Description: Extremely efficient toolkit for solving the best subset selection problem in linear regression, logistic regression, Poisson regression, Cox proportional hazard model, multiple-response Gaussian, and multinomial regression. It implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times.  
+Description: Extremely efficient toolkit for solving the best subset selection problem in linear regression, logistic regression, Poisson regression, Cox proportional hazard model, multiple-response regression, multinomial logistic regression, and principal component analysis. It implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times.  
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -34,5 +35,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-URL: https://github.com/abess-team/abess, https://abess-team.github.io/abess/
+URL: https://github.com/abess-team/abess, https://abess-team.github.io/abess/, https://abess.readthedocs.io
 BugReports: https://github.com/abess-team/abess/issues

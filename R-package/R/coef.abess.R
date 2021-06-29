@@ -1,4 +1,4 @@
-#' Extract Model Coefficients from a fitted "abess" object.
+#' Extract Model Coefficients from a fitted "\code{abess}" object.
 #'
 #' This function provides estimated
 #' coefficients from a fitted "\code{abess}" object.
@@ -19,6 +19,8 @@
 #' For a coefficient matrix, each row is a variable, and each column is a support size. 
 #' 
 #' @inherit abess.default seealso
+#' 
+#' @method coef abess
 #' 
 #' @export
 #'

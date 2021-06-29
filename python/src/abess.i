@@ -12,7 +12,7 @@ import_array();
 %}
 
 
-void pywrap_abess(double* IN_ARRAY2, int DIM1, int DIM2, double* IN_ARRAY2, int DIM1, int DIM2, int n, int p, int data_type, double* IN_ARRAY1, int DIM1,
+void pywrap_abess(double* IN_ARRAY2, int DIM1, int DIM2, double* IN_ARRAY2, int DIM1, int DIM2, int n, int p, int data_type, double* IN_ARRAY1, int DIM1, double* IN_ARRAY2, int DIM1, int DIM2,
                  bool is_normal,
                  int algorithm_type, int model_type, int max_iter, int exchange_num,
                  int path_type, bool is_warm_start,
@@ -30,6 +30,7 @@ void pywrap_abess(double* IN_ARRAY2, int DIM1, int DIM2, double* IN_ARRAY2, int 
                  int thread,
                  bool covariance_update,
                  bool sparse_matrix,
+                 int splicing_type,
                  double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* OUTPUT, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, int* ARGOUT_ARRAY1, int DIM1, int*OUTPUT);
 
 // .i文件里面不能加默认变量

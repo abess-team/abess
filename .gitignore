@@ -56,3 +56,9 @@ python/abess/__pycache__/__init__.cpython-37.pyc
 python/abess/__pycache__/linear.cpython-37.pyc
 R-package/Rplot.jpeg
 R-package/Rplot01.jpeg
+.DS_Store
+python/include_new/*
+*.gcda
+*.gcno
+R-package/R/loadings.abesspca.R
+R-package/vignettes/omit/v02-linearreg.Rmd

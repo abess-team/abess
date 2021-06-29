@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.abess.R
 \name{plot.abess}
 \alias{plot.abess}
-\title{Creat plot from a fitted "abess" object}
+\title{Creat plot from a fitted "\code{abess}" object}
 \usage{
 \method{plot}{abess}(
   x,

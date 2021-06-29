@@ -1,4 +1,4 @@
-#' Extract the deviance from a fitted "abess" object.
+#' Extract the deviance from a fitted "\code{abess}" object.
 #'
 #' Similar to other deviance methods, 
 #' which returns deviance from a fitted "\code{abess}" object.

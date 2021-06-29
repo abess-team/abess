@@ -27,3 +27,11 @@
 ^vignettes/test\.Rmd$
 ^vignettes/linearreg\.Rmd$
 ^vignettes/poissonregression\.Rmd$
+^vignettes/v02-linearreg\.Rmd$
+^vignettes/v03-classification\.Rmd$
+^vignettes/v04-poissonregression\.Rmd$
+^vignettes/v05-coxreg\.Rmd$
+^vignettes/v06-MultiTaskLearning\.Rmd$
+^vignettes/v07-advancedFeatures\.Rmd$
+^vignettes/v08-pca\.Rmd$
+^vignettes/v09-fasterSetting\.Rmd$

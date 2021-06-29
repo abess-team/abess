@@ -1,3 +1,4 @@
 Sphinx
 sphinxcontrib-phpdomain
 sphinx-autoapi
+nbsphinx

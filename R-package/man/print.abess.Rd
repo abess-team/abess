@@ -2,9 +2,9 @@
 % Please edit documentation in R/print.abess.R
 \name{print.abess}
 \alias{print.abess}
-\title{Print method for a fitted "abess" object}
+\title{Print method for a fitted "\code{abess}" object}
 \usage{
-print.abess(x, digits = max(5, getOption("digits") - 5), ...)
+\method{print}{abess}(x, digits = max(5, getOption("digits") - 5), ...)
 }
 \arguments{
 \item{x}{A "\code{abess}" object.}

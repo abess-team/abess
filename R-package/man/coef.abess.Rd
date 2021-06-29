@@ -2,7 +2,7 @@
 % Please edit documentation in R/coef.abess.R
 \name{coef.abess}
 \alias{coef.abess}
-\title{Extract Model Coefficients from a fitted "abess" object.}
+\title{Extract Model Coefficients from a fitted "\code{abess}" object.}
 \usage{
 \method{coef}{abess}(object, support.size = NULL, sparse = TRUE, ...)
 }

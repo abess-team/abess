@@ -8,13 +8,15 @@ Installation
 Stable release
 --------------
 
+- Python       
+
 To install abess, run this command in your terminal:
 
 .. code-block:: console
 
     $ pip install abess
 
-This is the preferred method to install scikit-network, as it will always install the most recent stable release.
+This is the preferred method to install abess, as it will always install the most recent stable release. 
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -22,6 +24,11 @@ you through the process.
 .. _pip: https://pip.pypa.io
 .. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
 
+- R 
+Run the command in R session:
+.. code-block:: console
+
+    install.packages("abess")
 
 From sources
 ------------
@@ -48,6 +55,16 @@ Or, after having unpacked the tarball if relevant, you can install it with:
 
     $ cd <scikit-network folder>
     $ python setup.py develop
+
+OpenMP Support
+---------------
+To support OpenMP parallelism in Cpp, the dependence for OpenMP should be install. 
+In MacOS:       
+
+.. code-block:: console
+
+    $ brew install llvm
+    $ brew install libomp
 
 
 

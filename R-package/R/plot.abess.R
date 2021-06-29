@@ -1,4 +1,4 @@
-#' @title Creat plot from a fitted "abess" object
+#' @title Creat plot from a fitted "\code{abess}" object
 #' 
 #' @description Produces a coefficient/deviance/tuning-value plot 
 #' for a fitted "abess" object.
@@ -23,6 +23,8 @@
 #' each dimension of multivariate response.
 #' 
 #' @inherit abess.default seealso
+#' 
+#' @method plot abess
 #' 
 #' @export
 #' 

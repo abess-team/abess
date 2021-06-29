@@ -12,12 +12,14 @@
 Contents
 *********
 .. .. toctree::
+..    Installation <Installation>
 ..    Tutorial <Tutorial/index.rst>
 ..    Python package <Python-package/index.rst>
 ..    R package <R-package/index.rst>
 ..    About <About/index.rst>
 
 .. toctree::
+   Installation <Installation.md>
    Tutorial <Tutorial/index.rst>
    Python package <Python-package/index.rst>
    R package <https://abess-team.github.io/abess/>

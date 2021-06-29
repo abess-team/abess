@@ -38,6 +38,7 @@ jobs:
           install.packages("pkgdown", type = "binary")
           install.packages("survival", type = "binary")
           install.packages("Hmisc", type = "binary")
+          install.packages("ROCR", type = "binary")
         shell: Rscript {0}
 
       - name: Install package

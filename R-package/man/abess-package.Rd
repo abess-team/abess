@@ -6,13 +6,14 @@
 \alias{_PACKAGE}
 \title{abess: Adaptive Best Subset Selection in Polynomial Time}
 \description{
-Extremely efficient toolkit for solving the best subset selection problem in linear regression, logistic regression, Poisson regression, Cox proportional hazard model, multiple-response Gaussian, and multinomial regression. It implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times.
+Extremely efficient toolkit for solving the best subset selection problem in linear regression, logistic regression, Poisson regression, Cox proportional hazard model, multiple-response regression, multinomial logistic regression, and principal component analysis. It implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://github.com/abess-team/abess}
   \item \url{https://abess-team.github.io/abess/}
+  \item \url{https://abess.readthedocs.io}
   \item Report bugs at \url{https://github.com/abess-team/abess/issues}
 }
 
@@ -25,6 +26,7 @@ Authors:
   \item Kangkang Jiang \email{jiangkk3@mail2.sysu.edu.cn}
   \item Yanhang Zhang \email{zhangyh98@ruc.edu.cn}
   \item Liyuan Hu \email{huly5@mail2.sysu.edu.cn}
+  \item Junhao Huang \email{huangjh256@mail2.sysu.edu.can}
   \item Junxian Zhu \email{zhujunx@mail2.sysu.edu.cn}
   \item Canhong Wen \email{wencanhong@gmail.com}
   \item Heping Zhang \email{heping.zhang@yale.edu} (\href{https://orcid.org/0000-0002-0688-4076}{ORCID})

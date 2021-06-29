@@ -17,6 +17,30 @@
 #include <iostream>
 #include <vector>
 using namespace std;
+using namespace Eigen;
+
+template <class T2, class T3>
+struct FIT_ARG
+{
+    int support_size;
+    double lambda;
+    T2 beta_init;
+    T3 coef0_init;
+    Eigen::VectorXd bd_init;
+    Eigen::VectorXi A_init;
+
+    FIT_ARG(int _support_size, double _lambda, T2 _beta_init, T3 _coef0_init, VectorXd _bd_init, VectorXi _A_init)
+    {
+        support_size = _support_size;
+        lambda = _lambda;
+        beta_init = _beta_init;
+        coef0_init = _coef0_init;
+        bd_init = _bd_init;
+        A_init = _A_init;
+    };
+
+    FIT_ARG(){};
+};
 
 Eigen::MatrixXd Pointer2MatrixXd(double *x, int x_row, int x_col);
 // Eigen::MatrixXi Pointer2MatrixXi(int *x, int x_row, int x_col);

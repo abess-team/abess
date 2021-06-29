@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.rst": "restructuredtext",
         "ostream": "cpp",
         "iostream": "cpp",
         "array": "cpp",
@@ -63,7 +64,11 @@
         "dense": "cpp",
         "cinttypes": "cpp",
         "cfloat": "cpp",
-        "matrixfunctions": "cpp"
+        "matrixfunctions": "cpp",
+        "algorithm": "cpp",
+        "unordered_set": "cpp",
+        "iomanip": "cpp",
+        "string": "cpp"
     }, 
     "C_Cpp.dimInactiveRegions": false,
     "restructuredtext.confPath": ""
