@@ -100,6 +100,7 @@ problem at different support size (specified by \code{support.size})
 can be efficiently solved.
 }
 \examples{
+\donttest{
 library(abess)
 
 ## predictor matrix input:
@@ -110,7 +111,6 @@ pca_fit
 ## covariance matrix input:
 pca_fit <- abesspca(stats::cov(USArrests), type = "gram")
 pca_fit
-loadings(pca_fit)
 
 ## robust covariance matrix input:
 rob_cov <- MASS::cov.rob(USArrests)[["cov"]]
@@ -122,13 +122,12 @@ pca_fit
 pca_fit <- abesspca(USArrests, sparse.type = "kpc", 
                     support.size = c(1, 2))
 loadings(pca_fit)
-plot(pca_fit)
+}
 }
 \seealso{
 \code{\link{print.abesspca}}, 
-\code{\link{loadings.abesspca}}, 
-\code{\link{plot.abesspca}}.
+\code{\link{loadings.abesspca}},
 }
 \author{
-Jin Zhu, Junxian Zhu, Ruihuang Liu, Xueqin Wang
+Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang
 }

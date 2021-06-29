@@ -5,7 +5,7 @@
 \alias{loadings.abesspca}
 \title{Extract Sparse Loadings from a fitted "\code{abesspca}" object.}
 \usage{
-loadings(object, support.size = NULL, sparse = TRUE, ...)
+loadings(object, support.size = NULL, kpc = NULL, sparse = TRUE, ...)
 
 \method{loadings}{abesspca}(object, support.size = NULL, kpc = NULL, sparse = TRUE, ...)
 }
@@ -18,16 +18,16 @@ If \code{support.size = NULL}, then all coefficients would be returned.
 Default: \code{support.size = NULL}. 
 This parameter is omitted if {sparse.type = "kpc"}.}
 
-\item{sparse}{A logical value, specifying whether the coefficients should be
-presented as sparse matrix or not. Default: \code{sparse = TRUE}.}
-
-\item{...}{Other arguments.}
-
 \item{kpc}{An integer vector specifies 
 the coefficient fitted at given principal component. 
 If \code{kpc = NULL}, then all coefficients would be returned. 
 Default: \code{kpc = NULL}. 
 This parameter is omitted if {sparse.type = "fpc"}.}
+
+\item{sparse}{A logical value, specifying whether the coefficients should be
+presented as sparse matrix or not. Default: \code{sparse = TRUE}.}
+
+\item{...}{Other arguments.}
 }
 \value{
 A matrix with \code{length(support.size)} columns. 
@@ -40,6 +40,5 @@ coefficients from a fitted "\code{abesspca}" object.
 }
 \seealso{
 \code{\link{print.abesspca}}, 
-\code{\link{loadings.abesspca}}, 
-\code{\link{plot.abesspca}}.
+\code{\link{loadings.abesspca}},
 }

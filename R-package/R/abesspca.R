@@ -49,15 +49,16 @@
 #' otherwise, the total standard deviations of all principal components.}
 #' \item{call}{The original call to \code{abess}.}
 #' 
-#' @author Jin Zhu, Junxian Zhu, Ruihuang Liu, Xueqin Wang 
+#' @author Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang 
 #' 
 #' @export
 #' 
 #' @seealso \code{\link{print.abesspca}}, 
 #' \code{\link{loadings.abesspca}}, 
-#' \code{\link{plot.abesspca}}. 
+# \code{\link{plot.abesspca}}. 
 #'
 #' @examples
+#' \donttest{
 #' library(abess)
 #' 
 #' ## predictor matrix input:
@@ -68,7 +69,6 @@
 #' ## covariance matrix input:
 #' pca_fit <- abesspca(stats::cov(USArrests), type = "gram")
 #' pca_fit
-#' loadings(pca_fit)
 #' 
 #' ## robust covariance matrix input:
 #' rob_cov <- MASS::cov.rob(USArrests)[["cov"]]
@@ -80,7 +80,7 @@
 #' pca_fit <- abesspca(USArrests, sparse.type = "kpc", 
 #'                     support.size = c(1, 2))
 #' loadings(pca_fit)
-#' plot(pca_fit)
+#' }
 abesspca <- function(x, 
                      type = c("predictor", "gram"), 
                      sparse.type = c("fpc", "kpc"), 
