@@ -8,6 +8,7 @@ Authors@R: c(
   person(given = "Kangkang", family = "Jiang", email = "jiangkk3@mail2.sysu.edu.cn", role = c("aut")),
   person(given = "Yanhang", family = "Zhang", email = "zhangyh98@ruc.edu.cn", role = c("aut")),
   person(given = "Liyuan", family = "Hu", email = "huly5@mail2.sysu.edu.cn", role = c("aut")),
+  person(given = "Junhao", family = "Huang", email = "huangjh256@mail2.sysu.edu.can", role = c("aut")),
   person(given = "Junxian", family = "Zhu", email = "zhujunx@mail2.sysu.edu.cn", role = c("aut")),
   person(given = "Canhong", family = "Wen", email = "wencanhong@gmail.com", role = c("aut")),
   person(given = "Heping", family = "Zhang", email = "heping.zhang@yale.edu", role = c("aut"), comment = c(ORCID = "0000-0002-0688-4076")),

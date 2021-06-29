@@ -1,4 +1,5 @@
 ignore:
   # ignore folders and all its contents 
   - "python/include/"
-  - "python/src/abess_wrap.cpp" 
+  - "python/src/abess_wrap.cpp"
+  - "R-package/src"

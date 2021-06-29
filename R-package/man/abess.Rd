@@ -205,6 +205,7 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
 }
 \examples{
 \donttest{
+library(abess)
 n <- 100
 p <- 20
 support.size <- 3
@@ -255,9 +256,13 @@ predict(abess_fit, newx = dataset[["x"]][1:10, ],
 ########## Best group subset selection #############
 dataset <- generate.data(n, p, support.size)
 group_index <- rep(1:10, each = 2)
-abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                   group.index = group_index)
+abess_fit <- abess(dataset[["x"]], dataset[["y"]], group.index = group_index)
 str(extract(abess_fit))
+
+################ Golden section searching ################
+dataset <- generate.data(n, p, support.size)
+abess_fit <- abess(dataset[["x"]], dataset[["y"]], tune.path = "gsection")
+abess_fit
 
 ################ Feature screening ################
 p <- 1000

@@ -7,9 +7,9 @@
 abesspca(
   x,
   type = c("predictor", "gram"),
+  sparse.type = c("fpc", "kpc"),
   cor = FALSE,
   support.size = NULL,
-  support.num = NULL,
   c.max = 2,
   lambda = 0,
   always.include = NULL,
@@ -27,17 +27,23 @@ a predictor or the sample covariance/correlation matrix.}
 \item{type}{If \code{type = "predictor"}, \code{x} is considered as the predictor matrix. 
 If \code{type = "gram"}, \code{x} is considered as a sample covariance or correlation matrix.}
 
+\item{sparse.type}{If \code{sparse.type = "fpc"}, then best subset selection performs on the first principal component; 
+If \code{sparse.type = "kpc"}, then best subset selection performs on the first \eqn{K} principal components.}
+
 \item{cor}{A logical value. If \code{cor = TRUE}, perform PCA on the correlation matrix; 
 otherwise, the covariance matrix. 
 This option is available only if \code{type = "predictor"}. 
 Default: \code{cor = FALSE}.}
 
-\item{support.size}{An integer vector representing the alternative support sizes.}
-
-\item{support.num}{A integer specifies the number of support size to be consider.
-This arguments is ignored if \code{support.size} is supplied. 
-Default: \code{support.num = min(ncol(x), 100)} if \code{group.index = NULL};
-otherwise, \code{support.num = min(length(unique(group.index)), 100)}.}
+\item{support.size}{An integer vector. It represents the alternative support sizes when \code{sparse.type = "fpc"}, 
+while each support size controls the sparsity of a principal component when \code{sparse.type = "kpc"}. 
+When \code{sparse.type = "fpc"} but \code{support.size} is not supplied, 
+it is set as \code{support.size = 1:min(ncol(x), 100)} if \code{group.index = NULL};
+otherwise, \code{support.size = 1:min(length(unique(group.index)), 100)}. 
+When \code{sparse.type = "kpc"} but \code{support.size} is not supplied, 
+then for 20\% principal components, 
+it is set as \code{min(ncol(x), 100)} if \code{group.index = NULL};
+otherwise, \code{min(length(unique(group.index)), 100)}.}
 
 \item{c.max}{an integer splicing size. Default is: \code{c.max = 2}.}
 
@@ -71,10 +77,13 @@ A S3 \code{abesspca} class object, which is a \code{list} with the following com
 \item{loadings}{A \eqn{p}-by-\code{length(support.size)} loading matrix of sparse principal components (PC), 
 where each row is a variable and each column is a support size;}
 \item{nvars}{The number of variables.}
+\item{sparse.type}{The same as input.}
 \item{support.size}{The actual support.size values used. Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.}
 \item{ev}{A vector with size \code{length(support.size)}. It records the explained variance at each support size.}
 \item{pev}{A vector with the same length as \code{ev}. It records the percentage of explained variance at each support size.}
-\item{var.all}{Total variance of the explained by first principal component.}
+\item{var.all}{If \code{sparse.type = "fpc"}, 
+it is the total variance of the explained by first principal component; 
+otherwise, the total standard deviations of all principal components.}
 \item{call}{The original call to \code{abess}.}
 }
 \description{
@@ -109,6 +118,11 @@ rob_cov <- (rob_cov + t(rob_cov)) / 2
 pca_fit <- abesspca(rob_cov, type = "gram")
 pca_fit
 
+## K-component principal component analysis
+pca_fit <- abesspca(USArrests, sparse.type = "kpc", 
+                    support.size = c(1, 2))
+loadings(pca_fit)
+plot(pca_fit)
 }
 \seealso{
 \code{\link{print.abesspca}}, 

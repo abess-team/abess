@@ -43,14 +43,20 @@ Motivated by this observation, we suggest to recruit a heuristic search based on
 The code below exhibits how to employ the golden search technique with abess package: 
 ```{r}
 library(abess)
-synthetic_data <- generate.data(n = 300, p = 1000, 
-                                beta = c(3, 1.5, 0, 0, 2, rep(0, 995)))
+synthetic_data <- generate.data(n = 500, p = 100, 
+                                beta = c(3, 1.5, 0, 0, 2, rep(0, 95)))
 dat <- cbind.data.frame("y" = synthetic_data[["y"]], 
                         synthetic_data[["x"]])
-
+t1 <- system.time(abess_fit <- abess(y ~ ., data = dat, tune.path = "gsection"))
+str(extract(abess_fit))
 ```
-Compare to the sequential searching, the golden section greatly reduce the runtime:
+
+The output of golden-section strategy suggests the optimal model size is accurately detected. 
+Compare to the sequential searching, the golden section reduce the runtime because 
+it skip some support sizes which are likely to be a non-optimal one: 
+
 ```{r}
-system.time(abess_fit <- abess(y ~ ., data = dat, support.size = 3))
+t2 <- system.time(abess_fit <- abess(y ~ ., data = dat))
+rbind(t1, t2)
 ```
 

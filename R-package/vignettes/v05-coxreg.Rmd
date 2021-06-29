@@ -1,13 +1,36 @@
 ---
 title: "Best Subset Selection for Censored Response"
-author: "Liyuan Hu"
+author: "Liyuan Hu, Jin Zhu"
 date: "2021/5/27"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
+
+<!-- In this vignette, a lung cancer dataset is first displayed to the  -->
+
+<!-- ## Lung Cancer Dataset -->
+
+<!-- Let's have a look on the lung cancer dataset collected North Central Cancer Treatment Group (NCCTG).  -->
+<!-- This dataset consists of survival information of patients with advanced lung cancer from the NCCTG.  -->
+
+<!-- ```{r} -->
+<!-- lung <- read.csv("lung.csv", header = TRUE) -->
+<!-- head(lung) -->
+<!-- ``` -->
+
+<!-- The second columns -->
+
+<!-- ```{r} -->
+<!-- sum(is.na(lung)) -->
+<!-- ``` -->
+
+
+<!-- The proportional hazards model allows the analysis of survival data by regression modeling. -->
+<!-- Linearity is assumed on the log scale of the hazard. The hazard ratio in Cox proportional hazard model -->
+<!--  is assumed constant. First, we load the data.  -->
 
 ## Cox Proportional Hazrds Regression
 
@@ -104,13 +127,14 @@ The `plot.abess()` function helps to visualize the change of models with the cha
 ```{r}
 plot(abess_fit, label=T)
 ```
+    
 The graph shows that, beginning from the most dense model, the 4th variable (`ph.ecog2`) is included in the active set until the support size reaches 0.
 
 We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size. 
 ```{r}
 plot(abess_fit, type="tune")
 ```
-
+      
 The tuning value reaches the lowest point at 5. And We might choose the estimated model with support size equals 5 as our final model. 
 
 To extract any model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.
