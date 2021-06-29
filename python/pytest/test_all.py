@@ -316,6 +316,7 @@ class TestClass:
     def test_PCA(self):
         n = 1000
         p = 20
+        s = 10
         group_size = 5
         group_num = 4
 
@@ -327,27 +328,36 @@ class TestClass:
         g_index = np.arange(group_num)
         g_index = g_index.repeat(group_size)
 
-        # give X
-        model = abessPCA(support_size=range(0, p + 1))
-        model.fit(X)
+        # Check1: give X
+        model = abessPCA(support_size=range(s, s + 1))
+        model.fit(X, is_normal = False)
         coef1 = np.nonzero(model.coef_)[0]
 
-        # give Sigma
-        model.fit(Sigma=X.T.dot(X))
+        assert len(coef1) == s
+
+        # Check2: give Sigma
+        model.fit(Sigma = X.T.dot(X))
         coef2 = np.nonzero(model.coef_)[0]
 
-        # check1:
-        check1 = (coef1 == coef2).all()
+        assert len(coef2) == s
 
-        # group
-        model = abessPCA(support_size=range(0, 4))
+        # Check3: group
+        model = abessPCA(support_size=range(3, 4))
         model.fit(X, group=g_index, is_normal=False)
 
-        # check2:
         coef3 = np.unique(g_index[np.nonzero(model.coef_)])
-        check2 = (coef3.size <= 3)
+        assert (coef3.size == 3)
 
-        assert (check1 and check2)
+        # Check4: multi
+        model = abessPCA(support_size=range(s, s + 1))
+        model.fit(X, is_normal = False, number = 3)
+        assert (model.coef_.shape[1] == 3)
+
+        for i in range(3):
+            coef4 = np.nonzero(model.coef_[:, i])[0]
+            assert (len(coef4) == s)
+
+
 
     def test_gaussian_gs(self):
         n = 100
