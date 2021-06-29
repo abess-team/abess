@@ -548,6 +548,10 @@ class bess_base(BaseEstimator):
         # splicing type
         if (self.splicing_type != 0 and self.splicing_type !=1):
             raise ValueError("splicing type should be 0 or 1.")
+        
+        # number
+        if (not isinstance(number, int) or number <= 0 or number > p):
+            raise ValueError("number should be an positive integer and not bigger than X.shape[1].")
 
         # print("argument list: ")
         # print("self.data_type: " + str(self.data_type))
