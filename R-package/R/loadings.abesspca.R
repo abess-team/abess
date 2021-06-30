@@ -1,6 +1,6 @@
 #' @rdname loadings.abesspca
 #' @export
-loadings <- function(object, support.size = NULL, sparse = TRUE, ...) UseMethod("loadings")
+loadings <- function(object, support.size = NULL, kpc = NULL, sparse = TRUE, ...) UseMethod("loadings")
 
 #' Extract Sparse Loadings from a fitted "\code{abesspca}" object.
 #'
@@ -12,7 +12,13 @@ loadings <- function(object, support.size = NULL, sparse = TRUE, ...) UseMethod(
 #' @param support.size An integer vector specifies 
 #' the coefficient fitted at given \code{support.size}. 
 #' If \code{support.size = NULL}, then all coefficients would be returned. 
-#' Default: \code{support.size = NULL}.
+#' Default: \code{support.size = NULL}. 
+#' This parameter is omitted if {sparse.type = "kpc"}. 
+#' @param kpc An integer vector specifies 
+#' the coefficient fitted at given principal component. 
+#' If \code{kpc = NULL}, then all coefficients would be returned. 
+#' Default: \code{kpc = NULL}. 
+#' This parameter is omitted if {sparse.type = "fpc"}. 
 #' 
 #' @param sparse A logical value, specifying whether the coefficients should be
 #' presented as sparse matrix or not. Default: \code{sparse = TRUE}.
@@ -30,13 +36,22 @@ loadings <- function(object, support.size = NULL, sparse = TRUE, ...) UseMethod(
 #'
 loadings.abesspca <- function(object, 
                               support.size = NULL, 
+                              kpc = NULL, 
                               sparse = TRUE, ...)
 {
   supp_size_index <- NULL
-  if (!is.null(support.size)) {
-    supp_size_index <- match_support_size(object, support.size)
+  if (object[["sparse.type"]] == "fpc") {
+    if (!is.null(support.size)) {
+      supp_size_index <- match_support_size(object, support.size)
+    } else {
+      supp_size_index <- match_support_size(object, object[["support.size"]])
+    }    
   } else {
-    supp_size_index <- match_support_size(object, object[["support.size"]])
+    if (!is.null(kpc)) {
+      supp_size_index <- 1:length(object[["support.size"]])
+    } else {
+      supp_size_index <- kpc
+    }
   }
   
   stopifnot(is.logical(sparse))

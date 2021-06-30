@@ -55,7 +55,7 @@ using namespace Eigen;
 using namespace std;
 
 // [[Rcpp::export]]
-List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, 
+List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                int data_type, Eigen::VectorXd weight, Eigen::MatrixXd sigma,
                bool is_normal,
                int algorithm_type, int model_type, int max_iter, int exchange_num,
@@ -162,7 +162,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
       {
         algorithm_mul_sparse = new abessMultinomial<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
       }
-      else if (model_type == 7) 
+      else if (model_type == 7)
       {
         algorithm_uni_sparse = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
       }
@@ -179,76 +179,73 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
   vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>> *> algorithm_list_mul_sparse(max(Kfold, thread));
   if (is_cv)
   {
-    if (is_parallel)
+    for (int i = 0; i < max(Kfold, thread); i++)
     {
-      for (int i = 0; i < max(Kfold, thread); i++)
+      if (!sparse_matrix)
       {
-        if (!sparse_matrix)
+        if (algorithm_type == 6)
         {
-          if (algorithm_type == 6)
+          if (model_type == 1)
           {
-            if (model_type == 1)
-            {
-              algorithm_list_uni_dense[i] = new abessLm<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
-            }
-            else if (model_type == 2)
-            {
-              algorithm_list_uni_dense[i] = new abessLogistic<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 3)
-            {
-              algorithm_list_uni_dense[i] = new abessPoisson<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 4)
-            {
-              algorithm_list_uni_dense[i] = new abessCox<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 5)
-            {
-              algorithm_list_mul_dense[i] = new abessMLm<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
-            }
-            else if (model_type == 6)
-            {
-              algorithm_list_mul_dense[i] = new abessMultinomial<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 7) 
-            {
-              algorithm_list_uni_dense[i] = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
+            algorithm_list_uni_dense[i] = new abessLm<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
+          }
+          else if (model_type == 2)
+          {
+            algorithm_list_uni_dense[i] = new abessLogistic<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 3)
+          {
+            algorithm_list_uni_dense[i] = new abessPoisson<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 4)
+          {
+            algorithm_list_uni_dense[i] = new abessCox<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 5)
+          {
+            algorithm_list_mul_dense[i] = new abessMLm<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
+          }
+          else if (model_type == 6)
+          {
+            algorithm_list_mul_dense[i] = new abessMultinomial<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 7)
+          {
+            algorithm_list_uni_dense[i] = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
           }
         }
-        else
+      }
+      else
+      {
+        if (algorithm_type == 6)
         {
-          if (algorithm_type == 6)
+          if (model_type == 1)
           {
-            if (model_type == 1)
-            {
-              algorithm_list_uni_sparse[i] = new abessLm<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
-            }
-            else if (model_type == 2)
-            {
-              algorithm_list_uni_sparse[i] = new abessLogistic<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 3)
-            {
-              algorithm_list_uni_sparse[i] = new abessPoisson<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 4)
-            {
-              algorithm_list_uni_sparse[i] = new abessCox<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 5)
-            {
-              algorithm_list_mul_sparse[i] = new abessMLm<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
-            }
-            else if (model_type == 6)
-            {
-              algorithm_list_mul_sparse[i] = new abessMultinomial<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
-            else if (model_type == 7) 
-            {
-              algorithm_list_uni_sparse[i] = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
-            }
+            algorithm_list_uni_sparse[i] = new abessLm<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
+          }
+          else if (model_type == 2)
+          {
+            algorithm_list_uni_sparse[i] = new abessLogistic<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 3)
+          {
+            algorithm_list_uni_sparse[i] = new abessPoisson<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 4)
+          {
+            algorithm_list_uni_sparse[i] = new abessCox<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 5)
+          {
+            algorithm_list_mul_sparse[i] = new abessMLm<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type);
+          }
+          else if (model_type == 6)
+          {
+            algorithm_list_mul_sparse[i] = new abessMultinomial<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
+          }
+          else if (model_type == 7)
+          {
+            algorithm_list_uni_sparse[i] = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type);
           }
         }
       }
@@ -269,7 +266,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 #endif
       Eigen::VectorXd y_vec = y.col(0).eval();
 
-      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, 
+      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p,
                                                                                        data_type, weight, sigma,
                                                                                        is_normal,
                                                                                        algorithm_type, model_type, max_iter, exchange_num,
@@ -300,7 +297,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
       cout << "abesscpp2 5" << endl;
       cout << "mul_dense" << endl;
 #endif
-      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd>(x, y, n, p, 
+      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd>(x, y, n, p,
                                                                                                 data_type, weight, sigma,
                                                                                                 is_normal,
                                                                                                 algorithm_type, model_type, max_iter, exchange_num,
@@ -362,7 +359,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 #endif
       Eigen::VectorXd y_vec = y.col(0).eval();
 
-      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, 
+      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p,
                                                                                                    data_type, weight, sigma,
                                                                                                    is_normal,
                                                                                                    algorithm_type, model_type, max_iter, exchange_num,
@@ -394,7 +391,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
       cout << "mul_sparse" << endl;
 #endif
 
-      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>>(sparse_x, y, n, p, 
+      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>>(sparse_x, y, n, p,
                                                                                                             data_type, weight, sigma,
                                                                                                             is_normal,
                                                                                                             algorithm_type, model_type, max_iter, exchange_num,
@@ -453,7 +450,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 //  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> for Multivariable Dense
 //  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double> > for Multivariable Sparse
 template <class T1, class T2, class T3, class T4>
-List abessCpp(T4 &x, T1 &y, int n, int p, 
+List abessCpp(T4 &x, T1 &y, int n, int p,
               int data_type, Eigen::VectorXd weight, Eigen::MatrixXd sigma,
               bool is_normal,
               int algorithm_type, int model_type, int max_iter, int exchange_num,
@@ -505,9 +502,10 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   // 3:group_XTX
   if (is_cv)
   {
-    metric->set_cv_train_test_mask(data.get_n());
+    metric->set_cv_train_test_mask(data, data.get_n());
+    metric->set_cv_init_fit_arg(data.p, data.M);
     // metric->set_cv_initial_model_param(Kfold, data.get_p());
-    metric->set_cv_initial_A(Kfold, data.get_p());
+    // metric->set_cv_initial_A(Kfold, data.get_p());
     // metric->set_cv_initial_coef0(Kfold, data.get_p());
     // if (model_type == 1)
     //   metric->cal_cv_group_XTX(data);
@@ -546,20 +544,17 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       sequential_path_cv<T1, T2, T3, T4>(data, sigma, algorithm, metric, sequence, lambda_seq, early_stop, -1, result);
     }
   }
-  // else
-  // {
-  //     if (algorithm_type == 5 || algorithm_type == 3)
-  //     {
-  //         double log_lambda_min = log(max(lambda_min, 1e-5));
-  //         double log_lambda_max = log(max(lambda_max, 1e-5));
+  else
+  {
+    // if (algorithm_type == 5 || algorithm_type == 3)
+    // {
+    //     double log_lambda_min = log(max(lambda_min, 1e-5));
+    //     double log_lambda_max = log(max(lambda_max, 1e-5));
 
-  //         result = pgs_path(data, algorithm, metric, s_min, s_max, log_lambda_min, log_lambda_max, powell_path, nlambda);
-  //     }
-  //     else
-  //     {
-  //         result = gs_path(data, algorithm, metric, s_min, s_max, K_max, epsilon);
-  //     }
-  // }
+    //     result = pgs_path(data, algorithm, metric, s_min, s_max, log_lambda_min, log_lambda_max, powell_path, nlambda);
+    // }
+    gs_path(data, algorithm, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, K_max, epsilon, is_parallel, result);
+  }
 
 #ifdef TEST
   t2 = clock();
@@ -711,6 +706,31 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 #endif
     }
   }
+  else
+  {
+    beta_matrix = result.beta_matrix;
+    coef0_matrix = result.coef0_matrix;
+    ic_matrix = result.ic_matrix;
+    train_loss_matrix = result.train_loss_matrix;
+    Eigen::MatrixXd test_loss_matrix = result.test_loss_matrix;
+    if (is_cv)
+    {
+      test_loss_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
+    }
+    else
+    {
+      ic_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
+    }
+
+#ifdef TEST
+    std::cout << "test_loss: " << std::endl;
+    std::cout << test_loss_matrix << std::endl;
+    std::cout << "train_loss: " << std::endl;
+    std::cout << train_loss_matrix << std::endl;
+    std::cout << "ic: " << std::endl;
+    std::cout << ic_matrix << std::endl;
+#endif
+  }
 
 #ifdef TEST
   std::cout << "abesscpp 3 end --------" << std::endl;
@@ -758,9 +778,9 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   {
     if (data.data_type == 1)
     {
-      for (int j = 0; j < lambda_seq.size(); j++)
+      for (int j = 0; j < beta_matrix.cols(); j++)
       {
-        for (int i = 0; i < sequence.size(); i++)
+        for (int i = 0; i < beta_matrix.rows(); i++)
         {
           array_quotient(beta_matrix(i, j), data.x_norm, 1);
           beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(data.n));
@@ -770,9 +790,9 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     }
     else if (data.data_type == 2)
     {
-      for (int j = 0; j < lambda_seq.size(); j++)
+      for (int j = 0; j < beta_matrix.cols(); j++)
       {
-        for (int i = 0; i < sequence.size(); i++)
+        for (int i = 0; i < beta_matrix.rows(); i++)
         {
           array_quotient(beta_matrix(i, j), data.x_norm, 1);
           beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(data.n));
@@ -782,9 +802,9 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     }
     else
     {
-      for (int j = 0; j < lambda_seq.size(); j++)
+      for (int j = 0; j < beta_matrix.cols(); j++)
       {
-        for (int i = 0; i < sequence.size(); i++)
+        for (int i = 0; i < beta_matrix.rows(); i++)
         {
           array_quotient(beta_matrix(i, j), data.x_norm, 1);
           beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(data.n));
@@ -807,6 +827,9 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
                             Named("train_loss_all") = train_loss_matrix,
                             Named("ic_all") = ic_matrix,
                             Named("test_loss_all") = test_loss_sum);
+  if (path_type == 2) {
+    out_result.push_back(sequence, "sequence");
+  }
 #else
   out_result.add("beta", best_beta);
   out_result.add("coef0", best_coef0);

@@ -42,7 +42,13 @@ plot.abesspca <- function (x,
   
   stopifnot(is.logical(label))
   
-  type <- match.arg(type)
+  if (x[["sparse.type"]] == "fpc") {
+    type <- match.arg(type)
+  } else {
+    if (length(type) == 2) {
+      type <- "variance"
+    }
+  }
   df_list <- x[["support.size"]]
   df_list <- c(0, df_list)
   if (type == "variance") {
@@ -59,6 +65,9 @@ plot.abesspca <- function (x,
               ic.type = "variance")
   }
   if (type %in% c("loadings")) {
+    if (x[["sparse.type"]] == "loadings") {
+      stop("Best subset selection for K (>=2) principal component analysis does not supports plotting loadings matrix solution path.")
+    }
     plot_solution(y_value, df_list, 
                   mar = c(3, 4, 3, 4), label)
   }
