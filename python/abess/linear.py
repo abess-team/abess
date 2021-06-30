@@ -287,6 +287,8 @@ class bess_base(BaseEstimator):
             X, y = check_X_y(X, y, ensure_2d=True,
                             accept_sparse=False, multi_output=True, y_numeric=True)
             
+            if (self.model_type == "PCA"):
+                X = X - X.mean(axis = 0)
             Sigma = np.matrix(-1)
             self.n_features_in_ = X.shape[1]
             self.input_type = 0 
@@ -794,7 +796,7 @@ class bess_base(BaseEstimator):
             intercept_ = np.ones(X.shape[0]) * self.intercept_
             xbeta = np.dot(X, self.coef_) + intercept_
 
-            return xbeta
+            return np.exp(xbeta)/(1 + np.exp(xbeta))
         else:
             return None
 

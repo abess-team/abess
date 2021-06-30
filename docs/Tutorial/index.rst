@@ -6,6 +6,7 @@ This page contains links to all the Python related documents on Python package.
 .. toctree::
     LinearRegression
     LogisticRegression
+    logi_and_multiclass
     PoissonRegression
     CoxRegression
     MultiTaskLearning
@@ -17,6 +18,7 @@ This page contains links to all the Python related documents on Python package.
     ComputationalImprove
     PCA
     work_with_sklearn
+    
     
 
 
