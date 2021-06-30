@@ -298,7 +298,7 @@ class TestClass:
         # data3 = gen_data_splicing(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
-        support_size = np.linspace(0, s_max, s_max+1)
+        support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
         alpha = [0., 0.1, 0.2, 0.3, 0.4]
 
         model = abessLm()
@@ -417,7 +417,7 @@ class TestClass:
         family = "binomial"
         rho = 0.5
         sigma = 1
-        np.random.seed(1)
+        np.random.seed(5)
         data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
         print("logistic abess")
