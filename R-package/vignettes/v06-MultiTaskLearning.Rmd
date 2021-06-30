@@ -2,7 +2,18 @@
 title: "Multi-Response Linear Regression"
 author: "Jin Zhu, Liyuan Hu"
 date: "2021/5/31"
-output: html_document
+output:
+  html_document: 
+    toc: yes
+    keep_md: yes
+    self_contained: no
+  pdf_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 3
+  word_document: 
+    toc: yes
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}

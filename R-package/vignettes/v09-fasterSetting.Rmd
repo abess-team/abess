@@ -2,7 +2,18 @@
 title: "Tips for faster computation"
 author: "Jin Zhu"
 date: "6/13/2021"
-output: html_document
+output:
+  html_document: 
+    toc: yes
+    keep_md: yes
+    self_contained: no
+  pdf_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 3
+  word_document: 
+    toc: yes
+    keep_md: yes
 editor_options: 
   markdown: 
     wrap: sentence

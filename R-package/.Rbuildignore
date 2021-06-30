@@ -28,6 +28,7 @@
 ^vignettes/linearreg\.Rmd$
 ^vignettes/poissonregression\.Rmd$
 ^vignettes/v02-linearreg\.Rmd$
+^vignettes/omit/v02-linearreg\.Rmd$
 ^vignettes/v03-classification\.Rmd$
 ^vignettes/v04-poissonregression\.Rmd$
 ^vignettes/v05-coxreg\.Rmd$
