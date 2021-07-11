@@ -2,7 +2,7 @@
 
 > Before developing the code, please make sure:
 - following the [Installation](../Installation.md), the code in github works on your device;
-- read the [Architecture](Architecture.rst) of abess library.
+- read the [Architecture](Architecture.md) of abess library.
 
 ## Core C++
 
@@ -180,3 +180,13 @@ Congratulation! Your work can now be used by:
 ```Python
 from abess.linear import abessPCA
 ```
+
+## Miscellaneous
+
+### Code style
+New R code should follow the tidyverse [style guide](https://style.tidyverse.org/). You can use the styler package to apply these styles. 
+New Python code...
+Please don’t restyle code that has nothing to do with your code.
+
+### Test cases
+We use [testthat](cran.r-project.org/web/packages/testthat) for unit tests in R and [pytest](https://pypi.org/project/pytest/) in python. Contributions with test cases included are easier to accept.
