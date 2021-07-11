@@ -341,27 +341,9 @@
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get the deviance of the estimated model on all candidate support size</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/deviance.html">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>##            [,1]
-##  [1,] 202734.27
-##  [2,] 137565.32
-##  [3,] 116526.84
-##  [4,] 111214.06
-##  [5,] 106353.05
-##  [6,] 104483.91
-##  [7,]  99600.40
-##  [8,]  99303.92
-##  [9,]  98158.60
-## [10,]  94654.62
-## [11,]  94081.77
-## [12,]  93894.74
-## [13,]  93695.85
-## [14,]  92354.17
-## [15,]  92200.23
-## [16,]  92154.67
-## [17,]  92106.59
-## [18,]  92065.27
-## [19,]  92032.81
-## [20,]  92017.87</code></pre>
+<pre><code>##  [1] 202734.27 137565.32 116526.84 111214.06 106353.05 104483.91  99600.40
+##  [8]  99303.92  98158.60  94654.62  94081.77  93894.74  93695.85  92354.17
+## [15]  92200.23  92154.67  92106.59  92065.27  92032.81  92017.87</code></pre>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># print the fitted model</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
@@ -474,9 +456,9 @@ The pre-processed dataset can be freely downloaded by running:</p>
 ##   .. .. ..$ : chr [1:33] "0" "1" "2" "3" ...
 ##   .. ..@ x       : num [1:528] -0.251 -0.204 4.195 -0.161 0.527 ...
 ##   .. ..@ factors : list()
-##  $ intercept     : num [1:33, 1] 599 2115 1774 1270 1045 ...
-##  $ dev           : num [1:33, 1] 381863 172847 155975 147048 141513 ...
-##  $ tune.value    : num [1:33, 1] 6426 6043 6004 5987 5981 ...
+##  $ intercept     : num [1:33] 599 2115 1774 1270 1045 ...
+##  $ dev           : num [1:33] 381863 172847 155975 147048 141513 ...
+##  $ tune.value    : num [1:33] 6426 6043 6004 5987 5981 ...
 ##  $ nobs          : int 500
 ##  $ nvars         : int 5253
 ##  $ family        : chr "gaussian"
