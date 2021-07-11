@@ -36,3 +36,4 @@
 ^vignettes/v07-advancedFeatures\.Rmd$
 ^vignettes/v08-sPCA\.Rmd$
 ^vignettes/v09-fasterSetting\.Rmd$
+^\.covrignore$
