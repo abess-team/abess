@@ -297,22 +297,6 @@ test_that("Fast than Lasso (gaussian) works", {
   expect_lt(t1[3], t2[3])
 })
 
-test_that("Sparse matrix works", {
-  require(Matrix)
-  n <- 100
-  p <- 20
-  support.size <- 3
-  dataset <- generate.data(n, p, support.size)
-  dataset[["x"]][abs(dataset[["x"]]) < 1] <- 0
-  dataset[["x"]] <- Matrix(dataset[["x"]])
-  abess_fit1 <- abess(dataset[["x"]], dataset[["y"]])
-  abess_fit2 <- abess(as.matrix(dataset[["x"]]), dataset[["y"]], normalize = 0)
-  
-  abess_fit1[["call"]] <- NULL
-  abess_fit2[["call"]] <- NULL
-  expect_true(all.equal(abess_fit1, abess_fit2))
-})
-
 test_that("Golden section works", {
   n <- 500
   p <- 1500
@@ -320,4 +304,17 @@ test_that("Golden section works", {
   dataset <- generate.data(n, p, support_size)
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], tune.path = "gsection")
   test_batch(abess_fit, dataset, gaussian)
+})
+
+test_that("abess Output works", {
+  n <- 100
+  p <- 100
+  support_size <- 3
+  
+  dataset <- generate.data(n, p, support_size, seed = 1)
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]])
+  expect_true(is.vector(abess_fit[["dev"]]))
+  expect_true(is.vector(abess_fit[["tune.value"]]))
+  expect_true(is.vector(abess_fit[["support.size"]]))
+  expect_true(is.vector(abess_fit[["intercept"]]))
 })

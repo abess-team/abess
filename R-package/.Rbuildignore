@@ -34,5 +34,5 @@
 ^vignettes/v05-coxreg\.Rmd$
 ^vignettes/v06-MultiTaskLearning\.Rmd$
 ^vignettes/v07-advancedFeatures\.Rmd$
-^vignettes/v08-pca\.Rmd$
+^vignettes/v08-sPCA\.Rmd$
 ^vignettes/v09-fasterSetting\.Rmd$
