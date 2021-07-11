@@ -627,7 +627,7 @@ class bess_base(BaseEstimator):
         # print("linear.py fit")
         # print(y.shape)
 
-        support_sizes.astype('int32')
+        support_sizes = np.array(support_sizes).astype('int32')
         result = pywrap_abess(X, y, n, p, self.data_type, weight, Sigma,
                             is_normal,
                             algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,

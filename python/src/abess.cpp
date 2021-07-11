@@ -77,7 +77,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                bool sparse_matrix,
                int splicing_type)
 {
-  bool is_parallel = thread != 1;
+  // bool is_parallel = thread != 1;
 
 #ifdef _OPENMP
   // Eigen::initParallel();
