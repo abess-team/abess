@@ -825,6 +825,7 @@ abess.default <- function(x,
   }
   
   names(result)[which(names(result) == "train_loss_all")] <- "dev"
+  result[["dev"]] <- result[["dev"]][, 1]
   if (is_cv) {
     names(result)[which(names(result) == "test_loss_all")] <- "tune.value"
     result[["ic_all"]] <- NULL
@@ -832,13 +833,20 @@ abess.default <- function(x,
     names(result)[which(names(result) == "ic_all")] <- "tune.value"
     result[["test_loss_all"]] <- NULL
   }
+  result[["tune.value"]] <- result[["tune.value"]][, 1]
+  
   result[["best.size"]] <- s_list[which.min(result[["tune.value"]])]
   names(result)[which(names(result) == "coef0_all")] <- "intercept"
-  if (family == "multinomial") {
-    result[["intercept"]] <- lapply(result[["intercept"]], function(x) {
-      x <- x[-y_dim]
-    })
+  if (family %in% MULTIVARIATE_RESPONSE) {
+    if (family == "multinomial") {
+      result[["intercept"]] <- lapply(result[["intercept"]], function(x) {
+        x <- x[-y_dim]
+      })
+    }
+  } else {
+    result[["intercept"]] <- as.vector(result[["intercept"]])
   }
+
   names(result)[which(names(result) == 'beta_all')] <- "beta"
   # names(result)[which(names(result) == 'screening_A')] <- "screening.index"
   # result[["screening.index"]] <- result[["screening.index"]] + 1
