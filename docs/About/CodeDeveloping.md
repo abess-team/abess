@@ -1,21 +1,8 @@
 # Code Developing
 
-> Before developing the code, please follow the [Installation](../Installation.md) and make sure the initial code works on your device. 
-
-## Quick start
-
-Firstly, to start with our frame, a simple introduction is worthy to be shown.
-
-![](./fig/frame.svg)
-
-The core code of abess is built with C++ and the figure above shows the software architecture of abess and each building block will be described as follows. 
-
-- **The Data class** accept tabular data and return a Data object used on other parts; 
-- **The Algorithm class**, as the core class in abess, implement the generic splicing procedure for best subset selection. Seven built-in tasks are present and you can also add your algorithm as the next section shows. 
-- **The Metric class** serves as a evaluator. Based on the Algorithm and Data objects, it evaluate the estimation at a given support size by cross validation or information criterion. 
-- Finally, **R or Python interface** collects the results.
-
-For more details, please read *[这里放文献链接？（如果有）]()*
+> Before developing the code, please make sure:
+- following the [Installation](../Installation.md), the code in github works on your device;
+- read the [Architecture](Architecture.rst) of abess library.
 
 ## Core C++
 
@@ -129,7 +116,14 @@ Now your new method has been connected to the whole frame. In the next section, 
 
 ### R Package
 
-to be added...
+To make sure your code available for R, run 
+```powershell
+R CMD INSTALL R-package
+```
+Then, this package would be installed into R session if the R package dependence (`Rcpp` and `Matrix`) have been installed. 
+
+After that, the object in R can be passed to Cpp via the 
+unified API `abessCpp`. We strongly suggest the R function is named as `abessXXX` and use `roxygen2` to write R documentation and `devtools` to configure your package. 
 
 ### Python Package
 
