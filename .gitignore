@@ -65,3 +65,8 @@ R-package/vignettes/omit/v02-linearreg.Rmd
 R-package/tests/testthat/Rplots.pdf
 *.pdf
 *.pdf
+python/pytest/test_all.py
+python/pytest/3.0
+python/src/abess_wrap.cpp
+python/src/cabess.py
+python.rar

@@ -12,7 +12,7 @@ class List
 public:
 	List(){};
 	~List(){};
-	void add(string name, int value);
+	// void add(string name, int value);
 	void get_value_by_name(string name, int &value);
 	void add(string name, double value);
 	void get_value_by_name(string name, double &value);
@@ -21,11 +21,11 @@ public:
 	void add(string name, VectorXd &value);
 	void get_value_by_name(string name, VectorXd &value);
 	void add(string name, VectorXi &value);
-	void get_value_by_name(string name, VectorXi &value);
-	void add(string name, Eigen::Matrix<VectorXd, Dynamic, Dynamic> &value);
-	void get_value_by_name(string name, Eigen::Matrix<VectorXd, Dynamic, Dynamic> &value);
-	void add(string name, Eigen::Matrix<VectorXi, Dynamic, Dynamic> &value);
-	void get_value_by_name(string name, Eigen::Matrix<VectorXi, Dynamic, Dynamic> &value);
+	// void get_value_by_name(string name, VectorXi &value);
+	// void add(string name, Eigen::Matrix<VectorXd, Dynamic, Dynamic> &value);
+	// void get_value_by_name(string name, Eigen::Matrix<VectorXd, Dynamic, Dynamic> &value);
+	// void add(string name, Eigen::Matrix<VectorXi, Dynamic, Dynamic> &value);
+	// void get_value_by_name(string name, Eigen::Matrix<VectorXi, Dynamic, Dynamic> &value);
 
 private:
 	vector<int> vector_int;

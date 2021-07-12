@@ -1,5 +1,0 @@
-================
-GroupSelection
-================
-
-This is content.

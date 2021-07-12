@@ -764,6 +764,8 @@ public:
     }
     else
     {
+      if(XA.cols() == 0) return 0.;
+
 #ifdef TEST
       cout << "effective_number_of_parameter" << endl;
       clock_t t1 = clock(), t2;
@@ -817,16 +819,21 @@ public:
 
   ~abessLm(){};
 
-  void primary_model_fit(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  void primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
-    if (X.cols() == 0)
-    {
-      coef0 = y.mean();
-      return;
-    }
+    int n = x.rows();
+    int p = x.cols();
+
+    // to ensure
+    T4 X(n, p + 1);
+    X.rightCols(p) = x;
+    add_constant_column(X);
     // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
     Eigen::MatrixXd XTX = X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
-    beta = XTX.ldlt().solve(X.adjoint() * y);
+    Eigen::VectorXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
+
+    beta = beta0.tail(p).eval();
+    coef0 = beta0(0);
 
     // if (X.cols() == 0)
     // {
@@ -1123,6 +1130,7 @@ public:
     }
     else
     {
+      if(XA.cols() == 0) return 0.;
 #ifdef TEST
       cout << "effective_number_of_parameter" << endl;
       clock_t t1 = clock(), t2;
@@ -1499,6 +1507,7 @@ public:
     }
     else
     {
+      if(XA.cols() == 0) return 0.;
 #ifdef TEST
       cout << "effective_number_of_parameter" << endl;
       clock_t t1 = clock(), t2;
@@ -1589,19 +1598,33 @@ public:
 
   ~abessMLm(){};
 
-  void primary_model_fit(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  void primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
     // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
 
-    if (X.cols() == 0)
-    {
-      // coef0 = y.colwise().sum();
-      return;
-    }
-    // cout << "primary_fit 1" << endl;
-    // overload_ldlt(X, X, y, beta);
-    Eigen::MatrixXd XTX = X.transpose() * X;
-    beta = (XTX + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).ldlt().solve(X.transpose() * y);
+    int n = x.rows();
+    int p = x.cols();
+    int M = y.cols();
+
+    // to ensure
+    T4 X(n, p + 1);
+    X.rightCols(p) = x;
+    add_constant_column(X);
+    // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
+    Eigen::MatrixXd XTX = X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
+    Eigen::MatrixXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
+
+    beta = beta0.block(1, 0, p, M);
+    coef0 = beta0.row(0).eval();
+    // if (X.cols() == 0)
+    // {
+    //   // coef0 = y.colwise().sum();
+    //   return;
+    // }
+    // // cout << "primary_fit 1" << endl;
+    // // overload_ldlt(X, X, y, beta);
+    // Eigen::MatrixXd XTX = X.transpose() * X;
+    // beta = (XTX + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).ldlt().solve(X.transpose() * y);
     // cout << "primary_fit 2" << endl;
 
     // CG
@@ -2162,6 +2185,7 @@ public:
     }
     else
     {
+      if(XA.cols() == 0) return 0.;
 #ifdef TEST
       cout << "effective_number_of_parameter" << endl;
       clock_t t1 = clock(), t2;

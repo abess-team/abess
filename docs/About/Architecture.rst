@@ -1,5 +1,0 @@
-================
-Architecture
-================
-
-This is content.

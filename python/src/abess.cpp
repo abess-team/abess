@@ -77,7 +77,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                bool sparse_matrix,
                int splicing_type)
 {
-  bool is_parallel = thread != 1;
+  // bool is_parallel = thread != 1;
 
 #ifdef _OPENMP
   // Eigen::initParallel();
@@ -827,6 +827,9 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
                             Named("train_loss_all") = train_loss_matrix,
                             Named("ic_all") = ic_matrix,
                             Named("test_loss_all") = test_loss_sum);
+  if (path_type == 2) {
+    out_result.push_back(sequence, "sequence");
+  }
 #else
   out_result.add("beta", best_beta);
   out_result.add("coef0", best_coef0);
