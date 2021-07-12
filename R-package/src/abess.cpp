@@ -439,7 +439,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     delete algorithm_list_mul_sparse[i];
   }
   return out_result;
-};
+}
 
 //  T1 for y, XTy, XTone
 //  T2 for beta
