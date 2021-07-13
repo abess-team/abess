@@ -1,12 +1,8 @@
-#' @rdname loadings.abesspca
-#' @export
-loadings <- function(object, support.size = NULL, kpc = NULL, sparse = TRUE, ...) UseMethod("loadings")
-
 #' Extract Sparse Loadings from a fitted "\code{abesspca}" object.
 #'
 #' This function provides estimated
 #' coefficients from a fitted "\code{abesspca}" object.
-#' @rdname loadings.abesspca
+#' @rdname coef.abesspca
 #'
 #' @param object An "\code{abesspca}" project.
 #' @param support.size An integer vector specifies 
@@ -30,14 +26,14 @@ loadings <- function(object, support.size = NULL, kpc = NULL, sparse = TRUE, ...
 #' 
 #' @inherit abesspca seealso
 #' 
-#' @method loadings abesspca
+#' @method coef abesspca
 #' 
 #' @export
 #'
-loadings.abesspca <- function(object, 
-                              support.size = NULL, 
-                              kpc = NULL, 
-                              sparse = TRUE, ...)
+coef.abesspca <- function(object, 
+                          support.size = NULL, 
+                          kpc = NULL, 
+                          sparse = TRUE, ...)
 {
   supp_size_index <- NULL
   if (object[["sparse.type"]] == "fpc") {
@@ -55,7 +51,7 @@ loadings.abesspca <- function(object,
   }
   
   stopifnot(is.logical(sparse))
-  coef <- object[["loadings"]]
+  coef <- object[["coef"]]
   if (!is.null(supp_size_index)) {
     coef <- coef[, supp_size_index, drop = FALSE]
   }

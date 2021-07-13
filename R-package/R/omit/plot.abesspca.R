@@ -5,8 +5,8 @@
 #'
 #' @inheritParams print.abesspca
 #' @param type The type of terms to be plot in the y-axis. 
-#' One of \code{"loadings"} and \code{"variance"}. 
-#' Default is \code{"loadings"}.
+#' One of \code{"coef"} and \code{"variance"}. 
+#' Default is \code{"coef"}.
 #' @param label A logical value. 
 #' If \code{label = TRUE} (the default), 
 #' label the curves with variable sequence numbers. 
@@ -33,7 +33,7 @@
 #' plot(pca_fit, "variance")
 #' 
 plot.abesspca <- function (x, 
-                           type = c("loadings", "variance"), 
+                           type = c("coef", "variance"), 
                            label = FALSE, 
                            ...)
 {
@@ -53,8 +53,8 @@ plot.abesspca <- function (x,
   df_list <- c(0, df_list)
   if (type == "variance") {
     y_value <- c(0, x[["ev"]])
-  } else if (type == "loadings") {
-    y_value <- x[["loadings"]]
+  } else if (type == "coef") {
+    y_value <- x[["coef"]]
     y_value <- cbind(0, y_value)
   } else {
   }
@@ -64,8 +64,8 @@ plot.abesspca <- function (x,
               mar = c(3, 4, 3, 4), 
               ic.type = "variance")
   }
-  if (type %in% c("loadings")) {
-    if (x[["sparse.type"]] == "loadings") {
+  if (type %in% c("coef")) {
+    if (x[["sparse.type"]] == "coef") {
       stop("Best subset selection for K (>=2) principal component analysis does not supports plotting loadings matrix solution path.")
     }
     plot_solution(y_value, df_list, 

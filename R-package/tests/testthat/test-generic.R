@@ -83,9 +83,9 @@ test_that("generic (abesspca) works", {
   # expect_invisible(plot(abess_fit))
   # expect_invisible(plot(abess_fit, type = "variance"))
   
-  expect_visible(loadings(abess_fit))
-  expect_visible(loadings(abess_fit, support.size = 3))
-  expect_visible(loadings(abess_fit, sparse = FALSE))
+  expect_visible(coef(abess_fit))
+  expect_visible(coef(abess_fit, support.size = 3))
+  expect_visible(coef(abess_fit, sparse = FALSE))
   
   ## K-PCA
   abess_fit <- abesspca(dataset[["x"]], sparse.type = "kpc", 
@@ -96,7 +96,7 @@ test_that("generic (abesspca) works", {
   # expect_invisible(plot(abess_fit))
   # expect_invisible(plot(abess_fit, type = "variance"))
   
-  expect_visible(loadings(abess_fit))
-  expect_visible(loadings(abess_fit, kpc = 2))
-  expect_visible(loadings(abess_fit, sparse = FALSE))
+  expect_visible(coef(abess_fit))
+  expect_visible(coef(abess_fit, kpc = 2))
+  expect_visible(coef(abess_fit, sparse = FALSE))
 })
