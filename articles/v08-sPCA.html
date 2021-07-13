@@ -161,20 +161,14 @@
 <a href="#adaptive-best-subset-selection-for-pca" class="anchor"></a>Adaptive best subset selection for PCA</h3>
 <p>Next, we turn to fit abessPCA. For fitting the model, we can give either predictor matrix <span class="math inline">\(X\)</span>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-## Attaching package: 'abess'</code></pre>
-<pre><code>## The following object is masked from 'package:stats':
-## 
-##     loadings</code></pre>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">best_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
+<span class="va">best_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of 8
 ##  $ nvars       : int 99
 ##  $ support.size: num [1:99] 1 2 3 4 5 6 7 8 9 10 ...
 ##  $ sparse.type : chr "fpc"
-##  $ loadings    :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
+##  $ coef        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
 ##   .. ..@ i       : int [1:4950] 11 11 76 11 76 83 11 81 82 83 ...
 ##   .. ..@ p       : int [1:100] 0 1 3 6 10 15 21 28 36 45 ...
 ##   .. ..@ Dim     : int [1:2] 99 99
@@ -189,14 +183,14 @@
 ##  $ call        : language abesspca(x = X)
 ##  - attr(*, "class")= chr "abesspca"</code></pre>
 <p>or Gram-type matrix (like covariance matrix, correlation matrix and robust covariance matrix):</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cov</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"gram"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of 8
 ##  $ nvars       : int 99
 ##  $ support.size: num [1:99] 1 2 3 4 5 6 7 8 9 10 ...
 ##  $ sparse.type : chr "fpc"
-##  $ loadings    :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
+##  $ coef        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
 ##   .. ..@ i       : int [1:4950] 11 11 76 11 76 83 11 81 82 83 ...
 ##   .. ..@ p       : int [1:100] 0 1 3 6 10 15 21 28 36 45 ...
 ##   .. ..@ Dim     : int [1:2] 99 99
@@ -215,13 +209,13 @@
 <h3 class="hasAnchor">
 <a href="#interpreting-result" class="anchor"></a>Interpreting result</h3>
 <p>After fitting abessPCA, we study the percentage of explained variance as <span class="math inline">\(s\)</span> increases:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">[[</span><span class="st">"support.size"</span><span class="op">]</span><span class="op">]</span>, <span class="va">best_pca</span><span class="op">[[</span><span class="st">"pev"</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></code></pre></div>
 <p><img src="v08-sPCA_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>It is clear that the higher sparsity is, the more variance it can explain. Interestingly, we can seek for a smaller sparsity which can explain most of the variance. For instance, when 40 variables are selected, the percentage of explained variance from abessPCA exceeds 80%.<br>
-This result shows that using less than half of all 99 variables can be close to perfect. We can use <code>loadings</code> function to investigate which variables are selected when the explained variance are large. For example, if we choose sparsity 40, the used variables are:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/loadings.html">loadings</a></span><span class="op">(</span><span class="va">best_pca</span>, support.size <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></code></pre></div>
+This result shows that using less than half of all 99 variables can be close to perfect. We can use <code>coef</code> function to investigate which variables are selected when the explained variance are large. For example, if we choose sparsity 40, the used variables are:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">best_pca</span>, support.size <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></code></pre></div>
 <pre><code>## 99 x 1 sparse Matrix of class "dgCMatrix"
 ##              40
 ## V6    .        
@@ -350,17 +344,17 @@ This result shows that using less than half of all 99 variables can be close to 
 <li>Group 17: {the 97th, 98th, 99th variables}.</li>
 </ul>
 <p>Denote different groups as different number:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">g_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">16</span>, each <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">17</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>And fit a group SPCA model with additional argument <code>group.index = g_info</code>:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="va">X</span>, group.index <span class="op">=</span> <span class="va">g_info</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of 8
 ##  $ nvars       : int 99
 ##  $ support.size: num [1:17] 1 2 3 4 5 6 7 8 9 10 ...
 ##  $ sparse.type : chr "fpc"
-##  $ loadings    :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
+##  $ coef        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
 ##   .. ..@ i       : int [1:912] 42 43 44 45 46 47 18 19 20 21 ...
 ##   .. ..@ p       : int [1:18] 0 6 18 36 60 90 126 168 216 270 ...
 ##   .. ..@ Dim     : int [1:2] 99 17
@@ -389,14 +383,14 @@ This result shows that using less than half of all 99 variables can be close to 
   v_2 \leftarrow \arg\max_{v} v^T \Sigma^{\prime} v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq 5,
 \]</span> where <span class="math inline">\(\Sigma^{\prime} = \Sigma' = (1-v_1 v_1^\top)\Sigma(1-v_1 v_1^\top)\)</span>. The <span class="math inline">\((v_1, v_2)\)</span> forms a sparse loading matrix.</p>
 <p>The code for solving the two problem is:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_kpca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="va">X</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">40</span><span class="op">)</span>, sparse.type <span class="op">=</span> <span class="st">"kpc"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best_kpca</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of 8
 ##  $ nvars       : int 99
 ##  $ support.size: num [1:2] 50 40
 ##  $ sparse.type : chr "kpc"
-##  $ loadings    :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
+##  $ coef        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
 ##   .. ..@ i       : int [1:90] 2 3 4 11 12 13 15 16 17 19 ...
 ##   .. ..@ p       : int [1:3] 0 50 90
 ##   .. ..@ Dim     : int [1:2] 99 2

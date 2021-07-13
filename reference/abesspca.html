@@ -254,7 +254,7 @@ Default is <code>max.splicing.iter = 20</code>.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A S3 <code>abesspca</code> class object, which is a <code>list</code> with the following components:</p>
-<dt>loadings</dt><dd><p>A \(p\)-by-<code><a href='https://rdrr.io/r/base/length.html'>length(support.size)</a></code> loading matrix of sparse principal components (PC), 
+<dt>coef</dt><dd><p>A \(p\)-by-<code><a href='https://rdrr.io/r/base/length.html'>length(support.size)</a></code> loading matrix of sparse principal components (PC), 
 where each row is a variable and each column is a support size;</p></dd>
 <dt>nvars</dt><dd><p>The number of variables.</p></dd>
 <dt>sparse.type</dt><dd><p>The same as input.</p></dd>
@@ -279,7 +279,7 @@ can be efficiently solved.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='print.abesspca.html'>print.abesspca</a></code>, 
-<code><a href='loadings.html'>loadings.abesspca</a></code>,</p></div>
+<code><a href='coef.abesspca.html'>coef.abesspca</a></code>,</p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang</p>
@@ -326,14 +326,14 @@ can be efficiently solved.</p>
 #&gt; abesspca(x = rob_cov, type = "gram")
 #&gt; 
 #&gt;   support.size       ev       pev
-#&gt; 1            1 6747.076 0.9887506
-#&gt; 2            2 6781.189 0.9937497
-#&gt; 3            3 6811.124 0.9981366
-#&gt; 4            4 6823.840 1.0000000</div><div class='input'>
+#&gt; 1            1 6364.229 0.9844528
+#&gt; 2            2 6419.685 0.9930310
+#&gt; 3            3 6454.595 0.9984310
+#&gt; 4            4 6464.738 1.0000000</div><div class='input'>
 <span class='co'>## K-component principal component analysis</span>
 <span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span>, sparse.type <span class='op'>=</span> <span class='st'>"kpc"</span>, 
                     support.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='loadings.html'>loadings</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 4 x 2 sparse Matrix of class "dgCMatrix"
 #&gt;          1          2
 #&gt; Murder   .  .        
