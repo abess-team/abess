@@ -465,6 +465,9 @@ double loglik_logit(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &coef, int n, Eig
 template <class T4>
 void logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
 {
+#ifdef TEST
+    clock_t t1 = clock();
+#endif
     // cout << "primary_fit-----------" << endl;
     if (x.cols() == 0)
     {
@@ -479,11 +482,14 @@ void logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
     T4 X(n, p + 1);
     X.rightCols(p) = x;
 
-    // to do !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // X.col(0) = Eigen::MatrixXd::Ones(n, 1);
+    add_constant_column(X);
 
-    T4 X_new(n, p + 1);
-    T4 X_new_transpose(p + 1, n);
+    T4 X_new(X);
+
+#ifdef TEST
+    clock_t t2 = clock();
+    std::cout << "primary fit init time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+#endif
 
     Eigen::VectorXd beta0 = Eigen::VectorXd::Zero(p + 1);
     beta0(0) = coef0;
@@ -515,15 +521,8 @@ void logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
         {
             X_new.col(i) = X.col(i).cwiseProduct(W).cwiseProduct(weights);
         }
-        X_new_transpose = X_new.transpose();
 
-        // to ensure
-        // beta0 = (X_new_transpose * X).llt().solve(X_new_transpose * Z);
-
-        // CG
-        ConjugateGradient<T4, Lower | Upper> cg;
-        cg.compute(X_new_transpose * X);
-        beta0 = cg.solve(X_new_transpose * Z);
+        overload_ldlt(X_new, X, Z, beta0);
 
         Pi = pi(X, y, beta0);
         log_Pi = Pi.array().log();
@@ -537,12 +536,8 @@ void logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
         bool condition3 = abs(loglik1) < min(1e-3, tau);
         if (condition1 || condition2 || condition3)
         {
-            // cout << "condition1:" << condition1 << endl;
-            // cout << "condition2:" << condition2 << endl;
-            // cout << "condition3:" << condition3 << endl;
             break;
         }
-
         loglik0 = loglik1;
         W = Pi.cwiseProduct(one - Pi);
         for (int i = 0; i < n; i++)
@@ -552,6 +547,11 @@ void logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
         }
         Z = X * beta0 + (y - Pi).cwiseQuotient(W);
     }
+#ifdef TEST
+    t2 = clock();
+    std::cout << "primary fit time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    cout << "primary fit iter : " << j << endl;
+#endif
     beta = beta0.tail(p).eval();
     coef0 = beta0(0);
 };
