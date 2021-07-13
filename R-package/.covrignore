@@ -1,2 +1,2 @@
-include
-../include
+R-package/inst/include
+inst/include

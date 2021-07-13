@@ -1,9 +1,47 @@
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+      R:
+        target: auto
+        flags:
+          - R
+      python:
+        target: auto
+        flags:
+          - python
+      src:
+        target: auto
+        flags:
+          - src
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false  
+  require_base: yes
+  require_head: yes       
+  branches: null
+
+flags:
+  r:
+    paths:
+      - R-package/R
+    carryforward: false
+  python:
+    paths:
+      - python/abess
+    carryforward: true
+  src:
+    paths:
+      - src
+    carryforward: true
+
 ignore:
   # ignore folders and all its contents 
   - "python/include/"
   - "python/src/abess_wrap.cpp"
   - "python/abess/cabess"
 
-fixes:
-  - "/home/travis/build/abess-team/::"
   
