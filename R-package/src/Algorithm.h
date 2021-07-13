@@ -764,6 +764,8 @@ public:
     }
     else
     {
+      if(XA.cols() == 0) return 0.;
+
 #ifdef TEST
       cout << "effective_number_of_parameter" << endl;
       clock_t t1 = clock(), t2;
@@ -1128,6 +1130,7 @@ public:
     }
     else
     {
+      if(XA.cols() == 0) return 0.;
 #ifdef TEST
       cout << "effective_number_of_parameter" << endl;
       clock_t t1 = clock(), t2;
@@ -1504,6 +1507,7 @@ public:
     }
     else
     {
+      if(XA.cols() == 0) return 0.;
 #ifdef TEST
       cout << "effective_number_of_parameter" << endl;
       clock_t t1 = clock(), t2;
@@ -2181,6 +2185,7 @@ public:
     }
     else
     {
+      if(XA.cols() == 0) return 0.;
 #ifdef TEST
       cout << "effective_number_of_parameter" << endl;
       clock_t t1 = clock(), t2;
