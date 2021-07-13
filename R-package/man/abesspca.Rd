@@ -74,7 +74,7 @@ Default is \code{max.splicing.iter = 20}.}
 }
 \value{
 A S3 \code{abesspca} class object, which is a \code{list} with the following components:
-\item{loadings}{A \eqn{p}-by-\code{length(support.size)} loading matrix of sparse principal components (PC), 
+\item{coef}{A \eqn{p}-by-\code{length(support.size)} loading matrix of sparse principal components (PC), 
 where each row is a variable and each column is a support size;}
 \item{nvars}{The number of variables.}
 \item{sparse.type}{The same as input.}
@@ -121,12 +121,12 @@ pca_fit
 ## K-component principal component analysis
 pca_fit <- abesspca(USArrests, sparse.type = "kpc", 
                     support.size = c(1, 2))
-loadings(pca_fit)
+coef(pca_fit)
 }
 }
 \seealso{
 \code{\link{print.abesspca}}, 
-\code{\link{loadings.abesspca}},
+\code{\link{coef.abesspca}},
 }
 \author{
 Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang

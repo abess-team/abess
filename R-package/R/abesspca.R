@@ -37,7 +37,7 @@
 #' 
 #' 
 #' @return A S3 \code{abesspca} class object, which is a \code{list} with the following components:
-#' \item{loadings}{A \eqn{p}-by-\code{length(support.size)} loading matrix of sparse principal components (PC), 
+#' \item{coef}{A \eqn{p}-by-\code{length(support.size)} loading matrix of sparse principal components (PC), 
 #' where each row is a variable and each column is a support size;}
 #' \item{nvars}{The number of variables.}
 #' \item{sparse.type}{The same as input.}
@@ -54,7 +54,7 @@
 #' @export
 #' 
 #' @seealso \code{\link{print.abesspca}}, 
-#' \code{\link{loadings.abesspca}}, 
+#' \code{\link{coef.abesspca}}, 
 # \code{\link{plot.abesspca}}. 
 #'
 #' @examples
@@ -79,7 +79,7 @@
 #' ## K-component principal component analysis
 #' pca_fit <- abesspca(USArrests, sparse.type = "kpc", 
 #'                     support.size = c(1, 2))
-#' loadings(pca_fit)
+#' coef(pca_fit)
 #' }
 abesspca <- function(x, 
                      type = c("predictor", "gram"), 
@@ -332,12 +332,12 @@ abesspca <- function(x,
   result[["support.size"]] <- s_list
   result[["sparse.type"]] <- sparse_type
   if (sparse_type == "fpc") {
-    result[["loadings"]] <- res_list[[1]][["beta_all"]]
+    result[["coef"]] <- res_list[[1]][["beta_all"]]
     result[["ev"]] <- - res_list[[1]][["train_loss_all"]][, 1]
     # names(result)[which(names(result) == "train_loss_all")] <- "ev"
     # result[["ev"]] <- - result[["ev"]][, 1]
   } else {
-    result[["loadings"]] <- lapply(res_list, function(x) {
+    result[["coef"]] <- lapply(res_list, function(x) {
       x[["beta_all"]][[1]]
     })
     result[["ev"]] <- sapply(res_list, function(x) {
@@ -346,9 +346,9 @@ abesspca <- function(x,
     result[["ev"]] <- cumsum(result[["ev"]])
   }
   
-  # names(result)[which(names(result) == 'beta_all')] <- "loadings"
-  result[["loadings"]] <- do.call("cbind", result[["loadings"]])
-  result[["loadings"]] <- Matrix::Matrix(result[["loadings"]], 
+  # names(result)[which(names(result) == 'beta_all')] <- "coef"
+  result[["coef"]] <- do.call("cbind", result[["coef"]])
+  result[["coef"]] <- Matrix::Matrix(result[["coef"]], 
                                          sparse = TRUE, 
                                          dimnames = list(vn, 
                                                          as.character(s_list)))
