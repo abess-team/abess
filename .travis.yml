@@ -1,9 +1,12 @@
 matrix:
   include:
     - language: R
+      before_install:
+        - cd R-package
       cache: packages
       after_success:
-        - travis_wait 60 Rscript -e 'covr::codecov(path = "./R-package", quiet = FALSE, type = c("vignettes", "examples", "tests"), flags = "R")'
+        - cd ..
+        - travis_wait 60 Rscript -e 'covr::codecov(path = "./R-package", quiet = FALSE, type = c("vignettes", "examples", "tests"), flags = "R-package")'
 
     - dist: xenial
       language: python
