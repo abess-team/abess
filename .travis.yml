@@ -1,12 +1,25 @@
 matrix:
   include:
     - language: R
+    
+      apt_packages:
+        - libxml2-dev
+        
+      r_packages:
+        - xml2
+      
       before_install:
         - cd R-package
+      
       cache: packages
+      
       after_success:
-        - travis_wait 60 Rscript -e 'covr::codecov(path = ".", quiet = FALSE, type = c("vignettes", "examples", "tests"), flags = "rpackage")'
-
+        - cd ..
+        - travis_wait 60 Rscript -e 'library(covr); x <- package_coverage(path = "./R-package", quiet = FALSE, type = c("examples")); to_cobertura(x, "rpackage.xml")'
+        - curl -Os https://uploader.codecov.io/latest/macos/codecov
+        - chmod +x codecov
+        - ./codecov -F R -f rpackage.xml
+        
     - dist: xenial
       language: python
       python:
