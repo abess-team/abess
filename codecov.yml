@@ -1,21 +1,3 @@
-coverage:
-  status:
-    project:
-      default:
-        target: auto
-      R:
-        target: auto
-        flags:
-          - R
-      python:
-        target: auto
-        flags:
-          - python
-      src:
-        target: auto
-        flags:
-          - src
-
 comment:
   layout: "reach, diff, flags, files"
   behavior: default
@@ -24,24 +6,17 @@ comment:
   require_head: yes       
   branches: null
 
-flags:
-  r:
+flag_management:
+  default_rules:
+    carryforward: true
+  rpackage:
     paths:
-      - R-package/R
-    carryforward: false
+      - R-package
   python:
-    paths:
-      - python/abess
-    carryforward: true
-  src:
-    paths:
-      - src
-    carryforward: true
-
-ignore:
-  # ignore folders and all its contents 
-  - "python/include/"
-  - "python/src/abess_wrap.cpp"
-  - "python/abess/cabess"
+    ignore:
+      - "python/include/"
+      - "python/src/abess_wrap.cpp"
+      - "python/abess/cabess"
+    
 
   

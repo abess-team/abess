@@ -5,8 +5,7 @@ matrix:
         - cd R-package
       cache: packages
       after_success:
-        - cd ..
-        - travis_wait 60 Rscript -e 'covr::codecov(path = "./R-package", quiet = FALSE, type = c("vignettes", "examples", "tests"), flags = "R-package")'
+        - travis_wait 60 Rscript -e 'covr::codecov(path = ".", quiet = FALSE, type = c("vignettes", "examples", "tests"), flags = "rpackage")'
 
     - dist: xenial
       language: python
@@ -39,8 +38,5 @@ matrix:
         - ls *
         - codecov -F Python
         
-
-      after_success:
-        - codecov -F Python # run codecov
 
 
