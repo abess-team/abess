@@ -12,8 +12,6 @@ matrix:
         - covr
       
       before_install:
-        - pip3 install -U pip
-        - pip3 install -U codecov
         - cd R-package
       
       cache: packages
@@ -23,6 +21,8 @@ matrix:
         - ls *
         - travis_wait 60 Rscript -e 'library(covr); x <- package_coverage(path = "./R-package", quiet = FALSE, type = c("examples")); to_cobertura(x, "rpackage.xml")'
         - ls *
+        - pip3 install -U pip
+        - pip3 install -U codecov
         - codecov -F rpackage -f rpackage.xml
         
     - dist: xenial
