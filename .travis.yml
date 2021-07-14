@@ -16,9 +16,9 @@ matrix:
       after_success:
         - cd ..
         - travis_wait 60 Rscript -e 'library(covr); x <- package_coverage(path = "./R-package", quiet = FALSE, type = c("examples")); to_cobertura(x, "rpackage.xml")'
-        - curl -Os https://uploader.codecov.io/latest/macos/codecov
+        - curl -Os https://uploader.codecov.io/latest/linux/codecov
         - chmod +x codecov
-        - ./codecov -F R -f rpackage.xml
+        - ./codecov -F rpackage -f rpackage.xml
         
     - dist: xenial
       language: python
