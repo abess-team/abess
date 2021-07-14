@@ -7,18 +7,20 @@ matrix:
         
       r_packages:
         - xml2
+        - covr
       
       before_install:
+        - pip install codecov
         - cd R-package
       
       cache: packages
       
       after_success:
         - cd ..
+        - ls *
         - travis_wait 60 Rscript -e 'library(covr); x <- package_coverage(path = "./R-package", quiet = FALSE, type = c("examples")); to_cobertura(x, "rpackage.xml")'
-        - curl -Os https://uploader.codecov.io/latest/linux/codecov
-        - chmod +x codecov
-        - ./codecov -F rpackage -f rpackage.xml
+        - ls *
+        - codecov -F rpackage -f rpackage.xml
         
     - dist: xenial
       language: python
