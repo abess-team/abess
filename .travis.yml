@@ -4,13 +4,16 @@ matrix:
     
       apt_packages:
         - libxml2-dev
+        - python3
+        - python3-pip
         
       r_packages:
         - xml2
         - covr
       
       before_install:
-        - pip install codecov
+        - pip3 install -U pip
+        - pip3 install -U codecov
         - cd R-package
       
       cache: packages
