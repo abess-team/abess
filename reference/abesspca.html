@@ -174,8 +174,11 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A matrix object. It can be either the predictor matrix where each row is an observation and each column is 
-a predictor or the sample covariance/correlation matrix.</p></td>
+      <td><p>A matrix object. It can be either a predictor matrix 
+where each row is an observation and each column is a predictor or 
+a sample covariance/correlation matrix. 
+If <code>x</code> is a predictor matrix, it can be in sparse matrix format 
+(inherit from class <code>"dgCMatrix"</code> in package <code>Matrix</code>).</p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -326,10 +329,10 @@ can be efficiently solved.</p>
 #&gt; abesspca(x = rob_cov, type = "gram")
 #&gt; 
 #&gt;   support.size       ev       pev
-#&gt; 1            1 4051.132 0.9807190
-#&gt; 2            2 4087.685 0.9895679
-#&gt; 3            3 4119.179 0.9971922
-#&gt; 4            4 4130.778 1.0000000</div><div class='input'>
+#&gt; 1            1 6574.962 0.9879190
+#&gt; 2            2 6614.267 0.9938249
+#&gt; 3            3 6642.303 0.9980373
+#&gt; 4            4 6655.365 1.0000000</div><div class='input'>
 <span class='co'>## K-component principal component analysis</span>
 <span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span>, sparse.type <span class='op'>=</span> <span class='st'>"kpc"</span>, 
                     support.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
@@ -339,7 +342,8 @@ can be efficiently solved.</p>
 #&gt; Murder   .  .        
 #&gt; Assault  1  .        
 #&gt; UrbanPop . -0.9320592
-#&gt; Rape     . -0.3623060</div><div class='input'><span class='co'># }</span>
+#&gt; Rape     . -0.3623060</div><div class='input'>
+<span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

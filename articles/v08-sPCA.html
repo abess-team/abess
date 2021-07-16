@@ -381,7 +381,7 @@ This result shows that using less than half of all 99 variables can be close to 
     v_1 \leftarrow \arg\max_{v} v^T\Sigma v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq 10,
 \]</span> <span class="math display">\[
   v_2 \leftarrow \arg\max_{v} v^T \Sigma^{\prime} v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq 5,
-\]</span> where <span class="math inline">\(\Sigma^{\prime} = \Sigma' = (1-v_1 v_1^\top)\Sigma(1-v_1 v_1^\top)\)</span>. The <span class="math inline">\((v_1, v_2)\)</span> forms a sparse loading matrix.</p>
+\]</span> where <span class="math inline">\(\Sigma^{\prime} = (1-v_1 v_1^\top)\Sigma(1-v_1 v_1^\top)\)</span>. The <span class="math inline">\((v_1, v_2)\)</span> forms a sparse loading matrix.</p>
 <p>The code for solving the two problem is:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_kpca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="va">X</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">40</span><span class="op">)</span>, sparse.type <span class="op">=</span> <span class="st">"kpc"</span><span class="op">)</span>
@@ -399,8 +399,8 @@ This result shows that using less than half of all 99 variables can be close to 
 ##   .. .. ..$ : chr [1:2] "50" "40"
 ##   .. ..@ x       : num [1:90] 0.1318 -0.1202 -0.0747 -0.166 -0.1945 ...
 ##   .. ..@ factors : list()
-##  $ ev          : num [1:2] 1.01 1.69
-##  $ pev         : num [1:2] 0.256 0.426
+##  $ ev          : num [1:2] 1.08 1.58
+##  $ pev         : num [1:2] 0.272 0.399
 ##  $ var.all     : num 3.97
 ##  $ call        : language abesspca(x = X, sparse.type = "kpc", support.size = c(50, 40))
 ##  - attr(*, "class")= chr "abesspca"</code></pre>

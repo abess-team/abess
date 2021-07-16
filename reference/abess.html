@@ -164,7 +164,7 @@ in polynomial times.</p>
   family <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"gaussian"</span>, <span class='st'>"binomial"</span>, <span class='st'>"poisson"</span>, <span class='st'>"cox"</span>, <span class='st'>"mgaussian"</span>, <span class='st'>"multinomial"</span><span class='op'>)</span>,
   tune.path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"sequence"</span>, <span class='st'>"gsection"</span><span class='op'>)</span>,
   tune.type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"gic"</span>, <span class='st'>"ebic"</span>, <span class='st'>"bic"</span>, <span class='st'>"aic"</span>, <span class='st'>"cv"</span><span class='op'>)</span>,
-  weight <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>,
+  weight <span class='op'>=</span> <span class='cn'>NULL</span>,
   normalize <span class='op'>=</span> <span class='cn'>NULL</span>,
   c.max <span class='op'>=</span> <span class='fl'>2</span>,
   support.size <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -204,7 +204,9 @@ Can be in sparse matrix format (inherit from class <code>"dgCMatrix"</code> in p
       <td><p>The response variable, of <code>n</code> observations. 
 For <code>family = "binomial"</code> should have two levels. 
 For <code>family="poisson"</code>, <code>y</code> should be a vector with positive integer. 
-For <code>family = "cox"</code>, <code>y</code> should be a two-column matrix with columns named <code>time</code> and <code>status</code>.
+For <code>family = "cox"</code>, <code>y</code> should be a <code>Surv</code> object returned 
+by the <code>survival</code> package or 
+a two-column matrix with columns named <code>"time"</code> and <code>"status"</code>.
 For <code>family = "mgaussian"</code>, <code>y</code> should be a matrix of quantitative responses.
 For <code>family = "multinomial"</code>, <code>y</code> should be a factor of at least three levels.
 Note that, for either <code>"binomial"</code> or <code>"multinomial"</code>, 
@@ -235,7 +237,8 @@ Default is <code>"gic"</code>.</p></td>
     </tr>
     <tr>
       <th>weight</th>
-      <td><p>Observation weights. Default is <code>1</code> for each observation.</p></td>
+      <td><p>Observation weights. When <code>weight = NULL</code>, 
+we set <code>weight = 1</code> for each observation as default.</p></td>
     </tr>
     <tr>
       <th>normalize</th>
