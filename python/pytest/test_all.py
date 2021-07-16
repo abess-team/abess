@@ -101,8 +101,6 @@ class TestClass:
     #                           primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
     #     group = np.linspace(1, p, p)
     #     model3.fit(data.x, data.y, group=group)
-
-    #     model.predict_proba(data.x)
     #     nonzero_true = np.nonzero(data.coef_)[0]
     #     nonzero_fit = np.nonzero(model2.coef_)[0]
     #     print(nonzero_true)
