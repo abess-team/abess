@@ -1,8 +1,8 @@
 abess: R & Python Softwares for Best-Subset Selection in Polynomial Time
 ---
 
-![Github action](https://github.com/abess-team/abess/actions/workflows/ABESS-CI.yaml/badge.svg)
-[![Build Status](https://travis-ci.com/abess-team/abess.svg?branch=master)](https://travis-ci.com/abess-team/abess)
+![Github action](https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg)
+<!-- [![Build Status](https://travis-ci.com/abess-team/abess.svg?branch=master)](https://travis-ci.com/abess-team/abess) -->
 [![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://codecov.io/gh/abess-team/abess)
 [![docs](https://readthedocs.org/projects/abess/badge/?version=latest)](https://abess.readthedocs.io/en/latest/?badge=latest)
 [![cran](https://img.shields.io/cran/v/abess?logo=R)](https://cran.r-project.org/package=abess)
