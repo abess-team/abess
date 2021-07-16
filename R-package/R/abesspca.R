@@ -123,7 +123,6 @@ abesspca <- function(x,
   stopifnot(class(x)[1] %in% c("matrix", "data.frame", "dgCMatrix"))
   sparse_X <- ifelse(class(x)[1] %in% c("matrix", "data.frame"), FALSE, TRUE)
   if (sparse_X) {
-    stop("If x is a sparse matrix, it must be a dgCMatrix matrix!")
   } else {
     if (is.data.frame(x)) {
       x <- as.matrix(x)
@@ -211,14 +210,15 @@ abesspca <- function(x,
         } else {
           s_num <- min(nvars, 100)
         }
-      } else {
-        s_num <- support.num
-        if (group_select) {
-          stopifnot(s_num <= ngroup)
-        } else {
-          stopifnot(s_num <= nvars)
-        }
-      }
+      } 
+      # else {
+      #   s_num <- support.num
+      #   if (group_select) {
+      #     stopifnot(s_num <= ngroup)
+      #   } else {
+      #     stopifnot(s_num <= nvars)
+      #   }
+      # }
       s_list <-
         round(seq.int(
           from = 1,
@@ -404,13 +404,8 @@ variance_explained <- function(X, loading){
 
 sparse.cov <- function(x, cor = FALSE) {
   n <- nrow(x)
-  
   cMeans <- colMeans(x)
-  cSums <- colSums(x)
-  
-  covmat <- tcrossprod(cMeans, (-2*cSums+n*cMeans))
-  crossp <- as.matrix(crossprod(x))
-  covmat <- covmat + crossp
+  covmat <- (as.matrix(crossprod(x)) - n*tcrossprod(cMeans))/(n-1)
   
   if (cor) {
     sdvec <- sqrt(diag(covmat))

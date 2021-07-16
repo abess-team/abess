@@ -1,5 +1,6 @@
 library(testthat)
 library(abess)
+require(Matrix)
 
 test_that("abesspca (FPC) works", {
   data(USArrests)
@@ -56,6 +57,26 @@ test_that("abesspca (group) works", {
   
   spca_fit1 <- abesspca(USArrests)
   expect_true(all(coef(spca_fit)[, 3] == coef(spca_fit1)[, 4]))
+})
+
+test_that("abesspca (sparse) works", {
+  data(USArrests)
+  zero_matrix <- sample(0:1, size = prod(dim(USArrests)), replace = TRUE)
+  zero_matrix <- matrix(zero_matrix, nrow = nrow(USArrests))
+  USArrests[zero_matrix == 0] <- 0
+  ## covariance matrix:
+  USArrests <- as.matrix(USArrests)
+  spca_fit1 <- abesspca(USArrests)
+  USArrests <- Matrix(USArrests, sparse = TRUE)
+  spca_fit2 <- abesspca(USArrests)
+  expect_true(all.equal(spca_fit1, spca_fit2))
+  
+  ## correlation matrix:
+  USArrests <- as.matrix(USArrests)
+  spca_fit1 <- abesspca(USArrests, cor = TRUE)
+  USArrests <- Matrix(USArrests, sparse = TRUE)
+  spca_fit2 <- abesspca(USArrests, cor = TRUE)
+  expect_true(all.equal(spca_fit1, spca_fit2))
 })
 
 test_that("abesspca (always.include) works", {
