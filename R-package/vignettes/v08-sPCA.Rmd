@@ -164,7 +164,7 @@ $$
 $$
   v_2 \leftarrow \arg\max_{v} v^T \Sigma^{\prime} v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq 5,
 $$
-where $\Sigma^{\prime} = \Sigma' = (1-v_1 v_1^\top)\Sigma(1-v_1 v_1^\top)$. 
+where $\Sigma^{\prime} = (1-v_1 v_1^\top)\Sigma(1-v_1 v_1^\top)$. 
 The $(v_1, v_2)$ forms a sparse loading matrix.
 
 The code for solving the two problem is:
