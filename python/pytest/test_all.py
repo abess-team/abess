@@ -42,7 +42,7 @@ class TestClass:
         model2 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
                          K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
                          exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=1, covariance_update=True)
+                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=1, covariance_update=True, always_select=[0])
         model2.fit(data.x, data.y)
 
         model3 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
@@ -68,53 +68,57 @@ class TestClass:
             reg.coef_, rel=1e-5, abs=1e-5)
         assert (nonzero_true == nonzero_fit).all()
 
-    # def test_binomial(self):
-    #     n = 100
-    #     p = 20
-    #     k = 3
-    #     family = "binomial"
-    #     rho = 0.5
-    #     sigma = 1
-    #     np.random.seed(1)
-    #     data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-    #     support_size = range(0, 20)
-    #     print("logistic abess")
+    def test_binomial(self):
+        n = 100
+        p = 20
+        k = 3
+        family = "binomial"
+        rho = 0.5
+        sigma = 1
+        np.random.seed(1)
+        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        support_size = range(0, 20)
+        print("logistic abess")
 
-    #     model = abessLogistic(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=30,
-    #                           K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-    #                           exchange_num=2, tau=0.1 * np.log(n*p) / n,
-    #                           primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
-    #     group = np.linspace(1, p, p)
-    #     model.fit(data.x, data.y, group=group)
+        model = abessLogistic(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=30,
+                              K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                              exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
+        group = np.linspace(1, p, p)
+        model.fit(data.x, data.y, group=group)
 
-    #     model2 = abessLogistic(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
-    #                            K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-    #                            exchange_num=2, tau=0.1 * np.log(n*p) / n,
-    #                            primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5, sparse_matrix=True)
-    #     group = np.linspace(1, p, p)
-    #     model2.fit(data.x, data.y, group=group)
-    #     model2.predict(data.x)
+        model2 = abessLogistic(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+                               K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                               exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                               primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5, sparse_matrix=True)
+        group = np.linspace(1, p, p)
+        model2.fit(data.x, data.y, group=group)
+        model2.predict(data.x)
 
-    #     model3 = abessLogistic(path_type="seq", support_size=support_size, ic_type='aic', is_screening=False, screening_size=30,  alpha=[0.001],
-    #                           K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
-    #                           exchange_num=2, tau=0.1 * np.log(n*p) / n,
-    #                           primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
-    #     group = np.linspace(1, p, p)
-    #     model3.fit(data.x, data.y, group=group)
-    #     nonzero_true = np.nonzero(data.coef_)[0]
-    #     nonzero_fit = np.nonzero(model2.coef_)[0]
-    #     print(nonzero_true)
-    #     print(nonzero_fit)
-    #     assert (nonzero_true == nonzero_fit).all()
+        model3 = abessLogistic(path_type="seq", support_size=support_size, ic_type='aic', is_screening=False, screening_size=30,  alpha=[0.001],
+                              K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+                              exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
+        group = np.linspace(1, p, p)
+        model3.fit(data.x, data.y, group=group)
 
-    #     if sys.version_info[1] >= 6:
-    #         new_x = data.x[:, nonzero_fit]
-    #         reg = LogisticRegression(penalty="none")
-    #         reg.fit(new_x, data.y)
-    #         print(model2.coef_[nonzero_fit])
-    #         print(reg.coef_)
-    #         assert model2.coef_[nonzero_fit] == approx(
-    #             reg.coef_[0], rel=1e-2, abs=1e-2)
+        model.predict_proba(data.x)
+        
+
+        nonzero_true = np.nonzero(data.coef_)[0]
+        nonzero_fit = np.nonzero(model2.coef_)[0]
+        print(nonzero_true)
+        print(nonzero_fit)
+        assert (nonzero_true == nonzero_fit).all()
+
+        if sys.version_info[1] >= 6:
+            new_x = data.x[:, nonzero_fit]
+            reg = LogisticRegression(penalty="none")
+            reg.fit(new_x, data.y)
+            print(model2.coef_[nonzero_fit])
+            print(reg.coef_)
+            assert model2.coef_[nonzero_fit] == approx(
+                reg.coef_[0], rel=1e-2, abs=1e-2)
 
     def test_cox(self):
         n = 100
@@ -387,7 +391,7 @@ class TestClass:
         rho = 0.5
         sigma = 1
         M = 1
-        np.random.seed(2)
+        np.random.seed(3)
         # data = gen_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
         data = gen_data(n, p, family=family, k=k, rho=rho)
         # data3 = gen_data_splicing(
@@ -403,7 +407,7 @@ class TestClass:
             param_grid={"support_size": support_size,
                         "alpha": alpha},
             cv=cv,
-            n_jobs=5).fit(data.x, data.y)
+            n_jobs=1).fit(data.x, data.y)
 
         assert gcv.best_params_["support_size"] == k
         assert gcv.best_params_["alpha"] == 0.
@@ -470,35 +474,35 @@ class TestClass:
     #     assert gcv.best_params_["support_size"] == k
     #     assert gcv.best_params_["alpha"] == 0.
   
-    def test_multinomial_sklearn(self):
-        n = 100
-        p = 20
-        k = 3
-        family = "multinomial"
-        rho = 0.5
-        sigma = 1
-        M = 1
-        np.random.seed(2)
-        # data = gen_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
-        data = gen_data_splicing(
-            family=family, n=n, p=p,  k=k, rho=rho, M=M)
-        # data3 = gen_data_splicing(
-        #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
-        s_max = 20
-        support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
-        alpha = [0., 0.1, 0.2, 0.3, 0.4]
+    # def test_multinomial_sklearn(self):
+    #     n = 100
+    #     p = 20
+    #     k = 3
+    #     family = "multinomial"
+    #     rho = 0.5
+    #     sigma = 1
+    #     M = 1
+    #     np.random.seed(2)
+    #     # data = gen_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+    #     data = gen_data_splicing(
+    #         family=family, n=n, p=p,  k=k, rho=rho, M=M)
+    #     # data3 = gen_data_splicing(
+    #     #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
+    #     s_max = 20
+    #     support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
+    #     alpha = [0., 0.1, 0.2, 0.3, 0.4]
 
-        model = abessMultinomial()
-        cv = KFold(n_splits=5, shuffle=True, random_state=0)
-        gcv = GridSearchCV(
-            model,
-            param_grid={"support_size": support_size,
-                        "alpha": alpha},
-            cv=cv,
-            n_jobs=1).fit(data.x, data.y)
+    #     model = abessMultinomial()
+    #     cv = KFold(n_splits=5, shuffle=True, random_state=0)
+    #     gcv = GridSearchCV(
+    #         model,
+    #         param_grid={"support_size": support_size,
+    #                     "alpha": alpha},
+    #         cv=cv,
+    #         n_jobs=1).fit(data.x, data.y)
 
-        assert gcv.best_params_["support_size"] == k
-        assert gcv.best_params_["alpha"] == 0.
+    #     assert gcv.best_params_["support_size"] == k
+    #     assert gcv.best_params_["alpha"] == 0.
 
     def test_PCA(self):
         n = 1000
