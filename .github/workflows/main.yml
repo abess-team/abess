@@ -1,3 +1,6 @@
+
+name: ABESS-CI
+
 on:
   push:
     branches:
