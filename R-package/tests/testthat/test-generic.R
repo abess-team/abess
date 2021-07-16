@@ -49,23 +49,14 @@ test_that("generic (univariate) works", {
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "cox")
   expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
   expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
-  
-  ## mgaussian
-  dataset <- generate.data(n, p, support_size, seed = 1, family = "mgaussian")
-  abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "mgaussian")
-  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
-  
-  ## multinomial
-  dataset <- generate.data(n, p, support_size, seed = 1, family = "multinomial")
-  abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "multinomial")
-  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
-  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
 })
 
 
 test_that("generic (multivariate) works", {
+  skip_on_os("mac")
+  skip_on_os("solaris")
   n <- 100
-  p <- 200
+  p <- 100
   support_size <- 3
   
   dataset <- generate.data(n, p, support_size, seed = 1, family = "mgaussian")
@@ -84,7 +75,8 @@ test_that("generic (multivariate) works", {
   expect_visible(coef(abess_fit, sparse = FALSE))
   
   expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
-  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], support.size = c(3, 4)))
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], 
+                         support.size = c(3, 4)))
   
   expect_visible(extract(abess_fit))
   expect_visible(extract(abess_fit, support.size = 4))
@@ -94,12 +86,18 @@ test_that("generic (multivariate) works", {
   expect_visible(deviance(abess_fit, type = "aic"))
   expect_visible(deviance(abess_fit, type = "bic"))
   expect_visible(deviance(abess_fit, type = "ebic"))
+  
+  ## multinomial
+  dataset <- generate.data(n, p, support_size, seed = 1, family = "multinomial")
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "multinomial")
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
 })
 
 
 test_that("generic (abesspca) works", {
   n <- 100
-  p <- 200
+  p <- 100
   support_size <- 3
   
   ## F-PCA
@@ -127,4 +125,14 @@ test_that("generic (abesspca) works", {
   expect_visible(coef(abess_fit))
   expect_visible(coef(abess_fit, kpc = 2))
   expect_visible(coef(abess_fit, sparse = FALSE))
+})
+
+### As a by-production, testing data.generator:
+test_that("data generator works", {
+  n <- 50
+  p <- 50
+  support_size <- 3
+  
+  expect_visible(generate.data(n, p, support_size, seed = 1, cortype = 2))
+  expect_visible(generate.data(n, p, support_size, seed = 1, cortype = 3))
 })
