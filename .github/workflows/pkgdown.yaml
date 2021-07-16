@@ -105,8 +105,8 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps("R-package", dependencies = TRUE)
-          install.packages("covr", type = "binary")
-          install.packages("xml2", type = "binary")
+          install.packages("covr")
+          install.packages("xml2")
         shell: Rscript {0}
 
       - name: Install package
