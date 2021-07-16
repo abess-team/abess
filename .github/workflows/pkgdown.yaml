@@ -81,7 +81,7 @@ jobs:
 
   codecovR:
     name: Codecov for R-package
-    runs-on: macos-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
 
