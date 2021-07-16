@@ -763,8 +763,6 @@ class bess_base(BaseEstimator):
         elif self.model_type == "Poisson":
             intercept_ = np.ones(X.shape[0]) * self.intercept_
             xbeta_exp = np.exp(np.dot(X, self.coef_) + intercept_)
-            # result = dict()
-            # result["lam"] = xbeta_exp
             return xbeta_exp
         elif self.model_type == "Multigaussian":
             intercept_ = np.ones(X.shape[0]) * self.intercept_
@@ -833,9 +831,7 @@ class bess_base(BaseEstimator):
         elif self.model_type == "Poisson":
             intercept_ = np.ones(X.shape[0]) * self.intercept_
             xbeta_exp = np.exp(np.dot(X, self.coef_) + intercept_)
-            result = dict()
-            result["lam"] = xbeta_exp
-            return result
+            return -((y - xbeta_exp)*(y - xbeta_exp)).sum()
 
         elif self.model_type == "Cox":
             risk_score = np.dot(X, self.coef_)
