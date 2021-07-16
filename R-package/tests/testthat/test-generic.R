@@ -32,6 +32,9 @@ test_that("generic (univariate) works", {
   expect_visible(deviance(abess_fit, type = "bic"))
   expect_visible(deviance(abess_fit, type = "ebic"))
   
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], tune.type = "gic")
+  expect_visible(deviance(abess_fit, type = "gic"))
+  
   ## binomial
   dataset <- generate.data(n, p, support_size, seed = 1, family = "binomial")
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "binomial")
