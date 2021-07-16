@@ -30,6 +30,12 @@ test_batch <- function(abess_fit, dataset, family) {
   names(est_beta) <- NULL
   names(est_coef0) <- NULL
   
+  if (Sys.info()[1] == "Darwin") {
+    threshold <- 1e-5
+  } else {
+    threshold <- 1e-3
+  }
+  
   expect_equal(oracle_beta, est_beta, tolerance = 1e-5)
   expect_equal(oracle_coef0, est_coef0, tolerance = 1e-5)
   
