@@ -19,7 +19,7 @@ matrix:
       after_success:
         - cd ..
         - ls *
-        - travis_wait 60 Rscript -e 'library(covr); x <- package_coverage(path = "./R-package", quiet = FALSE, type = c("vignettes", "examples", "tests")); to_cobertura(x, "rpackage.xml")'
+        - travis_wait 60 Rscript -e 'library(covr); x <- package_coverage(path = "./R-package", quiet = FALSE, type = c("vignettes", "examples", "tests"), function_exclusions = "\\.onUnload"); to_cobertura(x, "rpackage.xml")'
         - ls *
         - pip install --upgrade pip
         - pip3 install --user codecov
