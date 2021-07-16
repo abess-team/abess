@@ -4,10 +4,10 @@ on:
       - main
       - master
 
-name: pkgdown
 
 jobs:
   pkgdown:
+    name: pkgdown
     runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.ABESS_TOKEN }}
@@ -49,3 +49,42 @@ jobs:
           git config --local user.email "zhuj37@mail2.sysu.edu.cn"
           git config --local user.name "Mamba413"
           Rscript -e 'pkgdown::deploy_to_branch("R-package", new_process = FALSE)'
+  
+  codecovPy:
+    name: workflow for Codecov
+    runs-on: ubuntu-latest
+    env:
+      PYTHON: '3.7'
+    steps:
+    - uses: actions/checkout@master
+    - name: Setup Python
+      uses: actions/setup-python@master
+      with:
+        python-version: 3.7
+    - name: Generate coverage report
+      run: |
+        pip install -r ./python/requirements.txt
+        pip install pytest
+        pip install pytest-cov
+        pip install scikit-learn
+        pip install lifelines
+        pip install pandas
+        pip install codecov
+        pip install gcovr
+        export CFLAGS="--coverage"
+        python ./python/setup.py install
+        pytest ./python --cov=abess --cov-report=xml
+        gcovr ./python/src/ --xml 
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
+        directory: ./
+        flags: python
+        env_vars: OS,PYTHON
+        name: codecov-umbrella
+        fail_ci_if_error: true
+        path_to_write_report: ./codecov_report.txt
+        verbose: true
+  
