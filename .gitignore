@@ -76,3 +76,4 @@ codecov
 rpackage.xml
 R-package/.RData
 R-package/R/tmp/abess.R
+python/pytest/1.py

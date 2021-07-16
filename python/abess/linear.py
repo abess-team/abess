@@ -765,10 +765,10 @@ class bess_base(BaseEstimator):
             xbeta_exp = np.exp(np.dot(X, self.coef_) + intercept_)
             return xbeta_exp
         elif self.model_type == "Multigaussian":
-            intercept_ = np.ones(X.shape[0]) * self.intercept_
+            intercept_ = np.repeat(self.intercept_[np.newaxis,...], X.shape[0], axis=0)
             return np.dot(X, self.coef_) + intercept_
         elif self.model_type == "Multinomial":
-            intercept_ = np.ones(X.shape[0]) * self.intercept_
+            intercept_ = np.repeat(self.intercept_[np.newaxis,...], X.shape[0], axis=0)
             xbeta = np.dot(X, self.coef_) + intercept_
             return np.argmax(xbeta)
     
@@ -808,20 +808,26 @@ class bess_base(BaseEstimator):
         if X.shape[1] != self.n_features_in_:
             raise ValueError("X.shape[1] should be " + str(self._p))
 
-        if self.model_type == "Lm" or self.model_type == "Multigaussian":
+        if self.model_type == "Lm":
             intercept_ = np.ones(X.shape[0]) * self.intercept_
+            y_pre = np.dot(X, self.coef_) + intercept_
+            return -((y - y_pre)*(y - y_pre)).sum()
+        
+        if self.model_type == "Multigaussian":
+            intercept_ = np.repeat(self.intercept_[np.newaxis,...], X.shape[0], axis=0)
             y_pre = np.dot(X, self.coef_) + intercept_
             return -((y - y_pre)*(y - y_pre)).sum()
 
         elif self.model_type == "Logistic":
             intercept_ = np.ones(X.shape[0]) * self.intercept_
             xbeta = np.dot(X, self.coef_) + intercept_
-            eta = np.exp(xbeta)
-            pr = np.exp(xbeta)
+            xbeta[xbeta>30] = 30
+            xbeta[xbeta<-30] = -30
+            pr = np.exp(xbeta)/(1 + np.exp(xbeta))
             return (y * np.log(pr) + (np.ones(X.shape[0]) - y) * np.log(np.ones(X.shape[0]) - pr)).sum()
 
         elif self.model_type == "Multinomial":
-            intercept_ = np.ones(X.shape[0]) * self.intercept_
+            intercept_ = np.repeat(self.intercept_[np.newaxis,...], X.shape[0], axis=0)
             xbeta = np.dot(X, self.coef_) + intercept_
             eta = np.exp(xbeta)
             for i in range(X.shape[0]):
@@ -830,8 +836,9 @@ class bess_base(BaseEstimator):
 
         elif self.model_type == "Poisson":
             intercept_ = np.ones(X.shape[0]) * self.intercept_
-            xbeta_exp = np.exp(np.dot(X, self.coef_) + intercept_)
-            return -((y - xbeta_exp)*(y - xbeta_exp)).sum()
+            eta = np.dot(X, self.coef_) + intercept_
+            exp_eta = np.exp(eta)
+            return (y * eta - exp_eta).sum()
 
         elif self.model_type == "Cox":
             risk_score = np.dot(X, self.coef_)
