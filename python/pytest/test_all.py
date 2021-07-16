@@ -75,7 +75,7 @@ class TestClass:
         family = "binomial"
         rho = 0.5
         sigma = 1
-        np.random.seed(1)
+        np.random.seed(5)
         data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
         print("logistic abess")
