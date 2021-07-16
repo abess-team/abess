@@ -3,7 +3,7 @@ library(testthat)
 
 test_that("generic (univariate) works", {
   n <- 100
-  p <- 200
+  p <- 100
   support_size <- 3
   
   dataset <- generate.data(n, p, support_size, seed = 1)
@@ -32,6 +32,34 @@ test_that("generic (univariate) works", {
   expect_visible(deviance(abess_fit, type = "bic"))
   expect_visible(deviance(abess_fit, type = "ebic"))
   
+  ## binomial
+  dataset <- generate.data(n, p, support_size, seed = 1, family = "binomial")
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "binomial")
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
+  
+  ## poisson
+  dataset <- generate.data(n, p, support_size, seed = 1, family = "poisson")
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "poisson")
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
+  
+  ## cox
+  dataset <- generate.data(n, p, support_size, seed = 1, family = "cox")
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "cox")
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
+  
+  ## mgaussian
+  dataset <- generate.data(n, p, support_size, seed = 1, family = "mgaussian")
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "mgaussian")
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
+  
+  ## multinomial
+  dataset <- generate.data(n, p, support_size, seed = 1, family = "multinomial")
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "multinomial")
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
 })
 
 
