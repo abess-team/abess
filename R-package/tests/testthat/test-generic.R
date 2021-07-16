@@ -135,4 +135,19 @@ test_that("data generator works", {
   
   expect_visible(generate.data(n, p, support_size, seed = 1, cortype = 2))
   expect_visible(generate.data(n, p, support_size, seed = 1, cortype = 3))
+
+  expect_visible(generate.data(n, p, seed = 1, family = "gaussian", 
+                               beta = c(rep(1, 5), rep(0, p - 5))))
+  expect_visible(generate.data(n, p, seed = 1, family = "binomial", 
+                               beta = c(rep(1, 5), rep(0, p - 5))))
+  expect_visible(generate.data(n, p, seed = 1, family = "poisson", 
+                               beta = c(rep(1, 5), rep(0, p - 5))))
+  expect_visible(generate.data(n, p, seed = 1, family = "cox", 
+                               beta = c(rep(1, 5), rep(0, p - 5))))
+  expect_visible(generate.data(n, p, seed = 1, family = "mgaussian", 
+                               beta = matrix(rep(c(rep(1, 5), rep(0, p - 5)), 3), 
+                                             ncol = 3)))
+  expect_visible(generate.data(n, p, seed = 1, family = "multinomial", 
+                               beta = matrix(rep(c(rep(1, 5), rep(0, p - 5)), 3), 
+                                             ncol = 3)))
 })
