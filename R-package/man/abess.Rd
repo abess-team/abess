@@ -12,7 +12,7 @@
   family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
   tune.path = c("sequence", "gsection"),
   tune.type = c("gic", "ebic", "bic", "aic", "cv"),
-  weight = rep(1, nrow(x)),
+  weight = NULL,
   normalize = NULL,
   c.max = 2,
   support.size = NULL,
@@ -45,7 +45,9 @@ Can be in sparse matrix format (inherit from class \code{"dgCMatrix"} in package
 \item{y}{The response variable, of \code{n} observations. 
 For \code{family = "binomial"} should have two levels. 
 For \code{family="poisson"}, \code{y} should be a vector with positive integer. 
-For \code{family = "cox"}, \code{y} should be a two-column matrix with columns named \code{time} and \code{status}.
+For \code{family = "cox"}, \code{y} should be a \code{Surv} object returned 
+by the \code{survival} package or 
+a two-column matrix with columns named \code{"time"} and \code{"status"}.
 For \code{family = "mgaussian"}, \code{y} should be a matrix of quantitative responses.
 For \code{family = "multinomial"}, \code{y} should be a factor of at least three levels.
 Note that, for either \code{"binomial"} or \code{"multinomial"}, 
@@ -68,7 +70,8 @@ where the specific support size to be considered is determined by golden section
 Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
 Default is \code{"gic"}.}
 
-\item{weight}{Observation weights. Default is \code{1} for each observation.}
+\item{weight}{Observation weights. When \code{weight = NULL}, 
+we set \code{weight = 1} for each observation as default.}
 
 \item{normalize}{Options for normalization. \code{normalize = 0} for no normalization. 
 \code{normalize = 1} for subtracting the mean of columns of \code{x}.

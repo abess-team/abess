@@ -17,7 +17,9 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param y The response variable, of \code{n} observations. 
 #' For \code{family = "binomial"} should have two levels. 
 #' For \code{family="poisson"}, \code{y} should be a vector with positive integer. 
-#' For \code{family = "cox"}, \code{y} should be a two-column matrix with columns named \code{time} and \code{status}.
+#' For \code{family = "cox"}, \code{y} should be a \code{Surv} object returned 
+#' by the \code{survival} package or 
+#' a two-column matrix with columns named \code{"time"} and \code{"status"}.
 #' For \code{family = "mgaussian"}, \code{y} should be a matrix of quantitative responses.
 #' For \code{family = "multinomial"}, \code{y} should be a factor of at least three levels.
 #' Note that, for either \code{"binomial"} or \code{"multinomial"}, 
@@ -88,7 +90,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gaussian"},
 #' \code{2} for \code{"binomial"}. Default is \code{normalize = NULL}.
 #' @param c.max an integer splicing size. Default is: \code{c.max = 2}. 
-#' @param weight Observation weights. Default is \code{1} for each observation.
+#' @param weight Observation weights. When \code{weight = NULL}, 
+#' we set \code{weight = 1} for each observation as default.
 #' @param max.splicing.iter The maximum number of performing splicing algorithm. 
 #' In most of the case, only a few times of splicing iteration can guarantee the convergence. 
 #' Default is \code{max.splicing.iter = 20}.
@@ -298,7 +301,7 @@ abess.default <- function(x,
                           family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
                           tune.path = c("sequence", "gsection"),
                           tune.type = c("gic", "ebic", "bic", "aic", "cv"),
-                          weight = rep(1, nrow(x)),
+                          weight = NULL,
                           normalize = NULL,
                           c.max = 2,
                           support.size = NULL,
@@ -321,19 +324,11 @@ abess.default <- function(x,
                           ...)
 {
   tau <- NULL
+
+  ## check lambda
   if(length(lambda) > 1){
     stop("only a single lambda value is allowed.")
   }
-  if(length(lambda) == 1 && lambda == 0){
-    type <- "bss"
-  }else{
-    type <- "bsrr"
-  }
-  algorithm_type = switch(type,
-                          "bss" = "GPDAS",
-                          "bsrr" = "GL0L2")
-  
-  ## check lambda
   stopifnot(!anyNA(lambda))
   stopifnot(all(lambda >= 0))
   lambda.list <- lambda
@@ -375,24 +370,17 @@ abess.default <- function(x,
     "multinomial" = 6
   )
   
-  # check weight
-  nobs <- nrow(x)
-  stopifnot(is.vector(weight))
-  if (length(weight) != nobs) {
-    stop("Rows of x must be the same as length of weight!")
-  }
-  stopifnot(all(is.numeric(weight)), all(weight >= 0))
-  
   ## check predictors:
-  # if (anyNA(x)) {
-  #   stop("x has missing value!")
-  # }
+  vn <- colnames(x)  ## if x is not a matrix type object, it will return NULL.
   nvars <- ncol(x)
-  vn <- colnames(x)
+  nobs <- nrow(x)
+  if (nvars == 1) {
+    stop("x should have at least two columns!")
+  }
   if (is.null(vn)) {
     vn <- paste0("x", 1:nvars)
   }
-  
+  stopifnot(class(x)[1] %in% c("data.frame", "matrix", "dgCMatrix"))
   sparse_X <- ifelse(class(x)[1] %in% c("matrix", "data.frame"), FALSE, TRUE)
   if (sparse_X) {
     if (class(x) == "dgCMatrix") {
@@ -401,17 +389,30 @@ abess.default <- function(x,
       x <- as.matrix(x)
       x <- x[, c(3, 1, 2)]
     } else {
-      stop("Must be a dgCMatrix matrix!")
+      stop("If x is a sparse matrix, it must be a dgCMatrix matrix!")
     }
   } else {
-    if (!is.matrix(x)) {
+    if (is.data.frame(x)) {
       x <- as.matrix(x)
-    }    
+    }
+    if (!is.numeric(x)) {
+      stop("x must be a numeric matrix or data.frame!")
+    } 
   }
-  if (nvars == 1) {
-    stop("x should have at least two columns!")
+  if (anyNA(x) || any(is.infinite(x))) {
+    stop("x has missing value or infinite value!")
   }
 
+  # check weight
+  if (is.null(weight)) {
+    weight <- rep(1, nobs)
+  }
+  stopifnot(is.vector(weight))
+  if (length(weight) != nobs) {
+    stop("Rows of x must be the same as length of weight!")
+  }
+  stopifnot(all(is.numeric(weight)), all(weight >= 0))
+  
   ## check C-max:
   stopifnot(is.numeric(c.max) & c.max >= 1)
   if (c.max >= nvars) {
@@ -687,9 +688,7 @@ abess.default <- function(x,
       stop("The number of screening features must be equal or less than that of the column of x!")
     if (path_type == 1) {
       if (screening.num < max(s_list))
-        stop(
-          "The number of screening features must be equal or greater than the maximum one in support.size!"
-        )
+        stop("The number of screening features must be equal or greater than the maximum one in support.size!")
     } else{
       if (screening.num < s_max)
         stop("The number of screening features must be equal or greater than the max(gs.range)!")
@@ -944,6 +943,7 @@ abess.formula <- function(formula, data, subset, na.action, ...) {
   
   y <- model.response(mf, "numeric")
   x <- abess_model_matrix(mt, mf, contrasts)[, -1]
+  x <- as.matrix(x)
   
   # all_name <- all.vars(mt)
   # if (abess_res[["family"]] == "cox") {

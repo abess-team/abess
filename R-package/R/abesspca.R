@@ -1,8 +1,11 @@
 #' Adaptive best subset selection for principal component analysis
 #' 
 #' @inheritParams abess.default
-#' @param x A matrix object. It can be either the predictor matrix where each row is an observation and each column is 
-#' a predictor or the sample covariance/correlation matrix. 
+#' @param x A matrix object. It can be either a predictor matrix 
+#' where each row is an observation and each column is a predictor or 
+#' a sample covariance/correlation matrix. 
+#' If \code{x} is a predictor matrix, it can be in sparse matrix format 
+#' (inherit from class \code{"dgCMatrix"} in package \code{Matrix}).
 #' @param type If \code{type = "predictor"}, \code{x} is considered as the predictor matrix. 
 #' If \code{type = "gram"}, \code{x} is considered as a sample covariance or correlation matrix.
 #' @param sparse.type If \code{sparse.type = "fpc"}, then best subset selection performs on the first principal component; 
@@ -80,6 +83,7 @@
 #' pca_fit <- abesspca(USArrests, sparse.type = "kpc", 
 #'                     support.size = c(1, 2))
 #' coef(pca_fit)
+#' 
 #' }
 abesspca <- function(x, 
                      type = c("predictor", "gram"), 
@@ -110,9 +114,29 @@ abesspca <- function(x,
   max_splicing_iter <- as.integer(max.splicing.iter)
   
   ## check x matrix:
-  stopifnot(!anyNA(x))
-  if (!is.matrix(x)) {
-    x <- as.matrix(x)
+  vn <- colnames(x)
+  if (is.null(vn)) {
+    vn <- paste0("x", 1:nvars)
+  }
+  
+  nvars <- ncol(x)
+  stopifnot(class(x)[1] %in% c("matrix", "data.frame", "dgCMatrix"))
+  sparse_X <- ifelse(class(x)[1] %in% c("matrix", "data.frame"), FALSE, TRUE)
+  if (sparse_X) {
+    stop("If x is a sparse matrix, it must be a dgCMatrix matrix!")
+  } else {
+    if (is.data.frame(x)) {
+      x <- as.matrix(x)
+    }
+    if (!is.numeric(x)) {
+      stop("x must be a numeric matrix or data.frame!")
+    } 
+    if (nvars == 1) {
+      stop("x should have at least two columns!")
+    }
+    if (anyNA(x) || any(is.infinite(x))) {
+      stop("x has missing value or infinite value!")
+    }    
   }
   
   ## compute gram matrix
@@ -123,16 +147,19 @@ abesspca <- function(x,
   } else {
     stopifnot(length(cor) == 1)
     stopifnot(is.logical(cor))
-    if (cor) {
-      x <- stats::cor(x)
+    if (sparse_X) {
+      if (cor) {
+        x <- sparse.cov(x, cor = TRUE)
+      } else {
+        x <- sparse.cov(x)
+      }
     } else {
-      x <- stats::cov(x)
+      if (cor) {
+        x <- stats::cor(x)
+      } else {
+        x <- stats::cov(x)
+      }
     }
-  }
-  nvars <- dim(x)[2]
-  vn <- colnames(x)
-  if (is.null(vn)) {
-    vn <- paste0("x", 1:nvars)
   }
   
   ## check sparse.type
@@ -257,6 +284,7 @@ abesspca <- function(x,
   res_list <- list()
   k <- 0
   s_list_copy <- s_list
+  x_copy <- x
   while(k_num > 0) {
     k_num <- k_num - 1
     k <- k + 1
@@ -340,18 +368,23 @@ abesspca <- function(x,
     result[["coef"]] <- lapply(res_list, function(x) {
       x[["beta_all"]][[1]]
     })
-    result[["ev"]] <- sapply(res_list, function(x) {
-      - x[["train_loss_all"]][1, 1]
-    })
-    result[["ev"]] <- cumsum(result[["ev"]])
   }
   
   # names(result)[which(names(result) == 'beta_all')] <- "coef"
   result[["coef"]] <- do.call("cbind", result[["coef"]])
   result[["coef"]] <- Matrix::Matrix(result[["coef"]], 
-                                         sparse = TRUE, 
-                                         dimnames = list(vn, 
-                                                         as.character(s_list)))
+                                     sparse = TRUE, 
+                                     dimnames = list(vn, as.character(s_list)))
+  
+  if (sparse_type == "kpc") {
+    k_num <- ncol(result[["coef"]])
+    ev_vec <- numeric(k_num)
+    for (i in 1:k_num) {
+      ev_vec[i] <- variance_explained(x_copy, 
+                                      result[["coef"]][, 1:i, drop = FALSE])
+    }
+    result[["ev"]] <- ev_vec
+  }
   
   result[["pev"]] <- result[["ev"]] / total_variance
   result[["var.all"]] <- total_variance
@@ -367,6 +400,24 @@ variance_explained <- function(X, loading){
   Z <- qr(X %*% loading)
   result <- sum(diag(qr.R(Z))^2)
   return(result)
+}
+
+sparse.cov <- function(x, cor = FALSE) {
+  n <- nrow(x)
+  
+  cMeans <- colMeans(x)
+  cSums <- colSums(x)
+  
+  covmat <- tcrossprod(cMeans, (-2*cSums+n*cMeans))
+  crossp <- as.matrix(crossprod(x))
+  covmat <- covmat + crossp
+  
+  if (cor) {
+    sdvec <- sqrt(diag(covmat))
+    covmat <- covmat / crossprod(t(sdvec))
+  }
+  
+  as.matrix(covmat)
 }
 
 project_cov <- function(cov_mat, direction) {

@@ -103,7 +103,7 @@ test_that("screening (binomial) works", {
 })
 
 test_that("screening (cox) works", {
-  skip("skip cox now!")
+  skip("skip cox now because it is too slow!")
   n <- 300
   p <- 1000
   support_size <- 3
@@ -129,6 +129,8 @@ test_that("screening (poisson) works", {
 })
 
 test_that("screening (mgaussian) works", {
+  skip_on_os("mac")
+  skip_on_os("solaris")
   n <- 200
   p <- 2000
   support_size <- 3
