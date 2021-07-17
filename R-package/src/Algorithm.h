@@ -265,7 +265,8 @@ public:
     t1 = clock();
 #endif
     // std::cout << "fit 6" << endl;
-    int C_max = min(min(T0, N - T0), this->exchange_num);
+    int always_select_size = this->always_select.size();
+    int C_max = min(min(T0 - always_select_size, N - T0 - always_select_size), this->exchange_num);
 
     for (this->l = 1; this->l <= this->max_iter; l++)
     {
@@ -373,6 +374,11 @@ public:
     bd = Eigen::VectorXd::Zero(N);
     this->sacrifice(X, X_A, y, beta, beta_A, coef0, A, I, weights, g_index, g_size, N, A_ind, bd);
 
+    for(int i=0;i<this->always_select.size();i++)
+    {
+      bd(this->always_select(i)) = DBL_MAX;
+    }
+
 #ifdef TEST
     t2 = clock();
     std::cout << "bd time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
@@ -385,13 +391,15 @@ public:
     Eigen::VectorXd d_I_group = Eigen::VectorXd::Zero(I_size);
     for (int i = 0; i < A_size; i++)
     {
-      beta_A_group(i) = bd(A[i]);
+      beta_A_group(i) = bd(A(i));
     }
 
     for (int i = 0; i < I_size; i++)
     {
-      d_I_group(i) = bd(I[i]);
+      d_I_group(i) = bd(I(i));
     }
+
+    if(C_max <=0) return;
 
     Eigen::VectorXi A_min_k = min_k(beta_A_group, C_max, true);
     Eigen::VectorXi I_max_k = max_k(d_I_group, C_max, true);
@@ -483,6 +491,12 @@ public:
       slice(beta, A_ind, beta_A);
 
       this->sacrifice(X, X_A, y, beta, beta_A, coef0, A, I, weights, g_index, g_size, N, A_ind, bd);
+
+      for(int i=0;i<this->always_select.size();i++)
+      {
+        bd[this->always_select[i]] = DBL_MAX;
+      }
+
     }
 
 #ifdef TEST

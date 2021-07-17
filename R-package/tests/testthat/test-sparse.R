@@ -1,4 +1,6 @@
 require(Matrix)
+library(abess)
+library(testthat)
 
 sparse_batch_check <- function(abess_fit1, abess_fit2) {
   expect_equal(abess_fit1[["tune.value"]], abess_fit2[["tune.value"]], 
