@@ -39,7 +39,7 @@ The designed matrix is formed by i.i.d sample generated from a multivariate norm
 All experiments are
 evaluated on an Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz and under R version 3.6.1. 
 
-Results are presented in the following picture. As an package solving best subset selection, abess reaches a high efficient performance.
+Results are presented in the following picture. As a package solving best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
 
 ![avatar](vignettes/RMtime.png)
 
