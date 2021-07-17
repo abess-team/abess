@@ -78,7 +78,7 @@ void pi(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0
     }
     // cout << "pi: " << pi.block(0, 0, 5, y.cols());
     // return pi;
-};
+}
 
 template <class T4>
 void pi(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &coef, Eigen::MatrixXd &pr)
@@ -94,7 +94,7 @@ void pi(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &coef, Eigen::MatrixXd &pr)
     }
     // cout << "pi: " << pi.block(0, 0, 5, y.cols());
     // return pi;
-};
+}
 
 template <class T4>
 void multinomial_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
@@ -554,7 +554,7 @@ void logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
 #endif
     beta = beta0.tail(p).eval();
     coef0 = beta0(0);
-};
+}
 
 template <class T4>
 void lm_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)

@@ -72,7 +72,7 @@ T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind)
         }
         return X_new;
     }
-};
+}
 
 template <class T4>
 void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
@@ -89,7 +89,7 @@ void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
             X_seg.col(k) = X.col(ind(k));
         }
     }
-};
+}
 
 template <class T4>
 Eigen::Matrix<T4, -1, -1> group_XTX(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)
