@@ -80,8 +80,7 @@ test_that("abesspca (sparse) works", {
 })
 
 test_that("abesspca (always.include) works", {
-  skip("Skip always.include now!")
   data(USArrests)
-  spca_fit <- abesspca(USArrests, always.include = c(1))
-  expect_true(all(coef(spca_fit)[1, , drop] == 0))
+  spca_fit <- abesspca(USArrests, always.include = c(2))
+  expect_true(all(coef(spca_fit)[2, , drop = TRUE] != 0))
 })

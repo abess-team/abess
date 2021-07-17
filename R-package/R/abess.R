@@ -386,8 +386,6 @@ abess.default <- function(x,
       x[, 1:2] <- x[, 1:2] - 1
       x <- as.matrix(x)
       x <- x[, c(3, 1, 2)]
-    } else {
-      stop("If x is a sparse matrix, it must be a dgCMatrix matrix!")
     }
   } else {
     if (is.data.frame(x)) {

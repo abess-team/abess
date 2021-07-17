@@ -334,7 +334,6 @@ test_that("abess (output) works", {
 })
 
 test_that("abess (always-include) works", {
-  skip("Skip always include now.")
   n <- 100
   p <- 20
   support_size <- 3
