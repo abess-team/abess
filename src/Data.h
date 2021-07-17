@@ -65,14 +65,11 @@ public:
 
         this->g_index = g_index;
         this->g_num = (g_index).size();
-        if (g_num > 1)
-        {
-            Eigen::VectorXi temp = Eigen::VectorXi::Zero(g_num);
-            for (int i = 0; i < g_num - 1; i++)
-                temp(i) = g_index(i + 1);
-            temp(g_num - 1) = this->p;
-            this->g_size = temp - g_index;
-        }
+        Eigen::VectorXi temp = Eigen::VectorXi::Zero(g_num);
+        for (int i = 0; i < g_num - 1; i++)
+            temp(i) = g_index(i + 1);
+        temp(g_num - 1) = this->p;
+        this->g_size = temp - g_index;
     };
 
     // to do

@@ -27,5 +27,5 @@ the last column is the percent of explained variance of model.
 }
 \seealso{
 \code{\link{print.abesspca}}, 
-\code{\link{loadings.abesspca}},
+\code{\link{coef.abesspca}},
 }

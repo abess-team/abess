@@ -1,7 +1,8 @@
 library(testthat)
 library(abess)
+require(Matrix)
 
-test_batch <- function(abess_fit, dataset, family) {
+test_that("abesspca (FPC) works", {
   data(USArrests)
   
   spca_fit <- abesspca(USArrests)
@@ -25,12 +26,13 @@ test_batch <- function(abess_fit, dataset, family) {
   spca_fit1[["call"]] <- NULL
   spca_fit2[["call"]] <- NULL
   expect_true(all.equal(spca_fit1, spca_fit2))
-}
+})
 
-test_batch <- function(abess_fit, dataset, family) {
+test_that("abesspca (KPC) works", {
   data(USArrests)
   
-  spca_fit <- abesspca(USArrests, support.size = rep(1, ncol(USArrests)), 
+  spca_fit <- abesspca(USArrests, 
+                       support.size = rep(1, ncol(USArrests)), 
                        sparse.type = "kpc")
   
   ## Reasonablity of abesspca
@@ -45,4 +47,41 @@ test_batch <- function(abess_fit, dataset, family) {
   ## oracle estimation by svd function:
   svdobj <- svd(cov(USArrests))
   expect_equal(spca_fit[["var.all"]], sum(svdobj[["d"]]))
-}
+})
+
+test_that("abesspca (group) works", {
+  data(USArrests)
+  
+  spca_fit <- abesspca(USArrests, group.index = c(1, 1, 2, 3))
+  expect_true(max(spca_fit[["support.size"]]) == 3)
+  
+  spca_fit1 <- abesspca(USArrests)
+  expect_true(all(coef(spca_fit)[, 3] == coef(spca_fit1)[, 4]))
+})
+
+test_that("abesspca (sparse) works", {
+  data(USArrests)
+  zero_matrix <- sample(0:1, size = prod(dim(USArrests)), replace = TRUE)
+  zero_matrix <- matrix(zero_matrix, nrow = nrow(USArrests))
+  USArrests[zero_matrix == 0] <- 0
+  ## covariance matrix:
+  USArrests <- as.matrix(USArrests)
+  spca_fit1 <- abesspca(USArrests)
+  USArrests <- Matrix(USArrests, sparse = TRUE)
+  spca_fit2 <- abesspca(USArrests)
+  expect_true(all.equal(spca_fit1, spca_fit2))
+  
+  ## correlation matrix:
+  USArrests <- as.matrix(USArrests)
+  spca_fit1 <- abesspca(USArrests, cor = TRUE)
+  USArrests <- Matrix(USArrests, sparse = TRUE)
+  spca_fit2 <- abesspca(USArrests, cor = TRUE)
+  expect_true(all.equal(spca_fit1, spca_fit2))
+})
+
+test_that("abesspca (always.include) works", {
+  skip("Skip always.include now!")
+  data(USArrests)
+  spca_fit <- abesspca(USArrests, always.include = c(1))
+  expect_true(all(coef(spca_fit)[1, , drop] == 0))
+})

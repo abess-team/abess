@@ -193,6 +193,7 @@ test_that("Group selection: abess (poisson) works", {
 })
 
 test_that("Group selection: abess (cox) works", {
+  skip("Skip cox now because it is too slow.")
   skip_on_travis()
   if (!require("survival")) {
     install.packages("survival")
@@ -205,7 +206,8 @@ test_that("Group selection: abess (cox) works", {
   dataset <- generate.group(n, J, k, support_size, family = "cox", seed = 1)
   
   ## default interface
-  abess_fit <- abess::abess(dataset[["x"]], dataset[["y"]], group.index = dataset$group.index, family = "cox")
+  abess_fit <- abess::abess(dataset[["x"]], dataset[["y"]], 
+                            group.index = dataset$group.index, family = "cox")
   
   ## support size
   fit_s_size <- abess_fit[["best.size"]]

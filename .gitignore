@@ -70,3 +70,10 @@ python/pytest/3.0
 python/src/abess_wrap.cpp
 python/src/cabess.py
 python.rar
+
+R-package/src/tmp2
+codecov
+rpackage.xml
+R-package/.RData
+R-package/R/tmp/abess.R
+python/pytest/1.py

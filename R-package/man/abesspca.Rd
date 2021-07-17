@@ -21,8 +21,11 @@ abesspca(
 )
 }
 \arguments{
-\item{x}{A matrix object. It can be either the predictor matrix where each row is an observation and each column is 
-a predictor or the sample covariance/correlation matrix.}
+\item{x}{A matrix object. It can be either a predictor matrix 
+where each row is an observation and each column is a predictor or 
+a sample covariance/correlation matrix. 
+If \code{x} is a predictor matrix, it can be in sparse matrix format 
+(inherit from class \code{"dgCMatrix"} in package \code{Matrix}).}
 
 \item{type}{If \code{type = "predictor"}, \code{x} is considered as the predictor matrix. 
 If \code{type = "gram"}, \code{x} is considered as a sample covariance or correlation matrix.}
@@ -74,7 +77,7 @@ Default is \code{max.splicing.iter = 20}.}
 }
 \value{
 A S3 \code{abesspca} class object, which is a \code{list} with the following components:
-\item{loadings}{A \eqn{p}-by-\code{length(support.size)} loading matrix of sparse principal components (PC), 
+\item{coef}{A \eqn{p}-by-\code{length(support.size)} loading matrix of sparse principal components (PC), 
 where each row is a variable and each column is a support size;}
 \item{nvars}{The number of variables.}
 \item{sparse.type}{The same as input.}
@@ -121,12 +124,13 @@ pca_fit
 ## K-component principal component analysis
 pca_fit <- abesspca(USArrests, sparse.type = "kpc", 
                     support.size = c(1, 2))
-loadings(pca_fit)
+coef(pca_fit)
+
 }
 }
 \seealso{
 \code{\link{print.abesspca}}, 
-\code{\link{loadings.abesspca}},
+\code{\link{coef.abesspca}},
 }
 \author{
 Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang

@@ -97,11 +97,11 @@ Interestingly, we can seek for a smaller sparsity which can explain most of the 
 For instance, when 40 variables are selected, 
 the percentage of explained variance from abessPCA exceeds 80%.     
 This result shows that using less than half of all 99 variables can be close to perfect. 
-We can use `loadings` function 
+We can use `coef` function 
 to investigate which variables are selected when the explained variance are large. 
 For example, if we choose sparsity 40, the used variables are:
 ```{r}
-loadings(best_pca, support.size = 40)
+coef(best_pca, support.size = 40)
 ```
 where each row of loading matrix corresponds to a variable. 
 
@@ -164,7 +164,7 @@ $$
 $$
   v_2 \leftarrow \arg\max_{v} v^T \Sigma^{\prime} v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq 5,
 $$
-where $\Sigma^{\prime} = \Sigma' = (1-v_1 v_1^\top)\Sigma(1-v_1 v_1^\top)$. 
+where $\Sigma^{\prime} = (1-v_1 v_1^\top)\Sigma(1-v_1 v_1^\top)$. 
 The $(v_1, v_2)$ forms a sparse loading matrix.
 
 The code for solving the two problem is:

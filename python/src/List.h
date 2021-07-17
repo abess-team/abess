@@ -13,7 +13,7 @@ public:
 	List(){};
 	~List(){};
 	// void add(string name, int value);
-	void get_value_by_name(string name, int &value);
+	// void get_value_by_name(string name, int &value);
 	void add(string name, double value);
 	void get_value_by_name(string name, double &value);
 	void add(string name, MatrixXd &value);

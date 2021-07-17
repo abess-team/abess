@@ -34,15 +34,15 @@ deviance.abess <- function(object,
       dev <- object[["dev"]]
       supp_size <- object[["support.size"]]
       if (type == "aic") {
-        adjust_term <- supp_size
+        adjust_term <- 2
       } else if (type == "bic") {
-        adjust_term <- supp_size
+        adjust_term <- log(object[["nobs"]])
       } else if (type == "ebic") {
-        adjust_term <- supp_size
+        adjust_term <- (2 * log(object[["nvars"]]) + log((object[["nobs"]])))
       } else if (type == "gic") {
-        adjust_term <- supp_size
+        adjust_term <- log(object[["nvars"]]) * log(log(object[["nobs"]]))
       }
-      dev <- dev + adjust_term
+      dev <- dev + adjust_term * supp_size
     }
   }
   
