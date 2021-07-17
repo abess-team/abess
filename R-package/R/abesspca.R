@@ -114,13 +114,8 @@ abesspca <- function(x,
   max_splicing_iter <- as.integer(max.splicing.iter)
   
   ## check x matrix:
-  vn <- colnames(x)
-  if (is.null(vn)) {
-    vn <- paste0("x", 1:nvars)
-  }
-  
-  nvars <- ncol(x)
   stopifnot(class(x)[1] %in% c("matrix", "data.frame", "dgCMatrix"))
+  nvars <- ncol(x)
   sparse_X <- ifelse(class(x)[1] %in% c("matrix", "data.frame"), FALSE, TRUE)
   if (sparse_X) {
   } else {
@@ -128,7 +123,7 @@ abesspca <- function(x,
       x <- as.matrix(x)
     }
     if (!is.numeric(x)) {
-      stop("x must be a numeric matrix or data.frame!")
+      stop("x must be a *numeric* matrix/data.frame!")
     } 
     if (nvars == 1) {
       stop("x should have at least two columns!")
@@ -136,6 +131,11 @@ abesspca <- function(x,
     if (anyNA(x) || any(is.infinite(x))) {
       stop("x has missing value or infinite value!")
     }    
+  }
+  
+  vn <- colnames(x)
+  if (is.null(vn)) {
+    vn <- paste0("x", 1:nvars)
   }
   
   ## compute gram matrix

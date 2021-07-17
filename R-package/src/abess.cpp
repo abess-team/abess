@@ -77,7 +77,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                bool sparse_matrix,
                int splicing_type)
 {
-  bool is_parallel = thread != 1;
+  // bool is_parallel = thread != 1;
 
 #ifdef _OPENMP
   // Eigen::initParallel();
@@ -492,6 +492,19 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     screening_A = screening(data, model_type, screening_size, always_select, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon);
   }
 
+  if(always_select.size() != 0)
+  {
+    if(is_cv)
+    {
+      algorithm->always_select = always_select;
+      for(int i=0;i<algorithm_list.size();i++)
+      {
+        // cout<<"i= "<<i<<endl;
+        algorithm_list[i]->always_select = always_select;
+      }
+    }
+  }
+  
   int M = data.y.cols();
 
   Metric<T1, T2, T3, T4> *metric = new Metric<T1, T2, T3, T4>(ic_type, ic_coef, is_cv, Kfold);

@@ -326,9 +326,7 @@ abess.default <- function(x,
   tau <- NULL
 
   ## check lambda
-  if(length(lambda) > 1){
-    stop("only a single lambda value is allowed.")
-  }
+  stopifnot(length(lambda) == 1)
   stopifnot(!anyNA(lambda))
   stopifnot(all(lambda >= 0))
   lambda.list <- lambda
@@ -371,6 +369,7 @@ abess.default <- function(x,
   )
   
   ## check predictors:
+  stopifnot(class(x)[1] %in% c("data.frame", "matrix", "dgCMatrix"))
   vn <- colnames(x)  ## if x is not a matrix type object, it will return NULL.
   nvars <- ncol(x)
   nobs <- nrow(x)
@@ -380,7 +379,6 @@ abess.default <- function(x,
   if (is.null(vn)) {
     vn <- paste0("x", 1:nvars)
   }
-  stopifnot(class(x)[1] %in% c("data.frame", "matrix", "dgCMatrix"))
   sparse_X <- ifelse(class(x)[1] %in% c("matrix", "data.frame"), FALSE, TRUE)
   if (sparse_X) {
     if (class(x) == "dgCMatrix") {
@@ -388,15 +386,13 @@ abess.default <- function(x,
       x[, 1:2] <- x[, 1:2] - 1
       x <- as.matrix(x)
       x <- x[, c(3, 1, 2)]
-    } else {
-      stop("If x is a sparse matrix, it must be a dgCMatrix matrix!")
     }
   } else {
     if (is.data.frame(x)) {
       x <- as.matrix(x)
     }
     if (!is.numeric(x)) {
-      stop("x must be a numeric matrix or data.frame!")
+      stop("x must be a *numeric* matrix/data.frame!")
     } 
   }
   if (anyNA(x) || any(is.infinite(x))) {
@@ -443,8 +439,16 @@ abess.default <- function(x,
       family <- "binomial"
     }
     if (length(unique(y)) > 2 && family == "binomial") {
-      stop("Input binary y when setting family = 'binomial'; otherwise, 
+      stop("Input binary y when family = 'binomial'; otherwise, 
            change the option for family to 'multinomial'. ")
+    }
+    if (length(unique(y)) == nobs && family == "multinomial") {
+      stop("All of y value are distinct. 
+           Please input categorial y when family = 'multinomial'.")
+    }
+    if ((nobs / length(unique(y))) < 5 && family == "multinomial") {
+      warning("The number of the category of y is relative large compare to nvars. 
+              The numerical result might be unstable.")
     }
     if (!is.factor(y)) {
       y <- as.factor(y)
@@ -471,7 +475,7 @@ abess.default <- function(x,
       y <- as.matrix(y)
     }
     if (ncol(y) != 2) {
-      stop("Please input y with two columns!")
+      stop("y must be a Surv object or a matrix with two columns when family = 'cox'!")
     }
     ## pre-process data for cox model
     sort_y <- order(y[, 1])
@@ -481,7 +485,7 @@ abess.default <- function(x,
   }
   if (family == "mgaussian") {
     if (!is.matrix(y) || dim(y)[2] <= 1) {
-      stop("y must be a n-by-q matrix (q >= 1) when family = 'mgaussian'!")
+      stop("y must be a n-by-q matrix (q > 1) when family = 'mgaussian'!")
     }
     y_vn <- colnames(y)
     if (is.null(y_vn)) {
@@ -493,12 +497,8 @@ abess.default <- function(x,
   multi_y <- family %in% MULTIVARIATE_RESPONSE
   
   # check whether x and y are matching:
-  if (is.vector(y)) {
-    if (nobs != length(y))
-      stop("Rows of x must be the same as length of y!")
-  } else {
-    if (nobs != nrow(y))
-      stop("Rows of x must be the same as rows of y!")
+  if (nobs != nrow(y)) {
+    stop("Rows of x must be the same as rows of y!")
   }
   
   ## strategy for tunning

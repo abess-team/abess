@@ -12,20 +12,8 @@ pip install abess
 ### R
 To install stable version into R environment, run the command:
 ```R
-install.packages("Ball")
+install.packages("abess")
 ```
-
-### OpenMP Support
-
-To support OpenMP parallelism in Cpp, the dependence for OpenMP should be install. 
-In MacOS, the dependence can be installed by:       
-
-```powershell
-brew install llvm
-brew install libomp
-```
-
-Without OpenMP, abess only use a single CPU core, leading to suboptimal learning speed.
 
 ## Latest release
 
@@ -57,6 +45,16 @@ install_github("abess-team/abess", build_vignettes = TRUE)
 ```
 Windows user will need to install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) first.
 
+## OpenMP Support
 
+To support OpenMP parallelism in Cpp, the dependence for OpenMP should be install. 
+In MacOS, the dependence can be installed by:       
+
+```powershell
+brew install llvm
+brew install libomp
+```
+
+Without OpenMP, abess only use a single CPU core, leading to suboptimal learning speed.
 
 
