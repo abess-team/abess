@@ -17,7 +17,32 @@
 #include <iostream>
 #include <vector>
 using namespace std;
+using namespace Eigen;
 
+template <class T2, class T3>
+struct FIT_ARG
+{
+    int support_size;
+    double lambda;
+    T2 beta_init;
+    T3 coef0_init;
+    Eigen::VectorXd bd_init;
+    Eigen::VectorXi A_init;
+
+    FIT_ARG(int _support_size, double _lambda, T2 _beta_init, T3 _coef0_init, VectorXd _bd_init, VectorXi _A_init)
+    {
+        support_size = _support_size;
+        lambda = _lambda;
+        beta_init = _beta_init;
+        coef0_init = _coef0_init;
+        bd_init = _bd_init;
+        A_init = _A_init;
+    };
+
+    FIT_ARG(){};
+};
+
+#ifndef R_BUILD
 Eigen::MatrixXd Pointer2MatrixXd(double *x, int x_row, int x_col);
 // Eigen::MatrixXi Pointer2MatrixXi(int *x, int x_row, int x_col);
 Eigen::VectorXd Pointer2VectorXd(double *x, int x_len);
@@ -26,6 +51,8 @@ void MatrixXd2Pointer(Eigen::MatrixXd x_matrix, double *x);
 // void MatrixXi2Pointer(Eigen::MatrixXi x_matrix, int *x);
 void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x);
 // void VectorXi2Pointer(Eigen::VectorXi x_vector, int *x);
+#endif
+
 
 Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N);
 

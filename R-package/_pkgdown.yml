@@ -28,7 +28,7 @@ reference:
   contents:
   - abesspca
   - print.abesspca
-  - loadings.abesspca
+  - coef.abesspca
   - plot.abesspca
   
 - title: Datasets

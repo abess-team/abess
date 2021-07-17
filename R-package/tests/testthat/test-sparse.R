@@ -81,6 +81,8 @@ test_that("Sparse matrix (cox) works", {
 })
 
 test_that("Sparse matrix (mgaussian) works", {
+  skip_on_os("mac")
+  skip_on_os("solaris")
   n <- 100
   p <- 20
   support.size <- 3

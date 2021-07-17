@@ -42,7 +42,7 @@ class TestClass:
         model2 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
                          K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
                          exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=1, covariance_update=True)
+                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=1, covariance_update=True, always_select=[0])
         model2.fit(data.x, data.y)
 
         model3 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
@@ -75,7 +75,7 @@ class TestClass:
         family = "binomial"
         rho = 0.5
         sigma = 1
-        np.random.seed(1)
+        np.random.seed(5)
         data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
         print("logistic abess")
@@ -101,6 +101,8 @@ class TestClass:
                               primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
+
+        model.predict_proba(data.x)
         
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -246,6 +248,7 @@ class TestClass:
                                    primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=False)
         group = np.linspace(1, p, p)
         model.fit(data.x, data.y, group=group)
+        model.predict(data.x)
 
         model2 = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
                                     K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
@@ -289,6 +292,7 @@ class TestClass:
                                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model.fit(data.x, data.y, group=group)
+        model.predict(data.x)
 
         model2 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
                                   K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
@@ -351,7 +355,63 @@ class TestClass:
         assert gcv.best_params_["support_size"] == k
         assert gcv.best_params_["alpha"] == 0.
 
-    
+    def test_binomial_sklearn(self):
+        n = 100
+        p = 20
+        k = 3
+        family = "binomial"
+        rho = 0.5
+        sigma = 1
+        np.random.seed(1)
+        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        # data3 = gen_data_splicing(
+        #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
+        s_max = 20
+        support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
+        alpha = [0., 0.1, 0.2, 0.3, 0.4]
+
+        model = abessLogistic()
+        cv = KFold(n_splits=5, shuffle=True, random_state=0)
+        gcv = GridSearchCV(
+            model,
+            param_grid={"support_size": support_size,
+                        "alpha": alpha},
+            cv=cv,
+            n_jobs=5).fit(data.x, data.y)
+        
+
+        assert gcv.best_params_["support_size"] == k
+        assert gcv.best_params_["alpha"] == 0.
+
+    def test_poisson_sklearn(self):
+        n = 100
+        p = 20
+        k = 3
+        family = "poisson"
+        rho = 0.5
+        sigma = 1
+        M = 1
+        np.random.seed(3)
+        # data = gen_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+        data = gen_data(n, p, family=family, k=k, rho=rho)
+        # data3 = gen_data_splicing(
+        #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
+        s_max = 20
+        support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
+        alpha = [0., 0.1, 0.2, 0.3, 0.4]
+
+        model = abessPoisson()
+        cv = KFold(n_splits=5, shuffle=True, random_state=0)
+        gcv = GridSearchCV(
+            model,
+            param_grid={"support_size": support_size,
+                        "alpha": alpha},
+            cv=cv,
+            n_jobs=1).fit(data.x, data.y)
+
+        assert gcv.best_params_["support_size"] == k
+        assert gcv.best_params_["alpha"] == 0.
+
     def test_cox_sklearn(self):
         n = 100
         p = 20
@@ -383,6 +443,66 @@ class TestClass:
 
         assert gcv.best_params_["support_size"] == k
         assert gcv.best_params_["alpha"] == 0.
+ 
+    # def test_multigaussian_sklearn(self):
+    #     n = 100
+    #     p = 20
+    #     k = 3
+    #     family = "multigaussian"
+    #     rho = 0.5
+    #     sigma = 1
+    #     M = 1
+    #     np.random.seed(2)
+    #     # data = gen_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+    #     data = gen_data_splicing(
+    #         family=family, n=n, p=p,  k=k, rho=rho, M=M)
+    #     # data3 = gen_data_splicing(
+    #     #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
+    #     s_max = 20
+    #     support_size = np.linspace(1, s_max, s_max+1)
+    #     alpha = [0., 0.1, 0.2, 0.3, 0.4]
+
+    #     model = abessMultigaussian()
+    #     cv = KFold(n_splits=5, shuffle=True, random_state=0)
+    #     gcv = GridSearchCV(
+    #         model,
+    #         param_grid={"support_size": support_size,
+    #                     "alpha": alpha},
+    #         cv=cv,
+    #         n_jobs=1).fit(data.x, data.y)
+
+    #     assert gcv.best_params_["support_size"] == k
+    #     assert gcv.best_params_["alpha"] == 0.
+  
+    # def test_multinomial_sklearn(self):
+    #     n = 100
+    #     p = 20
+    #     k = 3
+    #     family = "multinomial"
+    #     rho = 0.5
+    #     sigma = 1
+    #     M = 1
+    #     np.random.seed(2)
+    #     # data = gen_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+    #     data = gen_data_splicing(
+    #         family=family, n=n, p=p,  k=k, rho=rho, M=M)
+    #     # data3 = gen_data_splicing(
+    #     #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
+    #     s_max = 20
+    #     support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
+    #     alpha = [0., 0.1, 0.2, 0.3, 0.4]
+
+    #     model = abessMultinomial()
+    #     cv = KFold(n_splits=5, shuffle=True, random_state=0)
+    #     gcv = GridSearchCV(
+    #         model,
+    #         param_grid={"support_size": support_size,
+    #                     "alpha": alpha},
+    #         cv=cv,
+    #         n_jobs=1).fit(data.x, data.y)
+
+    #     assert gcv.best_params_["support_size"] == k
+    #     assert gcv.best_params_["alpha"] == 0.
 
     def test_PCA(self):
         n = 1000
@@ -429,57 +549,56 @@ class TestClass:
             assert (len(coef4) == s)
 
 
+    # def test_gaussian_gs(self):
+    #     n = 100
+    #     p = 20
+    #     k = 3
+    #     family = "gaussian"
+    #     rho = 0.5
+    #     sigma = 1
+    #     M = 1
+    #     np.random.seed(2)
+    #     data = gen_data_splicing(family=family, n=n, p=p, k=k, rho=rho, M=M)
+    #     data2 = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+    #     data3 = gen_data_splicing(
+    #         family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
+    #     s_max = 20
 
-    def test_gaussian_gs(self):
-        n = 100
-        p = 20
-        k = 3
-        family = "gaussian"
-        rho = 0.5
-        sigma = 1
-        M = 1
-        np.random.seed(2)
-        data = gen_data_splicing(family=family, n=n, p=p, k=k, rho=rho, M=M)
-        data2 = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        data3 = gen_data_splicing(
-            family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
-        s_max = 20
+    #     model = abessLm(path_type="pgs", support_size=[0], ic_type='ebic', is_screening=True, screening_size=20,
+    #                     K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=s_max, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+    #                     exchange_num=2, tau=0.1 * np.log(n*p) / n,
+    #                     primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True)
+    #     model.fit(data.x, data.y)
+    #     model.predict(data.x)
 
-        model = abessLm(path_type="pgs", support_size=[0], ic_type='ebic', is_screening=True, screening_size=20,
-                        K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=s_max, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-                        exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                        primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True)
-        model.fit(data.x, data.y)
-        model.predict(data.x)
+    #     model2 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
+    #                      K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+    #                      exchange_num=2, tau=0.1 * np.log(n*p) / n,
+    #                      primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=1, covariance_update=True)
+    #     model2.fit(data.x, data.y)
 
-        model2 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-                         exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=1, covariance_update=True)
-        model2.fit(data.x, data.y)
+    #     model3 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
+    #                      K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+    #                      exchange_num=2, tau=0.1 * np.log(n*p) / n,
+    #                      primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=False, sparse_matrix=True)
+    #     model3.fit(data.x, data.y)
 
-        model3 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-                         exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=False, sparse_matrix=True)
-        model3.fit(data.x, data.y)
+    #     model4 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
+    #                      K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+    #                      exchange_num=2, tau=0.1 * np.log(n*p) / n,
+    #                      primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=True)
+    #     model4.fit(data.x, data.y)
 
-        model4 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
-                         exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=True)
-        model4.fit(data.x, data.y)
-
-        nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model.coef_)[0]
-        print(nonzero_true)
-        print(nonzero_fit)
-        new_x = data.x[:, nonzero_fit]
-        reg = LinearRegression()
-        reg.fit(new_x, data.y.reshape(-1))
-        assert model.coef_[nonzero_fit] == approx(
-            reg.coef_, rel=1e-5, abs=1e-5)
-        assert (nonzero_true == nonzero_fit).all()
+    #     nonzero_true = np.nonzero(data.coef_)[0]
+    #     nonzero_fit = np.nonzero(model.coef_)[0]
+    #     print(nonzero_true)
+    #     print(nonzero_fit)
+    #     new_x = data.x[:, nonzero_fit]
+    #     reg = LinearRegression()
+    #     reg.fit(new_x, data.y.reshape(-1))
+    #     assert model.coef_[nonzero_fit] == approx(
+    #         reg.coef_, rel=1e-5, abs=1e-5)
+    #     assert (nonzero_true == nonzero_fit).all()
 
     def test_binomial_gs(self):
         n = 100

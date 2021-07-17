@@ -1,12 +1,30 @@
 matrix:
   include:
     - language: R
+    
+      apt_packages:
+        - libxml2-dev
+        - python3
+        - python3-pip
+        
+      r_packages:
+        - xml2
+        - covr
+      
       before_install:
         - cd R-package
+      
       cache: packages
+      
       after_success:
-        - travis_wait 60 Rscript -e 'covr::codecov(path = ".", quiet = FALSE, type = c("vignettes", "examples", "tests"), flags = "R")'
-
+        - cd ..
+        - ls *
+        - travis_wait 60 Rscript -e 'library(covr); x <- package_coverage(path = "./R-package", quiet = FALSE, type = c("vignettes", "examples", "tests"), function_exclusions = "\\.onUnload"); to_cobertura(x, "rpackage.xml")'
+        - ls *
+        - pip install --upgrade pip
+        - pip3 install --user codecov
+        - codecov -F rpackage -f rpackage.xml
+        
     - dist: xenial
       language: python
       python:
@@ -38,8 +56,3 @@ matrix:
         - ls *
         - codecov -F Python
         
-
-      after_success:
-        - codecov -F Python # run codecov
-
-

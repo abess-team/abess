@@ -300,31 +300,6 @@ generatedata2 <- function(eta) {
   return(a)
 }
 
-# #' Title
-# #' @description recover beta after feature screening
-# #' @note run this function 
-# #' before \code{object[["screening_A"]]} is removed.
-# #' @noRd
-# recover_beta <- function(object) {
-#   if (length(object[["screening_A"]]) != 0) {
-#     beta_all <- matrix(0, nrow = object[["nvars"]], 
-#                        ncol = length(object[["support.size"]]))
-#     beta_all[object[["screening_A"]] + 1, ] <- object[["beta"]]
-#     object[["beta"]] <- beta_all
-#   }
-# }
-
-
-list.beta <- function(beta.mat, object, sparse) {
-  beta.all <- matrix(0, nrow = length(object[["best.model"]][["beta"]]), 
-                     ncol = ncol(beta.mat))
-  beta.all[object[["screening.index"]], ] = beta.mat[[1]]
-  if (sparse) {
-    beta.all <- Matrix::Matrix(beta.all)
-  }
-  return(beta.all)
-}
-
 match_support_size <- function(object, support.size) {
   supp_size_index <- match(support.size, object[["support.size"]])
   if (anyNA(supp_size_index)) {

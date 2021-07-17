@@ -51,10 +51,6 @@ Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::VectorXd, double, T4> &da
         Eigen::VectorXd beta;
         double coef0;
         coef_set_zero(g_size(i), M, beta, coef0);
-        // if (model_type == 2)
-        // {
-        //     logistic_fit(x_tmp, data.y, data.weight, beta, coef0, DBL_MAX, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon, 0., 0.);
-        // }
         if (model_type == 1)
         {
             lm_fit(x_tmp, data.y, data.weight, beta, coef0, DBL_MAX, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon, 0., 0.);
@@ -211,6 +207,19 @@ Eigen::VectorXi screening(Data<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd
     data.g_num = screening_size;
     data.g_index = new_g_index;
     data.g_size = new_g_size;
+
+    if (always_select.size() != 0)
+    {
+        Eigen::VectorXi new_always_select(always_select.size());
+        int j = 0;
+        for (int i = 0; i < always_select.size(); i++)
+        {
+            while (always_select(i) != screening_A(j))
+                j++;
+            new_always_select(i) = j;
+        }
+        always_select = new_always_select;
+    }
 
     return screening_A_ind;
 }

@@ -22,6 +22,7 @@
 
 using namespace std;
 
+#ifndef R_BUILD
 Eigen::MatrixXd Pointer2MatrixXd(double *x, int x_row, int x_col)
 {
     Eigen::MatrixXd x_matrix(x_row, x_col);
@@ -121,6 +122,7 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x)
 //         x[i] = x_vector[i];
 //     }
 // }
+#endif
 
 Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N)
 {
