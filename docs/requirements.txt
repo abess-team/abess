@@ -2,3 +2,4 @@ Sphinx
 sphinxcontrib-phpdomain
 sphinx-autoapi
 nbsphinx
+sklearn
