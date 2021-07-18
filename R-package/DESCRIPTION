@@ -1,8 +1,8 @@
 Package: abess
 Type: Package
 Title: Adaptive Best Subset Selection in Polynomial Time
-Version: 0.1.0
-Date: 2021-04-21
+Version: 0.2.0
+Date: 2021-07-18
 Authors@R: c(
   person(given = "Jin", family = "Zhu", email = "zhuj37@mail2.sysu.edu.cn", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8550-5822")),
   person(given = "Kangkang", family = "Jiang", email = "jiangkk3@mail2.sysu.edu.cn", role = c("aut")),
@@ -12,11 +12,12 @@ Authors@R: c(
   person(given = "Junxian", family = "Zhu", email = "zhujunx@mail2.sysu.edu.cn", role = c("aut")),
   person(given = "Canhong", family = "Wen", email = "wencanhong@gmail.com", role = c("aut")),
   person(given = "Heping", family = "Zhang", email = "heping.zhang@yale.edu", role = c("aut"), comment = c(ORCID = "0000-0002-0688-4076")),
-  person(given = "Xueqin", family = "Wang", email = "wangxq20@ustc.edu.cn", role = c("aut"), comment = c(ORCID = "0000-0001-5205-9950"))
+  person(given = "Xueqin", family = "Wang", email = "wangxq20@ustc.edu.cn", role = c("aut"), comment = c(ORCID = "0000-0001-5205-9950")), 
+  person("spectra contributors", role = c("cph"), comment = "Spectra implementation")
   )
 Maintainer: Jin Zhu <zhuj37@mail2.sysu.edu.cn>
-Description: Extremely efficient toolkit for solving the best subset selection problem in linear regression, logistic regression, Poisson regression, Cox proportional hazard model, multiple-response regression, multinomial logistic regression, and principal component analysis. It implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times.  
-License: GPL (>= 3)
+Description: Extremely efficient toolkit for solving the best subset selection problem in linear regression, logistic regression, Poisson regression, Cox proportional hazard model, multiple-response regression, multinomial logistic regression, and (sequential) principal component analysis. It implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times.  
+License: GPL (>= 3) | file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 2.10)

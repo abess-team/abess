@@ -397,9 +397,10 @@ abesspca <- function(x,
 }
 
 variance_explained <- function(X, loading){
-  Z <- qr(X %*% loading)
-  result <- sum(diag(qr.R(Z))^2)
-  return(result)
+  pc <- X %*% loading
+  Z <- qr(pc)
+  ev <- sum(abs(diag(qr.R(Z))))
+  ev
 }
 
 sparse.cov <- function(x, cor = FALSE) {
