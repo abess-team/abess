@@ -308,6 +308,12 @@ match_support_size <- function(object, support.size) {
   supp_size_index
 }
 
+check_integer <- function(x, error_message) {
+  if (any(x %% 1 != 0)) {
+    stop(error_message)
+  }
+}
+
 abess_model_matrix <- function(object, data = environment(object), 
                                contrasts.arg = NULL, 
                                xlev = NULL, ...) 

@@ -18,7 +18,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' For \code{family = "binomial"} should have two levels. 
 #' For \code{family="poisson"}, \code{y} should be a vector with positive integer. 
 #' For \code{family = "cox"}, \code{y} should be a \code{Surv} object returned 
-#' by the \code{survival} package or 
+#' by the \code{survival} package (recommended) or 
 #' a two-column matrix with columns named \code{"time"} and \code{"status"}.
 #' For \code{family = "mgaussian"}, \code{y} should be a matrix of quantitative responses.
 #' For \code{family = "multinomial"}, \code{y} should be a factor of at least three levels.
@@ -469,10 +469,11 @@ abess.default <- function(x,
       stop("y must be positive integer value when family = 'poisson'.")
     }
   }
-  if (family == "cox")
-  {
+  if (family == "cox") {
     if (!is.matrix(y)) {
       y <- as.matrix(y)
+    } else {
+      stopifnot(length(unique(y[, 2])) != 2)
     }
     if (ncol(y) != 2) {
       stop("y must be a Surv object or a matrix with two columns when family = 'cox'!")
@@ -517,6 +518,10 @@ abess.default <- function(x,
     max_group_size <- 1
     # g_df <- rep(1, nvars)
   } else {
+    stopifnot(all(!is.na(group.index)))
+    stopifnot(all(is.finite(group.index)))
+    stopifnot(diff(group.index) >= 0)
+    check_integer(group.index, "group.index must be a vector with integer value.")
     group_select <- TRUE
     gi <- unique(group.index)
     g_index <- match(gi, group.index) - 1
@@ -701,12 +706,11 @@ abess.default <- function(x,
   if (is.null(always.include)) {
     always_include <- numeric(0)
   } else {
-    if (anyNA(always.include)) {
-      stop("always.include has missing values.")
+    if (anyNA(always.include) || any(is.finite(always.include))) {
+      stop("always.include has missing values or infinite values.")
     }
-    if (any(always.include <= 0)) {
-      stop("always.include should be an vector containing variable indexes which is positive.")
-    }
+    stopifnot(always.include > 0)
+    check_integer(always.include, "always.include must be a vector with integer value.")
     always.include <- as.integer(always.include) - 1
     if (length(always.include) > screening_num)
       stop("The number of variables in always.include should not exceed the screening.num")

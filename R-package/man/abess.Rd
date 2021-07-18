@@ -46,7 +46,7 @@ Can be in sparse matrix format (inherit from class \code{"dgCMatrix"} in package
 For \code{family = "binomial"} should have two levels. 
 For \code{family="poisson"}, \code{y} should be a vector with positive integer. 
 For \code{family = "cox"}, \code{y} should be a \code{Surv} object returned 
-by the \code{survival} package or 
+by the \code{survival} package (recommended) or 
 a two-column matrix with columns named \code{"time"} and \code{"status"}.
 For \code{family = "mgaussian"}, \code{y} should be a matrix of quantitative responses.
 For \code{family = "multinomial"}, \code{y} should be a factor of at least three levels.
