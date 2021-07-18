@@ -57,7 +57,7 @@ source("R-package/example/timing.R")
 
 Results are presented in the following picture. As a package solving best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
 
-![avatar](R-package/vignettes/RMtime.png)
+![avatar](R-package/vignettes/readmeTiming.png)
 
 ## Reference
 A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117    
