@@ -114,13 +114,14 @@ generate.data <- function(n,
                           beta = NULL,
                           cortype = 1,
                           snr = 10,
+                          sigma = NULL,
                           weibull.shape = 1,
                           uniform.max = 1, 
                           y.dim = 3, 
                           class.num = 3, 
                           seed = 1) 
 {
-  sigma <- 1
+  # sigma <- 1
   
   family <- match.arg(family)
   if (family == "mgaussian") {
@@ -195,7 +196,10 @@ generate.data <- function(n,
     } else {
       beta <- input_beta
     }
-    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    if(is.null(sigma)){
+      sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    }
+    # sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     
     y <- x %*% beta + rnorm(n, 0, sigma)
   } 
@@ -206,7 +210,10 @@ generate.data <- function(n,
     } else {
       beta <- input_beta
     }
-    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    if(is.null(sigma)){
+      sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    }
+    # sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     
     eta <- x %*% beta + rnorm(n, 0, sigma)
     PB <- apply(eta, 1, generatedata2)
@@ -239,7 +246,10 @@ generate.data <- function(n,
     } else {
       beta <- input_beta
     }
-    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    if(is.null(sigma)){
+      sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    }
+    # sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     sigma <- 0
     eta <- x %*% beta + stats::rnorm(n, 0, sigma)
     eta <- ifelse(eta > 30, 30, eta)
