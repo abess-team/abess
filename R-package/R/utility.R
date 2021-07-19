@@ -308,9 +308,15 @@ match_support_size <- function(object, support.size) {
   supp_size_index
 }
 
-check_integer <- function(x, error_message) {
+check_integer <- function(x, message) {
   if (any(x %% 1 != 0)) {
-    stop(error_message)
+    stop(message)
+  }
+}
+
+check_integer_warning <- function(x, message) {
+  if (any(x %% 1 != 0)) {
+    warning(message)
   }
 }
 
