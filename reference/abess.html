@@ -74,7 +74,7 @@ in polynomial times." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -205,7 +205,7 @@ Can be in sparse matrix format (inherit from class <code>"dgCMatrix"</code> in p
 For <code>family = "binomial"</code> should have two levels. 
 For <code>family="poisson"</code>, <code>y</code> should be a vector with positive integer. 
 For <code>family = "cox"</code>, <code>y</code> should be a <code>Surv</code> object returned 
-by the <code>survival</code> package or 
+by the <code>survival</code> package (recommended) or 
 a two-column matrix with columns named <code>"time"</code> and <code>"status"</code>.
 For <code>family = "mgaussian"</code>, <code>y</code> should be a matrix of quantitative responses.
 For <code>family = "multinomial"</code>, <code>y</code> should be a factor of at least three levels.
