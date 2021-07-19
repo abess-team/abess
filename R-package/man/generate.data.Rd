@@ -13,6 +13,7 @@ generate.data(
   beta = NULL,
   cortype = 1,
   snr = 10,
+  sigma = NULL,
   weibull.shape = 1,
   uniform.max = 1,
   y.dim = 3,
@@ -53,7 +54,10 @@ matrix are \eqn{rho} and diagonal entries are 1.}
 as the variance of \eqn{x\beta} divided
 by the variance of a gaussian noise: \eqn{\frac{Var(x\beta)}{\sigma^2}}.
 The gaussian noise \eqn{\epsilon} is set with mean 0 and variance.
-The noise is added to the linear predictor \eqn{\eta} = \eqn{x\beta}. Default is \code{snr = 10}.}
+The noise is added to the linear predictor \eqn{\eta} = \eqn{x\beta}. Default is \code{snr = 10}.
+Note that this arguments's effect is overridden if \code{sigma} is supplied with a non-null value.}
+
+\item{sigma}{The variance of the gaussian noise. Default \code{sigma = NULL} implies it is determined by \code{snr}.}
 
 \item{weibull.shape}{The shape parameter of the Weibull distribution. 
 It works only when \code{family = "cox"}. 
@@ -82,7 +86,7 @@ Generate simulated data under the
 generalized linear model and Cox proportional hazard model.
 }
 \details{
-For \code{family = "gaussian"} , the data model is 
+For \code{family = "gaussian"}, the data model is 
 \deqn{Y = X \beta + \epsilon.}
 The underlying regression coefficient \eqn{\beta} has 
 uniform distribution [m, 100m] and \eqn{m=5 \sqrt{2log(p)/n}.}
@@ -109,8 +113,17 @@ The underlying regression coefficient \eqn{\beta} has
 uniform distribution [2m, 10m], 
 where \eqn{m = 5 \sqrt{2log(p)/n}}.
 
-In the above models, \eqn{\epsilon \sim N(0,
-\sigma^2 ),} where \eqn{\sigma^2} is determined by the \code{snr}.
+For \code{family = "mgaussian"}, the data model is 
+\deqn{Y = X \beta + E.}
+The non-zero values of regression matrix \eqn{\beta} are sampled from
+uniform distribution [m, 100m] and \eqn{m=5 \sqrt{2log(p)/n}.} 
+
+For \code{family= "multinomial"}, the data model is \deqn{Prob(Y = 1) = \exp(X \beta + E)/(1 + \exp(X \beta + E)).}
+The non-zero values of regression coefficient \eqn{\beta} has 
+uniform distribution [2m, 10m] and \eqn{m = 5 \sqrt{2log(p)/n}.}
+
+In the above models, \eqn{\epsilon \sim N(0, \sigma^2 )} and \eqn{E \sim MVN(0, \sigma^2 \times I_{q \times q})}, 
+where \eqn{\sigma^2} is determined by the \code{snr} and q is \code{y.dim}.
 }
 \examples{
 
