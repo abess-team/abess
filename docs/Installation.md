@@ -9,6 +9,9 @@ To install abess on Python, you can simply get the stable version with:
 pip install abess
 ```
 
+If you don't have [pip](https://pip.pypa.io) installed, this [Python installation guide](http://docs.python-guide.org/en/latest/starting/installation/) can guide
+you through the process.
+
 ### R
 To install stable version into R environment, run the command:
 ```R
@@ -27,7 +30,7 @@ Clone our github project to your device:
 git clone https://github.com/abess-team/abess.git
 ```
 
-After cloning, and manually install python by conducting command:
+After cloning, manually install python by conducting command:
 
 ```powershell
 cd abess/python

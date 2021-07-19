@@ -193,8 +193,6 @@ test_that("Group selection: abess (poisson) works", {
 })
 
 test_that("Group selection: abess (cox) works", {
-  skip("Skip cox now because it is too slow.")
-  skip_on_travis()
   if (!require("survival")) {
     install.packages("survival")
   }
