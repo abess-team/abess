@@ -1,7 +1,7 @@
 # abess: An R package for Best-Subset Selection in Polynomial Time
 
 <!-- badges: start -->
-[![Build Status](https://travis-ci.com/abess-team/abess.svg?branch=master)](https://travis-ci.com/abess-team/abess)
+[![Github action](https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg)](https://github.com/abess-team/abess/actions)
 [![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://codecov.io/gh/abess-team/abess)
 [![cran](https://img.shields.io/cran/v/abess?logo=R)](https://cran.r-project.org/package=abess)
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
@@ -22,7 +22,13 @@ Best-subset selection aims to find a small subset of predictors such that the re
 
 ## Installation
 
-You can install the newest version of abess from [github](https://github.com/) with:
+To install the Ball R package from CRAN, just run:
+
+``` r
+install.packages("abess")
+```
+
+Alternative, you can install the newest version of abess from [github](https://github.com/) with:
 
 ``` r
 remotes::install_github("abess-team/abess")
@@ -47,7 +53,11 @@ Results are presented in the following picture. As a package solving best subset
 
 ![avatar](vignettes/readmeTiming.png)
 
+## Citation
+If you use **abess** package or reference our examples in a presentation or publication, we would appreciate citations of our package.
+
 ## Reference
 A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117    
 Fan, J. and Lv, J. (2008), Sure independence screening for ultrahigh dimensional feature space. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x    
-Qiang Sun & Heping Zhang (2020) Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079
+Qiang Sun & Heping Zhang (2020) Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079     
+Zhang, Y., Zhu, J., Zhu, J. and Wang, X., 2021. Certifiably Polynomial Algorithm for Best Group Subset Selection. arXiv preprint arXiv:2104.12576.
