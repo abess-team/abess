@@ -731,7 +731,7 @@ abess.default <- function(x,
   if (is.null(always.include)) {
     always_include <- numeric(0)
   } else {
-    if (anyNA(always.include) || any(is.finite(always.include))) {
+    if (anyNA(always.include) || any(is.infinite(always.include))) {
       stop("always.include has missing values or infinite values.")
     }
     stopifnot(always.include %in% 1:nvars)
