@@ -876,6 +876,7 @@ class abessLogistic(bess_base):
     Examples
     --------
     >>> ### Sparsity known
+    >>>
     >>> from bess.linear import *
     >>> import numpy as np
     >>> np.random.seed(12345)
@@ -889,14 +890,13 @@ class abessLogistic(bess_base):
     >>> model.predict(x)
 
     >>> ### Sparsity unknown
-    # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>>
+    >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
-
-    # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>>
+    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = GroupPdasLogistic(path_type="pgs")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
@@ -945,13 +945,13 @@ class abessLm(bess_base):
     >>> model.predict(x)
 
     >>> ### Sparsity unknown
-    # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
+    >>> >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>>
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
 
-    # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+    >>> >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>>
     >>> model = GroupPdasLogistic(path_type="pgs")
     >>> model.fit(X=x, y=y)
@@ -988,6 +988,7 @@ class abessCox(bess_base):
     Examples
     --------
     >>> ### Sparsity known
+    >>>
     >>> from bess.linear import *
     >>> import numpy as np
     >>> np.random.seed(12345)
@@ -1001,14 +1002,13 @@ class abessCox(bess_base):
     >>> model.predict(x)
 
     >>> ### Sparsity unknown
-    # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>>
+    >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
-
-    # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>>
+    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = GroupPdasLogistic(path_type="pgs")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
@@ -1045,6 +1045,7 @@ class abessPoisson(bess_base):
     Examples
     --------
     >>> ### Sparsity known
+    >>>
     >>> from bess.linear import *
     >>> import numpy as np
     >>> np.random.seed(12345)
@@ -1058,14 +1059,13 @@ class abessPoisson(bess_base):
     >>> model.predict(x)
 
     >>> ### Sparsity unknown
-    # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>>
+    >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
-
-    # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>>
+    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = GroupPdasLogistic(path_type="pgs")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
@@ -1101,6 +1101,7 @@ class abessMultigaussian(bess_base):
     Examples
     --------
     >>> ### Sparsity known
+    >>>
     >>> from bess.linear import *
     >>> import numpy as np
     >>> np.random.seed(12345)
@@ -1114,14 +1115,13 @@ class abessMultigaussian(bess_base):
     >>> model.predict(x)
 
     >>> ### Sparsity unknown
-    # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>>
+    >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
-
-    # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>>
+    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = GroupPdasLogistic(path_type="pgs")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
@@ -1159,6 +1159,7 @@ class abessMultinomial(bess_base):
     Examples
     --------
     >>> ### Sparsity known
+    >>>
     >>> from bess.linear import *
     >>> import numpy as np
     >>> np.random.seed(12345)
@@ -1172,14 +1173,13 @@ class abessMultinomial(bess_base):
     >>> model.predict(x)
 
     >>> ### Sparsity unknown
-    # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>>
+    >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
-
-    # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>>
+    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = GroupPdasLogistic(path_type="pgs")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
@@ -1215,6 +1215,7 @@ class abessPCA(bess_base):
     Examples
     --------
     >>> ### Sparsity known
+    >>>
     >>> from bess.linear import *
     >>> import numpy as np
     >>> np.random.seed(12345)
@@ -1228,14 +1229,13 @@ class abessPCA(bess_base):
     >>> model.predict(x)
 
     >>> ### Sparsity unknown
-    # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>>
+    >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>> model = GroupPdasLogistic(path_type="seq")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
-
-    # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>>
+    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = GroupPdasLogistic(path_type="pgs")
     >>> model.fit(X=x, y=y)
     >>> model.predict(x)
