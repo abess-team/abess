@@ -187,8 +187,6 @@ test_that("abess (binomial) works", {
 })
 
 test_that("abess (cox) works", {
-  skip("skip cox now!")
-  skip_on_travis()
   if (!require("survival")) {
     install.packages("survival")
   }
@@ -198,8 +196,8 @@ test_that("abess (cox) works", {
   
   dataset <- generate.data(n, p, support.size, 
                            family = "cox", seed = 1)
-  t <- system.time(abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                                      family = "cox", newton = "approx"))
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                     family = "cox", newton = "approx", tune.type = "cv")
   
   ## support size
   fit_s_size <- abess_fit[["best.size"]]
@@ -229,10 +227,12 @@ test_that("abess (cox) works", {
   }
   
   ## Surv object input:
-  dataset[["y"]] <- survival::Surv(time = dataset[["y"]][["time"]], 
-                                   event = dataset[["y"]][["status"]])
+  dataset[["y"]] <- survival::Surv(time = dataset[["y"]][, 1], 
+                                   event = dataset[["y"]][, 2])
   abess_fit1 <- abess(dataset[["x"]], dataset[["y"]], 
-                      family = "cox", newton = "approx")
+                      family = "cox", newton = "approx", 
+                      tune.type = "cv")
+  expect_true(all.equal(abess_fit, abess_fit1))
 })
 
 test_that("abess (poisson) works", {

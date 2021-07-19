@@ -1488,17 +1488,16 @@ public:
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
 
     for (int i = 0; i < N; i++)
-      for (int i = 0; i < N; i++)
-      {
-        T4 XG = X.middleCols(g_index(i), g_size(i));
-        Eigen::MatrixXd XGbar = XG.transpose() * h * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
+    {
+      T4 XG = X.middleCols(g_index(i), g_size(i));
+      Eigen::MatrixXd XGbar = XG.transpose() * h * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
 
-        Eigen::MatrixXd phiG;
-        XGbar.sqrt().evalTo(phiG);
-        Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
-        betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
-        dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
-      }
+      Eigen::MatrixXd phiG;
+      XGbar.sqrt().evalTo(phiG);
+      Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
+      betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
+      dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
+    }
     for (int i = 0; i < A_size; i++)
     {
       bd(A[i]) = betabar.segment(g_index(A[i]), g_size(A[i])).squaredNorm() / g_size(A[i]);
