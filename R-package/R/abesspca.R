@@ -54,6 +54,9 @@
 #' 
 #' @author Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang 
 #' 
+#' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
+#' @references Sparse principal component analysis. Hui Zou, Hastie Trevor, and Tibshirani Robert. Journal of computational and graphical statistics 15.2 (2006): 265-286.
+#' 
 #' @export
 #' 
 #' @seealso \code{\link{print.abesspca}}, 
@@ -138,14 +141,23 @@ abesspca <- function(x,
     vn <- paste0("x", 1:nvars)
   }
   
+  
+  ## check sparse.type
+  sparse_type <- match.arg(sparse.type)
+  
   ## compute gram matrix
   cov_type <- match.arg(type)
   if (cov_type == "gram") {
     stopifnot(dim(x)[1] == dim(x)[2])
     stopifnot(all(t(x) == x))
+    ## eigen values:
+    eigen_value <- eigen(x, only.values = TRUE)[["values"]]
   } else {
     stopifnot(length(cor) == 1)
     stopifnot(is.logical(cor))
+    ## eigen values:
+    eigen_value <- (svd(scale(x, center = TRUE, scale = cor))[["d"]])^2  # improve runtimes
+    
     if (sparse_X) {
       if (cor) {
         x <- sparse.cov(x, cor = TRUE)
@@ -161,8 +173,10 @@ abesspca <- function(x,
     }
   }
   
-  ## check sparse.type
-  sparse_type <- match.arg(sparse.type)
+  if (sparse_type == "fpc") { 
+    eigen_value <- eigen_value[1]
+  } 
+  total_variance <- sum(eigen_value)
   
   ## total variance: 
   # svdobj <- svd(x)
@@ -271,13 +285,6 @@ abesspca <- function(x,
     }
 
     always_include <- always.include
-  }
-  
-  ## total variance:
-  if (sparse_type == "fpc") {
-    total_variance <- eigen(x, only.values = TRUE)[["values"]][1]
-  } else {
-    total_variance <- sum(eigen(x, only.values = TRUE)[["values"]])
   }
   
   ## Cpp interface:
