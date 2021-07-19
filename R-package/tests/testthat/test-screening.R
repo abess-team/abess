@@ -103,9 +103,8 @@ test_that("screening (binomial) works", {
 })
 
 test_that("screening (cox) works", {
-  skip("skip cox now because it is too slow!")
-  n <- 300
-  p <- 1000
+  n <- 100
+  p <- 300
   support_size <- 3
   
   ## default interface
