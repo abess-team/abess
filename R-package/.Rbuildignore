@@ -37,3 +37,4 @@
 ^vignettes/v08-sPCA\.Rmd$
 ^vignettes/v09-fasterSetting\.Rmd$
 ^\.covrignore$
+^example$

@@ -6,7 +6,7 @@
 \alias{_PACKAGE}
 \title{abess: Adaptive Best Subset Selection in Polynomial Time}
 \description{
-Extremely efficient toolkit for solving the best subset selection problem in linear regression, logistic regression, Poisson regression, Cox proportional hazard model, multiple-response regression, multinomial logistic regression, and principal component analysis. It implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times.
+Extremely efficient toolkit for solving the best subset selection problem in linear regression, logistic regression, Poisson regression, Cox proportional hazard model, multiple-response regression, multinomial logistic regression, and (sequential) principal component analysis. It implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times.
 }
 \seealso{
 Useful links:
@@ -31,6 +31,11 @@ Authors:
   \item Canhong Wen \email{wencanhong@gmail.com}
   \item Heping Zhang \email{heping.zhang@yale.edu} (\href{https://orcid.org/0000-0002-0688-4076}{ORCID})
   \item Xueqin Wang \email{wangxq20@ustc.edu.cn} (\href{https://orcid.org/0000-0001-5205-9950}{ORCID})
+}
+
+Other contributors:
+\itemize{
+  \item spectra contributors (Spectra implementation) [copyright holder]
 }
 
 }

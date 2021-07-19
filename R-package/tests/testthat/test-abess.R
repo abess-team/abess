@@ -227,6 +227,12 @@ test_that("abess (cox) works", {
     abs_coxph_diff <- abs(oracle_beta[i] - true_beta[i])
     expect_lt(abs_abess_diff / abs_coxph_diff, 1.05)
   }
+  
+  ## Surv object input:
+  dataset[["y"]] <- survival::Surv(time = dataset[["y"]][["time"]], 
+                                   event = dataset[["y"]][["status"]])
+  abess_fit1 <- abess(dataset[["x"]], dataset[["y"]], 
+                      family = "cox", newton = "approx")
 })
 
 test_that("abess (poisson) works", {
