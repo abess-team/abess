@@ -29,7 +29,9 @@ abessMultinomial
 ----------------
 .. autoclass:: abess.linear.abessMultinomial
 
-
+abessPCA
+----------------
+.. autoclass:: abess.linear.abessPCA
 
 gen\_data
 ---------
