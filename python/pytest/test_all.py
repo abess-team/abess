@@ -548,7 +548,6 @@ class TestClass:
             coef4 = np.nonzero(model.coef_[:, i])[0]
             assert (len(coef4) == s)
 
-
     # def test_gaussian_gs(self):
     #     n = 100
     #     p = 20
@@ -1014,4 +1013,37 @@ class TestClass:
                         exchange_num=2, tau=0.1 * np.log(n*p) / n,
                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True)
         
-     
+    def test_gendata(self):
+        n = 100
+        p = 20
+        k = 10
+        families = ['gaussian', 'binomial', 'poisson', 'cox']
+        for f in families:
+            data = gen_data(n = n, p = p, family = f, k = k)
+            assert data.x.shape[0] == n and data.x.shape[1] == p and data.y.shape[0] == n
+
+            data2 = gen_data(n = n, p = p, family = f, k = k, coef_ = data.coef_)
+            assert (data.coef_ == data2.coef_).all()
+         
+        data = gen_data(n = n, p = p, k = k, family = 'cox', censoring = False)
+
+        data = gen_data_splicing(n = n, p = p, k = k, M = 2)
+        assert data.x.shape[0] == n and data.x.shape[1] == p and data.y.shape[0] == n and data.y.shape[1] == 2
+
+        data2 = gen_data_splicing(n = n, p = p, k = k, M = 2, coef_ = data.coef_)
+        assert (data.coef_ == data2.coef_).all()
+
+        # test for error input
+        try:
+            gen_data(n = n, p = p, k = k, family = 'other')
+        except ValueError:
+            assert True
+        else:
+            assert False
+
+        try:
+            gen_data_splicing(n = n, p = p, k = k, family = 'other')
+        except ValueError:
+            assert True
+        else:
+            assert False
