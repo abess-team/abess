@@ -1,5 +1,0 @@
-=================
-MultiTaskLearning
-=================
-
-This is content.
