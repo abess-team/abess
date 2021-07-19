@@ -128,6 +128,11 @@ coef(pca_fit)
 
 }
 }
+\references{
+A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
+
+Sparse principal component analysis. Hui Zou, Hastie Trevor, and Tibshirani Robert. Journal of computational and graphical statistics 15.2 (2006): 265-286.
+}
 \seealso{
 \code{\link{print.abesspca}}, 
 \code{\link{coef.abesspca}},

@@ -157,6 +157,7 @@ abesspca <- function(x,
     stopifnot(is.logical(cor))
     ## eigen values:
     eigen_value <- (svd(scale(x, center = TRUE, scale = cor))[["d"]])^2  # improve runtimes
+    eigen_value <- eigen_value / (dim(x)[1] - 1)
     
     if (sparse_X) {
       if (cor) {
