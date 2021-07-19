@@ -2,7 +2,7 @@ library(abess)
 library(testthat)
 require(Matrix)
 
-test_that("abess exception handling works", {
+test_that("abess (data) works", {
   n <- 100
   p <- 20
   support_size <- 3
@@ -56,6 +56,65 @@ test_that("abess exception handling works", {
   dataset[["y"]] <- c(dataset[["y"]], sort(dataset[["y"]]))
   expect_error(abess(dataset[["x"]], dataset[["y"]]), 
                regexp = "Rows of x")
+  
+  ########### Exception for y ############
+  dataset <- generate.data(n, p, support_size, family = "binomial")
+  expect_warning(abess(dataset[["x"]], dataset[["y"]], family = "multinomial"), 
+                 regexp = "We change to family = 'binomial'")
+})
+
+test_that("abess (option) works", {
+  n <- 20
+  p <- 100
+  support_size <- 3
+  dataset <- generate.data(n, p, support_size)
+  
+  ## weight
+  expect_error(abess(dataset[["x"]], dataset[["y"]], weight = rep(1, p)), 
+               regexp = "Rows of x")
+  
+  ## c.max
+  expect_error(abess(dataset[["x"]], dataset[["y"]], c.max = 21), 
+               regexp = "c.max")
+  expect_warning(abess(dataset[["x"]], dataset[["y"]], c.max = 2.2), 
+                 regexp = "c.max")
+  
+  ## screening.num
+  expect_error(abess(dataset[["x"]], dataset[["y"]], screening.num = p + 1), 
+               regexp = "screening")
+  expect_error(abess(dataset[["x"]], dataset[["y"]], screening.num = 1), 
+               regexp = "screening")
+  expect_error(abess(dataset[["x"]], dataset[["y"]], 
+                     tune.path = "gsection", screening.num = 1), 
+               regexp = "screening")
+  expect_warning(abess(dataset[["x"]], dataset[["y"]], screening.num = 19.2), 
+                 regexp = "screening")
+  
+  ## always.include
+  expect_error(abess(dataset[["x"]], dataset[["y"]], always.include = c(-1)), 
+               regexp = "always.include")
+  expect_error(abess(dataset[["x"]], dataset[["y"]], always.include = c(1.2)), 
+               regexp = "always.include")
+  expect_error(abess(dataset[["x"]], dataset[["y"]], support.size = c(1, 2), 
+                     always.include = c(1, 2, 3)), 
+               regexp = "always.include")
+  expect_error(abess(dataset[["x"]], dataset[["y"]], tune.path = "gsection", 
+                     gs.range = c(1, 2), always.include = c(1, 2, 3)), 
+               regexp = "always.include")
+  
+  ## nfold
+  expect_warning(abess(dataset[["x"]], dataset[["y"]], 
+                     nfolds = c(2.2), tune.type = "cv"), 
+                 regexp = "nfolds")
+  
+  ## gs.range
+  expect_warning(abess(dataset[["x"]], dataset[["y"]], tune.path = "gsection", 
+                       gs.range = c(1.2, 8.3)), 
+                 regexp = "gs.range")
+  
+  ## max.splicing.iter
+  expect_warning(abess(dataset[["x"]], dataset[["y"]], max.splicing.iter = 3.2), 
+                 regexp = "max.splicing.iter")
 })
 
 test_that("abesspca exception handling works", {

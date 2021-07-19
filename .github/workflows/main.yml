@@ -118,9 +118,7 @@ jobs:
 
       - name: Generate coverage report
         run: |
-          ls *
           Rscript -e 'library(covr); x <- package_coverage(path = "./R-package", quiet = FALSE, type = c("vignettes", "examples", "tests"), function_exclusions = "\\.onUnload"); to_cobertura(x, "rpackage.xml")'
-          ls *
 
       - name: Upload coverage report
         run: |

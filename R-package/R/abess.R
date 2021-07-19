@@ -354,6 +354,9 @@ abess.default <- function(x,
   
   ## check max splicing iteration
   stopifnot(is.numeric(max.splicing.iter) & max.splicing.iter >= 1)
+  check_integer_warning(max.splicing.iter, 
+                        "max.splicing.iter should be an integer value. 
+                        It is coerced to as.integer(max.splicing.iter).")
   max_splicing_iter <- as.integer(max.splicing.iter)
   
   ## task type:
@@ -408,13 +411,6 @@ abess.default <- function(x,
     stop("Rows of x must be the same as length of weight!")
   }
   stopifnot(all(is.numeric(weight)), all(weight >= 0))
-  
-  ## check C-max:
-  stopifnot(is.numeric(c.max) & c.max >= 1)
-  if (c.max >= nvars) {
-    stop("c.max should smaller than the number of predictors!")
-  }
-  c_max <- as.integer(c.max)
   
   ## check response:
   if (anyNA(y)) {
@@ -472,12 +468,11 @@ abess.default <- function(x,
   if (family == "cox") {
     if (!is.matrix(y)) {
       y <- as.matrix(y)
-    } else {
-      stopifnot(length(unique(y[, 2])) != 2)
     }
     if (ncol(y) != 2) {
       stop("y must be a Surv object or a matrix with two columns when family = 'cox'!")
     }
+    stopifnot(length(unique(y[, 2])) == 2)
     ## pre-process data for cox model
     sort_y <- order(y[, 1])
     y <- y[sort_y, ]
@@ -539,6 +534,7 @@ abess.default <- function(x,
     }
   } else {
     stopifnot(any(is.numeric(support.size) & support.size >= 0))
+    check_integer(support.size, "support.size must be a vector with integer value.")
     if (group_select) {
       stopifnot(max(support.size) < ngroup)
     } else {
@@ -566,7 +562,12 @@ abess.default <- function(x,
     }
   } else {
     stopifnot(length(gs.range) == 2)
-    stopifnot(any(is.numeric(gs.range) & gs.range > 0))
+    stopifnot(all(is.numeric(gs.range)))
+    stopifnot(all(gs.range > 0))
+    check_integer_warning(gs.range, 
+                          "gs.range should be a vector with integer. 
+                          It is coerced to as.integer(gs.range).")
+    gs.range <- as.integer(gs.range)
     stopifnot(as.integer(gs.range)[1] != as.integer(gs.range)[2])
     if (group_select) {
       stopifnot(max(gs.range) < ngroup)
@@ -578,13 +579,30 @@ abess.default <- function(x,
     s_max <- max(gs.range)
   }
   
-  ## check compatible between group selection and support size
-  if (group_select) {
-    if (path_type == 1 & max(s_list) > length(gi))
-      stop("The maximum one support.size should not be larger than the number of groups!")
-    if (path_type == 2 & s_max > length(gi))
-      stop("max(gs.range) is too large. Should be smaller than the number of groups!")
+  ## check C-max:
+  stopifnot(is.numeric(c.max))
+  stopifnot(c.max >= 1)
+  check_integer_warning(c.max, 
+                        "c.max should be an integer. 
+                        It is coerced to as.integer(c.max).")
+  if (path_type == 1) {
+    if (c.max > max(s_list)) {
+      stop("c.max should smaller max(support.size)!")
+    }
+  } else if (path_type == 2) {
+    if (c.max > s_max) {
+      stop("c.max should smaller max(gs.range)!")
+    }
   }
+  c_max <- as.integer(c.max)
+  
+  ## check compatible between group selection and support size
+  # if (group_select) {
+  #   if (path_type == 1 & max(s_list) > length(gi))
+  #     stop("The maximum one support.size should not be larger than the number of groups!")
+  #   if (path_type == 2 & s_max > length(gi))
+  #     stop("max(gs.range) is too large. Should be smaller than the number of groups!")
+  # }
   
   ## check covariance update
   stopifnot(is.logical(cov.update))
@@ -643,6 +661,9 @@ abess.default <- function(x,
   is_cv <- ifelse(tune.type == "cv", TRUE, FALSE)
   if (is_cv) {
     stopifnot(is.numeric(nfolds) & nfolds >= 2)
+    check_integer_warning(nfolds, 
+                          "nfolds should be an integer value. 
+                          It is coerced to be as.integer(nfolds). ")
     nfolds <- as.integer(nfolds)
   }
   
@@ -688,6 +709,9 @@ abess.default <- function(x,
   } else {
     stopifnot(is.numeric(screening.num))
     stopifnot(screening.num >= 1)
+    check_integer_warning(screening.num, 
+                          "screening.num should be a integer. 
+                          It is coerced to as.integer(screening.num).")
     screening.num <- as.integer(screening.num)
     if (screening.num > nvars)
       stop("The number of screening features must be equal or less than that of the column of x!")
@@ -706,9 +730,10 @@ abess.default <- function(x,
   if (is.null(always.include)) {
     always_include <- numeric(0)
   } else {
-    if (anyNA(always.include) || any(is.finite(always.include))) {
+    if (anyNA(always.include) || any(is.infinite(always.include))) {
       stop("always.include has missing values or infinite values.")
     }
+    stopifnot(always.include %in% 1:nvars)
     stopifnot(always.include > 0)
     check_integer(always.include, "always.include must be a vector with integer value.")
     always.include <- as.integer(always.include) - 1
