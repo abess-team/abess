@@ -585,7 +585,6 @@ abess.default <- function(x,
   check_integer_warning(c.max, 
                         "c.max should be an integer. 
                         It is coerced to as.integer(c.max).")
-  c.max <- as.integer(c.max)
   if (path_type == 1) {
     if (c.max > max(s_list)) {
       stop("c.max should smaller max(support.size)!")
