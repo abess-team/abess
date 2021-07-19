@@ -124,8 +124,11 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the newest version of abess from <a href="https://github.com/">github</a> with:</p>
+<p>To install the Ball R package from CRAN, just run:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"abess"</span><span class="op">)</span></code></pre></div>
+<p>Alternative, you can install the newest version of abess from <a href="https://github.com/">github</a> with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"abess-team/abess"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="performance" class="section level2">
@@ -133,17 +136,23 @@
 <a href="#performance" class="anchor"></a>Performance</h2>
 <p>To show the computational efficiency of abess, we compare abess R package with popular R libraries: glmnet, ncvreg, picasso for linear, logistic and poisson regressions; Timings of the CPU execution are recorded in seconds and averaged over 100 replications on a sequence of 100 regularization parameters.</p>
 <p>The designed matrix is formed by i.i.d sample generated from a multivariate normal distribution with mean 0 and covariance matrix <span class="math inline"><em>Σ</em> = (<em>σ</em><sub><em>i</em><em>j</em></sub>)</span>. We consider two settings—low correlation and high correlation. For the low correlation scenario, we set <span class="math inline"><em>σ</em><sub><em>i</em><em>j</em></sub> = 0.1<sup>|<em>i</em> − <em>j</em>|</sup></span> and for the high correlation <span class="math inline"><em>σ</em><sub><em>i</em><em>j</em></sub> = 0.7</span>. The number of predictors is 1000. The true coefficient <span class="math inline"><em>β</em><sup>*</sup></span> is a vector with 10 nonzero entries uniformly distributed in <span class="math inline">[<em>b</em>, <em>B</em>]</span>. We set <span class="math inline">$b=5\sqrt{2\log(p)/n}$</span>, <span class="math inline"><em>B</em> = 100<em>b</em></span> for linear regression <span class="math inline">$b = 10\sqrt{2\log(p)/n}$</span>, <span class="math inline"><em>B</em> = 5 * <em>b</em></span> for logistic regression and <span class="math inline">$b = -10 \sqrt{2 \log(p) / n}$</span>, <span class="math inline">$B=10 \sqrt{2 \log(p) / n}$</span> for poisson regression. A random noise generated from a standard Gaussian distribution is added to the linear predictor <span class="math inline"><em>x</em><sup>′</sup><em>β</em></span> for linear regression. The size of training data is 500. All experiments are evaluated on an Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz and under R version 3.6.1.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="st">"R-package/example/timing.R"</span><span class="op">)</span></code></pre></div>
 <p>Results are presented in the following picture. As a package solving best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.</p>
 <p><img src="articles/readmeTiming.png" alt="avatar"></p>
+</div>
+<div id="citation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#citation" class="anchor"></a>Citation</h2>
+<p>If you use <strong>abess</strong> package or reference our examples in a presentation or publication, we would appreciate citations of our package.</p>
 </div>
 <div id="reference" class="section level2">
 <h2 class="hasAnchor">
 <a href="#reference" class="anchor"></a>Reference</h2>
 <p>A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117<br>
 Fan, J. and Lv, J. (2008), Sure independence screening for ultrahigh dimensional feature space. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. <a href="https://doi.org/10.1111/j.1467-9868.2008.00674.x" class="uri">https://doi.org/10.1111/j.1467-9868.2008.00674.x</a><br>
-Qiang Sun &amp; Heping Zhang (2020) Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079</p>
+Qiang Sun &amp; Heping Zhang (2020) Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079<br>
+Zhang, Y., Zhu, J., Zhu, J. and Wang, X., 2021. Certifiably Polynomial Algorithm for Best Group Subset Selection. arXiv preprint arXiv:2104.12576.</p>
 </div>
 </div>
   </div>
@@ -194,7 +203,7 @@ Qiang Sun &amp; Heping Zhang (2020) Targeted Inference Involving High-Dimensiona
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.com/abess-team/abess"><img src="https://travis-ci.com/abess-team/abess.svg?branch=master" alt="Build Status"></a></li>
+<li><a href="https://github.com/abess-team/abess/actions"><img src="https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg" alt="Github action"></a></li>
 <li><a href="https://codecov.io/gh/abess-team/abess"><img src="https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00" alt="codecov"></a></li>
 <li><a href="https://cran.r-project.org/package=abess"><img src="https://img.shields.io/cran/v/abess?logo=R" alt="cran"></a></li>
 <li><a href="http://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License"></a></li>

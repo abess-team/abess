@@ -279,6 +279,10 @@ solve this problem.
 By exploiting the warm-start initialization, the non-convex optimization 
 problem at different support size (specified by <code>support.size</code>) 
 can be efficiently solved.</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117</p>
+<p>Sparse principal component analysis. Hui Zou, Hastie Trevor, and Tibshirani Robert. Journal of computational and graphical statistics 15.2 (2006): 265-286.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='print.abesspca.html'>print.abesspca</a></code>, 
@@ -329,10 +333,10 @@ can be efficiently solved.</p>
 #&gt; abesspca(x = rob_cov, type = "gram")
 #&gt; 
 #&gt;   support.size       ev       pev
-#&gt; 1            1 4727.415 0.9698953
-#&gt; 2            2 4802.938 0.9853900
-#&gt; 3            3 4864.802 0.9980823
-#&gt; 4            4 4874.149 1.0000000</div><div class='input'>
+#&gt; 1            1 6224.179 0.9859453
+#&gt; 2            2 6269.776 0.9931683
+#&gt; 3            3 6303.551 0.9985184
+#&gt; 4            4 6312.905 1.0000000</div><div class='input'>
 <span class='co'>## K-component principal component analysis</span>
 <span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span>, sparse.type <span class='op'>=</span> <span class='st'>"kpc"</span>, 
                     support.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>

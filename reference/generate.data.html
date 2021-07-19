@@ -164,6 +164,7 @@ generalized linear model and Cox proportional hazard model.</p>
   beta <span class='op'>=</span> <span class='cn'>NULL</span>,
   cortype <span class='op'>=</span> <span class='fl'>1</span>,
   snr <span class='op'>=</span> <span class='fl'>10</span>,
+  sigma <span class='op'>=</span> <span class='cn'>NULL</span>,
   weibull.shape <span class='op'>=</span> <span class='fl'>1</span>,
   uniform.max <span class='op'>=</span> <span class='fl'>1</span>,
   y.dim <span class='op'>=</span> <span class='fl'>3</span>,
@@ -222,7 +223,12 @@ matrix are \(rho\) and diagonal entries are 1.</p></td>
 as the variance of \(x\beta\) divided
 by the variance of a gaussian noise: \(\frac{Var(x\beta)}{\sigma^2}\).
 The gaussian noise \(\epsilon\) is set with mean 0 and variance.
-The noise is added to the linear predictor \(\eta\) = \(x\beta\). Default is <code>snr = 10</code>.</p></td>
+The noise is added to the linear predictor \(\eta\) = \(x\beta\). Default is <code>snr = 10</code>.
+Note that this arguments's effect is overridden if <code>sigma</code> is supplied with a non-null value.</p></td>
+    </tr>
+    <tr>
+      <th>sigma</th>
+      <td><p>The variance of the gaussian noise. Default <code>sigma = NULL</code> implies it is determined by <code>snr</code>.</p></td>
     </tr>
     <tr>
       <th>weibull.shape</th>
@@ -261,7 +267,7 @@ Default is <code>uniform.max = 1</code>.</p></td>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>For <code>family = "gaussian"</code> , the data model is 
+    <p>For <code>family = "gaussian"</code>, the data model is 
 $$Y = X \beta + \epsilon.$$
 The underlying regression coefficient \(\beta\) has 
 uniform distribution [m, 100m] and \(m=5 \sqrt{2log(p)/n}.\)</p>
@@ -284,8 +290,15 @@ then we define the censor status as
 The underlying regression coefficient \(\beta\) has 
 uniform distribution [2m, 10m], 
 where \(m = 5 \sqrt{2log(p)/n}\).</p>
-<p>In the above models, \(\epsilon \sim N(0,
-\sigma^2 ),\) where \(\sigma^2\) is determined by the <code>snr</code>.</p>
+<p>For <code>family = "mgaussian"</code>, the data model is 
+$$Y = X \beta + E.$$
+The non-zero values of regression matrix \(\beta\) are sampled from
+uniform distribution [m, 100m] and \(m=5 \sqrt{2log(p)/n}.\)</p>
+<p>For <code>family= "multinomial"</code>, the data model is $$Prob(Y = 1) = \exp(X \beta + E)/(1 + \exp(X \beta + E)).$$
+The non-zero values of regression coefficient \(\beta\) has 
+uniform distribution [2m, 10m] and \(m = 5 \sqrt{2log(p)/n}.\)</p>
+<p>In the above models, \(\epsilon \sim N(0, \sigma^2 )\) and \(E \sim MVN(0, \sigma^2 \times I_{q \times q})\), 
+where \(\sigma^2\) is determined by the <code>snr</code> and q is <code>y.dim</code>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Jin Zhu</p>
