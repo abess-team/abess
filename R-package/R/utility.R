@@ -374,13 +374,9 @@ abess_model_matrix <- function(object, data = environment(object),
     
     for (i in namD) {
       if (is.character(data[[i]])) {
-        stop("Some columns in data are character! 
-             You may convert these columns to a dummy variable via 
-             model.matrix function or discard them.")
+        stop("Some columns in data are character! You may convert these columns to a dummy variable via model.matrix function or discard them.")
       } else if (is.factor(data[[i]])) {
-        stop("Some columns in data are factor!. 
-        You may convert these columns to a dummy variable via 
-             model.matrix function or discard them.")
+        stop("Some columns in data are factor!. You may convert these columns to a dummy variable via model.matrix function or discard them.")
       }
     }
   }
