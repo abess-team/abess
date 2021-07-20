@@ -1054,79 +1054,6 @@ class TestClass:
             assert False
     
     def test_check(self):
-        # path & ic & exchange_num & screen
-        try:
-            model = abessLm(path_type = 'other')
-            model.fit([[1]], [1])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-        
-        try:
-            model = abessLm(path_type = 'seq')
-            model.fit([[1]], [1])
-            model.fit([[1], [2]], [1, 2])
-            model.fit([[1], [2], [3]], [1, 2, 3])
-
-            model = abessLm(path_type = 'seq', support_size = [3])
-            model.fit([[1]], [1])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-        
-        try:
-            model = abessLm(path_type = 'pgs')
-            model.fit([[1]], [1])
-
-            model = abessLm(path_type = 'pgs', s_min = 1, s_max = 0)
-            model.fit([[1]], [1])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-        
-        try:
-            model = abessLm(path_type = 'pgs', lambda_min = 1, lambda_max = 0)
-            model.fit([[1]], [1])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-        
-        try:
-            model = abessLm(ic_type = 'other')
-            model.fit([[1]], [1])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-        
-        try:
-            model = abessLm(exchange_num = -1)
-            model.fit([[1]], [1])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-        
-        try:
-            model = abessLm(is_screening = True)
-            model = abessLm(is_screening = True, screening_size = 3)
-            model.fit([[1]], [1])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-        
-        try:
-            model = abessLm(is_screening = True, support_size = [2], screening_size = 1)
-            model.fit([[1, 2, 3]], [1])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
 
         # X and y
         model = abessLm()
@@ -1245,6 +1172,153 @@ class TestClass:
             print(e)
         else:
             assert False
+        
+        # others
+        try:
+            model = abessLm(path_type = 'other')
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm(path_type = 'seq')
+            model.fit([[1]], [1])
+            model.fit([[1], [2]], [1, 2])
+            model.fit([[1], [2], [3]], [1, 2, 3])
+
+            model = abessLm(path_type = 'seq', support_size = [3])
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm(path_type = 'pgs')
+            model.fit([[1]], [1])
+
+            model = abessLm(path_type = 'pgs', s_min = 1, s_max = 0)
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm(path_type = 'pgs', lambda_min = 1, lambda_max = 0)
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm(ic_type = 'other')
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm(exchange_num = -1)
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm(is_screening = True)
+            model = abessLm(is_screening = True, screening_size = 3)
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm(is_screening = True, support_size = [2], screening_size = 1)
+            model.fit([[1, 2, 3]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm(primary_model_fit_max_iter = 0.5)
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm(primary_model_fit_epsilon = -1)
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model = abessLm(primary_model_fit_epsilon = -1)
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model = abessLm(thread = -1)
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm(splicing_type = -1)
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessPCA()
+            model.fit([[1]], [1], number = -1)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm()
+            model.fit([[1]], [1])
+            model.score([1, 2], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+    def test_score(self):
+        model = abessLm()
+        model.fit([[1]], [1])
+        model.score([[1]] , [1])
+
+        model = abessMultigaussian()
+        model.fit([[1]], [[1, 1]])
+        model.score([[1]], [[1, 1]])
 
         
+        model = abessLogistic()
+        model.fit([[1]], [1])
+        model.score([[1]], [1])
+
+        model = abessMultinomial()
+        model.fit([[1]], [[1, 1]])
+        model.score([[1]], [[1, 1]])    
             
