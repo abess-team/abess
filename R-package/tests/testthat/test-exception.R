@@ -9,6 +9,12 @@ test_that("abess (data) works", {
   dataset <- generate.data(n, p, support_size)
   
   ########### Exception for x ############
+  dat <- cbind.data.frame("y" = dataset[["y"]], dataset[["x"]])
+  dat[["x1"]] <- as.character(dat[["x1"]])
+  expect_error(abess(y ~ ., data = dat), regexp = "Some columns in data are character")
+  dat[["x1"]] <- as.factor(as.numeric(dat[["x1"]]))
+  expect_error(abess(y ~ ., data = dat), regexp = "Some columns in data are factor")
+  
   dataset[["x"]][1, 1] <- NA
   expect_error(abess(dataset[["x"]], dataset[["y"]]), regexp = "x has missing")
   
@@ -74,8 +80,6 @@ test_that("abess (option) works", {
                regexp = "Rows of x")
   
   ## c.max
-  expect_error(abess(dataset[["x"]], dataset[["y"]], c.max = 21), 
-               regexp = "c.max")
   expect_warning(abess(dataset[["x"]], dataset[["y"]], c.max = 2.2), 
                  regexp = "c.max")
   
