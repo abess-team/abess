@@ -15,7 +15,7 @@ def sample(p, k):
     return select
 
 
-def gen_data(n, p, family, k, rho=0, sigma=1, coef_=None, censoring=True, c=1, scal=10):
+def gen_data(n, p, family, k, rho=0, sigma=1, coef_=None, censoring=True, c=1, scal=10, snr = None):
     zero = np.zeros([n, 1])
     ones = np.ones([n, 1])
     X = np.random.normal(0, 1, n*p).reshape(n, p)
@@ -38,7 +38,15 @@ def gen_data(n, p, family, k, rho=0, sigma=1, coef_=None, censoring=True, c=1, s
         else:
             Tbeta = coef_
 
-        y = np.matmul(x, Tbeta) + sigma * np.random.normal(0, 1, n)
+        if snr is None:
+            y = np.matmul(x, Tbeta) + sigma * np.random.normal(0, 1, n)
+        else:
+            y = np.matmul(x, Tbeta)
+            power = np.mean(np.square(y))
+            npower = power / 10 ** (snr/10)
+            noise = np.random.randn(len(y)) * np.sqrt(npower)
+            y += noise
+
         return data(x, y, Tbeta)
 
     elif family == "binomial":

@@ -792,6 +792,8 @@ class bess_base(BaseEstimator):
             intercept_ = np.repeat(self.intercept_[np.newaxis,...], X.shape[0], axis=0)
             xbeta = np.dot(X, self.coef_) + intercept_
             return np.argmax(xbeta)
+        elif self.model_type == "Cox":
+            return np.exp(np.dot(X, self.coef_))
     
     def predict_proba(self, X):
         """
