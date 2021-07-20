@@ -453,7 +453,9 @@ class bess_base(BaseEstimator):
             if weight is None:
                 raise ValueError(
                     "When you choose is_weight is True, the parameter weight should be given")
-            elif (weight.dtype != "int" and weight.dtype != "float"):
+            else:
+                weight = np.array(weight)
+            if (weight.dtype != "int" and weight.dtype != "float"):
                 raise ValueError("weight should be numeric.")
             elif (len(weight.shape) > 1):
                 raise ValueError("weight should be an n-length, 1D array.")
