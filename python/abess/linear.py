@@ -647,7 +647,9 @@ class bess_base(BaseEstimator):
                 tmp[:, 2] = X.col
                 tmp[:, 0] = X.data
 
-                X = tmp
+                ind = np.lexsort((tmp[:, 2], tmp[:, 1]))
+            
+                X = tmp[ind, :]
                 # print(X)
 
         # stop = time()
