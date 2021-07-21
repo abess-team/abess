@@ -8,6 +8,7 @@
 #' (inherit from class \code{"dgCMatrix"} in package \code{Matrix}).
 #' @param type If \code{type = "predictor"}, \code{x} is considered as the predictor matrix. 
 #' If \code{type = "gram"}, \code{x} is considered as a sample covariance or correlation matrix.
+#' @param c.max an integer splicing size. The default of \code{c.max} is the maximum of 2 and \code{max(support.size) / 2}. 
 #' @param sparse.type If \code{sparse.type = "fpc"}, then best subset selection performs on the first principal component; 
 #' If \code{sparse.type = "kpc"}, then best subset selection performs on the first \eqn{K} principal components. 
 #' @param cor A logical value. If \code{cor = TRUE}, perform PCA on the correlation matrix; 
@@ -93,7 +94,7 @@ abesspca <- function(x,
                      sparse.type = c("fpc", "kpc"), 
                      cor = FALSE, 
                      support.size = NULL, 
-                     c.max = 2,
+                     c.max = NULL,
                      lambda = 0,
                      always.include = NULL,
                      group.index = NULL, 
@@ -135,12 +136,10 @@ abesspca <- function(x,
       stop("x has missing value or infinite value!")
     }    
   }
-  
   vn <- colnames(x)
   if (is.null(vn)) {
     vn <- paste0("x", 1:nvars)
   }
-  
   
   ## check sparse.type
   sparse_type <- match.arg(sparse.type)
@@ -185,13 +184,6 @@ abesspca <- function(x,
   # total_variance <- sum((svdobj[["d"]])^2)
   # v <- svdobj[["v"]]
   
-  ## check C-max:
-  stopifnot(is.numeric(c.max) & c.max >= 1)
-  if (c.max >= nvars) {
-    stop("c.max should smaller than the number of predictors!")
-  }
-  c_max <- as.integer(c.max)
-  
   ## check lambda:
   stopifnot(!anyNA(lambda))
   stopifnot(all(lambda >= 0))
@@ -216,7 +208,6 @@ abesspca <- function(x,
   } else {
     s_max <- nvars
   }
-  
   if (is.null(support.size)) {
     if (sparse_type == "fpc") {
       if (is.null(support.num)) {
@@ -234,12 +225,7 @@ abesspca <- function(x,
       #     stopifnot(s_num <= nvars)
       #   }
       # }
-      s_list <-
-        round(seq.int(
-          from = 1,
-          to = s_max,
-          length.out = s_num
-        ))
+      s_list <- round(seq.int(from = 1, to = s_max, length.out = s_num))
       s_list <- unique(s_list)
       k_num <- 1
     } else {
@@ -267,6 +253,16 @@ abesspca <- function(x,
       k_num <- length(support.size)
     }
     s_list <- support.size
+  }
+  
+  ## check C-max:
+  if (is.null(c.max)) {
+    c_max <- max(c(2, round(max(s_list) / 2)))
+  } else {
+    stopifnot(is.numeric(c.max) & c.max >= 1)
+    check_integer_warning(c.max, 
+                          "c.max should be an integer. It is coerced to as.integer(c.max).")
+    c_max <- as.integer(c.max)
   }
   
   ## check always included variables:
@@ -342,7 +338,7 @@ abesspca <- function(x,
       approximate_Newton = FALSE,
       thread = 1, 
       covariance_update = FALSE,
-      sparse_matrix = FALSE, 
+      sparse_matrix = FALSE, ### to change
       splicing_type = splicing_type
     )
 
@@ -408,6 +404,7 @@ variance_explained <- function(X, loading){
   pc <- X %*% loading
   Z <- qr(pc)
   ev <- sum(abs(diag(qr.R(Z))))
+  # ev <- sum((diag(qr.R(Z)))^2)
   ev
 }
 
