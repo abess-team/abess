@@ -453,7 +453,9 @@ class bess_base(BaseEstimator):
             if weight is None:
                 raise ValueError(
                     "When you choose is_weight is True, the parameter weight should be given")
-            elif (weight.dtype != "int" and weight.dtype != "float"):
+            else:
+                weight = np.array(weight)
+            if (weight.dtype != "int" and weight.dtype != "float"):
                 raise ValueError("weight should be numeric.")
             elif (len(weight.shape) > 1):
                 raise ValueError("weight should be an n-length, 1D array.")
@@ -827,6 +829,7 @@ class bess_base(BaseEstimator):
 
         # Input validation
         X = check_array(X)
+        y = check_array(y, ensure_2d = False)
 
         if X.shape[1] != self.n_features_in_:
             raise ValueError("X.shape[1] should be " + str(self._p))
@@ -865,6 +868,7 @@ class bess_base(BaseEstimator):
 
         elif self.model_type == "Cox":
             risk_score = np.dot(X, self.coef_)
+            y = np.array(y)
             result = concordance_index_censored(
                 np.array(y[:, 1], np.bool_), y[:, 0], risk_score)
             return result[0]
