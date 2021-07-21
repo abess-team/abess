@@ -1091,6 +1091,10 @@ class TestClass:
             print(e)
         else:
             assert False
+        
+        x = coo_matrix(([1,2,3], ([0,1,2],[0,1,2])))
+        y = [1, 2, 3]
+        model.fit(x, y)
 
         # Sigma
         model = abessPCA()
@@ -1310,32 +1314,6 @@ class TestClass:
         else:
             assert False
         
-        try:
-            model = abessLm()
-            model.fit([[1]], [1])
-            model.score([1, 2], [1])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-        
-        try:
-            model = abessCox()
-            model.fit([[1]], [[1, 1]])
-            model.score([[1]], [[1, 1]])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-        
-        try:
-            model = abessCox()
-            model.fit([[1]], [[1, 1]])
-            model.score([[1], [2]], [[1, 0], [2, 0]])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
         
     def test_score(self):
         model = abessLm()
@@ -1353,5 +1331,32 @@ class TestClass:
 
         model = abessMultinomial()
         model.fit([[1]], [[1, 1]])
-        model.score([[1]], [[1, 1]])    
+        model.score([[1]], [[1, 1]])   
+
+        try:
+            model = abessLm()
+            model.fit([[1]], [1])
+            model.score([1, 2], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessCox()
+            model.fit([[1]], [[1, 1]])
+            model.score([[1]], [[1, 1]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model = abessCox()
+            model.fit([[1]], [[1, 1]])
+            model.score([[1], [2]], [[1, 0], [2, 0]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False 
             
