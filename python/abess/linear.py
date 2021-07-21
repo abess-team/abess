@@ -284,8 +284,12 @@ class bess_base(BaseEstimator):
         """
         # self._arg_check()
 
-        if isinstance(X, (list, np.ndarray, np.matrix)):
-            X = np.array(X)
+        if isinstance(X, (list, np.ndarray, np.matrix, coo_matrix)):
+            if isinstance(X, coo_matrix):
+                if not self.sparse_matrix:
+                    self.sparse_matrix = True
+            else:
+                X = np.array(X)
 
             # print(X)
             if (X.dtype != 'int' and X.dtype != 'float'):
@@ -304,34 +308,13 @@ class bess_base(BaseEstimator):
             # Check that X and y have correct shape
             # accept_sparse
             X, y = check_X_y(X, y, ensure_2d=True,
-                            accept_sparse=False, multi_output=True, y_numeric=True)
+                            accept_sparse=True, multi_output=True, y_numeric=True)
             
             if (self.model_type == "PCA"):
                 X = X - X.mean(axis = 0)
             Sigma = np.matrix(-1)
             self.n_features_in_ = p
-        elif isinstance(X, coo_matrix):
-            if not self.sparse_matrix:
-                self.sparse_matrix = True
 
-            if (X.dtype != 'int' and X.dtype != 'float'):
-                raise ValueError("sparse X should be numeric.")
-            elif len(X.shape) != 2:
-                    raise ValueError("sparse X should be 2-dimension.")
-            
-            n = X.shape[0]
-            p = X.shape[1]
-            if (y is None):
-                if (self.model_type == "PCA"):
-                    y = np.zeros(n)
-                else:
-                    raise ValueError("y should be given in "+str(self.algorithm_type))
-
-            X, y = check_X_y(X, y, ensure_2d=True,
-                                accept_sparse=True, multi_output=True, y_numeric=True)
-            Sigma = np.matrix(-1)
-            self.n_features_in_ = p
-    
         elif (X is None and self.model_type == "PCA"):   
             if (Sigma is not None):     # input_type=1
                 Sigma = np.array(Sigma)
