@@ -650,7 +650,6 @@ class bess_base(BaseEstimator):
                 ind = np.lexsort((tmp[:, 2], tmp[:, 1]))
             
                 X = tmp[ind, :]
-                print(X)
                 # print(X)
 
         # stop = time()
