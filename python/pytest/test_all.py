@@ -1139,6 +1139,13 @@ class TestClass:
         # group & weight
         model = abessLm()
         try:
+            model.fit([[1]], [1], is_weight = True)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
             model.fit([[1]], [1], is_weight = True, weight = ['c'])
         except ValueError as e:
             print(e)
@@ -1186,7 +1193,7 @@ class TestClass:
             model = abessLm(path_type = 'seq')
             model.fit([[1]], [1])
             model.fit([[1], [2]], [1, 2])
-            model.fit([[1], [2], [3]], [1, 2, 3])
+            model.fit([[1, 1], [2, 2]], [1, 2])
 
             model = abessLm(path_type = 'seq', support_size = [3])
             model.fit([[1]], [1])
@@ -1208,6 +1215,14 @@ class TestClass:
         
         try:
             model = abessLm(path_type = 'pgs', lambda_min = 1, lambda_max = 0)
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm(path_type = 'pgs', K_max = 1)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -1299,6 +1314,24 @@ class TestClass:
             model = abessLm()
             model.fit([[1]], [1])
             model.score([1, 2], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessCox()
+            model.fit([[1]], [[1, 1]])
+            model.score([[1]], [[1, 1]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessCox()
+            model.fit([[1]], [[1, 1]])
+            model.score([[1], [2]], [[1, 0], [2, 0]])
         except ValueError as e:
             print(e)
         else:
