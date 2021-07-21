@@ -1,4 +1,4 @@
-from ..src.cabess import pywrap_abess
+from abess.cabess import pywrap_abess
 import numpy as np
 import math
 import types
