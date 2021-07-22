@@ -583,17 +583,7 @@ abess.default <- function(x,
   stopifnot(is.numeric(c.max))
   stopifnot(c.max >= 1)
   check_integer_warning(c.max, 
-                        "c.max should be an integer. 
-                        It is coerced to as.integer(c.max).")
-  if (path_type == 1) {
-    if (c.max > max(s_list)) {
-      stop("c.max should smaller max(support.size)!")
-    }
-  } else if (path_type == 2) {
-    if (c.max > s_max) {
-      stop("c.max should smaller max(gs.range)!")
-    }
-  }
+                        "c.max should be an integer. It is coerced to as.integer(c.max).")
   c_max <- as.integer(c.max)
   
   ## check compatible between group selection and support size

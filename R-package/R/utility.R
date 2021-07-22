@@ -29,8 +29,8 @@
 #' by the variance of a gaussian noise: \eqn{\frac{Var(x\beta)}{\sigma^2}}.
 #' The gaussian noise \eqn{\epsilon} is set with mean 0 and variance.
 #' The noise is added to the linear predictor \eqn{\eta} = \eqn{x\beta}. Default is \code{snr = 10}.
-# This option is invalid for \code{cortype = 3}.
-# @param censoring Whether data is censored or not. Valid only for \code{family = "cox"}. Default is \code{TRUE}.
+#' Note that this arguments's effect is overridden if \code{sigma} is supplied with a non-null value. 
+#' @param sigma The variance of the gaussian noise. Default \code{sigma = NULL} implies it is determined by \code{snr}.
 #' @param weibull.shape The shape parameter of the Weibull distribution. 
 #' It works only when \code{family = "cox"}. 
 #' Default: \code{weibull.shape = 1}.
@@ -63,7 +63,7 @@
 # to the \eqn{\sqrt n} length. Then the design matrix \eqn{X} is generated with
 # \eqn{X_j = \bar{X}_j + \rho(\bar{X}_{j+1}+\bar{X}_{j-1})} for \eqn{j=2,\dots,p-1}.
 #'
-#' For \code{family = "gaussian"} , the data model is 
+#' For \code{family = "gaussian"}, the data model is 
 #' \deqn{Y = X \beta + \epsilon.}
 #' The underlying regression coefficient \eqn{\beta} has 
 #' uniform distribution [m, 100m] and \eqn{m=5 \sqrt{2log(p)/n}.}
@@ -90,8 +90,17 @@
 #' uniform distribution [2m, 10m], 
 #' where \eqn{m = 5 \sqrt{2log(p)/n}}.
 #' 
-#' In the above models, \eqn{\epsilon \sim N(0,
-#' \sigma^2 ),} where \eqn{\sigma^2} is determined by the \code{snr}.
+#' For \code{family = "mgaussian"}, the data model is 
+#' \deqn{Y = X \beta + E.}
+#' The non-zero values of regression matrix \eqn{\beta} are sampled from
+#' uniform distribution [m, 100m] and \eqn{m=5 \sqrt{2log(p)/n}.} 
+#' 
+#' For \code{family= "multinomial"}, the data model is \deqn{Prob(Y = 1) = \exp(X \beta + E)/(1 + \exp(X \beta + E)).}
+#' The non-zero values of regression coefficient \eqn{\beta} has 
+#' uniform distribution [2m, 10m] and \eqn{m = 5 \sqrt{2log(p)/n}.}
+#' 
+#' In the above models, \eqn{\epsilon \sim N(0, \sigma^2 )} and \eqn{E \sim MVN(0, \sigma^2 \times I_{q \times q})}, 
+#' where \eqn{\sigma^2} is determined by the \code{snr} and q is \code{y.dim}.
 #' 
 #' @author Jin Zhu
 #' 
@@ -199,7 +208,6 @@ generate.data <- function(n,
     if(is.null(sigma)){
       sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     }
-    # sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     
     y <- x %*% beta + rnorm(n, 0, sigma)
   } 
@@ -213,7 +221,6 @@ generate.data <- function(n,
     if(is.null(sigma)){
       sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     }
-    # sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     
     eta <- x %*% beta + rnorm(n, 0, sigma)
     PB <- apply(eta, 1, generatedata2)
@@ -226,7 +233,9 @@ generate.data <- function(n,
     } else {
       beta <- input_beta
     }
-    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    if(is.null(sigma)){
+      sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    }
     
     eta <- x %*% beta + rnorm(n, 0, sigma)
     time <- (-log(stats::runif(n)) / drop(exp(eta))) ^ (1 / weibull.shape)
@@ -249,7 +258,7 @@ generate.data <- function(n,
     if(is.null(sigma)){
       sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     }
-    # sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    
     sigma <- 0
     eta <- x %*% beta + stats::rnorm(n, 0, sigma)
     eta <- ifelse(eta > 30, 30, eta)
@@ -269,7 +278,9 @@ generate.data <- function(n,
     } else {
       beta <- input_beta
     }
-    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    if(is.null(sigma)){
+      sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    }
     sigma <- diag(sigma)
     sigma <- sigma * y_cor
     epsilon <- MASS::mvrnorm(n = n, mu = rep(0, y_dim), Sigma = sigma)
@@ -285,7 +296,9 @@ generate.data <- function(n,
     } else {
       beta <- input_beta
     }
-    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    if(is.null(sigma)){
+      sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    }
     sigma <- diag(sigma)
     sigma <- sigma * y_cor
     epsilon <- MASS::mvrnorm(n, rep(0, y_dim), sigma)
@@ -361,13 +374,9 @@ abess_model_matrix <- function(object, data = environment(object),
     
     for (i in namD) {
       if (is.character(data[[i]])) {
-        stop("Some columns in data are character! 
-             You may convert these columns to a dummy variable via 
-             model.matrix function or discard them.")
+        stop("Some columns in data are character! You may convert these columns to a dummy variable via model.matrix function or discard them.")
       } else if (is.factor(data[[i]])) {
-        stop("Some columns in data are factor!. 
-        You may convert these columns to a dummy variable via 
-             model.matrix function or discard them.")
+        stop("Some columns in data are factor!. You may convert these columns to a dummy variable via model.matrix function or discard them.")
       }
     }
   }

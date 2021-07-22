@@ -1,4 +1,4 @@
-Python API Reference
+Generalized Linear Models
 ====================
 
 .. contents::
@@ -28,10 +28,4 @@ abessMultigaussian
 abessMultinomial
 ----------------
 .. autoclass:: abess.linear.abessMultinomial
-
-
-
-gen\_data
----------
-.. autofunction:: abess.gen_data.gen_data
 
