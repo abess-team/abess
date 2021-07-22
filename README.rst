@@ -24,6 +24,7 @@ Installation
 ============
 
 To install abess, please view chapter: `Installation`_.
+
 .. _Installation: https://abess.readthedocs.io/en/latest/Installation.html
 
 
