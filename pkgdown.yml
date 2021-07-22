@@ -2,6 +2,7 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
+  algorithm: algorithm.html
   v01-abess-guide: v01-abess-guide.html
   v03-classification: v03-classification.html
   v04-poissonregression: v04-poissonregression.html
@@ -10,5 +11,5 @@ articles:
   v07-advancedFeatures: v07-advancedFeatures.html
   v08-sPCA: v08-sPCA.html
   v09-fasterSetting: v09-fasterSetting.html
-last_built: 2021-07-22T11:52Z
+last_built: 2021-07-22T12:15Z
 
