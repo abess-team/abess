@@ -16,6 +16,7 @@ Contents
 ..    Tutorial <Tutorial/index.rst>
 ..    Python package <Python-package/index.rst>
 ..    R package <R-package/index.rst>
+..    FQA <FQA.md>
 ..    About <About/index.rst>
 
 .. toctree::
@@ -23,6 +24,7 @@ Contents
    Tutorial <Tutorial/index.rst>
    Python package <Python-package/index.rst>
    R package <https://abess-team.github.io/abess/>
+   FQA <FQA.md>
    About <About/index.rst>
 
 

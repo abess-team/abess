@@ -5,14 +5,13 @@ This page contains links to all the Python related documents on Python package.
 
 .. toctree::
     LinearRegression
-    logi_and_multiclass
-    PoissonRegression
-    CoxRegression
     MultiTaskLearning
-    RegularizedBeSS
-    ComputationalImprove
+    PoissonRegression
+    logi_and_multiclass
+    CoxRegression
     PCA
     advanced_features
+    ComputationalImprove
     work_with_sklearn
     
     
