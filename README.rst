@@ -11,34 +11,44 @@ Welcome to abess's documentation!
 that the resulting linear model is expected to have the most desirable
 prediction accuracy. This project implements a polynomial algorithm proposed to solve these problems. It supports:
 
--  various model:
 -  linear regression
 -  classification (binary or multi-class)
 -  counting-response modeling
 -  censored-response modeling
 -  multi-response modeling (multi-tasks learning)
--  sure independence screening
+-  group best subset selection
 -  nuisance penalized regression
+-  sure independence screening
 
-Quick Start
+Installation
 ============
 
-- R 
+To install abess, please view chapter: `Installation`_.
+.. _Installation: https://abess.readthedocs.io/en/latest/Installation.html
 
-- Python
 
-You can install the newest version of abess from
-`pypi <https://pypi.org>`__ with:
+Performance
+===========
 
-.. code-block:: console
+To show the computational efficiency of abess, 
+we compare abess R package with popular R libraries: glmnet, ncvreg, picasso for linear, logistic and poisson regressions; 
+Timings of the CPU execution are recorded in seconds and averaged over 100 replications on a sequence
+of 100 regularization parameters.
 
-    $pip install abess
+The designed matrix is formed by i.i.d sample generated from a multivariate normal distribution with mean 0 and covariance matrix :math:`\Sigma = (\sigma_{ij})`. We consider two settings—low correlation and high correlation. 
+For the low correlation scenario, we set :math:`\sigma_{ij} = 0.1^{|i-j|}` and for the high correlation :math:`\sigma_{ij} = 0.7`. The number of predictors is 1000. 
+The true coefficient :math:`\beta^*` is a vector with 10 nonzero entries uniformly distributed in :math:`[b,B]`. We set :math:`b=5\sqrt{2\log(p)/n}`, :math:`B = 100b` for linear regression :math:`b = 10\sqrt{2\log(p)/n}`, :math:`B = 5*b` for 
+logistic regression and :math:`b = -10 \sqrt{2  \log(p) / n}`, :math:`B=10 \sqrt{2 \log(p) / n}` for poisson regression. A random noise generated from a standard Gaussian distribution is added to the linear predictor :math:`x^\prime\beta` for linear regression. 
+The size of training data is 500.
 
-Import abess in a Python project:
+All experiments are evaluated on an Intel(R) Xeon(R) 
+CPU E5-2620 v4 @ 2.10GHz and under R version 3.6.1. 
+for 100 replicas.
 
-.. code-block:: console
+As a package solving best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
 
-    import abess
+.. image:: ./Tutorial/fig/readmeTiming.png
+
 
 Reference
 =========
@@ -49,6 +59,7 @@ Reference
 
 | Qiang Sun & Heping Zhang (2020) Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079
 
+| Zhang, Y., Zhu, J., Zhu, J. and Wang, X., 2021. Certifiably Polynomial Algorithm for Best Group Subset Selection. arXiv preprint arXiv:2104.12576.
 
 .. |Codacy| image:: https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76 
    :target: https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abess-team/abess&amp;utm_campaign=Badge_Grade
