@@ -499,7 +499,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       algorithm->always_select = always_select;
       for (int i = 0; i < algorithm_list.size(); i++)
       {
-        // cout<<"i= "<<i<<endl;
 
         algorithm_list[i]->always_select = always_select;
       }
