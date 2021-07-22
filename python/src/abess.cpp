@@ -843,7 +843,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
                             Named("coef0_all") = coef0_matrix,
                             Named("train_loss_all") = train_loss_matrix,
                             Named("ic_all") = ic_matrix,
-                            Named("effective_number_matrix") = effective_number_matrix,
+                            Named("effective_number_all") = effective_number_matrix,
                             Named("test_loss_all") = test_loss_sum);
   if (path_type == 2)
   {
