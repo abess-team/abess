@@ -477,7 +477,9 @@ class bess_base(BaseEstimator):
         # path parameter
         if path_type_int == 1:
             if self.support_size is None:
-                if n == 1:
+                if self.model_type == 'PCA':
+                    support_sizes = list(range(1, p + 1))
+                elif n == 1:
                     support_sizes = [0, 1]
                 elif p == 1:
                     support_sizes = [0, 1]
@@ -518,7 +520,10 @@ class bess_base(BaseEstimator):
                 new_s_min = self.s_min
 
             if self.s_max is None:
-                new_s_max = min(p, int(n / (np.log(np.log(n)) * np.log(p))))
+                if self.model_type == 'PCA':
+                    new_s_max = p
+                else:
+                    new_s_max = min(p, int(n / (np.log(np.log(n)) * np.log(p))))
             elif (self.s_max < new_s_min):
                 raise ValueError("s_max should be larger than s_min")
             else:
@@ -884,35 +889,34 @@ class bess_base(BaseEstimator):
 @ fix_docs
 class abessLogistic(bess_base):
     """
-    Adaptive Best-Subset Selection(ABESS) algorithm for logistic regression.
+    Adaptive Best-Subset Selection (ABESS) algorithm for logistic regression.
 
     Examples
     --------
     >>> ### Sparsity known
     >>>
-    >>> from bess.linear import *
+    >>> from abess.linear import abessLogistic
+    >>> from abess.gen_data import gen_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-    >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-    >>> xbeta = np.matmul(x, beta)
-    >>> p = np.exp(xbeta)/(1+np.exp(xbeta))
-    >>> y = np.random.binomial(1, p)
-    >>> model = GroupPdasLogistic(path_type="seq", support_size=[5])
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> data = gen_data(n = 100, p = 50, k = 10, family = 'binomial')
+    >>> model = abessLogistic(support_size = [10])
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-    >>> model = GroupPdasLogistic(path_type="seq")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
+    >>> model = abessLogistic(path_type = "seq")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
     >>>
-    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = GroupPdasLogistic(path_type="pgs")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> # path_type="pgs", 
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+    >>> model = abessLogistic(path_type="pgs")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -945,30 +949,29 @@ class abessLm(bess_base):
     Examples
     --------
     >>> ### Sparsity known
-    >>> from bess.linear import *
+    >>>
+    >>> from abess.linear import abessLm
+    >>> from abess.gen_data import gen_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-    >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-    >>> xbeta = np.matmul(x, beta)
-    >>> p = np.exp(xbeta)/(1+np.exp(xbeta))
-    >>> y = np.random.binomial(1, p)
-    >>> model = GroupPdasLogistic(path_type="seq", support_size=[5])
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> data = gen_data(n = 100, p = 50, k = 10, family = 'gaussian')
+    >>> model = abessLm(support_size = [10])
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
-    >>> >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
     >>>
-    >>> model = GroupPdasLogistic(path_type="seq")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
-
-    >>> >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
+    >>> model = abessLm(path_type = "seq")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
     >>>
-    >>> model = GroupPdasLogistic(path_type="pgs")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> # path_type="pgs", 
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+    >>> model = abessLm(path_type="pgs")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -1002,29 +1005,28 @@ class abessCox(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from bess.linear import *
+    >>> from abess.linear import abessCox
+    >>> from abess.gen_data import gen_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-    >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-    >>> xbeta = np.matmul(x, beta)
-    >>> p = np.exp(xbeta)/(1+np.exp(xbeta))
-    >>> y = np.random.binomial(1, p)
-    >>> model = GroupPdasLogistic(path_type="seq", support_size=[5])
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> data = gen_data(n = 100, p = 50, k = 10, family = 'cox')
+    >>> model = abessCox(support_size = [10])
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-    >>> model = GroupPdasLogistic(path_type="seq")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
+    >>> model = abessCox(path_type = "seq")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
     >>>
-    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = GroupPdasLogistic(path_type="pgs")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> # path_type="pgs", 
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+    >>> model = abessCox(path_type="pgs")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -1059,29 +1061,28 @@ class abessPoisson(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from bess.linear import *
+    >>> from abess.linear import abessPoisson
+    >>> from abess.gen_data import gen_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-    >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-    >>> xbeta = np.matmul(x, beta)
-    >>> p = np.exp(xbeta)/(1+np.exp(xbeta))
-    >>> y = np.random.binomial(1, p)
-    >>> model = GroupPdasLogistic(path_type="seq", support_size=[5])
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> data = gen_data(n = 100, p = 50, k = 10, family = 'poisson')
+    >>> model = abessPoisson(support_size = [10])
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-    >>> model = GroupPdasLogistic(path_type="seq")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
+    >>> model = abessPoisson(path_type = "seq")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
     >>>
-    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = GroupPdasLogistic(path_type="pgs")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> # path_type="pgs", 
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+    >>> model = abessPoisson(path_type="pgs")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -1115,29 +1116,28 @@ class abessMultigaussian(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from bess.linear import *
+    >>> from abess.linear import abessMultigaussian
+    >>> from abess.gen_data import gen_data_splicing
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-    >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-    >>> xbeta = np.matmul(x, beta)
-    >>> p = np.exp(xbeta)/(1+np.exp(xbeta))
-    >>> y = np.random.binomial(1, p)
-    >>> model = GroupPdasLogistic(path_type="seq", support_size=[5])
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> data = gen_data_splicing(n = 100, p = 50, k = 10, M = 3, family = 'multigaussian')
+    >>> model = abessMultigaussian(support_size = [10])
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-    >>> model = GroupPdasLogistic(path_type="seq")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
+    >>> model = abessMultigaussian(path_type = "seq")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
     >>>
-    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = GroupPdasLogistic(path_type="pgs")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> # path_type="pgs", 
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+    >>> model = abessMultigaussian(path_type="pgs")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -1173,29 +1173,28 @@ class abessMultinomial(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from bess.linear import *
+    >>> from abess.linear import abessMultinomial
+    >>> from abess.gen_data import gen_data_splicing
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-    >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-    >>> xbeta = np.matmul(x, beta)
-    >>> p = np.exp(xbeta)/(1+np.exp(xbeta))
-    >>> y = np.random.binomial(1, p)
-    >>> model = GroupPdasLogistic(path_type="seq", support_size=[5])
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> data = gen_data_splicing(n = 100, p = 50, k = 10, M = 3, family = 'multinomial')
+    >>> model = abessMultinomial(support_size = [10])
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-    >>> model = GroupPdasLogistic(path_type="seq")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
+    >>> model = abessMultinomial(path_type = "seq")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
     >>>
-    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = GroupPdasLogistic(path_type="pgs")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> # path_type="pgs", 
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+    >>> model = abessMultinomial(path_type="pgs")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -1229,29 +1228,33 @@ class abessPCA(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from bess.linear import *
+    >>> from abess.linear import abessPCA
+    >>> from abess.gen_data import gen_data_splicing
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-    >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-    >>> xbeta = np.matmul(x, beta)
-    >>> p = np.exp(xbeta)/(1+np.exp(xbeta))
-    >>> y = np.random.binomial(1, p)
-    >>> model = GroupPdasLogistic(path_type="seq", support_size=[5])
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> x = np.random.randn(100, 50)
+    >>> model = abessPCA(support_size = [10])
+    >>> model.fit(x)
+    >>> print(model.coef_)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-    >>> model = GroupPdasLogistic(path_type="seq")
-    >>> model.fit(X=x, y=y)
-    >>> model.predict(x)
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(1, p + 1))
+    >>> model = abessPCA(path_type = "seq")
+    >>> model.fit(x)
+    >>> print(model.coef_)
     >>>
-    >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = GroupPdasLogistic(path_type="pgs")
-    >>> model.fit(X=x, y=y)
+    >>> # path_type="pgs", 
+    >>> # Default: s_min=1, s_max=p
+    >>> model = abessPCA(path_type="pgs")
+    >>> model.fit(x)
     >>> model.predict(x)
+    >>> print(model.coef_)
+
+    >>> ### x unknown, but Sigma known
+    >>> model.fit(Sigma = Sigma)
+    >>> print(model.coef_)
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
