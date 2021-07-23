@@ -547,6 +547,23 @@ class TestClass:
         for i in range(3):
             coef4 = np.nonzero(model.coef_[:, i])[0]
             assert (len(coef4) == s)
+        
+        # Check5: sparse
+        model = abessPCA(support_size = [s], sparse_matrix = True)
+        model.fit(X, is_normal=False)
+        coef5 = np.nonzero(model.coef_)[0]
+        assert (coef5 == coef1).all() 
+
+        # Check6: cv
+        model = abessPCA(support_size = [s], is_cv = True)
+        model.fit(X, is_normal=False)
+        coef6 = np.nonzero(model.coef_)[0]
+        assert (coef6 == coef1).all() 
+
+        model = abessPCA(support_size = [s], sparse_matrix = True, is_cv = True)
+        model.fit(X, is_normal=False)
+        coef7 = np.nonzero(model.coef_)[0]
+        assert (coef7 == coef1).all() 
 
     # def test_gaussian_gs(self):
     #     n = 100
@@ -1313,6 +1330,10 @@ class TestClass:
             print(e)
         else:
             assert False
+        
+        # full
+        model = abessLm(support_size = [1])
+        model.fit([[1]], [1])
         
         
     def test_score(self):
