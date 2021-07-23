@@ -26,9 +26,6 @@ jobs:
       run:
         pip install swig mingw bash
         pip install -r ./python/requirements.txt
-    - name: Install abess
-      run:
-        python ./python/setup.py install
 
   pkgdown:
     name: pkgdown
