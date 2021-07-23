@@ -9,7 +9,7 @@ on:
 
 
 jobs:
-  InstallTest:
+  InstallUbuntu:
     name: Installation test on Ubuntu
     runs-on: ${{ matrix.os }}
     strategy:
@@ -23,11 +23,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run:
+      run: |
         sudo apt-get install -y swig bash mingw-w64
         pip install -r ./python/requirements.txt
     - name: Install abess
-      run:
+      run: |
         python ./python/setup.py install
         
 
