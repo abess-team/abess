@@ -104,7 +104,8 @@ class bess_base(BaseEstimator):
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 1 for `abessPCA` and splicing_type = 0 for else.
 
-    Atrributes
+
+    Attributes
     ----------
     coef_ : array of shape (n_features, ) or (n_targets, n_features)
         Estimated coefficients for the best subset selection problem.

@@ -492,19 +492,19 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     screening_A = screening(data, model_type, screening_size, always_select, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon);
   }
 
-  if(always_select.size() != 0)
+  if (always_select.size() != 0)
   {
-    if(is_cv)
+    if (is_cv)
     {
       algorithm->always_select = always_select;
-      for(int i=0;i<algorithm_list.size();i++)
+      for (int i = 0; i < algorithm_list.size(); i++)
       {
-        // cout<<"i= "<<i<<endl;
+
         algorithm_list[i]->always_select = always_select;
       }
     }
   }
-  
+
   int M = data.y.cols();
 
   Metric<T1, T2, T3, T4> *metric = new Metric<T1, T2, T3, T4>(ic_type, ic_coef, is_cv, Kfold);
@@ -582,6 +582,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   Eigen::MatrixXd ic_matrix(s_size, lambda_size);
   Eigen::MatrixXd test_loss_sum = Eigen::MatrixXd::Zero(s_size, lambda_size);
   Eigen::MatrixXd train_loss_matrix(s_size, lambda_size);
+  Eigen::MatrixXd effective_number_matrix(s_size, lambda_size);
 
   if (path_type == 1)
   {
@@ -652,6 +653,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           coef0_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_coef0();
           train_loss_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_train_loss();
           ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.M, data.g_num, algorithm_list[algorithm_index]);
+          effective_number_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_effective_number();
         }
 #ifdef TEST
         std::cout << "parallel cv 2 end--------" << std::endl;
@@ -698,6 +700,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           coef0_matrix(s_index, lambda_index) = algorithm->get_coef0();
           train_loss_matrix(s_index, lambda_index) = algorithm->get_train_loss();
           ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.M, data.g_num, algorithm);
+          effective_number_matrix(s_index, lambda_index) = algorithm->get_effective_number();
         }
       }
 #ifdef TEST
@@ -710,6 +713,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       coef0_matrix = result.coef0_matrix;
       ic_matrix = result.ic_matrix;
       train_loss_matrix = result.train_loss_matrix;
+      effective_number_matrix = result.effective_number_matrix;
       ic_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
 #ifdef TEST
       std::cout << "train_loss: " << std::endl;
@@ -839,8 +843,10 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
                             Named("coef0_all") = coef0_matrix,
                             Named("train_loss_all") = train_loss_matrix,
                             Named("ic_all") = ic_matrix,
+                            Named("effective_number_all") = effective_number_matrix,
                             Named("test_loss_all") = test_loss_sum);
-  if (path_type == 2) {
+  if (path_type == 2)
+  {
     out_result.push_back(sequence, "sequence");
   }
 #else
