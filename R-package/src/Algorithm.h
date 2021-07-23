@@ -247,14 +247,14 @@ public:
 #ifdef TEST
     t1 = clock();
 #endif
-    if (this->algorithm_type == 6)
-    {
-      A_ind = find_ind(A, g_index, g_size, p, N);
-      X_A = X_seg(train_x, train_n, A_ind);
-      slice(this->beta, A_ind, beta_A);
-      this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
-      slice_restore(beta_A, A_ind, this->beta);
-    }
+    // if (this->algorithm_type == 6)
+    // {
+    A_ind = find_ind(A, g_index, g_size, p, N);
+    X_A = X_seg(train_x, train_n, A_ind);
+    slice(this->beta, A_ind, beta_A);
+    this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
+    slice_restore(beta_A, A_ind, this->beta);
+    // }
 
     this->beta_warmstart = this->beta;
     this->coef0_warmstart = this->coef0;
@@ -282,62 +282,62 @@ public:
       A_list.col(this->l) = A;
       // std::cout << "fit 8" << endl;
 
-      if (this->algorithm_type != 6)
+      // if (this->algorithm_type != 6)
+      // {
+      //   A_ind = find_ind(A, g_index, g_size, p, N);
+      //   X_A = X_seg(train_x, train_n, A_ind);
+      //   slice(this->beta, A_ind, beta_A);
+      //   this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
+      //   slice_restore(beta_A, A_ind, this->beta);
+      //   for (int ll = 0; ll < this->l; ll++)
+      //   {
+      //     if (A == A_list.col(ll))
+      //     {
+      //       this->group_df = 0;
+      //       for (unsigned int i = 0; i < A.size(); i++)
+      //       {
+      //         this->group_df = this->group_df + g_size(A(i));
+      //       }
+      //       return;
+      //     }
+      //   }
+      // }
+      // else
+      // {
+      if (A == A_list.col(this->l - 1))
       {
+#ifdef TEST
+        std::cout << "------------iter time: ----------" << this->l << endl;
+        t2 = clock();
+#endif
+#ifdef TEST
+        std::cout << "fit get A" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+        t1 = clock();
+#endif
+        this->A_out = A;
+
         A_ind = find_ind(A, g_index, g_size, p, N);
         X_A = X_seg(train_x, train_n, A_ind);
         slice(this->beta, A_ind, beta_A);
-        this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
-        slice_restore(beta_A, A_ind, this->beta);
-        for (int ll = 0; ll < this->l; ll++)
-        {
-          if (A == A_list.col(ll))
-          {
-            this->group_df = 0;
-            for (unsigned int i = 0; i < A.size(); i++)
-            {
-              this->group_df = this->group_df + g_size(A(i));
-            }
-            return;
-          }
-        }
-      }
-      else
-      {
-        if (A == A_list.col(this->l - 1))
-        {
-#ifdef TEST
-          std::cout << "------------iter time: ----------" << this->l << endl;
-          t2 = clock();
-#endif
-#ifdef TEST
-          std::cout << "fit get A" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-          t1 = clock();
-#endif
-          this->A_out = A;
+        // cout << "A: " << endl;
+        // cout << A << endl;
+        // cout << "beta" << endl;
+        // cout << beta_A << endl;
+        this->effective_number = effective_number_of_parameter(train_x, X_A, train_y, train_weight, this->beta, beta_A, this->coef0);
 
-          A_ind = find_ind(A, g_index, g_size, p, N);
-          X_A = X_seg(train_x, train_n, A_ind);
-          slice(this->beta, A_ind, beta_A);
-          // cout << "A: " << endl;
-          // cout << A << endl;
-          // cout << "beta" << endl;
-          // cout << beta_A << endl;
-          this->effective_number = effective_number_of_parameter(train_x, X_A, train_y, train_weight, this->beta, beta_A, this->coef0);
-
-          this->group_df = A_ind.size();
-          // for (unsigned int i = 0; i < A.size(); i++)
-          // {
-          //   this->group_df = this->group_df + g_size(A(i));
-          // }
+        this->group_df = A_ind.size();
+        // for (unsigned int i = 0; i < A.size(); i++)
+        // {
+        //   this->group_df = this->group_df + g_size(A(i));
+        // }
 #ifdef TEST
-          t2 = clock();
-          std::cout << "group_df time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+        t2 = clock();
+        std::cout << "group_df time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
-          return;
-        }
+        return;
       }
     }
+    // }
   };
 
   void get_A(T4 &X, T1 &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, T2 &beta, T3 &coef0, Eigen::VectorXd &bd, int T0, Eigen::VectorXd &weights,
@@ -374,7 +374,7 @@ public:
     bd = Eigen::VectorXd::Zero(N);
     this->sacrifice(X, X_A, y, beta, beta_A, coef0, A, I, weights, g_index, g_size, N, A_ind, bd);
 
-    for(int i=0;i<this->always_select.size();i++)
+    for (int i = 0; i < this->always_select.size(); i++)
     {
       bd(this->always_select(i)) = DBL_MAX;
     }
@@ -399,7 +399,8 @@ public:
       d_I_group(i) = bd(I(i));
     }
 
-    if(C_max <=0) return;
+    if (C_max <= 0)
+      return;
 
     Eigen::VectorXi A_min_k = min_k(beta_A_group, C_max, true);
     Eigen::VectorXi I_max_k = max_k(d_I_group, C_max, true);
@@ -492,11 +493,10 @@ public:
 
       this->sacrifice(X, X_A, y, beta, beta_A, coef0, A, I, weights, g_index, g_size, N, A_ind, bd);
 
-      for(int i=0;i<this->always_select.size();i++)
+      for (int i = 0; i < this->always_select.size(); i++)
       {
         bd[this->always_select[i]] = DBL_MAX;
       }
-
     }
 
 #ifdef TEST
@@ -778,7 +778,8 @@ public:
     }
     else
     {
-      if(XA.cols() == 0) return 0.;
+      if (XA.cols() == 0)
+        return 0.;
 
 #ifdef TEST
       cout << "effective_number_of_parameter" << endl;
@@ -1144,7 +1145,8 @@ public:
     }
     else
     {
-      if(XA.cols() == 0) return 0.;
+      if (XA.cols() == 0)
+        return 0.;
 #ifdef TEST
       cout << "effective_number_of_parameter" << endl;
       clock_t t1 = clock(), t2;
@@ -1488,16 +1490,17 @@ public:
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
 
     for (int i = 0; i < N; i++)
-    {
-      T4 XG = X.middleCols(g_index(i), g_size(i));
-      Eigen::MatrixXd XGbar = XG.transpose() * h * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
+      for (int i = 0; i < N; i++)
+      {
+        T4 XG = X.middleCols(g_index(i), g_size(i));
+        Eigen::MatrixXd XGbar = XG.transpose() * h * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
 
-      Eigen::MatrixXd phiG;
-      XGbar.sqrt().evalTo(phiG);
-      Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
-      betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
-      dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
-    }
+        Eigen::MatrixXd phiG;
+        XGbar.sqrt().evalTo(phiG);
+        Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
+        betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
+        dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
+      }
     for (int i = 0; i < A_size; i++)
     {
       bd(A[i]) = betabar.segment(g_index(A[i]), g_size(A[i])).squaredNorm() / g_size(A[i]);
@@ -1520,7 +1523,8 @@ public:
     }
     else
     {
-      if(XA.cols() == 0) return 0.;
+      if (XA.cols() == 0)
+        return 0.;
 #ifdef TEST
       cout << "effective_number_of_parameter" << endl;
       clock_t t1 = clock(), t2;
@@ -2198,7 +2202,8 @@ public:
     }
     else
     {
-      if(XA.cols() == 0) return 0.;
+      if (XA.cols() == 0)
+        return 0.;
 #ifdef TEST
       cout << "effective_number_of_parameter" << endl;
       clock_t t1 = clock(), t2;
