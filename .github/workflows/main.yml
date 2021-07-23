@@ -23,7 +23,7 @@ jobs:
     - name: Installation
       run:
       pip install -r ./python/requirements.txt
-      pip install swig wingw bash
+      pip install swig mingw bash
       python ./python/setup.py install
 
   pkgdown:
