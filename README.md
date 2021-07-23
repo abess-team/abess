@@ -49,15 +49,16 @@ of 100 regularization parameters.
 
 <!-- We consider three aspects. The first one is the prediction performance on a validation data set of size 1000. For linear and poisson regression, this is measured by $\|X\hat{\beta}-X\beta^*\|_2$ where $\hat{\beta}$ is the fitted coefficients and $\beta^*$ is the true coefficients. For the logistic regression, we use the AUC. The second is the selection performance in terms of true positive rate (TPR) and false positive rate (FPR). The third is the running time. -->
 
-The designed matrix is formed by i.i.d sample generated from a multivariate normal distribution with mean 0 and covariance matrix $\Sigma = (\sigma_{ij})$. We consider two settings—low correlation and high correlation. For the low correlation scenario, we set $\sigma_{ij} = 0.1^{|i-j|}$ and for the high correlation $\sigma_{ij} = 0.7$. The number of predictors is 1000. The true coefficient $\beta^*$ is a vector with 10 nonzero entries uniformly distributed in $[b,B]$. We set $b=5\sqrt{2\log(p)/n}$, $B = 100b$ for linear regression $b = 10\sqrt{2\log(p)/n}$, $B = 5*b$ for logistic regression and $b = -10 \sqrt{2  \log(p) / n}$, $B=10 \sqrt{2 \log(p) / n}$ for poisson regression. A random noise generated from a standard Gaussian distribution is added to the linear predictor $x^\prime\beta$ for linear regression. The size of training data is 500.
-All experiments are
-evaluated on an Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz and under R version 3.6.1. for 100 replicas.
+<!-- The designed matrix is formed by i.i.d sample generated from a multivariate normal distribution with mean 0 and covariance matrix $\Sigma = (\sigma_{ij})$. We consider two settings—low correlation and high correlation. For the low correlation scenario, we set $\sigma_{ij} = 0.1^{|i-j|}$ and for the high correlation $\sigma_{ij} = 0.7$. The number of predictors is 1000. The true coefficient $\beta^*$ is a vector with 10 nonzero entries uniformly distributed in $[b,B]$. We set $b=5\sqrt{2\log(p)/n}$, $B = 100b$ for linear regression $b = 10\sqrt{2\log(p)/n}$, $B = 5*b$ for logistic regression and $b = -10 \sqrt{2  \log(p) / n}$, $B=10 \sqrt{2 \log(p) / n}$ for poisson regression. A random noise generated from a standard Gaussian distribution is added to the linear predictor $x^\prime\beta$ for linear regression. The size of training data is 500. -->
+
 
 
 ```r
 source("R-package/example/timing.R")
 ```
 
+All experiments are
+evaluated on an Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz and under R version 3.6.1. for 100 replicas.
 <!-- Results are presented in the following table and figure. For all the scenarios, the L0-based estimators in L0Learn and abess show the best prediction performance with the abess performs better in terms of variable selection and efficiency. For linear regression, we see that the Lasso estimator in both glmnet and ncvreg has the largest prediction error compared with other estimators. With the increase in correlation, difficulties of identifying the sparsity structure increase for MCP (ncvreg) and SCAD (ncvreg). For logistic regression, abess shows a great advantage in efficiency compared with L0Learn. Here we see that it is difficult for L0-based method to identify all the true significant predictors in high correlation setting, but abess is generally the least likely to make a mistake. 
 For poisson regression, our abess package continues to exhibit the dominance of over prediction performance and variable selection. 
 Notably, as a package aiming at best subset selection, abess shows a competitive short run time, never been eclipsed by comparison with glmnet and ncvreg which are famous for high efficiency. -->
