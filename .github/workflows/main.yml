@@ -20,7 +20,8 @@ jobs:
       uses: actions/setup-python@master
       with:
         python-version: 3.7
-    run:
+    - name: Installation
+      run:
       pip install -r ./python/requirements.txt
       python ./python/setup.py install
 
