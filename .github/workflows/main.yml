@@ -45,8 +45,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        iwr -useb get.scoop.sh | iex
-        scoop install swig gcc
+        choco install swig mingw
         pip install -r ./python/requirements.txt
     - name: Install abess
       run: |
