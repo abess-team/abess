@@ -28,6 +28,7 @@ struct Result
     Eigen::MatrixXd train_loss_matrix;
     // Eigen::Matrix<Eigen::VectorXi, Eigen::Dynamic, Eigen::Dynamic> A_matrix;
     Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> bd_matrix;
+    Eigen::MatrixXd effective_number_matrix;
 };
 
 List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
