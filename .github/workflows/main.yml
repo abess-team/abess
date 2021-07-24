@@ -28,7 +28,8 @@ jobs:
         pip install -r ./python/requirements.txt
     - name: Install abess
       run: |
-        python ./python/setup.py install
+        cd ./python
+        python setup.py install
         
   # InstallWins:    ## error !
   #   name: Installation test on Windows
