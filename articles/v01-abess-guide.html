@@ -54,9 +54,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/algorithm.html">ABESS algorithm: details</a>
-    </li>
-    <li>
       <a href="../articles/v01-abess-guide.html">Quick start for `abess`: Linear regression</a>
     </li>
     <li>
@@ -79,6 +76,9 @@
     </li>
     <li>
       <a href="../articles/v09-fasterSetting.html">Tips for faster computation</a>
+    </li>
+    <li>
+      <a href="../articles/v10-algorithm.html">ABESS algorithm: details</a>
     </li>
   </ul>
 </li>
@@ -449,8 +449,8 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">crime</span>, screening.num <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## List of 13
-##  $ beta          :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
+<pre><code>## List of 14
+##  $ beta                :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
 ##   .. ..@ i       : int [1:528] 442 442 3950 442 3267 3950 442 1747 3267 3950 ...
 ##   .. ..@ p       : int [1:34] 0 0 1 3 6 10 15 21 28 36 ...
 ##   .. ..@ Dim     : int [1:2] 5253 33
@@ -459,18 +459,19 @@ The pre-processed dataset can be freely downloaded by running:</p>
 ##   .. .. ..$ : chr [1:33] "0" "1" "2" "3" ...
 ##   .. ..@ x       : num [1:528] -0.251 -0.204 4.195 -0.161 0.527 ...
 ##   .. ..@ factors : list()
-##  $ intercept     : num [1:33] 599 2115 1774 1270 1045 ...
-##  $ dev           : num [1:33] 381863 172847 155975 147048 141513 ...
-##  $ tune.value    : num [1:33] 6426 6043 6004 5987 5981 ...
-##  $ nobs          : int 500
-##  $ nvars         : int 5253
-##  $ family        : chr "gaussian"
-##  $ tune.path     : chr "sequence"
-##  $ tune.type     : chr "GIC"
-##  $ support.size  : int [1:33] 0 1 2 3 4 5 6 7 8 9 ...
-##  $ best.size     : int 12
-##  $ screening.vars: chr [1:1000] "pctBlack" "pctWhite" "medIncome" "pctWdiv" ...
-##  $ call          : language abess.formula(formula = y ~ ., data = crime, screening.num = 1000)
+##  $ intercept           : num [1:33] 599 2115 1774 1270 1045 ...
+##  $ dev                 : num [1:33] 381863 172847 155975 147048 141513 ...
+##  $ tune.value          : num [1:33] 6426 6043 6004 5987 5981 ...
+##  $ effective_number_all: num [1:33, 1] 0 1 2 3 4 5 6 7 8 9 ...
+##  $ nobs                : int 500
+##  $ nvars               : int 5253
+##  $ family              : chr "gaussian"
+##  $ tune.path           : chr "sequence"
+##  $ tune.type           : chr "GIC"
+##  $ support.size        : int [1:33] 0 1 2 3 4 5 6 7 8 9 ...
+##  $ best.size           : int 12
+##  $ screening.vars      : chr [1:1000] "pctBlack" "pctWhite" "medIncome" "pctWdiv" ...
+##  $ call                : language abess.formula(formula = y ~ ., data = crime, screening.num = 1000)
 ##  - attr(*, "class")= chr "abess"</code></pre>
 <p>The returned object of <code>abess</code> includes the features selected by screening. We exhibit six variables of them:</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">

@@ -95,9 +95,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/algorithm.html">ABESS algorithm: details</a>
-    </li>
-    <li>
       <a href="../articles/v01-abess-guide.html">Quick start for `abess`: Linear regression</a>
     </li>
     <li>
@@ -120,6 +117,9 @@
     </li>
     <li>
       <a href="../articles/v09-fasterSetting.html">Tips for faster computation</a>
+    </li>
+    <li>
+      <a href="../articles/v10-algorithm.html">ABESS algorithm: details</a>
     </li>
   </ul>
 </li>
@@ -336,10 +336,10 @@ can be efficiently solved.</p>
 #&gt; abesspca(x = rob_cov, type = "gram")
 #&gt; 
 #&gt;   support.size       ev       pev
-#&gt; 1            1 6309.053 0.9827109
-#&gt; 2            2 6362.517 0.9910386
-#&gt; 3            3 6410.151 0.9984582
-#&gt; 4            4 6420.050 1.0000000</div><div class='input'>
+#&gt; 1            1 6626.368 0.9862732
+#&gt; 2            2 6667.090 0.9923344
+#&gt; 3            3 6705.387 0.9980345
+#&gt; 4            4 6718.592 1.0000000</div><div class='input'>
 <span class='co'>## K-component principal component analysis</span>
 <span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span>, sparse.type <span class='op'>=</span> <span class='st'>"kpc"</span>, 
                     support.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
