@@ -102,6 +102,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
     Eigen::MatrixXd ic_matrix(sequence_size, lambda_size);
     Eigen::MatrixXd test_loss_matrix(sequence_size, lambda_size);
     Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(sequence_size, lambda_size);
+    Eigen::MatrixXd effective_number_matrix(sequence_size, lambda_size);
 
     T2 beta_init;
     T3 coef0_init;
@@ -167,6 +168,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
             coef0_matrix(i, j) = algorithm->coef0;
             train_loss_matrix(i, j) = algorithm->get_train_loss();
             bd_matrix(i, j) = algorithm->bd;
+            effective_number_matrix(i, j) = algorithm->get_effective_number();
 
 #ifdef TEST
             t2 = clock();
@@ -200,6 +202,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
     result.bd_matrix = bd_matrix;
     result.ic_matrix = ic_matrix;
     result.test_loss_matrix = test_loss_matrix;
+    result.effective_number_matrix = effective_number_matrix;
 }
 
 template <class T1, class T2, class T3, class T4>
@@ -280,6 +283,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
     Eigen::MatrixXd ic_matrix(sequence_size, 1);
     Eigen::MatrixXd test_loss_matrix(sequence_size, 1);
     Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(sequence_size, 1);
+    Eigen::MatrixXd effective_number_matrix(sequence_size, 1);
 
     T2 beta_init;
     T3 coef0_init;
@@ -327,6 +331,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
     coef0_matrix(0, 0) = algorithm->coef0;
     train_loss_matrix(0, 0) = algorithm->get_train_loss();
     bd_matrix(0, 0) = algorithm->bd;
+    effective_number_matrix(0, 0) = algorithm->get_effective_number();
 
     // beta_matrix.col(1) = algorithm->get_beta();
     // coef0_sequence(1) = algorithm->get_coef0();
@@ -372,6 +377,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
     coef0_matrix(1, 0) = algorithm->coef0;
     train_loss_matrix(1, 0) = algorithm->get_train_loss();
     bd_matrix(1, 0) = algorithm->bd;
+    effective_number_matrix(1, 0) = algorithm->get_effective_number();
 
     // algorithm->fit();
     // if (algorithm->warm_start)
@@ -439,6 +445,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
             coef0_matrix(iter, 0) = algorithm->coef0;
             train_loss_matrix(iter, 0) = algorithm->get_train_loss();
             bd_matrix(iter, 0) = algorithm->bd;
+            effective_number_matrix(iter, 0) = algorithm->get_effective_number();
             // algorithm->update_train_mask(full_mask);
             // algorithm->update_sparsity_level(T1);
             // algorithm->update_beta_init(beta_init);
@@ -507,6 +514,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
             coef0_matrix(iter, 0) = algorithm->coef0;
             train_loss_matrix(iter, 0) = algorithm->get_train_loss();
             bd_matrix(iter, 0) = algorithm->bd;
+            effective_number_matrix(iter, 0) = algorithm->get_effective_number();
             // algorithm->update_train_mask(full_mask);
             // algorithm->update_sparsity_level(T2);
             // algorithm->update_beta_init(beta_init);
@@ -582,6 +590,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
             coef0_matrix(iter, 0) = algorithm->coef0;
             train_loss_matrix(iter, 0) = algorithm->get_train_loss();
             bd_matrix(iter, 0) = algorithm->bd;
+            effective_number_matrix(iter, 0) = algorithm->get_effective_number();
 
             sequence(iter) = T_tmp;
             // best_beta = algorithm->get_beta();
@@ -603,67 +612,8 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
     result.bd_matrix = bd_matrix.block(0, 0, iter, 1);
     result.ic_matrix = ic_matrix.block(0, 0, iter, 1);
     result.test_loss_matrix = test_loss_matrix.block(0, 0, iter, 1);
+    result.effective_number_matrix = effective_number_matrix.block(0, 0, iter, 1);
     sequence = sequence.head(iter).eval();
-
-    //     if (data.is_normal)
-    //     {
-    //         if (algorithm->model_type == 1)
-    //         {
-    //             best_beta = sqrt(double(n)) * best_beta.cwiseQuotient(data.x_norm);
-    //             best_coef0 = data.y_mean - best_beta.dot(data.x_mean);
-    //         }
-    //         else
-    //         {
-    //             best_beta = sqrt(double(n)) * best_beta.cwiseQuotient(data.x_norm);
-    //             best_coef0 = best_coef0 - best_beta.dot(data.x_mean);
-    //         }
-    //     }
-    //     beta_all = beta_all.leftCols(iter).eval();
-    //     coef0_all = coef0_all.head(iter).eval();
-    //     train_loss_all = train_loss_all.head(iter).eval();
-    //     ic_all = ic_all.head(iter).eval();
-
-    //     if (data.is_normal)
-    //     {
-    //         if (algorithm->model_type == 1)
-    //         {
-    //             for (int k = 0; k < iter; k++)
-    //             {
-    //                 beta_all.col(k) = sqrt(double(n)) * beta_all.col(k).cwiseQuotient(data.x_norm);
-    //                 coef0_all(k) = data.y_mean - beta_all.col(k).dot(data.x_mean);
-    //             }
-    //         }
-    //         else if (data.data_type == 2)
-    //         {
-    //             for (int k = 0; k < iter; k++)
-    //             {
-    //                 beta_all.col(k) = sqrt(double(n)) * beta_all.col(k).cwiseQuotient(data.x_norm);
-    //                 coef0_all(k) = coef0_all(k) - beta_all.col(k).dot(data.x_mean);
-    //             }
-    //         }
-    //         else
-    //         {
-    //             for (int k = 0; k < iter; k++)
-    //             {
-    //                 beta_all.col(k) = sqrt(double(n)) * beta_all.col(k).cwiseQuotient(data.x_norm);
-    //             }
-    //         }
-    //     }
-
-    // #ifdef R_BUILD
-    //     return List::create(Named("beta") = best_beta, Named("coef0") = best_coef0, Named("train_loss") = best_train_loss, Named("ic") = best_ic,
-    //                         Named("beta_all") = beta_all,
-    //                         Named("coef0_all") = coef0_all,
-    //                         Named("train_loss_all") = train_loss_all,
-    //                         Named("ic_all") = ic_all);
-    // #else
-    //     List mylist;
-    //     mylist.add("beta", best_beta);
-    //     mylist.add("coef0", best_coef0);
-    //     mylist.add("train_loss", best_train_loss);
-    //     mylist.add("ic", best_ic);
-    //     return mylist;
-    // #endif
 }
 
 double det(double a[], double b[]);
