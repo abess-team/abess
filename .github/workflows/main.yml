@@ -31,7 +31,7 @@ jobs:
         cd ./python
         python setup.py install
         
-  InstallWins:    ## error !
+  InstallWins:  
     name: Installation test on Windows
     runs-on: ${{ matrix.os }}
     strategy:
