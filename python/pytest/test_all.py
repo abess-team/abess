@@ -565,6 +565,10 @@ class TestClass:
         coef7 = np.nonzero(model.coef_)[0]
         assert (coef7 == coef1).all() 
 
+        # Check7: score & predict
+        model.score(X)
+        model.predict(X)
+
     # def test_gaussian_gs(self):
     #     n = 100
     #     p = 20

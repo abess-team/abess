@@ -1,5 +1,5 @@
 Principal Component Analysis
-====================
+============================
 
 .. contents::
     :backlinks: none

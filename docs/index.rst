@@ -8,23 +8,12 @@
 
 .. include:: ../README.rst 
 
-*********
-Contents
-*********
-.. .. toctree::
-..    Installation <Installation>
-..    Tutorial <Tutorial/index.rst>
-..    Python package <Python-package/index.rst>
-..    R package <R-package/index.rst>
-..    FQA <FQA.md>
-..    About <About/index.rst>
-
 .. toctree::
    Installation <Installation.md>
    Tutorial <Tutorial/index.rst>
-   Python package <Python-package/index.rst>
+   Python API <Python-package/index.rst>
    R package <https://abess-team.github.io/abess/>
-   FQA <FQA.md>
+   FAQ <FAQ.md>
    About <About/index.rst>
 
 

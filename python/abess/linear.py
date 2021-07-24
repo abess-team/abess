@@ -104,13 +104,28 @@ class bess_base(BaseEstimator):
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 1 for `abessPCA` and splicing_type = 0 for else.
 
-
-    Attributes
-    ----------
-    coef_ : array of shape (n_features, ) or (n_targets, n_features)
+    Returns
+    ------- 
+    coef_: array of shape (n_features, ) or (n_targets, n_features)
         Estimated coefficients for the best subset selection problem.
-    ic_ : double
+    ic_: double
         The score under chosen information criterion.
+
+    Yields
+    ------
+    fit(): 
+        Start the model fitting process.
+    predict():
+        Return the predicted responses of given data.
+    predict_proba():
+        Only for `abessLogistic` now.
+        Return the probabilities that the given data is classified to each class.
+    score():
+        Given new data, and 
+        for `abessLm`, `abessMultigaussian`, `abessPoisson`, it returns the sum of squared error;
+        for `abessLogistic`, `abessMultinomial`, it returns the Gini index;
+        for `abessCox`, it returns the C-index;
+        for `abessPCA`, it returns the explained ratio. 
 
 
     References
@@ -252,7 +267,7 @@ class bess_base(BaseEstimator):
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
+        X : array-like of shape (n_samples, p_features)
             Training data
         y :  array-like of shape (n_samples,) or (n_samples, n_targets)
             Target values. Will be cast to X's dtype if necessary.
@@ -712,7 +727,8 @@ class bess_base(BaseEstimator):
         
         # for PCA, "number" indicates the number of PCs returned
         if (model_type_int == 7 and number > 1):
-            Sigma = X.T.dot(X)
+            if Sigma == np.matrix(-1):
+                Sigma = np.cov(X.T)
             v = self.coef_.copy()
             v = v.reshape(len(v), 1)
             v_all = v.copy()
@@ -764,7 +780,7 @@ class bess_base(BaseEstimator):
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
+        X : array-like of shape (n_samples, p_features)
             Test data.
 
         """
@@ -809,6 +825,8 @@ class bess_base(BaseEstimator):
             return np.argmax(xbeta)
         elif self.model_type == "Cox":
             return np.exp(np.dot(X, self.coef_))
+        elif self.model_type == "PCA":
+            return X.dot(self.coef_)
     
     def predict_proba(self, X):
         """
@@ -819,7 +837,7 @@ class bess_base(BaseEstimator):
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
+        X : array-like of shape (n_samples, p_features)
             Test data.
 
         """
@@ -836,13 +854,29 @@ class bess_base(BaseEstimator):
         else:
             return None
 
-    def score(self, X, y, sample_weight=None):
+    def score(self, X, y=None, sample_weight=None):
+        """
+        Given new data, and 
+
+        - for `abessLm`, `abessMultigaussian`, `abessPoisson`, it returns the sum of squared error;
+        - for `abessLogistic`, `abessMultinomial`, it returns the Gini index;
+        - for `abessCox`, it returns the C-index;
+        - for `abessPCA`, it returns the explained ratio. 
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, p_features)
+            Test predictors.
+        y : array-like of shape (n_samples, p_features), optional
+            Test response. For `abessPCA`, it can be omitted.
+        """
         # Check is fit had been called
         check_is_fitted(self)
 
         # Input validation
         X = check_array(X)
-        y = check_array(y, ensure_2d = False)
+        if self.model_type != "PCA":
+            y = check_array(y, ensure_2d = False)
 
         if X.shape[1] != self.n_features_in_:
             raise ValueError("X.shape[1] should be " + str(self._p))
@@ -885,6 +919,18 @@ class bess_base(BaseEstimator):
             result = concordance_index_censored(
                 np.array(y[:, 1], np.bool_), y[:, 0], risk_score)
             return result[0]
+        
+        elif self.model_type == "PCA":
+            s = np.cov(X.T)
+            if len(self.coef_.shape) == 1:
+                explain = self.coef_.T.dot(s).dot(self.coef_)
+            else:
+                explain = np.sum(np.diag(self.coef_.T.dot(s).dot(self.coef_)))
+            if isinstance(s, (int, float)):
+                full = s
+            else:
+                full = np.sum(np.diag(s))
+            return explain / full
 
 
 @ fix_docs
