@@ -1,5 +1,5 @@
 Generalized Linear Models
-====================
+=========================
 
 .. contents::
     :backlinks: none

@@ -16,6 +16,54 @@ def sample(p, k):
 
 
 def gen_data(n, p, family, k, rho=0, sigma=1, coef_=None, censoring=True, c=1, scal=10, snr = None):
+    """
+    Parameters
+    ----------
+    n: int
+        The number of observations.
+    p: int
+        The number of predictors of interest.
+    family: {gaussian, binomial, poisson, cox}
+        The distribution of the simulated response. 
+        "gaussian" for univariate quantitative response, 
+        "binomial" for binary classification response, 
+        "poisson" for counting response, 
+        "cox" for left-censored response.
+    k: int
+        The number of nonzero coefficients in the underlying regression model. 
+    rho: float, optional
+        A parameter used to characterize the pairwise correlation in predictors. 
+        Default: rho = 0.
+    sigma: float, optional
+        The variance of the gaussian noise. 
+        It would be unused if `snr` is not None.
+        Default: sigma = 1.
+    coef_: array_like, optional
+        The coefficient values in the underlying regression model. 
+        Default: coef_ = None.
+    censoring: bool, optional
+        For Cox data, it indicates whether censoring is existed.
+        Default: censoring = True
+    c: int, optional
+        For Cox data and `censoring=True`, it indicates the maximum censoring time.
+        So that all observations have chances to be censored at (0, c).
+        Default: c = 1.
+    scal: float, optional
+        The scale of survival time in Cox data.
+        Default: scal = 10.
+    snr: float, optional
+        A numerical value controlling the signal-to-noise ratio (SNR) in gaussian data.
+        Default: snr = None.
+    
+    Returns
+    -------
+    x: array_like, shape(n, p)
+        Design matrix of predictors.
+    y: array_like, shape(n,)
+        Response variable.
+    coef_: array_like, shape(p,)
+        The coefficients used in the underlying regression model.
+    """
     zero = np.zeros([n, 1])
     ones = np.ones([n, 1])
     X = np.random.normal(0, 1, n*p).reshape(n, p)
@@ -143,6 +191,46 @@ def beta_generator(k, M):
 
 
 def gen_data_splicing(family="gaussian", n=100, p=100, k=10, SNR=1, rho=0.5, coef_=None, M=1, sparse_ratio=None):
+    """
+    Parameters
+    ----------
+    n: int, optional
+        The number of observations.
+        Default: n = 100.
+    p: int, optional
+        The number of predictors of interest.
+        Default: p = 100.
+    family: {gaussian, binomial, poisson}, optional
+        The distribution of the simulated multi-response. 
+        "gaussian" for univariate quantitative response, 
+        "binomial" for binary classification response, 
+        "poisson" for counting response.
+        Default: family = "gaussian".
+    k: int, optional
+        The number of nonzero coefficients in the underlying regression model. 
+        Default: k = 10.
+    M: int, optional
+        The number of multi-responses. 
+        Default: M = 1.
+    rho: float, optional
+        A parameter used to characterize the pairwise correlation in predictors. 
+        Default: rho = 0.5.
+    coef_: array_like, optional
+        The coefficient values in the underlying regression model. 
+        Default: coef_ = None.
+    sparse_ratio: float, optional
+        The sparse ratio of predictor matrix (x).
+        Default: sparse_ratio = None.
+    
+    Returns
+    -------
+    x: array_like, shape(n, p)
+        Design matrix of predictors.
+    y: array_like, shape(n, M)
+        Response variable.
+    coef_: array_like, shape(p, M)
+        The coefficients used in the underlying regression model.
+    """
     Sigma = np.ones(p*p).reshape(p, p) * rho
     ones = np.ones([n, 1])
     for i in range(p):
