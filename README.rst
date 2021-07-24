@@ -32,24 +32,39 @@ Performance
 ===========
 
 To show the computational efficiency of abess, 
-we compare abess R package with popular R libraries: glmnet, ncvreg, picasso for linear, logistic and poisson regressions; 
-Timings of the CPU execution are recorded in seconds and averaged over 100 replications on a sequence
-of 100 regularization parameters.
+we compare abess package with two popular python packages: sklearn and glmnet. We compare the time and 
+test loss on linear and logistic regression. 
+Timings of the CPU execution are recorded in seconds and both of the 
+comparisons are averaged over 100 replications. The detail of 
+comparing code can be viewed at `https://github.com/abess-team/abess/tree/master/docs/perform`_.
 
-The designed matrix is formed by i.i.d sample generated from a multivariate normal distribution with mean 0 and covariance matrix :math:`\Sigma = (\sigma_{ij})`. We consider two settings—low correlation and high correlation. 
-For the low correlation scenario, we set :math:`\sigma_{ij} = 0.1^{|i-j|}` and for the high correlation :math:`\sigma_{ij} = 0.7`. The number of predictors is 1000. 
-The true coefficient :math:`\beta^*` is a vector with 10 nonzero entries uniformly distributed in :math:`[b,B]`. We set :math:`b=5\sqrt{2\log(p)/n}`, :math:`B = 100b` for linear regression :math:`b = 10\sqrt{2\log(p)/n}`, :math:`B = 5*b` for 
-logistic regression and :math:`b = -10 \sqrt{2  \log(p) / n}`, :math:`B=10 \sqrt{2 \log(p) / n}` for poisson regression. A random noise generated from a standard Gaussian distribution is added to the linear predictor :math:`x^\prime\beta` for linear regression. 
-The size of training data is 500.
+.. _https://github.com/abess-team/abess/tree/master/docs/perform: https://github.com/abess-team/abess/tree/master/docs/perform
 
-All experiments are evaluated on an Intel(R) Xeon(R) 
-CPU E5-2620 v4 @ 2.10GHz and under R version 3.6.1. 
-for 100 replicas.
+Results are presented in the following picture. 
 
-As a package solving best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
+Loss:
 
-.. image:: ./Tutorial/fig/readmeTiming.png
+|pic1| |pic2|
 
+.. |pic1| image:: ./perform/lm_loss.png
+   :width: 48%
+
+.. |pic2| image:: ./perform/logi_loss.png
+   :width: 48%
+
+Time:
+
+|pic3| |pic4|
+
+.. |pic3| image:: ./perform/lm_time.png
+   :width: 48%
+
+.. |pic4| image:: ./perform/logi_time.png
+   :width: 48%
+
+Although glmnet has a high speed, its loss is much higher than others.
+For the rest two algorithms, abess reaches a higher efficient performance than sklearn, 
+especially on linear regression while their losses are both quite small.
 
 Reference
 =========
