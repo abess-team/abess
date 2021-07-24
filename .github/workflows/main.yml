@@ -9,13 +9,35 @@ on:
 
 
 jobs:
-  InstallUb:
-    name: Installation test on Ubuntu
+#   InstallUb:
+#     name: Installation test on Ubuntu
+#     runs-on: ${{ matrix.os }}
+#     strategy:
+#       matrix:
+#         os: [ubuntu-latest]
+#         python-version: [3.6, 3.7, 3.8, 3.9]
+#     steps:
+#     - uses: actions/checkout@master
+#     - name: Setup Python
+#       uses: actions/setup-python@master
+#       with:
+#         python-version: ${{ matrix.python-version }}
+#     - name: Install dependencies
+#       run: |
+#         sudo apt-get install -y swig bash mingw-w64
+#         pip install -r ./python/requirements.txt
+#     - name: Install abess
+#       run: |
+#         cd ./python
+#         python setup.py install
+        
+  InstallWins:    ## error !
+    name: Installation test on Windows
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        os: [windows-latest]
+        python-version: [3.7]
     steps:
     - uses: actions/checkout@master
     - name: Setup Python
@@ -24,54 +46,33 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        sudo apt-get install -y swig bash mingw-w64
+        choco install swig mingw git
         pip install -r ./python/requirements.txt
     - name: Install abess
       run: |
-        cd ./python
+        cd python
         python setup.py install
         
-  # InstallWins:    ## error !
-  #   name: Installation test on Windows
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [windows-latest]
-  #       python-version: [3.7]
-  #   steps:
-  #   - uses: actions/checkout@master
-  #   - name: Setup Python
-  #     uses: actions/setup-python@master
-  #     with:
-  #       python-version: ${{ matrix.python-version }}
-  #   - name: Install dependencies
-  #     run: |
-  #       choco install swig mingw git
-  #       pip install -r ./python/requirements.txt
-  #   - name: Install abess
-  #     run: |
-  #       python ./python/setup.py install
-        
-  InstallMac:
-    name: Installation test on Mac
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest]
-        python-version: [3.6, 3.7, 3.8, 3.9]
-    steps:
-    - uses: actions/checkout@master
-    - name: Setup Python
-      uses: actions/setup-python@master
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        brew install swig mingw-w64 bash
-        pip install -r ./python/requirements.txt
-    - name: Install abess
-      run: |
-        python ./python/setup.py install
+#   InstallMac:
+#     name: Installation test on Mac
+#     runs-on: ${{ matrix.os }}
+#     strategy:
+#       matrix:
+#         os: [macos-latest]
+#         python-version: [3.6, 3.7, 3.8, 3.9]
+#     steps:
+#     - uses: actions/checkout@master
+#     - name: Setup Python
+#       uses: actions/setup-python@master
+#       with:
+#         python-version: ${{ matrix.python-version }}
+#     - name: Install dependencies
+#       run: |
+#         brew install swig mingw-w64 bash
+#         pip install -r ./python/requirements.txt
+#     - name: Install abess
+#       run: |
+#         python ./python/setup.py install
 
   pkgdown:
     name: pkgdown
