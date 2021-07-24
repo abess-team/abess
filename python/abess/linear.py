@@ -352,13 +352,13 @@ class bess_base(BaseEstimator):
         # print(X)
         # print(X.dtype)
 
-        if self.algorithm_type == "Pdas":
-            algorithm_type_int = 1
-        elif self.algorithm_type == "GroupPdas":
-            algorithm_type_int = 2
-        elif self.algorithm_type == "L0L2":
-            algorithm_type_int = 5
-        elif self.algorithm_type == "abess":
+        # if self.algorithm_type == "Pdas":
+        #     algorithm_type_int = 1
+        # elif self.algorithm_type == "GroupPdas":
+        #     algorithm_type_int = 2
+        # elif self.algorithm_type == "L0L2":
+        #     algorithm_type_int = 5
+        if self.algorithm_type == "abess":
             algorithm_type_int = 6
         else:
             raise ValueError("algorithm_type should not be " +
