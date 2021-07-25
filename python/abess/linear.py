@@ -762,6 +762,7 @@ class bess_base(BaseEstimator):
         - for linear and poisson regression problem, we return a numpy array of the prediction of the mean;
         - for classification problem, we return a \code{dict} of \code{pr} and \code{y}, where \code{pr} is the probability of response variable is 1 and \code{y} is predicted to be 1 if \code{pr} > 0.5 else \code{y} is 0;
         - for PCA, we return the PC scores under reduced dimension.
+        
         Parameters
         ----------
         X : array-like of shape (n_samples, p_features)
