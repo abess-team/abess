@@ -11,14 +11,23 @@ Welcome to abess's documentation!
 that the resulting linear model is expected to have the most desirable
 prediction accuracy. This project implements a polynomial algorithm proposed to solve these problems. It supports:
 
--  linear regression
--  classification (binary or multi-class)
--  counting-response modeling
--  censored-response modeling
--  multi-response modeling (multi-tasks learning)
--  group best subset selection
--  nuisance penalized regression
--  sure independence screening
+-  `linear regression`_
+-  `classification (binary or multi-class)`_
+-  `counting-response modeling`_
+-  `censored-response modeling`_
+-  `multi-response modeling (multi-tasks learning)`_
+-  `group best subset selection`_
+-  `nuisance penalized regression`_
+-  `sure independence screening`_
+
+.. _linear regression: https://abess.readthedocs.io/en/latest/Tutorial/LinearRegression.html
+.. _classification (binary or multi-class): https://abess.readthedocs.io/en/latest/Tutorial/logi_and_multiclass.html
+.. _counting-response modeling: https://abess.readthedocs.io/en/latest/Tutorial/PoissonRegression.html
+.. _censored-response modeling: https://abess.readthedocs.io/en/latest/Tutorial/CoxRegression.html
+.. _multi-response modeling (multi-tasks learning): https://abess.readthedocs.io/en/latest/Tutorial/MultiTaskLearning.html
+.. _group best subset selection: https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Best-group-subset-selection
+.. _nuisance penalized regression: https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Nuisance-Regression
+.. _sure independence screening: https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Integrate-SIS
 
 Installation
 ============
@@ -32,39 +41,23 @@ Performance
 ===========
 
 To show the computational efficiency of abess, 
-we compare abess package with two popular python packages: sklearn and glmnet. We compare the time and 
-test loss on linear and logistic regression. 
-Timings of the CPU execution are recorded in seconds and both of the 
-comparisons are averaged over 100 replications. The detail of 
-comparing code can be viewed at `https://github.com/abess-team/abess/tree/master/docs/perform`_.
-
-.. _https://github.com/abess-team/abess/tree/master/docs/perform: https://github.com/abess-team/abess/tree/master/docs/perform
+we compare abess with scikit-learn on linear and logistic regression.
+Timings of the CPU execution are recorded in seconds, which 
+are averaged over 100 replications. The detail of the  
+comparing code can be viewed at https://github.com/abess-team/abess/tree/master/docs/perform .
 
 Results are presented in the following picture. 
 
-Loss:
-
 |pic1| |pic2|
 
-.. |pic1| image:: ./perform/lm_loss.png
+.. |pic1| image:: ./perform/lm_time.png
    :width: 48%
 
-.. |pic2| image:: ./perform/logi_loss.png
+.. |pic2| image:: ./perform/logi_time.png
    :width: 48%
 
-Time:
-
-|pic3| |pic4|
-
-.. |pic3| image:: ./perform/lm_time.png
-   :width: 48%
-
-.. |pic4| image:: ./perform/logi_time.png
-   :width: 48%
-
-Although glmnet has a high speed, its loss is much higher than others.
-For the rest two algorithms, abess reaches a higher efficient performance than sklearn, 
-especially on linear regression while their losses are both quite small.
+As a package solving best subset selection, abess reaches a high efficient performance especially 
+in linear regression where it gives the fastest solution.
 
 Reference
 =========

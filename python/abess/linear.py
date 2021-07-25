@@ -111,23 +111,6 @@ class bess_base(BaseEstimator):
     ic_: double
         The score under chosen information criterion.
 
-    Yields
-    ------
-    fit(): 
-        Start the model fitting process.
-    predict():
-        Return the predicted responses of given data.
-    predict_proba():
-        Only for `abessLogistic` now.
-        Return the probabilities that the given data is classified to each class.
-    score():
-        Given new data, and 
-        for `abessLm`, `abessMultigaussian`, `abessPoisson`, it returns the sum of squared error;
-        for `abessLogistic`, `abessMultinomial`, it returns the Gini index;
-        for `abessCox`, it returns the C-index;
-        for `abessPCA`, it returns the explained ratio. 
-
-
     References
     ----------
     - Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang. A polynomial algorithm for best-subset selection problem. Proceedings of the National Academy of Sciences, 117(52):33117-33123, 2020.
@@ -774,10 +757,12 @@ class bess_base(BaseEstimator):
         """
         The predict function is used to give prediction for new data.
 
-        We will return the prediction of response variable.
-        For linear and poisson regression problem, we return a numpy array of the prediction of the mean.
-        For classification problem, we return a \code{dict} of \code{pr} and \code{y}, where \code{pr} is the probability of response variable is 1 and \code{y} is predicted to be 1 if \code{pr} > 0.5 else \code{y} is 0.
-
+        We will return the prediction under fitted model:
+        
+        - for linear and poisson regression problem, we return a numpy array of the prediction of the mean;
+        - for classification problem, we return a \code{dict} of \code{pr} and \code{y}, where \code{pr} is the probability of response variable is 1 and \code{y} is predicted to be 1 if \code{pr} > 0.5 else \code{y} is 0;
+        - for PCA, we return the PC scores under reduced dimension.
+        
         Parameters
         ----------
         X : array-like of shape (n_samples, p_features)

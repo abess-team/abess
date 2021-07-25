@@ -5,7 +5,5 @@ Principal Component Analysis
     :backlinks: none
     :local:
 
-abessPCA
-----------------
-.. autoclass:: abess.linear.abessPCA
-
+.. toctree::
+    pca
