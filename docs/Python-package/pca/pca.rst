@@ -1,5 +1,5 @@
-Principal Component Analysis
-============================
+abessPCA
+========
 
 .. contents::
     :backlinks: none
