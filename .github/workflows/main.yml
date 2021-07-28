@@ -46,7 +46,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        choco install swig mingw git
+        choco install --force swig mingw git 
         pip install -r ./python/requirements.txt
     - name: Install abess
       run: |
