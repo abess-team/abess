@@ -227,7 +227,7 @@ class abessPCA(bess_base):
             if isinstance(self.support_size, (numbers.Real, numbers.Integral)):
                 support_sizes = np.empty(1, dtype=int)
                 support_sizes[0] = self.support_size
-            elif (np.any(np.array(self.support_size) > p) and 
+            elif (np.any(np.array(self.support_size) > p) or 
                     np.any(np.array(self.support_size) < 0)):
                 raise ValueError("All support_size should be between 0 and X.shape[1]")
             else:
@@ -275,6 +275,10 @@ class abessPCA(bess_base):
         # Splicing type
         if (self.splicing_type != 0 and self.splicing_type !=1):
             raise ValueError("splicing type should be 0 or 1.")
+        
+        # number
+        if (not isinstance(number, int) or number <= 0 or number > p):
+            raise ValueError("number should be an positive integer and not bigger than X.shape[1].")
         
         # Sparse X
         if self.sparse_matrix:

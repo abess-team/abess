@@ -112,7 +112,7 @@ class abessLogistic(bess_base):
         y[xbeta > 0] = 1
         return y
 
-    def score(self, X, y, sample_weight=None):
+    def score(self, X, y):
         """
         Given new data, and it returns the entropy function.
 
@@ -203,7 +203,7 @@ class abessLm(bess_base):
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         return np.dot(X, self.coef_) + intercept_
     
-    def score(self, X, y, sample_weight=None):
+    def score(self, X, y):
         """
         Given new data, and it returns the prediction error.
 
@@ -289,7 +289,7 @@ class abessCox(bess_base):
 
         return np.exp(np.dot(X, self.coef_))
     
-    def score(self, X, y, sample_weight=None):
+    def score(self, X, y):
         """
         Given new data, and it returns C-index.
 
@@ -381,7 +381,7 @@ class abessPoisson(bess_base):
         xbeta_exp = np.exp(np.dot(X, self.coef_) + intercept_)
         return xbeta_exp 
     
-    def score(self, X, y, sample_weight=None):
+    def score(self, X, y):
         """
         Given new data, and it returns the prediction error.
 
@@ -394,7 +394,8 @@ class abessPoisson(bess_base):
         """
         X, y = self.new_data_check(X, y)
 
-        eta = self.predict(X)
+        intercept_ = np.ones(X.shape[0]) * self.intercept_
+        eta = np.dot(X, self.coef_) + intercept_
         exp_eta = np.exp(eta)
         return (y * eta - exp_eta).sum()
 
@@ -471,7 +472,7 @@ class abessMultigaussian(bess_base):
         intercept_ = np.repeat(self.intercept_[np.newaxis,...], X.shape[0], axis=0)
         return np.dot(X, self.coef_) + intercept_
     
-    def score(self, X, y, sample_weight=None):
+    def score(self, X, y):
         """
         Given new data, and it returns prediction error.
 
@@ -579,7 +580,7 @@ class abessMultinomial(bess_base):
         xbeta = np.dot(X, self.coef_) + intercept_
         return np.argmax(xbeta)
     
-    def score(self, X, y, sample_weight=None):
+    def score(self, X, y):
         """
         Given new data, and it returns the entropy function.
 

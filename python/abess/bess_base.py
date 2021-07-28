@@ -283,7 +283,7 @@ class bess_base(BaseEstimator):
                 if isinstance(self.support_size, (numbers.Real, numbers.Integral)):
                     support_sizes = np.empty(1, dtype=int)
                     support_sizes[0] = self.support_size
-                elif (np.any(np.array(self.support_size) > p) and 
+                elif (np.any(np.array(self.support_size) > p) or 
                         np.any(np.array(self.support_size) < 0)):
                     raise ValueError("All support_size should be between 0 and X.shape[1]")
                 else:

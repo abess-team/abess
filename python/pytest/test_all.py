@@ -1157,38 +1157,24 @@ class TestClass:
         else:
             assert False   
         
-        try:
-            model.fit(y = [1])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-        
         # group & weight
         model = abessLm()
         try:
-            model.fit([[1]], [1], is_weight = True)
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-
-        try:
-            model.fit([[1]], [1], is_weight = True, weight = ['c'])
+            model.fit([[1]], [1], weight = ['c'])
         except ValueError as e:
             print(e)
         else:
             assert False
         
         try:
-            model.fit([[1]], [1], is_weight = True, weight = [1, 2])
+            model.fit([[1]], [1], weight = [1, 2])
         except ValueError as e:
             print(e)
         else:
             assert False
         
         try:
-            model.fit([[1]], [1], is_weight = True, weight = [[1]])
+            model.fit([[1]], [1], weight = [[1]])
         except ValueError as e:
             print(e)
         else:
@@ -1207,7 +1193,7 @@ class TestClass:
             print(e)
         else:
             assert False
-        
+
         # others
         try:
             model = abessLm(path_type = 'other')
