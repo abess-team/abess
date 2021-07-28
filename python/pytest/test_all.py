@@ -529,6 +529,12 @@ class TestClass:
 
         assert len(coef1) == s
 
+        model = abessPCA(support_size=s)    # give integer
+        model.fit(X, is_normal = False)
+        coef1 = np.nonzero(model.coef_)[0]
+
+        assert len(coef1) == s
+
         # Check2: give Sigma
         model.fit(Sigma = X.T.dot(X))
         coef2 = np.nonzero(model.coef_)[0]
@@ -551,11 +557,17 @@ class TestClass:
             coef4 = np.nonzero(model.coef_[:, i])[0]
             assert (len(coef4) == s)
         
+        model.ratio(X)
+        
         # Check5: sparse
         model = abessPCA(support_size = [s], sparse_matrix = True)
         model.fit(X, is_normal=False)
         coef5 = np.nonzero(model.coef_)[0]
         assert (coef5 == coef1).all() 
+
+        temp = coo_matrix(([1,2,3], ([0,1,2],[0,1,2])))
+        model = abessPCA()
+        model.fit(temp)
 
         # Check6: cv
         model = abessPCA(support_size = [s], is_cv = True)
@@ -571,6 +583,81 @@ class TestClass:
         # Check7: ratio & transform
         model.ratio(X)
         model.transform(X)
+        model.ratio(np.ones((1, p)))
+
+        # Check8: ic, alpha
+        for ic in ['aic', 'bic', 'ebic', 'gic']:
+            model = abessPCA(ic_type = ic, alpha = 0.1)
+            model.fit(X)
+        
+        # Check9: screening
+        model = abessPCA(is_screening = True, screening_size=p-1)
+        model.fit(X)
+
+        # Check10: error arg
+        try:
+            model = abessPCA(ic_type = 'other')
+            model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessPCA()
+            model.fit(X, group = [[1]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessPCA()
+            model.fit(X, group = [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessPCA(support_size=[p+1])
+            model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessPCA(is_screening=True, screening_size=p+1)
+            model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessPCA(is_screening=True, screening_size=p-1, support_size=p)
+            model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model = abessPCA(thread=-1)
+            model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model = abessPCA(splicing_type=2)
+            model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
     # def test_gaussian_gs(self):
     #     n = 100
@@ -1351,6 +1438,15 @@ class TestClass:
             model = abessLm()
             model.fit([[1]], [1])
             model.score([1, 2], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessLm()
+            model.fit([[1]], [1])
+            model.score([[1, 2]], [1])
         except ValueError as e:
             print(e)
         else:

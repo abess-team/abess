@@ -148,7 +148,7 @@ class abessPCA(bess_base):
 
         # Input check
         if isinstance(X, (list, np.ndarray, np.matrix, coo_matrix)):
-            X = check_array(X, accept_sparse = np.True_)
+            X = check_array(X, accept_sparse = True)
 
             n = X.shape[0]
             p = X.shape[1]
