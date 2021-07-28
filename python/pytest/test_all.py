@@ -566,7 +566,7 @@ class TestClass:
         assert (coef5 == coef1).all() 
 
         temp = coo_matrix(([1,2,3], ([0,1,2],[0,1,2])))
-        model = abessPCA()
+        model = abessPCA(sparse_matrix = True)
         model.fit(temp)
 
         # Check6: cv
@@ -595,6 +595,14 @@ class TestClass:
         model.fit(X)
 
         # Check10: error arg
+        try:
+            model = abessPCA()
+            model.fit()
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
         try:
             model = abessPCA(ic_type = 'other')
             model.fit(X)
@@ -638,6 +646,14 @@ class TestClass:
         try:
             model = abessPCA(is_screening=True, screening_size=p-1, support_size=p)
             model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model = abessPCA(exchange_num=-1)
+            model.fit()
         except ValueError as e:
             print(e)
         else:
