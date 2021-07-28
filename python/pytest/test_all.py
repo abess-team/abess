@@ -1,5 +1,6 @@
 import numpy as np
 from abess.linear import *
+from abess.pca import *
 from abess.gen_data import gen_data, gen_data_splicing
 import pandas as pd
 from pytest import approx
@@ -9,6 +10,8 @@ from sklearn.model_selection import GridSearchCV
 
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LogisticRegression
+
+from scipy.sparse import coo_matrix 
 
 # For Python >=3.6
 if sys.version_info[0] == 3 and sys.version_info[1] >= 6:
@@ -54,7 +57,7 @@ class TestClass:
         model4 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001], 
                          K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
                          exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=True, splicing_type=2)
+                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=True, splicing_type=1)
         model4.fit(data.x, data.y)
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -565,9 +568,9 @@ class TestClass:
         coef7 = np.nonzero(model.coef_)[0]
         assert (coef7 == coef1).all() 
 
-        # Check7: score & predict
-        model.score(X)
-        model.predict(X)
+        # Check7: ratio & transform
+        model.ratio(X)
+        model.transform(X)
 
     # def test_gaussian_gs(self):
     #     n = 100
