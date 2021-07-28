@@ -100,7 +100,7 @@ class abessPCA(bess_base):
     
     def ratio(self, X):
         """
-        Given new data, and it returns the explained ratio.
+        Give new data, and it returns the explained ratio.
 
         Parameters
         ----------

@@ -114,7 +114,7 @@ class abessLogistic(bess_base):
 
     def score(self, X, y):
         """
-        Given new data, and it returns the entropy function.
+        Give new data, and it returns the entropy function.
 
         Parameters
         ----------
@@ -205,7 +205,7 @@ class abessLm(bess_base):
     
     def score(self, X, y):
         """
-        Given new data, and it returns the prediction error.
+        Give new data, and it returns the prediction error.
 
         Parameters
         ----------
@@ -276,7 +276,7 @@ class abessCox(bess_base):
     def predict(self, X):
         """
         For Cox model, 
-        the predict function returns the time-independent part of hazard function, i.e. :math:`\exp(X\beta)`, 
+        the predict function returns the time-independent part of hazard function, i.e. :math:`\exp(X\\beta)`, 
         on given data.
         
         Parameters
@@ -291,7 +291,7 @@ class abessCox(bess_base):
     
     def score(self, X, y):
         """
-        Given new data, and it returns C-index.
+        Give new data, and it returns C-index.
 
         Parameters
         ----------
@@ -383,7 +383,7 @@ class abessPoisson(bess_base):
     
     def score(self, X, y):
         """
-        Given new data, and it returns the prediction error.
+        Give new data, and it returns the prediction error.
 
         Parameters
         ----------
@@ -474,7 +474,7 @@ class abessMultigaussian(bess_base):
     
     def score(self, X, y):
         """
-        Given new data, and it returns prediction error.
+        Give new data, and it returns prediction error.
 
         Parameters
         ----------
@@ -582,7 +582,7 @@ class abessMultinomial(bess_base):
     
     def score(self, X, y):
         """
-        Given new data, and it returns the entropy function.
+        Give new data, and it returns the entropy function.
 
         Parameters
         ----------
