@@ -131,7 +131,7 @@ To make your code available for Python, `cd` into directory `abess/python` and r
 
 > If you receive an error said "*Can't create or remove files in install directory*", this may be caused by permission denied. The step below may help with it.
 >
-> - For Linux: run `sudo python setup.py install`.
+> - For Linux: run `python setup.py install --user` or `sudo python setup.py install`.
 > - For Windows: run the command as administrator.
 > - For MacOS:
 
@@ -142,9 +142,13 @@ It may take a few minutes to install:
 
 Now a file named `cabess.py` will be appeared in the directory `abess/python/src`, which help to link Python and C++. You need to move it into directory `abess/python/abess`.
 
-Then open file `abess/python/abess/linear.py` and add a new class like those already exist: [[code link]]()
+Then create a new python file in `abess/python/abess` or open the existed file `abess/python/abess/linear.py`. Here we create `abess/python/abess/pca.py` and import a temple class `bess_base`.
+
+A simple new method can be added like: [[code link]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py)。
 
 ```Python
+from .bess_base import bess_base
+
 class abessPCA(bess_base): 
     """
     Here is some introduction.
@@ -153,24 +157,27 @@ class abessPCA(bess_base):
         super(abessXXX, self).__init__(
             algorithm_type="abess", 
             model_type="PCA", 
-            ...
+            # ...
         )
+    def custom_function(self, ...):
+        # ...
 ```
 
-Then, the final step is to link this Python class with the model type number (it has been defined in the [Core C++](#Core C++)). In `linear.py`, you can find somewhere like: 
+As an example, we define two new functions (`ratio` and `transform`) and override the `fit` function.
+
+Then, the final step is to link this Python class with the model type number (it has been defined in the [Core C++](#Core C++)). In `bess_base.py`, you can find somewhere like (in the `fit` function): 
 
 ```Python
 if self.model_type == "Lm":
     model_type_int = 1
-elif ...
+elif # ...
 ```
 
-Add:
+Note that the new PCA method has been related to number "7" above. We need to denote `model_type_int = 7`
+in Python: [[link]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=path_type_int%20%3D%201%20(seq)-,model_type_int%20%3D%207,-path_type_int%20%3D%201)
 
 ```python
-...
-elif self.model_type == "PCA":
-    model_type_int = 7   
+model_type_int = 7   
 ```
 
 After finished all changes before, run `python setup.py install` again and this time the installation would be finished quickly. 
@@ -178,7 +185,7 @@ After finished all changes before, run `python setup.py install` again and this 
 Congratulation! Your work can now be used by:
 
 ```Python
-from abess.linear import abessPCA
+from abess.pca import abessPCA
 ```
 
 ## Miscellaneous
