@@ -35,7 +35,8 @@ In most of case, the workflow is:
 For the development of R documentation, the most important thing to know is that the abess R package relies on [roxygen2](https://cran.r-project.org/web/packages/roxygen2) package. This means that documentation is found in the R code close to the source of each function. 
 Before writing the documentation, it would be better to ensure the usage of the [Rd tags](https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html). 
 
-For the development of Python documentation, **TODO**. 
+For the development of Python documentation, there is a little difference between a new method and a new function. A new method need a brief introduction and some examples, such as [[link]](https://github.com/abess-team/abess/blob/master/python/abess/linear.py#:~:text=class%20abessLogistic(bess_base)%3A-,%22%22%22,%22%22%22,-def%20__init__(self)); and a new function under should at least contain an introduction and the parameters it requires, such as [[link]](https://github.com/abess-team/abess/blob/master/python/abess/linear.py#:~:text=return%20y-,def%20score(self%2C%20X%2C%20y)%3A,%22%22%22,-X%2C%20y%20%3D%20self). 
+Also note that the style of Python document is similar to [numpydoc](https://numpydoc.readthedocs.io/en/latest/format.html).
 
 ## Contribute code      
 If you are a experienced programmer, you might want to help new features development or bug fixing for the abess library. 

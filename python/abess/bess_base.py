@@ -140,9 +140,7 @@ class bess_base(BaseEstimator):
         
         # Check3 : y validation
         if y is not None:
-            y = check_array(y, ensure_2d = False)
-            if X.shape[0] != len(y):
-                raise ValueError("The length of y should be the same as X.shape[0].")
+            X, y = check_X_y(X, y, multi_output=True, y_numeric=True)
             return X, y
         
         return X
@@ -177,7 +175,7 @@ class bess_base(BaseEstimator):
                 self.sparse_matrix = True
 
             # Check that X and y have correct shape
-            X, y = check_X_y(X, y, ensure_2d=True, accept_sparse=True, multi_output=True, y_numeric=True)
+            X, y = check_X_y(X, y, accept_sparse=True, multi_output=True, y_numeric=True)
             
             # Sort for Cox 
             if self.model_type == "Cox":

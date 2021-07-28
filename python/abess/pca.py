@@ -100,7 +100,7 @@ class abessPCA(bess_base):
     
     def ratio(self, X):
         """
-        Given new data, and it returns the explained ratio.
+        Give new data, and it returns the explained ratio.
 
         Parameters
         ----------
@@ -148,7 +148,9 @@ class abessPCA(bess_base):
 
         # Input check
         if isinstance(X, (list, np.ndarray, np.matrix, coo_matrix)):
-            X = check_array(X, accept_sparse = np.True_)
+            if isinstance(X, coo_matrix):
+                self.sparse_matrix = True
+            X = check_array(X, accept_sparse = True)
 
             n = X.shape[0]
             p = X.shape[1]
