@@ -4,7 +4,7 @@ Some frequently asked questions would be shown here.
 If the error you met is not contained here, please open an issue
 on out project [https://github.com/abess-team/abess/issues](https://github.com/abess-team/abess/issues).
 
-## For python package
+## Python package
 
 ### Installation failed
 
@@ -24,3 +24,10 @@ errors, please try to update the complier first.
 #### Folder name
 
 Make sure your working folder path is not named "abess". If not, Python would not import the `abess` packages and give some errors.
+
+### R package       
+
+- Update Rcpp package if you encounter the following errors:
+```r
+function 'Rcpp_precious_remove' not provided by package 'Rcpp'
+```

@@ -20,8 +20,8 @@ import sys
 
 # -- Project information -----------------------------------------------------
 project = 'abess'
-copyright = '2021, Kangkang Jiang'
-author = 'Kangkang Jiang'
+copyright = '2021, abess team'
+author = 'abess team'
 
 # The full version, including alpha/beta/rc tags
 release = '0.1'

@@ -6,5 +6,4 @@ About
     Contributing
     Architecture
     CodeDeveloping
-    Credits
     History
