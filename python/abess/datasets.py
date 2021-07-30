@@ -15,22 +15,24 @@ def sample(p, k):
     return select
 
 
-def gen_data(n, p, family, k, rho=0, sigma=1, coef_=None, censoring=True, c=1, scal=10, snr = None):
+def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None, censoring=True, c=1, scal=10, snr = None):
     """
+    Generate a dataset with single response.
+
     Parameters
     ----------
     n: int
         The number of observations.
     p: int
         The number of predictors of interest.
+    k: int
+        The number of nonzero coefficients in the underlying regression model. 
     family: {gaussian, binomial, poisson, cox}
         The distribution of the simulated response. 
         "gaussian" for univariate quantitative response, 
         "binomial" for binary classification response, 
         "poisson" for counting response, 
         "cox" for left-censored response.
-    k: int
-        The number of nonzero coefficients in the underlying regression model. 
     rho: float, optional
         A parameter used to characterize the pairwise correlation in predictors. 
         Default: rho = 0.
@@ -190,8 +192,10 @@ def beta_generator(k, M):
     return beta_value
 
 
-def gen_data_splicing(family="gaussian", n=100, p=100, k=10, SNR=1, rho=0.5, coef_=None, M=1, sparse_ratio=None):
+def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho=0.5, coef_=None, M=1, sparse_ratio=None):
     """
+    Generate a dataset with multi-responses.
+
     Parameters
     ----------
     n: int, optional

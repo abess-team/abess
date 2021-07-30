@@ -1,7 +1,7 @@
 import numpy as np
 from abess.linear import *
 from abess.pca import *
-from abess.gen_data import gen_data, gen_data_splicing
+from abess.datasets import make_glm_data, make_multivariate_glm_data
 import pandas as pd
 from pytest import approx
 import sys
@@ -29,9 +29,9 @@ class TestClass:
         sigma = 1
         M = 1
         np.random.seed(2)
-        data = gen_data_splicing(family=family, n=n, p=p, k=k, rho=rho, M=M)
-        data2 = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        data3 = gen_data_splicing(
+        data = make_multivariate_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+        data2 = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data3 = make_multivariate_glm_data(
             family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
 
@@ -79,7 +79,7 @@ class TestClass:
         rho = 0.5
         sigma = 1
         np.random.seed(5)
-        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
         print("logistic abess")
 
@@ -133,7 +133,7 @@ class TestClass:
 
         # np.random.seed(3)
         np.random.seed(3)
-        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
 
         model = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
@@ -190,8 +190,8 @@ class TestClass:
         sigma = 1
         M = 1
         np.random.seed(3)
-        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        data2 = gen_data_splicing(
+        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data2 = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
@@ -241,7 +241,7 @@ class TestClass:
         rho = 0.5
         M = 3
         np.random.seed(1)
-        data = gen_data_splicing(
+        data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, int(n/np.log(np.log(n)) / np.log(p)))
 
@@ -285,7 +285,7 @@ class TestClass:
         rho = 0.5
         M = 3
         np.random.seed(5)
-        data = gen_data_splicing(
+        data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
@@ -338,9 +338,9 @@ class TestClass:
         sigma = 1
         M = 1
         np.random.seed(2)
-        # data = gen_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
-        data = gen_data(n, p, family=family, k=k, rho=rho)
-        # data3 = gen_data_splicing(
+        # data = make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+        data = make_glm_data(n, p, family=family, k=k, rho=rho)
+        # data3 = make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
         support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
@@ -366,8 +366,8 @@ class TestClass:
         rho = 0.5
         sigma = 1
         np.random.seed(1)
-        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        # data3 = gen_data_splicing(
+        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        # data3 = make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
         support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
@@ -395,9 +395,9 @@ class TestClass:
         sigma = 1
         M = 1
         np.random.seed(3)
-        # data = gen_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
-        data = gen_data(n, p, family=family, k=k, rho=rho)
-        # data3 = gen_data_splicing(
+        # data = make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+        data = make_glm_data(n, p, family=family, k=k, rho=rho)
+        # data3 = make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
         support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
@@ -424,9 +424,9 @@ class TestClass:
         sigma = 1
         M = 1
         np.random.seed(3)
-        # data = gen_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
-        data = gen_data(n, p, family=family, k=k, rho=rho)
-        # data3 = gen_data_splicing(
+        # data = make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+        data = make_glm_data(n, p, family=family, k=k, rho=rho)
+        # data3 = make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 10
         support_size = np.linspace(1, s_max, s_max+1, dtype = "int32")
@@ -456,10 +456,10 @@ class TestClass:
     #     sigma = 1
     #     M = 1
     #     np.random.seed(2)
-    #     # data = gen_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
-    #     data = gen_data_splicing(
+    #     # data = make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+    #     data = make_multivariate_glm_data(
     #         family=family, n=n, p=p,  k=k, rho=rho, M=M)
-    #     # data3 = gen_data_splicing(
+    #     # data3 = make_multivariate_glm_data(
     #     #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
     #     s_max = 20
     #     support_size = np.linspace(1, s_max, s_max+1)
@@ -486,10 +486,10 @@ class TestClass:
     #     sigma = 1
     #     M = 1
     #     np.random.seed(2)
-    #     # data = gen_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
-    #     data = gen_data_splicing(
+    #     # data = make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+    #     data = make_multivariate_glm_data(
     #         family=family, n=n, p=p,  k=k, rho=rho, M=M)
-    #     # data3 = gen_data_splicing(
+    #     # data3 = make_multivariate_glm_data(
     #     #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
     #     s_max = 20
     #     support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
@@ -684,9 +684,9 @@ class TestClass:
     #     sigma = 1
     #     M = 1
     #     np.random.seed(2)
-    #     data = gen_data_splicing(family=family, n=n, p=p, k=k, rho=rho, M=M)
-    #     data2 = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-    #     data3 = gen_data_splicing(
+    #     data = make_multivariate_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+    #     data2 = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+    #     data3 = make_multivariate_glm_data(
     #         family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
     #     s_max = 20
 
@@ -734,7 +734,7 @@ class TestClass:
         rho = 0.5
         sigma = 1
         np.random.seed(5)
-        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
         print("logistic abess")
 
@@ -778,7 +778,7 @@ class TestClass:
 
         # np.random.seed(3)
         np.random.seed(3)
-        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
 
         model = abessCox(path_type="pgs", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
@@ -827,8 +827,8 @@ class TestClass:
         sigma = 1
         M = 1
         np.random.seed(3)
-        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        data2 = gen_data_splicing(
+        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data2 = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
@@ -871,7 +871,7 @@ class TestClass:
         rho = 0.5
         M = 3
         np.random.seed(1)
-        data = gen_data_splicing(
+        data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, int(n/np.log(np.log(n)) / np.log(p)))
 
@@ -907,7 +907,7 @@ class TestClass:
         rho = 0.5
         M = 3
         np.random.seed(5)
-        data = gen_data_splicing(
+        data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
@@ -952,9 +952,9 @@ class TestClass:
         sigma = 1
         M = 1
         np.random.seed(2)
-        data = gen_data_splicing(family=family, n=n, p=p, k=k, rho=rho, M=M)
-        data2 = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        data3 = gen_data_splicing(
+        data = make_multivariate_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+        data2 = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data3 = make_multivariate_glm_data(
             family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
 
@@ -982,7 +982,7 @@ class TestClass:
         rho = 0.5
         sigma = 1
         np.random.seed(1)
-        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
         print("logistic abess")
 
@@ -1014,7 +1014,7 @@ class TestClass:
 
         # np.random.seed(3)
         np.random.seed(3)
-        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
 
         model = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
@@ -1045,8 +1045,8 @@ class TestClass:
         sigma = 1
         M = 1
         np.random.seed(1)
-        data = gen_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        data2 = gen_data_splicing(
+        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data2 = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
@@ -1076,7 +1076,7 @@ class TestClass:
         rho = 0.5
         M = 3
         np.random.seed(4)
-        data = gen_data_splicing(
+        data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, int(n/np.log(np.log(n)) / np.log(p)))
 
@@ -1105,7 +1105,7 @@ class TestClass:
         rho = 0.5
         M = 3
         np.random.seed(5)
-        data = gen_data_splicing(
+        data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
@@ -1146,35 +1146,35 @@ class TestClass:
         k = 10
         families = ['gaussian', 'binomial', 'poisson', 'cox']
         for f in families:
-            data = gen_data(n = n, p = p, family = f, k = k)
+            data = make_glm_data(n = n, p = p, family = f, k = k)
             assert data.x.shape[0] == n and data.x.shape[1] == p and data.y.shape[0] == n
 
-            data2 = gen_data(n = n, p = p, family = f, k = k, coef_ = data.coef_)
+            data2 = make_glm_data(n = n, p = p, family = f, k = k, coef_ = data.coef_)
             assert (data.coef_ == data2.coef_).all()
         
         # no-censoring Cox
-        data = gen_data(n = n, p = p, k = k, family = 'cox', censoring = False)
+        data = make_glm_data(n = n, p = p, k = k, family = 'cox', censoring = False)
 
         # snr gaussian
-        data = gen_data(n = n, p = p, k = k, family = 'gaussian', snr = 0.05)
+        data = make_glm_data(n = n, p = p, k = k, family = 'gaussian', snr = 0.05)
 
         # multi-response
-        data = gen_data_splicing(n = n, p = p, k = k, M = 2)
+        data = make_multivariate_glm_data(n = n, p = p, k = k, M = 2)
         assert data.x.shape[0] == n and data.x.shape[1] == p and data.y.shape[0] == n and data.y.shape[1] == 2
 
-        data2 = gen_data_splicing(n = n, p = p, k = k, M = 2, coef_ = data.coef_)
+        data2 = make_multivariate_glm_data(n = n, p = p, k = k, M = 2, coef_ = data.coef_)
         assert (data.coef_ == data2.coef_).all()
 
         # error input
         try:
-            gen_data(n = n, p = p, k = k, family = 'other')
+            make_glm_data(n = n, p = p, k = k, family = 'other')
         except ValueError:
             assert True
         else:
             assert False
 
         try:
-            gen_data_splicing(n = n, p = p, k = k, family = 'other')
+            make_multivariate_glm_data(n = n, p = p, k = k, family = 'other')
         except ValueError:
             assert True
         else:
