@@ -32,10 +32,10 @@ class abessLogistic(bess_base):
     >>> ### Sparsity known
     >>>
     >>> from abess.linear import abessLogistic
-    >>> from abess.gen_data import gen_data
+    >>> from abess.datasets import make_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> data = gen_data(n = 100, p = 50, k = 10, family = 'binomial')
+    >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'binomial')
     >>> model = abessLogistic(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
@@ -142,10 +142,10 @@ class abessLm(bess_base):
     >>> ### Sparsity known
     >>>
     >>> from abess.linear import abessLm
-    >>> from abess.gen_data import gen_data
+    >>> from abess.datasets import make_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> data = gen_data(n = 100, p = 50, k = 10, family = 'gaussian')
+    >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'gaussian')
     >>> model = abessLm(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
@@ -229,10 +229,10 @@ class abessCox(bess_base):
     >>> ### Sparsity known
     >>>
     >>> from abess.linear import abessCox
-    >>> from abess.gen_data import gen_data
+    >>> from abess.datasets import make_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> data = gen_data(n = 100, p = 50, k = 10, family = 'cox')
+    >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'cox')
     >>> model = abessCox(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
@@ -319,10 +319,10 @@ class abessPoisson(bess_base):
     >>> ### Sparsity known
     >>>
     >>> from abess.linear import abessPoisson
-    >>> from abess.gen_data import gen_data
+    >>> from abess.datasets import make_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> data = gen_data(n = 100, p = 50, k = 10, family = 'poisson')
+    >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'poisson')
     >>> model = abessPoisson(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
@@ -410,10 +410,10 @@ class abessMultigaussian(bess_base):
     >>> ### Sparsity known
     >>>
     >>> from abess.linear import abessMultigaussian
-    >>> from abess.gen_data import gen_data_splicing
+    >>> from abess.datasets import make_multivariate_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> data = gen_data_splicing(n = 100, p = 50, k = 10, M = 3, family = 'multigaussian')
+    >>> data = make_multivariate_glm_data(n = 100, p = 50, k = 10, M = 3, family = 'multigaussian')
     >>> model = abessMultigaussian(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
@@ -500,10 +500,10 @@ class abessMultinomial(bess_base):
     >>> ### Sparsity known
     >>>
     >>> from abess.linear import abessMultinomial
-    >>> from abess.gen_data import gen_data_splicing
+    >>> from abess.datasets import make_multivariate_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> data = gen_data_splicing(n = 100, p = 50, k = 10, M = 3, family = 'multinomial')
+    >>> data = make_multivariate_glm_data(n = 100, p = 50, k = 10, M = 3, family = 'multinomial')
     >>> model = abessMultinomial(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
@@ -736,7 +736,7 @@ class abessMultinomial(bess_base):
 #     >>> from bess.linear import *
 #     >>> import numpy as np
 #     >>> np.random.seed(12345)
-#     >>> data = gen_data(100, 200, family="cox", k=5, rho=0, sigma=1, c=10)
+#     >>> data = make_glm_data(100, 200, family="cox", k=5, rho=0, sigma=1, c=10)
 #     >>> model = PdasCox(path_type="seq", support_size=[5])
 #     >>> model.fit(data.x, data.y, is_normal=True)
 #     >>> model.predict(data.x)
@@ -899,7 +899,7 @@ class abessMultinomial(bess_base):
 #     >>> from bess.linear import *
 #     >>> import numpy as np
 #     >>> np.random.seed(12345)
-#     >>> data = gen_data(100, 200, family="cox", k=5, rho=0, sigma=1, c=10)
+#     >>> data = make_glm_data(100, 200, family="cox", k=5, rho=0, sigma=1, c=10)
 #     >>> model = PdasCox(path_type="seq", support_size=[5])
 #     >>> model.fit(data.x, data.y, is_normal=True)
 #     >>> model.predict(data.x)
@@ -1062,7 +1062,7 @@ class abessMultinomial(bess_base):
 #     >>> from bess.linear import *
 #     >>> import numpy as np
 #     >>> np.random.seed(12345)
-#     >>> data = gen_data(100, 200, family="cox", k=5, rho=0, sigma=1, c=10)
+#     >>> data = make_glm_data(100, 200, family="cox", k=5, rho=0, sigma=1, c=10)
 #     >>> model = GroupPdasCox(path_type="seq", support_size=[5])
 #     >>> model.fit(data.x, data.y, is_normal=True)
 #     >>> model.predict(data.x)
