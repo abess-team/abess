@@ -51,7 +51,7 @@ source("R-package/example/timing.R")
 
 Results are presented in the following picture. As a package solving best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
 
-![avatar](vignettes/readmeTiming.png)
+![avatar](../docs/perform/readmeTiming.png)
 
 ## Citation
 If you use **abess** package or reference our examples in a presentation or publication, we would appreciate citations of our package.

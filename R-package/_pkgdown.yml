@@ -1,5 +1,11 @@
 destination: docs
 
+repo:
+  url:
+    home: https://github.com/abess-team/abess/
+    source: https://github.com/abess-team/abess/tree/master/R-package/
+    issue: https://github.com/abess-team/abess/issues/
+
 home:
   links:
   - text: Learn more
