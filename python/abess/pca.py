@@ -33,7 +33,7 @@ class abessPCA(bess_base):
     >>> ### Sparsity known
     >>>
     >>> from abess.linear import abessPCA
-    >>> from abess.gen_data import gen_data_splicing
+    >>> from abess.datasets import make_multivariate_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> x = np.random.randn(100, 50)
