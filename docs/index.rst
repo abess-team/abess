@@ -15,5 +15,5 @@
    Tutorial <Tutorial/index.rst>
    Python API <Python-package/index.rst>
    R package <https://abess-team.github.io/abess/>
-   FAQ <FAQ.md>
    About <About/index.rst>
+   FAQ <FAQ.md>
