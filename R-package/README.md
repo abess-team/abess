@@ -1,4 +1,4 @@
-# abess: An R package for Best-Subset Selection in Polynomial Time
+# abess: An R package for Best-Subset Selection in Polynomial Time ![avatar](pkgdown/favicon/apple-touch-icon-120x120.png)
 
 <!-- badges: start -->
 [![Github action](https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg)](https://github.com/abess-team/abess/actions)
