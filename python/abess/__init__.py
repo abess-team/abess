@@ -8,4 +8,4 @@
 # from abess.linear import PdasLm, PdasLogistic, PdasPoisson, PdasCox, L0L2Lm, L0L2Logistic, L0L2Poisson, L0L2Cox, GroupPdasLm, GroupPdasLogistic, GroupPdasPoisson, GroupPdasCox, abessLogistic
 from abess.linear import abessLogistic, abessLm, abessCox, abessPoisson, abessMultigaussian, abessMultinomial
 from abess.pca import abessPCA
-from abess.gen_data import gen_data, gen_data_splicing
+from abess.datasets import make_glm_data, make_multivariate_glm_data

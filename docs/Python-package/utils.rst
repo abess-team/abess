@@ -5,10 +5,10 @@ Utility Functions
     :backlinks: none
     :local:
 
-gen\_data
----------
-.. autofunction:: abess.gen_data.gen_data
+make\_glm\_data
+---------------
+.. autofunction:: abess.datasets.make_glm_data
 
-gen\_data\_splicing
--------------------
-.. autofunction:: abess.gen_data.gen_data_splicing
+make\_multivariate\_glm\_data
+-----------------------------
+.. autofunction:: abess.datasets.make_multivariate_glm_data
