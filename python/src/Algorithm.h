@@ -198,6 +198,7 @@ public:
       this->A_out = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
       this->primary_model_fit(train_x, train_y, train_weight, this->beta, this->coef0, DBL_MAX, this->A_out, g_index, g_size);
       this->train_loss = neg_loglik_loss(train_x, train_y, train_weight, this->beta, this->coef0, this->A_out, g_index, g_size);
+      this->effective_number = effective_number_of_parameter(train_x, train_x, train_y, train_weight, this->beta, this->beta, this->coef0);
       return;
     }
 
@@ -584,104 +585,104 @@ public:
     // cout << "l0 loglik: " << loglik0 << endl;
 
     int j;
-    // double step = 1;
+    double step = 1;
     Eigen::VectorXd g(p + 1);
     Eigen::VectorXd beta1;
     for (j = 0; j < this->primary_model_fit_max_iter; j++)
     {
-      // // To do: Approximate Newton method
-      // if (this->approximate_Newton)
-      // {
-      //   Eigen::VectorXd h_diag(p + 1);
-      //   for (int i = 0; i < p + 1; i++)
-      //   {
-      //     h_diag(i) = 1.0 / X.col(i).cwiseProduct(W).cwiseProduct(weights).dot(X.col(i));
-      //   }
-      //   g = X.transpose() * ((y - Pi).cwiseProduct(weights));
-      //   beta1 = beta0 + step * g.cwiseProduct(h_diag);
-      //   Pi = pi(X, y, beta1);
-      //   log_Pi = Pi.array().log();
-      //   log_1_Pi = (one - Pi).array().log();
-      //   loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
-
-      //   while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon)
-      //   {
-      //     step = step / 2;
-      //     beta1 = beta0 + step * g.cwiseProduct(h_diag);
-      //     Pi = pi(X, y, beta1);
-      //     log_Pi = Pi.array().log();
-      //     log_1_Pi = (one - Pi).array().log();
-      //     loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
-      //   }
-
-      //   // cout << "j=" << j << " loglik: " << loglik1 << endl;
-      //   // cout << "j=" << j << " loglik diff: " << loglik1 - loglik0 << endl;
-      //   bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
-      //   // bool condition1 = false;
-      //   if (condition1)
-      //     break;
-
-      //   if (loglik1 > loglik0)
-      //   {
-      //     beta0 = beta1;
-      //     loglik0 = loglik1;
-      //     W = Pi.cwiseProduct(one - Pi);
-      //     for (int i = 0; i < n; i++)
-      //     {
-      //       if (W(i) < 0.001)
-      //         W(i) = 0.001;
-      //     }
-      //   }
-
-      //   if (step < this->primary_model_fit_epsilon)
-      //   {
-      //     break;
-      //   }
-      // }
-      // else
-      // {
-      // #ifdef TEST
-      //         t1 = clock();
-      // #endif
-      for (int i = 0; i < p + 1; i++)
+      // To do: Approximate Newton method
+      if (this->approximate_Newton)
       {
-        X_new.col(i) = X.col(i).cwiseProduct(W).cwiseProduct(weights);
+        Eigen::VectorXd h_diag(p + 1);
+        for (int i = 0; i < p + 1; i++)
+        {
+          h_diag(i) = 1.0 / X.col(i).cwiseProduct(W).cwiseProduct(weights).dot(X.col(i));
+        }
+        g = X.transpose() * ((y - Pi).cwiseProduct(weights));
+        beta1 = beta0 + step * g.cwiseProduct(h_diag);
+        Pi = pi(X, y, beta1);
+        log_Pi = Pi.array().log();
+        log_1_Pi = (one - Pi).array().log();
+        loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
+
+        while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon)
+        {
+          step = step / 2;
+          beta1 = beta0 + step * g.cwiseProduct(h_diag);
+          Pi = pi(X, y, beta1);
+          log_Pi = Pi.array().log();
+          log_1_Pi = (one - Pi).array().log();
+          loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
+        }
+
+        // cout << "j=" << j << " loglik: " << loglik1 << endl;
+        // cout << "j=" << j << " loglik diff: " << loglik1 - loglik0 << endl;
+        bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
+        // bool condition1 = false;
+        if (condition1)
+          break;
+
+        if (loglik1 > loglik0)
+        {
+          beta0 = beta1;
+          loglik0 = loglik1;
+          W = Pi.cwiseProduct(one - Pi);
+          for (int i = 0; i < n; i++)
+          {
+            if (W(i) < 0.001)
+              W(i) = 0.001;
+          }
+        }
+
+        if (step < this->primary_model_fit_epsilon)
+        {
+          break;
+        }
       }
-
-      Eigen::MatrixXd XTX = 2 * this->lambda_level * lambdamat + X_new.transpose() * X;
-      beta0 = XTX.ldlt().solve(X_new.transpose() * Z);
-
-      // overload_ldlt(X_new, X, Z, beta0);
-
-      // CG
-      // ConjugateGradient<T4, Lower | Upper> cg;
-      // cg.compute(X_new.transpose() * X);
-      // beta0 = cg.solve(X_new.transpose() * Z);
-
-      Pi = pi(X, y, beta0);
-      log_Pi = Pi.array().log();
-      log_1_Pi = (one - Pi).array().log();
-      loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
-      // cout << "j=" << j << " loglik: " << loglik1 << endl;
-      // cout << "j=" << j << " loglik diff: " << loglik0 - loglik1 << endl;
-      bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
-      bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
-      bool condition3 = abs(loglik1) < min(1e-3, this->tau);
-      if (condition1 || condition2 || condition3)
+      else
       {
-        break;
-      }
+#ifdef TEST
+        t1 = clock();
+#endif
+        for (int i = 0; i < p + 1; i++)
+        {
+          X_new.col(i) = X.col(i).cwiseProduct(W).cwiseProduct(weights);
+        }
 
-      loglik0 = loglik1;
-      W = Pi.cwiseProduct(one - Pi);
-      for (int i = 0; i < n; i++)
-      {
-        if (W(i) < 0.001)
-          W(i) = 0.001;
+        Eigen::MatrixXd XTX = 2 * this->lambda_level * lambdamat + X_new.transpose() * X;
+        beta0 = XTX.ldlt().solve(X_new.transpose() * Z);
+
+        // overload_ldlt(X_new, X, Z, beta0);
+
+        // CG
+        // ConjugateGradient<T4, Lower | Upper> cg;
+        // cg.compute(X_new.transpose() * X);
+        // beta0 = cg.solve(X_new.transpose() * Z);
+
+        Pi = pi(X, y, beta0);
+        log_Pi = Pi.array().log();
+        log_1_Pi = (one - Pi).array().log();
+        loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
+        // cout << "j=" << j << " loglik: " << loglik1 << endl;
+        // cout << "j=" << j << " loglik diff: " << loglik0 - loglik1 << endl;
+        bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
+        bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
+        bool condition3 = abs(loglik1) < min(1e-3, this->tau);
+        if (condition1 || condition2 || condition3)
+        {
+          break;
+        }
+
+        loglik0 = loglik1;
+        W = Pi.cwiseProduct(one - Pi);
+        for (int i = 0; i < n; i++)
+        {
+          if (W(i) < 0.001)
+            W(i) = 0.001;
+        }
+        Z = X * beta0 + (y - Pi).cwiseQuotient(W);
       }
-      Z = X * beta0 + (y - Pi).cwiseQuotient(W);
     }
-    // }
 #ifdef TEST
     t2 = clock();
     std::cout << "primary fit time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
