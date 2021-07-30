@@ -1,4 +1,4 @@
-abess: R & Python Softwares for Best-Subset Selection in Polynomial Time
+abess: R & Python Softwares for Best-Subset Selection in Polynomial Time ![avatar](R-package/pkgdown/favicon/apple-touch-icon-120x120.png)
 ---
 
 [![Github action](https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg)](https://github.com/abess-team/abess/actions)
