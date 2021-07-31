@@ -143,7 +143,7 @@
 <div id="cox-proportional-hazrds-regression" class="section level2">
 <h2 class="hasAnchor">
 <a href="#cox-proportional-hazrds-regression" class="anchor"></a>Cox Proportional Hazrds Regression</h2>
-<p>Cox Proportional Hazrds (CoxPH) regression is to describe the survival according to several corvariates. The difference between CoxPH regression and Kaplan-Meier curves or the logrank tests is that the latter only focus on modeling the survival according to one factor (categorical predictor is best) while the former is able to take into consideration any covariates simultaneouly, regardless of whether they’re quantitatrive or categorical. The model is as follow: <span class="math display">\[
+<p>Cox Proportional Hazrds (CoxPH) regression is to describe the survival according to several covariates. The difference between CoxPH regression and Kaplan-Meier curves or the logrank tests is that the latter only focus on modeling the survival according to one factor (categorical predictor is best) while the former is able to take into consideration any covariates simultaneously, regardless of whether they’re quantitatrive or categorical. The model is as follow: <span class="math display">\[
 h(t) = h_0(t)\exp(\eta).
 \]</span> where,</p>
 <ul>
@@ -264,7 +264,7 @@ h_{i'}(t) = h_0(t)\exp(\eta_{i'}) = h_0(t)\exp(x_{i'}\beta).
 ## 7             6 782.4605 1585.350
 ## 8             7 781.7364 1587.306
 ## 9             8 781.1942 1589.627
-## 10            9 780.8985 1589.035</code></pre>
+## 10            9 780.8985 1592.440</code></pre>
 <p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including <code>coef</code> for the coefficient value, <code>l2norm</code> for the L2-norm of the coefficients, <code>dev</code> for the deviance and <code>tune</code> for the tuning value. Default if <code>coef</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>

@@ -213,12 +213,12 @@ i. print the fitted model:</p>
 ## 1            0 321.9560 64.59866
 ## 2            1 246.5820 49.99585
 ## 3            2 229.6078 46.65819
-## 4            3 224.0843 47.10830
+## 4            3 224.0843 47.10831
 ## 5            4 220.4441 45.75501
-## 6            5 220.1834 46.31422
-## 7            6 220.0022 46.45407
-## 8            7 219.9602 46.39486
-## 9            8 219.9189 46.44110</code></pre>
+## 6            5 220.1834 46.31356
+## 7            6 220.0022 46.45392
+## 8            7 219.9602 46.39780
+## 9            8 219.9189 46.44112</code></pre>
 <ol start="2" style="list-style-type: lower-roman">
 <li>draw the estimated coefficients on all candidate support size by <code><a href="https://rdrr.io/r/stats/coef.html">coef()</a></code> function:</li>
 </ol>
@@ -226,25 +226,25 @@ i. print the fitted model:</p>
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
 <pre><code>## 9 x 9 sparse Matrix of class "dgCMatrix"
 ##                      0         1          2           3           4           5
-## (intercept) -0.3530971  1.158781  2.9213405  4.23195962  4.76830133  4.85381841
-## Pclass       .          .        -0.7952709 -1.01705711 -1.03770046 -1.00849748
-## Sexmale      .         -2.545075 -2.5818944 -2.51198902 -2.60544821 -2.59656498
-## Age          .          .         .         -0.02923674 -0.03712932 -0.03672236
-## SibSp        .          .         .          .          -0.36190220 -0.35770269
+## (intercept) -0.3530971  1.158781  2.9213405  4.23196067  4.76830134  4.85381912
+## Pclass       .          .        -0.7952709 -1.01705742 -1.03770047 -1.00849771
+## Sexmale      .         -2.545075 -2.5818945 -2.51198959 -2.60544822 -2.59656528
+## Age          .          .         .         -0.02923674 -0.03712932 -0.03672237
+## SibSp        .          .         .          .          -0.36190220 -0.35770273
 ## Parch        .          .         .          .           .           .         
 ## Fare         .          .         .          .           .           .         
 ## EmbarkedQ    .          .         .          .           .           .         
-## EmbarkedS    .          .         .          .           .          -0.21507406
+## EmbarkedS    .          .         .          .           .          -0.21507394
 ##                        6            7            8
-## (intercept)  5.112850231  5.106984385  5.083420161
-## Pclass      -1.076524915 -1.080872131 -1.088719668
-## Sexmale     -2.610626365 -2.600190253 -2.598294580
-## Age         -0.037469961 -0.037121587 -0.037070495
-## SibSp       -0.339009696 -0.350547541 -0.352463114
-## Parch        .            0.048198887  0.051065952
-## Fare        -0.001998085 -0.002237775 -0.002189826
-## EmbarkedQ    .            .            0.209319058
-## EmbarkedS   -0.245365347 -0.255782101 -0.218658720</code></pre>
+## (intercept)  5.113267696  5.106984954  5.083420471
+## Pclass      -1.076857703 -1.080872290 -1.088719756
+## Sexmale     -2.610452750 -2.600190316 -2.598294614
+## Age         -0.037455985 -0.037121591 -0.037070497
+## SibSp       -0.339102382 -0.350547550 -0.352463118
+## Parch        .            0.048198916  0.051065967
+## Fare        -0.001993685 -0.002237777 -0.002189827
+## EmbarkedQ    .            .            0.209319089
+## EmbarkedS   -0.245725788 -0.255782106 -0.218658720</code></pre>
 <ol start="3" style="list-style-type: lower-roman">
 <li>get the deviance of the estimated model on all candidate support size via <code><a href="https://rdrr.io/r/stats/deviance.html">deviance()</a></code> function:</li>
 </ol>
@@ -297,7 +297,7 @@ i. print the fitted model:</p>
 <span class="va">misClasificError</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">fitted.results</span> <span class="op">!=</span> <span class="va">test</span><span class="op">$</span><span class="va">Survived</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'Accuracy'</span>,<span class="fl">1</span><span class="op">-</span><span class="va">misClasificError</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "Accuracy 0.79746835443038"</code></pre>
-<p>We can also generate an ROC curve and calculate tha AUC value. On this dataset, the AUC is 0.87, which is quite close to 1.</p>
+<p>We can also generate an ROC curve and calculate the AUC value. On this dataset, the AUC is 0.87, which is quite close to 1.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ipa-tys.github.io/ROCR/">ROCR</a></span><span class="op">)</span>
 <span class="va">fitted.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">test</span>, type <span class="op">=</span> <span class="st">'response'</span><span class="op">)</span>

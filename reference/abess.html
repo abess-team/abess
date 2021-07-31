@@ -48,8 +48,8 @@
 
 <meta property="og:title" content="Adaptive Best-Subset Selection via Splicing — abess.default" />
 <meta property="og:description" content="Adaptive best-subset selection for regression, 
-classification, counting-response, censored-response, multi-response modeling 
-in polynomial times." />
+(multi-class) classification, counting-response, censored-response, 
+multi-response modeling in polynomial times." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -164,8 +164,8 @@ in polynomial times." />
 
     <div class="ref-description">
     <p>Adaptive best-subset selection for regression, 
-classification, counting-response, censored-response, multi-response modeling 
-in polynomial times.</p>
+(multi-class) classification, counting-response, censored-response, 
+multi-response modeling in polynomial times.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for default</span>
@@ -406,6 +406,8 @@ while a list of <code><a href='https://rdrr.io/r/base/length.html'>length(suppor
 <dt>support.size</dt><dd><p>The actual <code>support.size</code> values used. 
 Note that it is not necessary the same as the input  
 if the later have non-integer values or duplicated values.</p></dd>
+<dt>edf</dt><dd><p>The effective degree of freedom. 
+It is the same as <code>support.size</code> when <code>lambda = 0</code>.</p></dd>
 <dt>best.size</dt><dd><p>The best support size selected by the tuning value.</p></dd> 
 <dt>tune.type</dt><dd><p>The criterion type for tuning parameters.</p></dd>
 <dt>tune.path</dt><dd><p>The strategy for tuning parameters.</p></dd>
@@ -483,7 +485,7 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
 #&gt; 18           17  1434.539 804.6352
 #&gt; 19           18  1433.386 809.1298
 #&gt; 20           19  1432.351 813.6327
-#&gt; 21           20  1432.225 813.6239</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>abess_fit</span>, support.size <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+#&gt; 21           20  1432.225 818.1989</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>abess_fit</span>, support.size <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 21 x 1 sparse Matrix of class "dgCMatrix"
 #&gt;                     3
 #&gt; (intercept) -4.369861
@@ -549,28 +551,28 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
 #&gt; abess.default(x = dataset[["x"]], y = dataset[["y"]], family = "binomial", 
 #&gt;     tune.type = "cv")
 #&gt; 
-#&gt;    support.size       dev        cv
-#&gt; 1             0  68.59298 13.888785
-#&gt; 2             1  46.69364  9.467560
-#&gt; 3             2  22.31417  4.795569
-#&gt; 4             3  17.60334  5.453128
-#&gt; 5             4  16.86618  9.348024
-#&gt; 6             5  16.15675 14.748842
-#&gt; 7             6 233.15206 40.167095
-#&gt; 8             7 207.31665 45.498779
-#&gt; 9             8 195.19859 55.460595
-#&gt; 10            9 254.11086 71.431879
-#&gt; 11           10 185.26512 73.733246
-#&gt; 12           11 113.86185 80.906253
-#&gt; 13           12 102.55145 81.789855
-#&gt; 14           13 161.15186 84.576775
-#&gt; 15           14 154.05620 84.303964
-#&gt; 16           15  90.60221 85.743672
-#&gt; 17           16 171.54659 87.080871
-#&gt; 18           17 155.09793 87.686199
-#&gt; 19           18  91.13829 88.334593
-#&gt; 20           19  95.02055 88.585575
-#&gt; 21           20 176.73201 88.764208</div><div class='input'>
+#&gt;    support.size        dev        cv
+#&gt; 1             0 68.5929800 13.888785
+#&gt; 2             1 46.6936375  9.467560
+#&gt; 3             2 22.3141723  4.795584
+#&gt; 4             3 17.6033381  5.452508
+#&gt; 5             4 16.8661842  9.270334
+#&gt; 6             5 16.1567523 13.509915
+#&gt; 7             6 15.1608532 17.795735
+#&gt; 8             7 14.1862011 26.610685
+#&gt; 9             8 12.9885380 36.576038
+#&gt; 10            9 11.3835571 45.374933
+#&gt; 11           10 11.4476524 56.347169
+#&gt; 12           11 10.6908781 59.539941
+#&gt; 13           12  8.6440372 71.223442
+#&gt; 14           13  5.5030821 71.780756
+#&gt; 15           14  4.0881365 78.826742
+#&gt; 16           15  2.5061119 84.391788
+#&gt; 17           16  2.0018184 87.293547
+#&gt; 18           17  1.6328445 87.631140
+#&gt; 19           18  1.0663483 87.221179
+#&gt; 20           19  0.8656413 87.566520
+#&gt; 21           20  1.9401367 88.281570</div><div class='input'>
 <span class='co'>################ poisson model ################</span>
 <span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span>, family <span class='op'>=</span> <span class='st'>"poisson"</span><span class='op'>)</span>
 <span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span>, <span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"y"</span><span class='op'>]</span><span class='op'>]</span>, 

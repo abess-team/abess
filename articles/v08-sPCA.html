@@ -130,7 +130,7 @@
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Principal component analysis (PCA) is an important method in the field of data science, which can reduce the dimension of data and simplify our model. It actually solve an optimization problem like:</p>
 <p><span class="math display">\[
-    \max_{v} v^T\Sigma v,\qquad s.t.\quad v^Tv=1.
+    \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1.
 \]</span></p>
 <p>where <span class="math inline">\(\Sigma = X^TX / (n-1)\)</span> and <span class="math inline">\(X\)</span> is the <strong>centered</strong> sample matrix. We also denote that <span class="math inline">\(X\)</span> is a <span class="math inline">\(n\times p\)</span> matrix, where each row is an observation and each column is a variables.</p>
 <p>Then, before further analysis, we can project <span class="math inline">\(X\)</span> to <span class="math inline">\(v\)</span> (thus dimensional reduction), without losing too much information.</p>
@@ -138,7 +138,7 @@
 <p>For example, in gene analysis, the dataset may contain plenty of genes (variables) and we would like to find a subset of them, which can explain most information. Compared with using all genes, this small subset may perform better on interpretation, without loss much information. Then we can focus on these variables in the further analysis.</p>
 <p>When we trapped by these problems, a classical PCA may not be a best choice, since it use all variables. One of the alternatives is abessPCA, which is able to seek for principal component with a sparsity limitation:</p>
 <p><span class="math display">\[
-    \max_{v} v^T\Sigma v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq s.
+    \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq s.
 \]</span></p>
 <p>where <span class="math inline">\(s\)</span> is a non-negative integer, which indicates how many primary variables are used in principal component. With abessPCA, we can search for the best subset of variables to form principal component and it retains consistency even under <span class="math inline">\(p&gt;&gt;n\)</span>. And we make two remarks:</p>
 <ul>
@@ -338,11 +338,11 @@ This result shows that using less than half of all 99 variables can be close to 
 <a href="#group-variable" class="anchor"></a>Group variable</h3>
 <p>In some cases, some variables may need to consider together, that is, they should be “used” or “unused” for PC at the same time, which we call “group information”. The optimization problem becomes:</p>
 <p><span class="math display">\[
-    \max_{v} v^T\Sigma v,\qquad s.t.\quad v^Tv=1,\ \sum_{g=1}^G I(||v_g||\neq 0)\leq s.
+    \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ \sum_{g=1}^G I(||v_g||\neq 0)\leq s.
 \]</span></p>
 <p>where we suppose there are <span class="math inline">\(G\)</span> groups, and the <span class="math inline">\(g\)</span>-th one correspond to <span class="math inline">\(v_g\)</span>, <span class="math inline">\(v = [v_1^T,v_2^T,\cdots,v_G^T]^T\)</span>. Then we are interested to find <span class="math inline">\(s\)</span> (or less) important groups.</p>
 <blockquote>
-<p>Group problem is extraordinary important in real data analysis. Still take gene analysis as an example, several sites would be related to one charcter, and it is meaningless to consider each of them alone.</p>
+<p>Group problem is extraordinary important in real data analysis. Still take gene analysis as an example, several sites would be related to one pathway, and it is meaningless to consider each of them alone.</p>
 </blockquote>
 <p>abessPCA can also deal with group information. Here we make sure that variables in the same group address close to each other (if not, the data should be sorted first).</p>
 <p>Suppose that the data above have group information like:</p>
@@ -384,13 +384,13 @@ This result shows that using less than half of all 99 variables can be close to 
 <a href="#multiple-principal-components" class="anchor"></a>Multiple principal components</h3>
 <p>In some cases, we may seek for more than one principal components under sparsity. Actually, we can iteratively solve the largest principal component and then mapping the covariance matrix to its orthogonal space:</p>
 <p><span class="math display">\[
-\Sigma' = (1-vv^T)\Sigma(1-vv^T)
+\Sigma' = (1-vv^{\top})\Sigma(1-vv^{\top})
 \]</span></p>
 <p>where <span class="math inline">\(\Sigma\)</span> is the currect covariance matrix and <span class="math inline">\(v\)</span> is its (sparse) loading vector. We map it into <span class="math inline">\(\Sigma'\)</span>, which indicates the orthogonal space of <span class="math inline">\(v\)</span>, and then solve the sparse principal component for <span class="math inline">\(\Sigma'\)</span> again. By this iteration process, we can acquire multiple principal components and they are sorted from the largest to the smallest. In our program, there is an additional argument <code>sparse.type</code> to support this feature. By setting <code>sparse.type = "kpc"</code>, then best subset selection performs on the first <span class="math inline">\(K\)</span> principal components where <span class="math inline">\(K\)</span> is decided by argument <code>support.size</code>.</p>
 <p>Suppose we are interested in the first two principal components, and the support size is 50 in the first loading vector and is 40 in the second loading vector. In other words, we consecutively solve two problem: <span class="math display">\[
-    v_1 \leftarrow \arg\max_{v} v^T\Sigma v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq 10,
+    v_1 \leftarrow \arg\max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq 10,
 \]</span> <span class="math display">\[
-  v_2 \leftarrow \arg\max_{v} v^T \Sigma^{\prime} v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq 5,
+  v_2 \leftarrow \arg\max_{v} v^{\top} \Sigma^{\prime} v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq 5,
 \]</span> where <span class="math inline">\(\Sigma^{\prime} = (1-v_1 v_1^\top)\Sigma(1-v_1 v_1^\top)\)</span>. The <span class="math inline">\((v_1, v_2)\)</span> forms a sparse loading matrix.</p>
 <p>The code for solving the two problem is:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
