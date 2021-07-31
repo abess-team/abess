@@ -45,8 +45,8 @@ of 100 regularization parameters.
 All experiments are
 evaluated on an Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz and under R version 3.6.1. 
 
-```r
-source("R-package/example/timing.R")
+```shell
+$ Rscript R-package/example/timing.R
 ```
 
 Results are presented in the following picture. As a package solving best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
