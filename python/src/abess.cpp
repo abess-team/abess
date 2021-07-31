@@ -829,6 +829,12 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       }
     }
   }
+#ifdef TEST
+  std::cout << "effective_number_matrix: " << effective_number_matrix << std::endl;
+  std::cout << train_loss_matrix << std::endl;
+  std::cout << "ic: " << std::endl;
+  std::cout << ic_matrix << std::endl;
+#endif
   // cout << "abess 7" << endl;
 
   // List result;
