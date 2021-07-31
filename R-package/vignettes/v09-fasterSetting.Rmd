@@ -29,7 +29,7 @@ The generic splicing technique certifiably guarantees the best subset can be sel
 In practice, the computational efficiency can be improved to handle large scale datasets.
 The tips for computational improvement include:      
 
-- exploit sparse strucute of input matrix; 
+- exploit sparse structure of input matrix; 
 - use golden-section to search best support size;         
 - early-stop scheme;        
 - sure independence screening;            

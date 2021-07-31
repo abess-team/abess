@@ -2,7 +2,7 @@ Package: abess
 Type: Package
 Title: Adaptive Best Subset Selection in Polynomial Time
 Version: 0.2.0
-Date: 2021-07-18
+Date: 2021-07-31
 Authors@R: c(
   person(given = "Jin", family = "Zhu", email = "zhuj37@mail2.sysu.edu.cn", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8550-5822")),
   person(given = "Kangkang", family = "Jiang", email = "jiangkk3@mail2.sysu.edu.cn", role = c("aut")),

@@ -36,5 +36,8 @@
 ^vignettes/v07-advancedFeatures\.Rmd$
 ^vignettes/v08-sPCA\.Rmd$
 ^vignettes/v09-fasterSetting\.Rmd$
+^vignettes/v10-algorithm\.Rmd$
 ^\.covrignore$
+^logo\.png$
+^logo\.svg
 ^example$

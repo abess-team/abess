@@ -177,6 +177,8 @@ while a list of \code{length(support.size)} intercept vector (with size \code{nc
 \item{support.size}{The actual \code{support.size} values used. 
 Note that it is not necessary the same as the input  
 if the later have non-integer values or duplicated values.}
+\item{edf}{The effective degree of freedom. 
+It is the same as \code{support.size} when \code{lambda = 0}.}
 \item{best.size}{The best support size selected by the tuning value.} 
 \item{tune.type}{The criterion type for tuning parameters.}
 \item{tune.path}{The strategy for tuning parameters.}
@@ -187,8 +189,8 @@ It would be an empty character vector if \code{screening.num = 0}.}
 }
 \description{
 Adaptive best-subset selection for regression, 
-classification, counting-response, censored-response, multi-response modeling 
-in polynomial times.
+(multi-class) classification, counting-response, censored-response, 
+multi-response modeling in polynomial times.
 }
 \details{
 Best-subset selection aims to find a small subset of predictors, 

@@ -181,9 +181,15 @@ test_that("abess (binomial) works", {
                            family = "binomial", seed = 1)
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
                      family = "binomial", tune.type = "cv", 
-                     newton = "approx", max.newton.iter = 50, 
-                     newton.thresh = 1e-8)
+                     newton = "exact", newton.thresh = 1e-8)
   test_batch(abess_fit, dataset, binomial)
+  
+  abess_fit1 <- abess(dataset[["x"]], dataset[["y"]], 
+                      family = "binomial", tune.type = "cv", 
+                      newton = "approx", newton.thresh = 1e-8)
+  beta <- extract(abess_fit)[["support.beta"]]
+  beta1 <- extract(abess_fit1)[["support.beta"]]
+  expect_true(all(abs(beta - beta1) < 1e-3))
 })
 
 test_that("abess (cox) works", {
@@ -249,8 +255,6 @@ test_that("abess (poisson) works", {
 })
 
 test_that("abess (mgaussian) works", {
-  skip_on_os("mac")
-  skip_on_os("solaris")
   n <- 30
   p <- 10
   support_size <- 3
@@ -337,6 +341,7 @@ test_that("abess (output) works", {
   expect_true(is.vector(abess_fit[["tune.value"]]))
   expect_true(is.vector(abess_fit[["support.size"]]))
   expect_true(is.vector(abess_fit[["intercept"]]))
+  expect_true(is.vector(abess_fit[["edf"]]))
 })
 
 test_that("abess (always-include) works", {
@@ -346,4 +351,14 @@ test_that("abess (always-include) works", {
   dataset <- generate.data(n, p, support_size)
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], always.include = c(1))
   expect_true(all((abess_fit[["beta"]][1, , drop = TRUE][-1] != 0)))
+})
+
+test_that("abess (L2 regularization) works", {
+  n <- 100
+  p <- 20
+  support_size <- 3
+  dataset <- generate.data(n, p, support_size)
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], lambda = 0.1)
+  expect_true(all(diff(abess_fit[["edf"]]) > 0))
+  expect_true(all(abess_fit[["edf"]] <= abess_fit[["support.size"]]))
 })

@@ -10,7 +10,7 @@ abesspca(
   sparse.type = c("fpc", "kpc"),
   cor = FALSE,
   support.size = NULL,
-  c.max = 2,
+  c.max = NULL,
   lambda = 0,
   always.include = NULL,
   group.index = NULL,
@@ -48,7 +48,7 @@ then for 20\% principal components,
 it is set as \code{min(ncol(x), 100)} if \code{group.index = NULL};
 otherwise, \code{min(length(unique(group.index)), 100)}.}
 
-\item{c.max}{an integer splicing size. Default is: \code{c.max = 2}.}
+\item{c.max}{an integer splicing size. The default of \code{c.max} is the maximum of 2 and \code{max(support.size) / 2}.}
 
 \item{lambda}{A single lambda value for regularized best subset selection. Default is 0.}
 
