@@ -25,7 +25,7 @@ When analyzing the real world datasets, we may have the following targets:
 1. certain variables must be selected when some prior information is given;        
 2. selecting the weak signal variables when the prediction performance is main interest;       
 3. identifying predictors when group structure are provided;        
-4. pre-excluding a part of predictos when datasets have ultra high-dimensional predictors. 
+4. pre-excluding a part of predictors when datasets have ultra high-dimensional predictors. 
 
 In the following content, we will illustrate the statistic methods to reach these targets in a one-by-one manner, 
 and give quick examples to show how to perform the statistic methods with the `abess` package.

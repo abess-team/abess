@@ -17,6 +17,8 @@ output:
 editor_options: 
   markdown: 
     wrap: sentence
+vignette: |
+  %\VignetteEngine{knitr::rmarkdown} \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}

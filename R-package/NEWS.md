@@ -9,4 +9,9 @@
 
 # abess 0.1.0
 
-* Initial abess package
+* Initial stable version abess package
+* Support best subset selection for linear regression, logistic regression, poisson regression, cox proportional hazard regression, multi-gaussian regression, 
+multi-nomial regression. 
+* Support nuisance selection as a generic component
+* Unified API for cross validation and information criterion to select the optimal support size.
+* A documentation website is support for *abess* package

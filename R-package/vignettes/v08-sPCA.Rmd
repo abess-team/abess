@@ -21,7 +21,7 @@ This vignettes introduces what is adaptive best subset selection principal compo
 Principal component analysis (PCA) is an important method in the field of data science, which can reduce the dimension of data and simplify our model. It actually solve an optimization problem like:
 
 $$
-    \max_{v} v^T\Sigma v,\qquad s.t.\quad v^Tv=1.
+    \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1.
 $$
 
 where $\Sigma = X^TX / (n-1)$ and $X$ is the **centered** sample matrix. We also denote that $X$ is a $n\times p$ matrix, where each row is an observation and each column is a variables.
@@ -37,7 +37,7 @@ For example, in gene analysis, the dataset may contain plenty of genes (variable
 When we trapped by these problems, a classical PCA may not be a best choice, since it use all variables. One of the alternatives is abessPCA, which is able to seek for principal component with a sparsity limitation:
 
 $$
-    \max_{v} v^T\Sigma v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq s.
+    \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq s.
 $$
 
 where $s$ is a non-negative integer, which indicates how many primary variables are used in principal component. With abessPCA, we can search for the best subset of variables to form principal component and it retains consistency even under $p>>n$.
@@ -110,12 +110,12 @@ where each row of loading matrix corresponds to a variable.
 In some cases, some variables may need to consider together, that is, they should be "used" or "unused" for PC at the same time, which we call "group information". The optimization problem becomes:
 
 $$
-    \max_{v} v^T\Sigma v,\qquad s.t.\quad v^Tv=1,\ \sum_{g=1}^G I(||v_g||\neq 0)\leq s.
+    \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ \sum_{g=1}^G I(||v_g||\neq 0)\leq s.
 $$
 
 where we suppose there are $G$ groups, and the $g$-th one correspond to $v_g$, $v = [v_1^T,v_2^T,\cdots,v_G^T]^T$. Then we are interested to find $s$ (or less) important groups.
 
-> Group problem is extraordinary important in real data analysis. Still take gene analysis as an example, several sites would be related to one charcter, and it is meaningless to consider each of them alone. 
+> Group problem is extraordinary important in real data analysis. Still take gene analysis as an example, several sites would be related to one pathway, and it is meaningless to consider each of them alone. 
 
 abessPCA can also deal with group information. Here we make sure that variables in the same group address close to each other (if not, the data should be sorted first).
 
@@ -144,7 +144,7 @@ In some cases, we may seek for more than one principal components under sparsity
 Actually, we can iteratively solve the largest principal component and then mapping the covariance matrix to its orthogonal space:
 
 $$
-\Sigma' = (1-vv^T)\Sigma(1-vv^T)
+\Sigma' = (1-vv^{\top})\Sigma(1-vv^{\top})
 $$
 
 where $\Sigma$ is the currect covariance matrix and $v$ is its (sparse) loading vector. 
@@ -159,10 +159,10 @@ Suppose we are interested in the first two principal components,
 and the support size is 50 in the first loading vector and is 40 in the second loading vector. 
 In other words, we consecutively solve two problem:
 $$
-    v_1 \leftarrow \arg\max_{v} v^T\Sigma v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq 10,
+    v_1 \leftarrow \arg\max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq 10,
 $$
 $$
-  v_2 \leftarrow \arg\max_{v} v^T \Sigma^{\prime} v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq 5,
+  v_2 \leftarrow \arg\max_{v} v^{\top} \Sigma^{\prime} v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq 5,
 $$
 where $\Sigma^{\prime} = (1-v_1 v_1^\top)\Sigma(1-v_1 v_1^\top)$. 
 The $(v_1, v_2)$ forms a sparse loading matrix.
