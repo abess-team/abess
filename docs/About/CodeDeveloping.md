@@ -1,6 +1,6 @@
 # Code Developing
 
-> Before developing the code, please make sure:
+Before developing the code, please make sure:
 - following the [Installation](../Installation.md), the code in github works on your device;
 - read the [Architecture](Architecture.md) of abess library.
 
@@ -127,26 +127,21 @@ unified API `abessCpp`. We strongly suggest the R function is named as `abessXXX
 
 ### Python Package
 
-To make your code available for Python, `cd` into directory `abess/python` and run `python setup.py install`.
-
-> If you receive an error said "*Can't create or remove files in install directory*", this may be caused by permission denied. The step below may help with it.
->
-> - For Linux: run `python setup.py install --user` or `sudo python setup.py install`.
-> - For Windows: run the command as administrator.
-> - For MacOS:
+To make your code available for Python, `cd` into directory `abess/python` and run `python setup.py install`. (Same steps in [Installation](https://abess.readthedocs.io/en/latest/Installation.html#latest-release).)
 
 It may take a few minutes to install:
 
 - if the installation throw some errors, it means that the C++ code may be wrong;
 - if the installation runs without errors, it will finish with message like "*Finished processing dependencies for abess*". 
 
-Now a file named `cabess.py` will be appeared in the directory `abess/python/src`, which help to link Python and C++. You need to move it into directory `abess/python/abess`.
+Now a file named `cabess.py` will be appeared in the directory `abess/python/src`, which help to link Python and C++. You need to move it into directory `abess/python/abess` and replace the duplicated file there.
 
-Then create a new python file in `abess/python/abess` or open the existed file `abess/python/abess/linear.py`. Here we create `abess/python/abess/pca.py` and import a temple class `bess_base`.
+Then create a new python file in `abess/python/abess` or open the existed file, such as `abess/python/abess/linear.py`, to add a python api for your new method. 
 
-A simple new method can be added like: [[code link]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py)。
+Here we create `abess/python/abess/pca.py`. A simple new method can be added like: [[code link]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py).
 
 ```Python
+# all methods are based on the temple class `bess_base`
 from .bess_base import bess_base
 
 class abessPCA(bess_base): 
@@ -163,7 +158,7 @@ class abessPCA(bess_base):
         # ...
 ```
 
-As an example, we define two new functions (`ratio` and `transform`) and override the `fit` function.
+As an example, we define two new functions (`ratio` and `transform`) and override the `fit` function for `abessPCA`. [[code link]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py).
 
 Then, the final step is to link this Python class with the model type number (it has been defined in the [Core C++](#Core C++)). In `bess_base.py`, you can find somewhere like (in the `fit` function): 
 
@@ -173,12 +168,7 @@ if self.model_type == "Lm":
 elif # ...
 ```
 
-Note that the new PCA method has been related to number "7" above. We need to denote `model_type_int = 7`
-in Python: [[link]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=path_type_int%20%3D%201%20(seq)-,model_type_int%20%3D%207,-path_type_int%20%3D%201)
-
-```python
-model_type_int = 7   
-```
+Note that the new PCA method has been related to number "7" above, so we need to denote `model_type_int = 7` in our `fit` function. 
 
 After finished all changes before, run `python setup.py install` again and this time the installation would be finished quickly. 
 
@@ -187,6 +177,31 @@ Congratulation! Your work can now be used by:
 ```Python
 from abess.pca import abessPCA
 ```
+
+
+
+It is always a good habit to do some test for the changed package and we mainly use [pytest](https://docs.pytest.org/). We firstly install pytest with pip command:
+
+```bash
+$ pip install -U pytest
+```
+
+Under `abess/pytest`, you can see a file named `test_all.py` and it is the test file for all existing code. Please feel free to add your test code into it or simply create a new test file under that folder. The test code should at least contain:
+
+- possible input/output modes;
+- possible extreme cases;
+- possible wrong input.
+
+(Details of how to write a test can be viewed on [pytest-getting-started](https://docs.pytest.org/en/6.2.x/getting-started.html).)
+
+And then run:
+
+```bash
+$ cd pytest
+$ pytest
+```
+
+All test under pytest folder would be checked.
 
 ## Miscellaneous
 
