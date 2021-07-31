@@ -729,15 +729,33 @@ abess.default <- function(x,
     stopifnot(always.include > 0)
     check_integer(always.include, "always.include must be a vector with integer value.")
     always.include <- as.integer(always.include) - 1
-    if (length(always.include) > screening_num)
-      stop("The number of variables in always.include should not exceed the screening.num")
+    always_include_num <- length(always.include)
+    if (always_include_num > screening_num) {
+      stop("The number of variables in always.include must not exceed the screening.num")
+    }
     if (path_type == 1) {
-      if (length(always.include) > max(s_list))
+      if (always_include_num > max(s_list)) {
         stop("always.include containing too many variables. 
-             The length of it should not exceed the maximum in support.size.")
-    } else{
-      if (length(always.include) > s_max)
-        stop("always.include containing too many variables. The length of it should not exceed the max(gs.range).")
+           The length of it must not exceed the maximum in support.size.")
+      }
+      if (always_include_num > min(s_list)) {
+        if (is.null(support.size)) {
+          s_list <- s_list[s_list >= always_include_num]
+        } else {
+          stop(sprintf("always.include containing %s variables. The min(support.size) must be equal or greater than this.", always_include_num))        
+        }
+      }        
+    } else {
+      if (always_include_num > s_max) {
+        stop("always.include containing too many variables. The length of it must not exceed the max(gs.range).")
+      }
+      if (always_include_num > s_min) {
+        if (is.null(support.size)) {
+          s_min <- always_include_num
+        } else {
+          stop(sprintf("always.include containing %s variables. The min(gs.range) must be equal or greater than this.", always_include_num))  
+        }
+      }
     }
     always_include <- always.include
   }
