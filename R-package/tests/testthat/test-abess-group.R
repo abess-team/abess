@@ -163,13 +163,17 @@ test_that("Group selection: abess (logistic) works", {
   dataset <- generate.group(n, J, k, support_size, family = "binomial", seed = 1)
   
   ## default interface
-  abess_fit <- abess(dataset[["x"]], dataset[["y"]], group.index = dataset$group.index, family = "binomial")
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                     group.index = dataset$group.index, 
+                     family = "binomial", newton = "exact")
   test_batch(abess_fit, dataset, binomial)
   
   ## formula interface
   dat <- cbind.data.frame(dataset[["x"]][, 1:30], "y" = dataset[["y"]], 
                           dataset[["x"]][, 31:(J*k)])
-  abess_fit <- abess(y ~ ., data = dat, group.index = dataset$group.index, family = "binomial")
+  abess_fit <- abess(y ~ ., data = dat, 
+                     group.index = dataset$group.index, 
+                     family = "binomial", newton = "exact")
   test_batch(abess_fit, dataset, binomial)
 })
 

@@ -32,7 +32,7 @@ deviance.abess <- function(object,
       dev <- object[["tune.value"]]
     } else {
       dev <- object[["dev"]]
-      supp_size <- object[["support.size"]]
+      edf <- object[["edf"]]
       if (type == "aic") {
         adjust_term <- 2
       } else if (type == "bic") {
@@ -42,7 +42,7 @@ deviance.abess <- function(object,
       } else if (type == "gic") {
         adjust_term <- log(object[["nvars"]]) * log(log(object[["nobs"]]))
       }
-      dev <- dev + adjust_term * supp_size
+      dev <- dev + adjust_term * edf
     }
   }
   

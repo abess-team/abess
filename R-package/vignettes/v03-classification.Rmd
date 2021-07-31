@@ -144,7 +144,7 @@ misClasificError <- mean(fitted.results != test$Survived)
 print(paste('Accuracy',1-misClasificError))
 ```
 
-We can also generate an ROC curve and calculate tha AUC value. On this dataset, the AUC is 0.87, which is quite close to 1.
+We can also generate an ROC curve and calculate the AUC value. On this dataset, the AUC is 0.87, which is quite close to 1.
 ```{r}
 library(ROCR)
 fitted.results <- predict(abess_fit, newx = test, type = 'response')

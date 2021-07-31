@@ -4,8 +4,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' @title Adaptive Best-Subset Selection via Splicing
 #'
 #' @description Adaptive best-subset selection for regression, 
-#' classification, counting-response, censored-response, multi-response modeling 
-#' in polynomial times.
+#' (multi-class) classification, counting-response, censored-response, 
+#' multi-response modeling in polynomial times.
 #' 
 #' @aliases abess
 #' 
@@ -176,6 +176,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' \item{support.size}{The actual \code{support.size} values used. 
 #' Note that it is not necessary the same as the input  
 #' if the later have non-integer values or duplicated values.}
+#' \item{edf}{The effective degree of freedom. 
+#' It is the same as \code{support.size} when \code{lambda = 0}.}
 # \item{support.df}{The degree of freedom in each support set, 
 # in other words, the number of predictors in each group. 
 # Particularly, it would be a all one vector with length \code{nvars} when \code{group.index = NULL}.}
@@ -842,6 +844,8 @@ abess.default <- function(x,
     result[["support.size"]] <- s_list
   }
   
+  result[["edf"]] <- result[["effective_number_all"]][, 1]
+  result[["effective_number_all"]] <- NULL
   names(result)[which(names(result) == "train_loss_all")] <- "dev"
   result[["dev"]] <- result[["dev"]][, 1]
   if (is_cv) {
