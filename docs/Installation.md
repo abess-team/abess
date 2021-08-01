@@ -110,5 +110,11 @@ Make sure you install these packages before installing abess.
 
 ### R
 
-
+The R version should be 3.1.0 and newer in order to support C++11. 
+*abess* R package relies on limited R packages dependencies:
+- Rcpp: convert R Matrix/Vector object into C++ 
+- RcppEigen: linear algebra in C++
+Furthermore, if you would to develop the R package, it would be better to additionally install:
+- testthat: conduct unit tests
+- knitr and rmarkdown: write tutorials for R users
 
