@@ -5,8 +5,6 @@ from abess.linear import abessLm
 from abess.datasets import make_glm_data
 from sklearn.metrics import matthews_corrcoef
 from sklearn.linear_model import LassoCV
-# from glmnet import ElasticNet
-# import statsmodels.api as sm
 
 def metrics(coef, pred, test):
     pred_err = np.linalg.norm(pred - test.y)
@@ -27,8 +25,6 @@ model_name = "Lm"
 method = [
     "abess", 
     "sklearn", 
-    # "statsmodels",
-    # "glmnet", 
 ]
 file_output = True
 
@@ -74,32 +70,6 @@ for m in range(M):
         met[ind, m, 4] = t_end - t_start
         # print("     --> SKL time: " + str(t_end - t_start))
     
-    # ## statsmodels
-    # if "statsmodels" in method:
-    #     ind += 1
-
-    #     t_start = time()
-    #     model = sm.OLS(train.y, train.x)
-    #     fit = model.fit_regularized(alpha = 1, L1_wt = 1)
-    #     t_end = time()
-
-    #     met[ind, m, 0:4] = metrics(fit.params, fit.predict(test.x), test)
-    #     met[ind, m, 4] = t_end - t_start
-    #     # print("     --> STATS time: " + str(t_end - t_start))
-    
-    ## glmnet
-    if "glmnet" in method:
-        ind += 1
-
-        t_start = time()
-        model = ElasticNet(n_jobs = 8)
-        fit = model.fit(train.x, train.y)
-        t_end = time()
-
-        met[ind, m, 0:4] = metrics(fit.coef_, fit.predict(test.x), test)
-        met[ind, m, 4] = t_end - t_start
-        # print("     --> GLMNET time: " + str(t_end - t_start))
-
 for ind in range(0, len(method)):
     m = met[ind].mean(axis = 0)
     se = met[ind].std(axis = 0) / np.sqrt(M - 1)
