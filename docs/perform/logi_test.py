@@ -1,10 +1,10 @@
+import sys
 import numpy as np
 from time import time
 from abess.linear import abessLogistic
-from abess.gen_data import gen_data
+from abess.datasets import make_glm_data
 from sklearn.metrics import matthews_corrcoef, roc_auc_score
 from sklearn.linear_model import LogisticRegressionCV
-from glmnet import LogitNet
 
 def metrics(coef, pred, test):
     auc = roc_auc_score(test.y, pred)
@@ -18,23 +18,21 @@ def metrics(coef, pred, test):
     return np.array([auc, tpr, fpr, mcc])
 
 n = 500
-p = 1000
+p = 2000
 M = 100
-rho = 0.1 
+rho = float(sys.argv[1])
 model_name = "Logistic"
 method = [
     "abess",
     "sklearn",
-    "glmnet"
 ]
 file_output = True
 
-# time
-ti = np.zeros(len(method))
-# auc, tpr, fpr, mcc
-met = np.zeros((len(method), 4))
+# auc, tpr, fpr, mcc, time
+met = np.zeros((len(method), M, 5))
+res = np.zeros((len(method), 10))
 
-
+print('===== Testing '+ model_name + " - " + str(rho) + ' =====')
 for m in range(M):
     ind = -1
     if (m % 10 == 0):
@@ -42,58 +40,45 @@ for m in range(M):
 
     ## data gene
     np.random.seed(m)
-    train = gen_data(n = n, p = p, k = 10, family = "binomial", rho = rho)
-    np.random.seed(m + 100)
-    test = gen_data(n = n, p = p, k = 10, family = "binomial", rho = rho, coef_ = train.coef_)
+    train = make_glm_data(n = n, p = p, k = 10, family = "binomial", rho = rho)
+    np.random.seed(m + M)
+    test = make_glm_data(n = n, p = p, k = 10, family = "binomial", rho = rho, coef_ = train.coef_)
 
     ## abess
     if "abess" in method:
         ind += 1
 
         t_start = time()
-        model = abessLogistic(is_cv = True, path_type = "pgs", s_min = 0, s_max = 99)
+        model = abessLogistic(is_cv = True, path_type = "pgs", s_min = 0, s_max = 99, thread = 0)
         fit = model.fit(train.x, train.y)
         t_end = time()
 
-        met[ind] += metrics(fit.coef_, fit.predict(test.x), test)
-        ti[ind] += t_end - t_start
+        met[ind, m, 0:4] = metrics(fit.coef_, fit.predict(test.x), test)
+        met[ind, m, 4] = t_end - t_start
         # print("     --> ABESS time: " + str(t_end - t_start))
     
     if "sklearn" in method:
         ind += 1
 
         t_start = time()
-        model = LogisticRegressionCV(penalty = "l1", solver = "liblinear")
+        model = LogisticRegressionCV(penalty = "l1", solver = "liblinear", n_jobs = -1)
         fit = model.fit(train.x, train.y)
         t_end = time()
 
-        met[ind] += metrics(fit.coef_.flatten(), fit.predict(test.x), test)
-        ti[ind] += t_end - t_start
+        met[ind, m, 0:4] = metrics(fit.coef_.flatten(), fit.predict(test.x), test)
+        met[ind, m, 4] = t_end - t_start
         # print("     --> SKL time: " + str(t_end - t_start))
-    
-    ## glmnet
-    if "glmnet" in method:
-        ind += 1
 
-        t_start = time()
-        model = LogitNet()
-        fit = model.fit(train.x, train.y)
-        t_end = time()
+for ind in range(0, len(method)):
+    m = met[ind].mean(axis = 0)
+    se = met[ind].std(axis = 0) / np.sqrt(M - 1)
+    res[ind] = np.hstack((m, se))
 
-        met[ind] += metrics(fit.coef_.flatten(), fit.predict(test.x), test)
-        ti[ind] += t_end - t_start
-        # print("     --> GLMNET time: " + str(t_end - t_start))
-
-met /= M
-ti /= M
-
-print("===== " + model_name + " - " + str(rho) + " =====")
+print("===== Results " + model_name + " - " + str(rho) + " =====")
 print("Method: \n", method)
-print("Metrics: \n", met)
-print("Time: \n", ti)
+print("Metrics: \n", res[:, 0:5])
+print("Err", res[:, 5:10])
 
 if (file_output):
-    temp = ti.reshape(len(method), 1)
-    temp = np.hstack((met, temp)).T
-    np.savetxt(model_name + "_res.csv", temp, delimiter=",", encoding = "utf-8", fmt = "%.8f")
+    np.savetxt(model_name + str(rho) + "_res.csv", res, delimiter=",", encoding = "utf-8", fmt = "%.8f")
     print("Saved in file.")
