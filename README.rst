@@ -72,9 +72,7 @@ Best subset selection for linear regression on a simulated dataset in R:
    sim_dat <- generate.data(n = 300, p = 1000)
    abess(x = sim_dat[["x"]], y = sim_dat[["y"]])
 
-See more examples analyzed with R in the tutorials available `here`_.
-
-.. _here: https://abess-team.github.io/abess/articles/
+See more examples analyzed with R in the tutorials available `here <https://abess-team.github.io/abess/articles/>`_.
 
 
 Python package
@@ -94,9 +92,7 @@ Import best subset selection solver for linear regression in a Python project:
 
    from abess.linear import abessLm
 
-See more examples in the tutorials; the notebooks are available `here`_.
-
-.. _here: https://abess.readthedocs.io/en/latest/Tutorial/index.html
+See more examples in the tutorials; the notebooks are available `here <https://abess.readthedocs.io/en/latest/Tutorial/index.html>`_.
 
 Performance
 ===========
@@ -119,7 +115,7 @@ we obtain the runtime comparison picture:
 
 |Rpic1|
 
-.. |Rpic1| image:: ./perform/readmeTiming.png
+.. |Rpic1| image:: ./perform/Rtimings.png
    :width: 100%
 
 Python package   
@@ -133,13 +129,10 @@ Results are presented in the below figure, and can be reproduce by running the c
    $ python ./docs/perform/timings.py
 
 
-|pic1| |pic2|
+|pic1| 
 
-.. |pic1| image:: ./perform/lm_time.png
-   :width: 48%
-
-.. |pic2| image:: ./perform/logi_time.png
-   :width: 48%
+.. |pic1| image:: ./perform/timings.png
+   :width: 100%
 
 In both R and Python environments, 
 abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
