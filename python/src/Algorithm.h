@@ -1,6 +1,43 @@
-//
-// Created by jk on 2020/3/18.
-//
+/*****************************************************************************
+*  OpenST Basic tool library                                                 *
+*  Copyright (C) 2021 Kangkang Jiang  jiangkk3@mail2.sysu.edu.cn                         *
+*                                                                            *
+*  This file is part of OST.                                                 *
+*                                                                            *
+*  This program is free software; you can redistribute it and/or modify      *
+*  it under the terms of the GNU General Public License version 3 as         *
+*  published by the Free Software Foundation.                                *
+*                                                                            *
+*  You should have received a copy of the GNU General Public License         *
+*  along with OST. If not, see <http://www.gnu.org/licenses/>.               *
+*                                                                            *
+*  Unless required by applicable law or agreed to in writing, software       *
+*  distributed under the License is distributed on an "AS IS" BASIS,         *
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  *
+*  See the License for the specific language governing permissions and       *
+*  limitations under the License.                                            *
+*                                                                            *
+*  @file     algorithm.h                                                         *
+*  @brief    the algorithm for fitting.                            *
+*                                                                            *
+*                                                                            *
+*  @author   Kangkang Jiang                                                  *
+*  @email    jiangkk3@mail2.sysu.edu.cn                                      *
+*  @version  0.0.1                                                           *
+*  @date     2021-07-31                                                      *
+*  @license  GNU General Public License (GPL)                                *
+*                                                                            *
+*----------------------------------------------------------------------------*
+*  Remark         : Description                                              *
+*----------------------------------------------------------------------------*
+*  Change History :                                                          *
+*  <Date>     | <Version> | <Author>       | <Description>                   *
+*----------------------------------------------------------------------------*
+*  2021/07/31 | 0.0.1     | Kangkang Jiang | First version                   *
+*----------------------------------------------------------------------------*
+*                                                                            *
+*****************************************************************************/
+
 // #define TEST
 
 #ifndef SRC_ALGORITHM_H
@@ -25,74 +62,78 @@ using namespace Spectra;
 
 bool quick_sort_pair_max(std::pair<int, double> x, std::pair<int, double> y);
 
-//  T1 for y, XTy, XTone
-//  T2 for beta
-//  T3 for coef0
-//  T4 for X
-//  <Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> for Univariate Dense
-//  <Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double> > for Univariate Sparse
-//  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> for Multivariable Dense
-//  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double> > for Multivariable Sparse
+/**
+ * @brief Variable select based on splicing algorithm.
+ * T1 for y, XTy, XTone
+ * T2 for beta
+ * T3 for coef0
+ * T4 for X
+ * <Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> for Univariate Dense
+ * <Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double> > for Univariate Sparse
+ * <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> for Multivariable Dense
+ * <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double> > for Multivariable Sparse
+ */
+
 template <class T1, class T2, class T3, class T4>
 class Algorithm
 {
 public:
-  int l;
-  int model_fit_max;
-  int model_type;
-  int algorithm_type;
+  int l;              /* the final itertation time when the splicing algorithm converge. */
+  int model_fit_max;  /* Maximum number of iterations taken for the primary model fitting. */
+  int model_type;     /* primary model type. */
+  int algorithm_type; /* algorithm type. */
 
-  int group_df = 0;
-  int sparsity_level = 0;
-  double lambda_level = 0;
-  Eigen::VectorXi train_mask;
-  int max_iter;
-  int exchange_num;
-  bool warm_start;
-  T2 beta;
-  Eigen::VectorXd bd;
-  T3 coef0;
-  double train_loss = 0.;
-  T2 beta_init;
-  T3 coef0_init;
-  Eigen::VectorXi A_init;
-  Eigen::VectorXi I_init;
-  Eigen::VectorXd bd_init;
+  int group_df = 0;        /* freedom */
+  int sparsity_level = 0;  /* Number of non-zero coefficients. */
+  double lambda_level = 0; /* l2 normalization coefficients. */
+  // Eigen::VectorXi train_mask;
+  int max_iter;            /* Maximum number of iterations taken for the splicing algorithm to converge.  */
+  int exchange_num;        /* Max exchange variable num. */
+  bool warm_start;         /* When tuning the optimal parameter combination, whether to use the last solution as a warm start to accelerate the iterative convergence of the splicing algorithm.*/
+  T2 beta;                 /* coefficients. */
+  Eigen::VectorXd bd;      /* */
+  T3 coef0;                /* intercept. */
+  double train_loss = 0.;  /* train loss. */
+  T2 beta_init;            /* initialization coefficients. */
+  T3 coef0_init;           /* initialization intercept. */
+  Eigen::VectorXi A_init;  /* initialization active set. */
+  Eigen::VectorXi I_init;  /* initialization inactive set. */
+  Eigen::VectorXd bd_init; /* initialization bd vector. */
 
-  Eigen::VectorXi A_out;
-  Eigen::VectorXi I_out;
+  Eigen::VectorXi A_out; /* final active set. */
+  Eigen::VectorXi I_out; /* final active set. */
 
-  Eigen::Matrix<Eigen::MatrixXd, -1, -1> PhiG;
-  Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhiG;
-  Eigen::Matrix<T4, -1, -1> group_XTX;
-  bool lambda_change;
+  Eigen::Matrix<Eigen::MatrixXd, -1, -1> PhiG;    /* PhiG for linear model. */
+  Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhiG; /* invPhiG for linear model. */
+  Eigen::Matrix<T4, -1, -1> group_XTX;            /* XTX. */
+  bool lambda_change;                             /* lambda_change or not. */
 
-  Eigen::VectorXi always_select;
-  double tau;
-  int primary_model_fit_max_iter;
-  double primary_model_fit_epsilon;
-  bool approximate_Newton;
+  Eigen::VectorXi always_select;    /* always select variable. */
+  double tau;                       /* algorithm stop threshold */
+  int primary_model_fit_max_iter;   /* The maximal number of iteration for primaty model fit*/
+  double primary_model_fit_epsilon; /* The epsilon (threshold) of iteration for primaty model fit*/
+  bool approximate_Newton;          /* use approximate Newton method or not. */
 
-  T2 beta_warmstart;
-  T3 coef0_warmstart;
+  T2 beta_warmstart;  /*warmstart beta.*/
+  T3 coef0_warmstart; /*warmstart intercept.*/
 
   Eigen::VectorXi status;
 
-  Eigen::MatrixXd cox_hessian;
-  Eigen::VectorXd cox_g;
+  Eigen::MatrixXd cox_hessian; /* hessian matrix for cox model. */
+  Eigen::VectorXd cox_g;       /* score function for cox model. */
 
-  bool covariance_update;
-  Eigen::MatrixXd covariance;
-  Eigen::VectorXi covariance_update_flag;
-  T1 XTy;
-  T1 XTone;
+  bool covariance_update;                 /* use covairance update mathod or not. */
+  Eigen::MatrixXd covariance;             /* covairance matrix. */
+  Eigen::VectorXi covariance_update_flag; /* each variable have updated in covairance matirx. */
+  T1 XTy;                                 /*X.transpose() * y */
+  T1 XTone;                               /* X.transpose() * Eigen::MatrixXd::one() */
 
   Eigen::VectorXi U1;
 
-  double effective_number;
+  double effective_number; /* effective number of parameter. */
 
-  int splicing_type;
-  Eigen::MatrixXd Sigma;
+  int splicing_type;     /* exchange number update mathod. */
+  Eigen::MatrixXd Sigma; /* covariance matrix for pca. */
 
   Algorithm() = default;
 
@@ -176,7 +217,7 @@ public:
   {
     // std::cout << "fit" << endl;
     int T0 = this->sparsity_level;
-    this->status = status;
+    // this->status = status;
     this->cox_g = Eigen::VectorXd::Zero(0);
 
     this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;

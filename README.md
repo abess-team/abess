@@ -1,4 +1,4 @@
-abess: R & Python Softwares for Best-Subset Selection in Polynomial Time <img src='https://github.com/abess-team/abess/blob/master/R-package/pkgdown/favicon/apple-touch-icon-120x120.png' align="right" height="120" /></a>
+abess: R & Python Software for Best-Subset Selection in Polynomial Time <img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/pkgdown/favicon/icon.png' align="right" height="120" /></a>
 ---
 
 [![Github action](https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg)](https://github.com/abess-team/abess/actions)
@@ -11,7 +11,7 @@ abess: R & Python Softwares for Best-Subset Selection in Polynomial Time <img sr
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76)](https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abess-team/abess&amp;utm_campaign=Badge_Grade)
 <!-- [![Build Status](https://travis-ci.com/abess-team/abess.svg?branch=master)](https://travis-ci.com/abess-team/abess) -->
 
-**abess** (Adaptive BEst Subset Selection) aims to find a small subset of predictors such
+**abess** (Adaptive Best Subset Selection) aims to find a small subset of predictors such
 that the resulting linear model is expected to have the most desirable
 prediction accuracy. This project implements a polynomial algorithm proposed to solve these problems. It supports:
 
@@ -26,7 +26,7 @@ prediction accuracy. This project implements a polynomial algorithm proposed to 
 
 
 ## Installation
-The abess softwares both Python and R's interfaces. 
+The abess software both Python and R's interfaces. 
 
 ### Python package
 Install the stable version of Python-package from [Pypi](https://pypi.org/project/abess/) with:
@@ -63,13 +63,13 @@ evaluated on an Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz and under R version 3.
 For poisson regression, our abess package continues to exhibit the dominance of over prediction performance and variable selection. 
 Notably, as a package aiming at best subset selection, abess shows a competitive short run time, never been eclipsed by comparison with glmnet and ncvreg which are famous for high efficiency. -->
 
-Results are presented in the following picture. As a package solving best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
+Results are presented in the following picture. As a package solving the best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
 
 
 <center> Figure 1. Runing Time for different packages </center>
 
-![avatar](R-package/vignettes/readmeTiming.png)
-
+<!--![avatar](R-package/vignettes/readmeTiming.png)-->
+<img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/vignettes/readmeTiming.png'/></a>
 <!-- <center> Table 1. Results of Linear Rgression </center>
 
 |           |              | Coef Err       | RPE              | TPR          | FPR          | MCC          |
