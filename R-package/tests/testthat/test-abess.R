@@ -163,6 +163,30 @@ test_that("Covariance update works", {
   # expect_true(all.equal(abess_fit1, abess_fit2))
 })
 
+test_that("OPENMP works", {
+  skip_on_os("mac")
+  n <- 1000
+  p <- 500
+  support_size <- 3
+  
+  dataset <- generate.data(n, p, support_size, seed = 1)
+  t1 <- system.time(abess_fit1 <- abess(dataset[["x"]],
+                                        dataset[["y"]],
+                                        tune.type = "cv", 
+                                        num.threads = 1
+  ))
+  t2 <- system.time(abess_fit2 <- abess(dataset[["x"]],
+                                        dataset[["y"]],
+                                        tune.type = "cv", 
+                                        num.threads = 5
+  ))
+  
+  expect_lt(t2[3], t1[3])
+  abess_fit1[["call"]] <- NULL
+  abess_fit2[["call"]] <- NULL
+  expect_true(all.equal(abess_fit1, abess_fit2))
+})
+
 test_that("abess (gaussian) works", {
   n <- 300
   p <- 300
