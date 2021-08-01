@@ -1,4 +1,4 @@
-abess: R & Python Software for Best-Subset Selection in Polynomial Time <img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/pkgdown/favicon/apple-touch-icon-180x180.png' align="right" height="120" /></a>
+abess: R & Python Software for Best-Subset Selection in Polynomial Time <img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/pkgdown/favicon/icon.png' align="right" height="120" /></a>
 ---
 
 [![Github action](https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg)](https://github.com/abess-team/abess/actions)
@@ -68,8 +68,8 @@ Results are presented in the following picture. As a package solving the best su
 
 <center> Figure 1. Runing Time for different packages </center>
 
-![avatar](R-package/vignettes/readmeTiming.png)
-
+<!--![avatar](R-package/vignettes/readmeTiming.png)-->
+<img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/vignettes/readmeTiming.png'/></a>
 <!-- <center> Table 1. Results of Linear Rgression </center>
 
 |           |              | Coef Err       | RPE              | TPR          | FPR          | MCC          |

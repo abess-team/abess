@@ -1,4 +1,4 @@
-# abess: An R package for Best-Subset Selection in Polynomial Time <img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/pkgdown/favicon/apple-touch-icon-180x180.png' align="right" height="120" /></a>
+# abess: An R package for Best-Subset Selection in Polynomial Time <img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/pkgdown/favicon/icon.png' align="right" height="120" /></a>
 
 <!-- badges: start -->
 [![Github action](https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg)](https://github.com/abess-team/abess/actions)
@@ -51,7 +51,8 @@ $ Rscript R-package/example/timing.R
 
 Results are presented in the following picture. As a package solving the best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
 
-![avatar](../docs/perform/readmeTiming.png)
+<!--![avatar](R-package/vignettes/readmeTiming.png)-->
+<img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/vignettes/readmeTiming.png'/></a>
 
 ## Citation
 If you use **abess** package or reference our examples in a presentation or publication, we would appreciate citations of our package.
