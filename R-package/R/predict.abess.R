@@ -8,24 +8,23 @@
 #' \code{"binomial"}, fitted mean for \code{"poisson"} and the fitted relative-risk for
 #' \code{"cox"}; for \code{"gaussian"}, \code{type = "response"} is equivalent to \code{type = "link"}
 #' @param ... Additional arguments affecting the predictions produced.
-#' 
+#'
 #' @return The object returned depends on the types of family.
-#' 
+#'
 #' @inherit abess.default seealso
-#' 
+#'
 #' @export
 #'
-predict.abess <- function(object, newx, 
-                          type = c("link", "response"), 
-                          support.size = NULL, 
-                          ...)
-{
+predict.abess <- function(object, newx,
+                          type = c("link", "response"),
+                          support.size = NULL,
+                          ...) {
   if (missing(newx)) {
     stop("You need to supply a value for newx")
   }
   newx <- as.matrix(newx)
   multi_y <- object[["family"]] %in% MULTIVARIATE_RESPONSE
-  
+
   if (!is.null(colnames(newx))) {
     if (multi_y) {
       vn <- rownames(object[["beta"]][[1]])
@@ -38,37 +37,41 @@ predict.abess <- function(object, newx,
     newx <- newx[, vn]
   }
   type <- match.arg(type)
-  
+
   if (is.null(support.size)) {
     supp_size_index <- which.min(object[["tune.value"]])
   } else {
     supp_size_index <- match_support_size(object, support.size)
   }
-  
+
   if (multi_y) {
     y <- list()
     i <- 1
     for (index in supp_size_index) {
       y_tmp <- newx %*% object[["beta"]][[index]]
-      y[[i]] <- sweep(as.matrix(y_tmp), 2, FUN = "+", 
-                      STATS = object[["intercept"]][[index]])
+      y[[i]] <- sweep(as.matrix(y_tmp), 2,
+        FUN = "+",
+        STATS = object[["intercept"]][[index]]
+      )
       i <- i + 1
     }
     names(y) <- support.size
   } else {
     y <- newx %*% object[["beta"]][, supp_size_index, drop = FALSE]
-    y <- sweep(as.matrix(y), 2, FUN = "+", 
-               STATS = object[["intercept"]][supp_size_index])
+    y <- sweep(as.matrix(y), 2,
+      FUN = "+",
+      STATS = object[["intercept"]][supp_size_index]
+    )
   }
-  
+
   if (object[["family"]] %in% c("gaussian", "mgaussian")) {
   } else if (object[["family"]] == "binomial") {
-    if (type  == "link") {
+    if (type == "link") {
     } else if (type == "response") {
       bi <- stats::binomial()
       y <- bi[["linkinv"]](y)
     } else if (type == "class") {
-      
+
     }
   } else if (object[["family"]] == "poisson") {
     if (type == "link") {
@@ -91,6 +94,6 @@ predict.abess <- function(object, newx,
       }
     }
   }
-  
+
   y
 }

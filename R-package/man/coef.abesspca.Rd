@@ -9,16 +9,16 @@
 \arguments{
 \item{object}{An "\code{abesspca}" project.}
 
-\item{support.size}{An integer vector specifies 
-the coefficient fitted at given \code{support.size}. 
-If \code{support.size = NULL}, then all coefficients would be returned. 
-Default: \code{support.size = NULL}. 
+\item{support.size}{An integer vector specifies
+the coefficient fitted at given \code{support.size}.
+If \code{support.size = NULL}, then all coefficients would be returned.
+Default: \code{support.size = NULL}.
 This parameter is omitted if {sparse.type = "kpc"}.}
 
-\item{kpc}{An integer vector specifies 
-the coefficient fitted at given principal component. 
-If \code{kpc = NULL}, then all coefficients would be returned. 
-Default: \code{kpc = NULL}. 
+\item{kpc}{An integer vector specifies
+the coefficient fitted at given principal component.
+If \code{kpc = NULL}, then all coefficients would be returned.
+Default: \code{kpc = NULL}.
 This parameter is omitted if {sparse.type = "fpc"}.}
 
 \item{sparse}{A logical value, specifying whether the coefficients should be
@@ -27,8 +27,8 @@ presented as sparse matrix or not. Default: \code{sparse = TRUE}.}
 \item{...}{Other arguments.}
 }
 \value{
-A matrix with \code{length(support.size)} columns. 
-Each column corresponds to a sparse loading for the first principal component, 
+A matrix with \code{length(support.size)} columns.
+Each column corresponds to a sparse loading for the first principal component,
 where the number of non-zeros entries depends on the \code{support.size}.
 }
 \description{
@@ -36,6 +36,6 @@ This function provides estimated
 coefficients from a fitted "\code{abesspca}" object.
 }
 \seealso{
-\code{\link{print.abesspca}}, 
+\code{\link{print.abesspca}},
 \code{\link{coef.abesspca}},
 }

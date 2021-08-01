@@ -33,21 +33,21 @@ model. Can be omitted if \code{beta} is supplied.}
 predictors. Default is \code{0}.}
 
 \item{family}{The distribution of the simulated response. \code{"gaussian"} for
-univariate quantitative response, \code{"binomial"} for binary classification response,  
-\code{"poisson"} for counting response, \code{"cox"} for left-censored response, 
-\code{"mgaussian"} for multivariate quantitative response, 
+univariate quantitative response, \code{"binomial"} for binary classification response,
+\code{"poisson"} for counting response, \code{"cox"} for left-censored response,
+\code{"mgaussian"} for multivariate quantitative response,
 \code{"mgaussian"} for multi-classification response.}
 
-\item{beta}{The coefficient values in the underlying regression model. 
+\item{beta}{The coefficient values in the underlying regression model.
 If it is supplied, \code{support.size} would be omitted.}
 
-\item{cortype}{The correlation structure. 
-\code{cortype = 1} denotes the independence structure, 
+\item{cortype}{The correlation structure.
+\code{cortype = 1} denotes the independence structure,
 where the covariance matrix has \eqn{(i,j)} entry equals \eqn{I(i \neq j)}.
 \code{cortype = 2} denotes the exponential structure,
 where the covariance matrix has \eqn{(i,j)} entry equals \eqn{rho^{|i-j|}}.
-code{cortype = 3} denotes the constant structure, 
-where the non-diagnoal entries of covariance 
+code{cortype = 3} denotes the constant structure,
+where the non-diagnoal entries of covariance
 matrix are \eqn{rho} and diagonal entries are 1.}
 
 \item{snr}{A numerical value controlling the signal-to-noise ratio (SNR). The SNR is defined as
@@ -59,14 +59,14 @@ Note that this arguments's effect is overridden if \code{sigma} is supplied with
 
 \item{sigma}{The variance of the gaussian noise. Default \code{sigma = NULL} implies it is determined by \code{snr}.}
 
-\item{weibull.shape}{The shape parameter of the Weibull distribution. 
-It works only when \code{family = "cox"}. 
+\item{weibull.shape}{The shape parameter of the Weibull distribution.
+It works only when \code{family = "cox"}.
 Default: \code{weibull.shape = 1}.}
 
-\item{uniform.max}{A parameter controlling censored rate. 
-A large value implies a small censored rate; 
-otherwise, a large censored rate. 
-It works only when \code{family = "cox"}. 
+\item{uniform.max}{A parameter controlling censored rate.
+A large value implies a small censored rate;
+otherwise, a large censored rate.
+It works only when \code{family = "cox"}.
 Default is \code{uniform.max = 1}.}
 
 \item{y.dim}{Response's Dimension. It works only when \code{family = "mgaussian"}. Default: \code{y.dim = 3}.}
@@ -77,52 +77,52 @@ Default is \code{uniform.max = 1}.}
 }
 \value{
 A \code{list} object comprising:
-\item{x}{Design matrix of predictors.} 
+\item{x}{Design matrix of predictors.}
 \item{y}{Response variable.}
 \item{beta}{The coefficients used in the underlying regression model.}
 }
 \description{
-Generate simulated data under the 
+Generate simulated data under the
 generalized linear model and Cox proportional hazard model.
 }
 \details{
-For \code{family = "gaussian"}, the data model is 
+For \code{family = "gaussian"}, the data model is
 \deqn{Y = X \beta + \epsilon.}
-The underlying regression coefficient \eqn{\beta} has 
+The underlying regression coefficient \eqn{\beta} has
 uniform distribution [m, 100m] and \eqn{m=5 \sqrt{2log(p)/n}.}
 
 For \code{family= "binomial"}, the data model is \deqn{Prob(Y = 1) = \exp(X
 \beta + \epsilon)/(1 + \exp(X \beta + \epsilon)).}
-The underlying regression coefficient \eqn{\beta} has 
+The underlying regression coefficient \eqn{\beta} has
 uniform distribution [2m, 10m] and \eqn{m = 5 \sqrt{2log(p)/n}.}
 
-For \code{family = "poisson"}, the data is modeled to have 
-an exponential distribution: 
+For \code{family = "poisson"}, the data is modeled to have
+an exponential distribution:
 \deqn{Y = Exp(\exp(X \beta + \epsilon)).}
-The underlying regression coefficient \eqn{\beta} has 
+The underlying regression coefficient \eqn{\beta} has
 uniform distribution [2m, 10m] and \eqn{m = \sqrt{2log(p)/n}/3.}
 
 For \code{family = "cox"}, the model for failure time \eqn{T} is
 \deqn{T = (-\log(U / \exp(X \beta)))^{1/weibull.shape},}
 where \eqn{U} is a uniform random variable with range [0, 1].
-The centering time \eqn{C} is generated from 
+The centering time \eqn{C} is generated from
 uniform distribution \eqn{[0, uniform.max]},
-then we define the censor status as 
+then we define the censor status as
 \eqn{\delta = I(T \le C)} and observed time as \eqn{R = \min\{T, C\}}.
-The underlying regression coefficient \eqn{\beta} has 
-uniform distribution [2m, 10m], 
+The underlying regression coefficient \eqn{\beta} has
+uniform distribution [2m, 10m],
 where \eqn{m = 5 \sqrt{2log(p)/n}}.
 
-For \code{family = "mgaussian"}, the data model is 
+For \code{family = "mgaussian"}, the data model is
 \deqn{Y = X \beta + E.}
 The non-zero values of regression matrix \eqn{\beta} are sampled from
-uniform distribution [m, 100m] and \eqn{m=5 \sqrt{2log(p)/n}.} 
+uniform distribution [m, 100m] and \eqn{m=5 \sqrt{2log(p)/n}.}
 
 For \code{family= "multinomial"}, the data model is \deqn{Prob(Y = 1) = \exp(X \beta + E)/(1 + \exp(X \beta + E)).}
-The non-zero values of regression coefficient \eqn{\beta} has 
+The non-zero values of regression coefficient \eqn{\beta} has
 uniform distribution [2m, 10m] and \eqn{m = 5 \sqrt{2log(p)/n}.}
 
-In the above models, \eqn{\epsilon \sim N(0, \sigma^2 )} and \eqn{E \sim MVN(0, \sigma^2 \times I_{q \times q})}, 
+In the above models, \eqn{\epsilon \sim N(0, \sigma^2 )} and \eqn{E \sim MVN(0, \sigma^2 \times I_{q \times q})},
 where \eqn{\sigma^2} is determined by the \code{snr} and q is \code{y.dim}.
 }
 \examples{
@@ -133,7 +133,6 @@ p <- 20
 support.size <- 5
 dataset <- generate.data(n, p, support.size)
 str(dataset)
-
 }
 \author{
 Jin Zhu

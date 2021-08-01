@@ -9,9 +9,9 @@
 \arguments{
 \item{object}{An "\code{abess}" project.}
 
-\item{support.size}{An integer vector specifies 
-the coefficient fitted at given \code{support.size}. 
-If \code{support.size = NULL}, then all coefficients would be returned. 
+\item{support.size}{An integer vector specifies
+the coefficient fitted at given \code{support.size}.
+If \code{support.size = NULL}, then all coefficients would be returned.
 Default: \code{support.size = NULL}.}
 
 \item{sparse}{A logical value, specifying whether the coefficients should be
@@ -20,8 +20,8 @@ presented as sparse matrix or not. Default: \code{sparse = TRUE}.}
 \item{...}{Other arguments.}
 }
 \value{
-A coefficient matrix when fitting an univariate model including gaussian, binomial, poisson, and cox; 
-otherwise, a list containing coefficient matrices. 
+A coefficient matrix when fitting an univariate model including gaussian, binomial, poisson, and cox;
+otherwise, a list containing coefficient matrices.
 For a coefficient matrix, each row is a variable, and each column is a support size.
 }
 \description{
@@ -29,9 +29,9 @@ This function provides estimated
 coefficients from a fitted "\code{abess}" object.
 }
 \seealso{
-\code{\link{print.abess}}, 
-\code{\link{predict.abess}}, 
-\code{\link{coef.abess}}, 
+\code{\link{print.abess}},
+\code{\link{predict.abess}},
+\code{\link{coef.abess}},
 \code{\link{extract.abess}},
 \code{\link{plot.abess}},
 \code{\link{deviance.abess}}.

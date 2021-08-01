@@ -1,51 +1,52 @@
 #' @title Creat plot from a fitted "\code{abess}" object
-#' 
-#' @description Produces a coefficient/deviance/tuning-value plot 
+#'
+#' @description Produces a coefficient/deviance/tuning-value plot
 #' for a fitted "abess" object.
 #'
 #' @inheritParams print.abess
-#' @param type The type of terms to be plot in the y-axis. 
-#' One of the following: \code{"coef"} (i.e., coefficients), 
-#' \code{"l2norm"} (i.e., L2-norm of coefficients), 
-#' \code{"dev"} (i.e., deviance), 
-#' and \code{"tune"} (i.e., tuning value). 
+#' @param type The type of terms to be plot in the y-axis.
+#' One of the following: \code{"coef"} (i.e., coefficients),
+#' \code{"l2norm"} (i.e., L2-norm of coefficients),
+#' \code{"dev"} (i.e., deviance),
+#' and \code{"tune"} (i.e., tuning value).
 #' Default is \code{"coef"}.
-#' @param label A logical value. 
-#' If \code{label = TRUE} (the default), 
-#' label the curves with variable sequence numbers. 
+#' @param label A logical value.
+#' If \code{label = TRUE} (the default),
+#' label the curves with variable sequence numbers.
 #' @param ... Other graphical parameters to plot
-#' 
+#'
 #' @return No return value, called for side effects.
 #'
-#' @note 
-#' If \code{family = "mgaussian"} or \code{family = "multinomial"}, 
-#' a coefficient plot is produced for 
+#' @note
+#' If \code{family = "mgaussian"} or \code{family = "multinomial"},
+#' a coefficient plot is produced for
 #' each dimension of multivariate response.
-#' 
+#'
 #' @inherit abess.default seealso
-#' 
+#'
 #' @method plot abess
-#' 
+#'
 #' @export
-#' 
-#' @examples 
+#'
+#' @examples
 #' dataset <- generate.data(100, 20, 3)
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]])
 #' plot(abess_fit)
 #' plot(abess_fit, type = "l2norm")
 #' plot(abess_fit, type = "dev")
 #' plot(abess_fit, type = "tune")
-plot.abess <- function (x, 
-                        type = c("coef", "l2norm", 
-                                 "dev", "dev.ratio", "tune"), 
-                        label = FALSE, 
-                        ...)
-{
+plot.abess <- function(x,
+                       type = c(
+                         "coef", "l2norm",
+                         "dev", "dev.ratio", "tune"
+                       ),
+                       label = FALSE,
+                       ...) {
   user_default_par <- graphics::par(no.readonly = TRUE)
   on.exit(graphics::par(user_default_par))
-  
+
   stopifnot(is.logical(label))
-  
+
   type <- match.arg(type)
   if (type == "tune") {
     y_value <- x[["tune.value"]]
@@ -66,61 +67,68 @@ plot.abess <- function (x,
     }
   }
   df_list <- x[["support.size"]]
-  
+
   default_mar <- c(5, 4, 3, 2) + 0.1
-  
+
   if (type %in% c("dev", "tune")) {
-    plot_loss(y_value, df_list, 
-              mar = default_mar, 
-              ic.type = ifelse(type == "dev", "dev", 
-                               x[["tune.type"]]))
+    plot_loss(y_value, df_list,
+      mar = default_mar,
+      ic.type = ifelse(type == "dev", "dev",
+        x[["tune.type"]]
+      )
+    )
   }
   if (type %in% c("coef", "l2norm")) {
-    plot_solution(y_value, df_list, 
-                  mar = default_mar, label)
+    plot_solution(y_value, df_list,
+      mar = default_mar, label
+    )
   }
 }
 
-plot_loss <- function(loss, df, 
-                      mar = c(0, 4, 2, 4), 
+plot_loss <- function(loss, df,
+                      mar = c(0, 4, 2, 4),
                       ic.type) {
-  
-  graphics::plot.new()                            # empty plot
+  graphics::plot.new() # empty plot
   graphics::plot.window(range(df), range(loss), xaxs = "i")
-  oldpar <- graphics::par(mar = mar, lend = "square")          # square line ends
-  graphics::par(new = TRUE)                         # add to the plot
-  graphics::plot(df, loss, type = "o", pch = 16, 
-                 col = "#3182bd", 
-                 ylab = ifelse(ic.type == "cv", 
-                               "cross validation deviance", 
-                               ic.type),
-                 xlim = c(0, max(df)), xlab = "Support size")
+  oldpar <- graphics::par(mar = mar, lend = "square") # square line ends
+  graphics::par(new = TRUE) # add to the plot
+  graphics::plot(df, loss,
+    type = "o", pch = 16,
+    col = "#3182bd",
+    ylab = ifelse(ic.type == "cv",
+      "cross validation deviance",
+      ic.type
+    ),
+    xlim = c(0, max(df)), xlab = "Support size"
+  )
   graphics::grid()
   graphics::axis(2)
-  #axis(4, pos=par("usr")[1], line=0.5)  # this would plot them 'inside'
+  # axis(4, pos=par("usr")[1], line=0.5)  # this would plot them 'inside'
   # box()                                 # outer box
-  
+
   graphics::par(oldpar)
 }
 
 plot_solution_one <- function(beta, df, mar, label) {
   beta <- as.matrix(beta)
   p <- nrow(beta)
-  graphics::plot.new()                            # empty plot
-  graphics::plot.window(range(df), range(beta), xaxs="i")
-  
+  graphics::plot.new() # empty plot
+  graphics::plot.window(range(df), range(beta), xaxs = "i")
+
   oldpar <- graphics::par(mar = mar, lend = "square") # square line ends
-  graphics::par(new = TRUE)                           # add to the plot
-  
-  graphics::plot(df, beta[1, , drop = TRUE], 
-                 type = "l", col = 1, 
-                 xlim = c(0, max(df)), xlab = "Support size",
-                 ylim = range(beta), ylab = "Coefficients")
+  graphics::par(new = TRUE) # add to the plot
+
+  graphics::plot(df, beta[1, , drop = TRUE],
+    type = "l", col = 1,
+    xlim = c(0, max(df)), xlab = "Support size",
+    ylim = range(beta), ylab = "Coefficients"
+  )
   for (i in 2:p) {
-    graphics::lines(df, beta[i, , drop = TRUE], 
-                    col = i, xlim = c(0, p + 1))
+    graphics::lines(df, beta[i, , drop = TRUE],
+      col = i, xlim = c(0, p + 1)
+    )
   }
-  
+
   if (label) {
     nnz <- p
     xpos <- max(df) - 0.8
@@ -129,10 +137,10 @@ plot_solution_one <- function(beta, df, mar, label) {
     ypos <- beta[, ncol(beta)]
     graphics::text(xpos, ypos, 1:p, cex = 0.8, pos = pos)
   }
-  
+
   graphics::grid()
   graphics::axis(2)
-  graphics::box()                             # outer box
+  graphics::box() # outer box
   graphics::par(oldpar)
 }
 

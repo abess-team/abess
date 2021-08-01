@@ -39,25 +39,25 @@
 }
 \arguments{
 \item{x}{Input matrix, of dimension \eqn{n \times p}; each row is an observation
-vector and each column is a predictor/feature/variable. 
+vector and each column is a predictor/feature/variable.
 Can be in sparse matrix format (inherit from class \code{"dgCMatrix"} in package \code{Matrix}).}
 
-\item{y}{The response variable, of \code{n} observations. 
-For \code{family = "binomial"} should have two levels. 
-For \code{family="poisson"}, \code{y} should be a vector with positive integer. 
-For \code{family = "cox"}, \code{y} should be a \code{Surv} object returned 
-by the \code{survival} package (recommended) or 
+\item{y}{The response variable, of \code{n} observations.
+For \code{family = "binomial"} should have two levels.
+For \code{family="poisson"}, \code{y} should be a vector with positive integer.
+For \code{family = "cox"}, \code{y} should be a \code{Surv} object returned
+by the \code{survival} package (recommended) or
 a two-column matrix with columns named \code{"time"} and \code{"status"}.
 For \code{family = "mgaussian"}, \code{y} should be a matrix of quantitative responses.
 For \code{family = "multinomial"}, \code{y} should be a factor of at least three levels.
-Note that, for either \code{"binomial"} or \code{"multinomial"}, 
+Note that, for either \code{"binomial"} or \code{"multinomial"},
 if y is presented as a numerical vector, it will be coerced into a factor.}
 
-\item{family}{One of the following models: 
-\code{"gaussian"} (continuous response), 
-\code{"binomial"} (binary response), 
-\code{"poisson"} (non-negative count), 
-\code{"cox"} (left-censored response), 
+\item{family}{One of the following models:
+\code{"gaussian"} (continuous response),
+\code{"binomial"} (binary response),
+\code{"poisson"} (non-negative count),
+\code{"cox"} (left-censored response),
 \code{"mgaussian"} (multivariate continuous response).
 Depending on the response. Any unambiguous substring can be given.}
 
@@ -66,14 +66,14 @@ Depending on the response. Any unambiguous substring can be given.}
 For \code{tune.path = "gsection"}, we solve the best subset selection problem with support size ranged in \code{gs.range},
 where the specific support size to be considered is determined by golden section.}
 
-\item{tune.type}{The type of criterion for choosing the support size. 
+\item{tune.type}{The type of criterion for choosing the support size.
 Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
 Default is \code{"gic"}.}
 
-\item{weight}{Observation weights. When \code{weight = NULL}, 
+\item{weight}{Observation weights. When \code{weight = NULL},
 we set \code{weight = 1} for each observation as default.}
 
-\item{normalize}{Options for normalization. \code{normalize = 0} for no normalization. 
+\item{normalize}{Options for normalization. \code{normalize = 0} for no normalization.
 \code{normalize = 1} for subtracting the mean of columns of \code{x}.
 \code{normalize = 2} for scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
 \code{normalize = 3} for subtracting the means of the columns of \code{x} and \code{y}, and also
@@ -83,11 +83,11 @@ If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gau
 
 \item{c.max}{an integer splicing size. Default is: \code{c.max = 2}.}
 
-\item{support.size}{An integer vector representing the alternative support sizes. 
+\item{support.size}{An integer vector representing the alternative support sizes.
 Only used for \code{tune.path = "sequence"}. Default is \code{0:min(n, round(n/(log(log(n))log(p))))}.}
 
-\item{gs.range}{A integer vector with two elements. 
-The first element is the minimum model size considered by golden-section, 
+\item{gs.range}{A integer vector with two elements.
+The first element is the minimum model size considered by golden-section,
 the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
 Not available now.}
 
@@ -102,71 +102,71 @@ Denote the first group as \code{1}, the second \code{2}, etc.
 If you do not fit a model with a group structure,
 please set \code{group.index = NULL} (the default).}
 
-\item{splicing.type}{Optional type for splicing. 
-If \code{splicing.type = 1}, the number of variables to be spliced is 
-\code{c.max}, ..., \code{1}; if \code{splicing.type = 2}, 
+\item{splicing.type}{Optional type for splicing.
+If \code{splicing.type = 1}, the number of variables to be spliced is
+\code{c.max}, ..., \code{1}; if \code{splicing.type = 2},
 the number of variables to be spliced is \code{c.max}, \code{c.max/2}, ..., \code{1}.
 (Default: \code{splicing.type = 2}.)}
 
-\item{max.splicing.iter}{The maximum number of performing splicing algorithm. 
-In most of the case, only a few times of splicing iteration can guarantee the convergence. 
+\item{max.splicing.iter}{The maximum number of performing splicing algorithm.
+In most of the case, only a few times of splicing iteration can guarantee the convergence.
 Default is \code{max.splicing.iter = 20}.}
 
-\item{screening.num}{An integer number. Preserve \code{screening.num} number of predictors with the largest 
+\item{screening.num}{An integer number. Preserve \code{screening.num} number of predictors with the largest
 marginal maximum likelihood estimator before running algorithm.}
 
 \item{warm.start}{Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.}
 
 \item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.}
 
-\item{cov.update}{A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE}, 
-use a covariance-based implementation; otherwise, a naive implementation. 
-The naive method is more efficient than covariance-based method only when \eqn{p >> n}. 
+\item{cov.update}{A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE},
+use a covariance-based implementation; otherwise, a naive implementation.
+The naive method is more efficient than covariance-based method only when \eqn{p >> n}.
 Default: \code{cov.update = TRUE}.}
 
-\item{newton}{A character specify the Newton's method for fitting generalized linear models, 
+\item{newton}{A character specify the Newton's method for fitting generalized linear models,
 it should be either \code{newton = "exact"} or \code{newton = "approx"}.
-If \code{newton = "exact"}, then the exact hessian is used, 
-while \code{newton = "approx"} uses diagonal entry of the hessian, 
+If \code{newton = "exact"}, then the exact hessian is used,
+while \code{newton = "approx"} uses diagonal entry of the hessian,
 and can be faster (especially when \code{family = "cox"}).}
 
-\item{newton.thresh}{a numeric value for controlling positive convergence tolerance. 
+\item{newton.thresh}{a numeric value for controlling positive convergence tolerance.
 The Newton's iterations converge when \eqn{|dev - dev_{old}|/(|dev| + 0.1)<} \code{newton.thresh}.}
 
 \item{max.newton.iter}{a integer giving the maximal number of Newton's iteration iterations.
 Default is \code{max.newton.iter = 10} if \code{newton = "exact"}, and \code{max.newton.iter = 60} if \code{newton = "approx"}.}
 
-\item{early.stop}{A boolean value decide whether early stopping. 
-If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one. 
+\item{early.stop}{A boolean value decide whether early stopping.
+If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one.
 Default: \code{early.stop = FALSE}.}
 
-\item{num.threads}{An integer decide the number of threads to be 
-concurrently used for cross-validation (i.e., \code{tune.type = "cv"}). 
-If \code{num.threads = 0}, then all of available cores will be used. 
+\item{num.threads}{An integer decide the number of threads to be
+concurrently used for cross-validation (i.e., \code{tune.type = "cv"}).
+If \code{num.threads = 0}, then all of available cores will be used.
 Default: \code{num.threads = 0}.}
 
-\item{seed}{Seed to be used to divide the sample into cross-validation folds. 
+\item{seed}{Seed to be used to divide the sample into cross-validation folds.
 Default is \code{seed = 1}.}
 
 \item{...}{further arguments to be passed to or from methods.}
 
-\item{formula}{an object of class "\code{formula}": 
-a symbolic description of the model to be fitted. 
+\item{formula}{an object of class "\code{formula}":
+a symbolic description of the model to be fitted.
 The details of model specification are given in the "Details" section of "\code{\link{formula}}".}
 
 \item{data}{a data frame containing the variables in the \code{formula}.}
 
 \item{subset}{an optional vector specifying a subset of observations to be used.}
 
-\item{na.action}{a function which indicates 
-what should happen when the data contain \code{NA}s. 
+\item{na.action}{a function which indicates
+what should happen when the data contain \code{NA}s.
 Defaults to \code{getOption("na.action")}.}
 }
 \value{
 A S3 \code{abess} class object, which is a \code{list} with the following components:
 \item{beta}{A \eqn{p}-by-\code{length(support.size)} matrix of coefficients for univariate family, stored in column format;
 while a list of \code{length(support.size)} coefficients matrix (with size \eqn{p}-by-\code{ncol(y)}) for multivariate family.}
-\item{intercept}{An intercept vector of length \code{length(support.size)} for univariate family; 
+\item{intercept}{An intercept vector of length \code{length(support.size)} for univariate family;
 while a list of \code{length(support.size)} intercept vector (with size \code{ncol(y)}) for multivariate family.}
 \item{dev}{the deviance of length \code{length(support.size)}.}
 \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
@@ -174,38 +174,38 @@ while a list of \code{length(support.size)} intercept vector (with size \code{nc
 \item{nvars}{The number of variables used for training.}
 \item{family}{Type of the model.}
 \item{tune.path}{The path type for tuning parameters.}
-\item{support.size}{The actual \code{support.size} values used. 
-Note that it is not necessary the same as the input  
+\item{support.size}{The actual \code{support.size} values used.
+Note that it is not necessary the same as the input
 if the later have non-integer values or duplicated values.}
-\item{edf}{The effective degree of freedom. 
+\item{edf}{The effective degree of freedom.
 It is the same as \code{support.size} when \code{lambda = 0}.}
-\item{best.size}{The best support size selected by the tuning value.} 
+\item{best.size}{The best support size selected by the tuning value.}
 \item{tune.type}{The criterion type for tuning parameters.}
 \item{tune.path}{The strategy for tuning parameters.}
-\item{screening.vars}{The character vector specify the feature 
-selected by feature screening. 
+\item{screening.vars}{The character vector specify the feature
+selected by feature screening.
 It would be an empty character vector if \code{screening.num = 0}.}
 \item{call}{The original call to \code{abess}.}
 }
 \description{
-Adaptive best-subset selection for regression, 
-(multi-class) classification, counting-response, censored-response, 
+Adaptive best-subset selection for regression,
+(multi-class) classification, counting-response, censored-response,
 multi-response modeling in polynomial times.
 }
 \details{
-Best-subset selection aims to find a small subset of predictors, 
-so that the resulting model is expected to have the most desirable prediction accuracy. 
+Best-subset selection aims to find a small subset of predictors,
+so that the resulting model is expected to have the most desirable prediction accuracy.
 Best-subset selection problem under the support size \eqn{s} is
 \deqn{\min_\beta -2 \log L(\beta) \;\;{\rm s.t.}\;\; \|\beta\|_0 \leq s,}
 where \eqn{L(\beta)} is arbitrary convex functions. In
 the GLM case, \eqn{\log L(\beta)} is the log-likelihood function; in the Cox
-model, \eqn{\log L(\beta)} is the log partial-likelihood function. 
+model, \eqn{\log L(\beta)} is the log partial-likelihood function.
 
-The best subset selection problem is solved by the "abess" algorithm in this package, see Zhu (2020) for details. 
-Under mild conditions, the algorithm exactly solve this problem in polynomial time. 
+The best subset selection problem is solved by the "abess" algorithm in this package, see Zhu (2020) for details.
+Under mild conditions, the algorithm exactly solve this problem in polynomial time.
 This algorithm exploits the idea of sequencing and splicing to reach a stable solution in finite steps
-when \eqn{s} is fixed. 
-To find the optimal support size \eqn{s}, 
+when \eqn{s} is fixed.
+To find the optimal support size \eqn{s},
 we provide various criterion like GIC, AIC, BIC and cross-validation error to determine it.
 }
 \examples{
@@ -221,8 +221,10 @@ abess_fit <- abess(dataset[["x"]], dataset[["y"]])
 ## helpful generic functions:
 print(abess_fit)
 coef(abess_fit, support.size = 3)
-predict(abess_fit, newx = dataset[["x"]][1:10, ], 
-        support.size = c(3, 4))
+predict(abess_fit,
+  newx = dataset[["x"]][1:10, ],
+  support.size = c(3, 4)
+)
 str(extract(abess_fit, 3))
 deviance(abess_fit)
 plot(abess_fit)
@@ -230,33 +232,40 @@ plot(abess_fit)
 ################ logistic model ################
 dataset <- generate.data(n, p, support.size, family = "binomial")
 ## allow cross-validation to tuning
-abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                   family = "binomial", tune.type = "cv")
+abess_fit <- abess(dataset[["x"]], dataset[["y"]],
+  family = "binomial", tune.type = "cv"
+)
 abess_fit
 
 ################ poisson model ################
 dataset <- generate.data(n, p, support.size, family = "poisson")
-abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                   family = "poisson", tune.type = "cv")
+abess_fit <- abess(dataset[["x"]], dataset[["y"]],
+  family = "poisson", tune.type = "cv"
+)
 abess_fit
 
 ################ Cox model ################
 dataset <- generate.data(n, p, support.size, family = "cox")
-abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                   family = "cox", tune.type = "cv")
+abess_fit <- abess(dataset[["x"]], dataset[["y"]],
+  family = "cox", tune.type = "cv"
+)
 
 ################ Multivariate gaussian model ################
 dataset <- generate.data(n, p, support.size, family = "mgaussian")
-abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                   family = "mgaussian", tune.type = "cv")
+abess_fit <- abess(dataset[["x"]], dataset[["y"]],
+  family = "mgaussian", tune.type = "cv"
+)
 plot(abess_fit, type = "l2norm")
 
 ################ Multinomial model (multi-classification) ################
 dataset <- generate.data(n, p, support.size, family = "multinomial")
-abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                   family = "multinomial", tune.type = "cv")
-predict(abess_fit, newx = dataset[["x"]][1:10, ], 
-        support.size = c(3, 4), type = "response")
+abess_fit <- abess(dataset[["x"]], dataset[["y"]],
+  family = "multinomial", tune.type = "cv"
+)
+predict(abess_fit,
+  newx = dataset[["x"]][1:10, ],
+  support.size = c(3, 4), type = "response"
+)
 
 ########## Best group subset selection #############
 dataset <- generate.data(n, p, support.size)
@@ -272,8 +281,9 @@ abess_fit
 ################ Feature screening ################
 p <- 1000
 dataset <- generate.data(n, p, support.size)
-abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
-                   screening.num = 100)
+abess_fit <- abess(dataset[["x"]], dataset[["y"]],
+  screening.num = 100
+)
 str(extract(abess_fit))
 
 ################ Sparse predictor ################
@@ -302,9 +312,9 @@ Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regr
 Certifiably Polynomial Algorithm for Best Group Subset Selection. Zhang, Yanhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). arXiv preprint arXiv:2104.12576.
 }
 \seealso{
-\code{\link{print.abess}}, 
-\code{\link{predict.abess}}, 
-\code{\link{coef.abess}}, 
+\code{\link{print.abess}},
+\code{\link{predict.abess}},
+\code{\link{coef.abess}},
 \code{\link{extract.abess}},
 \code{\link{plot.abess}},
 \code{\link{deviance.abess}}.

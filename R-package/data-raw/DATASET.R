@@ -6,7 +6,8 @@ library(SIS)
 trim32 <- readRDS("./data-raw/trim32.rds")
 
 sis_fit <- SIS(as.matrix(trim32[["x"]]), as.vector(trim32[["y"]]),
-               family = "gaussian", iter = FALSE, nsis = 500)
+  family = "gaussian", iter = FALSE, nsis = 500
+)
 
 trim32[["x"]] <- trim32[["x"]]
 trim32_x <- trim32[["x"]][, sis_fit[["sis.ix0"]]]
