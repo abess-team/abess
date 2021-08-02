@@ -178,18 +178,18 @@ coefficients from a fitted "<code>abesspca</code>" object.</p>
     </tr>
     <tr>
       <th>support.size</th>
-      <td><p>An integer vector specifies 
-the coefficient fitted at given <code>support.size</code>. 
-If <code>support.size = NULL</code>, then all coefficients would be returned. 
-Default: <code>support.size = NULL</code>. 
+      <td><p>An integer vector specifies
+the coefficient fitted at given <code>support.size</code>.
+If <code>support.size = NULL</code>, then all coefficients would be returned.
+Default: <code>support.size = NULL</code>.
 This parameter is omitted if sparse.type = "kpc".</p></td>
     </tr>
     <tr>
       <th>kpc</th>
-      <td><p>An integer vector specifies 
-the coefficient fitted at given principal component. 
-If <code>kpc = NULL</code>, then all coefficients would be returned. 
-Default: <code>kpc = NULL</code>. 
+      <td><p>An integer vector specifies
+the coefficient fitted at given principal component.
+If <code>kpc = NULL</code>, then all coefficients would be returned.
+Default: <code>kpc = NULL</code>.
 This parameter is omitted if sparse.type = "fpc".</p></td>
     </tr>
     <tr>
@@ -205,12 +205,12 @@ presented as sparse matrix or not. Default: <code>sparse = TRUE</code>.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A matrix with <code><a href='https://rdrr.io/r/base/length.html'>length(support.size)</a></code> columns. 
-Each column corresponds to a sparse loading for the first principal component, 
+    <p>A matrix with <code><a href='https://rdrr.io/r/base/length.html'>length(support.size)</a></code> columns.
+Each column corresponds to a sparse loading for the first principal component,
 where the number of non-zeros entries depends on the <code>support.size</code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='print.abesspca.html'>print.abesspca</a></code>, 
+    <div class='dont-index'><p><code><a href='print.abesspca.html'>print.abesspca</a></code>,
 <code>coef.abesspca</code>,</p></div>
 
   </div>
