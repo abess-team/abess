@@ -31,8 +31,10 @@ other packages.
 
 
 <center> Figure 1. Performance for different packages </center>
+
 ![avatar]('https://raw.githubusercontent.com/abess-team/abess/master/docs/perform/performance.png')
 
 
 <center> Figure 2. Runing Time for different packages </center>
+
 ![avatar]('https://raw.githubusercontent.com/abess-team/abess/master/docs/perform/time_perform.png')
