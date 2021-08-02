@@ -3,10 +3,9 @@ import sys
 from setuptools import setup, find_packages, Extension
 from os import path
 
-class numpy_get_include(object):
-    def __str__(self):
-        import numpy
-        return numpy.get_include()
+def run(self):
+    __builtins__.__NUMPY_SETUP__ = False
+    import numpy
 
 os_type = 'MS_WIN64'
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -31,7 +30,7 @@ if sys.platform.startswith('win32'):
                               extra_link_args=['-lgomp'],
                               libraries=["vcruntime140"],
                               include_dirs=[
-                                  numpy_get_include(), CURRENT_DIR + '/include'],
+                                  numpy.get_include(), CURRENT_DIR + '/include'],
                               swig_opts=["-c++"]
                               )
 elif sys.platform.startswith('darwin'):
@@ -47,7 +46,7 @@ elif sys.platform.startswith('darwin'):
                               language='c++',
                               extra_compile_args=[
                                   "-DNDEBUG", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native"],
-                              include_dirs=[numpy_get_include(), eigen_path],
+                              include_dirs=[numpy.get_include(), eigen_path],
                               swig_opts=["-c++"]
                               )
 else:
@@ -64,7 +63,7 @@ else:
                               extra_compile_args=[
                                   "-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native"],
                               extra_link_args=['-lgomp'],
-                              include_dirs=[numpy_get_include(), eigen_path],
+                              include_dirs=[numpy.get_include(), eigen_path],
                               swig_opts=["-c++"]
                               )
     pass
