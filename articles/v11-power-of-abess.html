@@ -131,12 +131,24 @@
 <div id="simulation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#simulation" class="anchor"></a>Simulation</h2>
+<div id="settings" class="section level3">
+<h3 class="hasAnchor">
+<a href="#settings" class="anchor"></a>Settings</h3>
 <p>We compare the abess package with popular R libraries: glmnet, ncvreg for linear and logistic regressions; All these packages are compared in three aspects including the prediction performance, the variable selection performance, and the computation efficiency. The prediction performance of the linear model is measured by <span class="math inline">\(\|y - \hat{y}\|_2\)</span> on a test set and for logistic regression this is measured by the area under the ROC Curve. For the variable selection performance, we compute the true positive rate (TPR) and the false positive rate (FPR) of the fitted active set. Timings of the CPU execution are recorded in seconds and all the performances are averaged over 100 replications on a sequence of 100 regularization parameters.</p>
 <p>The designed matrix is formed by i.i.d samples generated from a multivariate normal distribution with mean 0 and covariance matrix <span class="math inline">\(\Sigma = (\sigma_{ij})\)</span>. We consider two settings—low correlation and high correlation of the predictors. For the low correlation scenario, we set <span class="math inline">\(\sigma_{ij} = 0.1^{|i-j|}\)</span> and for the high correlation <span class="math inline">\(\sigma_{ij} = 0.7\)</span>. The number of predictors is 1000. The true coefficient <span class="math inline">\(\beta^*\)</span> is a vector with 10 nonzero entries uniformly distributed in <span class="math inline">\([b,B]\)</span>. We set <span class="math inline">\(b=5\sqrt{2\log(p)/n}\)</span>, <span class="math inline">\(B = 100b\)</span> for linear regression <span class="math inline">\(b = 10\sqrt{2\log(p)/n}\)</span>, <span class="math inline">\(B = 5*b\)</span> for logistic regression and <span class="math inline">\(b = -10 \sqrt{2 \log(p) / n}\)</span>, <span class="math inline">\(B=10 \sqrt{2 \log(p) / n}\)</span> for poisson regression. A random noise generated from a standard Gaussian distribution is added to the linear predictor <span class="math inline">\(x^\prime\beta\)</span> for linear regression. The size of training data for linear regression is 500 and 1000 for logistic regression.</p>
 <p>All experiments are evaluated on an Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz 3.31 GHz and under R version 3.6.1.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="st">"R-package/example/perform.R"</span><span class="op">)</span></code></pre></div>
-<p>The results are presented in the following pictures. First, among all of the methods implemented in different packages, the estimator obtained by the abess package shows the best prediction performance. Second, the estimator obtained by the abess package can reasonably control the false-positive rate at a low level like SCAD and MCP while preventing the poor true signal detection problem as SCAD and MCP in the linear model when the correlation between predictors is high. Furthermore, our abess package is highly efficient compared with other packages. To conduct the same task, the abess package is never eclipsed by the glmnet package which is esteemed as the benchmark of efficiency.</p>
+</div>
+<div id="results" class="section level3">
+<h3 class="hasAnchor">
+<a href="#results" class="anchor"></a>Results</h3>
+<p>The results are presented in the following pictures.</p>
+<ul>
+<li><p>First, among all of the methods implemented in different packages, the estimator obtained by the abess package shows the best prediction performance.</p></li>
+<li><p>Second, the estimator obtained by the abess package can reasonably control the false-positive rate at a low level like SCAD and MCP while preventing the poor true signal detection problem as SCAD and MCP in the linear model when the correlation between predictors is high.</p></li>
+<li><p>Furthermore, our abess package is highly efficient compared with other packages. To conduct the same task, the abess package is never eclipsed by the glmnet package which is esteemed as the benchmark of efficiency.</p></li>
+</ul>
 <center>
 Figure 1. Performance for different packages
 </center>
@@ -145,6 +157,7 @@ Figure 1. Performance for different packages
 Figure 2. Runing Time for different packages
 </center>
 <p><img src="https://raw.githubusercontent.com/abess-team/abess/master/docs/perform/time_perform.png"></p>
+</div>
 </div>
   </div>
 
