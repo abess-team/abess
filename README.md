@@ -43,7 +43,7 @@ install.packages("abess")
 ## Performance
 
 To show the computational efficiency of abess, 
-we compare abess R package with popular R libraries: glmnet, ncvreg, picasso for linear, logistic and poisson regressions; 
+we compare abess R package with popular R libraries: glmnet, ncvreg for linear, logistic and poisson regressions; 
 Timings of the CPU execution are recorded in seconds and averaged over 100 replications on a sequence
 of 100 regularization parameters.
 
