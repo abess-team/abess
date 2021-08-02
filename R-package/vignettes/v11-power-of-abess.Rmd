@@ -12,8 +12,11 @@ knitr::opts_chunk$set(echo = TRUE,warning = F, message = F)
 ## Simulation
 
 To show the computational efficiency of abess, 
-we compare abess R package with popular R libraries: glmnet, ncvreg, picasso for linear, logistic and poisson regressions; 
-Timings of the CPU execution are recorded in seconds and averaged over 100 replications on a sequence
+we compare abess R package with popular R libraries: glmnet, ncvreg for linear, logistic and poisson regressions; 
+All these packages are compared in three aspects including the prediction performance, the variable selection performance and the computation efficiency.
+The perdiction performance of the linear model is measured by $\|y - \hat{y}\|_2$ on a test set and for logistic regression this is measured by the area under the ROC Curve.
+For the variable selection performance, we compute the true positive rate (TPR) and the false positive rate (FPR) of the fitted active set. 
+Timings of the CPU execution are recorded in seconds and all the performance are averaged over 100 replications on a sequence
 of 100 regularization parameters.
 
 
