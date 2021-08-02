@@ -126,7 +126,7 @@ jobs:
       uses: actions/setup-python@master
       with:
         python-version: 3.7
-    - name: Generate coverage report
+    - name: Install abess & dependencies
       run: |
         pip install pytest
         pip install pytest-cov
@@ -138,7 +138,9 @@ jobs:
         export CFLAGS="--coverage"
         python ./python/setup.py install
         ls *
-        pytest ./python --cov=abess --cov-report=xml
+    - name: Generate coverage report
+      run: |
+        pytest ./python/pytest --cov=abess --cov-report=xml
         gcovr ./python/src/ --xml 
         ls *
         codecov -F Python
