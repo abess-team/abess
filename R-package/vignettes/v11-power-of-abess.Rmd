@@ -19,6 +19,7 @@ For the variable selection performance, we compute the true positive rate (TPR) 
 Timings of the CPU execution are recorded in seconds and all the performance are averaged over 100 replications on a sequence
 of 100 regularization parameters.
 
+The designed matrix is formed by i.i.d sample generated from a multivariate normal distribution with mean 0 and covariance matrix $\Sigma = (\sigma_{ij})$. We consider two settings—low correlation and high correlation of the predictors. For the low correlation scenario, we set $\sigma_{ij} = 0.1^{|i-j|}$ and for the high correlation $\sigma_{ij} = 0.7$. The number of predictors is 1000. The true coefficient $\beta^*$ is a vector with 10 nonzero entries uniformly distributed in $[b,B]$. We set $b=5\sqrt{2\log(p)/n}$, $B = 100b$ for linear regression $b = 10\sqrt{2\log(p)/n}$, $B = 5*b$ for logistic regression and $b = -10 \sqrt{2  \log(p) / n}$, $B=10 \sqrt{2 \log(p) / n}$ for poisson regression. A random noise generated from a standard Gaussian distribution is added to the linear predictor $x^\prime\beta$ for linear regression. The size of training data for linear regression is 500 and 1000 for logistic regression.
 
 All experiments are
 evaluated on an  Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz 3.31 GHz and under R version 3.6.1. 
@@ -28,9 +29,11 @@ source("R-package/example/perform.R")
 ```
 
 The results are presented in the following pictures. First, among all of the methods implemented in different packages,
-the estimator obtained by abess package shows the best prediction performance and can reasonably control the false-positive rate 
-at a low level like SCAD and MCP. Furthermore, our abess package is highly efficient compared with 
-other packages.
+the estimator obtained by abess package shows the best prediction performance. Second, the estimator obtained by abess package 
+can reasonably control the false-positive rate 
+at a low level like SCAD and MCP while prevent the poor true signal detection performance as SCAD and MCP in the linear model when the correlation between predictors is high. 
+Furthermore, our abess package is highly efficient compared with 
+other packages. To conduct the same task, the abess package is never eclipsed by the glmnet pacakge which is esteemed as the benchmark of efficiency.
 
 
 <center> Figure 1. Performance for different packages </center>
