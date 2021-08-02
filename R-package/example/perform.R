@@ -6,12 +6,12 @@ library(mccr)
 library(pROC)
 M <- 100
 p <- 1000
-n <- 500
 rho_list <- c(0.7, 0.1)
 model_list <- c("linear", "logistic")
 for (model in model_list)
 {
   source(paste0(model, "_source.R"))
+  n <- ifelse(model=="logistic", 1000, 500)
   for (rho in rho_list)
   {
     cortype <- ifelse(rho <= 0.5, 2, 3)

@@ -42,16 +42,15 @@ of 100 regularization parameters.
 
 <!-- The designed matrix is formed by i.i.d sample generated from a multivariate normal distribution with mean 0 and covariance matrix $\Sigma = (\sigma_{ij})$. We consider two settings—low correlation and high correlation. For the low correlation scenario, we set $\sigma_{ij} = 0.1^{|i-j|}$ and for the high correlation $\sigma_{ij} = 0.7$. The number of predictors is 1000. The true coefficient $\beta^*$ is a vector with 10 nonzero entries uniformly distributed in $[b,B]$. We set $b=5\sqrt{2\log(p)/n}$, $B = 100b$ for linear regression $b = 10\sqrt{2\log(p)/n}$, $B = 5*b$ for logistic regression and $b = -10 \sqrt{2  \log(p) / n}$, $B=10 \sqrt{2 \log(p) / n}$ for poisson regression. A random noise generated from a standard Gaussian distribution is added to the linear predictor $x^\prime\beta$ for linear regression. The size of training data is 500. -->
 All experiments are
-evaluated on an Intel(R) Xeon(R) CPU E5-2620 v4 @ 2.10GHz and under R version 3.6.1. 
+evaluated on an  Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz 3.31 GHz and under R version 3.6.1. 
 
-```shell
-$ Rscript R-package/example/timing.R
+```r
+source("R-package/example/timing.R")
 ```
 
 Results are presented in the following picture. As a package solving the best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
 
-<!--![avatar](R-package/vignettes/readmeTiming.png)-->
-<img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/vignettes/readmeTiming.png'/></a>
+![avatar](../docs/perform/readmeTiming.png)
 
 ## Citation
 If you use **abess** package or reference our examples in a presentation or publication, we would appreciate citations of our package.
