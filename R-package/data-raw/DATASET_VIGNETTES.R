@@ -1,4 +1,5 @@
-+rm(list = ls()); gc(reset = TRUE)
++rm(list = ls())
+gc(reset = TRUE)
 library(data.table)
 library(fastDummies)
 working_path <- getwd()
@@ -9,10 +10,14 @@ setwd(data_raw_path)
 ####################### Crime Dataset #######################
 #############################################################
 crime <- fread("crime.txt", data.table = FALSE, header = FALSE)
-col_name <- fread("crime_colnames.txt", data.table = FALSE, 
-                  header = FALSE)[, 1]
-y_col_name <- fread("crime_Y_colnames.txt", data.table = FALSE, 
-                    header = FALSE)[, 1]
+col_name <- fread("crime_colnames.txt",
+  data.table = FALSE,
+  header = FALSE
+)[, 1]
+y_col_name <- fread("crime_Y_colnames.txt",
+  data.table = FALSE,
+  header = FALSE
+)[, 1]
 colnames(crime) <- col_name
 crime[crime == "?"] <- NA
 
@@ -60,14 +65,16 @@ crime[["fold"]] <- NULL
 
 # state: US state
 length(unique(crime[["State"]]))
-table(crime[["State"]])  # remove some category
+table(crime[["State"]]) # remove some category
 
 to_remove_state <- names(table(crime[["State"]]))[as.vector(table(crime[["State"]])) < 20]
 crime[["State"]][crime[["State"]] %in% to_remove_state] <- "other"
 table(crime[["State"]])
 state_data <- crime[, "State", drop = FALSE]
-state_data <- dummy_cols(.data = state_data, select_columns = "State", 
-                         remove_first_dummy = TRUE, remove_selected_columns = TRUE)
+state_data <- dummy_cols(
+  .data = state_data, select_columns = "State",
+  remove_first_dummy = TRUE, remove_selected_columns = TRUE
+)
 
 # feature interaction:
 crime[["State"]] <- NULL
@@ -76,7 +83,7 @@ crime <- as.data.frame(crime)
 crime_interaction <- model.matrix(~ .^2, data = crime)
 dim(crime_interaction)
 head(crime_interaction[, 1:6])
-crime_interaction <- crime_interaction[, -1]  # remove intercept term
+crime_interaction <- crime_interaction[, -1] # remove intercept term
 head(crime_interaction[, 1:6])
 
 # X data:
@@ -89,9 +96,10 @@ crime <- cbind.data.frame(y, x)
 # sample:
 set.seed(1)
 part_index <- 1:nrow(x)
-part_index <- sample(part_index, 
-                     size = 500, 
-                     replace = FALSE)
+part_index <- sample(part_index,
+  size = 500,
+  replace = FALSE
+)
 crime <- crime[part_index, ]
 
 save(crime, file = "crime.rda")

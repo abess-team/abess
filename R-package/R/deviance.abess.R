@@ -1,30 +1,29 @@
 #' Extract the deviance from a fitted "\code{abess}" object.
 #'
-#' Similar to other deviance methods, 
+#' Similar to other deviance methods,
 #' which returns deviance from a fitted "\code{abess}" object.
 #'
 #'
 #' @param object A "\code{abess}" object.
-#' @param type The type of deviance. 
-#' One of the following: \code{"standard"}, 
-#' \code{"gic"}, \code{"ebic"}, \code{"bic"} and \code{"aic"}. 
+#' @param type The type of deviance.
+#' One of the following: \code{"standard"},
+#' \code{"gic"}, \code{"ebic"}, \code{"bic"} and \code{"aic"}.
 #' Default is \code{"standard"}.
 #' @param ... additional arguments
-#' 
+#'
 #' @return A numeric vector.
-#' 
+#'
 #' @inherit abess.default seealso
-#' 
+#'
 #' @export
-deviance.abess <- function(object, 
-                           type = c("standard", "gic", "ebic", "bic", "aic"), 
-                           ...)
-{
+deviance.abess <- function(object,
+                           type = c("standard", "gic", "ebic", "bic", "aic"),
+                           ...) {
   num <- object[["nobs"]]
   nvars <- object[["nvars"]]
-  
+
   type <- match.arg(type)
-  
+
   if (type == "standard") {
     dev <- object[["dev"]]
   } else {
@@ -45,6 +44,6 @@ deviance.abess <- function(object,
       dev <- dev + adjust_term * edf
     }
   }
-  
+
   dev
 }

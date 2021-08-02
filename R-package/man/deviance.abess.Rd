@@ -9,9 +9,9 @@
 \arguments{
 \item{object}{A "\code{abess}" object.}
 
-\item{type}{The type of deviance. 
-One of the following: \code{"standard"}, 
-\code{"gic"}, \code{"ebic"}, \code{"bic"} and \code{"aic"}. 
+\item{type}{The type of deviance.
+One of the following: \code{"standard"},
+\code{"gic"}, \code{"ebic"}, \code{"bic"} and \code{"aic"}.
 Default is \code{"standard"}.}
 
 \item{...}{additional arguments}
@@ -20,13 +20,13 @@ Default is \code{"standard"}.}
 A numeric vector.
 }
 \description{
-Similar to other deviance methods, 
+Similar to other deviance methods,
 which returns deviance from a fitted "\code{abess}" object.
 }
 \seealso{
-\code{\link{print.abess}}, 
-\code{\link{predict.abess}}, 
-\code{\link{coef.abess}}, 
+\code{\link{print.abess}},
+\code{\link{predict.abess}},
+\code{\link{coef.abess}},
 \code{\link{extract.abess}},
 \code{\link{plot.abess}},
 \code{\link{deviance.abess}}.

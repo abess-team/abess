@@ -13,9 +13,9 @@ extract(object, support.size = NULL, ...)
 \item{object}{An "\code{abess}" project.}
 
 \item{support.size}{An integer value specifies
-the model size fitted at given \code{support.size}. 
-If \code{support.size = NULL}, then the model with 
-the best tuning value would be returned. 
+the model size fitted at given \code{support.size}.
+If \code{support.size = NULL}, then the model with
+the best tuning value would be returned.
 Default: \code{support.size = NULL}.}
 
 \item{...}{Other arguments.}
@@ -25,22 +25,22 @@ A \code{list} object including the following components:
 \item{beta}{A \eqn{p}-by-1 matrix of sparse matrix, stored in column format.}
 \item{intercept}{The fitted intercept value.}
 \item{support.size}{The \code{support.size} used in the function.}
-\item{support.beta}{The \code{support.size}-length vector of fitted 
+\item{support.beta}{The \code{support.size}-length vector of fitted
 coefficients on the support set.}
-\item{support.vars}{The character vector gives 
+\item{support.vars}{The character vector gives
 variables in the support set.}
 \item{tune.value}{The tuning value of the model.}
 \item{dev}{The deviance of the model.}
 }
 \description{
-Extract the fixed-support-size 
-model's information such as the selected 
+Extract the fixed-support-size
+model's information such as the selected
 predictors, coefficient estimation, and so on.
 }
 \seealso{
-\code{\link{print.abess}}, 
-\code{\link{predict.abess}}, 
-\code{\link{coef.abess}}, 
+\code{\link{print.abess}},
+\code{\link{predict.abess}},
+\code{\link{coef.abess}},
 \code{\link{extract.abess}},
 \code{\link{plot.abess}},
 \code{\link{deviance.abess}}.

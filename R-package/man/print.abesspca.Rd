@@ -21,11 +21,11 @@ Prints the fitted model and returns it invisibly.
 }
 \details{
 Print a \code{data.frame} with three columns:
-the first column is support size of model; 
+the first column is support size of model;
 the second column is the explained variance of model;
 the last column is the percent of explained variance of model.
 }
 \seealso{
-\code{\link{print.abesspca}}, 
+\code{\link{print.abesspca}},
 \code{\link{coef.abesspca}},
 }

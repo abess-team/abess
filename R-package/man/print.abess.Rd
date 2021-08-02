@@ -21,14 +21,14 @@ Prints the fitted model and returns it invisibly.
 }
 \details{
 Print a \code{data.frame} with three columns:
-the first column is support size of model; 
+the first column is support size of model;
 the second column is deviance of model;
 the last column is the tuning value of the certain tuning type.
 }
 \seealso{
-\code{\link{print.abess}}, 
-\code{\link{predict.abess}}, 
-\code{\link{coef.abess}}, 
+\code{\link{print.abess}},
+\code{\link{predict.abess}},
+\code{\link{coef.abess}},
 \code{\link{extract.abess}},
 \code{\link{plot.abess}},
 \code{\link{deviance.abess}}.

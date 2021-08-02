@@ -18,9 +18,9 @@ fitted values. \code{type = "response"} gives the fitted probabilities for
 \code{"cox"}; for \code{"gaussian"}, \code{type = "response"} is equivalent to \code{type = "link"}}
 
 \item{support.size}{An integer value specifies
-the model size fitted at given \code{support.size}. 
-If \code{support.size = NULL}, then the model with 
-the best tuning value would be returned. 
+the model size fitted at given \code{support.size}.
+If \code{support.size = NULL}, then the model with
+the best tuning value would be returned.
 Default: \code{support.size = NULL}.}
 
 \item{...}{Additional arguments affecting the predictions produced.}
@@ -32,9 +32,9 @@ The object returned depends on the types of family.
 Make predictions from a fitted "\code{abess}" object.
 }
 \seealso{
-\code{\link{print.abess}}, 
-\code{\link{predict.abess}}, 
-\code{\link{coef.abess}}, 
+\code{\link{print.abess}},
+\code{\link{predict.abess}},
+\code{\link{coef.abess}},
 \code{\link{extract.abess}},
 \code{\link{plot.abess}},
 \code{\link{deviance.abess}}.

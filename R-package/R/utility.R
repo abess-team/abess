@@ -1,8 +1,8 @@
 #' @title Generate simulated data
 #'
-#' @description Generate simulated data under the 
+#' @description Generate simulated data under the
 #' generalized linear model and Cox proportional hazard model.
-#' 
+#'
 #' @param n The number of observations.
 #' @param p The number of predictors of interest.
 #' @param support.size The number of nonzero coefficients in the underlying regression
@@ -10,48 +10,48 @@
 #' @param rho A parameter used to characterize the pairwise correlation in
 #' predictors. Default is \code{0}.
 #' @param family The distribution of the simulated response. \code{"gaussian"} for
-#' univariate quantitative response, \code{"binomial"} for binary classification response,  
-#' \code{"poisson"} for counting response, \code{"cox"} for left-censored response, 
-#' \code{"mgaussian"} for multivariate quantitative response, 
+#' univariate quantitative response, \code{"binomial"} for binary classification response,
+#' \code{"poisson"} for counting response, \code{"cox"} for left-censored response,
+#' \code{"mgaussian"} for multivariate quantitative response,
 #' \code{"mgaussian"} for multi-classification response.
-#' @param beta The coefficient values in the underlying regression model. 
+#' @param beta The coefficient values in the underlying regression model.
 #' If it is supplied, \code{support.size} would be omitted.
-#' @param cortype The correlation structure. 
-#' \code{cortype = 1} denotes the independence structure, 
+#' @param cortype The correlation structure.
+#' \code{cortype = 1} denotes the independence structure,
 #' where the covariance matrix has \eqn{(i,j)} entry equals \eqn{I(i \neq j)}.
 #' \code{cortype = 2} denotes the exponential structure,
 #' where the covariance matrix has \eqn{(i,j)} entry equals \eqn{rho^{|i-j|}}.
-#' code{cortype = 3} denotes the constant structure, 
-#' where the non-diagnoal entries of covariance 
-#' matrix are \eqn{rho} and diagonal entries are 1. 
+#' code{cortype = 3} denotes the constant structure,
+#' where the non-diagnoal entries of covariance
+#' matrix are \eqn{rho} and diagonal entries are 1.
 #' @param snr A numerical value controlling the signal-to-noise ratio (SNR). The SNR is defined as
 #' as the variance of \eqn{x\beta} divided
 #' by the variance of a gaussian noise: \eqn{\frac{Var(x\beta)}{\sigma^2}}.
 #' The gaussian noise \eqn{\epsilon} is set with mean 0 and variance.
 #' The noise is added to the linear predictor \eqn{\eta} = \eqn{x\beta}. Default is \code{snr = 10}.
-#' Note that this arguments's effect is overridden if \code{sigma} is supplied with a non-null value. 
+#' Note that this arguments's effect is overridden if \code{sigma} is supplied with a non-null value.
 #' @param sigma The variance of the gaussian noise. Default \code{sigma = NULL} implies it is determined by \code{snr}.
-#' @param weibull.shape The shape parameter of the Weibull distribution. 
-#' It works only when \code{family = "cox"}. 
+#' @param weibull.shape The shape parameter of the Weibull distribution.
+#' It works only when \code{family = "cox"}.
 #' Default: \code{weibull.shape = 1}.
-#' @param uniform.max A parameter controlling censored rate. 
-#' A large value implies a small censored rate; 
-#' otherwise, a large censored rate. 
-#' It works only when \code{family = "cox"}. 
+#' @param uniform.max A parameter controlling censored rate.
+#' A large value implies a small censored rate;
+#' otherwise, a large censored rate.
+#' It works only when \code{family = "cox"}.
 #' Default is \code{uniform.max = 1}.
 # @param sigma A parameter used to control the signal-to-noise ratio. For linear regression,
 # it is the error variance \eqn{\sigma^2}. For logistic regression,
-# the larger the value of sigma, the higher the signal-to-noise ratio. 
+# the larger the value of sigma, the higher the signal-to-noise ratio.
 # Valid only for \code{cortype = 3}.
 #' @param y.dim Response's Dimension. It works only when \code{family = "mgaussian"}. Default: \code{y.dim = 3}.
 #' @param class.num The number of class. It works only when \code{family = "multinomial"}. Default: \code{class.num = 3}.
 #' @param seed random seed. Default: \code{seed = 1}.
 #' @return A \code{list} object comprising:
-#' \item{x}{Design matrix of predictors.} 
+#' \item{x}{Design matrix of predictors.}
 #' \item{y}{Response variable.}
 #' \item{beta}{The coefficients used in the underlying regression model.}
-#' 
-#' @details 
+#'
+#' @details
 # We generate an \eqn{n \times p} random Gaussian matrix
 # \eqn{X} with mean 0 and a covariance matrix with an exponential structure
 # or a constant structure. For the exponential structure, the covariance matrix
@@ -63,49 +63,49 @@
 # to the \eqn{\sqrt n} length. Then the design matrix \eqn{X} is generated with
 # \eqn{X_j = \bar{X}_j + \rho(\bar{X}_{j+1}+\bar{X}_{j-1})} for \eqn{j=2,\dots,p-1}.
 #'
-#' For \code{family = "gaussian"}, the data model is 
+#' For \code{family = "gaussian"}, the data model is
 #' \deqn{Y = X \beta + \epsilon.}
-#' The underlying regression coefficient \eqn{\beta} has 
+#' The underlying regression coefficient \eqn{\beta} has
 #' uniform distribution [m, 100m] and \eqn{m=5 \sqrt{2log(p)/n}.}
 #'
 #' For \code{family= "binomial"}, the data model is \deqn{Prob(Y = 1) = \exp(X
 #' \beta + \epsilon)/(1 + \exp(X \beta + \epsilon)).}
-#' The underlying regression coefficient \eqn{\beta} has 
+#' The underlying regression coefficient \eqn{\beta} has
 #' uniform distribution [2m, 10m] and \eqn{m = 5 \sqrt{2log(p)/n}.}
-#' 
-#' For \code{family = "poisson"}, the data is modeled to have 
-#' an exponential distribution: 
+#'
+#' For \code{family = "poisson"}, the data is modeled to have
+#' an exponential distribution:
 #' \deqn{Y = Exp(\exp(X \beta + \epsilon)).}
-#' The underlying regression coefficient \eqn{\beta} has 
+#' The underlying regression coefficient \eqn{\beta} has
 #' uniform distribution [2m, 10m] and \eqn{m = \sqrt{2log(p)/n}/3.}
 #'
 #' For \code{family = "cox"}, the model for failure time \eqn{T} is
 #' \deqn{T = (-\log(U / \exp(X \beta)))^{1/weibull.shape},}
 #' where \eqn{U} is a uniform random variable with range [0, 1].
-#' The centering time \eqn{C} is generated from 
+#' The centering time \eqn{C} is generated from
 #' uniform distribution \eqn{[0, uniform.max]},
-#' then we define the censor status as 
+#' then we define the censor status as
 #' \eqn{\delta = I(T \le C)} and observed time as \eqn{R = \min\{T, C\}}.
-#' The underlying regression coefficient \eqn{\beta} has 
-#' uniform distribution [2m, 10m], 
+#' The underlying regression coefficient \eqn{\beta} has
+#' uniform distribution [2m, 10m],
 #' where \eqn{m = 5 \sqrt{2log(p)/n}}.
-#' 
-#' For \code{family = "mgaussian"}, the data model is 
+#'
+#' For \code{family = "mgaussian"}, the data model is
 #' \deqn{Y = X \beta + E.}
 #' The non-zero values of regression matrix \eqn{\beta} are sampled from
-#' uniform distribution [m, 100m] and \eqn{m=5 \sqrt{2log(p)/n}.} 
-#' 
+#' uniform distribution [m, 100m] and \eqn{m=5 \sqrt{2log(p)/n}.}
+#'
 #' For \code{family= "multinomial"}, the data model is \deqn{Prob(Y = 1) = \exp(X \beta + E)/(1 + \exp(X \beta + E)).}
-#' The non-zero values of regression coefficient \eqn{\beta} has 
+#' The non-zero values of regression coefficient \eqn{\beta} has
 #' uniform distribution [2m, 10m] and \eqn{m = 5 \sqrt{2log(p)/n}.}
-#' 
-#' In the above models, \eqn{\epsilon \sim N(0, \sigma^2 )} and \eqn{E \sim MVN(0, \sigma^2 \times I_{q \times q})}, 
+#'
+#' In the above models, \eqn{\epsilon \sim N(0, \sigma^2 )} and \eqn{E \sim MVN(0, \sigma^2 \times I_{q \times q})},
 #' where \eqn{\sigma^2} is determined by the \code{snr} and q is \code{y.dim}.
-#' 
+#'
 #' @author Jin Zhu
-#' 
+#'
 #' @export
-#' 
+#'
 #' @examples
 #'
 #' # Generate simulated data
@@ -114,7 +114,6 @@
 #' support.size <- 5
 #' dataset <- generate.data(n, p, support.size)
 #' str(dataset)
-#' 
 generate.data <- function(n,
                           p,
                           support.size = NULL,
@@ -125,13 +124,12 @@ generate.data <- function(n,
                           snr = 10,
                           sigma = NULL,
                           weibull.shape = 1,
-                          uniform.max = 1, 
-                          y.dim = 3, 
-                          class.num = 3, 
-                          seed = 1) 
-{
+                          uniform.max = 1,
+                          y.dim = 3,
+                          class.num = 3,
+                          seed = 1) {
   # sigma <- 1
-  
+
   family <- match.arg(family)
   if (family == "mgaussian") {
     y_dim <- y.dim
@@ -141,7 +139,7 @@ generate.data <- function(n,
     y_dim <- 1
   }
   y_cor <- diag(y_dim)
-  
+
   set.seed(seed)
   # if(is.null(beta)){
   #   beta <- rep(0, p)
@@ -149,14 +147,13 @@ generate.data <- function(n,
   # } else{
   #   beta <- beta
   # }
-  
+
   multi_y <- FALSE
   if (family %in% c("mgaussian", "multinomial")) {
     multi_y <- TRUE
   }
-  
+
   if (!is.null(beta)) {
-    
     if (multi_y) {
       stopifnot(is.matrix(beta))
       support.size <- sum(apply(abs(beta) > 1e-5, 1, sum) != 0)
@@ -164,7 +161,7 @@ generate.data <- function(n,
       stopifnot(is.vector(beta))
       support.size <- sum(abs(beta) > 1e-5)
     }
-    
+
     beta[abs(beta) <= 1e-5] <- 0
   } else {
     if (is.null(support.size)) {
@@ -172,12 +169,12 @@ generate.data <- function(n,
     }
     stopifnot(is.numeric(support.size) & support.size >= 1)
   }
-  
+
   if (cortype == 1) {
     Sigma <- diag(p)
   } else if (cortype == 2) {
     Sigma <- matrix(0, p, p)
-    Sigma <- rho ^ (abs(row(Sigma) - col(Sigma)))
+    Sigma <- rho^(abs(row(Sigma) - col(Sigma)))
   } else if (cortype == 3) {
     Sigma <- matrix(rho, p, p)
     diag(Sigma) <- 1
@@ -187,7 +184,7 @@ generate.data <- function(n,
   } else {
     x <- MASS::mvrnorm(n, rep(0, p), Sigma)
   }
-  
+
   ### pre-treatment for beta ###
   input_beta <- beta
   if (multi_y) {
@@ -205,12 +202,12 @@ generate.data <- function(n,
     } else {
       beta <- input_beta
     }
-    if(is.null(sigma)){
+    if (is.null(sigma)) {
       sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     }
-    
+
     y <- x %*% beta + rnorm(n, 0, sigma)
-  } 
+  }
   if (family == "binomial") {
     m <- 5 * sqrt(2 * log(p) / n)
     if (is.null(input_beta)) {
@@ -218,10 +215,10 @@ generate.data <- function(n,
     } else {
       beta <- input_beta
     }
-    if(is.null(sigma)){
+    if (is.null(sigma)) {
       sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     }
-    
+
     eta <- x %*% beta + rnorm(n, 0, sigma)
     PB <- apply(eta, 1, generatedata2)
     y <- stats::rbinom(n, 1, PB)
@@ -233,12 +230,12 @@ generate.data <- function(n,
     } else {
       beta <- input_beta
     }
-    if(is.null(sigma)){
+    if (is.null(sigma)) {
       sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     }
-    
+
     eta <- x %*% beta + rnorm(n, 0, sigma)
-    time <- (-log(stats::runif(n)) / drop(exp(eta))) ^ (1 / weibull.shape)
+    time <- (-log(stats::runif(n)) / drop(exp(eta)))^(1 / weibull.shape)
     ctime <- stats::runif(n, max = uniform.max)
     status <- (time < ctime) * 1
     censoringrate <- 1 - mean(status)
@@ -255,10 +252,10 @@ generate.data <- function(n,
     } else {
       beta <- input_beta
     }
-    if(is.null(sigma)){
+    if (is.null(sigma)) {
       sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     }
-    
+
     sigma <- 0
     eta <- x %*% beta + stats::rnorm(n, 0, sigma)
     eta <- ifelse(eta > 30, 30, eta)
@@ -273,12 +270,13 @@ generate.data <- function(n,
     m <- 5 * sqrt(2 * log(p) / n)
     M <- 100 * m
     if (is.null(input_beta)) {
-      beta[nonzero, ] <- matrix(stats::runif(support.size * y_dim, m, M), 
-                                ncol = y_dim)
+      beta[nonzero, ] <- matrix(stats::runif(support.size * y_dim, m, M),
+        ncol = y_dim
+      )
     } else {
       beta <- input_beta
     }
-    if(is.null(sigma)){
+    if (is.null(sigma)) {
       sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     }
     sigma <- diag(sigma)
@@ -291,12 +289,13 @@ generate.data <- function(n,
     m <- 5 * sqrt(2 * log(p) / n)
     M <- 100 * m
     if (is.null(input_beta)) {
-      beta[nonzero, ] <- matrix(stats::runif(support.size * y_dim, m, M), 
-                                ncol = y_dim)
+      beta[nonzero, ] <- matrix(stats::runif(support.size * y_dim, m, M),
+        ncol = y_dim
+      )
     } else {
       beta <- input_beta
     }
-    if(is.null(sigma)){
+    if (is.null(sigma)) {
       sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     }
     sigma <- diag(sigma)
@@ -310,7 +309,7 @@ generate.data <- function(n,
     })
   }
   set.seed(NULL)
-  
+
   colnames(x) <- paste0("x", 1:p)
   return(list(x = x, y = y, beta = beta))
 }
@@ -343,10 +342,9 @@ check_integer_warning <- function(x, message) {
   }
 }
 
-abess_model_matrix <- function(object, data = environment(object), 
-                               contrasts.arg = NULL, 
-                               xlev = NULL, ...) 
-{
+abess_model_matrix <- function(object, data = environment(object),
+                               contrasts.arg = NULL,
+                               xlev = NULL, ...) {
   ############################################################
   # The wrapped code refers to model.matrix.default function
   t <- if (missing(data)) {
@@ -360,10 +358,13 @@ abess_model_matrix <- function(object, data = environment(object),
     deparse2 <- function(x) {
       paste(deparse(x, width.cutoff = 500L), collapse = " ")
     }
-    reorder <- match(vapply(attr(t, "variables"), deparse2, "")[-1L], 
-                     names(data))
-    if (anyNA(reorder)) 
+    reorder <- match(
+      vapply(attr(t, "variables"), deparse2, "")[-1L],
+      names(data)
+    )
+    if (anyNA(reorder)) {
       stop("model frame and formula mismatch in model.matrix()")
+    }
     if (!identical(reorder, seq_len(ncol(data)))) {
       data <- data[, reorder, drop = FALSE]
     }
@@ -371,7 +372,7 @@ abess_model_matrix <- function(object, data = environment(object),
   ############################################################
   if (length(data)) {
     namD <- names(data)
-    
+
     for (i in namD) {
       if (is.character(data[[i]])) {
         stop("Some columns in data are character! You may convert these columns to a dummy variable via model.matrix function or discard them.")
@@ -385,7 +386,6 @@ abess_model_matrix <- function(object, data = environment(object),
 
 MULTIVARIATE_RESPONSE <- c("mgaussian", "multinomial")
 
-.onUnload <- function (libpath)
-{
+.onUnload <- function(libpath) {
   library.dynam.unload("abess", libpath)
 }

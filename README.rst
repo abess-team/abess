@@ -36,12 +36,13 @@ The selection for best subset shows great value in scientific researches and pra
 For example, clinicians wants to know whether a patient is health or not  
 based on the expression level of a few of important genes.
 
-This library implements a generic algorithm framework to find the optimal solution in polynomial time [#1abess]_. 
+This library implements a generic algorithm framework to find the optimal solution in an extremely fast way [#1abess]_. 
 This framework now supports the detection of best subset under: 
 `linear regression`_, `(multi-class) classification`_, `censored-response modeling`_ [#4sksurv]_, 
 `multi-response modeling (a.k.a. multi-tasks learning)`_, etc. 
 It also supports the variants of best subset selection like 
 `group best subset selection`_ [#2gbes]_ and `nuisance best subset selection`_ [#3nbes]_. 
+Especially, the time complexity of (group) best subset selection for linear regression is certifiably polynomial [#1abess]_ [#2gbes]_.
 
 .. _linear regression: https://abess.readthedocs.io/en/latest/Tutorial/LinearRegression.html
 .. _(multi-class) classification: https://abess.readthedocs.io/en/latest/Tutorial/logi_and_multiclass.html
@@ -72,27 +73,28 @@ Best subset selection for linear regression on a simulated dataset in R:
    sim_dat <- generate.data(n = 300, p = 1000)
    abess(x = sim_dat[["x"]], y = sim_dat[["y"]])
 
-See more examples analyzed with R in the tutorials available `here <https://abess-team.github.io/abess/articles/>`_.
+See more examples analyzed with R in the `R markdowns collections <https://abess-team.github.io/abess/articles/>`_.
 
 
 Python package
------------
+--------------
 
-To install abess, please view chapter: `Installation`_.
+Install the stable abess Python package from Pypi: 
 
 .. code-block:: shell
 
-   $ pip install abess
+$ pip install abess
 
 .. _Installation: https://abess.readthedocs.io/en/latest/Installation.html
 
+To install abess in source, please view chapter: `Installation`_.
 Import best subset selection solver for linear regression in a Python project:    
 
 .. code-block:: python
 
    from abess.linear import abessLm
 
-See more examples in the tutorials; the notebooks are available `here <https://abess.readthedocs.io/en/latest/Tutorial/index.html>`_.
+See more examples analyzed with Python in the tutorials; the notebooks are available `here <https://abess.readthedocs.io/en/latest/Tutorial/index.html>`_.
 
 Performance
 ===========
@@ -104,6 +106,7 @@ The variable selection and estimation result are deferred to Tutorial.
 
 R package    
 -----------
+
 We compare abess R package with three widely used R packages: glmnet, ncvreg, L0Learn. 
 Conducting the following commands in shell: 
 
@@ -137,8 +140,8 @@ Results are presented in the below figure, and can be reproduce by running the c
 In both R and Python environments, 
 abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
 
-Open source software       
-==========
+Open source software     
+====================
 
 abess is a free software and its source code are publicly available in `Github`_.  
 The core framework is programmed in C++, and user-friendly R and Python interfaces are offered.

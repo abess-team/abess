@@ -14,15 +14,15 @@
 \arguments{
 \item{x}{A "\code{abess}" object.}
 
-\item{type}{The type of terms to be plot in the y-axis. 
-One of the following: \code{"coef"} (i.e., coefficients), 
-\code{"l2norm"} (i.e., L2-norm of coefficients), 
-\code{"dev"} (i.e., deviance), 
-and \code{"tune"} (i.e., tuning value). 
+\item{type}{The type of terms to be plot in the y-axis.
+One of the following: \code{"coef"} (i.e., coefficients),
+\code{"l2norm"} (i.e., L2-norm of coefficients),
+\code{"dev"} (i.e., deviance),
+and \code{"tune"} (i.e., tuning value).
 Default is \code{"coef"}.}
 
-\item{label}{A logical value. 
-If \code{label = TRUE} (the default), 
+\item{label}{A logical value.
+If \code{label = TRUE} (the default),
 label the curves with variable sequence numbers.}
 
 \item{...}{Other graphical parameters to plot}
@@ -31,12 +31,12 @@ label the curves with variable sequence numbers.}
 No return value, called for side effects.
 }
 \description{
-Produces a coefficient/deviance/tuning-value plot 
+Produces a coefficient/deviance/tuning-value plot
 for a fitted "abess" object.
 }
 \note{
-If \code{family = "mgaussian"} or \code{family = "multinomial"}, 
-a coefficient plot is produced for 
+If \code{family = "mgaussian"} or \code{family = "multinomial"},
+a coefficient plot is produced for
 each dimension of multivariate response.
 }
 \examples{
@@ -48,9 +48,9 @@ plot(abess_fit, type = "dev")
 plot(abess_fit, type = "tune")
 }
 \seealso{
-\code{\link{print.abess}}, 
-\code{\link{predict.abess}}, 
-\code{\link{coef.abess}}, 
+\code{\link{print.abess}},
+\code{\link{predict.abess}},
+\code{\link{coef.abess}},
 \code{\link{extract.abess}},
 \code{\link{plot.abess}},
 \code{\link{deviance.abess}}.
