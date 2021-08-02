@@ -11,4 +11,5 @@ It has three methods:
 
 .. autofunction:: abess.linear.abessMultinomial.fit
 .. autofunction:: abess.linear.abessMultinomial.predict
+.. autofunction:: abess.linear.abessMultinomial.predict_proba
 .. autofunction:: abess.linear.abessMultinomial.score

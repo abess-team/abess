@@ -5,7 +5,7 @@ abessPCA
     :backlinks: none
     :local:
 
-.. autoclass:: abess.linear.abessPCA
+.. autoclass:: abess.pca.abessPCA
 
 It has three methods:
 

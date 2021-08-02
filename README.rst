@@ -122,14 +122,14 @@ we obtain the runtime comparison picture:
    :width: 100%
 
 Python package   
------------
+---------------
 
 We compare abess Python package with scikit-learn on linear and logistic regression.
 Results are presented in the below figure, and can be reproduce by running the commands in shell:
 
 .. code-block:: shell
 
-   $ python ./docs/perform/timings.py
+   $ python ./python/example/timings.py
 
 
 |pic1| 
@@ -161,7 +161,7 @@ the other best subset selection problems.
 .. The corresponding BibteX entry:
 
 References
-=========
+==========
 
 .. [#1abess] Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang (2020). A polynomial algorithm for best-subset selection problem. Proceedings of the National Academy of Sciences, 117(52):33117-33123.
 

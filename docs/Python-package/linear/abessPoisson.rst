@@ -1,5 +1,5 @@
-abessMultiPoisson
-=================
+abessPoisson
+============
 
 .. contents::
     :backlinks: none
