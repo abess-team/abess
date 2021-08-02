@@ -1,14 +1,3 @@
----
-title: "Power of abess"
-author: "Liyuan Hu"
-date: "2021/8/2"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,warning = F, message = F)
-```
-
 ## Simulation
 
 To show the computational efficiency of abess, 
@@ -28,7 +17,6 @@ The results are presented in the following picture. First, among all of the meth
 the estimator obtained by abess package shows the best prediction performance and can reasonably control the false-positive rate 
 at a low level like SCAD and MCP. Furthermore, our abess package is highly efficient compared with 
 other packages.
-
 
 <center> Figure 1. Performance for different packages </center>
 <img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/perform/performance.png' align="right" height="120"  align=center/>
