@@ -10,6 +10,7 @@
 
 .. toctree::
    :hidden:
+   :caption: USING ABESS
 
    Installation <Installation.md>
    Tutorial <Tutorial/index.rst>
@@ -17,3 +18,17 @@
    R package <https://abess-team.github.io/abess/>
    About <About/index.rst>
    FAQ <FAQ.md>
+
+.. toctree::
+   :hidden:
+   :caption: USEFUL LINK
+
+   abess @GitHub <https://github.com/abess-team/abess>
+   abess @CRAN <https://cran.rstudio.com/web/packages/abess/index.html>
+   abess @PyPI <https://pypi.org/project/abess/>
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`search`

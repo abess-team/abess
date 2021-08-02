@@ -127,7 +127,7 @@ unified API `abessCpp`. We strongly suggest the R function is named as `abessXXX
 
 ### Python Package
 
-To make your code available for Python, `cd` into directory `abess/python` and run `python setup.py install`. (Same steps in [Installation](https://abess.readthedocs.io/en/latest/Installation.html#latest-release).)
+To make your code available for Python, `cd` into directory `abess/python` and run `$ python setup.py install`. (Same steps in [Installation](https://abess.readthedocs.io/en/latest/Installation.html#latest-release).)
 
 It may take a few minutes to install:
 
@@ -170,7 +170,7 @@ elif # ...
 
 Note that the new PCA method has been related to number "7" above, so we need to denote `model_type_int = 7` in our `fit` function. 
 
-After finished all changes before, run `python setup.py install` again and this time the installation would be finished quickly. 
+After finished all changes before, run `$ python setup.py install` again and this time the installation would be finished quickly. 
 
 Congratulation! Your work can now be used by:
 

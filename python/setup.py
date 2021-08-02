@@ -1,8 +1,10 @@
 import os
 import sys
-import numpy
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages, Extension, dist
 from os import path
+
+dist.Distribution().fetch_build_eggs(['numpy'])
+import numpy
 
 os_type = 'MS_WIN64'
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))

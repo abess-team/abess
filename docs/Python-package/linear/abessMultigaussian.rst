@@ -11,5 +11,4 @@ It has four methods:
 
 .. autofunction:: abess.linear.abessMultigaussian.fit
 .. autofunction:: abess.linear.abessMultigaussian.predict
-.. autofunction:: abess.linear.abessMultigaussian.predict_proba
 .. autofunction:: abess.linear.abessMultigaussian.score
