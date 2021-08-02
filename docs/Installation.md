@@ -5,8 +5,8 @@
 ### Python
 To install abess on Python, you can simply get the stable version with:
 
-```python
-pip install abess
+```powershell
+$ pip install abess
 ```
 
 If you don't have [pip](https://pip.pypa.io) installed, this [Python installation guide](http://docs.python-guide.org/en/latest/starting/installation/) can guide
@@ -27,8 +27,8 @@ If the instructions do not help for you, please feel free to ask questions by op
 Clone our [github project](https://github.com/abess-team/abess) to your device:
 
 ```powershell
-git clone https://github.com/abess-team/abess.git
-cd abess
+$ git clone https://github.com/abess-team/abess.git
+$ cd abess
 ```
 
 Before installing abess itself, some dependencies should be installed first: `swig`, `bash`, `mingw`, which may be a little different in different platforms:
@@ -40,14 +40,14 @@ Before installing abess itself, some dependencies should be installed first: `sw
 What's more, some basic python packages are required. We have written in `abess/python/requirements.txt` and just install them with `pip`:
 
 ```powershell
-pip install -r ./python/requirements.txt
+$ pip install -r ./python/requirements.txt
 ```
 
 After that, `cd` into `python` and manually install abess by conducting command:
 
 ```powershell
-cd ./python
-python setup.py install
+$ cd ./python
+$ python setup.py install
 ```
 
 If it finishes with "*Finished processing dependencies for abess*", the installation is successful.
@@ -92,8 +92,8 @@ To enable OpenMP:
 - In MacOS, the dependence can be installed by:       
 
     ```bash
-    brew install llvm
-    brew install libomp
+    $ brew install llvm
+    $ brew install libomp
     ```
 
 ### Python

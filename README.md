@@ -26,7 +26,7 @@ prediction accuracy. This project implements a polynomial algorithm proposed to 
 
 
 ## Installation
-The abess software both Python and R's interfaces. 
+The abess software has both Python and R's interfaces. 
 
 ### Python package
 Install the stable version of Python-package from [Pypi](https://pypi.org/project/abess/) with:
