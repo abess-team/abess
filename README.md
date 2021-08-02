@@ -69,7 +69,7 @@ Results are presented in the following picture. As a package solving the best su
 <center> Figure 1. Runing Time for different packages </center>
 
 <!--![avatar](R-package/vignettes/readmeTiming.png)-->
-<img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/vignettes/Rtiming.png'/></a>
+<img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/perform/Rtiming.png'/></a>
 <!-- <center> Table 1. Results of Linear Rgression </center>
 
 |           |              | Coef Err       | RPE              | TPR          | FPR          | MCC          |
