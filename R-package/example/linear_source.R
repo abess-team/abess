@@ -97,13 +97,13 @@ simu <- function(i, n, p, rho, cortype, method = c("glmnet", "ncvreg.MCP",
   {
     res.L0Learn.CD <- res.default
   }
-  if ("L0Learn.CDPSI" %in% method)
-  {
-    res.L0Learn.CDPSI <- simu.L0learn(dat, dat.test, algorithm = "CDPSI")
-  } else
-  {
-    res.L0Learn.CDPSI <- res.default
-  }
+  # if ("L0Learn.CDPSI" %in% method)
+  # {
+  #   res.L0Learn.CDPSI <- simu.L0learn(dat, dat.test, algorithm = "CDPSI")
+  # } else
+  # {
+  #   res.L0Learn.CDPSI <- res.default
+  # }
   if ("abess" %in% method)
   {
     res.abess <- simu.abess(dat, dat.test)
@@ -112,5 +112,5 @@ simu <- function(i, n, p, rho, cortype, method = c("glmnet", "ncvreg.MCP",
     res.abess <- res.default
   }
   return(rbind(res.glmnet, res.ncvreg.MCP, res.ncvreg.SCAD, res.ncvreg.lasso, 
-               res.L0Learn.CD, res.L0Learn.CDPSI, res.abess))
+               res.L0Learn.CD, res.abess))
 }
