@@ -29,6 +29,6 @@ the estimator obtained by abess package shows the best prediction performance an
 at a low level like SCAD and MCP. Furthermore, our abess package is highly efficient compared with 
 other packages.
 
-<img src='https://raw.githubusercontent.com/abess-team/abess/doc/perform/performance.png' align="right" height="120" />
+<img src='https://raw.githubusercontent.com/abess-team/abess/docs/perform/performance.png' align="right" height="120" />
 
-<img src='https://raw.githubusercontent.com/abess-team/abess/doc/perform/time_perform.png' align="right" height="120" />
+<img src='https://raw.githubusercontent.com/abess-team/abess/docs/perform/time_perform.png' align="right" height="120" />
