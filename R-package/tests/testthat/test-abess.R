@@ -166,7 +166,9 @@ test_that("Covariance update works", {
 test_that("OPENMP works", {
   skip_on_os("mac")
   
-  require("ps")
+  if (!require("ps")) {
+    install.packages("ps")
+  }
   num_threads <- ps_num_threads()
   skip_if(num_threads == 1)
   
