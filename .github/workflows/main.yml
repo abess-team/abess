@@ -157,11 +157,12 @@ jobs:
 
       - name: Ubuntu dependencies
         run: |
+          sudo apt-get install libomp5
+          sudo apt-get install libomp-dev
           sudo apt-get install libxml2-dev
           sudo apt-get install libcurl4-openssl-dev
           sudo apt-get install python3
           sudo apt-get install python3-pip
-          sudo apt-get install libomp-dev
 
       - name: Query dependencies
         run: |
