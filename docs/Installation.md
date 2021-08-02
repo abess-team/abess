@@ -34,11 +34,11 @@ $ cd abess
 
 Before installing abess itself, some dependencies should be installed first: `swig`, `bash`, `mingw`, which may be a little different in different platforms:
 
-- **Linux**: `sudo apt install swig bash mingw-w64` (for Ubuntu, but other Linux systems are similar);
-- **Windows**: `choco install swig mingw git ` (using [Chocolatey](https://community.chocolatey.org/packages)), or manually install the software and add them into PATH;
-- **MacOS**: `brew install swig mingw-w64 bash` (using [brew](https://brew.sh/)).
+- **Linux**: `$ sudo apt install swig bash mingw-w64` (for Ubuntu, but other Linux systems are similar);
+- **Windows**: `$ choco install swig mingw git ` (using [Chocolatey](https://community.chocolatey.org/packages)), or manually install the software and add them into PATH;
+- **MacOS**: `$ brew install swig mingw-w64 bash` (using [brew](https://brew.sh/)).
 
-After that, `cd` into `python` and manually install abess by conducting command:
+After that, you can manually install abess by conducting command:
 
 ```bash
 $ cd ./python
@@ -49,7 +49,7 @@ If it finishes with "*Finished processing dependencies for abess*", the installa
 
 > If you receive an error said "*Can't create or remove files in install directory*", this may be caused by permission denied. The step below may help with it.
 >
-> - For Linux/MacOS: run `python setup.py install --user` or `sudo python setup.py install` instead.
+> - For Linux/MacOS: run `$ python setup.py install --user` or `$ sudo python setup.py install` instead.
 > - For Windows: run the command as administrator.
 
 ### R
