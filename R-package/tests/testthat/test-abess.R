@@ -164,6 +164,7 @@ test_that("Covariance update works", {
 })
 
 test_that("OPENMP works", {
+  skip("Skip OPENMP!")
   skip_on_os("mac")
   
   if (!require("ps")) {
@@ -173,7 +174,6 @@ test_that("OPENMP works", {
   print(num_threads)
   skip_if(num_threads == 1)
   
-  skip("Skip OPENMP.")
   
   n <- 500
   p <- 500
