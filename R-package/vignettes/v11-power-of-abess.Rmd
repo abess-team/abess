@@ -1,21 +1,40 @@
 ---
-title: "Power of abess"
+title: 'Power of abess'
 author: "Liyuan Hu"
-date: "2021/8/2"
-output: html_document
+date: "8/2/2021"
+output:
+  html_document: 
+    toc: yes
+    keep_md: yes
+    self_contained: no
+  pdf_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 3
+  word_document: 
+    toc: yes
+    keep_md: yes
+editor_options: 
+  markdown: 
+    wrap: sentence
+vignette: |
+  %\VignetteEngine{knitr::rmarkdown} \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,warning = F, message = F)
 ```
+In this part, we are going to explore the power of the abess package using simulated data. 
+We compare the abess package with popular R libraries: glmnet, ncvreg for linear and logistic regressions in the following section.
 
 ## Simulation
 
 ### Settings
-We compare the abess package with popular R libraries: glmnet, ncvreg for linear and logistic regressions; 
+
 All these packages are compared in three aspects including the prediction performance, the variable selection performance, and the computation efficiency.
 The prediction performance of the linear model is measured by $\|y - \hat{y}\|_2$ on a test set and for logistic regression this is measured by the area under the ROC Curve.
-For the variable selection performance, we compute the true positive rate (TPR) and the false positive rate (FPR) of the fitted active set. 
+For the variable selection performance, we compute the true positive rate (TPR, which is the proportion of varibales in the active set that are correctly identified) 
+and the false positive rate (FPR, which is the proportion of the varibales in the inactive set that are falsely identified as a signal). 
 Timings of the CPU execution are recorded in seconds and all the performances are averaged over 100 replications on a sequence
 of 100 regularization parameters.
 
@@ -36,15 +55,24 @@ The results are presented in the following pictures.
 * First, among all of the methods implemented in different packages,
 	the estimator obtained by the abess package shows the best prediction performance. 
 	
-* Second, the estimator obtained by the abess package can reasonably control the false-positive rate at a low level like SCAD and MCP while preventing the poor true signal detection problem as SCAD and MCP in the linear model when the correlation between predictors is high. Here we see that the spike-and-slab-prior-based best subset selection estimator meets difficulties in recovering the true active set in logistic regression when the predictors are highly correlated, but still enjoys the best prediction performance. This is that when the predictors are highly correlated, we only need a small subset of predictors to explain the response. For a better variable selection, while maintaining the perfect prediction, a regularized best subset selection is recommended and also available in the abess package. For more information on the regularized best subset selection, please refer to [Advanced Features](https://abess-team.github.io/abess/articles/v07-advancedFeatures.html).
+* Second, the estimator obtained by the abess package can reasonably control the FPR at a 
+low level like SCAD and MCP while preventing the poor true signal detection problem as SCAD and MCP in the linear model 
+when the correlation between predictors is high. 
 
 * Furthermore, our abess package is highly efficient compared with other packages. To conduct the same task, the abess package is never eclipsed by the glmnet package which is esteemed as the benchmark of efficiency.
 
 <center> Figure 1. Performance for different packages </center>
 
-<img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/perform/performance.png'/>
+<img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/perform/performance.png' width="70%" height="70%"/>
 
 
 <center> Figure 2. Runing Time for different packages </center>
 
-<img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/perform/time_perform.png'/>
+<img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/perform/time_perform.png' width="70%" height="70%"/>
+
+Here we see that the spike-and-slab-prior-based best subset selection estimator meets difficulties in recovering the true active set in logistic regression when the predictors are highly correlated, but still enjoys the best prediction performance. 
+This is that when the predictors are highly correlated, we only need a small subset of predictors to 
+explain the response. For a better variable selection, while maintaining the perfect prediction, 
+a regularized best subset selection is recommended and also available in the abess package. 
+For more information on the regularized best subset selection, 
+please refer to [Advanced Features](https://abess-team.github.io/abess/articles/v07-advancedFeatures.html).
