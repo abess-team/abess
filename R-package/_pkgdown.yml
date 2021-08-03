@@ -35,7 +35,6 @@ reference:
   - abesspca
   - print.abesspca
   - coef.abesspca
-  - plot.abesspca
   
 - title: Datasets
   contents:
