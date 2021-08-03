@@ -83,7 +83,7 @@ Install the stable abess Python package from Pypi:
 
 .. code-block:: shell
 
-$ pip install abess
+   $ pip install abess
 
 .. _Installation: https://abess.readthedocs.io/en/latest/Installation.html
 
