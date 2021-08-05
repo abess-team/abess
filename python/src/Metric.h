@@ -313,7 +313,7 @@ public:
         algorithm_list[k]->update_sparsity_level(fit_arg.support_size);
         algorithm_list[k]->update_lambda_level(fit_arg.lambda);
 
-        if (algorithm->get_warm_start())
+        if (algorithm_list[k]->get_warm_start())
         {
 
           algorithm_list[k]->update_beta_init(this->cv_init_fit_arg[k].beta_init);

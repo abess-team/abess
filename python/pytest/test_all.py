@@ -100,9 +100,8 @@ class TestClass:
         model2.predict(data.x)
 
         model3 = abessLogistic(path_type="seq", support_size=support_size, ic_type='aic', is_screening=False, screening_size=30,  alpha=[0.001],
-                               K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
-                               exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                               primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
+                              K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
 

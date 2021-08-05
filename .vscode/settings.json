@@ -68,8 +68,15 @@
         "algorithm": "cpp",
         "unordered_set": "cpp",
         "iomanip": "cpp",
-        "string": "cpp"
-    }, 
+        "string": "cpp",
+        "iterator": "cpp",
+        "map": "cpp",
+        "memory": "cpp",
+        "memory_resource": "cpp",
+        "optional": "cpp",
+        "set": "cpp",
+        "string_view": "cpp"
+    },
     "C_Cpp.dimInactiveRegions": false,
     "restructuredtext.confPath": ""
 }

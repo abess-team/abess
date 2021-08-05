@@ -729,6 +729,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     coef0_matrix = result.coef0_matrix;
     ic_matrix = result.ic_matrix;
     train_loss_matrix = result.train_loss_matrix;
+    effective_number_matrix = result.effective_number_matrix;
     Eigen::MatrixXd test_loss_matrix = result.test_loss_matrix;
     if (is_cv)
     {
@@ -830,6 +831,10 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     }
   }
 #ifdef TEST
+  std::cout << "lambda_sequence" << lambda_seq << std::endl;
+  std::cout << "lambda_sequence" << lambda_seq[0] << std::endl;
+
+  std::cout << "sequence" << sequence << std::endl;
   std::cout << "effective_number_matrix: " << effective_number_matrix << std::endl;
   std::cout << train_loss_matrix << std::endl;
   std::cout << "ic: " << std::endl;
