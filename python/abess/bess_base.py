@@ -6,6 +6,7 @@ from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.base import BaseEstimator
 from abess.cabess import pywrap_abess
 
+
 class bess_base(BaseEstimator):
     """
     Parameters
@@ -128,23 +129,24 @@ class bess_base(BaseEstimator):
         self.covariance_update = covariance_update
         self.sparse_matrix = sparse_matrix
         self.splicing_type = splicing_type
-    
-    def new_data_check(self, X, y = None):
+
+    def new_data_check(self, X, y=None):
         # Check1 : whether fit had been called
         check_is_fitted(self)
 
         # Check2 : X validation
         X = check_array(X)
         if X.shape[1] != self.n_features_in_:
-            raise ValueError("X.shape[1] should be " + str(self.n_features_in_))
-        
+            raise ValueError("X.shape[1] should be " +
+                             str(self.n_features_in_))
+
         # Check3 : y validation
         if y is not None:
             X, y = check_X_y(X, y, multi_output=True, y_numeric=True)
             return X, y
-        
+
         return X
-    
+
     def fit(self, X=None, y=None, is_normal=True, weight=None, group=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
@@ -175,9 +177,10 @@ class bess_base(BaseEstimator):
                 self.sparse_matrix = True
 
             # Check that X and y have correct shape
-            X, y = check_X_y(X, y, accept_sparse=True, multi_output=True, y_numeric=True)
-            
-            # Sort for Cox 
+            X, y = check_X_y(X, y, accept_sparse=True,
+                             multi_output=True, y_numeric=True)
+
+            # Sort for Cox
             if self.model_type == "Cox":
                 X = X[y[:, 0].argsort()]
                 y = y[y[:, 0].argsort()]
@@ -193,15 +196,16 @@ class bess_base(BaseEstimator):
                 M = 1
                 y = y.reshape(len(y), 1)
             else:
-                M = y.shape[1] 
+                M = y.shape[1]
         else:
             raise ValueError("X should be a matrix or sparse matrix.")
-        
+
         # Algorithm_type: abess
         if self.algorithm_type == "abess":
             algorithm_type_int = 6
         else:
-            raise ValueError("algorithm_type should not be " + str(self.algorithm_type))
+            raise ValueError("algorithm_type should not be " +
+                             str(self.algorithm_type))
 
         # Model_type: lm, logit, poiss, cox, multi-gaussian, multi-nomial
         if self.model_type == "Lm":
@@ -217,7 +221,8 @@ class bess_base(BaseEstimator):
         elif self.model_type == "Multinomial":
             model_type_int = 6
         else:
-            raise ValueError("model_type should not be " + str(self.model_type))
+            raise ValueError("model_type should not be " +
+                             str(self.model_type))
 
         # Path_type: seq, pgs
         if self.path_type == "seq":
@@ -237,7 +242,8 @@ class bess_base(BaseEstimator):
         elif self.ic_type == "ebic":
             ic_type_int = 4
         else:
-            raise ValueError("ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")          
+            raise ValueError(
+                "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
 
         # Group:
         if group is None:
@@ -247,7 +253,8 @@ class bess_base(BaseEstimator):
             if group.ndim > 1:
                 raise ValueError("group should be an 1D array of integers.")
             elif group.size != p:
-                raise ValueError("The length of group should be equal to X.shape[1].")
+                raise ValueError(
+                    "The length of group should be equal to X.shape[1].")
             g_index = []
             group.sort()
             group_set = list(set(group))
@@ -259,7 +266,7 @@ class bess_base(BaseEstimator):
 
         # Weight:
         if weight is None:
-            weight = np.ones(n) 
+            weight = np.ones(n)
         else:
             weight = np.array(weight)
             if (weight.dtype != "int" and weight.dtype != "float"):
@@ -268,7 +275,7 @@ class bess_base(BaseEstimator):
                 raise ValueError("weight should be a 1-D array.")
             elif weight.size != n:
                 raise ValueError("X.shape[0] should be equal to weight.size")
-            
+
         # Path parameters
         if path_type_int == 1:  # seq
             if self.support_size is None:
@@ -281,9 +288,10 @@ class bess_base(BaseEstimator):
                 if isinstance(self.support_size, (numbers.Real, numbers.Integral)):
                     support_sizes = np.empty(1, dtype=int)
                     support_sizes[0] = self.support_size
-                elif (np.any(np.array(self.support_size) > p) or 
+                elif (np.any(np.array(self.support_size) > p) or
                         np.any(np.array(self.support_size) < 0)):
-                    raise ValueError("All support_size should be between 0 and X.shape[1]")
+                    raise ValueError(
+                        "All support_size should be between 0 and X.shape[1]")
                 else:
                     support_sizes = self.support_size
 
@@ -307,7 +315,7 @@ class bess_base(BaseEstimator):
             new_s_min = 0 \
                 if self.s_min is None else self.s_min
             new_s_max = min(p, int(n / (np.log(np.log(n)) * np.log(p)))) \
-                if self.s_max is None else self.s_max                      
+                if self.s_max is None else self.s_max
             new_lambda_min = 0 \
                 if self.lambda_min is None else self.lambda_min
             new_lambda_max = 0 \
@@ -318,17 +326,18 @@ class bess_base(BaseEstimator):
             if (new_s_max < new_s_min):
                 raise ValueError("s_max should be larger than s_min")
             if (new_lambda_max < new_lambda_min):
-                raise ValueError("lambda_max should be larger than lambda_min.")
-            
+                raise ValueError(
+                    "lambda_max should be larger than lambda_min.")
+
             # unused
             support_sizes = [0]
             alphas = [0]
         support_sizes = np.array(support_sizes, dtype='int32')
-        
+
         # Exchange_num
         if (not isinstance(self.exchange_num, int) or self.exchange_num <= 0):
             raise ValueError("exchange_num should be an positive integer.")
-        # elif (self.exchange_num > min(support_sizes)):    
+        # elif (self.exchange_num > min(support_sizes)):
         #     print("[Warning]  exchange_num may be larger than sparsity, and it would be set up to sparsity.")
 
         # Is_screening
@@ -337,26 +346,31 @@ class bess_base(BaseEstimator):
                 if self.screening_size is None else self.screening_size
 
             if self.screening_size > p:
-                raise ValueError("screening size should be smaller than X.shape[1].")
+                raise ValueError(
+                    "screening size should be smaller than X.shape[1].")
             elif self.screening_size < max(support_sizes):
-                raise ValueError("screening size should be more than max(support_size).")
+                raise ValueError(
+                    "screening size should be more than max(support_size).")
         else:
             new_screening_size = -1
-        
+
         # Primary fit parameters
-        if (not isinstance(self.primary_model_fit_max_iter, int) or self.primary_model_fit_max_iter <= 0 ):
-            raise ValueError("primary_model_fit_max_iter should be an positive integer.")
+        if (not isinstance(self.primary_model_fit_max_iter, int) or self.primary_model_fit_max_iter <= 0):
+            raise ValueError(
+                "primary_model_fit_max_iter should be an positive integer.")
         if (self.primary_model_fit_epsilon < 0):
-            raise ValueError("primary_model_fit_epsilon should be non-negative.")
-        
+            raise ValueError(
+                "primary_model_fit_epsilon should be non-negative.")
+
         # Thread
         if (not isinstance(self.thread, int) or self.thread < 0):
-            raise ValueError("thread should be positive number or 0 (maximum supported by your device).")
-        
+            raise ValueError(
+                "thread should be positive number or 0 (maximum supported by your device).")
+
         # Splicing type
-        if (self.splicing_type != 0 and self.splicing_type !=1):
+        if (self.splicing_type != 0 and self.splicing_type != 1):
             raise ValueError("splicing type should be 0 or 1.")
-        
+
         # Sparse X
         if self.sparse_matrix:
             if type(X) != type(coo_matrix((1, 1))):
@@ -382,27 +396,27 @@ class bess_base(BaseEstimator):
         # wrap with cpp
         state = [0]
         result = pywrap_abess(X, y, n, p, self.data_type, weight, Sigma,
-                            is_normal,
-                            algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
-                            path_type_int, self.is_warm_start,
-                            ic_type_int, self.ic_coef, self.is_cv, self.K,
-                            g_index,
-                            state,
-                            support_sizes,
-                            alphas,
-                            new_s_min, new_s_max, new_K_max, self.epsilon,
-                            new_lambda_min, new_lambda_max, self.n_lambda,
-                            self.is_screening, new_screening_size, self.powell_path,
-                            self.always_select, self.tau,
-                            self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
-                            self.early_stop, self.approximate_Newton,
-                            self.thread,
-                            self.covariance_update,
-                            self.sparse_matrix,
-                            self.splicing_type,
-                            p * M,
-                            1 * M, 1, 1, 1, 1, 1, p
-                            )
+                              is_normal,
+                              algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
+                              path_type_int, self.is_warm_start,
+                              ic_type_int, self.ic_coef, self.is_cv, self.K,
+                              g_index,
+                              state,
+                              support_sizes,
+                              alphas,
+                              new_s_min, new_s_max, new_K_max, self.epsilon,
+                              new_lambda_min, new_lambda_max, self.n_lambda,
+                              self.is_screening, new_screening_size, self.powell_path,
+                              self.always_select, self.tau,
+                              self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
+                              self.early_stop, self.approximate_Newton,
+                              self.thread,
+                              self.covariance_update,
+                              self.sparse_matrix,
+                              self.splicing_type,
+                              p * M,
+                              1 * M, 1, 1, 1, 1, 1, p
+                              )
 
         # print("linear fit end")
         # print(len(result))
@@ -415,5 +429,5 @@ class bess_base(BaseEstimator):
 
         self.train_loss_ = result[2]
         self.ic_ = result[3]
-        
+
         return self
