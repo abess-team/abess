@@ -271,7 +271,8 @@ Eigen::VectorXi diff_union(Eigen::VectorXi A, Eigen::VectorXi &B, Eigen::VectorX
 Eigen::VectorXi min_k(Eigen::VectorXd &vec, int k, bool sort_by_value)
 {
     Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
-    auto rule = [vec](int i, int j) -> bool {
+    auto rule = [vec](int i, int j) -> bool
+    {
         return vec(i) < vec(j);
     }; // sort rule
     std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
@@ -290,7 +291,8 @@ Eigen::VectorXi min_k(Eigen::VectorXd &vec, int k, bool sort_by_value)
 Eigen::VectorXi max_k(Eigen::VectorXd &vec, int k, bool sort_by_value)
 {
     Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
-    auto rule = [vec](int i, int j) -> bool {
+    auto rule = [vec](int i, int j) -> bool
+    {
         return vec(i) > vec(j);
     }; // sort rule
     std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
@@ -308,7 +310,8 @@ Eigen::VectorXi max_k(Eigen::VectorXd &vec, int k, bool sort_by_value)
 Eigen::VectorXi max_k_2(Eigen::VectorXd &vec, int k)
 {
     Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
-    auto rule = [vec](int i, int j) -> bool {
+    auto rule = [vec](int i, int j) -> bool
+    {
         return vec(i) > vec(j);
     }; // sort rule
     std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
@@ -634,15 +637,15 @@ void add_constant_column(Eigen::SparseMatrix<double> &X)
     }
 }
 
-void set_nonzeros(Eigen::MatrixXd &X, Eigen::MatrixXd &x)
-{
-    return;
-}
+// void set_nonzeros(Eigen::MatrixXd &X, Eigen::MatrixXd &x)
+// {
+//     return;
+// }
 
-void set_nonzeros(Eigen::SparseMatrix<double> &X, Eigen::SparseMatrix<double> &x)
-{
-    X.reserve(x.nonZeros() + x.rows());
-}
+// void set_nonzeros(Eigen::SparseMatrix<double> &X, Eigen::SparseMatrix<double> &x)
+// {
+//     X.reserve(x.nonZeros() + x.rows());
+// }
 
 void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::VectorXd &Z, Eigen::VectorXd &beta)
 {
