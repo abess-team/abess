@@ -433,14 +433,6 @@ void multinomial_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen:
 template <class T4>
 void multigaussian_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
 {
-    // beta = (X.adjoint() * X + lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
-
-    if (x.cols() == 0)
-    {
-        // coef0 = y.colwise().sum();
-        return;
-    }
-    // cout << "primary_fit 1" << endl;
     overload_ldlt(x, x, y, beta);
     // Eigen::MatrixXd XTX = X.transpose() * X;
     // beta = (XTX + lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).ldlt().solve(X.transpose() * y);
@@ -468,12 +460,6 @@ void logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
 #ifdef TEST
     clock_t t1 = clock();
 #endif
-    // cout << "primary_fit-----------" << endl;
-    if (x.cols() == 0)
-    {
-        coef0 = -log(1 / y.mean() - 1);
-        return;
-    }
 
     int n = x.rows();
     int p = x.cols();
@@ -559,11 +545,6 @@ void logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
 template <class T4>
 void lm_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
 {
-    if (x.cols() == 0)
-    {
-        coef0 = y.mean();
-        return;
-    }
     // beta = (X.adjoint() * X + lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
     Eigen::MatrixXd XTX = x.adjoint() * x + lambda * Eigen::MatrixXd::Identity(x.cols(), x.cols());
     beta = XTX.ldlt().solve(x.adjoint() * y);
@@ -680,11 +661,6 @@ void cox_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd
 #ifdef TEST
     clock_t t1 = clock();
 #endif
-    if (x.cols() == 0)
-    {
-        coef0 = 0.;
-        return;
-    }
 
     // cout << "primary_fit-----------" << endl;
     int n = x.rows();
