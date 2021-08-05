@@ -19,6 +19,18 @@ To make sure that `abess` package runs correctly,
 What's more, the newer version is recommended. So if you meet some 
 errors, please try to update the complier first.
 
+Besides, some may receive an error said "*error: Microsoft Visual C++ 14.0 is required*".
+You can get it with [Microsoft Visual C++ Build Tools](http://go.microsoft.com/fwlink/?LinkId=691126).
+After installing this tools, the error should be solved.
+
+#### Permission
+
+If you receive an error said "*Can't create or remove files in install directory*" during the installation, this may be caused by permission denied. The step below would help with it.
+
+- For Linux/MacOS: run `$ python setup.py install --user` or `$ sudo python setup.py install` instead.
+- For Windows: run the command as an administrator.
+
+
 ### Import failed
 
 #### Folder name

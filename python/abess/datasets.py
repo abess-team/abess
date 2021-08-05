@@ -15,7 +15,7 @@ def sample(p, k):
     return select
 
 
-def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None, censoring=True, c=1, scal=10, snr = None):
+def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None, censoring=True, c=1, scal=10, snr=None):
     """
     Generate a dataset with single response.
 
@@ -56,7 +56,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None, censoring=True, c
     snr: float, optional
         A numerical value controlling the signal-to-noise ratio (SNR) in gaussian data.
         Default: snr = None.
-    
+
     Returns
     -------
     x: array_like, shape(n, p)
@@ -225,7 +225,7 @@ def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho
     sparse_ratio: float, optional
         The sparse ratio of predictor matrix (x).
         Default: sparse_ratio = None.
-    
+
     Returns
     -------
     x: array_like, shape(n, p)

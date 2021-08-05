@@ -5,6 +5,7 @@ from .bess_base import bess_base
 import numpy as np
 import types
 
+
 def fix_docs(cls):
     # inherit the document from base class
     index = cls.__doc__.find("Examples\n    --------\n")
@@ -97,7 +98,7 @@ class abessLogistic(bess_base):
         For Logistic model, 
         the predict function returns a \code{dict} of \code{pr} and \code{y}, where \code{pr} is the probability of response variable is 1 and \code{y} is predicted to be 1 if \code{pr} > 0.5 else \code{y} is 0
         on given data.
-        
+
         Parameters
         ----------
         X : array-like of shape (n_samples, p_features)
@@ -105,7 +106,7 @@ class abessLogistic(bess_base):
 
         """
         X = self.new_data_check(X)
-        
+
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = np.dot(X, self.coef_) + intercept_
         y = np.zeros(xbeta.size)
@@ -127,10 +128,11 @@ class abessLogistic(bess_base):
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = np.dot(X, self.coef_) + intercept_
-        xbeta[xbeta>30] = 30
-        xbeta[xbeta<-30] = -30
+        xbeta[xbeta > 30] = 30
+        xbeta[xbeta < -30] = -30
         pr = np.exp(xbeta)/(1 + np.exp(xbeta))
         return (y * np.log(pr) + (np.ones(X.shape[0]) - y) * np.log(np.ones(X.shape[0]) - pr)).sum()
+
 
 @ fix_docs
 class abessLm(bess_base):
@@ -191,7 +193,7 @@ class abessLm(bess_base):
         For linear regression problem, 
         the predict function returns a numpy array of the prediction of the mean
         on given data.
-        
+
         Parameters
         ----------
         X : array-like of shape (n_samples, p_features)
@@ -202,7 +204,7 @@ class abessLm(bess_base):
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         return np.dot(X, self.coef_) + intercept_
-    
+
     def score(self, X, y):
         """
         Give new data, and it returns the prediction error.
@@ -272,13 +274,13 @@ class abessCox(bess_base):
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type
         )
-    
+
     def predict(self, X):
         """
         For Cox model, 
         the predict function returns the time-independent part of hazard function, i.e. :math:`\exp(X\\beta)`, 
         on given data.
-        
+
         Parameters
         ----------
         X : array-like of shape (n_samples, p_features)
@@ -288,7 +290,7 @@ class abessCox(bess_base):
         X = self.new_data_check(X)
 
         return np.exp(np.dot(X, self.coef_))
-    
+
     def score(self, X, y):
         """
         Give new data, and it returns C-index.
@@ -368,7 +370,7 @@ class abessPoisson(bess_base):
         For Poisson model, 
         the predict function returns a numpy array of the prediction of the mean of response,
         on given data.
-        
+
         Parameters
         ----------
         X : array-like of shape (n_samples, p_features)
@@ -379,8 +381,8 @@ class abessPoisson(bess_base):
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta_exp = np.exp(np.dot(X, self.coef_) + intercept_)
-        return xbeta_exp 
-    
+        return xbeta_exp
+
     def score(self, X, y):
         """
         Give new data, and it returns the prediction error.
@@ -454,13 +456,13 @@ class abessMultigaussian(bess_base):
             splicing_type=splicing_type
         )
         self.data_type = 1
-    
+
     def predict(self, X):
         """
         For Multigaussian model, 
         the predict function returns a numpy matrix of the prediction of the mean of responses,
         on given data.
-        
+
         Parameters
         ----------
         X : array-like of shape (n_samples, p_features)
@@ -469,9 +471,10 @@ class abessMultigaussian(bess_base):
         """
         X = self.new_data_check(X)
 
-        intercept_ = np.repeat(self.intercept_[np.newaxis,...], X.shape[0], axis=0)
+        intercept_ = np.repeat(
+            self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
         return np.dot(X, self.coef_) + intercept_
-    
+
     def score(self, X, y):
         """
         Give new data, and it returns prediction error.
@@ -543,7 +546,7 @@ class abessMultinomial(bess_base):
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type
         )
-    
+
     def predict_proba(self, X):
         """
         The predict_proba function is used to give the probabilities of new data begin assigned to different classes.
@@ -556,7 +559,8 @@ class abessMultinomial(bess_base):
         """
         X = self.new_data_check(X)
 
-        intercept_ = np.repeat(self.intercept_[np.newaxis,...], X.shape[0], axis=0)
+        intercept_ = np.repeat(
+            self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
         xbeta = np.dot(X, self.coef_) + intercept_
         eta = np.exp(xbeta)
         for i in range(X.shape[0]):
@@ -567,7 +571,7 @@ class abessMultinomial(bess_base):
         """
         For Multinomial model, 
         the predict function returns return the most possible class the given data may be.
-        
+
         Parameters
         ----------
         X : array-like of shape (n_samples, p_features)
@@ -576,10 +580,11 @@ class abessMultinomial(bess_base):
         """
         X = self.new_data_check(X)
 
-        intercept_ = np.repeat(self.intercept_[np.newaxis,...], X.shape[0], axis=0)
+        intercept_ = np.repeat(
+            self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
         xbeta = np.dot(X, self.coef_) + intercept_
         return np.argmax(xbeta)
-    
+
     def score(self, X, y):
         """
         Give new data, and it returns the entropy function.
@@ -592,10 +597,9 @@ class abessMultinomial(bess_base):
             Test response (dummy variables of real class). 
         """
         X, y = self.new_data_check(X, y)
-    
+
         pr = self.predict_proba(X)
         return np.sum(y * np.log(pr))
-
 
 
 # @fix_docs

@@ -11,7 +11,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LogisticRegression
 
-from scipy.sparse import coo_matrix 
+from scipy.sparse import coo_matrix
 
 # For Python >=3.6
 if sys.version_info[0] == 3 and sys.version_info[1] >= 6:
@@ -29,7 +29,8 @@ class TestClass:
         sigma = 1
         M = 1
         np.random.seed(2)
-        data = make_multivariate_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+        data = make_multivariate_glm_data(
+            family=family, n=n, p=p, k=k, rho=rho, M=M)
         data2 = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         data3 = make_multivariate_glm_data(
             family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
@@ -54,7 +55,7 @@ class TestClass:
                          primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=False, sparse_matrix=True)
         model3.fit(data.x, data.y)
 
-        model4 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001], 
+        model4 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
                          K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
                          exchange_num=2, tau=0.1 * np.log(n*p) / n,
                          primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=True, splicing_type=1)
@@ -99,14 +100,13 @@ class TestClass:
         model2.predict(data.x)
 
         model3 = abessLogistic(path_type="seq", support_size=support_size, ic_type='aic', is_screening=False, screening_size=30,  alpha=[0.001],
-                              K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
-                              exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
+                               K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+                               exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                               primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
 
         model.predict_proba(data.x)
-        
 
         nonzero_true = np.nonzero(data.coef_)[0]
         nonzero_fit = np.nonzero(model2.coef_)[0]
@@ -203,9 +203,9 @@ class TestClass:
         model.fit(data.x, data.y, group=group)
 
         model1 = abessPoisson(path_type="seq", support_size=support_size, ic_type='gic', is_screening=True, screening_size=20, alpha=[0.001],
-                             K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
-                             exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                             primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5)
+                              K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
+                              exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model1.fit(data.x, data.y, group=group)
 
@@ -318,7 +318,6 @@ class TestClass:
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-
         nonzero_true = np.nonzero(data.coef_)[0]
         nonzero_fit = np.nonzero(model.coef_)[0]
         print(nonzero_true)
@@ -343,7 +342,7 @@ class TestClass:
         # data3 = make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
-        support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
+        support_size = np.linspace(0, s_max, s_max+1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3, 0.4]
 
         model = abessLm()
@@ -370,7 +369,7 @@ class TestClass:
         # data3 = make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
-        support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
+        support_size = np.linspace(0, s_max, s_max+1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3, 0.4]
 
         model = abessLogistic()
@@ -381,7 +380,6 @@ class TestClass:
                         "alpha": alpha},
             cv=cv,
             n_jobs=5).fit(data.x, data.y)
-        
 
         assert gcv.best_params_["support_size"] == k
         assert gcv.best_params_["alpha"] == 0.
@@ -400,7 +398,7 @@ class TestClass:
         # data3 = make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
-        support_size = np.linspace(0, s_max, s_max+1, dtype = "int32")
+        support_size = np.linspace(0, s_max, s_max+1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3, 0.4]
 
         model = abessPoisson()
@@ -429,7 +427,7 @@ class TestClass:
         # data3 = make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 10
-        support_size = np.linspace(1, s_max, s_max+1, dtype = "int32")
+        support_size = np.linspace(1, s_max, s_max+1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3]
 
         model = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=20,
@@ -446,7 +444,7 @@ class TestClass:
 
         assert gcv.best_params_["support_size"] == k
         assert gcv.best_params_["alpha"] == 0.
- 
+
     # def test_multigaussian_sklearn(self):
     #     n = 100
     #     p = 20
@@ -476,7 +474,7 @@ class TestClass:
 
     #     assert gcv.best_params_["support_size"] == k
     #     assert gcv.best_params_["alpha"] == 0.
-  
+
     # def test_multinomial_sklearn(self):
     #     n = 100
     #     p = 20
@@ -524,19 +522,19 @@ class TestClass:
 
         # Check1: give X
         model = abessPCA(support_size=range(s, s + 1))
-        model.fit(X, is_normal = False)
+        model.fit(X, is_normal=False)
         coef1 = np.nonzero(model.coef_)[0]
 
         assert len(coef1) == s
 
         model = abessPCA(support_size=s)    # give integer
-        model.fit(X, is_normal = False)
+        model.fit(X, is_normal=False)
         coef1 = np.nonzero(model.coef_)[0]
 
         assert len(coef1) == s
 
         # Check2: give Sigma
-        model.fit(Sigma = X.T.dot(X))
+        model.fit(Sigma=X.T.dot(X))
         coef2 = np.nonzero(model.coef_)[0]
 
         assert len(coef2) == s
@@ -550,35 +548,35 @@ class TestClass:
 
         # Check4: multi
         model = abessPCA(support_size=range(s, s + 1))
-        model.fit(X, is_normal = False, number = 3)
+        model.fit(X, is_normal=False, number=3)
         assert (model.coef_.shape[1] == 3)
 
         for i in range(3):
             coef4 = np.nonzero(model.coef_[:, i])[0]
             assert (len(coef4) == s)
-        
+
         model.ratio(X)
-        
+
         # Check5: sparse
-        model = abessPCA(support_size = [s], sparse_matrix = True)
+        model = abessPCA(support_size=[s], sparse_matrix=True)
         model.fit(X, is_normal=False)
         coef5 = np.nonzero(model.coef_)[0]
-        assert (coef5 == coef1).all() 
+        assert (coef5 == coef1).all()
 
-        temp = coo_matrix(([1,2,3], ([0,1,2],[0,1,2])))
-        model = abessPCA(sparse_matrix = True)
+        temp = coo_matrix(([1, 2, 3], ([0, 1, 2], [0, 1, 2])))
+        model = abessPCA(sparse_matrix=True)
         model.fit(temp)
 
         # Check6: cv
-        model = abessPCA(support_size = [s], is_cv = True)
+        model = abessPCA(support_size=[s], is_cv=True)
         model.fit(X, is_normal=False)
         coef6 = np.nonzero(model.coef_)[0]
-        assert (coef6 == coef1).all() 
+        assert (coef6 == coef1).all()
 
-        model = abessPCA(support_size = [s], sparse_matrix = True, is_cv = True)
+        model = abessPCA(support_size=[s], sparse_matrix=True, is_cv=True)
         model.fit(X, is_normal=False)
         coef7 = np.nonzero(model.coef_)[0]
-        assert (coef7 == coef1).all() 
+        assert (coef7 == coef1).all()
 
         # Check7: ratio & transform
         model.ratio(X)
@@ -587,11 +585,11 @@ class TestClass:
 
         # Check8: ic, alpha
         for ic in ['aic', 'bic', 'ebic', 'gic']:
-            model = abessPCA(ic_type = ic, alpha = 0.1)
+            model = abessPCA(ic_type=ic, alpha=0.1)
             model.fit(X)
-        
+
         # Check9: screening
-        model = abessPCA(is_screening = True, screening_size=p-1)
+        model = abessPCA(is_screening=True, screening_size=p-1)
         model.fit(X)
 
         # Check10: error arg
@@ -604,29 +602,29 @@ class TestClass:
             assert False
 
         try:
-            model = abessPCA(ic_type = 'other')
+            model = abessPCA(ic_type='other')
             model.fit(X)
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
             model = abessPCA()
-            model.fit(X, group = [[1]])
+            model.fit(X, group=[[1]])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
             model = abessPCA()
-            model.fit(X, group = [1])
+            model.fit(X, group=[1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
             model = abessPCA(support_size=[p+1])
             model.fit(X)
@@ -634,7 +632,7 @@ class TestClass:
             print(e)
         else:
             assert False
-        
+
         try:
             model = abessPCA(is_screening=True, screening_size=p+1)
             model.fit(X)
@@ -642,15 +640,16 @@ class TestClass:
             print(e)
         else:
             assert False
-        
+
         try:
-            model = abessPCA(is_screening=True, screening_size=p-1, support_size=p)
+            model = abessPCA(is_screening=True,
+                             screening_size=p-1, support_size=p)
             model.fit(X)
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
             model = abessPCA(exchange_num=-1)
             model.fit()
@@ -942,7 +941,6 @@ class TestClass:
         # assert model.coef_[nonzero_fit] == approx(reg.coef_, rel=1e-5, abs=1e-5)
         assert (nonzero_true == nonzero_fit).all()
 
-
     def test_gaussian_sparse_matrix(self):
         n = 100
         p = 20
@@ -952,7 +950,8 @@ class TestClass:
         sigma = 1
         M = 1
         np.random.seed(2)
-        data = make_multivariate_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
+        data = make_multivariate_glm_data(
+            family=family, n=n, p=p, k=k, rho=rho, M=M)
         data2 = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         data3 = make_multivariate_glm_data(
             family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
@@ -966,13 +965,14 @@ class TestClass:
         model.predict(data.x)
 
         model2 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                        K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-                        exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                        primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True, sparse_matrix=True)
-        model2.fit(data.x + 1, data.y +1)
+                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                         exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True, sparse_matrix=True)
+        model2.fit(data.x + 1, data.y + 1)
 
         assert model.coef_ == approx(model2.coef_, rel=1e-5, abs=1e-5)
-        assert model.intercept_ == approx(model2.intercept_, rel=1e-5, abs=1e-5)
+        assert model.intercept_ == approx(
+            model2.intercept_, rel=1e-5, abs=1e-5)
 
     def test_binomial_sparse_matrix(self):
         n = 100
@@ -994,15 +994,16 @@ class TestClass:
         model.fit(data.x, data.y, group=group)
 
         model2 = abessLogistic(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=30,
-                              K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-                              exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5, sparse_matrix=True)
+                               K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                               exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                               primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
         model2.predict(data.x)
 
         assert model.coef_ == approx(model2.coef_, rel=1e-5, abs=1e-5)
-        assert model.intercept_ == approx(model2.intercept_, rel=1e-5, abs=1e-5)
+        assert model.intercept_ == approx(
+            model2.intercept_, rel=1e-5, abs=1e-5)
 
     def test_cox_sparse_matrix(self):
         n = 100
@@ -1026,14 +1027,15 @@ class TestClass:
         model.predict(data.x)
 
         model2 = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
-                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-                         exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                         primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
+                          K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                          exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                          primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model2.fit(data.x + 1, data.y, group=group)
 
         assert model.coef_ == approx(model2.coef_, rel=1e-5, abs=1e-5)
-        assert model.intercept_ == approx(model2.intercept_, rel=1e-5, abs=1e-5)
+        assert model.intercept_ == approx(
+            model2.intercept_, rel=1e-5, abs=1e-5)
 
     def test_poisson_sparse_matrix(self):
         # to do
@@ -1058,15 +1060,16 @@ class TestClass:
         model.fit(data.x + 1, data.y, group=group)
 
         model2 = abessPoisson(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
-                             K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-                             exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                             primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
+                              K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                              exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model2.fit(data.x + 1, data.y, group=group)
         model2.predict(data.x)
 
         assert model.coef_ == approx(model2.coef_, rel=1e-1, abs=1e-1)
-        assert model.intercept_ == approx(model2.intercept_, rel=1e-1, abs=1e-1)
+        assert model.intercept_ == approx(
+            model2.intercept_, rel=1e-1, abs=1e-1)
 
     def test_mulgaussian_sparse_matrix(self):
         n = 100
@@ -1088,14 +1091,16 @@ class TestClass:
         model.fit(data.x, data.y, group=group)
 
         model2 = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
-                                   K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-                                   exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                                   primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True, sparse_matrix=True)
+                                    K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                                    exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                                    primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-        assert model.coef_[np.nonzero(model.coef_)[0]] == approx(model2.coef_[np.nonzero(model2.coef_)[0]], rel=1e-1, abs=1e-1)
-        assert model.intercept_ == approx(model2.intercept_, rel=1e-1, abs=1e-1)
+        assert model.coef_[np.nonzero(model.coef_)[0]] == approx(
+            model2.coef_[np.nonzero(model2.coef_)[0]], rel=1e-1, abs=1e-1)
+        assert model.intercept_ == approx(
+            model2.intercept_, rel=1e-1, abs=1e-1)
 
     def test_mulnomial_sparse_matrix(self):
         n = 100
@@ -1117,14 +1122,16 @@ class TestClass:
         model.fit(data.x, data.y, group=group)
 
         model2 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
-                                 K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-                                 exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                                 primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
+                                  K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                                  exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-        assert model.coef_[np.nonzero(model.coef_)[0]] == approx(model2.coef_[np.nonzero(model2.coef_)[0]], rel=1e-1, abs=1e-1)
-        assert model.intercept_ == approx(model2.intercept_, rel=1e-1, abs=1e-1)
+        assert model.coef_[np.nonzero(model.coef_)[0]] == approx(
+            model2.coef_[np.nonzero(model2.coef_)[0]], rel=1e-1, abs=1e-1)
+        assert model.intercept_ == approx(
+            model2.intercept_, rel=1e-1, abs=1e-1)
 
     def test_wrong_arg(self):
         n = 100
@@ -1136,50 +1143,51 @@ class TestClass:
         M = 1
         np.random.seed(2)
         model5 = abessLm(path_type="other", support_size=range(0, 5), ic_type='dic', is_screening=True, screening_size=20,
-                        K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
-                        exchange_num=2, tau=0.1 * np.log(n*p) / n,
-                        primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True)
-        
+                         K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                         exchange_num=2, tau=0.1 * np.log(n*p) / n,
+                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True)
+
     def test_gendata(self):
         n = 100
         p = 20
         k = 10
         families = ['gaussian', 'binomial', 'poisson', 'cox']
         for f in families:
-            data = make_glm_data(n = n, p = p, family = f, k = k)
+            data = make_glm_data(n=n, p=p, family=f, k=k)
             assert data.x.shape[0] == n and data.x.shape[1] == p and data.y.shape[0] == n
 
-            data2 = make_glm_data(n = n, p = p, family = f, k = k, coef_ = data.coef_)
+            data2 = make_glm_data(n=n, p=p, family=f, k=k, coef_=data.coef_)
             assert (data.coef_ == data2.coef_).all()
-        
+
         # no-censoring Cox
-        data = make_glm_data(n = n, p = p, k = k, family = 'cox', censoring = False)
+        data = make_glm_data(n=n, p=p, k=k, family='cox', censoring=False)
 
         # snr gaussian
-        data = make_glm_data(n = n, p = p, k = k, family = 'gaussian', snr = 0.05)
+        data = make_glm_data(n=n, p=p, k=k, family='gaussian', snr=0.05)
 
         # multi-response
-        data = make_multivariate_glm_data(n = n, p = p, k = k, M = 2)
+        data = make_multivariate_glm_data(n=n, p=p, k=k, M=2)
         assert data.x.shape[0] == n and data.x.shape[1] == p and data.y.shape[0] == n and data.y.shape[1] == 2
 
-        data2 = make_multivariate_glm_data(n = n, p = p, k = k, M = 2, coef_ = data.coef_)
+        data2 = make_multivariate_glm_data(
+            n=n, p=p, k=k, M=2, coef_=data.coef_)
         assert (data.coef_ == data2.coef_).all()
 
         # error input
         try:
-            make_glm_data(n = n, p = p, k = k, family = 'other')
+            make_glm_data(n=n, p=p, k=k, family='other')
         except ValueError:
             assert True
         else:
             assert False
 
         try:
-            make_multivariate_glm_data(n = n, p = p, k = k, family = 'other')
+            make_multivariate_glm_data(n=n, p=p, k=k, family='other')
         except ValueError:
             assert True
         else:
             assert False
-    
+
     def test_check(self):
 
         # X and y
@@ -1190,108 +1198,108 @@ class TestClass:
             print(e)
         else:
             assert False
-        
+
         try:
             model.fit([[1, 1, 1]], [1, 2])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
             model.fit([1], [1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model.fit(X = [[1]])
+            model.fit(X=[[1]])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model.fit(y = [1])
+            model.fit(y=[1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
-        x = coo_matrix(([1,2,3], ([0,1,2],[0,1,2])))
+
+        x = coo_matrix(([1, 2, 3], ([0, 1, 2], [0, 1, 2])))
         y = [1, 2, 3]
         model.fit(x, y)
 
         # Sigma
         model = abessPCA()
         try:
-            model.fit(Sigma = [['c']])
+            model.fit(Sigma=[['c']])
         except ValueError as e:
             print(e)
         else:
             assert False
 
         try:
-            model.fit(Sigma = [1])
+            model.fit(Sigma=[1])
         except ValueError as e:
             print(e)
         else:
-            assert False 
+            assert False
 
         try:
-            model.fit(Sigma = [[np.nan]])
+            model.fit(Sigma=[[np.nan]])
         except ValueError as e:
             print(e)
         else:
-            assert False 
+            assert False
 
         try:
-            model.fit(Sigma = [[1, 0], [1, 0]])
+            model.fit(Sigma=[[1, 0], [1, 0]])
         except ValueError as e:
             print(e)
         else:
-            assert False   
-        
+            assert False
+
         try:
-            model.fit(Sigma = [[-1, 0], [0, -1]])
+            model.fit(Sigma=[[-1, 0], [0, -1]])
         except ValueError as e:
             print(e)
         else:
-            assert False   
-        
+            assert False
+
         # group & weight
         model = abessLm()
         try:
-            model.fit([[1]], [1], weight = ['c'])
+            model.fit([[1]], [1], weight=['c'])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model.fit([[1]], [1], weight = [1, 2])
+            model.fit([[1]], [1], weight=[1, 2])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model.fit([[1]], [1], weight = [[1]])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False    
-        
-        try:
-            model.fit([[1]], [1], group = [1, 2])
+            model.fit([[1]], [1], weight=[[1]])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model.fit([[1]], [1], group = [[1]])
+            model.fit([[1]], [1], group=[1, 2])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model.fit([[1]], [1], group=[[1]])
         except ValueError as e:
             print(e)
         else:
@@ -1299,96 +1307,89 @@ class TestClass:
 
         # others
         try:
-            model = abessLm(path_type = 'other')
+            model = abessLm(path_type='other')
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model = abessLm(path_type = 'seq')
+            model = abessLm(path_type='seq')
             model.fit([[1]], [1])
             model.fit([[1], [2]], [1, 2])
             model.fit([[1, 1], [2, 2]], [1, 2])
 
-            model = abessLm(path_type = 'seq', support_size = [3])
+            model = abessLm(path_type='seq', support_size=[3])
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model = abessLm(path_type = 'pgs')
+            model = abessLm(path_type='pgs')
             model.fit([[1]], [1])
 
-            model = abessLm(path_type = 'pgs', s_min = 1, s_max = 0)
+            model = abessLm(path_type='pgs', s_min=1, s_max=0)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model = abessLm(path_type = 'pgs', lambda_min = 1, lambda_max = 0)
+            model = abessLm(path_type='pgs', lambda_min=1, lambda_max=0)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model = abessLm(path_type = 'pgs', K_max = 1)
+            model = abessLm(path_type='pgs', K_max=1)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model = abessLm(ic_type = 'other')
+            model = abessLm(ic_type='other')
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model = abessLm(exchange_num = -1)
+            model = abessLm(exchange_num=-1)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model = abessLm(is_screening = True)
-            model = abessLm(is_screening = True, screening_size = 3)
+            model = abessLm(is_screening=True)
+            model = abessLm(is_screening=True, screening_size=3)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model = abessLm(is_screening = True, support_size = [2], screening_size = 1)
+            model = abessLm(is_screening=True, support_size=[
+                            2], screening_size=1)
             model.fit([[1, 2, 3]], [1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model = abessLm(primary_model_fit_max_iter = 0.5)
-            model.fit([[1]], [1])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-        
-        try:
-            model = abessLm(primary_model_fit_epsilon = -1)
+            model = abessLm(primary_model_fit_max_iter=0.5)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -1396,7 +1397,7 @@ class TestClass:
             assert False
 
         try:
-            model = abessLm(primary_model_fit_epsilon = -1)
+            model = abessLm(primary_model_fit_epsilon=-1)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -1404,51 +1405,57 @@ class TestClass:
             assert False
 
         try:
-            model = abessLm(thread = -1)
+            model = abessLm(primary_model_fit_epsilon=-1)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model = abessLm(splicing_type = -1)
+            model = abessLm(thread=-1)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
+        try:
+            model = abessLm(splicing_type=-1)
+            model.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
         try:
             model = abessPCA()
-            model.fit([[1]], [1], number = -1)
+            model.fit([[1]], [1], number=-1)
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         # full
-        model = abessLm(support_size = [1])
+        model = abessLm(support_size=[1])
         model.fit([[1]], [1])
-        
-        
+
     def test_score(self):
         model = abessLm()
         model.fit([[1]], [1])
-        model.score([[1]] , [1])
+        model.score([[1]], [1])
 
         model = abessMultigaussian()
         model.fit([[1]], [[1, 1]])
         model.score([[1]], [[1, 1]])
 
-        
         model = abessLogistic()
         model.fit([[1]], [1])
         model.score([[1]], [1])
 
         model = abessMultinomial()
         model.fit([[1]], [[1, 1]])
-        model.score([[1]], [[1, 1]])   
+        model.score([[1]], [[1, 1]])
 
         try:
             model = abessLm()
@@ -1458,7 +1465,7 @@ class TestClass:
             print(e)
         else:
             assert False
-        
+
         try:
             model = abessLm()
             model.fit([[1]], [1])
@@ -1467,7 +1474,7 @@ class TestClass:
             print(e)
         else:
             assert False
-        
+
         try:
             model = abessCox()
             model.fit([[1]], [[1, 1]])
@@ -1484,5 +1491,4 @@ class TestClass:
         except ValueError as e:
             print(e)
         else:
-            assert False 
-            
+            assert False

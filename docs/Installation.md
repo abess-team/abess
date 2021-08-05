@@ -47,11 +47,6 @@ $ python setup.py install
 
 If it finishes with "*Finished processing dependencies for abess*", the installation is successful.
 
-> If you receive an error said "*Can't create or remove files in install directory*", this may be caused by permission denied. The step below may help with it.
->
-> - For Linux/MacOS: run `$ python setup.py install --user` or `$ sudo python setup.py install` instead.
-> - For Windows: run the command as administrator.
-
 ### R
 To install the development version from GitHub, run the following code in R console:
 
