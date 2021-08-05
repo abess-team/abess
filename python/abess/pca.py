@@ -374,3 +374,7 @@ class abessPCA(bess_base):
             self.ic_ = None
 
         return self
+
+    def fit_transform(self, X=None, is_normal=True, group=None, Sigma=None, number=1):
+        self.fit(X, is_normal, group, Sigma, number)
+        return X.dot(self.coef_)
