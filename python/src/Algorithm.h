@@ -213,6 +213,12 @@ public:
 
   int get_l() { return this->l; }
 
+  bool check_ill_condition(Eigen::MatrixXd &M){
+    Eigen::JacobiSVD<MatrixXd> svd(M);
+    double cond = svd.singularValues()(0) / svd.singularValues()(svd.singularValues().size()-1);
+    return (cond > 1e+6) ? true : false;
+  }
+
   void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::VectorXi &status, Eigen::MatrixXd sigma)
   {
     // std::cout << "fit" << endl;
@@ -237,7 +243,13 @@ public:
     if (N == T0)
     {
       this->A_out = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
-      this->primary_model_fit(train_x, train_y, train_weight, this->beta, this->coef0, DBL_MAX, this->A_out, g_index, g_size);
+      T2 beta_old = this->beta;
+      T3 coef0_old = this->coef0;
+      bool success = this->primary_model_fit(train_x, train_y, train_weight, this->beta, this->coef0, DBL_MAX, this->A_out, g_index, g_size);
+      if (!success){
+        this->beta = beta_old;
+        this->coef0 = coef0_old;
+      }
       this->train_loss = neg_loglik_loss(train_x, train_y, train_weight, this->beta, this->coef0, this->A_out, g_index, g_size);
       this->effective_number = effective_number_of_parameter(train_x, train_x, train_y, train_weight, this->beta, this->beta, this->coef0);
       return;
@@ -294,7 +306,13 @@ public:
     A_ind = find_ind(A, g_index, g_size, p, N);
     X_A = X_seg(train_x, train_n, A_ind);
     slice(this->beta, A_ind, beta_A);
-    this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
+    T2 beta_old = beta_A;
+    T3 coef0_old = this->coef0;
+    bool success = this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
+    if (!success){
+        this->beta = beta_old;
+        this->coef0 = coef0_old;
+      }
     slice_restore(beta_A, A_ind, this->beta);
     // }
 
@@ -469,9 +487,12 @@ public:
       slice(this->beta_warmstart, A_ind_exchage, beta_A_exchange);
       coef0_A_exchange = this->coef0_warmstart;
 
-      primary_model_fit(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, L0, A_exchange, g_index, g_size);
-
-      L1 = neg_loglik_loss(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, A_exchange, g_index, g_size);
+      bool success = primary_model_fit(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, L0, A_exchange, g_index, g_size);
+      if (success){
+        L1 = neg_loglik_loss(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, A_exchange, g_index, g_size);
+      }else{
+        L1 = L0 + 1;
+      }
 
       // cout << "L0: " << L0 << " L1: " << L1 << endl;
       if (L0 - L1 > tau)
@@ -564,7 +585,7 @@ public:
 
   virtual void sacrifice(T4 &X, T4 &XA, T1 &y, T2 &beta, T2 &beta_A, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd) = 0;
 
-  virtual void primary_model_fit(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) = 0;
+  virtual bool primary_model_fit(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) = 0;
 
   virtual double effective_number_of_parameter(T4 &X, T4 &XA, T1 &y, Eigen::VectorXd &weights, T2 &beta, T2 &beta_A, T3 &coef0) = 0;
 };
@@ -577,7 +598,7 @@ public:
 
   ~abessLogistic(){};
 
-  void primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
 #ifdef TEST
     clock_t t1 = clock();
@@ -586,7 +607,7 @@ public:
     if (x.cols() == 0)
     {
       coef0 = -log(1 / y.mean() - 1);
-      return;
+      return true;
     }
 
     int n = x.rows();
@@ -691,6 +712,7 @@ public:
         }
 
         Eigen::MatrixXd XTX = 2 * this->lambda_level * lambdamat + X_new.transpose() * X;
+        if (this->check_ill_condition(XTX)) return false;
         beta0 = XTX.ldlt().solve(X_new.transpose() * Z);
 
         // overload_ldlt(X_new, X, Z, beta0);
@@ -731,6 +753,7 @@ public:
 #endif
     beta = beta0.tail(p).eval();
     coef0 = beta0(0);
+    return true;
   };
 
   double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
@@ -876,7 +899,7 @@ public:
 
   ~abessLm(){};
 
-  void primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
     int n = x.rows();
     int p = x.cols();
@@ -887,10 +910,12 @@ public:
     add_constant_column(X);
     // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
     Eigen::MatrixXd XTX = X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
+    if (this->check_ill_condition(XTX)) return false;
     Eigen::VectorXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
-
+    
     beta = beta0.tail(p).eval();
     coef0 = beta0(0);
+    return true;
 
     // if (X.cols() == 0)
     // {
@@ -1029,7 +1054,7 @@ public:
 
   ~abessPoisson(){};
 
-  void primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
 #ifdef TEST
     clock_t t1 = clock();
@@ -1065,6 +1090,7 @@ public:
       }
       z = eta + (y - expeta).cwiseQuotient(expeta);
       Eigen::MatrixXd XTX = X_new.transpose() * X + 2 * this->lambda_level * lambdamat;
+      if (this->check_ill_condition(XTX)) return false;
       beta0 = (XTX).ldlt().solve(X_new.transpose() * z);
       eta = X * beta0;
       for (int i = 0; i <= n - 1; i++)
@@ -1096,6 +1122,7 @@ public:
 #endif
     beta = beta0.tail(p).eval();
     coef0 = beta0(0);
+    return true;
   };
 
   double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
@@ -1246,7 +1273,7 @@ public:
 
   ~abessCox(){};
 
-  void primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
 #ifdef TEST
     clock_t t1 = clock();
@@ -1254,7 +1281,7 @@ public:
     if (x.cols() == 0)
     {
       coef0 = 0.;
-      return;
+      return true;
     }
 
     // cout << "primary_fit-----------" << endl;
@@ -1331,15 +1358,17 @@ public:
       std::cout << "beta0.rows(): " << beta0.rows() << endl;
       std::cout << "beta0.cols(): " << beta0.cols() << endl;
 #endif
+      Eigen::MatrixXd temp = x.transpose() * h * x;
       if (this->approximate_Newton)
       {
         // d = g.cwiseQuotient((x.transpose() * h * x + 2 * this->lambda_level * lambdamat).diagonal());
-        d = (x.transpose() * g - 2 * this->lambda_level * beta0).cwiseQuotient((x.transpose() * h * x).diagonal());
+        d = (x.transpose() * g - 2 * this->lambda_level * beta0).cwiseQuotient(temp.diagonal());
       }
       else
       {
         // d = (x.transpose() * h * x + 2 * this->lambda_level * lambdamat).ldlt().solve(g);
-        d = (x.transpose() * h * x).ldlt().solve(x.transpose() * g - 2 * this->lambda_level * beta0);
+        if (this->check_ill_condition(temp)) return false;
+        d = temp.ldlt().solve(x.transpose() * g - 2 * this->lambda_level * beta0);
       }
 
 #ifdef TEST
@@ -1413,7 +1442,7 @@ public:
         this->cox_hessian = h;
         this->cox_g = g;
         // cout << "condition1" << endl;
-        return;
+        return true;
       }
 
       if (loglik1 > loglik0)
@@ -1432,7 +1461,7 @@ public:
         this->cox_hessian = h;
         this->cox_g = g;
         // cout << "condition2" << endl;
-        return;
+        return true;
       }
     }
 #ifdef TEST
@@ -1442,6 +1471,7 @@ public:
 #endif
 
     beta = beta0;
+    return true;
   };
 
   double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
@@ -1613,7 +1643,7 @@ public:
 
   ~abessMLm(){};
 
-  void primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
     // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
 
@@ -1627,10 +1657,12 @@ public:
     add_constant_column(X);
     // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
     Eigen::MatrixXd XTX = X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
+    if (this->check_ill_condition(XTX)) return false;
     Eigen::MatrixXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
-
+    
     beta = beta0.block(1, 0, p, M);
     coef0 = beta0.row(0).eval();
+    return true;
     // if (X.cols() == 0)
     // {
     //   // coef0 = y.colwise().sum();
@@ -1784,7 +1816,7 @@ public:
 
   ~abessMultinomial(){};
 
-  void primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
 #ifdef TEST
     clock_t t1 = clock();
@@ -1826,8 +1858,9 @@ public:
       // ConjugateGradient<MatrixXd, Lower | Upper> cg;
       // cg.compute(X.adjoint() * X);
       Eigen::MatrixXd XTX = X.transpose() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
+      if (this->check_ill_condition(XTX)) return false;
       Eigen::MatrixXd invXTX = XTX.ldlt().solve(Eigen::MatrixXd::Identity(p + 1, p + 1));
-
+      
       // cout << "y: " << y.rows() << " " << y.cols() << endl;
       // cout << "Pi: " << Pi.rows() << " " << Pi.cols() << endl;
 
@@ -1985,8 +2018,9 @@ public:
       std::cout << "primary_model_fit 10" << endl;
       cout << "Xbeta: " << Xbeta << endl;
 #endif
-
+      if (this->check_ill_condition(W)) return false;
       Eigen::VectorXd Z = Xbeta + W.ldlt().solve(res);
+      
 #ifdef TEST
       std::cout << "primary_model_fit 11" << endl;
 #endif
@@ -2002,6 +2036,7 @@ public:
 #ifdef TEST
         std::cout << "primary_model_fit 3: " << j << endl;
 #endif
+        if (this->check_ill_condition(XTWX)) return false;
         beta0_tmp = XTWX.ldlt().solve(XTW * Z);
         for (int m1 = 0; m1 < M; m1++)
         {
@@ -2092,6 +2127,7 @@ public:
           Xbeta.segment(m1 * n, n) = X * beta0.col(m1).eval();
         }
 
+        if (this->check_ill_condition(W)) return false;
         Z = Xbeta + W.ldlt().solve(res);
       }
     }
@@ -2104,6 +2140,7 @@ public:
 
     beta = beta0.block(1, 0, p, M);
     coef0 = beta0.row(0).eval();
+    return true;
   };
 
   double neg_loglik_loss(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
@@ -2358,18 +2395,18 @@ public:
     return SA;
   }
 
-  void primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
 #ifdef TEST
     cout << "<< SPCA primary_model_fit >>" << endl;
 #endif
     int p = x.cols();
     if (p == 0)
-      return;
+      return true;
     if (p == 1)
     {
       beta << 1;
-      return;
+      return true;
     }
 
     MatrixXd Y = SigmaA(A, g_index, g_size);
@@ -2385,13 +2422,15 @@ public:
     if (eig.info() == SUCCESSFUL)
     {
       temp = eig.eigenvectors(1);
+    }else{
+      return false;
     }
 
     beta = temp.col(0);
 #ifdef TEST
     cout << "<< SPCA primary_model_fit end>>" << endl;
 #endif
-    return;
+    return true;
   };
 
   double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
