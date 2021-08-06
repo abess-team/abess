@@ -13,6 +13,7 @@ This page contains links to all the Python related documents on Python package.
     advanced_features
     ComputationalImprove
     work_with_sklearn
+    algorithm
     power_of_abess
     
 

@@ -1,6 +1,6 @@
 # Power of abess
 
-In this part, we are going to explore the power of the abess package using simulated data. We compare the abess package with popular Python packages: [scikit-learn](https://scikit-learn.org/stable/supervised_learning.html#supervised-learning) for linear and logistic regressions in the following section. Actually, we also compare with [python-glmnet](https://github.com/civisanalytics/python-glmnet), [statsmodels](https://github.com/statsmodels/statsmodels) and [L0bnb][https://github.com/alisaab/l0bnb], but the python-glmnet presents a poor prediction error, the statsmodels runs slow and the L0bnb cannot adaptively choose sparsity level. So their results are not showed here. 
+In this part, we are going to explore the power of the abess package using simulated data. We compare the abess package with popular Python packages: [scikit-learn](https://scikit-learn.org/stable/supervised_learning.html#supervised-learning) for linear and logistic regressions in the following section. Actually, we also compare with [python-glmnet](https://github.com/civisanalytics/python-glmnet), [statsmodels](https://github.com/statsmodels/statsmodels) and [L0bnb](https://github.com/alisaab/l0bnb), but the python-glmnet presents a poor prediction error, the statsmodels runs slow and the L0bnb cannot adaptively choose sparsity level. So their results are not showed here. 
 
 ## Simulation
 
