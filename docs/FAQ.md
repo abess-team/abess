@@ -19,9 +19,8 @@ To make sure that `abess` package runs correctly,
 What's more, the newer version is recommended. So if you meet some 
 errors, please try to update the complier first.
 
-Besides, some may receive an error said "*error: Microsoft Visual C++ 14.0 is required*".
-You can get it with [Microsoft Visual C++ Build Tools](http://go.microsoft.com/fwlink/?LinkId=691126).
-After installing this tools, the error should be solved.
+Besides, in Windows, you may receive an error said "*error: Microsoft Visual C++ \*version\* is required*". An [article](https://wiki.python.org/moin/WindowsCompilers) may do help with it
+After installing the related version of Microsoft Visual C++, the error should be solved.
 
 #### Permission
 
