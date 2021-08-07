@@ -1,5 +1,7 @@
 destination: docs
 
+url: https://abess-team.github.io/abess/
+
 repo:
   url:
     home: https://github.com/abess-team/abess/
@@ -14,6 +16,9 @@ home:
 template:
   params:
     bootswatch: cerulean
+    docsearch:
+      api_key: d32715b0e35635336aba6377dd751e21
+      index_name: abess
 
 reference:
 - title: Overview
