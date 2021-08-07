@@ -36,13 +36,13 @@ Before installing abess itself, some dependencies should be installed first: `sw
 
 - **Linux**: `$ sudo apt install swig bash mingw-w64` (for Ubuntu, but other Linux systems are similar);
 - **Windows**: `$ choco install swig mingw git ` (using [Chocolatey](https://community.chocolatey.org/packages)), or manually install the software and add them into PATH;
-- **MacOS**: `$ brew install swig mingw-w64 bash` (using [brew](https://brew.sh/)).
+- **MacOS**: `$ brew install swig mingw-w64 bash` (using [Homebrew](https://brew.sh/)).
 
 After that, you can manually install abess by conducting command:
 
 ```bash
 $ cd ./python
-$ python setup.py install
+$ python setup.py install --user
 ```
 
 If it finishes with "*Finished processing dependencies for abess*", the installation is successful.

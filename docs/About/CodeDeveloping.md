@@ -211,4 +211,4 @@ New Python code...
 Please don’t restyle code that has nothing to do with your code.
 
 ### Test cases
-We use [testthat](cran.r-project.org/web/packages/testthat) for unit tests in R and [pytest](https://pypi.org/project/pytest/) in python. Contributions with test cases included are easier to accept.
+We use [testthat](https://cran.r-project.org/web/packages/testthat) for unit tests in R and [pytest](https://pypi.org/project/pytest/) in python. Contributions with test cases included are easier to accept.
