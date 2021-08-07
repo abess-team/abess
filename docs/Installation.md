@@ -36,13 +36,13 @@ Before installing abess itself, some dependencies should be installed first: `sw
 
 - **Linux**: `$ sudo apt install swig bash mingw-w64` (for Ubuntu, but other Linux systems are similar);
 - **Windows**: `$ choco install swig mingw git ` (using [Chocolatey](https://community.chocolatey.org/packages)), or manually install the software and add them into PATH;
-- **MacOS**: `$ brew install swig mingw-w64 bash` (using [brew](https://brew.sh/)).
+- **MacOS**: `$ brew install swig mingw-w64 bash` (using [Homebrew](https://brew.sh/)).
 
 After that, you can manually install abess by conducting command:
 
 ```bash
 $ cd ./python
-$ python setup.py install
+$ python setup.py install --user
 ```
 
 If it finishes with "*Finished processing dependencies for abess*", the installation is successful.
@@ -92,20 +92,27 @@ To enable OpenMP:
 Some [basic Python packages](https://github.com/abess-team/abess/blob/master/python/setup.py#:~:text=install_requires%3D%5B,%5D%2C) are required for abess. Actually, they can be found on 
 `abess/python/setup.py` and automatically installed during the installation.
 
-```bash
-$ pip install numpy scipy sklearn
-```
+- [numpy](https://pypi.org/project/numpy/): the fundamental package for array computing with Python.
+- [scipy](https://pypi.org/project/scipy/): work with NumPy arrays, and provides many user-friendly and efficient numerical routines.
+- [scikit-learn](https://pypi.org/project/scikit-learn/): a Python module for machine learning built on top of SciPy. 
+
+Furthermore, if you want to develop the Python packages, some additional packages should be installed:
+
+- [pytest](https://pypi.org/project/pytest/): simple powerful testing with Python.
+- [Sphinx](https://pypi.org/project/Sphinx/): develop the Python documentation.
+    - [nbsphinx](https://pypi.org/project/nbsphinx/): support jupyter notebook for Sphinx.
+    - [myst-parser](https://pypi.org/project/myst-parser/): support markdown for Sphinx.
 
 ### R
 
 The R version should be 3.1.0 and newer in order to support C++11. 
-*abess* R package relies on limited R packages dependencies:
+abess R package relies on limited R packages dependencies:
 
-- Rcpp: convert R Matrix/Vector object into C++ 
-- RcppEigen: linear algebra in C++
+- [Rcpp](https://cran.r-project.org/web/packages/Rcpp/index.html): convert R Matrix/Vector object into C++.
+- [RcppEigen](https://cran.r-project.org/web/packages/RcppEigen/index.html): linear algebra in C++.
 
 Furthermore, if you would to develop the R package, it would be better to additionally install:
 
-- testthat: conduct unit tests
-- knitr and rmarkdown: write tutorials for R users
+- [testthat](https://cran.r-project.org/web/packages/testthat/index.html): conduct unit tests.
+- [knitr](https://cran.r-project.org/web/packages/knitr/index.html) and [rmarkdown](https://cran.r-project.org/web/packages/rmarkdown/index.html): write tutorials for R users.
 
