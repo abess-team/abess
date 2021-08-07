@@ -1,10 +1,10 @@
 name: Upload Python Package
 
-# on:
-#   release:
-#     types: [created]
+on:
+  release:
+    types: [created]
 
-on: [push]
+# on: [push]
 
 jobs:
   deploy_whl:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
-        python-version: [3.5,3.6]
+        python-version: [3.5,3.6,3.7,3.8,3.9]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
@@ -33,28 +33,28 @@ jobs:
           python setup.py bdist_wheel
           twine upload dist/*
 
-  # deploy source:
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [ubuntu-latest]
-  #       python-version: [3.9]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - name: Install dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         pip install setuptools wheel twine
-  #         sudo apt-get install -y swig bash mingw-w64
-  #     - name: Build and publish
-  #       env:
-  #         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-  #         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-  #       run: |
-  #         cd python
-  #         python setup.py sdist
-  #         twine upload dist/*
+  deploy source:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel twine
+          sudo apt-get install -y swig bash 
+      - name: Build and publish
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          cd python
+          python setup.py sdist
+          twine upload dist/*
