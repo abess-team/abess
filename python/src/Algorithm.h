@@ -213,12 +213,6 @@ public:
 
   int get_l() { return this->l; }
 
-  bool check_ill_condition(Eigen::MatrixXd &M){
-    Eigen::JacobiSVD<MatrixXd> svd(M);
-    double cond = svd.singularValues()(0) / svd.singularValues()(svd.singularValues().size()-1);
-    return (cond > 1e+6) ? true : false;
-  }
-
   void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::VectorXi &status, Eigen::MatrixXd sigma)
   {
     // std::cout << "fit" << endl;
@@ -712,7 +706,7 @@ public:
         }
 
         Eigen::MatrixXd XTX = 2 * this->lambda_level * lambdamat + X_new.transpose() * X;
-        if (this->check_ill_condition(XTX)) return false;
+        if (check_ill_condition(XTX)) return false;
         beta0 = XTX.ldlt().solve(X_new.transpose() * Z);
 
         // overload_ldlt(X_new, X, Z, beta0);
@@ -910,7 +904,7 @@ public:
     add_constant_column(X);
     // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
     Eigen::MatrixXd XTX = X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
-    if (this->check_ill_condition(XTX)) return false;
+    if (check_ill_condition(XTX)) return false;
     Eigen::VectorXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
     
     beta = beta0.tail(p).eval();
@@ -1090,7 +1084,7 @@ public:
       }
       z = eta + (y - expeta).cwiseQuotient(expeta);
       Eigen::MatrixXd XTX = X_new.transpose() * X + 2 * this->lambda_level * lambdamat;
-      if (this->check_ill_condition(XTX)) return false;
+      if (check_ill_condition(XTX)) return false;
       beta0 = (XTX).ldlt().solve(X_new.transpose() * z);
       eta = X * beta0;
       for (int i = 0; i <= n - 1; i++)
@@ -1367,7 +1361,7 @@ public:
       else
       {
         // d = (x.transpose() * h * x + 2 * this->lambda_level * lambdamat).ldlt().solve(g);
-        if (this->check_ill_condition(temp)) return false;
+        if (check_ill_condition(temp)) return false;
         d = temp.ldlt().solve(x.transpose() * g - 2 * this->lambda_level * beta0);
       }
 
@@ -1657,7 +1651,7 @@ public:
     add_constant_column(X);
     // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
     Eigen::MatrixXd XTX = X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
-    if (this->check_ill_condition(XTX)) return false;
+    if (check_ill_condition(XTX)) return false;
     Eigen::MatrixXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
     
     beta = beta0.block(1, 0, p, M);
@@ -1858,7 +1852,7 @@ public:
       // ConjugateGradient<MatrixXd, Lower | Upper> cg;
       // cg.compute(X.adjoint() * X);
       Eigen::MatrixXd XTX = X.transpose() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
-      if (this->check_ill_condition(XTX)) return false;
+      if (check_ill_condition(XTX)) return false;
       Eigen::MatrixXd invXTX = XTX.ldlt().solve(Eigen::MatrixXd::Identity(p + 1, p + 1));
       
       // cout << "y: " << y.rows() << " " << y.cols() << endl;
@@ -2018,7 +2012,6 @@ public:
       std::cout << "primary_model_fit 10" << endl;
       cout << "Xbeta: " << Xbeta << endl;
 #endif
-      if (this->check_ill_condition(W)) return false;
       Eigen::VectorXd Z = Xbeta + W.ldlt().solve(res);
       
 #ifdef TEST
@@ -2036,7 +2029,6 @@ public:
 #ifdef TEST
         std::cout << "primary_model_fit 3: " << j << endl;
 #endif
-        if (this->check_ill_condition(XTWX)) return false;
         beta0_tmp = XTWX.ldlt().solve(XTW * Z);
         for (int m1 = 0; m1 < M; m1++)
         {
@@ -2127,7 +2119,6 @@ public:
           Xbeta.segment(m1 * n, n) = X * beta0.col(m1).eval();
         }
 
-        if (this->check_ill_condition(W)) return false;
         Z = Xbeta + W.ldlt().solve(res);
       }
     }
