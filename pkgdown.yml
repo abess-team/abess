@@ -12,5 +12,8 @@ articles:
   v09-fasterSetting: v09-fasterSetting.html
   v10-algorithm: v10-algorithm.html
   v11-power-of-abess: v11-power-of-abess.html
-last_built: 2021-08-06T13:33Z
+last_built: 2021-08-07T06:57Z
+urls:
+  reference: https://abess-team.github.io/abess//reference
+  article: https://abess-team.github.io/abess//articles
 
