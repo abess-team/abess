@@ -683,3 +683,10 @@ void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::MatrixXd &
 {
     beta = (X_new.transpose() * X).ldlt().solve(X_new.transpose() * Z);
 }
+
+bool check_ill_condition(Eigen::MatrixXd &M){
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(M);
+    double l1 = svd.singularValues()(0);
+    double l2 = svd.singularValues()(svd.singularValues().size()-1);
+    return ((l2 == 0 || l1 / l2 > 1e+10) ? true : false);
+}

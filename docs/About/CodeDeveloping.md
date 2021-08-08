@@ -178,9 +178,42 @@ Congratulation! Your work can now be used by:
 from abess.pca import abessPCA
 ```
 
+#### bess_base
 
+As we show above, any new methods are based on `bess_base`, which can be found in `bess_base.py`: [[code link]](https://github.com/abess-team/abess/blob/master/python/abess/bess_base.py)
 
-It is always a good habit to do some test for the changed package and we mainly use [pytest](https://docs.pytest.org/). We firstly install pytest with pip command:
+```python
+from sklearn.base import BaseEstimator
+class bess_base(BaseEstimator):
+     def __init__(...):
+        #...
+     def fit(...):	# abess process, warp with cpp
+        #...
+     #...
+```
+
+Actually, it is based on `sklearn.base.BaseEstimator` [[document link]](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html). Two methods, `get_params` and `set_params` are offered in this base class. 
+
+In our package, we write an method called `fit` to realize the abess process. Of cause, you can also override it like `abessPCA`.
+
+## Miscellaneous
+
+### Code style
+New R code should follow the tidyverse [style guide](https://style.tidyverse.org/). You can use the styler package to apply these styles. 
+New Python code...
+Please don’t restyle code that has nothing to do with your code.
+
+### Test cases
+
+It is always a good habit to do some test for the changed package.
+
+#### R Package
+
+We use [testthat](https://cran.r-project.org/web/packages/testthat) for unit tests in R and [pytest](https://pypi.org/project/pytest/) in python. Contributions with test cases included are easier to accept.
+
+#### Python Package
+
+ We use [pytest](https://docs.pytest.org/) for testing python code. We firstly install it with pip command:
 
 ```bash
 $ pip install -U pytest
@@ -202,13 +235,3 @@ $ pytest
 ```
 
 All test under pytest folder would be checked.
-
-## Miscellaneous
-
-### Code style
-New R code should follow the tidyverse [style guide](https://style.tidyverse.org/). You can use the styler package to apply these styles. 
-New Python code...
-Please don’t restyle code that has nothing to do with your code.
-
-### Test cases
-We use [testthat](cran.r-project.org/web/packages/testthat) for unit tests in R and [pytest](https://pypi.org/project/pytest/) in python. Contributions with test cases included are easier to accept.

@@ -40,7 +40,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None, censoring=True, c
         The variance of the gaussian noise. 
         It would be unused if `snr` is not None.
         Default: sigma = 1.
-    coef_: array_like, optional
+    coef\_: array_like, optional
         The coefficient values in the underlying regression model. 
         Default: coef_ = None.
     censoring: bool, optional
@@ -63,7 +63,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None, censoring=True, c
         Design matrix of predictors.
     y: array_like, shape(n,)
         Response variable.
-    coef_: array_like, shape(p,)
+    coef\_: array_like, shape(p,)
         The coefficients used in the underlying regression model.
     """
     zero = np.zeros([n, 1])
@@ -219,7 +219,7 @@ def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho
     rho: float, optional
         A parameter used to characterize the pairwise correlation in predictors. 
         Default: rho = 0.5.
-    coef_: array_like, optional
+    coef\_: array_like, optional
         The coefficient values in the underlying regression model. 
         Default: coef_ = None.
     sparse_ratio: float, optional
@@ -232,7 +232,7 @@ def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho
         Design matrix of predictors.
     y: array_like, shape(n, M)
         Response variable.
-    coef_: array_like, shape(p, M)
+    coef\_: array_like, shape(p, M)
         The coefficients used in the underlying regression model.
     """
     Sigma = np.ones(p*p).reshape(p, p) * rho

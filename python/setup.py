@@ -71,7 +71,7 @@ with open(path.join(CURRENT_DIR, 'README.md')) as f:
     long_description = f.read()
 
 setup(name='abess',
-      version='0.0.2',
+      version='0.0.3',
       author="Kangkang Jiang, Jin Zhu, Yanhang Zhang, Junxian Zhu, Xueqin Wang",
       author_email="jiangkk3@mail2.sysu.edu.cn",
       maintainer="Kangkang Jiang",
