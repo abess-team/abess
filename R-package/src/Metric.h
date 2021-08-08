@@ -268,13 +268,11 @@ public:
     algorithm->update_sparsity_level(fit_arg.support_size);
     algorithm->update_lambda_level(fit_arg.lambda);
 
-    if (algorithm->get_warm_start())
-    {
-      algorithm->update_beta_init(fit_arg.beta_init);
-      algorithm->update_bd_init(fit_arg.bd_init);
-      algorithm->update_coef0_init(fit_arg.coef0_init);
-      algorithm->update_A_init(fit_arg.A_init, N);
-    }
+    algorithm->update_beta_init(fit_arg.beta_init);
+    algorithm->update_bd_init(fit_arg.bd_init);
+    algorithm->update_coef0_init(fit_arg.coef0_init);
+    algorithm->update_A_init(fit_arg.A_init, N);
+
     algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, data.status, algorithm->Sigma);
 
     if (algorithm->get_warm_start())
@@ -313,7 +311,7 @@ public:
         algorithm_list[k]->update_sparsity_level(fit_arg.support_size);
         algorithm_list[k]->update_lambda_level(fit_arg.lambda);
 
-        if (algorithm->get_warm_start())
+        if (algorithm_list[k]->get_warm_start())
         {
 
           algorithm_list[k]->update_beta_init(this->cv_init_fit_arg[k].beta_init);

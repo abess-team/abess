@@ -1581,49 +1581,6 @@ public:
         h = this->cox_hessian;
         // g = this->cox_g;
       }
-      else
-      {
-        Eigen::VectorXd cum_eta(n);
-        Eigen::VectorXd cum_eta2(n);
-        Eigen::VectorXd cum_eta3(n);
-        Eigen::VectorXd eta = XA * beta_A;
-        for (int i = 0; i <= n - 1; i++)
-        {
-          if (eta(i) < -30.0)
-            eta(i) = -30.0;
-          if (eta(i) > 30.0)
-            eta(i) = 30.0;
-        }
-        eta = weights.array() * eta.array().exp();
-        cum_eta(n - 1) = eta(n - 1);
-        for (int k = n - 2; k >= 0; k--)
-        {
-          cum_eta(k) = cum_eta(k + 1) + eta(k);
-        }
-        cum_eta2(0) = (y(0) * weights(0)) / cum_eta(0);
-        for (int k = 1; k <= n - 1; k++)
-        {
-          cum_eta2(k) = (y(k) * weights(k)) / cum_eta(k) + cum_eta2(k - 1);
-        }
-        cum_eta3(0) = (y(0) * weights(0)) / pow(cum_eta(0), 2);
-        for (int k = 1; k <= n - 1; k++)
-        {
-          cum_eta3(k) = (y(k) * weights(k)) / pow(cum_eta(k), 2) + cum_eta3(k - 1);
-        }
-        h = -cum_eta3.replicate(1, n);
-        h = h.cwiseProduct(eta.replicate(1, n));
-        h = h.cwiseProduct(eta.replicate(1, n).transpose());
-        for (int i = 0; i < n; i++)
-        {
-          for (int j = i + 1; j < n; j++)
-          {
-            h(j, i) = h(i, j);
-          }
-        }
-        h.diagonal() = cum_eta2.cwiseProduct(eta) + h.diagonal();
-        // g = weights.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
-      }
-
 #ifdef TEST
       t2 = clock();
       std::cout << "d1 time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
