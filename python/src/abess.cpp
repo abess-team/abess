@@ -85,7 +85,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
   {
     thread = omp_get_max_threads();
   }
-  Eigen::setNbThreads(thread);
+  Eigen::setNbThreads(1);
   omp_set_num_threads(thread);
 #ifdef TEST
   cout << Eigen::nbThreads() << " Threads for eigen." << endl;
