@@ -28,7 +28,7 @@ def fix_docs(cls):
 @fix_docs
 class abessPCA(bess_base):
     """
-    Adaptive Best-Subset Selection(ABESS) algorithm for COX proportional hazards model.
+    Adaptive Best-Subset Selection(ABESS) algorithm for principal component analysis.
 
     Examples
     --------
