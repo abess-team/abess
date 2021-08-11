@@ -36,7 +36,7 @@ If you receive an error said "*Can't create or remove files in install directory
 
 Make sure your working folder path is not named "abess". If not, Python would not import the `abess` packages and give some errors.
 
-### R package       
+## R package       
 
 - Update Rcpp package if you encounter the following errors:
 ```r

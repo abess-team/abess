@@ -581,7 +581,7 @@ Algorithm 2: Sequential Group-Splicing (SGSplicing).
 
    .. math:: \left(\hat{\boldsymbol{{\boldsymbol\beta}}}_{T}, \hat{\boldsymbol{d}}_{T}, \hat{\mathcal{A}}_{T}, \hat{\mathcal{I}}_{T}\right)=\text{GSplicing}(X, y, \{G_j\}_{j=1}^J, T,  \mathcal{A}^0_T, \pi_T, C_{\max}).
 
-End for
+   End for
 
 3. Compute the minimum of GIC:
 
