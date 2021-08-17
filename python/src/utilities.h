@@ -129,12 +129,13 @@ Eigen::VectorXi vector_slice(Eigen::VectorXi &nums, Eigen::VectorXi &ind);
 
 // Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind);
 Eigen::VectorXi Ac(Eigen::VectorXi &A, int N);
-// Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U);
+Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U);
 Eigen::VectorXi diff_union(Eigen::VectorXi A, Eigen::VectorXi &B, Eigen::VectorXi &C);
 Eigen::VectorXi min_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
 Eigen::VectorXi max_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
 
 Eigen::VectorXi max_k_2(Eigen::VectorXd &vec, int k);
+Eigen::VectorXi max_k_3(Eigen::VectorXd &vec, int k, Eigen::VectorXi ind);
 
 // to do
 void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int axis = 0);
@@ -172,6 +173,11 @@ void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<doubl
 void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta);
 
 bool check_ill_condition(Eigen::MatrixXd &M);
+
+bool check_same_vector(Eigen::VectorXi &v1, Eigen::VectorXi &v2, bool order = false);
+
+void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, 
+               Eigen::VectorXi &A_U, Eigen::VectorXi &g_index_U, Eigen::VectorXi &g_size_U);
 
 #endif //BESS_UTILITIES_H
 

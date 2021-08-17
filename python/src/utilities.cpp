@@ -133,7 +133,8 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
     else
     {
         int mark = 0;
-        Eigen::VectorXi ind = Eigen::VectorXi::Zero(p);
+        Eigen::VectorXi ind = Eigen::VectorXi::Zero(p);cout<<"0.2 | p =" <<p<<" | Lsize = "<<L.size()<<" | gsize = "<<gsize.size()<<","<<index.size()<<endl;
+        for (int i=0;i<L.size();i++) cout<<L(i)<<" ";cout<<endl;
         for (int i = 0; i < L.size(); i++)
         {
             ind.segment(mark, gsize(L(i))) = Eigen::VectorXi::LinSpaced(gsize(L(i)), index(L(i)), index(L(i)) + gsize(L(i)) - 1);
@@ -360,40 +361,40 @@ Eigen::VectorXi Ac(Eigen::VectorXi &A, int N)
 }
 
 // Ac
-// Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U)
-// {
-//     int A_size = A.size();
-//     int N = U.size();
-//     if (A_size == 0)
-//     {
-//         return U;
-//     }
-//     else if (A_size == N)
-//     {
-//         Eigen::VectorXi I(0);
-//         return I;
-//     }
-//     else
-//     {
-//         Eigen::VectorXi I(N - A_size);
-//         int cur_index = 0;
-//         int A_index = 0;
-//         for (int i = 0; i < N; i++)
-//         {
-//             if (A_index < A.size() && U(i) == A(A_index))
-//             {
-//                 A_index += 1;
-//                 continue;
-//             }
-//             else
-//             {
-//                 I(cur_index) = U(i);
-//                 cur_index += 1;
-//             }
-//         }
-//         return I;
-//     }
-// }
+Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U)
+{
+    int A_size = A.size();
+    int N = U.size();
+    if (A_size == 0)
+    {
+        return U;
+    }
+    else if (A_size == N)
+    {
+        Eigen::VectorXi I(0);
+        return I;
+    }
+    else
+    {
+        Eigen::VectorXi I(N - A_size);
+        int cur_index = 0;
+        int A_index = 0;
+        for (int i = 0; i < N; i++)
+        {
+            if (A_index < A.size() && U(i) == A(A_index))
+            {
+                A_index += 1;
+                continue;
+            }
+            else
+            {
+                I(cur_index) = U(i);
+                cur_index += 1;
+            }
+        }
+        return I;
+    }
+}
 
 void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int axis)
 {
@@ -689,4 +690,39 @@ bool check_ill_condition(Eigen::MatrixXd &M){
     double l1 = svd.singularValues()(0);
     double l2 = svd.singularValues()(svd.singularValues().size()-1);
     return ((l2 == 0 || l1 / l2 > 1e+10) ? true : false);
+}
+
+bool check_same_vector(Eigen::VectorXi &v1, Eigen::VectorXi &v2, bool order){
+    if (order){
+        return (v1 == v2);
+    }else{
+        if (v1.size() != v2.size()) return false;
+        if (v1.maxCoeff() != v2.maxCoeff()) return false;
+
+        int mark[v1.maxCoeff() + 1] = {0};
+        for (int i = 0; i < v1.size(); i++){
+            mark[v1(i)]++;
+            mark[v2(i)]--;
+        } 
+        for (int i = 0; i <= v1.maxCoeff(); i++)
+            if (mark[i] != 0) return false;
+        return true;
+    }
+}
+
+void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size,
+               Eigen::VectorXi &A_U, Eigen::VectorXi &g_index_U, Eigen::VectorXi &g_size_U)
+{
+    int pos = 0;
+    for (int i = 0; i < U.size(); i++){
+        for (int j = 0; j < A.size(); j++)
+            if (A(j) == U(i)){
+                A_U(j) = i;
+                break;
+            } 
+        // if (i < A.size()) A_U(i) = i;
+        g_size_U(i) = g_size(U(i));
+        g_index_U(i) = pos;
+        pos += g_size_U(i);
+    }
 }

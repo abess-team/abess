@@ -66,7 +66,7 @@ class abessPCA(bess_base):
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  K_max=None, epsilon=0.0001, lambda_min=None, lambda_max=None, n_lambda=100, ic_type="ebic", ic_coef=1.0, is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
                  always_select=[], tau=0.,
-                 primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-8,
+                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  early_stop=False, approximate_Newton=False,
                  thread=1,
                  sparse_matrix=False,
@@ -121,7 +121,7 @@ class abessPCA(bess_base):
             full = np.sum(np.diag(s))
         return explain / full
 
-    def fit(self, X=None, is_normal=True, group=None, Sigma=None, number=1):
+    def fit(self, X=None, is_normal=True, group=None, Sigma=None, number=1, sub_search=0):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -145,7 +145,11 @@ class abessPCA(bess_base):
         number : int, optional 
             Indicates the number of PCs returned. 
             Default: 1
-
+        sub_search : int, optional
+            The size of subsearching in splicing.
+            It should be a non-positive integer and if sub_search=0, it would be set as 
+            the size of inactive set. 
+            Default: 0
         """
 
         # Input check
@@ -290,6 +294,11 @@ class abessPCA(bess_base):
         if (not isinstance(number, int) or number <= 0 or number > p):
             raise ValueError(
                 "number should be an positive integer and not bigger than X.shape[1].")
+        
+        # Sub_search
+        if (not isinstance(sub_search, int) or sub_search < 0):
+            raise ValueError(
+                "sub_search should be a non-negative number.")
 
         # Sparse X
         if self.sparse_matrix:
@@ -335,6 +344,7 @@ class abessPCA(bess_base):
                               self.covariance_update,
                               self.sparse_matrix,
                               self.splicing_type,
+                              sub_search,
                               p * M,
                               1 * M, 1, 1, 1, 1, 1, p
                               )
@@ -370,6 +380,7 @@ class abessPCA(bess_base):
                                       self.covariance_update,
                                       self.sparse_matrix,
                                       self.splicing_type,
+                                      sub_search,
                                       p * M,
                                       1 * M, 1, 1, 1, 1, 1, p
                                       )
