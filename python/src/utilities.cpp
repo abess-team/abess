@@ -19,6 +19,7 @@
 #include <vector>
 #include <iostream>
 #include <time.h>
+#include <string.h>
 
 using namespace std;
 
@@ -85,6 +86,7 @@ void MatrixXd2Pointer(Eigen::MatrixXd x_matrix, double *x)
             x[i * x_matrix_col + j] = x_matrix(i, j);
         }
     }
+    return;
 }
 
 // void MatrixXi2Pointer(Eigen::MatrixXi x_matrix, int *x)
@@ -110,6 +112,7 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x)
     {
         x[i] = x_vector[i];
     }
+    return;
 }
 
 // void VectorXi2Pointer(Eigen::VectorXi x_vector, int *x)
@@ -133,8 +136,9 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
     else
     {
         int mark = 0;
-        Eigen::VectorXi ind = Eigen::VectorXi::Zero(p);cout<<"0.2 | p =" <<p<<" | Lsize = "<<L.size()<<" | gsize = "<<gsize.size()<<","<<index.size()<<endl;
-        for (int i=0;i<L.size();i++) cout<<L(i)<<" ";cout<<endl;
+        Eigen::VectorXi ind = Eigen::VectorXi::Zero(p);
+        // cout<<"find_ind | p =" <<p<<" | Lsize = "<<L.size()<<" | gsize = "<<gsize.size()<<","<<index.size()<<endl;
+        // for (int i=0;i<L.size();i++) cout<<L(i)<<" ";cout<<endl;
         for (int i = 0; i < L.size(); i++)
         {
             ind.segment(mark, gsize(L(i))) = Eigen::VectorXi::LinSpaced(gsize(L(i)), index(L(i)), index(L(i)) + gsize(L(i)) - 1);
@@ -165,6 +169,7 @@ void slice_assignment(Eigen::VectorXd &nums, Eigen::VectorXi &ind, double value)
             nums(ind(i)) = value;
         }
     }
+    return;
 }
 
 // Eigen::VectorXd vector_slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind)
@@ -358,6 +363,7 @@ Eigen::VectorXi Ac(Eigen::VectorXi &A, int N)
         }
         return I;
     }
+    
 }
 
 // Ac
@@ -410,6 +416,7 @@ void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int 
             A(i) = nums(ind(i));
         }
     }
+    return;
 }
 
 void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int axis)
@@ -436,6 +443,7 @@ void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int 
             }
         }
     }
+    return;
 }
 
 void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::SparseMatrix<double> &A, int axis)
@@ -484,6 +492,7 @@ void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::Spars
             }
         }
     }
+    return;
 }
 
 void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nums, int axis)
@@ -500,6 +509,7 @@ void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nu
             nums(ind(i)) = A(i);
         }
     }
+    return;
 }
 
 void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nums, int axis)
@@ -526,18 +536,21 @@ void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nu
             }
         }
     }
+    return;
 }
 
 void coef_set_zero(int p, int M, Eigen::VectorXd &beta, double &coef0)
 {
     beta = Eigen::VectorXd::Zero(p);
     coef0 = 0.;
+    return;
 }
 
 void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0)
 {
     beta = Eigen::MatrixXd::Zero(p, M);
     coef0 = Eigen::VectorXd::Zero(M);
+    return;
 }
 
 // Eigen::VectorXd array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis)
@@ -568,6 +581,7 @@ Eigen::MatrixXd array_product(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis)
 void array_quotient(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis)
 {
     A = A.array() / B.array();
+    return;
 }
 void array_quotient(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis)
 {
@@ -585,6 +599,7 @@ void array_quotient(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis)
             A.col(i) = A.col(i).array() / B.array();
         }
     }
+    return;
 }
 
 double matrix_dot(Eigen::VectorXd &A, Eigen::VectorXd &B)
@@ -628,6 +643,7 @@ Eigen::VectorXd matrix_dot(Eigen::MatrixXd &A, Eigen::VectorXd &B)
 void add_constant_column(Eigen::MatrixXd &X)
 {
     X.col(0) = Eigen::MatrixXd::Ones(X.rows(), 1);
+    return;
 }
 
 void add_constant_column(Eigen::SparseMatrix<double> &X)
@@ -636,6 +652,7 @@ void add_constant_column(Eigen::SparseMatrix<double> &X)
     {
         X.insert(i, 0) = 1.0;
     }
+    return;
 }
 
 // void set_nonzeros(Eigen::MatrixXd &X, Eigen::MatrixXd &x)
@@ -658,6 +675,7 @@ void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<doubl
     // beta = solver.solve(X_new.transpose() * Z);
     Eigen::MatrixXd XTX = X_new.transpose() * X;
     beta = (XTX).ldlt().solve(X_new.transpose() * Z);
+    return;
 }
 
 void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta)
@@ -673,16 +691,19 @@ void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<doubl
     // cout << "overload ldlt 2" << endl;
     beta = (XTX).ldlt().solve(X_new.transpose() * Z);
     // cout << "overload ldlt 3" << endl;
+    return;
 }
 
 void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::VectorXd &Z, Eigen::VectorXd &beta)
 {
     beta = (X_new.transpose() * X).ldlt().solve(X_new.transpose() * Z);
+    return;
 }
 
 void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta)
 {
     beta = (X_new.transpose() * X).ldlt().solve(X_new.transpose() * Z);
+    return;
 }
 
 bool check_ill_condition(Eigen::MatrixXd &M){
@@ -699,7 +720,8 @@ bool check_same_vector(Eigen::VectorXi &v1, Eigen::VectorXi &v2, bool order){
         if (v1.size() != v2.size()) return false;
         if (v1.maxCoeff() != v2.maxCoeff()) return false;
 
-        int mark[v1.maxCoeff() + 1] = {0};
+        int mark[v1.maxCoeff() + 1];
+        memset(mark, 0, sizeof(mark));
         for (int i = 0; i < v1.size(); i++){
             mark[v1(i)]++;
             mark[v2(i)]--;
@@ -725,4 +747,5 @@ void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &A, Eigen::VectorXi &g_index,
         g_index_U(i) = pos;
         pos += g_size_U(i);
     }
+    return;
 }

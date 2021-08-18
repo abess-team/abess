@@ -135,7 +135,6 @@ Eigen::VectorXi min_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
 Eigen::VectorXi max_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
 
 Eigen::VectorXi max_k_2(Eigen::VectorXd &vec, int k);
-Eigen::VectorXi max_k_3(Eigen::VectorXd &vec, int k, Eigen::VectorXi ind);
 
 // to do
 void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int axis = 0);

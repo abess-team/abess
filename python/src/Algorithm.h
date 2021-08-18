@@ -289,32 +289,31 @@ public:
     std::cout << "init screening time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
 
-    // std::cout << "fit 3" << endl;
     Eigen::VectorXi I = Ac(A, N);
     // Eigen::MatrixXi A_list(T0, max_iter + 2);
     // A_list.col(0) = A;
 
-    T4 X_A;
+    Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
+    T4 X_A = X_seg(train_x, train_n, A_ind);
     T2 beta_A;
-    Eigen::VectorXi A_ind;
+    slice(this->beta, A_ind, beta_A);
 
-    // std::cout << "fit 5" << endl;
 #ifdef TEST
     t1 = clock();
 #endif
     // if (this->algorithm_type == 6)
     // {
-    A_ind = find_ind(A, g_index, g_size, p, N);
-    X_A = X_seg(train_x, train_n, A_ind);
-    slice(this->beta, A_ind, beta_A);
-    T2 beta_old = beta_A;
+    
     T3 coef0_old = this->coef0;
     bool success = this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
     if (!success){
-        this->beta = beta_old;
-        this->coef0 = coef0_old;
-      }
-    slice_restore(beta_A, A_ind, this->beta);
+      this->coef0 = coef0_old;
+    }else{
+      slice_restore(beta_A, A_ind, this->beta);
+      this->train_loss = neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
+    }
+    
+    // for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl<<"init loss = "<<this->train_loss<<endl; 
     // }
 
     this->beta_warmstart = this->beta;
@@ -330,31 +329,42 @@ public:
     int C_max = min(min(T0 - always_select_size, this->U_size - T0 - always_select_size), this->exchange_num);
 
 #ifdef TEST
-    std::cout << "fit 7" << endl;
+    // std::cout << "fit 7" << endl;
+    t1 = clock();
 #endif
-    this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size, N, this->tau, this->train_loss);
 
+    this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size, N, this->tau, this->train_loss);
+  
 #ifdef TEST
     t2 = clock();
     std::cout << "get A" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t1 = clock();
 #endif
       
     // final fit
-    this->primary_model_fit_max_iter += 20;
-    this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
-    this->primary_model_fit_max_iter -= 20;
-
     this->A_out = A;
 
     A_ind = find_ind(A, g_index, g_size, p, N);
     X_A = X_seg(train_x, train_n, A_ind);
     slice(this->beta, A_ind, beta_A);
+
+    this->primary_model_fit_max_iter += 20;
+    coef0_old = this->coef0;
+    success = this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
+    if (!success){
+      this->coef0 = coef0_old;
+    }else{
+      slice_restore(beta_A, A_ind, this->beta);
+      this->train_loss = neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
+    }
+    this->primary_model_fit_max_iter -= 20;
+
     // cout << "A: " << endl;
     // cout << A << endl;
     // cout << "beta" << endl;
     // cout << beta_A << endl;
-    this->effective_number = effective_number_of_parameter(train_x, X_A, train_y, train_weight, this->beta, beta_A, this->coef0);
 
+    this->effective_number = effective_number_of_parameter(train_x, X_A, train_y, train_weight, this->beta, beta_A, this->coef0);
     this->group_df = A_ind.size();
 
 #ifdef TEST
@@ -368,30 +378,21 @@ public:
              Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss)
   {
 #ifdef TEST
+    std::cout << "get_A 1 | T0 = " << T0  << " | U_size = " << this->U_size << " | N = " << N << endl;
 #endif
-    std::cout << "get_A 1 | T0 = " << T0 << " | sparsity = " << this->sparsity_level << " | U_size = " << this->U_size << " | bd_size = " << bd.size() << " | N = " << N << endl;
 
-    // if (this->U_size == N){
-    //   this->splicing(X, y, A, I, C_max, beta, coef0, bd, weights,
-    //                   g_index, g_size, N, tau, train_loss);
-    //   return;
-    // }
-
-    Eigen::VectorXi U = max_k_2(bd, this->U_size);
-    Eigen::VectorXi A_U(T0);
-    Eigen::VectorXi I_U(this->U_size - T0);
-    Eigen::VectorXi g_index_U(this->U_size);
-    Eigen::VectorXi g_size_U(this->U_size);
-    Eigen::VectorXd bdA(T0);
+    Eigen::VectorXi U = max_k(bd, this->U_size, true);
 
     int p = X.cols();
     int n = X.rows();
-
-    int num = 0;
-    while (++num < 20){
+    int C = C_max;
+    int iter = 0;
+    while (iter++ < this->max_iter){
 #ifdef TEST
+      std::cout << "get_A 2 | iter = " << iter << endl;///
 #endif
-      std::cout << "get_A 2" << endl;
+      // for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl<<"loss = "<<train_loss<<endl; ///
+      // for (int i=0;i<U.size();i++) cout<<U(i)<<" ";cout<<endl;///
 
       // mapping U
       Eigen::VectorXi U_ind = find_ind(U, g_index, g_size, p, N);
@@ -399,73 +400,100 @@ public:
       T2 beta_U;
       slice(beta, U_ind, beta_U);
 
+      Eigen::VectorXi g_index_U(this->U_size);
+      Eigen::VectorXi g_size_U(this->U_size); 
+      int pos = 0;
+      for (int i = 0; i < U.size(); i++){
+          g_size_U(i) = g_size(U(i));
+          g_index_U(i) = pos;
+          pos += g_size_U(i);
+      }
+
+      Eigen::VectorXi A_U = Eigen::VectorXi::LinSpaced(T0, 0, T0 - 1);
+      Eigen::VectorXi I_U = Eigen::VectorXi::LinSpaced(this->U_size - T0, T0, this->U_size - 1);
+
+#ifdef TEST
       std::cout << "get_A 2.5" << endl;
+#endif
+      // mapping_U(U, A, g_index, g_size, A_U, g_index_U, g_size_U);
+      // I_U = Ac(A_U, this->U_size);
 
-      // A,I,g in U
-      cout << "Asize = "<<A.size()<<" | AUsize = "<<A_U.size()<<endl;
-      mapping_U(U, A, g_index, g_size, A_U, g_index_U, g_size_U);
-      cout << "Asize = "<<A.size()<<" | AUsize = "<<A_U.size()<<endl;
-      for (int i=0;i<T0;i++) cout <<A_U(i)<<" ";cout<<endl;
-      I_U = Ac(A_U, this->U_size);
-
+      int num = 0;
       while (true){
 #ifdef TEST
+        std::cout << "get_A 3 | num  = " << ++num << endl;///
 #endif      
-        std::cout << "get_A 3 "<< endl;
+
         Eigen::VectorXi A_ind = find_ind(A_U, g_index_U, g_size_U, X_U.cols(), this->U_size); 
         T4 X_A = X_seg(X_U, n, A_ind);
         T2 beta_A;
         slice(beta_U, A_ind, beta_A);
+
+        // cout<<"AUsize = "<<A_U.size()<<" | IU_size = "<<I_U.size()<<endl;
+        // for (int i=0;i<A_U.size();i++) cout<<A_U(i)<<" ";cout<<endl;
+        // for (int i=0;i<I_U.size();i++) cout<<I_U(i)<<" ";cout<<endl;
+        
         Eigen::VectorXd bd_U = Eigen::VectorXd::Zero(this->U_size);
         this->sacrifice(X_U, X_A, y, beta_U, beta_A, coef0, A_U, I_U, weights, g_index_U, g_size_U, this->U_size, A_ind, bd_U);
+        // cout << "X_U : "<<X_U.rows()<<" * "<<X_U.cols()<<endl;
+        // cout << "beta_U : "<<beta_U.rows()<<" * "<<beta_U.cols()<<endl;
+        // cout << "X_A : "<<X_A.rows()<<" * "<<X_A.cols()<<endl;
+        // cout << "beta_A : "<<beta_A.rows()<<" * "<<beta_A.cols()<<endl;
+        // cout << "A_U : "<<A_U.rows()<<" * "<<A_U.cols()<<endl;
+        // cout << "I_U : "<<X_U.rows()<<" * "<<I_U.cols()<<endl;
+
+        // train_loss = neg_loglik_loss(X_A, y, weights, beta_A, coef0, A_U, g_index_U, g_size_U);
         
-        train_loss = neg_loglik_loss(X_A, y, weights, beta_A, coef0, A_U, g_index_U, g_size_U);
         double l0 = train_loss;
         this->splicing(X_U, y, A_U, I_U, C_max, beta_U, coef0, bd_U, weights,
                       g_index_U, g_size_U, this->U_size, tau, l0);
-        I_U = Ac(A_U, U);
-        if (l0 >= train_loss) break;
+#ifdef TEST        
+        cout << train_loss << " >" << l0<<endl;///
+#endif
+        if (l0 < train_loss) 
+          train_loss = l0; 
+        else 
+          break;
       }
       
-      // if loss not decrease, update A, bd and rediscover U
 #ifdef TEST
+      std::cout << "get_A 4 " << endl;///
 #endif
-      std::cout << "get_A 4 " << endl;
+
+      // if loss not decrease
+      C_max = C;
+      // for (int i=0;i<beta_U.size();i++) cout<<beta_U(i)<<" ";cout<<endl;///
+      slice_restore(beta_U, U_ind, beta);
+      
       for (int i = 0; i < T0; i++) A(i) = U(A_U(i));
-      I = Ac(A, N);
+      
+      // I = Ac(A, N);
+      Eigen::VectorXi ind = Eigen::VectorXi::Zero(N);
+      for (int i = 0; i < A.size(); i++) ind(A(i)) = 1;
+      int temp = 0;
+      for (int i = 0; i < N; i++) 
+          if (ind(i)==0) I(temp++) = i;
+
 
       Eigen::VectorXi A_ind0 = find_ind(A, g_index, g_size, p, N);
       T4 X_A0 = X_seg(X, n, A_ind0);
       T2 beta_A0;
       slice(beta, A_ind0, beta_A0);
       this->sacrifice(X, X_A0, y, beta, beta_A0, coef0, A, I, weights, g_index, g_size, N, A_ind0, bd);
-      for (int i = 0; i < this->always_select.size(); i++)
-      {
-        bd(this->always_select(i)) = DBL_MAX;
-      }
-
-      for (int i = 0; i < T0; i++){
-        bdA(i) = bd(A(i));
-        bd(A(i)) = DBL_MAX;
-      }
       
-      Eigen::VectorXi U_new = max_k_2(bd, this->U_size);
-      if (check_same_vector(U_new, U)) 
-        break; // if U not change, stop
-      else 
-        U = U_new;
-            
-    }
-
-    for (int i = 0; i < T0; i++){
-      bd(A(i)) = bdA(i);
+      // keep A in U_new
+      for (int i = 0; i < T0; i++) bd(A(i)) = DBL_MAX; 
+      
+      //update U
+      Eigen::VectorXi U_new = max_k(bd, this->U_size, true);
+      if (check_same_vector(U_new, U)) break; // if U not change, stop
+      U = U_new;   
     }
 
 #ifdef TEST
+    std::cout << "get_A 5" << endl;///
 #endif
-    std::cout << "get_A 5" << endl;
-
-    
+    return;
   };
   
   void splicing(T4 &X, T1 &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, T2 &beta, T3 &coef0, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
@@ -515,20 +543,16 @@ public:
 #endif
 
     // cout << "get A 5" << endl;
-    Eigen::VectorXi A_exchange(A_size);
-    Eigen::VectorXi A_ind_exchage;
-    T4 X_A_exchage;
-    T2 beta_A_exchange;
-    T3 coef0_A_exchange;
 
     double L;
     for (int k = C_max; k >= 1;)
     {
-      A_exchange = diff_union(A, s1, s2);
-      A_ind_exchage = find_ind(A_exchange, g_index, g_size, p, N);
-      X_A_exchage = X_seg(X, n, A_ind_exchage);
-      slice(this->beta_warmstart, A_ind_exchage, beta_A_exchange);
-      coef0_A_exchange = this->coef0_warmstart;
+      Eigen::VectorXi A_exchange = diff_union(A, s1, s2);
+      Eigen::VectorXi A_ind_exchage = find_ind(A_exchange, g_index, g_size, p, N);
+      T4 X_A_exchage = X_seg(X, n, A_ind_exchage);
+      T2 beta_A_exchange;
+      slice(beta, A_ind_exchage, beta_A_exchange);
+      T3 coef0_A_exchange = coef0;
 
       bool success = primary_model_fit(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, train_loss, A_exchange, g_index, g_size);
       if (success){
@@ -538,7 +562,7 @@ public:
       }
 
       // cout << "L0: " << L0 << " L1: " << L1 << endl;
-      if (L - train_loss > tau)
+      if (train_loss - L > tau)
       {
         train_loss = L;
         A = A_exchange;
@@ -568,6 +592,7 @@ public:
     t2 = clock();
     std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
 #endif
+    return;
   };
 
   Eigen::VectorXi inital_screening(T4 &X, T1 &y, T2 &beta, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
@@ -606,8 +631,7 @@ public:
 #endif
 
     // get Active-set A according to max_k bd
-    Eigen::VectorXi A_new = max_k_2(bd, this->sparsity_level);
-    // int p = X.cols();
+    Eigen::VectorXi A_new = max_k(bd, this->sparsity_level);
 
 #ifdef TEST
     t4 = clock();
@@ -857,16 +881,17 @@ public:
     }
     for (int i = 0; i < A_size; i++)
     {
-      bd(A[i]) = betabar.segment(g_index(A[i]), g_size(A[i])).squaredNorm() / g_size(A[i]);
+      bd(A(i)) = betabar.segment(g_index(A(i)), g_size(A(i))).squaredNorm() / g_size(A(i));
     }
     for (int i = 0; i < I_size; i++)
     {
-      bd(I[i]) = dbar.segment(g_index(I[i]), g_size(I[i])).squaredNorm() / g_size(I[i]);
+      bd(I(i)) = dbar.segment(g_index(I(i)), g_size(I(i))).squaredNorm() / g_size(I(i));
     }
 #ifdef TEST
     t2 = clock();
     std::cout << "group bd time beta: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
+    return;
   }
 
   double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0)

@@ -63,7 +63,8 @@ class abessLogistic(bess_base):
                  early_stop=False, approximate_Newton=False,
                  thread=1,
                  sparse_matrix=False,
-                 splicing_type=0
+                 splicing_type=0,
+                 sub_search=0
                  ):
         super(abessLogistic, self).__init__(
             algorithm_type="abess", model_type="Logistic", data_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -74,7 +75,8 @@ class abessLogistic(bess_base):
             early_stop=early_stop, approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
-            splicing_type=splicing_type
+            splicing_type=splicing_type,
+            sub_search=sub_search
         )
 
     def predict_proba(self, X):
@@ -174,7 +176,8 @@ class abessLm(bess_base):
                  early_stop=False, approximate_Newton=False,
                  thread=1, covariance_update=False,
                  sparse_matrix=False,
-                 splicing_type=0
+                 splicing_type=0,
+                 sub_search=0
                  ):
         super(abessLm, self).__init__(
             algorithm_type="abess", model_type="Lm", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -185,7 +188,8 @@ class abessLm(bess_base):
             early_stop=early_stop, approximate_Newton=approximate_Newton,
             thread=thread, covariance_update=covariance_update,
             sparse_matrix=sparse_matrix,
-            splicing_type=splicing_type
+            splicing_type=splicing_type,
+            sub_search=sub_search
         )
 
     def predict(self, X):
@@ -261,7 +265,8 @@ class abessCox(bess_base):
                  early_stop=False, approximate_Newton=False,
                  thread=1,
                  sparse_matrix=False,
-                 splicing_type=0
+                 splicing_type=0,
+                 sub_search=0
                  ):
         super(abessCox, self).__init__(
             algorithm_type="abess", model_type="Cox", data_type=3, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -272,7 +277,8 @@ class abessCox(bess_base):
             early_stop=early_stop, approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
-            splicing_type=splicing_type
+            splicing_type=splicing_type,
+            sub_search=sub_search
         )
 
     def predict(self, X):
@@ -351,7 +357,8 @@ class abessPoisson(bess_base):
                  early_stop=False, approximate_Newton=False,
                  thread=1,
                  sparse_matrix=False,
-                 splicing_type=0
+                 splicing_type=0,
+                 sub_search=0
                  ):
         super(abessPoisson, self).__init__(
             algorithm_type="abess", model_type="Poisson", data_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -362,7 +369,8 @@ class abessPoisson(bess_base):
             early_stop=early_stop, approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
-            splicing_type=splicing_type
+            splicing_type=splicing_type,
+            sub_search=sub_search
         )
 
     def predict(self, X):
@@ -442,7 +450,8 @@ class abessMultigaussian(bess_base):
                  early_stop=False, approximate_Newton=False,
                  thread=1, covariance_update=False,
                  sparse_matrix=False,
-                 splicing_type=0
+                 splicing_type=0,
+                 sub_search=0
                  ):
         super(abessMultigaussian, self).__init__(
             algorithm_type="abess", model_type="Multigaussian", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -453,7 +462,8 @@ class abessMultigaussian(bess_base):
             early_stop=early_stop, approximate_Newton=approximate_Newton,
             thread=thread, covariance_update=covariance_update,
             sparse_matrix=sparse_matrix,
-            splicing_type=splicing_type
+            splicing_type=splicing_type,
+            sub_search=sub_search
         )
         self.data_type = 1
 
@@ -533,7 +543,8 @@ class abessMultinomial(bess_base):
                  early_stop=False, approximate_Newton=False,
                  thread=1,
                  sparse_matrix=False,
-                 splicing_type=0
+                 splicing_type=0,
+                 sub_search=0
                  ):
         super(abessMultinomial, self).__init__(
             algorithm_type="abess", model_type="Multinomial", data_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -544,7 +555,8 @@ class abessMultinomial(bess_base):
             early_stop=early_stop, approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
-            splicing_type=splicing_type
+            splicing_type=splicing_type,
+            sub_search=sub_search
         )
 
     def predict_proba(self, X):

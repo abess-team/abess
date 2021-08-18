@@ -70,6 +70,12 @@ class bess_base(BaseEstimator):
         The type of splicing in `fit()` (in Algorithm.h). 
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 1 for `abessPCA` and splicing_type = 0 for else.
+    sub_search : int, optional
+        The size of inactive set during updating active set for splicing.
+        It should be a non-positive integer and if sub_search=0, it would be set as 
+        the size of whole inactive set. 
+        Default: 0
+    
 
     Returns
     ------- 
@@ -95,7 +101,8 @@ class bess_base(BaseEstimator):
                  thread=1,
                  covariance_update=False,
                  sparse_matrix=False,
-                 splicing_type=0):
+                 splicing_type=0,
+                 sub_search=0):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
         self.data_type = data_type
@@ -129,6 +136,7 @@ class bess_base(BaseEstimator):
         self.covariance_update = covariance_update
         self.sparse_matrix = sparse_matrix
         self.splicing_type = splicing_type
+        self.sub_search = sub_search
 
     def new_data_check(self, X, y=None):
         # Check1 : whether fit had been called
@@ -147,7 +155,7 @@ class bess_base(BaseEstimator):
 
         return X
 
-    def fit(self, X=None, y=None, is_normal=True, weight=None, group=None, sub_search=0):
+    def fit(self, X=None, y=None, is_normal=True, weight=None, group=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -169,11 +177,6 @@ class bess_base(BaseEstimator):
         group : int, optional
             The group index for each variable.
             Default: group = \code{numpy.ones(p)}.
-        sub_search : int, optional
-            The size of subsearching in splicing.
-            It should be a non-positive integer and if sub_search=0, it would be set as 
-            the size of inactive set. 
-            Default: 0
         """
 
         # Input check & init:
@@ -377,7 +380,7 @@ class bess_base(BaseEstimator):
             raise ValueError("splicing type should be 0 or 1.")
         
         # Sub_search
-        if (not isinstance(sub_search, int) or sub_search < 0):
+        if (not isinstance(self.sub_search, int) or self.sub_search < 0):
             raise ValueError(
                 "sub_search should be a non-negative number.")
 
@@ -424,7 +427,7 @@ class bess_base(BaseEstimator):
                               self.covariance_update,
                               self.sparse_matrix,
                               self.splicing_type,
-                              sub_search,
+                              self.sub_search,
                               p * M,
                               1 * M, 1, 1, 1, 1, 1, p
                               )
