@@ -132,7 +132,7 @@ class TestClass:
         sigma = 1
 
         # np.random.seed(3)
-        np.random.seed(3)
+        np.random.seed(2)
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
 
@@ -159,8 +159,11 @@ class TestClass:
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
+        model3 = abessCox(support_size=support_size, sub_search=10)
+        model3.fit(data.x, data.y, group=group)
+
         nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model2.coef_)[0]
+        nonzero_fit = np.nonzero(model3.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         assert (nonzero_true == nonzero_fit).all()
@@ -189,10 +192,10 @@ class TestClass:
         rho = 0.5
         sigma = 1
         M = 1
-        np.random.seed(3)
+        np.random.seed(9)
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        data2 = make_multivariate_glm_data(
-            family=family, n=n, p=p,  k=k, rho=rho, M=M)
+        # data2 = make_multivariate_glm_data(
+        #     family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
         model = abessPoisson(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
@@ -217,8 +220,11 @@ class TestClass:
         model2.fit(data.x, data.y, group=group)
         model2.predict(data.x)
 
+        model3 = abessPoisson(support_size=support_size, sub_search=10)
+        model3.fit(data.x, data.y, group=group)
+
         nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model2.coef_)[0]
+        nonzero_fit = np.nonzero(model3.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         assert (nonzero_true == nonzero_fit).all()
@@ -311,15 +317,18 @@ class TestClass:
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
 
-        model2 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
+        model4 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
                                   K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=False, K=5,
                                   exchange_num=2, tau=0.1 * np.log(n*p) / n,
                                   primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=False, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
-        model2.fit(data.x, data.y, group=group)
+        model4.fit(data.x, data.y, group=group)
+
+        model5 = abessMultinomial(support_size=support_size, sub_search=10)
+        model5.fit(data.x, data.y, group=group)
 
         nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model.coef_)[0]
+        nonzero_fit = np.nonzero(model5.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         # new_x = data.x[:, nonzero_fit]
@@ -336,7 +345,7 @@ class TestClass:
         rho = 0.5
         sigma = 1
         M = 1
-        np.random.seed(2)
+        np.random.seed(7)
         # data = make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
         data = make_glm_data(n, p, family=family, k=k, rho=rho)
         # data3 = make_multivariate_glm_data(
@@ -350,6 +359,7 @@ class TestClass:
         gcv = GridSearchCV(
             model,
             param_grid={"support_size": support_size,
+                        "sub_search": [10],
                         "alpha": alpha},
             cv=cv,
             n_jobs=5).fit(data.x, data.y)
@@ -364,7 +374,7 @@ class TestClass:
         family = "binomial"
         rho = 0.5
         sigma = 1
-        np.random.seed(1)
+        np.random.seed(3)
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         # data3 = make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
@@ -377,6 +387,7 @@ class TestClass:
         gcv = GridSearchCV(
             model,
             param_grid={"support_size": support_size,
+                        "sub_search": [10],
                         "alpha": alpha},
             cv=cv,
             n_jobs=5).fit(data.x, data.y)
@@ -406,6 +417,7 @@ class TestClass:
         gcv = GridSearchCV(
             model,
             param_grid={"support_size": support_size,
+                        "sub_search": [10],
                         "alpha": alpha},
             cv=cv,
             n_jobs=1).fit(data.x, data.y)
@@ -438,6 +450,7 @@ class TestClass:
         gcv = GridSearchCV(
             model,
             param_grid={"support_size": support_size,
+                        "sub_search": [10],
                         "alpha": alpha},
             cv=cv,
             n_jobs=1).fit(data.x, data.y)
@@ -766,7 +779,7 @@ class TestClass:
         sigma = 1
 
         # np.random.seed(3)
-        np.random.seed(3)
+        np.random.seed(4)
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
 
@@ -785,8 +798,11 @@ class TestClass:
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
+        model3 = abessCox(path_type="pgs", s_min=1, s_max=20, lambda_min=0.01, lambda_max=100, sub_search=10)
+        model3.fit(data.x, data.y, group=group)
+
         nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model2.coef_)[0]
+        nonzero_fit = np.nonzero(model3.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         assert (nonzero_true == nonzero_fit).all()
@@ -815,7 +831,7 @@ class TestClass:
         rho = 0.5
         sigma = 1
         M = 1
-        np.random.seed(3)
+        np.random.seed(0)
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         data2 = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
@@ -836,8 +852,11 @@ class TestClass:
         model2.fit(data.x, data.y, group=group)
         model2.predict(data.x)
 
+        model3 = abessPoisson(path_type="pgs", s_min=1, s_max=20, lambda_min=0.01, lambda_max=100, sub_search=10)
+        model3.fit(data.x, data.y, group=group)
+
         nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model2.coef_)[0]
+        nonzero_fit = np.nonzero(model3.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         assert (nonzero_true == nonzero_fit).all()
@@ -859,7 +878,7 @@ class TestClass:
         family = "multigaussian"
         rho = 0.5
         M = 3
-        np.random.seed(1)
+        np.random.seed(0)
         data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, int(n/np.log(np.log(n)) / np.log(p)))
@@ -878,8 +897,11 @@ class TestClass:
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
+        model3 = abessMultigaussian(path_type="pgs", s_min=1, s_max=20, lambda_min=0.01, lambda_max=100, sub_search=10)
+        model3.fit(data.x, data.y, group=group)
+
         nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model.coef_)[0]
+        nonzero_fit = np.nonzero(model3.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         # new_x = data.x[:, nonzero_fit]
@@ -921,8 +943,11 @@ class TestClass:
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
 
+        model4 = abessMultinomial(path_type="pgs", s_min=1, s_max=20, lambda_min=0.01, lambda_max=100, sub_search=10)
+        model4.fit(data.x, data.y, group=group)
+
         nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model.coef_)[0]
+        nonzero_fit = np.nonzero(model4.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         # new_x = data.x[:, nonzero_fit]
@@ -1036,7 +1061,7 @@ class TestClass:
         rho = 0.5
         sigma = 1
         M = 1
-        np.random.seed(1)
+        np.random.seed(0)
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         data2 = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
@@ -1057,9 +1082,12 @@ class TestClass:
         model2.fit(data.x + 1, data.y, group=group)
         model2.predict(data.x)
 
-        assert model.coef_ == approx(model2.coef_, rel=1e-1, abs=1e-1)
+        model3 = abessPoisson(support_size=support_size, sub_search=10, sparse_matrix=True)
+        model3.fit(data.x + 1, data.y, group=group)
+
+        assert model.coef_ == approx(model3.coef_, rel=1e-1, abs=1e-1)
         assert model.intercept_ == approx(
-            model2.intercept_, rel=1e-1, abs=1e-1)
+            model3.intercept_, rel=1e-1, abs=1e-1)
 
     def test_mulgaussian_sparse_matrix(self):
         n = 100
