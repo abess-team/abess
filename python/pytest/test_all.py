@@ -290,7 +290,7 @@ class TestClass:
         family = "multinomial"
         rho = 0.5
         M = 3
-        np.random.seed(5)
+        np.random.seed(8)
         data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
@@ -327,8 +327,8 @@ class TestClass:
         model5 = abessMultinomial(support_size=support_size, sub_search=10)
         model5.fit(data.x, data.y, group=group)
 
-        nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model5.coef_)[0]
+        nonzero_true = np.unique(np.nonzero(data.coef_)[0])
+        nonzero_fit = np.unique(np.nonzero(model5.coef_)[0])
         print(nonzero_true)
         print(nonzero_fit)
         # new_x = data.x[:, nonzero_fit]
@@ -910,10 +910,10 @@ class TestClass:
         # assert model.coef_[nonzero_fit] == approx(reg.coef_, rel=1e-5, abs=1e-5)
         assert (nonzero_true == nonzero_fit).all()
 
-    def test_mulnomial_gs(self):
+    def test_mulnomial_gs(self):#to do
         n = 100
         p = 20
-        k = 3
+        k = 5
         family = "multinomial"
         rho = 0.5
         M = 3
@@ -943,11 +943,15 @@ class TestClass:
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
 
-        model4 = abessMultinomial(path_type="pgs", s_min=1, s_max=20, lambda_min=0.01, lambda_max=100, sub_search=10)
+        model4 = abessMultinomial(path_type="pgs", s_min=1, s_max=p, ic_type='gic', sub_search=10)
+        group = np.linspace(1, p, p)
         model4.fit(data.x, data.y, group=group)
 
-        nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model4.coef_)[0]
+        model5 = abessMultinomial(support_size=support_size, sub_search=10)
+        model5.fit(data.x, data.y, group=group)
+
+        nonzero_true = np.unique(np.nonzero(data.coef_)[0])
+        nonzero_fit = np.unique(np.nonzero(model5.coef_)[0])
         print(nonzero_true)
         print(nonzero_fit)
         # new_x = data.x[:, nonzero_fit]
