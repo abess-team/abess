@@ -143,14 +143,14 @@ class bess_base(BaseEstimator):
         check_is_fitted(self)
 
         # Check2 : X validation
-        X = check_array(X)
+        X = check_array(X, accept_sparse=True)
         if X.shape[1] != self.n_features_in_:
             raise ValueError("X.shape[1] should be " +
                              str(self.n_features_in_))
 
         # Check3 : y validation
         if y is not None:
-            X, y = check_X_y(X, y, multi_output=True, y_numeric=True)
+            X, y = check_X_y(X, y, accept_sparse=True, multi_output=True, y_numeric=True)
             return X, y
 
         return X
@@ -178,6 +178,8 @@ class bess_base(BaseEstimator):
             The group index for each variable.
             Default: group = \code{numpy.ones(p)}.
         """
+
+        # print("fit enter.")#///
 
         # Input check & init:
         if isinstance(X, (list, np.ndarray, np.matrix, coo_matrix)):
@@ -407,6 +409,7 @@ class bess_base(BaseEstimator):
                 X = tmp[ind, :]
 
         # wrap with cpp
+        # print("wrap enter.")#///
         state = [0]
         result = pywrap_abess(X, y, n, p, self.data_type, weight, Sigma,
                               is_normal,

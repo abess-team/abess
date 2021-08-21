@@ -175,8 +175,5 @@ bool check_ill_condition(Eigen::MatrixXd &M);
 
 bool check_same_vector(Eigen::VectorXi &v1, Eigen::VectorXi &v2, bool order = false);
 
-void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, 
-               Eigen::VectorXi &A_U, Eigen::VectorXi &g_index_U, Eigen::VectorXi &g_size_U);
-
 #endif //BESS_UTILITIES_H
 

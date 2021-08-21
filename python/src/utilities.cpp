@@ -731,21 +731,3 @@ bool check_same_vector(Eigen::VectorXi &v1, Eigen::VectorXi &v2, bool order){
         return true;
     }
 }
-
-void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size,
-               Eigen::VectorXi &A_U, Eigen::VectorXi &g_index_U, Eigen::VectorXi &g_size_U)
-{
-    int pos = 0;
-    for (int i = 0; i < U.size(); i++){
-        for (int j = 0; j < A.size(); j++)
-            if (A(j) == U(i)){
-                A_U(j) = i;
-                break;
-            } 
-        // if (i < A.size()) A_U(i) = i;
-        g_size_U(i) = g_size(U(i));
-        g_index_U(i) = pos;
-        pos += g_size_U(i);
-    }
-    return;
-}

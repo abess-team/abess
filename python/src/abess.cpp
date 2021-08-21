@@ -79,7 +79,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                int sub_search)
 {
   // bool is_parallel = thread != 1;
-
+  // std::cout<<"abess2 enter."<<endl;///
 #ifdef _OPENMP
   // Eigen::initParallel();
   if (thread == 0)
@@ -101,6 +101,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 
   //////////////////// function generate_algorithm_pointer() ////////////////////////////
   // to do
+  // std::cout<<"abess new enter."<<endl;///
   if (!sparse_matrix)
   {
     if (model_type == 1)
@@ -243,7 +244,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 #ifdef TEST
   cout << "abesscpp2 2" << endl;
 #endif
-
+  // std::cout<<"abess result enter."<<endl;///
   List out_result;
   if (!sparse_matrix)
   {
@@ -470,7 +471,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 #ifndef R_BUILD
   std::srand(123);
 #endif
-
+  // std::cout<<"abessCpp enter."<<endl;///
   bool is_parallel = thread != 1;
 
   Data<T1, T2, T3, T4> data(x, y, data_type, weight, is_normal, g_index, status, sparse_matrix);
@@ -603,7 +604,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
         {
           if (covariance_update)
           {
-            algorithm_list[i]->covariance_update_flag = Eigen::VectorXi::Zero(data.p);
+            algorithm_list[i]->covariance = Eigen::MatrixXd::Zero(data.p, data.p);
+            algorithm_list[i]->covariance_update_flag = Eigen::MatrixXi::Zero(data.p, data.p);
             algorithm_list[i]->XTy = XTy;
             algorithm_list[i]->XTone = XTone;
           }
@@ -652,7 +654,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       {
         if (covariance_update)
         {
-          algorithm->covariance_update_flag = Eigen::VectorXi::Zero(data.p);
+          algorithm->covariance = Eigen::MatrixXd::Zero(data.p, data.p);
+          algorithm->covariance_update_flag = Eigen::MatrixXi::Zero(data.p, data.p);
           algorithm->XTy = XTy;
           algorithm->XTone = XTone;
         }
@@ -929,8 +932,10 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   Eigen::VectorXd lambda_sequence_Vec;
   Eigen::VectorXi always_select_Vec;
 
+
 #ifdef TEST
-  clock_t t1, t2;
+  clock_t t1, t2;///
+  std::cout<<"abess enter."<<endl;///
 #endif
   // t1 = clock();
   x_Mat = Pointer2MatrixXd(x, x_row, x_col);
@@ -945,7 +950,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   // t2 = clock();
   // std::cout << "pointer to data: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #ifdef TEST
-  t1 = clock();
+  t1 = clock();///
 #endif
   List mylist = abessCpp2(x_Mat, y_Mat, n, p, data_type, weight_Vec, sigma_Mat,
                           is_normal,
@@ -969,8 +974,8 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                           sub_search);
 
 #ifdef TEST
-  t2 = clock();
-  std::cout << "get result : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+  t2 = clock();///
+  std::cout << "get result : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;///
 #endif
 
   // t1 = clock();

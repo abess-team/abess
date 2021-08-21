@@ -37,7 +37,7 @@ class TestClass:
         s_max = 20
 
         model = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                        K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=5,
+                        K_max=10, epsilon=10, powell_path=2, s_min=1, s_max=p, lambda_min=0.01, lambda_max=100, is_cv=True, K=1,
                         exchange_num=2, tau=0.1 * np.log(n*p) / n,
                         primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=5, covariance_update=True)
         model.fit(data.x, data.y)
@@ -61,14 +61,17 @@ class TestClass:
                          primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=True, splicing_type=1)
         model4.fit(data.x, data.y)
 
+        model5 = abessLm(support_size=range(s_max), sub_search=100)
+        model5.fit(data.x, data.y)
+
         nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model.coef_)[0]
+        nonzero_fit = np.nonzero(model5.coef_)[0]
         print(nonzero_true)
         print(nonzero_fit)
         new_x = data.x[:, nonzero_fit]
         reg = LinearRegression()
         reg.fit(new_x, data.y.reshape(-1))
-        assert model.coef_[nonzero_fit] == approx(
+        assert model5.coef_[nonzero_fit] == approx(
             reg.coef_, rel=1e-5, abs=1e-5)
         assert (nonzero_true == nonzero_fit).all()
 

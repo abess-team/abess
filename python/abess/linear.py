@@ -92,7 +92,7 @@ class abessLogistic(bess_base):
         X = self.new_data_check(X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        xbeta = np.dot(X, self.coef_) + intercept_
+        xbeta = X.dot(self.coef_) + intercept_
         return np.exp(xbeta)/(1 + np.exp(xbeta))
 
     def predict(self, X):
@@ -110,7 +110,7 @@ class abessLogistic(bess_base):
         X = self.new_data_check(X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        xbeta = np.dot(X, self.coef_) + intercept_
+        xbeta = X.dot(self.coef_) + intercept_
         y = np.zeros(xbeta.size)
         y[xbeta > 0] = 1
         return y
@@ -129,7 +129,7 @@ class abessLogistic(bess_base):
         X, y = self.new_data_check(X, y)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        xbeta = np.dot(X, self.coef_) + intercept_
+        xbeta = X.dot(self.coef_) + intercept_
         xbeta[xbeta > 30] = 30
         xbeta[xbeta < -30] = -30
         pr = np.exp(xbeta)/(1 + np.exp(xbeta))
@@ -207,7 +207,7 @@ class abessLm(bess_base):
         X = self.new_data_check(X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        return np.dot(X, self.coef_) + intercept_
+        return X.dot(self.coef_) + intercept_
 
     def score(self, X, y):
         """
@@ -295,7 +295,7 @@ class abessCox(bess_base):
         """
         X = self.new_data_check(X)
 
-        return np.exp(np.dot(X, self.coef_))
+        return np.exp(X.dot(self.coef_))
 
     def score(self, X, y):
         """
@@ -309,7 +309,7 @@ class abessCox(bess_base):
             Test response. 
         """
         X, y = self.new_data_check(X, y)
-        risk_score = np.dot(X, self.coef_)
+        risk_score = X.dot(self.coef_)
         y = np.array(y)
         result = concordance_index_censored(
             np.array(y[:, 1], np.bool_), y[:, 0], risk_score)
@@ -388,7 +388,7 @@ class abessPoisson(bess_base):
         X = self.new_data_check(X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        xbeta_exp = np.exp(np.dot(X, self.coef_) + intercept_)
+        xbeta_exp = np.exp(X.dot(self.coef_) + intercept_)
         return xbeta_exp
 
     def score(self, X, y):
@@ -405,7 +405,7 @@ class abessPoisson(bess_base):
         X, y = self.new_data_check(X, y)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        eta = np.dot(X, self.coef_) + intercept_
+        eta = X.dot(self.coef_) + intercept_
         exp_eta = np.exp(eta)
         return (y * eta - exp_eta).sum()
 
@@ -483,7 +483,7 @@ class abessMultigaussian(bess_base):
 
         intercept_ = np.repeat(
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
-        return np.dot(X, self.coef_) + intercept_
+        return X.dot(self.coef_) + intercept_
 
     def score(self, X, y):
         """
@@ -573,7 +573,7 @@ class abessMultinomial(bess_base):
 
         intercept_ = np.repeat(
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
-        xbeta = np.dot(X, self.coef_) + intercept_
+        xbeta = X.dot(self.coef_) + intercept_
         eta = np.exp(xbeta)
         for i in range(X.shape[0]):
             pr = eta[i, :] / np.sum(eta[i, :])
@@ -594,7 +594,7 @@ class abessMultinomial(bess_base):
 
         intercept_ = np.repeat(
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
-        xbeta = np.dot(X, self.coef_) + intercept_
+        xbeta = X.dot(self.coef_) + intercept_
         return np.argmax(xbeta)
 
     def score(self, X, y):

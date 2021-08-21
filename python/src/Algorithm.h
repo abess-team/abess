@@ -124,7 +124,7 @@ public:
 
   bool covariance_update;                 /* use covairance update mathod or not. */
   Eigen::MatrixXd covariance;             /* covairance matrix. */
-  Eigen::VectorXi covariance_update_flag; /* each variable have updated in covairance matirx. */
+  Eigen::MatrixXi covariance_update_flag; /* each variable have updated in covairance matirx. */
   T1 XTy;                                 /*X.transpose() * y */
   T1 XTone;                               /* X.transpose() * Eigen::MatrixXd::one() */
 
@@ -135,6 +135,11 @@ public:
   
   int sub_search; /* size of sub_searching in splicing */ 
   int U_size;
+
+  T1 XTy_U; 
+  T1 XTone_U;
+  Eigen::Matrix<Eigen::MatrixXd, -1, -1> PhiG_U;
+  Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhiG_U;
 
   Algorithm() = default;
 
@@ -217,6 +222,7 @@ public:
 
   void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::VectorXi &status, Eigen::MatrixXd sigma)
   {
+    // std::cout<<"cpp fit enter. | sparsity = "<<this->sparsity_level<<endl;///
     // std::cout << "fit" << endl;
     int T0 = this->sparsity_level;
     // this->status = status;
@@ -257,23 +263,26 @@ public:
     }
 
 #ifdef TEST
-    clock_t t1, t2;
+    clock_t t1, t2;///
     t1 = clock();
 #endif
 
     if (this->model_type == 1 || this->model_type == 5)
     {
+      // this->covariance = Eigen::MatrixXd::Zero(train_x.cols(), train_x.cols());
       if ((this->algorithm_type == 6 && this->PhiG.rows() == 0) || this->lambda_change)
       {
         this->PhiG = Phi(train_x, g_index, g_size, train_n, p, N, this->lambda_level, this->group_XTX);
         this->invPhiG = invPhi(PhiG, N);
+        this->PhiG_U.resize(N, 1);
+        this->invPhiG_U.resize(N, 1);
       }
     }
 
 #ifdef TEST
     t2 = clock();
     std::cout << "PhiG invPhiG time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-    t1 = clock();
+    t1 = clock();///
 #endif
     // cout << "this->beta: " << this->beta << endl;
     // cout << "this->coef0_init" << this->coef0_init << endl;
@@ -285,8 +294,8 @@ public:
     // std::cout << "fit 2" << endl;
     Eigen::VectorXi A = inital_screening(train_x, train_y, this->beta, this->coef0, this->A_init, this->I_init, this->bd, train_weight, g_index, g_size, N);
 #ifdef TEST
-    t2 = clock();
-    std::cout << "init screening time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t2 = clock();///
+    std::cout << "init screening time" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;///
 #endif
 
     Eigen::VectorXi I = Ac(A, N);
@@ -299,7 +308,7 @@ public:
     slice(this->beta, A_ind, beta_A);
 
 #ifdef TEST
-    t1 = clock();
+    t1 = clock();///
 #endif
     // if (this->algorithm_type == 6)
     // {
@@ -320,10 +329,10 @@ public:
     this->coef0_warmstart = this->coef0;
 
 #ifdef TEST
-    t2 = clock();
-    std::cout << "primary fit" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-    t1 = clock();
+    t2 = clock();///
+    std::cout << "primary fit" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;///
 #endif
+
     // std::cout << "fit 6" << endl;
     int always_select_size = this->always_select.size();
     int C_max = min(min(T0 - always_select_size, this->U_size - T0 - always_select_size), this->exchange_num);
@@ -336,8 +345,8 @@ public:
     this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size, N, this->tau, this->train_loss);
   
 #ifdef TEST
-    t2 = clock();
-    std::cout << "get A" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    t2 = clock();///
+    std::cout << "get A" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;///
     t1 = clock();
 #endif
       
@@ -378,6 +387,7 @@ public:
              Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss)
   {
 #ifdef TEST
+    clock_t t1, t2;///
     std::cout << "get_A 1 | T0 = " << T0  << " | U_size = " << this->U_size << " | N = " << N << endl;
 #endif
 
@@ -394,7 +404,7 @@ public:
       // for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl<<"loss = "<<train_loss<<endl; ///
       // for (int i=0;i<U.size();i++) cout<<U(i)<<" ";cout<<endl;///
 
-      // mapping U
+      // mapping 
       Eigen::VectorXi U_ind = find_ind(U, g_index, g_size, p, N);
       T4 X_U = X_seg(X, n, U_ind);
       T2 beta_U;
@@ -415,10 +425,9 @@ public:
 #ifdef TEST
       std::cout << "get_A 2.5" << endl;
 #endif
-      // mapping_U(U, A, g_index, g_size, A_U, g_index_U, g_size_U);
-      // I_U = Ac(A_U, this->U_size);
 
       int num = 0;
+      //t1 = clock();///
       while (true){
 #ifdef TEST
         std::cout << "get_A 3 | num  = " << ++num << endl;///
@@ -434,7 +443,7 @@ public:
         // for (int i=0;i<I_U.size();i++) cout<<I_U(i)<<" ";cout<<endl;
         
         Eigen::VectorXd bd_U = Eigen::VectorXd::Zero(this->U_size);
-        this->sacrifice(X_U, X_A, y, beta_U, beta_A, coef0, A_U, I_U, weights, g_index_U, g_size_U, this->U_size, A_ind, bd_U);
+        this->sacrifice(X_U, X_A, y, beta_U, beta_A, coef0, A_U, I_U, weights, g_index_U, g_size_U, this->U_size, A_ind, bd_U, U, U_ind, num);
         // cout << "X_U : "<<X_U.rows()<<" * "<<X_U.cols()<<endl;
         // cout << "beta_U : "<<beta_U.rows()<<" * "<<beta_U.cols()<<endl;
         // cout << "X_A : "<<X_A.rows()<<" * "<<X_A.cols()<<endl;
@@ -457,6 +466,8 @@ public:
       }
       
 #ifdef TEST
+      // t2 = clock();///
+      // std::cout << "U time = " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;///
       std::cout << "get_A 4 " << endl;///
 #endif
 
@@ -479,7 +490,9 @@ public:
       T4 X_A0 = X_seg(X, n, A_ind0);
       T2 beta_A0;
       slice(beta, A_ind0, beta_A0);
-      this->sacrifice(X, X_A0, y, beta, beta_A0, coef0, A, I, weights, g_index, g_size, N, A_ind0, bd);
+      Eigen::VectorXi U0 = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
+      Eigen::VectorXi U_ind0 = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
+      this->sacrifice(X, X_A0, y, beta, beta_A0, coef0, A, I, weights, g_index, g_size, N, A_ind0, bd, U0, U_ind0, 0);
       
       // keep A in U_new
       for (int i = 0; i < T0; i++) bd(A(i)) = DBL_MAX; 
@@ -487,11 +500,13 @@ public:
       //update U
       Eigen::VectorXi U_new = max_k(bd, this->U_size, true);
       if (check_same_vector(U_new, U)) break; // if U not change, stop
+
       U = U_new;   
     }
 
 #ifdef TEST
     std::cout << "get_A 5" << endl;///
+    std::cout << "get_A iter = " << iter << endl;///
 #endif
     return;
   };
@@ -617,7 +632,9 @@ public:
       T2 beta_A;
       slice(beta, A_ind, beta_A);
   
-      this->sacrifice(X, X_A, y, beta, beta_A, coef0, A, I, weights, g_index, g_size, N, A_ind, bd);
+      Eigen::VectorXi U = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
+      Eigen::VectorXi U_ind = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
+      this->sacrifice(X, X_A, y, beta, beta_A, coef0, A, I, weights, g_index, g_size, N, A_ind, bd, U, U_ind, 0);
       for (int i = 0; i < this->always_select.size(); i++)
       {
         bd(this->always_select(i)) = DBL_MAX;
@@ -642,7 +659,7 @@ public:
 
   virtual double neg_loglik_loss(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) = 0;
 
-  virtual void sacrifice(T4 &X, T4 &XA, T1 &y, T2 &beta, T2 &beta_A, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd) = 0;
+  virtual void sacrifice(T4 &X, T4 &XA, T1 &y, T2 &beta, T2 &beta_A, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num) = 0;
 
   virtual bool primary_model_fit(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) = 0;
 
@@ -825,7 +842,7 @@ public:
     return -loglik_logit(X, y, coef, n, weights);
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd)
+  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
 #ifdef TEST
     clock_t t1 = clock(), t2;
@@ -995,23 +1012,43 @@ public:
     return (y - X * beta - coef0 * one).array().square().sum() / n;
   }
 
-  void covariance_update_f(T4 &X, Eigen::VectorXi &A_ind)
+  void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind)
   {
-    if (this->covariance.rows() == 0)
-    {
-      this->covariance = Eigen::MatrixXd::Zero(X.cols(), X.cols());
-    }
-    for (int i = 0; i < A_ind.size(); i++)
-    {
-      if (this->covariance_update_flag(A_ind(i)) == 0)
-      {
-        this->covariance.col(A_ind(i)) = X.transpose() * (X.col(A_ind(i)).eval());
-        this->covariance_update_flag(A_ind(i)) = 1;
+    int N = U.size(), p = U_ind.size();
+    if (this->covariance_update)
+      for (int i = 0; i < p; i++){
+        this->XTy_U(i) = this->XTy(U_ind(i), 0);
+        this->XTone_U(i) = this->XTone(U_ind(i), 0);
       }
+
+    for (int i = 0; i < N; i++){
+      this->PhiG_U(i, 0) = this->PhiG(U(i), 0);
+      this->invPhiG_U(i, 0) = this->invPhiG(U(i), 0);
     }
+    return;
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd)
+  Eigen::MatrixXd covariance_update_f(T4 &X, Eigen::VectorXi &U_ind, Eigen::VectorXi &A_ind_U)
+  {
+    int k = A_ind_U.size(), p = U_ind.size();
+    Eigen::MatrixXd cov_A(p, k);
+    Eigen::VectorXi A_ind(k);
+    for (int i = 0; i < k; i++) A_ind(i) = U_ind(A_ind_U(i));
+
+    for (int i = 0; i < p; i++)
+      for (int j = 0; j < k; j++){
+        if (this->covariance_update_flag(U_ind(i), A_ind(j)) == 0)
+        {
+          Eigen::MatrixXd temp = X.col(i).transpose() * X.col(A_ind_U(j));
+          this->covariance(U_ind(i), A_ind(j)) = temp(0, 0);
+          this->covariance_update_flag(U_ind(i), A_ind(j)) = 1;
+        }
+        cov_A(i, j) = this->covariance(U_ind(i), A_ind(j));
+      }
+    return cov_A;
+  }
+
+  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
 #ifdef TEST
     clock_t t1 = clock(), t2;
@@ -1019,10 +1056,17 @@ public:
     int p = X.cols();
     int n = X.rows();
 
+    if (num == 0){
+      this->XTy_U.resize(p, 1); 
+      this->XTone_U.resize(p, 1);
+      this->mapping_U(U, U_ind);
+    }
+
     Eigen::VectorXd d;
     if (!this->covariance_update)
     {
       Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
+      
       if (beta.size() != 0)
       {
         d = X.adjoint() * (y - XA * beta_A - coef0 * one) / double(n) - 2 * this->lambda_level * beta;
@@ -1037,17 +1081,16 @@ public:
       Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
       if (beta.size() != 0)
       {
-        this->covariance_update_f(X, A_ind);
-        Eigen::VectorXd XTXbeta = X_seg(this->covariance, this->covariance.cols(), A_ind) * beta_A;
-        d = (this->XTy - XTXbeta - this->XTone * coef0) / double(n) - 2 * this->lambda_level * beta;
+        Eigen::MatrixXd cov_A = this->covariance_update_f(X, U_ind, A_ind);
+        Eigen::VectorXd XTXbeta = cov_A * beta_A;
+        d = (this->XTy_U - XTXbeta - this->XTone_U * coef0) / double(n) - 2 * this->lambda_level * beta;
       }
       else
       {
-        Eigen::VectorXd XTonecoef0 = this->XTone * coef0;
-        d = (this->XTy - XTonecoef0) / double(n);
+        Eigen::VectorXd XTonecoef0 = this->XTone_U * coef0;
+        d = (this->XTy_U - XTonecoef0) / double(n);
       }
     }
-
 #ifdef TEST
     t2 = clock();
     std::cout << "d1 time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
@@ -1069,8 +1112,8 @@ public:
 
     for (int i = 0; i < N; i++)
     {
-      phiG = this->PhiG(i, 0);
-      invphiG = this->invPhiG(i, 0);
+      phiG = this->PhiG_U(i, 0);
+      invphiG = this->invPhiG_U(i, 0);
       betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
       dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
     }
@@ -1194,7 +1237,7 @@ public:
     return -loglik_poiss(X, y, coef, n, weights);
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd)
+  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
 #ifdef TEST
     clock_t t1 = clock(), t2;
@@ -1538,7 +1581,7 @@ public:
     return -loglik_cox(X, y, beta, weights);
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd)
+  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
 #ifdef TEST
     clock_t t1 = clock(), t2;
@@ -1746,23 +1789,44 @@ public:
     return (y - X * beta - array_product(one, coef0)).array().square().sum() / n / 2.0;
   }
 
-  void covariance_update_f(T4 &X, Eigen::VectorXi &A_ind)
+  void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind)
   {
-    if (this->covariance.rows() == 0)
-    {
-      this->covariance = Eigen::MatrixXd::Zero(X.cols(), X.cols());
-    }
-    for (int i = 0; i < A_ind.size(); i++)
-    {
-      if (this->covariance_update_flag(A_ind(i)) == 0)
-      {
-        this->covariance.col(A_ind(i)) = X.transpose() * X.col(A_ind(i));
-        this->covariance_update_flag(A_ind(i)) = 1;
+    int N = U.size(), p = U_ind.size(), M = this->XTy.cols();
+    if (this->covariance_update)
+      for (int i = 0; i < p; i++)
+      for (int j = 0; j < M; j++){
+        this->XTy_U(i, j) = this->XTy(U_ind(i), j);
+        this->XTone_U(i, j) = this->XTone(U_ind(i), j);
       }
+
+    for (int i = 0; i < N; i++){
+      this->PhiG_U(i, 0) = this->PhiG(U(i), 0);
+      this->invPhiG_U(i, 0) = this->invPhiG(U(i), 0);
     }
+    return;
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd)
+  Eigen::MatrixXd covariance_update_f(T4 &X, Eigen::VectorXi &U_ind, Eigen::VectorXi &A_ind_U)
+  {
+    int k = A_ind_U.size(), p = U_ind.size();
+    Eigen::MatrixXd cov_A(p, k);
+    Eigen::VectorXi A_ind(k);
+    for (int i = 0; i < k; i++) A_ind(i) = U_ind(A_ind_U(i));
+
+    for (int i = 0; i < p; i++)
+      for (int j = 0; j < k; j++){
+        if (this->covariance_update_flag(U_ind(i), A_ind(j)) == 0)
+        {
+          Eigen::MatrixXd temp = X.col(i).transpose() * X.col(A_ind_U(j));
+          this->covariance(U_ind(i), A_ind(j)) = temp(0, 0);
+          this->covariance_update_flag(U_ind(i), A_ind(j)) = 1;
+        }
+        cov_A(i, j) = this->covariance(U_ind(i), A_ind(j));
+      }
+    return cov_A;
+  }
+
+  void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
 #ifdef TEST
     clock_t t1 = clock(), t2;
@@ -1770,6 +1834,12 @@ public:
     int p = X.cols();
     int n = X.rows();
     int M = y.cols();
+
+    if (num == 0){
+      this->XTy_U.resize(p, M); 
+      this->XTone_U.resize(p, M);
+      this->mapping_U(U, U_ind);
+    }
 
     Eigen::MatrixXd d;
     if (!this->covariance_update)
@@ -1792,7 +1862,7 @@ public:
         clock_t t1 = clock();
 #endif
 
-        this->covariance_update_f(X, A_ind);
+        Eigen::MatrixXd cov_A = this->covariance_update_f(X, U_ind, A_ind);
 #ifdef TEST
         clock_t t2 = clock();
         std::cout << "covariance_update_f: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
@@ -1800,8 +1870,8 @@ public:
         t1 = clock();
 #endif
 
-        Eigen::MatrixXd XTXbeta = X_seg(this->covariance, this->covariance.rows(), A_ind) * beta_A;
-        d = (this->XTy - XTXbeta - array_product(this->XTone, coef0)) / double(n) - 2 * this->lambda_level * beta;
+        Eigen::MatrixXd XTXbeta = cov_A * beta_A;
+        d = (this->XTy_U - XTXbeta - array_product(this->XTone_U, coef0)) / double(n) - 2 * this->lambda_level * beta;
 
 #ifdef TEST
         t2 = clock();
@@ -1811,8 +1881,8 @@ public:
       }
       else
       {
-        Eigen::MatrixXd XTonecoef0 = array_product(this->XTone, coef0);
-        d = (this->XTy - XTonecoef0) / double(n);
+        Eigen::MatrixXd XTonecoef0 = array_product(this->XTone_U, coef0);
+        d = (this->XTy_U - XTonecoef0) / double(n);
       }
     }
 
@@ -1831,8 +1901,8 @@ public:
 
     for (int i = 0; i < N; i++)
     {
-      phiG = this->PhiG(i, 0);
-      invphiG = this->invPhiG(i, 0);
+      phiG = this->PhiG_U(i, 0);
+      invphiG = this->invPhiG_U(i, 0);
       betabar.block(g_index(i), 0, g_size(i), M) = phiG * beta.block(g_index(i), 0, g_size(i), M);
       dbar.block(g_index(i), 0, g_size(i), M) = invphiG * d.block(g_index(i), 0, g_size(i), M);
     }
@@ -2212,7 +2282,7 @@ public:
     return -((log_pr.array() * y.array()).sum());
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd)
+  void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
 #ifdef TEST
     clock_t t1 = clock(), t2;
@@ -2502,7 +2572,7 @@ public:
     return -beta.transpose() * Y * beta;
   };
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd)
+  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
 #ifdef TEST
     cout << "<< SPCA sacrifice >>" << endl;
