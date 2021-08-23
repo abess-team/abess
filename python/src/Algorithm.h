@@ -224,6 +224,7 @@ public:
   {
     // std::cout<<"cpp fit enter. | sparsity = "<<this->sparsity_level<<endl;///
     // std::cout << "fit" << endl;
+
     int T0 = this->sparsity_level;
     // this->status = status;
     this->cox_g = Eigen::VectorXd::Zero(0);
@@ -346,7 +347,7 @@ public:
   
 #ifdef TEST
     t2 = clock();///
-    std::cout << "get A" << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;///
+    std::cout << "get A " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;///
     t1 = clock();
 #endif
       
@@ -393,12 +394,20 @@ public:
              Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss)
   {
 #ifdef TEST
+    clock_t t1, t2, t3, t4;///
     std::cout << "get_A 1 | T0 = " << T0  << " | U_size = " << this->U_size << " | N = " << N << endl;
-    clock_t t1, t2;///
     t1 = clock();
 #endif
 
     Eigen::VectorXi U(this->U_size);
+    Eigen::VectorXi U_ind;
+    Eigen::VectorXi g_index_U(this->U_size);
+    Eigen::VectorXi g_size_U(this->U_size); 
+    T4 *X_U = new T4;
+    T2 beta_U;
+    Eigen::VectorXi A_U(T0);
+    Eigen::VectorXi I_U(this->U_size - T0);
+    Eigen::VectorXi always_select_U(this->always_select.size());
 
     if (this->U_size == N){
       U = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
@@ -409,6 +418,7 @@ public:
     t2 = clock();
     std::cout << "U time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif    
+
     int p = X.cols();
     int n = X.rows();
     int C = C_max;
@@ -418,22 +428,13 @@ public:
       std::cout << "get_A 2 | iter = " << iter << endl;///
       // for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl<<"loss = "<<train_loss<<endl; ///
       // for (int i=0;i<U.size();i++) cout<<U(i)<<" ";cout<<endl;///
-      t1 = clock();
+      t3 = clock();
 #endif
-
-      Eigen::VectorXi U_ind;
-      Eigen::VectorXi g_index_U(this->U_size);
-      Eigen::VectorXi g_size_U(this->U_size); 
-      T4 X_U;
-      T2 beta_U;
-      Eigen::VectorXi A_U(T0);
-      Eigen::VectorXi I_U(this->U_size - T0);
-      Eigen::VectorXi always_select_U(this->always_select.size());
-
       // mapping 
       if (this->U_size == N) {
+        delete X_U;
+        X_U = &X;
         U_ind = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
-        X_U = X;
         beta_U = beta;
         g_size_U = g_size;
         g_index_U = g_index;
@@ -442,7 +443,7 @@ public:
         always_select_U = this->always_select;
       }else{
         U_ind = find_ind(U, g_index, g_size, p, N);
-        X_U = X_seg(X, n, U_ind);
+        *X_U = X_seg(X, n, U_ind);
         slice(beta, U_ind, beta_U);
         
         int pos = 0;
@@ -465,38 +466,38 @@ public:
         }
       }
 
-
 #ifdef TEST
-      t2 = clock();
-      std::cout << "mapping U time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
       std::cout << "get_A 2.5" << endl;
+      t4 = clock();
+      std::cout << "mapping U time = " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << endl;
+      t3 = clock();///
 #endif
 
       int num = 0;
-      //t1 = clock();///
       while (true){
+        num ++;
 #ifdef TEST
         t1 = clock();
-        std::cout << "get_A 3 | num  = " << ++num << endl;///
+        std::cout << "get_A 3 | num  = " << num << endl;///
 #endif      
 
-        Eigen::VectorXi A_ind = find_ind(A_U, g_index_U, g_size_U, X_U.cols(), this->U_size); 
-        T4 X_A = X_seg(X_U, n, A_ind);
+        Eigen::VectorXi A_ind = find_ind(A_U, g_index_U, g_size_U, U_ind.size(), this->U_size); 
+        T4 X_A = X_seg(*X_U, n, A_ind);
         T2 beta_A;
         slice(beta_U, A_ind, beta_A);
 
         // cout<<"AUsize = "<<A_U.size()<<" | IU_size = "<<I_U.size()<<endl;
         
         Eigen::VectorXd bd_U = Eigen::VectorXd::Zero(this->U_size);
-        this->sacrifice(X_U, X_A, y, beta_U, beta_A, coef0, A_U, I_U, weights, g_index_U, g_size_U, this->U_size, A_ind, bd_U, U, U_ind, num);
-        
+        this->sacrifice(*X_U, X_A, y, beta_U, beta_A, coef0, A_U, I_U, weights, g_index_U, g_size_U, this->U_size, A_ind, bd_U, U, U_ind, num);
+
         for (int i = 0; i < always_select_U.size(); i++)
         {
           bd_U(always_select_U(i)) = DBL_MAX;
         }
 
         double l0 = train_loss;
-        this->splicing(X_U, y, A_U, I_U, C_max, beta_U, coef0, bd_U, weights,
+        this->splicing(*X_U, y, A_U, I_U, C_max, beta_U, coef0, bd_U, weights,
                       g_index_U, g_size_U, this->U_size, tau, l0);
 #ifdef TEST        
         cout << train_loss << " >" << l0<<endl;///
@@ -510,15 +511,17 @@ public:
       }
       
 #ifdef TEST
-      // t2 = clock();///
-      // std::cout << "U time = " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;///
+      t4 = clock();
+      std::cout << "total splicing time = " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << " | num = " << num << endl;///
       std::cout << "get_A 4 " << endl;///
       t1 = clock();
 #endif
 
-
       // store beta, A, I
       slice_restore(beta_U, U_ind, beta);
+      // A = A_U;
+      // std::sort(A.data(), A.data() + T0);
+      // I = Ac(A, N);
 
       Eigen::VectorXi ind = Eigen::VectorXi::Zero(N);
       for (int i = 0; i < T0; i++) ind(U(A_U(i))) = 1;
@@ -526,26 +529,33 @@ public:
       int tempA = 0, tempI = 0;
       for (int i = 0; i < N; i++) 
           if (ind(i)==0) I(tempI++) = i; else A(tempA++) = i;
+          
 #ifdef TEST      
       t2 = clock();
       std::cout << "restore time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+      t1 = clock();
 #endif      
-      if (this->U_size == N){
-        
-        break;
 
-      }else{
 #ifdef TEST
-        t1 = clock();
+        t2 = clock();
+        std::cout << "full bd time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
-        // bd in full set        
-        Eigen::VectorXi A_ind0 = find_ind(A, g_index, g_size, p, N);
-        T4 X_A0 = X_seg(X, n, A_ind0);
-        T2 beta_A0;
-        slice(beta, A_ind0, beta_A0);
-        Eigen::VectorXi U0 = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
-        Eigen::VectorXi U_ind0 = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
-        this->sacrifice(X, X_A0, y, beta, beta_A0, coef0, A, I, weights, g_index, g_size, N, A_ind0, bd, U0, U_ind0, 0);
+     
+      // bd in full set        
+      Eigen::VectorXi A_ind0 = find_ind(A, g_index, g_size, p, N);
+      T4 X_A0 = X_seg(X, n, A_ind0);
+      T2 beta_A0;
+      slice(beta, A_ind0, beta_A0);
+      Eigen::VectorXi U0 = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
+      Eigen::VectorXi U_ind0 = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
+      this->sacrifice(X, X_A0, y, beta, beta_A0, coef0, A, I, weights, g_index, g_size, N, A_ind0, bd, U0, U_ind0, 0);
+
+      if (this->U_size == N){
+        for (int i = 0; i < this->always_select.size(); i++) 
+          bd(this->always_select(i)) = DBL_MAX;
+
+        break;
+      }else{
         
         // keep A in U_new
         for (int i = 0; i < T0; i++) bd(A(i)) = DBL_MAX; 
@@ -556,12 +566,10 @@ public:
 
         U = U_new;  
         C_max = C;
-#ifdef TEST
-        t2 = clock();
-        std::cout << "update U time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-#endif
       } 
     }
+
+    if (this->U_size != N) delete X_U;
 
 #ifdef TEST
     std::cout << "get_A 5" << endl;///
@@ -618,15 +626,20 @@ public:
 
     // cout << "get A 5" << endl;
 
+    Eigen::VectorXi A_exchange(A_size);
+    Eigen::VectorXi A_ind_exchage;
+    T4 X_A_exchage;
+    T2 beta_A_exchange;
+    T3 coef0_A_exchange;
+
     double L;
     for (int k = C_max; k >= 1;)
     {
-      Eigen::VectorXi A_exchange = diff_union(A, s1, s2);
-      Eigen::VectorXi A_ind_exchage = find_ind(A_exchange, g_index, g_size, p, N);
-      T4 X_A_exchage = X_seg(X, n, A_ind_exchage);
-      T2 beta_A_exchange;
+      A_exchange = diff_union(A, s1, s2);
+      A_ind_exchage = find_ind(A_exchange, g_index, g_size, p, N);
+      X_A_exchage = X_seg(X, n, A_ind_exchage);
       slice(beta, A_ind_exchage, beta_A_exchange);
-      T3 coef0_A_exchange = coef0;
+      coef0_A_exchange = coef0;
 
       bool success = primary_model_fit(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, train_loss, A_exchange, g_index, g_size);
       if (success){
