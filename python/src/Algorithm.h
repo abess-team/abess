@@ -339,7 +339,6 @@ public:
     int C_max = min(min(T0 - always_select_size, this->U_size - T0 - always_select_size), this->exchange_num);
 
 #ifdef TEST
-    // std::cout << "fit 7" << endl;
     t1 = clock();///
 #endif
 
@@ -347,7 +346,7 @@ public:
   
 #ifdef TEST
     t2 = clock();///
-    std::cout << "get A " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;///
+    std::cout << "==> total get_A time = " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;///
     t1 = clock();
 #endif
       
@@ -395,7 +394,7 @@ public:
   {
 #ifdef TEST
     clock_t t1, t2, t3, t4;///
-    std::cout << "get_A 1 | T0 = " << T0  << " | U_size = " << this->U_size << " | N = " << N << endl;
+    std::cout << "==> get_A start | T0 = " << T0  << " | U_size = " << this->U_size << " | N = " << N << endl;
     t1 = clock();
 #endif
 
@@ -416,7 +415,7 @@ public:
     }
 #ifdef TEST
     t2 = clock();
-    std::cout << "U time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+    std::cout << "  U time = " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif    
 
     int p = X.cols();
@@ -425,7 +424,6 @@ public:
     int iter = 0;
     while (iter++ < this->max_iter){
 #ifdef TEST
-      std::cout << "get_A 2 | iter = " << iter << endl;///
       // for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl<<"loss = "<<train_loss<<endl; ///
       // for (int i=0;i<U.size();i++) cout<<U(i)<<" ";cout<<endl;///
       t3 = clock();
@@ -466,10 +464,10 @@ public:
         }
       }
 
+
 #ifdef TEST
-      std::cout << "get_A 2.5" << endl;
       t4 = clock();
-      std::cout << "mapping U time = " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << endl;
+      std::cout << "  mapping U time = " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << endl;
       t3 = clock();///
 #endif
 
@@ -478,7 +476,6 @@ public:
         num ++;
 #ifdef TEST
         t1 = clock();
-        std::cout << "get_A 3 | num  = " << num << endl;///
 #endif      
 
         Eigen::VectorXi A_ind = find_ind(A_U, g_index_U, g_size_U, U_ind.size(), this->U_size); 
@@ -497,31 +494,28 @@ public:
         }
 
         double l0 = train_loss;
-        this->splicing(*X_U, y, A_U, I_U, C_max, beta_U, coef0, bd_U, weights,
-                      g_index_U, g_size_U, this->U_size, tau, l0);
+        bool exchange = this->splicing(*X_U, y, A_U, I_U, C_max, beta_U, coef0, bd_U, weights,
+                                        g_index_U, g_size_U, this->U_size, tau, l0);                                 
 #ifdef TEST        
         cout << train_loss << " >" << l0<<endl;///
         t2 = clock();
-        std::cout << "splicing time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+        std::cout << "    splicing time = " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;///
 #endif
-        if (l0 < train_loss) 
+
+        if (exchange) 
           train_loss = l0; 
         else 
-          break; // if loss not decrease, A_U is stable
+          break; // A_U is stable
       }
       
 #ifdef TEST
       t4 = clock();
-      std::cout << "total splicing time = " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << " | num = " << num << endl;///
-      std::cout << "get_A 4 " << endl;///
+      std::cout << "  total splicing time = " << ((double)(t4 - t3) / CLOCKS_PER_SEC) << " | num = " << num << endl;///
       t1 = clock();
 #endif
 
       // store beta, A, I
       slice_restore(beta_U, U_ind, beta);
-      // A = A_U;
-      // std::sort(A.data(), A.data() + T0);
-      // I = Ac(A, N);
 
       Eigen::VectorXi ind = Eigen::VectorXi::Zero(N);
       for (int i = 0; i < T0; i++) ind(U(A_U(i))) = 1;
@@ -532,15 +526,10 @@ public:
           
 #ifdef TEST      
       t2 = clock();
-      std::cout << "restore time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+      std::cout << "  restore time = " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
       t1 = clock();
 #endif      
 
-#ifdef TEST
-        t2 = clock();
-        std::cout << "full bd time " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-#endif
-     
       // bd in full set        
       Eigen::VectorXi A_ind0 = find_ind(A, g_index, g_size, p, N);
       T4 X_A0 = X_seg(X, n, A_ind0);
@@ -550,11 +539,18 @@ public:
       Eigen::VectorXi U_ind0 = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
       this->sacrifice(X, X_A0, y, beta, beta_A0, coef0, A, I, weights, g_index, g_size, N, A_ind0, bd, U0, U_ind0, 0);
 
+#ifdef TEST
+      t2 = clock();
+      std::cout << "  full bd time = " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
+#endif
+     
       if (this->U_size == N){
+
         for (int i = 0; i < this->always_select.size(); i++) 
           bd(this->always_select(i)) = DBL_MAX;
 
         break;
+
       }else{
         
         // keep A in U_new
@@ -562,7 +558,9 @@ public:
         
         //update U
         Eigen::VectorXi U_new = max_k(bd, this->U_size, true);
-        if (check_same_vector(U_new, U)) break; // if U not change, stop
+
+        // if (check_same_vector(U_new, U)) break; // if U not change, stop
+        if (A_U.size() == 0 || A_U.maxCoeff() == T0 - 1) break; // if A_U not change, stop
 
         U = U_new;  
         C_max = C;
@@ -572,16 +570,15 @@ public:
     if (this->U_size != N) delete X_U;
 
 #ifdef TEST
-    std::cout << "get_A 5" << endl;///
     std::cout << "get_A iter = " << iter << endl;///
 #endif
     return;
   };
   
-  void splicing(T4 &X, T1 &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, T2 &beta, T3 &coef0, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
+  bool splicing(T4 &X, T1 &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, T2 &beta, T3 &coef0, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
              Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss)
   {
-    if (C_max <= 0) return;
+    if (C_max <= 0) return false;
 
 #ifdef TEST
     clock_t t0, t1, t2;
@@ -663,7 +660,7 @@ public:
         t2 = clock();
         std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
 #endif
-        return;
+        return true;
       }
       else
       {
@@ -679,7 +676,7 @@ public:
     t2 = clock();
     std::cout << "splicing time: " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
 #endif
-    return;
+    return false;
   };
 
   Eigen::VectorXi inital_screening(T4 &X, T1 &y, T2 &beta, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
@@ -1117,6 +1114,8 @@ public:
         }
         cov_A(i, j) = this->covariance(U_ind(i), A_ind(j));
       }
+
+    // Eigen::MatrixXd cov1
     return cov_A;
   }
 
