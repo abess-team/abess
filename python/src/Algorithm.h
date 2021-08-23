@@ -514,6 +514,8 @@ public:
       t1 = clock();
 #endif
 
+      if (A_U.size() == 0 || A_U.maxCoeff() == T0 - 1) break; // if A_U not change, stop
+
       // store beta, A, I
       slice_restore(beta_U, U_ind, beta);
 
@@ -560,7 +562,6 @@ public:
         Eigen::VectorXi U_new = max_k(bd, this->U_size, true);
 
         // if (check_same_vector(U_new, U)) break; // if U not change, stop
-        if (A_U.size() == 0 || A_U.maxCoeff() == T0 - 1) break; // if A_U not change, stop
 
         U = U_new;  
         C_max = C;
