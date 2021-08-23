@@ -206,32 +206,22 @@ Please don’t restyle code that has nothing to do with your code.
 ### Test cases
 
 It is always a good habit to do some test for the changed package.
+Contributions with test cases included are easier to accept.
 
-#### R Package
+We use [testthat](https://cran.r-project.org/web/packages/testthat) for unit tests in R and
+[pytest](https://docs.pytest.org/) in Python. You may need to install first.
 
-We use [testthat](https://cran.r-project.org/web/packages/testthat) for unit tests in R and [pytest](https://pypi.org/project/pytest/) in python. Contributions with test cases included are easier to accept.
+You can find some examples here and please feel free to add your test code into it (or create a new test file) under the test folder: 
 
-#### Python Package
+- [R test folder](https://github.com/abess-team/abess/tree/master/R-package/tests/testthat): `abess/R-package/tests/testthat`.
+- [Python test folder](https://github.com/abess-team/abess/tree/master/python/pytest): `abess/pytest`.
 
- We use [pytest](https://docs.pytest.org/) for testing python code. We firstly install it with pip command:
+A good test code should contain:
 
-```bash
-$ pip install -U pytest
-```
-
-Under `abess/pytest`, you can see a file named `test_all.py` and it is the test file for all existing code. Please feel free to add your test code into it or simply create a new test file under that folder. The test code should at least contain:
-
-- possible input/output modes;
+- possible input modes as well as some wrong input;
+- check whether the output is expected; 
 - possible extreme cases;
-- possible wrong input.
 
-(Details of how to write a test can be viewed on [pytest-getting-started](https://docs.pytest.org/en/6.2.x/getting-started.html).)
+All test under pytest folder should be checked after coding.
 
-And then run:
 
-```bash
-$ cd pytest
-$ pytest
-```
-
-All test under pytest folder would be checked.

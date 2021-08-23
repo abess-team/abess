@@ -30,6 +30,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
     clock_t t0, t1, t2;
 
 #endif
+    
     int p = data.get_p();
     int N = data.g_num;
     int M = data.y.cols();
@@ -88,7 +89,8 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
 
     if (algorithm->covariance_update)
     {
-        algorithm->covariance_update_flag = Eigen::VectorXi::Zero(p);
+        algorithm->covariance = Eigen::MatrixXd::Zero(p, p);
+        algorithm->covariance_update_flag = Eigen::MatrixXi::Zero(p, p);
         algorithm->XTy = train_x.transpose() * train_y;
         algorithm->XTone = train_x.transpose() * Eigen::MatrixXd::Ones(train_n, M);
     }
@@ -229,7 +231,8 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
 
     if (algorithm->covariance_update)
     {
-        algorithm->covariance_update_flag = Eigen::VectorXi::Zero(data.p);
+        algorithm->covariance = Eigen::MatrixXd::Zero(data.p, data.p);
+        algorithm->covariance_update_flag = Eigen::MatrixXi::Zero(data.p, data.p);
         algorithm->XTy = data.x.transpose() * data.y;
         algorithm->XTone = data.x.transpose() * Eigen::MatrixXd::Ones(data.n, data.M);
     }
@@ -251,7 +254,8 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
 
             if (algorithm_list[k]->covariance_update)
             {
-                algorithm_list[k]->covariance_update_flag = Eigen::VectorXi::Zero(p);
+                algorithm_list[k]->covariance = Eigen::MatrixXd::Zero(p, p);
+                algorithm_list[k]->covariance_update_flag = Eigen::MatrixXi::Zero(p, p);
                 algorithm_list[k]->XTy = metric->train_X_list[k].transpose() * metric->train_y_list[k];
                 algorithm_list[k]->XTone = metric->train_X_list[k].transpose() * Eigen::MatrixXd::Ones(metric->train_mask_list[k].size(), data.M);
             }

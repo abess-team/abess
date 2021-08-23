@@ -110,6 +110,7 @@ struct Result
  * @param primary_model_fit_epsilon     The epsilon (threshold) of iteration in `primary_model_fit()` (in Algorithm.h). 
  * @param splicing_type                 The type of splicing in `fit()` (in Algorithm.h). 
  *                                      "0" for decreasing by half, "1" for decresing by one.
+ * @param sub_search                    The number of inactive sets that are split when splicing. It should be positive integer.
  * @return result list.
  */
 List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
@@ -132,7 +133,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                int thread,
                bool covariance_update,
                bool sparse_matrix,
-               int splicing_type);
+               int splicing_type,
+               int sub_search);
 
 template <class T1, class T2, class T3, class T4>
 List abessCpp(T4 &x, T1 &y, int n, int p,
@@ -177,6 +179,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, 
                   bool covariance_update,
                   bool sparse_matrix,
                   int splicing_type,
+                  int sub_search,
                   double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
