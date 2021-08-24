@@ -173,7 +173,6 @@ void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::MatrixXd &
 
 bool check_ill_condition(Eigen::MatrixXd &M);
 
-bool check_same_vector(Eigen::VectorXi &v1, Eigen::VectorXi &v2, bool order = false);
 
 #endif //BESS_UTILITIES_H
 

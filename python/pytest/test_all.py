@@ -521,33 +521,33 @@ class TestClass:
     #     assert gcv.best_params_["support_size"] == k
     #     assert gcv.best_params_["alpha"] == 0.
 
-    # def test_PCA(self):
-    #     n = 1000
-    #     p = 20
-    #     s = 10
-    #     group_size = 5
-    #     group_num = 4
+    def test_PCA(self):
+        n = 1000
+        p = 20
+        s = 10
+        group_size = 5
+        group_num = 4
 
-    #     np.random.seed(2)
-    #     x1 = np.random.randn(n, 1)
-    #     x1 /= np.linalg.norm(x1)
-    #     X = x1.dot(np.random.randn(1, p)) + 0.01 * np.random.randn(n, p)
-    #     X = X - X.mean(axis=0)
-    #     g_index = np.arange(group_num)
-    #     g_index = g_index.repeat(group_size)
+        np.random.seed(2)
+        x1 = np.random.randn(n, 1)
+        x1 /= np.linalg.norm(x1)
+        X = x1.dot(np.random.randn(1, p)) + 0.01 * np.random.randn(n, p)
+        X = X - X.mean(axis=0)
+        g_index = np.arange(group_num)
+        g_index = g_index.repeat(group_size)
 
-    #     # Check1: give X
-    #     model = abessPCA(support_size=range(s, s + 1))
-    #     model.fit(X, is_normal=False)
-    #     coef1 = np.nonzero(model.coef_)[0]
+        # Check1: give X
+        model = abessPCA(support_size=range(s, s + 1))
+        model.fit(X, is_normal=False)
+        coef1 = np.nonzero(model.coef_)[0]
 
-    #     assert len(coef1) == s
+        assert len(coef1) == s
 
-    #     model = abessPCA(support_size=s)    # give integer
-    #     model.fit(X, is_normal=False)
-    #     coef1 = np.nonzero(model.coef_)[0]
+        model = abessPCA(support_size=s)    # give integer
+        model.fit(X, is_normal=False)
+        coef1 = np.nonzero(model.coef_)[0]
 
-    #     assert len(coef1) == s
+        assert len(coef1) == s
 
     #     # Check2: give Sigma
     #     model.fit(Sigma=X.T.dot(X))
@@ -555,140 +555,140 @@ class TestClass:
 
     #     assert len(coef2) == s
 
-    #     # Check3: group
-    #     model = abessPCA(support_size=range(3, 4))
-    #     model.fit(X, group=g_index, is_normal=False)
+        # Check3: group
+        model = abessPCA(support_size=range(3, 4))
+        model.fit(X, group=g_index, is_normal=False)
 
-    #     coef3 = np.unique(g_index[np.nonzero(model.coef_)])
-    #     assert (coef3.size == 3)
+        coef3 = np.unique(g_index[np.nonzero(model.coef_)])
+        assert (coef3.size == 3)
 
-    #     # Check4: multi
-    #     model = abessPCA(support_size=range(s, s + 1))
-    #     model.fit(X, is_normal=False, number=3)
-    #     assert (model.coef_.shape[1] == 3)
+        # Check4: multi
+        model = abessPCA(support_size=range(s, s + 1))
+        model.fit(X, is_normal=False, number=3)
+        assert (model.coef_.shape[1] == 3)
 
-    #     for i in range(3):
-    #         coef4 = np.nonzero(model.coef_[:, i])[0]
-    #         assert (len(coef4) == s)
+        for i in range(3):
+            coef4 = np.nonzero(model.coef_[:, i])[0]
+            assert (len(coef4) == s)
 
-    #     model.ratio(X)
+        model.ratio(X)
 
-    #     # Check5: sparse
-    #     model = abessPCA(support_size=[s], sparse_matrix=True)
-    #     model.fit(X, is_normal=False)
-    #     coef5 = np.nonzero(model.coef_)[0]
-    #     assert (coef5 == coef1).all()
+        # Check5: sparse
+        model = abessPCA(support_size=[s], sparse_matrix=True)
+        model.fit(X, is_normal=False)
+        coef5 = np.nonzero(model.coef_)[0]
+        assert (coef5 == coef1).all()
 
-    #     temp = coo_matrix(([1, 2, 3], ([0, 1, 2], [0, 1, 2])))
-    #     model = abessPCA(sparse_matrix=True)
-    #     model.fit(temp)
+        temp = coo_matrix(([1, 2, 3], ([0, 1, 2], [0, 1, 2])))
+        model = abessPCA(sparse_matrix=True)
+        model.fit(temp)
 
-    #     # Check6: cv
-    #     model = abessPCA(support_size=[s], is_cv=True)
-    #     model.fit(X, is_normal=False)
-    #     coef6 = np.nonzero(model.coef_)[0]
-    #     assert (coef6 == coef1).all()
+        # Check6: cv
+        model = abessPCA(support_size=[s], is_cv=True)
+        model.fit(X, is_normal=False)
+        coef6 = np.nonzero(model.coef_)[0]
+        assert (coef6 == coef1).all()
 
-    #     model = abessPCA(support_size=[s], sparse_matrix=True, is_cv=True)
-    #     model.fit(X, is_normal=False)
-    #     coef7 = np.nonzero(model.coef_)[0]
-    #     assert (coef7 == coef1).all()
+        model = abessPCA(support_size=[s], sparse_matrix=True, is_cv=True)
+        model.fit(X, is_normal=False)
+        coef7 = np.nonzero(model.coef_)[0]
+        assert (coef7 == coef1).all()
 
-    #     # Check7: ratio & transform
-    #     model.ratio(X)
-    #     model.transform(X)
-    #     model.ratio(np.ones((1, p)))
+        # Check7: ratio & transform
+        model.ratio(X)
+        model.transform(X)
+        model.ratio(np.ones((1, p)))
 
-    #     # Check8: ic, alpha
-    #     for ic in ['aic', 'bic', 'ebic', 'gic']:
-    #         model = abessPCA(ic_type=ic, alpha=0.1)
-    #         model.fit(X)
+        # Check8: ic, alpha
+        for ic in ['aic', 'bic', 'ebic', 'gic']:
+            model = abessPCA(ic_type=ic, alpha=0.1)
+            model.fit(X)
 
-    #     # Check9: screening
-    #     model = abessPCA(is_screening=True, screening_size=p-1)
-    #     model.fit(X)
+        # Check9: screening
+        model = abessPCA(is_screening=True, screening_size=p-1)
+        model.fit(X)
 
-    #     # Check10: error arg
-    #     try:
-    #         model = abessPCA()
-    #         model.fit()
-    #     except ValueError as e:
-    #         print(e)
-    #     else:
-    #         assert False
+        # Check10: error arg
+        try:
+            model = abessPCA()
+            model.fit()
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
-    #     try:
-    #         model = abessPCA(ic_type='other')
-    #         model.fit(X)
-    #     except ValueError as e:
-    #         print(e)
-    #     else:
-    #         assert False
+        try:
+            model = abessPCA(ic_type='other')
+            model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
-    #     try:
-    #         model = abessPCA()
-    #         model.fit(X, group=[[1]])
-    #     except ValueError as e:
-    #         print(e)
-    #     else:
-    #         assert False
+        try:
+            model = abessPCA()
+            model.fit(X, group=[[1]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
-    #     try:
-    #         model = abessPCA()
-    #         model.fit(X, group=[1])
-    #     except ValueError as e:
-    #         print(e)
-    #     else:
-    #         assert False
+        try:
+            model = abessPCA()
+            model.fit(X, group=[1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
-    #     try:
-    #         model = abessPCA(support_size=[p+1])
-    #         model.fit(X)
-    #     except ValueError as e:
-    #         print(e)
-    #     else:
-    #         assert False
+        try:
+            model = abessPCA(support_size=[p+1])
+            model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
-    #     try:
-    #         model = abessPCA(is_screening=True, screening_size=p+1)
-    #         model.fit(X)
-    #     except ValueError as e:
-    #         print(e)
-    #     else:
-    #         assert False
+        try:
+            model = abessPCA(is_screening=True, screening_size=p+1)
+            model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
-    #     try:
-    #         model = abessPCA(is_screening=True,
-    #                          screening_size=p-1, support_size=p)
-    #         model.fit(X)
-    #     except ValueError as e:
-    #         print(e)
-    #     else:
-    #         assert False
+        try:
+            model = abessPCA(is_screening=True,
+                             screening_size=p-1, support_size=p)
+            model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
-    #     try:
-    #         model = abessPCA(exchange_num=-1)
-    #         model.fit()
-    #     except ValueError as e:
-    #         print(e)
-    #     else:
-    #         assert False
+        try:
+            model = abessPCA(exchange_num=-1)
+            model.fit()
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
-    #     try:
-    #         model = abessPCA(thread=-1)
-    #         model.fit(X)
-    #     except ValueError as e:
-    #         print(e)
-    #     else:
-    #         assert False
+        try:
+            model = abessPCA(thread=-1)
+            model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
-    #     try:
-    #         model = abessPCA(splicing_type=2)
-    #         model.fit(X)
-    #     except ValueError as e:
-    #         print(e)
-    #     else:
-    #         assert False
+        try:
+            model = abessPCA(splicing_type=2)
+            model.fit(X)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
     def test_gaussian_gs(self):
         n = 100
@@ -881,7 +881,7 @@ class TestClass:
         family = "multigaussian"
         rho = 0.5
         M = 3
-        np.random.seed(0)
+        np.random.seed(1)
         data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, int(n/np.log(np.log(n)) / np.log(p)))
@@ -916,11 +916,11 @@ class TestClass:
     def test_mulnomial_gs(self):#to do
         n = 100
         p = 20
-        k = 5
+        k = 3
         family = "multinomial"
         rho = 0.5
         M = 3
-        np.random.seed(5)
+        np.random.seed(8)
         data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
