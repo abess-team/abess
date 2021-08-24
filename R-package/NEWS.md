@@ -1,3 +1,8 @@
+# abess 0.3.0
+
+* Add docs2search for R's website
+* Support important searching to improve computational efficiency when dimension is 10,000.
+
 # abess 0.2.0
 
 * Support sparse matrix as input
