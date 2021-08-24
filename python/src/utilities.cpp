@@ -712,23 +712,3 @@ bool check_ill_condition(Eigen::MatrixXd &M){
     double l2 = svd.singularValues()(svd.singularValues().size()-1);
     return ((l2 == 0 || l1 / l2 > 1e+10) ? true : false);
 }
-
-bool check_same_vector(Eigen::VectorXi &v1, Eigen::VectorXi &v2, bool order){
-    if (order){
-        return (v1 == v2);
-    }else{
-        if (v1.size() != v2.size()) return false;
-        if (v1.size() == 0) return true;
-        if (v1.maxCoeff() != v2.maxCoeff()) return false;
-
-        int mark[v1.maxCoeff() + 1];
-        memset(mark, 0, sizeof(mark));
-        for (int i = 0; i < v1.size(); i++){
-            mark[v1(i)]++;
-            mark[v2(i)]--;
-        } 
-        for (int i = 0; i <= v1.maxCoeff(); i++)
-            if (mark[i] != 0) return false;
-        return true;
-    }
-}

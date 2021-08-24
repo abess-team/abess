@@ -143,7 +143,7 @@ public:
 
   Algorithm() = default;
 
-  ~Algorithm(){};
+  virtual ~Algorithm(){};
 
   Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), bool covariance_update = false, int splicing_type = 0, int sub_search = 0)
   {
@@ -408,7 +408,7 @@ public:
     Eigen::VectorXi I_U(this->U_size - T0);
     Eigen::VectorXi always_select_U(this->always_select.size());
 
-    if (this->U_size == N){
+    if (this->U_size == N || this->model_type == 7){
       U = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
     }else{
       U = max_k(bd, this->U_size, true);
@@ -429,7 +429,7 @@ public:
       t3 = clock();
 #endif
       // mapping 
-      if (this->U_size == N) {
+      if (this->U_size == N || this->model_type == 7) {
         delete X_U;
         X_U = &X;
         U_ind = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
@@ -546,7 +546,7 @@ public:
       std::cout << "  full bd time = " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
      
-      if (this->U_size == N){
+      if (this->U_size == N || this->model_type == 7){
 
         for (int i = 0; i < this->always_select.size(); i++) 
           bd(this->always_select(i)) = DBL_MAX;
