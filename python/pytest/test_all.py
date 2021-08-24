@@ -549,11 +549,11 @@ class TestClass:
 
         assert len(coef1) == s
 
-    #     # Check2: give Sigma
-    #     model.fit(Sigma=X.T.dot(X))
-    #     coef2 = np.nonzero(model.coef_)[0]
+        # Check2: give Sigma
+        model.fit(Sigma=X.T.dot(X))
+        coef2 = np.nonzero(model.coef_)[0]
 
-    #     assert len(coef2) == s
+        assert len(coef2) == s
 
         # Check3: group
         model = abessPCA(support_size=range(3, 4))

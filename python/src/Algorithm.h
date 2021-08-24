@@ -229,7 +229,11 @@ public:
     // this->status = status;
     this->cox_g = Eigen::VectorXd::Zero(0);
 
-    this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
+    if (train_n == 1){
+      this->tau = 0.0;
+    }else{
+      this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
+    }
 
     this->beta = this->beta_init;
     this->coef0 = this->coef0_init;
@@ -408,7 +412,7 @@ public:
     Eigen::VectorXi I_U(this->U_size - T0);
     Eigen::VectorXi always_select_U(this->always_select.size());
 
-    if (this->U_size == N || this->model_type == 7){
+    if (this->U_size == N){
       U = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
     }else{
       U = max_k(bd, this->U_size, true);
@@ -429,7 +433,7 @@ public:
       t3 = clock();
 #endif
       // mapping 
-      if (this->U_size == N || this->model_type == 7) {
+      if (this->U_size == N) {
         delete X_U;
         X_U = &X;
         U_ind = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
@@ -473,8 +477,9 @@ public:
 
       int num = 0;
       while (true){
-        num ++;
+        num ++; 
 #ifdef TEST
+        // cout << num << " | loss = " << train_loss << endl;///
         t1 = clock();
 #endif      
 
@@ -546,7 +551,7 @@ public:
       std::cout << "  full bd time = " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
      
-      if (this->U_size == N || this->model_type == 7){
+      if (this->U_size == N){
 
         for (int i = 0; i < this->always_select.size(); i++) 
           bd(this->always_select(i)) = DBL_MAX;
@@ -1116,7 +1121,6 @@ public:
         cov_A(i, j) = this->covariance(U_ind(i), A_ind(j));
       }
 
-    // Eigen::MatrixXd cov1
     return cov_A;
   }
 
