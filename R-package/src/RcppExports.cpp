@@ -12,13 +12,13 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // abessCpp2
-List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int data_type, Eigen::VectorXd weight, Eigen::MatrixXd sigma, bool is_normal, int algorithm_type, int model_type, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef, bool is_cv, int Kfold, Eigen::VectorXi status, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int K_max, double epsilon, double lambda_min, double lambda_max, int nlambda, bool is_screening, int screening_size, int powell_path, Eigen::VectorXi g_index, Eigen::VectorXi always_select, double tau, int primary_model_fit_max_iter, double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton, int thread, bool covariance_update, bool sparse_matrix, int splicing_type, int sub_search);
+List abessCpp2(Eigen::MatrixXd& x, Eigen::MatrixXd& y, int n, int p, int data_type, Eigen::VectorXd weight, Eigen::MatrixXd sigma, bool is_normal, int algorithm_type, int model_type, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef, bool is_cv, int Kfold, Eigen::VectorXi status, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int K_max, double epsilon, double lambda_min, double lambda_max, int nlambda, bool is_screening, int screening_size, int powell_path, Eigen::VectorXi g_index, Eigen::VectorXi always_select, double tau, int primary_model_fit_max_iter, double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton, int thread, bool covariance_update, bool sparse_matrix, int splicing_type, int sub_search);
 RcppExport SEXP _abess_abessCpp2(SEXP xSEXP, SEXP ySEXP, SEXP nSEXP, SEXP pSEXP, SEXP data_typeSEXP, SEXP weightSEXP, SEXP sigmaSEXP, SEXP is_normalSEXP, SEXP algorithm_typeSEXP, SEXP model_typeSEXP, SEXP max_iterSEXP, SEXP exchange_numSEXP, SEXP path_typeSEXP, SEXP is_warm_startSEXP, SEXP ic_typeSEXP, SEXP ic_coefSEXP, SEXP is_cvSEXP, SEXP KfoldSEXP, SEXP statusSEXP, SEXP sequenceSEXP, SEXP lambda_seqSEXP, SEXP s_minSEXP, SEXP s_maxSEXP, SEXP K_maxSEXP, SEXP epsilonSEXP, SEXP lambda_minSEXP, SEXP lambda_maxSEXP, SEXP nlambdaSEXP, SEXP is_screeningSEXP, SEXP screening_sizeSEXP, SEXP powell_pathSEXP, SEXP g_indexSEXP, SEXP always_selectSEXP, SEXP tauSEXP, SEXP primary_model_fit_max_iterSEXP, SEXP primary_model_fit_epsilonSEXP, SEXP early_stopSEXP, SEXP approximate_NewtonSEXP, SEXP threadSEXP, SEXP covariance_updateSEXP, SEXP sparse_matrixSEXP, SEXP splicing_typeSEXP, SEXP sub_searchSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Eigen::MatrixXd >::type x(xSEXP);
-    Rcpp::traits::input_parameter< Eigen::MatrixXd >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Eigen::MatrixXd& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Eigen::MatrixXd& >::type y(ySEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type data_type(data_typeSEXP);

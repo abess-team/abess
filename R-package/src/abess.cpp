@@ -55,7 +55,7 @@ using namespace Eigen;
 using namespace std;
 
 // [[Rcpp::export]]
-List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
+List abessCpp2(Eigen::MatrixXd &x, Eigen::MatrixXd &y, int n, int p,
                int data_type, Eigen::VectorXd weight, Eigen::MatrixXd sigma,
                bool is_normal,
                int algorithm_type, int model_type, int max_iter, int exchange_num,
