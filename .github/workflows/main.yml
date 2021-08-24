@@ -57,13 +57,13 @@ jobs:
     name: Codecov workflow for Python-package
     runs-on: ubuntu-18.04
     env:
-      PYTHON: '3.9'
+      PYTHON: '3.8'
     steps:
     - uses: actions/checkout@master
     - name: Setup Python
       uses: actions/setup-python@master
       with:
-        python-version: 3.9
+        python-version: 3.8
     - name: Install abess & dependencies
       run: |
         pip install pytest
