@@ -881,7 +881,7 @@ class TestClass:
         family = "multigaussian"
         rho = 0.5
         M = 3
-        np.random.seed(0)
+        np.random.seed(1)
         data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, int(n/np.log(np.log(n)) / np.log(p)))
@@ -954,7 +954,7 @@ class TestClass:
         model5.fit(data.x, data.y, group=group)
 
         nonzero_true = np.unique(np.nonzero(data.coef_)[0])
-        nonzero_fit = np.unique(np.nonzero(model5.coef_)[0])
+        nonzero_fit = np.unique(np.nonzero(model.coef_)[0])
         print(nonzero_true)
         print(nonzero_fit)
         # new_x = data.x[:, nonzero_fit]
