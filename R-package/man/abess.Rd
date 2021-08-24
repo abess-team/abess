@@ -23,6 +23,7 @@
   splicing.type = 2,
   max.splicing.iter = 20,
   screening.num = NULL,
+  important.search = NULL,
   warm.start = TRUE,
   nfolds = 5,
   cov.update = TRUE,
@@ -114,6 +115,11 @@ Default is \code{max.splicing.iter = 20}.}
 
 \item{screening.num}{An integer number. Preserve \code{screening.num} number of predictors with the largest
 marginal maximum likelihood estimator before running algorithm.}
+
+\item{important.search}{An integer number indicating the number of 
+important variables to be splicing. 
+When \code{important.search} \eqn{\ll} \code{p} variables, 
+it would greatly reduce runtimes. Default: \code{important.search = 1000}.}
 
 \item{warm.start}{Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.}
 

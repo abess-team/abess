@@ -101,9 +101,10 @@ abesspca <- function(x,
                      group.index = NULL,
                      splicing.type = 1,
                      max.splicing.iter = 20,
-                     warm.start = TRUE,
+                     warm.start = TRUE, 
                      ...) {
   support.num <- NULL
+  important.search <- NULL
 
   ## check warm start:
   stopifnot(is.logical(warm.start))
@@ -285,6 +286,15 @@ abesspca <- function(x,
 
     always_include <- always.include
   }
+  
+  ## important searching: 
+  if (is.null(important.search)) {
+    important_search <- as.integer(0)
+  } else {
+    stopifnot(is.numeric(important.search))
+    stopifnot(important.search >= 0)
+    important_search <- as.integer(important.search)
+  }
 
   ## Cpp interface:
   res_list <- list()
@@ -341,7 +351,8 @@ abesspca <- function(x,
       thread = 1,
       covariance_update = FALSE,
       sparse_matrix = FALSE, ### to change
-      splicing_type = splicing_type
+      splicing_type = splicing_type, 
+      sub_search = important_search
     )
 
     if (sparse_type != "fpc") {
