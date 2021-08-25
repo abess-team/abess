@@ -1150,15 +1150,17 @@ public:
     int p = X.cols();
     int n = X.rows();
 
-    if (p == this->XTy.rows()){
-      this->XTy_U = this->XTy;
-      this->XTone_U = this->XTone;
-      this->PhiG_U = this->PhiG;
-      this->invPhiG_U = this->invPhiG;
-    }else if (num == 0){
-      this->XTy_U.resize(p, 1); 
-      this->XTone_U.resize(p, 1);
-      this->mapping_U(U, U_ind);
+    if (num == 0){
+      if (p == this->XTy.rows()){
+        this->XTy_U = this->XTy;
+        this->XTone_U = this->XTone;
+        this->PhiG_U = this->PhiG;
+        this->invPhiG_U = this->invPhiG;
+      }else{
+        this->XTy_U.resize(p, 1); 
+        this->XTone_U.resize(p, 1);
+        this->mapping_U(U, U_ind);
+      }
     }
 
     Eigen::VectorXd d;
@@ -1952,16 +1954,17 @@ public:
     int n = X.rows();
     int M = y.cols();
 
-    if (p == this->XTy.rows()){
-      this->XTy_U = this->XTy;
-      this->XTone_U = this->XTone;
-      this->PhiG_U = this->PhiG;
-      this->invPhiG_U = this->invPhiG;
-    }else if (num == 0){
-      this->XTy_U.resize(p, M); 
-      this->XTone_U.resize(p, M);
-      this->mapping_U(U, U_ind);
-    }
+    if (num == 0)
+      if (p == this->XTy.rows()){
+        this->XTy_U = this->XTy;
+        this->XTone_U = this->XTone;
+        this->PhiG_U = this->PhiG;
+        this->invPhiG_U = this->invPhiG;
+      }else{
+        this->XTy_U.resize(p, M); 
+        this->XTone_U.resize(p, M);
+        this->mapping_U(U, U_ind);
+      }
 
     Eigen::MatrixXd d;
     if (!this->covariance_update)
