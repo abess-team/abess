@@ -136,6 +136,8 @@ public:
   int sub_search; /* size of sub_searching in splicing */ 
   int U_size;
 
+  int pca_n = -1;
+
   T1 XTy_U; 
   T1 XTone_U;
   Eigen::Matrix<Eigen::MatrixXd, -1, -1> PhiG_U;
@@ -198,6 +200,14 @@ public:
 
   void update_group_XTX(Eigen::Matrix<T4, -1, -1> &group_XTX) { this->group_XTX = group_XTX; }
 
+  void update_tau(int train_n, int N){
+    if (train_n == 1){
+      this->tau = 0.0;
+    }else{
+      this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
+    }
+  }
+
   bool get_warm_start() { return this->warm_start; }
 
   double get_train_loss() { return this->train_loss; }
@@ -229,7 +239,7 @@ public:
     // this->status = status;
     this->cox_g = Eigen::VectorXd::Zero(0);
 
-    this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
+    this->update_tau(train_n, N);
 
     this->beta = this->beta_init;
     this->coef0 = this->coef0_init;
@@ -408,7 +418,7 @@ public:
     Eigen::VectorXi I_U(this->U_size - T0);
     Eigen::VectorXi always_select_U(this->always_select.size());
 
-    if (this->U_size == N || this->model_type == 7){
+    if (this->U_size == N){
       U = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
     }else{
       U = max_k(bd, this->U_size, true);
@@ -429,7 +439,7 @@ public:
       t3 = clock();
 #endif
       // mapping 
-      if (this->U_size == N || this->model_type == 7) {
+      if (this->U_size == N) {
         delete X_U;
         X_U = &X;
         U_ind = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
@@ -473,8 +483,9 @@ public:
 
       int num = 0;
       while (true){
-        num ++;
+        num ++; 
 #ifdef TEST
+        // cout << num << " | loss = " << train_loss << endl;///
         t1 = clock();
 #endif      
 
@@ -546,7 +557,7 @@ public:
       std::cout << "  full bd time = " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
      
-      if (this->U_size == N || this->model_type == 7){
+      if (this->U_size == N){
 
         for (int i = 0; i < this->always_select.size(); i++) 
           bd(this->always_select(i)) = DBL_MAX;
@@ -858,7 +869,7 @@ public:
         }
 
         Eigen::MatrixXd XTX = 2 * this->lambda_level * lambdamat + X_new.transpose() * X;
-        if (check_ill_condition(XTX)) return false;
+        // if (check_ill_condition(XTX)) return false;
         beta0 = XTX.ldlt().solve(X_new.transpose() * Z);
 
         // overload_ldlt(X_new, X, Z, beta0);
@@ -1056,7 +1067,7 @@ public:
     add_constant_column(X);
     // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
     Eigen::MatrixXd XTX = X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
-    if (check_ill_condition(XTX)) return false;
+    // if (check_ill_condition(XTX)) return false;
     Eigen::VectorXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
     
     beta = beta0.tail(p).eval();
@@ -1116,7 +1127,6 @@ public:
         cov_A(i, j) = this->covariance(U_ind(i), A_ind(j));
       }
 
-    // Eigen::MatrixXd cov1
     return cov_A;
   }
 
@@ -1140,15 +1150,17 @@ public:
     int p = X.cols();
     int n = X.rows();
 
-    if (p == this->XTy.rows()){
-      this->XTy_U = this->XTy;
-      this->XTone_U = this->XTone;
-      this->PhiG_U = this->PhiG;
-      this->invPhiG_U = this->invPhiG;
-    }else if (num == 0){
-      this->XTy_U.resize(p, 1); 
-      this->XTone_U.resize(p, 1);
-      this->mapping_U(U, U_ind);
+    if (num == 0){
+      if (p == this->XTy.rows()){
+        this->XTy_U = this->XTy;
+        this->XTone_U = this->XTone;
+        this->PhiG_U = this->PhiG;
+        this->invPhiG_U = this->invPhiG;
+      }else{
+        this->XTy_U.resize(p, 1); 
+        this->XTone_U.resize(p, 1);
+        this->mapping_U(U, U_ind);
+      }
     }
 
     Eigen::VectorXd d;
@@ -1287,7 +1299,7 @@ public:
       }
       z = eta + (y - expeta).cwiseQuotient(expeta);
       Eigen::MatrixXd XTX = X_new.transpose() * X + 2 * this->lambda_level * lambdamat;
-      if (check_ill_condition(XTX)) return false;
+      // if (check_ill_condition(XTX)) return false;
       beta0 = (XTX).ldlt().solve(X_new.transpose() * z);
       eta = X * beta0;
       for (int i = 0; i <= n - 1; i++)
@@ -1564,7 +1576,7 @@ public:
       else
       {
         // d = (x.transpose() * h * x + 2 * this->lambda_level * lambdamat).ldlt().solve(g);
-        if (check_ill_condition(temp)) return false;
+        // if (check_ill_condition(temp)) return false;
         d = temp.ldlt().solve(x.transpose() * g - 2 * this->lambda_level * beta0);
       }
 
@@ -1854,7 +1866,7 @@ public:
     add_constant_column(X);
     // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
     Eigen::MatrixXd XTX = X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
-    if (check_ill_condition(XTX)) return false;
+    // if (check_ill_condition(XTX)) return false;
     Eigen::MatrixXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
     
     beta = beta0.block(1, 0, p, M);
@@ -1942,16 +1954,17 @@ public:
     int n = X.rows();
     int M = y.cols();
 
-    if (p == this->XTy.rows()){
-      this->XTy_U = this->XTy;
-      this->XTone_U = this->XTone;
-      this->PhiG_U = this->PhiG;
-      this->invPhiG_U = this->invPhiG;
-    }else if (num == 0){
-      this->XTy_U.resize(p, M); 
-      this->XTone_U.resize(p, M);
-      this->mapping_U(U, U_ind);
-    }
+    if (num == 0)
+      if (p == this->XTy.rows()){
+        this->XTy_U = this->XTy;
+        this->XTone_U = this->XTone;
+        this->PhiG_U = this->PhiG;
+        this->invPhiG_U = this->invPhiG;
+      }else{
+        this->XTy_U.resize(p, M); 
+        this->XTone_U.resize(p, M);
+        this->mapping_U(U, U_ind);
+      }
 
     Eigen::MatrixXd d;
     if (!this->covariance_update)
@@ -2104,7 +2117,7 @@ public:
       // ConjugateGradient<MatrixXd, Lower | Upper> cg;
       // cg.compute(X.adjoint() * X);
       Eigen::MatrixXd XTX = X.transpose() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
-      if (check_ill_condition(XTX)) return false;
+      // if (check_ill_condition(XTX)) return false;
       Eigen::MatrixXd invXTX = XTX.ldlt().solve(Eigen::MatrixXd::Identity(p + 1, p + 1));
       
       // cout << "y: " << y.rows() << " " << y.cols() << endl;
@@ -2612,6 +2625,15 @@ public:
   abessPCA(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 1, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select, false, splicing_type, sub_search){};
 
   ~abessPCA(){};
+
+  void updata_tau(int train_n, int N){
+    if (this->pca_n > 0) train_n = this->pca_n;
+    if (train_n == 1){
+      this->tau = 0.0;
+    }else{
+      this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
+    }
+  }
 
   MatrixXd SigmaA(Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {

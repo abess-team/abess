@@ -848,3 +848,34 @@ Algorithm 4: Group-splicing
       Record the :math:`v_0 = \arg\max_v v^T\Sigma v`;
 
 4. return :math:`v_0`.
+
+Important Search
+----------------
+
+Suppose that there are only a few variables are important (i.e. too many noise variables), 
+it may be a vise choice to focus on some important variables during splicing process. 
+This can save a lot of time, especially under a large $p$.
+
+Algorithm
+~~~~~~~~~
+
+Suppose we are focus on the sparsity level :math:`s` and we have the sacrifice :math:`\zeta, \xi`
+from the last sparsity level's searching. Now we focus on an variables' subset :math:`U` with size `U\_size`, 
+which is not larger than :math:`p`:
+
+Algorithm : Important Search
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+1. Input :math:`s, X, y, group\_index, group\_size, \zeta, \xi, U\_size`;
+
+2. Sort all sacrifices and choose the largest :math:`U\_size` variables as :math:`U`, initially;
+
+3. Mapping :math:`X, y, group\_index, group\_size` to `U`;
+
+4. Form splicing on this space until the active set is stable;
+
+5. Re-compute the sacrifices on the new active and inactive set;
+
+6. Similar to Step 2, sort and update :math:`U`;
+
+7. If :math:`U` is unchanged (not in order), stop; else go to 3.
