@@ -42,7 +42,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None, censoring=True, c
         Default: sigma = 1.
     coef\_: array_like, optional
         The coefficient values in the underlying regression model. 
-        Default: coef_ = None.
+        Default: coef\_ = None.
     censoring: bool, optional
         For Cox data, it indicates whether censoring is existed.
         Default: censoring = True
@@ -221,7 +221,7 @@ def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho
         Default: rho = 0.5.
     coef\_: array_like, optional
         The coefficient values in the underlying regression model. 
-        Default: coef_ = None.
+        Default: coef\_ = None.
     sparse_ratio: float, optional
         The sparse ratio of predictor matrix (x).
         Default: sparse_ratio = None.

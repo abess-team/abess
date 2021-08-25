@@ -136,6 +136,8 @@ public:
   int sub_search; /* size of sub_searching in splicing */ 
   int U_size;
 
+  int pca_n = -1;
+
   T1 XTy_U; 
   T1 XTone_U;
   Eigen::Matrix<Eigen::MatrixXd, -1, -1> PhiG_U;
@@ -198,6 +200,14 @@ public:
 
   void update_group_XTX(Eigen::Matrix<T4, -1, -1> &group_XTX) { this->group_XTX = group_XTX; }
 
+  void update_tau(int train_n, int N){
+    if (train_n == 1){
+      this->tau = 0.0;
+    }else{
+      this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
+    }
+  }
+
   bool get_warm_start() { return this->warm_start; }
 
   double get_train_loss() { return this->train_loss; }
@@ -229,11 +239,7 @@ public:
     // this->status = status;
     this->cox_g = Eigen::VectorXd::Zero(0);
 
-    if (train_n == 1){
-      this->tau = 0.0;
-    }else{
-      this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
-    }
+    this->update_tau(train_n, N);
 
     this->beta = this->beta_init;
     this->coef0 = this->coef0_init;
@@ -2616,6 +2622,15 @@ public:
   abessPCA(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 1, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select, false, splicing_type, sub_search){};
 
   ~abessPCA(){};
+
+  void updata_tau(int train_n, int N){
+    if (this->pca_n > 0) train_n = this->pca_n;
+    if (train_n == 1){
+      this->tau = 0.0;
+    }else{
+      this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
+    }
+  }
 
   MatrixXd SigmaA(Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {

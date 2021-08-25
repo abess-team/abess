@@ -30,6 +30,13 @@ class abessPCA(bess_base):
     """
     Adaptive Best-Subset Selection(ABESS) algorithm for principal component analysis.
 
+    Parameters
+    ----------
+    splicing_type: {0, 1}, optional
+        The type of splicing in `fit()` (in Algorithm.h). 
+        "0" for decreasing by half, "1" for decresing by one.
+        Default: splicing_type = 1.
+
     Examples
     --------
     >>> ### Sparsity known
@@ -71,7 +78,7 @@ class abessPCA(bess_base):
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=1
-                #  sub_search=0
+                #  important_search=0
                  ):
         super(abessPCA, self).__init__(
             algorithm_type="abess", model_type="PCA", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -83,7 +90,7 @@ class abessPCA(bess_base):
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
-            sub_search=0
+            important_search=0
         )
         self.data_type = 1
 
@@ -123,7 +130,7 @@ class abessPCA(bess_base):
             full = np.sum(np.diag(s))
         return explain / full
 
-    def fit(self, X=None, is_normal=True, group=None, Sigma=None, number=1):
+    def fit(self, X=None, is_normal=True, group=None, Sigma=None, number=1, n=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -147,6 +154,9 @@ class abessPCA(bess_base):
         number : int, optional 
             Indicates the number of PCs returned. 
             Default: 1
+        n : int, optional
+            Sample size. If X is given, it would be X.shape[0]; if Sigma is given, it would be 1 by default.
+            Default: X.shape[0] or 1.
         """
 
         # Input check
@@ -171,7 +181,8 @@ class abessPCA(bess_base):
             elif np.any(np.linalg.eigvals(Sigma) < 0):
                 raise ValueError("Sigma should be semi-positive definite.")
 
-            n = 1
+            if (n is None): 
+                n = 1
             p = Sigma.shape[0]
             X = np.zeros((1, p))
             y = np.zeros((1, 1))
@@ -292,10 +303,10 @@ class abessPCA(bess_base):
             raise ValueError(
                 "number should be an positive integer and not bigger than X.shape[1].")
         
-        # Sub_search
-        if (not isinstance(self.sub_search, int) or self.sub_search < 0):
+        # Important_search
+        if (not isinstance(self.important_search, int) or self.important_search < 0):
             raise ValueError(
-                "sub_search should be a non-negative number.")
+                "important_search should be a non-negative number.")
 
         # Sparse X
         if self.sparse_matrix:
@@ -341,7 +352,7 @@ class abessPCA(bess_base):
                               self.covariance_update,
                               self.sparse_matrix,
                               self.splicing_type,
-                              self.sub_search,
+                              self.important_search,
                               p * M,
                               1 * M, 1, 1, 1, 1, 1, p
                               )
@@ -377,7 +388,7 @@ class abessPCA(bess_base):
                                       self.covariance_update,
                                       self.sparse_matrix,
                                       self.splicing_type,
-                                      self.sub_search,
+                                      self.important_search,
                                       p * M,
                                       1 * M, 1, 1, 1, 1, 1, p
                                       )
