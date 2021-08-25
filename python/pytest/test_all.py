@@ -61,7 +61,7 @@ class TestClass:
                          primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, early_stop=False, approximate_Newton=True, ic_coef=1., thread=0, covariance_update=True, splicing_type=1)
         model4.fit(data.x, data.y)
 
-        model5 = abessLm(support_size=range(s_max), sub_search=100)
+        model5 = abessLm(support_size=range(s_max), important_search=100)
         model5.fit(data.x, data.y)
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -162,7 +162,7 @@ class TestClass:
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-        model3 = abessCox(support_size=support_size, sub_search=10)
+        model3 = abessCox(support_size=support_size, important_search=10)
         model3.fit(data.x, data.y, group=group)
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -223,7 +223,7 @@ class TestClass:
         model2.fit(data.x, data.y, group=group)
         model2.predict(data.x)
 
-        model3 = abessPoisson(support_size=support_size, sub_search=10)
+        model3 = abessPoisson(support_size=support_size, important_search=10)
         model3.fit(data.x, data.y, group=group)
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -327,7 +327,7 @@ class TestClass:
         group = np.linspace(1, p, p)
         model4.fit(data.x, data.y, group=group)
 
-        model5 = abessMultinomial(support_size=support_size, sub_search=10)
+        model5 = abessMultinomial(support_size=support_size, important_search=10)
         model5.fit(data.x, data.y, group=group)
 
         nonzero_true = np.unique(np.nonzero(data.coef_)[0])
@@ -362,7 +362,7 @@ class TestClass:
         gcv = GridSearchCV(
             model,
             param_grid={"support_size": support_size,
-                        "sub_search": [10],
+                        "important_search": [10],
                         "alpha": alpha},
             cv=cv,
             n_jobs=5).fit(data.x, data.y)
@@ -390,7 +390,7 @@ class TestClass:
         gcv = GridSearchCV(
             model,
             param_grid={"support_size": support_size,
-                        "sub_search": [10],
+                        "important_search": [10],
                         "alpha": alpha},
             cv=cv,
             n_jobs=5).fit(data.x, data.y)
@@ -420,7 +420,7 @@ class TestClass:
         gcv = GridSearchCV(
             model,
             param_grid={"support_size": support_size,
-                        "sub_search": [10],
+                        "important_search": [10],
                         "alpha": alpha},
             cv=cv,
             n_jobs=1).fit(data.x, data.y)
@@ -453,7 +453,7 @@ class TestClass:
         gcv = GridSearchCV(
             model,
             param_grid={"support_size": support_size,
-                        "sub_search": [10],
+                        "important_search": [10],
                         "alpha": alpha},
             cv=cv,
             n_jobs=1).fit(data.x, data.y)
@@ -801,7 +801,7 @@ class TestClass:
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-        model3 = abessCox(path_type="pgs", s_min=1, s_max=20, lambda_min=0.01, lambda_max=100, sub_search=10)
+        model3 = abessCox(path_type="pgs", s_min=1, s_max=20, lambda_min=0.01, lambda_max=100, important_search=10)
         model3.fit(data.x, data.y, group=group)
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -855,7 +855,7 @@ class TestClass:
         model2.fit(data.x, data.y, group=group)
         model2.predict(data.x)
 
-        model3 = abessPoisson(path_type="pgs", s_min=1, s_max=20, lambda_min=0.01, lambda_max=100, sub_search=10)
+        model3 = abessPoisson(path_type="pgs", s_min=1, s_max=20, lambda_min=0.01, lambda_max=100, important_search=10)
         model3.fit(data.x, data.y, group=group)
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -900,7 +900,7 @@ class TestClass:
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-        model3 = abessMultigaussian(path_type="pgs", s_min=1, s_max=20, lambda_min=0.01, lambda_max=100, sub_search=10)
+        model3 = abessMultigaussian(path_type="pgs", s_min=1, s_max=20, lambda_min=0.01, lambda_max=100, important_search=10)
         model3.fit(data.x, data.y, group=group)
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -946,11 +946,11 @@ class TestClass:
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
 
-        model4 = abessMultinomial(path_type="pgs", s_min=1, s_max=p, ic_type='gic', sub_search=10)
+        model4 = abessMultinomial(path_type="pgs", s_min=1, s_max=p, ic_type='gic', important_search=10)
         group = np.linspace(1, p, p)
         model4.fit(data.x, data.y, group=group)
 
-        model5 = abessMultinomial(support_size=support_size, sub_search=10)
+        model5 = abessMultinomial(support_size=support_size, important_search=10)
         model5.fit(data.x, data.y, group=group)
 
         nonzero_true = np.unique(np.nonzero(data.coef_)[0])
@@ -1089,7 +1089,7 @@ class TestClass:
         model2.fit(data.x + 1, data.y, group=group)
         model2.predict(data.x)
 
-        model3 = abessPoisson(support_size=support_size, sub_search=10, sparse_matrix=True)
+        model3 = abessPoisson(support_size=support_size, important_search=10, sparse_matrix=True)
         model3.fit(data.x + 1, data.y, group=group)
 
         assert model.coef_ == approx(model3.coef_, rel=1e-1, abs=1e-1)
