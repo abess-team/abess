@@ -28,6 +28,13 @@ test_that("abesspca (FPC) works", {
   spca_fit1[["call"]] <- NULL
   spca_fit2[["call"]] <- NULL
   expect_true(all.equal(spca_fit1, spca_fit2))
+  
+  ## check identity:
+  spca_fit1 <- abesspca(USArrests, cor = TRUE)
+  spca_fit2 <- abesspca(cor(USArrests), type = "gram")
+  spca_fit1[["call"]] <- NULL
+  spca_fit2[["call"]] <- NULL
+  expect_true(all.equal(spca_fit1, spca_fit2))
 
   ## check identity:
   spca_fit1 <- abesspca(USArrests)
@@ -90,8 +97,10 @@ test_that("abesspca (group) works", {
 })
 
 test_that("abesspca (sparse) works", {
-  skip("")
-  data(USArrests)
+  # data(USArrests)
+  dat <- generate.data(100, 200, support.size = 3)
+  x <- dat[["x"]]
+  USArrests <- x
   set.seed(1)
   zero_matrix <- sample(0:1, size = prod(dim(USArrests)), replace = TRUE)
   zero_matrix <- matrix(zero_matrix, nrow = nrow(USArrests))
