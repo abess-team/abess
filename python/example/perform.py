@@ -21,7 +21,7 @@ lm7 = np.load('./Lm0.7_data.npy')
 logi1 = np.load('./Logistic0.1_data.npy')
 logi7 = np.load('./Logistic0.7_data.npy')
 
-plt.figure(figsize=(18, 27))
+plt.figure(figsize = (18, 27))
 
 # lm
 color = ['#00AF91', '#FFCC29', '#5089C6']
@@ -31,26 +31,26 @@ c3 = mpatches.Patch(color=color[2], label='ABESS')
 
 plt.subplot(321)
 for i in range(lm1.shape[0]):
-    plt.boxplot(x=[lm1[i, lm1[i, :, 0] < 100, 0], lm7[i, lm7[i, :, 0] < 100, 0]], patch_artist=True,
-                labels=['', ''], positions=[i + 1, i + 5], widths=0.7,
-                boxprops=dict(facecolor=color[i])),
-
+    plt.boxplot(x = [lm1[i, lm1[i, :, 0] < 100, 0], lm7[i, lm7[i, :, 0] < 100, 0]], patch_artist=True,
+        labels = ['', ''], positions = [i + 1, i + 5], widths = 0.7,
+        boxprops=dict(facecolor = color[i])),
+        
 plt.xlabel('low corr                                         high corr')
 plt.title('Linear - Predict Error')
 
 plt.subplot(323)
 for i in range(lm1.shape[0]):
-    plt.boxplot(x=[lm1[i, :, 1], lm7[i, :, 1]], patch_artist=True,
-                labels=['', ''], positions=[i + 1, i + 5], widths=0.7,
-                boxprops=dict(facecolor=color[i]))
+    plt.boxplot(x = [lm1[i, :, 1], lm7[i, :, 1]], patch_artist=True,
+        labels = ['', ''], positions = [i + 1, i + 5], widths = 0.7,
+        boxprops=dict(facecolor = color[i]))
 plt.xlabel('low corr                                         high corr')
 plt.title('Linear - Coefficient error')
 
 plt.subplot(325)
 for i in range(lm1.shape[0]):
-    plt.boxplot(x=[lm1[i, :, 3], lm7[i, :, 3]], patch_artist=True,
-                labels=['', ''], positions=[i + 1, i + 5], widths=0.7,
-                boxprops=dict(facecolor=color[i]))
+    plt.boxplot(x = [lm1[i, :, 3], lm7[i, :, 3]], patch_artist=True,
+        labels = ['', ''], positions = [i + 1, i + 5], widths = 0.7,
+        boxprops=dict(facecolor = color[i]))
 plt.xlabel('low corr                                         high corr')
 plt.title('Linear - FPR')
 plt.legend(handles=[c1, c2, c3])
@@ -60,26 +60,26 @@ color = ['#00AF91', '#5089C6']
 
 plt.subplot(322)
 for i in range(logi1.shape[0]):
-    plt.boxplot(x=[logi1[i, :, 0], logi7[i, :, 0]], patch_artist=True,
-                labels=['', ''], positions=[i + 1, i + 4], widths=0.7,
-                boxprops=dict(facecolor=color[i])),
-
+    plt.boxplot(x = [logi1[i, :, 0], logi7[i, :, 0]], patch_artist=True,
+        labels = ['', ''], positions = [i + 1, i + 4], widths = 0.7,
+        boxprops=dict(facecolor = color[i])),
+        
 plt.xlabel('low corr                                         high corr')
 plt.title('Logistic - AUC')
 
 plt.subplot(324)
 for i in range(logi1.shape[0]):
-    plt.boxplot(x=[logi1[i, :, 1], logi7[i, :, 1]], patch_artist=True,
-                labels=['', ''], positions=[i + 1, i + 4], widths=0.7,
-                boxprops=dict(facecolor=color[i]), medianprops=dict(color=color[i]))
+    plt.boxplot(x = [logi1[i, :, 1], logi7[i, :, 1]], patch_artist=True,
+        labels = ['', ''], positions = [i + 1, i + 4], widths = 0.7,
+        boxprops=dict(facecolor = color[i]), medianprops=dict(color=color[i]))
 plt.xlabel('low corr                                         high corr')
 plt.title('Logistic - Coefficient error')
 
 plt.subplot(326)
 for i in range(logi1.shape[0]):
-    plt.boxplot(x=[logi1[i, :, 3], logi7[i, :, 3]], patch_artist=True,
-                labels=['', ''], positions=[i + 1, i + 4], widths=0.7,
-                boxprops=dict(facecolor=color[i]))
+    plt.boxplot(x = [logi1[i, :, 3], logi7[i, :, 3]], patch_artist=True,
+        labels = ['', ''], positions = [i + 1, i + 4], widths = 0.7,
+        boxprops=dict(facecolor = color[i]))
 plt.xlabel('low corr                                         high corr')
 plt.title('Logistic - FPR')
 plt.legend(handles=[c1, c3])

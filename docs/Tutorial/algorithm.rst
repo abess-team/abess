@@ -866,16 +866,22 @@ which is not larger than :math:`p`:
 Algorithm : Important Search
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1. Input :math:`s, X, y, group\_index, group\_size, \zeta, \xi, U\_size`;
+1. Input :math:`s, X, y, group\_index, group\_size, \zeta, \xi, U\_size, max\_iter`;
 
 2. Sort all sacrifices and choose the largest :math:`U\_size` variables as :math:`U`, initially;
 
-3. Mapping :math:`X, y, group\_index, group\_size` to `U`;
+3. For :math:`iter = 0, 1, \cdots, max\_iter` do:
 
-4. Form splicing on this space until the active set is stable;
+      Mapping :math:`X, y, group\_index, group\_size` to `U`;
 
-5. Re-compute the sacrifices on the new active and inactive set;
+      Form splicing on this subset, until the active set is stable;
 
-6. Similar to Step 2, sort and update :math:`U`;
+      Inverse mapping to full set;
 
-7. If :math:`U` is unchanged (not in order), stop; else go to 3.
+      Re-compute the sacrifices with the new active set;
+
+      Sort and update :math:`U` (similar to Step 2);
+
+      If :math:`U` is unchanged (not in order), break;
+
+4. Return :math:`\mathcal{A}, \mathcal{I}`.
