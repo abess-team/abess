@@ -72,21 +72,21 @@ class abessPCA(bess_base):
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  K_max=None, epsilon=0.0001, lambda_min=None, lambda_max=None, n_lambda=100, ic_type="ebic", ic_coef=1.0, is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
-                 always_select=[], tau=0.,
+                 always_select=[], # tau=0.,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 early_stop=False, approximate_Newton=False,
+                 # early_stop=False, approximate_Newton=False,
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=1
-                #  important_search=0
+                 # important_search=0
                  ):
         super(abessPCA, self).__init__(
             algorithm_type="abess", model_type="PCA", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, n_lambda=n_lambda, ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
-            always_select=always_select, tau=tau,
+            always_select=always_select, tau=0.,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
-            early_stop=early_stop, approximate_Newton=approximate_Newton,
+            early_stop=False, approximate_Newton=False,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
