@@ -3,6 +3,6 @@ Contributing
 ============
 
 .. toctree::
-    Before
     Contributing
+    Before
     CodeDeveloping
