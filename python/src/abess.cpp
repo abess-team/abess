@@ -86,6 +86,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
   {
     thread = omp_get_max_threads();
   }
+
   if (is_cv && thread > Kfold)
   {
     thread = Kfold;

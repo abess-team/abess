@@ -101,9 +101,10 @@ abesspca <- function(x,
                      group.index = NULL,
                      splicing.type = 1,
                      max.splicing.iter = 20,
-                     warm.start = TRUE,
+                     warm.start = TRUE, 
                      ...) {
   support.num <- NULL
+  important.search <- NULL
 
   ## check warm start:
   stopifnot(is.logical(warm.start))
@@ -120,6 +121,7 @@ abesspca <- function(x,
   ## check x matrix:
   stopifnot(class(x)[1] %in% c("matrix", "data.frame", "dgCMatrix"))
   nvars <- ncol(x)
+  nobs <- nrow(x)
   sparse_X <- ifelse(class(x)[1] %in% c("matrix", "data.frame"), FALSE, TRUE)
   if (sparse_X) {
   } else {
@@ -285,6 +287,15 @@ abesspca <- function(x,
 
     always_include <- always.include
   }
+  
+  ## important searching: 
+  if (is.null(important.search)) {
+    important_search <- as.integer(0)
+  } else {
+    stopifnot(is.numeric(important.search))
+    stopifnot(important.search >= 0)
+    important_search <- as.integer(important.search)
+  }
 
   ## Cpp interface:
   res_list <- list()
@@ -299,10 +310,22 @@ abesspca <- function(x,
     } else {
       s_list_tmp <- s_list_copy[1]
     }
+    # print(nobs)
+    # print(nvars)
+    # print(x)
+    # print(max_splicing_iter)
+    # print(c_max)
+    # print(warm.start)
+    # print(as.vector(s_list_tmp))
+    # print(lambda)
+    # print(g_index)
+    # print(always_include)
+    # print(splicing_type)
+    # print(important_search)
     result <- abessCpp2(
-      x = matrix(1, ncol = nvars, nrow = 2),
+      x = matrix(0, ncol = nvars, nrow = 1),
       y = matrix(0),
-      n = 1,
+      n = nobs,
       p = nvars,
       data_type = 1,
       weight = c(1),
@@ -341,7 +364,8 @@ abesspca <- function(x,
       thread = 1,
       covariance_update = FALSE,
       sparse_matrix = FALSE, ### to change
-      splicing_type = splicing_type
+      splicing_type = splicing_type, 
+      sub_search = important_search
     )
 
     if (sparse_type != "fpc") {

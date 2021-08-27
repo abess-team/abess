@@ -82,6 +82,10 @@ abess <- function(x, ...) UseMethod("abess")
 #' (Default: \code{splicing.type = 2}.)
 #' @param screening.num An integer number. Preserve \code{screening.num} number of predictors with the largest
 #' marginal maximum likelihood estimator before running algorithm.
+#' @param important.search An integer number indicating the number of 
+#' important variables to be splicing. 
+#' When \code{important.search} \eqn{\ll} \code{p} variables, 
+#' it would greatly reduce runtimes. Default: \code{important.search = 1000}.
 #' @param normalize Options for normalization. \code{normalize = 0} for no normalization.
 #' \code{normalize = 1} for subtracting the mean of columns of \code{x}.
 #' \code{normalize = 2} for scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
@@ -324,6 +328,7 @@ abess.default <- function(x,
                           splicing.type = 2,
                           max.splicing.iter = 20,
                           screening.num = NULL,
+                          important.search = NULL, 
                           warm.start = TRUE,
                           nfolds = 5,
                           cov.update = TRUE,
@@ -734,6 +739,16 @@ abess.default <- function(x,
     screening <- TRUE
     screening_num <- screening.num
   }
+  
+  # check important searching:
+  if (is.null(important.search)) {
+    important_search <- min(c(nvars, 1000))
+    important_search <- as.integer(important_search)
+  } else {
+    stopifnot(is.numeric(important.search))
+    stopifnot(important.search >= 0)
+    important_search <- as.integer(important.search)
+  }
 
   # check always included variables:
   if (is.null(always.include)) {
@@ -820,7 +835,8 @@ abess.default <- function(x,
     thread = num_threads,
     covariance_update = covariance_update,
     sparse_matrix = sparse_X,
-    splicing_type = splicing_type
+    splicing_type = splicing_type, 
+    sub_search = important_search
   )
   t2 <- proc.time()
   # print(t2 - t1)

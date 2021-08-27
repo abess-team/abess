@@ -72,7 +72,7 @@ T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind)
         }
         return X_new;
     }
-}
+};
 
 template <class T4>
 void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
@@ -89,7 +89,7 @@ void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
             X_seg.col(k) = X.col(ind(k));
         }
     }
-}
+};
 
 template <class T4>
 Eigen::Matrix<T4, -1, -1> group_XTX(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)
@@ -129,7 +129,7 @@ Eigen::VectorXi vector_slice(Eigen::VectorXi &nums, Eigen::VectorXi &ind);
 
 // Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind);
 Eigen::VectorXi Ac(Eigen::VectorXi &A, int N);
-// Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U);
+Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U);
 Eigen::VectorXi diff_union(Eigen::VectorXi A, Eigen::VectorXi &B, Eigen::VectorXi &C);
 Eigen::VectorXi min_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
 Eigen::VectorXi max_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
@@ -170,4 +170,9 @@ void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::VectorXd &
 
 void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta);
 void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta);
+
+bool check_ill_condition(Eigen::MatrixXd &M);
+
+
 #endif //BESS_UTILITIES_H
+
