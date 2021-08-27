@@ -13,13 +13,13 @@ def fix_docs(cls):
         cls.__doc__ = cls.__doc__[:index] + \
             cls.__bases__[0].__doc__ + cls.__doc__[index:]
 
-    for name, func in vars(cls).items():
-        if isinstance(func, types.FunctionType):
-            # print(str(func) +  'needs doc')
-            for parent in cls.__bases__:
-                parfunc = getattr(parent, name, None)
-                if parfunc and getattr(parfunc, '__doc__', None):
-                    func.__doc__ = parfunc.__doc__ + func.__doc__
+    # for name, func in vars(cls).items():
+    #     if isinstance(func, types.FunctionType):
+    #         # print(str(func) +  'needs doc')
+    #         for parent in cls.__bases__:
+    #             parfunc = getattr(parent, name, None)
+    #             if parfunc and getattr(parfunc, '__doc__', None):
+    #                 func.__doc__ = parfunc.__doc__ + func.__doc__
     return cls
 
 

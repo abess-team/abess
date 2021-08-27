@@ -11,17 +11,17 @@ import numbers
 def fix_docs(cls):
     # inherit the document from base class
     index = cls.__doc__.find("Examples\n    --------\n")
-    if(index != -1):
+    if (index != -1):
         cls.__doc__ = cls.__doc__[:index] + \
             cls.__bases__[0].__doc__ + cls.__doc__[index:]
 
-    for name, func in vars(cls).items():
-        if isinstance(func, types.FunctionType):
-            # print(str(func) +  'needs doc')
-            for parent in cls.__bases__:
-                parfunc = getattr(parent, name, None)
-                if parfunc and getattr(parfunc, '__doc__', None):
-                    func.__doc__ = parfunc.__doc__ + func.__doc__
+    # for name, func in vars(cls).items():
+    #     if isinstance(func, types.FunctionType):
+    #         # print(str(func) +  'needs doc')
+    #         for parent in cls.__bases__:
+    #             parfunc = getattr(parent, name, None)
+    #             if parfunc and getattr(parfunc, '__doc__', None):
+    #                 func.__doc__ = parfunc.__doc__ + func.__doc__
     return cls
 
 
@@ -41,32 +41,18 @@ class abessPCA(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from abess.linear import abessPCA
-    >>> from abess.datasets import make_multivariate_glm_data
+    >>> from abess.pca import abessPCA
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> x = np.random.randn(100, 50)
-    >>> model = abessPCA(support_size = [10])
-    >>> model.fit(x)
-    >>> print(model.coef_)
-
-    >>> ### Sparsity unknown
+    >>> model = abessPCA(support_size = 10)
     >>>
-    >>> # path_type="seq",
-    >>> # Default: support_size = list(range(1, p + 1))
-    >>> model = abessPCA(path_type = "seq")
-    >>> model.fit(x)
+    >>> ### X known
+    >>> X = np.random.randn(100, 50)
+    >>> model.fit(X)
     >>> print(model.coef_)
     >>>
-    >>> # path_type="pgs", 
-    >>> # Default: s_min=1, s_max=p
-    >>> model = abessPCA(path_type="pgs")
-    >>> model.fit(x)
-    >>> model.predict(x)
-    >>> print(model.coef_)
-
-    >>> ### x unknown, but Sigma known
-    >>> model.fit(Sigma = Sigma)
+    >>> ### X unknown, but Sigma known
+    >>> model.fit(Sigma = np.cov(X.T))
     >>> print(model.coef_)
     """
 
