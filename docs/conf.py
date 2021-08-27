@@ -80,3 +80,5 @@ html_static_path = []
 master_doc = 'index'
 
 suppress_warnings=['myst.mathjax']
+
+autodoc_inherit_docstrings=True

@@ -55,27 +55,6 @@ Especially, the time complexity of (group) best subset selection for linear regr
 Quick start
 ============
 
-R package
------------
-
-Install abess from R CRAN by running the following command in R: 
-
-.. code-block:: r
-
-   install.packages("abess")
-
-
-Best subset selection for linear regression on a simulated dataset in R:
-
-.. code-block:: r
-
-   library(abess)
-   sim_dat <- generate.data(n = 300, p = 1000)
-   abess(x = sim_dat[["x"]], y = sim_dat[["y"]])
-
-See more examples analyzed with R in the `R markdowns collections <https://abess-team.github.io/abess/articles/>`_.
-
-
 Python package
 --------------
 
@@ -96,13 +75,54 @@ Import best subset selection solver for linear regression in a Python project:
 
 See more examples analyzed with Python in the tutorials; the notebooks are available `here <https://abess.readthedocs.io/en/latest/Tutorial/index.html>`_.
 
-Performance
-===========
+
+R package
+-----------
+
+Install abess from R CRAN by running the following command in R: 
+
+.. code-block:: r
+
+   install.packages("abess")
+
+
+Best subset selection for linear regression on a simulated dataset in R:
+
+.. code-block:: r
+
+   library(abess)
+   sim_dat <- generate.data(n = 300, p = 1000)
+   abess(x = sim_dat[["x"]], y = sim_dat[["y"]])
+
+See more examples analyzed with R in the `R markdowns collections <https://abess-team.github.io/abess/articles/>`_.
+
+Runtime Performance
+===================
 
 To show the power of abess in computation, 
 we assess its timings of the CPU execution (seconds) on synthetic datasets, and compare to 
 state-of-the-art variable selection methods. 
-The variable selection and estimation result are deferred to Tutorial.
+The variable selection and estimation results are deferred to `Python performance`_  
+and `R performance`_.
+
+.. _Python performance: https://abess.readthedocs.io/en/latest/Tutorial/power_of_abess.html
+.. _R performance: https://abess-team.github.io/abess/articles/v11-power-of-abess.html
+
+Python package   
+---------------
+
+We compare abess Python package with scikit-learn on linear and logistic regression.
+Results are presented in the below figure, and can be reproduce by running the commands in shell:
+
+.. code-block:: shell
+
+   $ python ./python/example/timings.py
+
+
+|pic1| 
+
+.. |pic1| image:: ./perform/timings.png
+   :width: 100%
 
 R package    
 -----------
@@ -121,23 +141,7 @@ we obtain the runtime comparison picture:
 .. |Rpic1| image:: ./perform/Rtimings.png
    :width: 100%
 
-Python package   
----------------
-
-We compare abess Python package with scikit-learn on linear and logistic regression.
-Results are presented in the below figure, and can be reproduce by running the commands in shell:
-
-.. code-block:: shell
-
-   $ python ./python/example/timings.py
-
-
-|pic1| 
-
-.. |pic1| image:: ./perform/timings.png
-   :width: 100%
-
-In both R and Python environments, 
+In both Python and R environments, 
 abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
 
 Open source software     

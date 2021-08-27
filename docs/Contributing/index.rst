@@ -1,9 +1,8 @@
 ============
-About
+Contributing
 ============
 
 .. toctree::
+    Before
     Contributing
-    Architecture
     CodeDeveloping
-    History

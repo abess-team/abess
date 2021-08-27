@@ -34,3 +34,6 @@ The results are presented in the following pictures. The first column is the res
 
 ![](../perform/timings.png)
 
+### R performance
+
+For R performance, please view [https://abess-team.github.io/abess/articles/v11-power-of-abess.html](https://abess-team.github.io/abess/articles/v11-power-of-abess.html).
