@@ -55,7 +55,7 @@ jobs:
   
   codecovPy:
     name: Codecov workflow for Python-package
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     env:
       PYTHON: '3.8'
     steps:
