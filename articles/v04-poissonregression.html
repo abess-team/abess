@@ -186,12 +186,12 @@
 <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
 <pre><code>## 7 x 7 sparse Matrix of class "dgCMatrix"
 ##                    0         1         2          3          4           5
-## (intercept) 1.581038 0.4281214 0.2558214 -0.1046758 -0.1048038 -0.11247215
-## age         .        .         .          .         -0.1220316 -0.14952589
-## sex         .        .         .          .          .         -0.05079657
-## job         .        1.5000572 1.3764398  1.3352378  1.3066533  1.31052728
-## education   .        .         .          0.7481294  0.7402971  0.74962104
-## region      .        .         0.5200982  0.6772816  0.7321943  0.73122135
+## (intercept) 1.581038 0.4281173 0.2558214 -0.1046764 -0.1048038 -0.11247340
+## age         .        .         .          .         -0.1220316 -0.14952604
+## sex         .        .         .          .          .         -0.05079634
+## job         .        1.5000590 1.3764398  1.3352379  1.3066533  1.31052745
+## education   .        .         .          0.7481297  0.7402971  0.74962081
+## region      .        .         0.5200980  0.6772817  0.7321943  0.73122174
 ## marry       .        .         .          .          .          .         
 ##                        6
 ## (intercept) -0.113176268
@@ -223,10 +223,10 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##              3         4
-## [1,]  1.838256  1.954873
+## [1,]  1.838255  1.954873
 ## [2,]  2.650749  2.692234
-## [3,]  3.080213  3.088154
-## [4,] -1.098250 -1.302053
+## [3,]  3.080214  3.088154
+## [4,] -1.098251 -1.302053
 ## [5,] -2.200394 -2.211221
 ## [6,]  4.107201  4.103329</code></pre>
 <p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including <code>coef</code> for the coefficient value, <code>l2norm</code> for the L2-norm of the coefficients, <code>dev</code> for the deviance and <code>tune</code> for the tuning value. Default if <code>coef</code>.</p>
@@ -268,9 +268,9 @@
 ##                   3
 ## age       .        
 ## sex       .        
-## job       1.3352378
-## education 0.7481294
-## region    0.6772816
+## job       1.3352379
+## education 0.7481297
+## region    0.6772817
 ## marry     .</code></pre>
 <p>The return is a list containing the basic information of the estimated model. The best model has estimated coefficients every close to the true coefficients and it successfully recovers the correct support.</p>
 </div>

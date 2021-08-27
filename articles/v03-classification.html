@@ -224,44 +224,44 @@ i. print the fitted model:</p>
 ## 1            0 321.9560 64.59866
 ## 2            1 246.5820 49.99585
 ## 3            2 229.6078 46.65819
-## 4            3 224.0843 47.10831
-## 5            4 220.4441 45.75501
-## 6            5 220.1834 46.31356
-## 7            6 220.0022 46.45392
-## 8            7 219.9602 46.39780
-## 9            8 219.9189 46.44112</code></pre>
+## 4            3 229.5308 46.99849
+## 5            4 228.9702 45.95916
+## 6            5 220.1834 45.34507
+## 7            6 220.0022 46.33689
+## 8            7 219.9602 46.31131
+## 9            8 219.9189 46.44110</code></pre>
 <ol start="2" style="list-style-type: lower-roman">
 <li>draw the estimated coefficients on all candidate support size by <code><a href="https://rdrr.io/r/stats/coef.html">coef()</a></code> function:</li>
 </ol>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
 <pre><code>## 9 x 9 sparse Matrix of class "dgCMatrix"
-##                      0         1          2           3           4           5
-## (intercept) -0.3530971  1.158781  2.9213405  4.23196067  4.76830134  4.85381912
-## Pclass       .          .        -0.7952709 -1.01705742 -1.03770047 -1.00849771
-## Sexmale      .         -2.545075 -2.5818945 -2.51198959 -2.60544822 -2.59656528
-## Age          .          .         .         -0.02923674 -0.03712932 -0.03672237
-## SibSp        .          .         .          .          -0.36190220 -0.35770273
-## Parch        .          .         .          .           .           .         
-## Fare         .          .         .          .           .           .         
-## EmbarkedQ    .          .         .          .           .           .         
-## EmbarkedS    .          .         .          .           .          -0.21507394
-##                        6            7            8
-## (intercept)  5.113267696  5.106984954  5.083420471
-## Pclass      -1.076857703 -1.080872290 -1.088719756
-## Sexmale     -2.610452750 -2.600190316 -2.598294614
-## Age         -0.037455985 -0.037121591 -0.037070497
-## SibSp       -0.339102382 -0.350547550 -0.352463118
-## Parch        .            0.048198916  0.051065967
-## Fare        -0.001993685 -0.002237777 -0.002189827
-## EmbarkedQ    .            .            0.209319089
-## EmbarkedS   -0.245725788 -0.255782106 -0.218658720</code></pre>
+##                      0         1          2            3            4
+## (intercept) -0.3530971  1.158781  2.9213405  3.051182847  3.261927133
+## Pclass       .          .        -0.7952709 -0.833342571 -0.814632215
+## Sexmale      .         -2.545075 -2.5818945 -2.593870590 -2.590161190
+## Age          .          .         .          .            .          
+## SibSp        .          .         .          .            .          
+## Parch        .          .         .          .            .          
+## Fare         .          .         .         -0.001187224 -0.001680436
+## EmbarkedQ    .          .         .          .            .          
+## EmbarkedS    .          .         .          .           -0.305263069
+##                       5            6            7            8
+## (intercept)  4.85381910  5.112858475  5.106984599  5.083420471
+## Pclass      -1.00849769 -1.076531449 -1.080872192 -1.088719756
+## Sexmale     -2.59656529 -2.610623038 -2.600190284 -2.598294614
+## Age         -0.03672237 -0.037469688 -0.037121588 -0.037070497
+## SibSp       -0.35770272 -0.339011574 -0.350547547 -0.352463118
+## Parch        .           .            0.048198898  0.051065967
+## Fare         .          -0.001997998 -0.002237776 -0.002189827
+## EmbarkedQ    .           .            .            0.209319089
+## EmbarkedS   -0.21507393 -0.245372362 -0.255782097 -0.218658720</code></pre>
 <ol start="3" style="list-style-type: lower-roman">
 <li>get the deviance of the estimated model on all candidate support size via <code><a href="https://rdrr.io/r/stats/deviance.html">deviance()</a></code> function:</li>
 </ol>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/deviance.html">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 321.9560 246.5820 229.6078 224.0843 220.4441 220.1834 220.0022 219.9602
+<pre><code>## [1] 321.9560 246.5820 229.6078 229.5308 228.9702 220.1834 220.0022 219.9602
 ## [9] 219.9189</code></pre>
 <ol start="4" style="list-style-type: lower-roman">
 <li>visualize the change of models with the change of support size via <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function:</li>
@@ -280,20 +280,20 @@ i. print the fitted model:</p>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of 7
 ##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:4] 0 1 2 3
+##   .. ..@ i       : int [1:4] 0 1 5 7
 ##   .. ..@ p       : int [1:2] 0 4
 ##   .. ..@ Dim     : int [1:2] 8 1
 ##   .. ..@ Dimnames:List of 2
 ##   .. .. ..$ : chr [1:8] "Pclass" "Sexmale" "Age" "SibSp" ...
 ##   .. .. ..$ : chr "4"
-##   .. ..@ x       : num [1:4] -1.0377 -2.6054 -0.0371 -0.3619
+##   .. ..@ x       : num [1:4] -0.81463 -2.59016 -0.00168 -0.30526
 ##   .. ..@ factors : list()
-##  $ intercept   : num 4.77
+##  $ intercept   : num 3.26
 ##  $ support.size: num 4
-##  $ support.vars: chr [1:4] "Pclass" "Sexmale" "Age" "SibSp"
-##  $ support.beta: num [1:4] -1.0377 -2.6054 -0.0371 -0.3619
-##  $ dev         : num 220
-##  $ tune.value  : num 45.8</code></pre>
+##  $ support.vars: chr [1:4] "Pclass" "Sexmale" "Fare" "EmbarkedS"
+##  $ support.beta: num [1:4] -0.81463 -2.59016 -0.00168 -0.30526
+##  $ dev         : num 229
+##  $ tune.value  : num 46</code></pre>
 <p>The return is a list containing the basic information of the estimated model.</p>
 </div>
 <div id="make-a-prediction" class="section level3">
@@ -307,7 +307,7 @@ i. print the fitted model:</p>
 <code class="sourceCode R"><span class="va">fitted.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">fitted.results</span> <span class="op">&gt;</span> <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>
 <span class="va">misClasificError</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">fitted.results</span> <span class="op">!=</span> <span class="va">test</span><span class="op">$</span><span class="va">Survived</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'Accuracy'</span>,<span class="fl">1</span><span class="op">-</span><span class="va">misClasificError</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "Accuracy 0.79746835443038"</code></pre>
+<pre><code>## [1] "Accuracy 0.810126582278481"</code></pre>
 <p>We can also generate an ROC curve and calculate the AUC value. On this dataset, the AUC is 0.87, which is quite close to 1.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ipa-tys.github.io/ROCR/">ROCR</a></span><span class="op">)</span>
@@ -320,7 +320,7 @@ i. print the fitted model:</p>
 <code class="sourceCode R"><span class="va">auc</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://ipa-tys.github.io/ROCR/reference/performance.html">performance</a></span><span class="op">(</span><span class="va">pr</span>, measure <span class="op">=</span> <span class="st">"auc"</span><span class="op">)</span>
 <span class="va">auc</span> <span class="op">&lt;-</span> <span class="va">auc</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="va">auc</span></code></pre></div>
-<pre><code>## [1] 0.8739505</code></pre>
+<pre><code>## [1] 0.8751124</code></pre>
 </div>
 </div>
 <div id="extension-multi-class-classification" class="section level2">

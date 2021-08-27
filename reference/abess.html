@@ -201,6 +201,7 @@ multi-response modeling in polynomial times.</p>
   splicing.type <span class='op'>=</span> <span class='fl'>2</span>,
   max.splicing.iter <span class='op'>=</span> <span class='fl'>20</span>,
   screening.num <span class='op'>=</span> <span class='cn'>NULL</span>,
+  important.search <span class='op'>=</span> <span class='cn'>NULL</span>,
   warm.start <span class='op'>=</span> <span class='cn'>TRUE</span>,
   nfolds <span class='op'>=</span> <span class='fl'>5</span>,
   cov.update <span class='op'>=</span> <span class='cn'>TRUE</span>,
@@ -327,6 +328,13 @@ Default is <code>max.splicing.iter = 20</code>.</p></td>
       <th>screening.num</th>
       <td><p>An integer number. Preserve <code>screening.num</code> number of predictors with the largest
 marginal maximum likelihood estimator before running algorithm.</p></td>
+    </tr>
+    <tr>
+      <th>important.search</th>
+      <td><p>An integer number indicating the number of 
+important variables to be splicing. 
+When <code>important.search</code> \(\ll\) <code>p</code> variables, 
+it would greatly reduce runtimes. Default: <code>important.search = 1000</code>.</p></td>
     </tr>
     <tr>
       <th>warm.start</th>
@@ -572,25 +580,25 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
 #&gt;    support.size        dev        cv
 #&gt; 1             0 68.5929800 13.888785
 #&gt; 2             1 46.6936375  9.467560
-#&gt; 3             2 22.3141723  4.795584
-#&gt; 4             3 17.6033381  5.452508
-#&gt; 5             4 16.8661842  9.270334
-#&gt; 6             5 16.1567523 13.509915
-#&gt; 7             6 15.1608532 17.795735
-#&gt; 8             7 14.1862011 26.610685
-#&gt; 9             8 12.9885380 36.576038
-#&gt; 10            9 11.3835571 45.374933
-#&gt; 11           10 11.4476524 56.347169
-#&gt; 12           11 10.6908781 59.539941
-#&gt; 13           12  8.6440372 71.223442
-#&gt; 14           13  5.5030821 71.780756
-#&gt; 15           14  4.0881365 78.826742
-#&gt; 16           15  2.5061119 84.391788
-#&gt; 17           16  2.0018184 87.293547
-#&gt; 18           17  1.6328445 87.631140
-#&gt; 19           18  1.0663483 87.221179
-#&gt; 20           19  0.8656413 87.566520
-#&gt; 21           20  1.9401367 88.281570</div><div class='input'>
+#&gt; 3             2 22.3141723  4.795585
+#&gt; 4             3 17.6033381  5.453335
+#&gt; 5             4 16.8661842  9.347666
+#&gt; 6             5 16.1567523 14.487379
+#&gt; 7             6 15.1597900 22.272580
+#&gt; 8             7 14.1855958 36.812812
+#&gt; 9             8 12.9136738 43.710756
+#&gt; 10            9 11.1315013 55.752772
+#&gt; 11           10 12.0759400 66.539038
+#&gt; 12           11 10.8758270 74.240580
+#&gt; 13           12  9.2186899 81.467268
+#&gt; 14           13  6.3965153 90.511271
+#&gt; 15           14  2.1615005 93.159335
+#&gt; 16           15  0.9216471 95.640309
+#&gt; 17           16  0.6925899 96.760954
+#&gt; 18           17  0.4639688 96.286227
+#&gt; 19           18  0.2831774 96.589552
+#&gt; 20           19  0.3136437 96.797684
+#&gt; 21           20  1.9300722 97.053282</div><div class='input'>
 <span class='co'>################ poisson model ################</span>
 <span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span>, family <span class='op'>=</span> <span class='st'>"poisson"</span><span class='op'>)</span>
 <span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span>, <span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"y"</span><span class='op'>]</span><span class='op'>]</span>,
@@ -601,28 +609,28 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
 #&gt; abess.default(x = dataset[["x"]], y = dataset[["y"]], family = "poisson", 
 #&gt;     tune.type = "cv")
 #&gt; 
-#&gt;    support.size        dev        cv
-#&gt; 1             0   44.95340  10.19365
-#&gt; 2             1  -31.62397   3.28437
-#&gt; 3             2 -100.57515 -10.57295
-#&gt; 4             3 -157.18472 -30.45472
-#&gt; 5             4 -160.75596 -31.01768
-#&gt; 6             5 -163.01916 -30.63952
-#&gt; 7             6 -164.82977 -30.13028
-#&gt; 8             7 -166.39686 -26.74170
-#&gt; 9             8 -167.33059 -27.33824
-#&gt; 10            9 -168.30048 -27.42207
-#&gt; 11           10 -168.98526 -27.25688
-#&gt; 12           11 -169.76250 -26.64811
-#&gt; 13           12 -170.25995 -27.38531
-#&gt; 14           13 -171.31745 -28.11082
-#&gt; 15           14 -171.54370 -28.38129
-#&gt; 16           15 -171.74975 -28.63368
-#&gt; 17           16 -171.85325 -28.08725
-#&gt; 18           17 -171.91807 -27.93866
-#&gt; 19           18 -171.94049 -28.14687
-#&gt; 20           19 -171.94879 -27.96197
-#&gt; 21           20 -171.95969 -27.89558</div><div class='input'>
+#&gt;    support.size        dev         cv
+#&gt; 1             0   44.95340  10.193650
+#&gt; 2             1  -31.62397   4.293688
+#&gt; 3             2 -100.57515 -10.572951
+#&gt; 4             3 -157.18472 -30.454725
+#&gt; 5             4 -160.75596 -31.017680
+#&gt; 6             5 -163.01916 -30.639520
+#&gt; 7             6 -164.82977 -30.130278
+#&gt; 8             7 -166.39686 -26.741696
+#&gt; 9             8 -167.33059 -27.338236
+#&gt; 10            9 -168.30048 -27.422068
+#&gt; 11           10 -168.98526 -27.256885
+#&gt; 12           11 -169.76250 -26.648112
+#&gt; 13           12 -170.25995 -27.385316
+#&gt; 14           13 -171.31745 -28.110821
+#&gt; 15           14 -171.54370 -28.381293
+#&gt; 16           15 -171.74975 -28.633670
+#&gt; 17           16 -171.85325 -28.087246
+#&gt; 18           17 -171.91807 -27.938664
+#&gt; 19           18 -171.94049 -28.146866
+#&gt; 20           19 -171.94879 -27.961969
+#&gt; 21           20 -171.95969 -27.895575</div><div class='input'>
 <span class='co'>################ Cox model ################</span>
 <span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span>, family <span class='op'>=</span> <span class='st'>"cox"</span><span class='op'>)</span>
 <span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span>, <span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"y"</span><span class='op'>]</span><span class='op'>]</span>,
@@ -647,29 +655,29 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; $`3`
 #&gt;                  1            2             
-#&gt;  [1,] 1.671671e-01 8.328200e-01 1.287189e-05
-#&gt;  [2,] 9.911159e-01 7.642165e-07 8.883312e-03
-#&gt;  [3,] 1.872056e-08 3.729703e-07 9.999996e-01
-#&gt;  [4,] 5.729829e-09 1.000000e+00 9.354748e-11
-#&gt;  [5,] 9.958075e-01 2.464085e-08 4.192443e-03
-#&gt;  [6,] 7.875359e-01 1.578117e-01 5.465246e-02
-#&gt;  [7,] 1.029619e-04 8.793505e-01 1.205466e-01
-#&gt;  [8,] 1.559240e-05 9.916642e-01 8.320255e-03
-#&gt;  [9,] 1.070042e-03 2.624924e-02 9.726807e-01
-#&gt; [10,] 2.169661e-03 5.300874e-08 9.978303e-01
+#&gt;  [1,] 1.151436e-01 8.848556e-01 8.456141e-07
+#&gt;  [2,] 9.968388e-01 1.023366e-08 3.161202e-03
+#&gt;  [3,] 2.787221e-10 5.420332e-09 1.000000e+00
+#&gt;  [4,] 2.683698e-11 1.000000e+00 1.267306e-13
+#&gt;  [5,] 9.986704e-01 1.496576e-10 1.329551e-03
+#&gt;  [6,] 8.574357e-01 1.107919e-01 3.177236e-02
+#&gt;  [7,] 1.486598e-05 9.189430e-01 8.104210e-02
+#&gt;  [8,] 9.959149e-07 9.979372e-01 2.061792e-03
+#&gt;  [9,] 2.183950e-04 1.042307e-02 9.893585e-01
+#&gt; [10,] 4.706825e-04 2.838957e-10 9.995293e-01
 #&gt; 
 #&gt; $`4`
 #&gt;                  1            2             
-#&gt;  [1,] 1.519011e-01 8.480973e-01 1.651999e-06
-#&gt;  [2,] 9.995554e-01 2.537617e-08 4.446060e-04
-#&gt;  [3,] 6.512419e-09 7.648814e-08 9.999999e-01
-#&gt;  [4,] 1.560530e-10 1.000000e+00 2.877017e-12
-#&gt;  [5,] 9.776994e-01 2.401934e-09 2.230056e-02
-#&gt;  [6,] 8.981233e-01 9.788248e-02 3.994230e-03
-#&gt;  [7,] 4.574281e-05 9.272144e-01 7.273983e-02
-#&gt;  [8,] 2.845467e-06 9.969577e-01 3.039405e-03
-#&gt;  [9,] 2.003835e-04 1.235827e-02 9.874413e-01
-#&gt; [10,] 2.127882e-03 3.456984e-09 9.978721e-01
+#&gt;  [1,] 1.014746e-01 8.985253e-01 1.007691e-07
+#&gt;  [2,] 9.999362e-01 2.756834e-10 6.377254e-05
+#&gt;  [3,] 1.802978e-10 1.755785e-09 1.000000e+00
+#&gt;  [4,] 6.027158e-13 1.000000e+00 5.835881e-15
+#&gt;  [5,] 9.854477e-01 1.809980e-11 1.455232e-02
+#&gt;  [6,] 9.284165e-01 7.027233e-02 1.311183e-03
+#&gt;  [7,] 7.235534e-06 9.575538e-01 4.243895e-02
+#&gt;  [8,] 1.697461e-07 9.992300e-01 7.698018e-04
+#&gt;  [9,] 2.665817e-05 4.046738e-03 9.959266e-01
+#&gt; [10,] 7.975191e-04 2.645104e-11 9.992025e-01
 #&gt; </div><div class='input'>
 <span class='co'>########## Best group subset selection #############</span>
 <span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span><span class='op'>)</span>
