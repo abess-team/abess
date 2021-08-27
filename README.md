@@ -40,7 +40,7 @@ Install the stable version of R-package from [CRAN](https://cran.r-project.org/w
 install.packages("abess")
 ```
 
-## Performance
+## Runtime Performance
 
 To show the computational efficiency of abess, 
 we compare abess R package with popular R libraries: glmnet, ncvreg for linear and logistic regressions; 

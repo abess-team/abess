@@ -1,4 +1,4 @@
-# Architecture
+# Before Contributing
 
 In this page, we briefly introduce our frame for fast and polynomial best subset selection:
 

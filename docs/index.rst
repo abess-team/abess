@@ -12,12 +12,13 @@
    :hidden:
    :caption: USING ABESS
 
-   Installation <Installation.md>
+   Installation <./Installation.md>
    Tutorial <Tutorial/index.rst>
    Python API <Python-package/index.rst>
    R package <https://abess-team.github.io/abess/>
-   About <About/index.rst>
-   FAQ <FAQ.md>
+   Contributing <Contributing/index.rst>
+   FAQ <./FAQ.md>
+   History <./History.md>
 
 .. toctree::
    :hidden:
