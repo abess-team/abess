@@ -1,6 +1,0 @@
-============
-History
-============
-
-.. toctree::
-    History
