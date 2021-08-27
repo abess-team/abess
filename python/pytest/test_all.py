@@ -293,7 +293,7 @@ class TestClass:
         family = "multinomial"
         rho = 0.5
         M = 3
-        np.random.seed(8)
+        np.random.seed(1)
         data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
@@ -920,7 +920,7 @@ class TestClass:
         family = "multinomial"
         rho = 0.5
         M = 3
-        np.random.seed(8)
+        np.random.seed(1)
         data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
