@@ -90,6 +90,8 @@ public:
   int max_iter;            /* Maximum number of iterations taken for the splicing algorithm to converge.  */
   int exchange_num;        /* Max exchange variable num. */
   bool warm_start;         /* When tuning the optimal parameter combination, whether to use the last solution as a warm start to accelerate the iterative convergence of the splicing algorithm.*/
+  T4 *x = NULL;
+  T1 *y = NULL;
   T2 beta;                 /* coefficients. */
   Eigen::VectorXd bd;      /* */
   T3 coef0;                /* intercept. */
@@ -123,8 +125,8 @@ public:
   Eigen::VectorXd cox_g;       /* score function for cox model. */
 
   bool covariance_update;                 /* use covairance update mathod or not. */
-  Eigen::MatrixXd covariance;             /* covairance matrix. */
-  Eigen::MatrixXi covariance_update_flag; /* each variable have updated in covairance matirx. */
+  Eigen::VectorXd **covariance = NULL;            /* covairance matrix. */
+  bool *covariance_update_flag = NULL;            /* each variable have updated in covairance matirx. */
   T1 XTy;                                 /*X.transpose() * y */
   T1 XTone;                               /* X.transpose() * Eigen::MatrixXd::one() */
 
@@ -241,6 +243,8 @@ public:
 
     this->update_tau(train_n, N);
 
+    this->x = &train_x;
+    this->y = &train_y;
     this->beta = this->beta_init;
     this->coef0 = this->coef0_init;
     this->bd = this->bd_init;
@@ -1109,38 +1113,51 @@ public:
     return;
   }
 
-  Eigen::MatrixXd covariance_update_f_U(T4 &X, Eigen::VectorXi &U_ind, Eigen::VectorXi &A_ind_U)
+  Eigen::MatrixXd covariance_update_f_U(Eigen::VectorXi &U_ind, Eigen::VectorXi &A_ind_U)
   {
     int k = A_ind_U.size(), p = U_ind.size();
     Eigen::MatrixXd cov_A(p, k);
     Eigen::VectorXi A_ind(k);
     for (int i = 0; i < k; i++) A_ind(i) = U_ind(A_ind_U(i));
 
-    for (int i = 0; i < p; i++)
-      for (int j = 0; j < k; j++){
-        if (this->covariance_update_flag(U_ind(i), A_ind(j)) == 0)
-        {
-          Eigen::MatrixXd temp = X.col(i).transpose() * X.col(A_ind_U(j));
-          this->covariance(U_ind(i), A_ind(j)) = temp(0, 0);
-          this->covariance_update_flag(U_ind(i), A_ind(j)) = 1;
-        }
-        cov_A(i, j) = this->covariance(U_ind(i), A_ind(j));
+    // for (int i = 0; i < p; i++)
+    //   for (int j = 0; j < k; j++){
+    //     if (this->covariance_update_flag(U_ind(i), A_ind(j)) == 0)
+    //     {
+    //       Eigen::MatrixXd temp = X.col(i).transpose() * X.col(A_ind_U(j));
+    //       this->covariance(U_ind(i), A_ind(j)) = temp(0, 0);
+    //       this->covariance_update_flag(U_ind(i), A_ind(j)) = 1;
+    //     }
+    //     cov_A(i, j) = this->covariance(U_ind(i), A_ind(j));
+    //   }
+
+    for (int i = 0; i < k; i++){
+      if (!this->covariance_update_flag[A_ind(i)])
+      {
+        this->covariance[A_ind(i)] = new Eigen::VectorXd;
+        *this->covariance[A_ind(i)] = (*this->x).transpose() * (*this->x).col(A_ind(i));
+        this->covariance_update_flag[A_ind(i)] = true;
       }
+      for (int j = 0; j < p; j++)
+      {
+        cov_A(j, i) = (*this->covariance[A_ind(i)])(U_ind(j));
+      }
+    }
 
     return cov_A;
   }
 
-  void covariance_update_f(T4 &X, Eigen::VectorXi &A_ind)
-  {
-    for (int i = 0; i < A_ind.size(); i++)
-    {
-      if (this->covariance_update_flag(A_ind(i), 0) == 0)
-      {
-        this->covariance.col(A_ind(i)) = X.transpose() * (X.col(A_ind(i)).eval());
-        this->covariance_update_flag(A_ind(i), 0) = 1;
-      }
-    }
-  }
+  // void covariance_update_f(T4 &X, Eigen::VectorXi &A_ind)
+  // {
+  //   for (int i = 0; i < A_ind.size(); i++)
+  //   {
+  //     if (this->covariance_update_flag(A_ind(i), 0) == 0)
+  //     {
+  //       this->covariance.col(A_ind(i)) = X.transpose() * (X.col(A_ind(i)).eval());
+  //       this->covariance_update_flag(A_ind(i), 0) = 1;
+  //     }
+  //   }
+  // }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
@@ -1182,14 +1199,7 @@ public:
       Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
       if (beta.size() != 0)
       {
-        Eigen::VectorXd XTXbeta;
-        if (p == this->XTy.rows()){
-          this->covariance_update_f(X, A_ind);
-          XTXbeta = X_seg(this->covariance, this->covariance.rows(), A_ind) * beta_A;
-        }else{
-          Eigen::MatrixXd cov_A = this->covariance_update_f_U(X, U_ind, A_ind);
-          XTXbeta = cov_A * beta_A;
-        }
+        Eigen::VectorXd XTXbeta = this->covariance_update_f_U(U_ind, A_ind) * beta_A;
         d = (this->XTy_U - XTXbeta - this->XTone_U * coef0) / double(n) - 2 * this->lambda_level * beta;
       }
       else
@@ -1913,37 +1923,40 @@ public:
     return;
   }
 
-  Eigen::MatrixXd covariance_update_f_U(T4 &X, Eigen::VectorXi &U_ind, Eigen::VectorXi &A_ind_U)
+  Eigen::MatrixXd covariance_update_f_U(Eigen::VectorXi &U_ind, Eigen::VectorXi &A_ind_U)
   {
     int k = A_ind_U.size(), p = U_ind.size();
     Eigen::MatrixXd cov_A(p, k);
     Eigen::VectorXi A_ind(k);
     for (int i = 0; i < k; i++) A_ind(i) = U_ind(A_ind_U(i));
 
-    for (int i = 0; i < p; i++)
-      for (int j = 0; j < k; j++){
-        if (this->covariance_update_flag(U_ind(i), A_ind(j)) == 0)
-        {
-          Eigen::MatrixXd temp = X.col(i).transpose() * X.col(A_ind_U(j));
-          this->covariance(U_ind(i), A_ind(j)) = temp(0, 0);
-          this->covariance_update_flag(U_ind(i), A_ind(j)) = 1;
-        }
-        cov_A(i, j) = this->covariance(U_ind(i), A_ind(j));
+    for (int i = 0; i < k; i++){
+      if (!this->covariance_update_flag[A_ind(i)])
+      {
+        this->covariance[A_ind(i)] = new Eigen::VectorXd;
+        *this->covariance[A_ind(i)] = (*this->x).transpose() * (*this->x).col(A_ind(i));
+        this->covariance_update_flag[A_ind(i)] = true;
       }
+      for (int j = 0; j < p; j++)
+      {
+        cov_A(j, i) = (*this->covariance[A_ind(i)])(U_ind(j));
+      }
+    }
+
     return cov_A;
   }
 
-  void covariance_update_f(T4 &X, Eigen::VectorXi &A_ind)
-  {
-    for (int i = 0; i < A_ind.size(); i++)
-    {
-      if (this->covariance_update_flag(A_ind(i), 0) == 0)
-      {
-        this->covariance.col(A_ind(i)) = X.transpose() * X.col(A_ind(i));
-        this->covariance_update_flag(A_ind(i), 0) = 1;
-      }
-    }
-  }
+  // void covariance_update_f(T4 &X, Eigen::VectorXi &A_ind)
+  // {
+  //   for (int i = 0; i < A_ind.size(); i++)
+  //   {
+  //     if (this->covariance_update_flag(A_ind(i), 0) == 0)
+  //     {
+  //       this->covariance.col(A_ind(i)) = X.transpose() * X.col(A_ind(i));
+  //       this->covariance_update_flag(A_ind(i), 0) = 1;
+  //     }
+  //   }
+  // }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
@@ -1986,14 +1999,7 @@ public:
 #ifdef TEST
         clock_t t1 = clock();
 #endif
-        Eigen::MatrixXd XTXbeta;
-        if (p == this->XTy.rows()){
-          this->covariance_update_f(X, A_ind);
-          XTXbeta = X_seg(this->covariance, this->covariance.rows(), A_ind) * beta_A;
-        }else{
-          Eigen::MatrixXd cov_A = this->covariance_update_f_U(X, U_ind, A_ind);
-          XTXbeta = cov_A * beta_A;
-        }
+        Eigen::MatrixXd XTXbeta = this->covariance_update_f_U(U_ind, A_ind) * beta_A;
 #ifdef TEST
         clock_t t2 = clock();
         std::cout << "covariance_update_f: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;

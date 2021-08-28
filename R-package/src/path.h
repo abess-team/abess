@@ -89,8 +89,9 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
 
     if (algorithm->covariance_update)
     {
-        algorithm->covariance = Eigen::MatrixXd::Zero(p, p);
-        algorithm->covariance_update_flag = Eigen::MatrixXi::Zero(p, p);
+        algorithm->covariance = new Eigen::VectorXd*[p];
+        algorithm->covariance_update_flag = new bool[p];
+        for (int i = 0; i < p; i++) algorithm->covariance_update_flag[i] = false;
         algorithm->XTy = train_x.transpose() * train_y;
         algorithm->XTone = train_x.transpose() * Eigen::MatrixXd::Ones(train_n, M);
     }
@@ -193,6 +194,15 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
         // }
     }
 
+    if (algorithm->covariance_update)
+    {
+        for (int i = 0; i < p; i++)
+            if (algorithm->covariance_update_flag[i])
+                delete algorithm->covariance[i];
+        delete[] algorithm->covariance;
+        delete[] algorithm->covariance_update_flag;
+    }
+
     // if (early_stop)
     // {
     //     ic_sequence = ic_sequence.block(0, 0, early_stop_s, lambda_size).eval();
@@ -231,8 +241,9 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
 
     if (algorithm->covariance_update)
     {
-        algorithm->covariance = Eigen::MatrixXd::Zero(data.p, data.p);
-        algorithm->covariance_update_flag = Eigen::MatrixXi::Zero(data.p, data.p);
+        algorithm->covariance = new Eigen::VectorXd*[data.p];
+        algorithm->covariance_update_flag = new bool[data.p];
+        for (int i = 0; i < data.p; i++) algorithm->covariance_update_flag[i] = false;
         algorithm->XTy = data.x.transpose() * data.y;
         algorithm->XTone = data.x.transpose() * Eigen::MatrixXd::Ones(data.n, data.M);
     }
@@ -254,8 +265,9 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
 
             if (algorithm_list[k]->covariance_update)
             {
-                algorithm_list[k]->covariance = Eigen::MatrixXd::Zero(p, p);
-                algorithm_list[k]->covariance_update_flag = Eigen::MatrixXi::Zero(p, p);
+                algorithm_list[k]->covariance = new Eigen::VectorXd*[data.p];
+                algorithm_list[k]->covariance_update_flag = new bool[data.p];
+                for (int i = 0; i < data.p; i++) algorithm_list[k]->covariance_update_flag[i] = false;
                 algorithm_list[k]->XTy = metric->train_X_list[k].transpose() * metric->train_y_list[k];
                 algorithm_list[k]->XTone = metric->train_X_list[k].transpose() * Eigen::MatrixXd::Ones(metric->train_mask_list[k].size(), data.M);
             }
@@ -607,6 +619,30 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
             // train_loss_all(iter) = best_train_loss;
             // ic_all(iter) = best_ic;
             iter++;
+        }
+    }
+
+    if (algorithm->covariance_update)
+    {
+        for (int i = 0; i < data.p; i++)
+            if (algorithm->covariance_update_flag[i])
+                delete algorithm->covariance[i];
+        delete[] algorithm->covariance;
+        delete[] algorithm->covariance_update_flag;
+    }
+
+    if (metric->is_cv)
+    {
+        for (int k = 0; k < metric->Kfold; k++)
+        {
+            if (algorithm_list[k]->covariance_update)
+            {
+                for (int i = 0; i < data.p; i++)
+                    if (algorithm_list[k]->covariance_update_flag[i])
+                        delete algorithm_list[k]->covariance[i];
+                delete[] algorithm_list[k]->covariance;
+                delete[] algorithm_list[k]->covariance_update_flag;
+            }
         }
     }
 
