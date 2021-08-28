@@ -79,12 +79,12 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                int sub_search)
 {
   // bool is_parallel = thread != 1;
-  // std::cout<<"abess2 enter."<<endl;///
+  // std::cout<<"abess2 enter."<<endl;
 #ifdef _OPENMP
   // Eigen::initParallel();
-  if (thread == 0)
-  {
-    thread = omp_get_max_threads();
+  int max_thread = omp_get_max_threads();
+  if (thread == 0 || thread > max_thread){
+    thread = max_thread;
   }
   if (is_cv && thread > Kfold)
   {
@@ -111,7 +111,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 
   //////////////////// function generate_algorithm_pointer() ////////////////////////////
   // to do
-  // std::cout<<"abess new enter."<<endl;///
+  // std::cout<<"abess new enter."<<endl;
   if (!sparse_matrix)
   {
     if (model_type == 1)
@@ -256,7 +256,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 #ifdef TEST
   cout << "abesscpp2 2" << endl;
 #endif
-  // std::cout<<"abess result enter."<<endl;///
+  // std::cout<<"abess result enter."<<endl;
   List out_result;
   if (!sparse_matrix)
   {
@@ -483,7 +483,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 #ifndef R_BUILD
   std::srand(123);
 #endif
-  // std::cout<<"abessCpp enter."<<endl;///
+  // std::cout<<"abessCpp enter."<<endl;
   bool is_parallel = thread != 1;
 
   Data<T1, T2, T3, T4> data(x, y, data_type, weight, is_normal, g_index, status, sparse_matrix);
@@ -586,6 +586,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   Eigen::MatrixXd train_loss_matrix(s_size, lambda_size);
   Eigen::MatrixXd effective_number_matrix(s_size, lambda_size);
 
+  // cout << "best"<<endl;///
+
   if (path_type == 1)
   {
     if (is_cv)
@@ -600,7 +602,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
       Eigen::Matrix<T4, -1, -1> full_group_XTX = group_XTX(data.x, data.g_index, data.g_size, data.n, data.p, data.g_num, model_type);
 
-      Eigen::MatrixXd covariance;
       T1 XTy;
       T1 XTone;
       if (covariance_update)
@@ -616,8 +617,9 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
         {
           if (covariance_update)
           {
-            algorithm_list[i]->covariance = Eigen::MatrixXd::Zero(data.p, data.p);
-            algorithm_list[i]->covariance_update_flag = Eigen::MatrixXi::Zero(data.p, data.p);
+            algorithm_list[i]->covariance = new Eigen::VectorXd*[data.p];
+            algorithm_list[i]->covariance_update_flag = new bool[data.p];
+            for (int j = 0; j < data.p; j++) algorithm_list[i]->covariance_update_flag[j] = false;
             algorithm_list[i]->XTy = XTy;
             algorithm_list[i]->XTone = XTone;
           }
@@ -658,6 +660,16 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.M, data.g_num, algorithm_list[algorithm_index]);
           effective_number_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_effective_number();
         }
+
+        if (covariance_update)
+        for (int i = 0; i < max(Kfold, thread); i++)
+        {
+          for (int j = 0; j < p; j++)
+              if (algorithm_list[i]->covariance_update_flag[j])
+                  delete algorithm_list[i]->covariance[j];
+          delete[] algorithm_list[i]->covariance;
+          delete[] algorithm_list[i]->covariance_update_flag;
+        }
 #ifdef TEST
         std::cout << "parallel cv 2 end--------" << std::endl;
 #endif
@@ -666,8 +678,9 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       {
         if (covariance_update)
         {
-          algorithm->covariance = Eigen::MatrixXd::Zero(data.p, data.p);
-          algorithm->covariance_update_flag = Eigen::MatrixXi::Zero(data.p, data.p);
+          algorithm->covariance = new Eigen::VectorXd*[data.p];
+          algorithm->covariance_update_flag = new bool[data.p];
+          for (int j = 0; j < data.p; j++) algorithm->covariance_update_flag[j] = false;
           algorithm->XTy = XTy;
           algorithm->XTone = XTone;
         }
@@ -705,6 +718,14 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           train_loss_matrix(s_index, lambda_index) = algorithm->get_train_loss();
           ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.M, data.g_num, algorithm);
           effective_number_matrix(s_index, lambda_index) = algorithm->get_effective_number();
+        }
+
+        if (covariance_update){
+          for (int j = 0; j < p; j++)
+              if (algorithm->covariance_update_flag[j])
+                  delete algorithm->covariance[j];
+          delete[] algorithm->covariance;
+          delete[] algorithm->covariance_update_flag;
         }
       }
 #ifdef TEST
@@ -757,6 +778,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 #ifdef TEST
   std::cout << "abesscpp 3 end --------" << std::endl;
 #endif
+
   // fit best model
   // int best_s = sequence(min_loss_index_row);
   double best_lambda = lambda_seq(min_loss_index_col);
@@ -946,8 +968,8 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
 
 
 #ifdef TEST
-  clock_t t1, t2;///
-  std::cout<<"abess enter."<<endl;///
+  clock_t t1, t2;
+  std::cout<<"abess enter."<<endl;
 #endif
   // t1 = clock();
   x_Mat = Pointer2MatrixXd(x, x_row, x_col);
@@ -962,7 +984,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   // t2 = clock();
   // std::cout << "pointer to data: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #ifdef TEST
-  t1 = clock();///
+  t1 = clock();
 #endif
   List mylist = abessCpp2(x_Mat, y_Mat, n, p, data_type, weight_Vec, sigma_Mat,
                           is_normal,
@@ -986,8 +1008,8 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                           sub_search);
 
 #ifdef TEST
-  t2 = clock();///
-  std::cout << "get result : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;///
+  t2 = clock();
+  std::cout << "get result : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 #endif
 
   // t1 = clock();
