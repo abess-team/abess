@@ -587,7 +587,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   Eigen::MatrixXd train_loss_matrix(s_size, lambda_size);
   Eigen::MatrixXd effective_number_matrix(s_size, lambda_size);
 
-  // cout << "best"<<endl;///
 
   if (path_type == 1)
   {
