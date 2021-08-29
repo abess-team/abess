@@ -485,7 +485,7 @@ public:
       t3 = clock();///
 #endif
 
-      int num = 0;
+      int num = -1;
       while (true){
         num ++; 
 #ifdef TEST
@@ -1117,30 +1117,18 @@ public:
   {
     int k = A_ind_U.size(), p = U_ind.size();
     Eigen::MatrixXd cov_A(p, k);
-    Eigen::VectorXi A_ind(k);
-    for (int i = 0; i < k; i++) A_ind(i) = U_ind(A_ind_U(i));
-
-    // for (int i = 0; i < p; i++)
-    //   for (int j = 0; j < k; j++){
-    //     if (this->covariance_update_flag(U_ind(i), A_ind(j)) == 0)
-    //     {
-    //       Eigen::MatrixXd temp = X.col(i).transpose() * X.col(A_ind_U(j));
-    //       this->covariance(U_ind(i), A_ind(j)) = temp(0, 0);
-    //       this->covariance_update_flag(U_ind(i), A_ind(j)) = 1;
-    //     }
-    //     cov_A(i, j) = this->covariance(U_ind(i), A_ind(j));
-    //   }
 
     for (int i = 0; i < k; i++){
-      if (!this->covariance_update_flag[A_ind(i)])
+      int Ai = U_ind(A_ind_U(i));
+      if (!this->covariance_update_flag[Ai])
       {
-        this->covariance[A_ind(i)] = new Eigen::VectorXd;
-        *this->covariance[A_ind(i)] = (*this->x).transpose() * (*this->x).col(A_ind(i));
-        this->covariance_update_flag[A_ind(i)] = true;
+        this->covariance[Ai] = new Eigen::VectorXd;
+        *this->covariance[Ai] = (*this->x).transpose() * (*this->x).col(Ai);
+        this->covariance_update_flag[Ai] = true;
       }
       for (int j = 0; j < p; j++)
       {
-        cov_A(j, i) = (*this->covariance[A_ind(i)])(U_ind(j));
+        cov_A(j, i) = (*this->covariance[Ai])(U_ind(j));
       }
     }
 
@@ -1927,19 +1915,18 @@ public:
   {
     int k = A_ind_U.size(), p = U_ind.size();
     Eigen::MatrixXd cov_A(p, k);
-    Eigen::VectorXi A_ind(k);
-    for (int i = 0; i < k; i++) A_ind(i) = U_ind(A_ind_U(i));
 
     for (int i = 0; i < k; i++){
-      if (!this->covariance_update_flag[A_ind(i)])
+      int Ai =  U_ind(A_ind_U(i));
+      if (!this->covariance_update_flag[Ai])
       {
-        this->covariance[A_ind(i)] = new Eigen::VectorXd;
-        *this->covariance[A_ind(i)] = (*this->x).transpose() * (*this->x).col(A_ind(i));
-        this->covariance_update_flag[A_ind(i)] = true;
+        this->covariance[Ai] = new Eigen::VectorXd;
+        *this->covariance[Ai] = (*this->x).transpose() * (*this->x).col(Ai);
+        this->covariance_update_flag[Ai] = true;
       }
       for (int j = 0; j < p; j++)
       {
-        cov_A(j, i) = (*this->covariance[A_ind(i)])(U_ind(j));
+        cov_A(j, i) = (*this->covariance[Ai])(U_ind(j));
       }
     }
 
