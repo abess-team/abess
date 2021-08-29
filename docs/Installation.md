@@ -65,7 +65,7 @@ Our core C++ code is based on some dependencies, which can be found in [abess/py
 
 - [Eigen](https://gitlab.com/libeigen/eigen/-/releases) (version *<u>TODO</u>*):
     a C++ template library for linear algebra: matrices, vectors, numerical solvers, and related algorithms.
-- [Spectra](https://github.com/yixuan/spectra/releases/tag/v0.9.0) (version 0.9.0):
+- [Spectra](https://github.com/yixuan/spectra/releases/tag/v1.0.0) (version 1.0.0):
     a header-only C++ library for large scale eigenvalue problems.
 
 They would be automatically included while installing the abess packages.
