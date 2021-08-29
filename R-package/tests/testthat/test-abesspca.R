@@ -73,7 +73,7 @@ test_that("abesspca (KPC) works", {
     sparse.type = "kpc",
     support.size = rep(4, 4)
   )
-  expect_true(all(spca_fit1[["pev"]] <= 1))
+  expect_true(all(spca_fit1[["pev"]] <= (1 + 1e-8)))
 
   ## Input 3 (default input):
   spca_fit1 <- abesspca(USArrests, sparse.type = "kpc")
@@ -97,11 +97,8 @@ test_that("abesspca (group) works", {
 })
 
 test_that("abesspca (sparse) works", {
-  # data(USArrests)
-  dat <- generate.data(100, 200, support.size = 3)
-  x <- dat[["x"]]
-  USArrests <- x
-  set.seed(1)
+  data(USArrests)
+  set.seed(123)
   zero_matrix <- sample(0:1, size = prod(dim(USArrests)), replace = TRUE)
   zero_matrix <- matrix(zero_matrix, nrow = nrow(USArrests))
   USArrests[zero_matrix == 0] <- 0
