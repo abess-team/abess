@@ -354,7 +354,7 @@ public:
 
 #ifdef TEST
     t1 = clock();///
-#endif
+#endif    
 
     this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size, N, this->tau, this->train_loss);
   
@@ -468,13 +468,14 @@ public:
         A_U = Eigen::VectorXi::LinSpaced(T0, 0, T0 - 1);
         I_U = Eigen::VectorXi::LinSpaced(this->U_size - T0, T0, this->U_size - 1);
 
-        int temp[N], s = this->always_select.size();
+        int temp[N] = {0}, s = this->always_select.size();
         for (int i = 0; i < s; i++) temp[this->always_select(i)] = 1;
         for (int i = 0; i < this->U_size; i++){
           if (s <= 0) break;
-          if (temp[U(i)] == 1)
+          if (temp[U(i)] == 1){
             always_select_U(this->always_select.size() - s) = i;
-          s--;
+            s--;
+          }
         }
       }
 
