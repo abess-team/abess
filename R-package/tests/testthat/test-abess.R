@@ -122,9 +122,9 @@ test_batch_multivariate <- function(abess_fit, dataset, gaussian = TRUE) {
 }
 
 test_that("Covariance update works", {
-  skip("Skip Covariance update!")
-  n <- 1000
-  p <- 500
+  ## n > p case:
+  n <- 100
+  p <- 20
   support_size <- 3
 
   dataset <- generate.data(n, p, support_size, seed = 1)
@@ -138,29 +138,28 @@ test_that("Covariance update works", {
     num.threads = 1
   ))
 
-  expect_lt(t2[3], t1[3])
   abess_fit1[["call"]] <- NULL
   abess_fit2[["call"]] <- NULL
   expect_true(all.equal(abess_fit1, abess_fit2))
+  # expect_lt(t2[3], t1[3])
 
+  ## p > n case:
+  n <- 50
+  p <- 1100
+  support_size <- 3
 
-  # n <- 100
-  # p <- 5000
-  # support_size <- 3
-  #
-  # dataset <- generate.data(n, p, support_size, seed = 1)
-  # t1 <- system.time(abess_fit1 <- abess(dataset[["x"]],
-  #                                       dataset[["y"]],
-  #                                       cov.update = FALSE,
-  #                                       num.threads = 1))
-  # t2 <- system.time(abess_fit2 <- abess(dataset[["x"]],
-  #                                       dataset[["y"]],
-  #                                       num.threads = 1))
-  #
-  # expect_gt(t2[3], t1[3])
-  # abess_fit1[["call"]] <- NULL
-  # abess_fit2[["call"]] <- NULL
-  # expect_true(all.equal(abess_fit1, abess_fit2))
+  dataset <- generate.data(n, p, support_size, seed = 1)
+  t1 <- system.time(abess_fit1 <- abess(dataset[["x"]],
+                                        dataset[["y"]],
+                                        cov.update = FALSE,
+                                        num.threads = 1))
+  t2 <- system.time(abess_fit2 <- abess(dataset[["x"]],
+                                        dataset[["y"]],
+                                        num.threads = 1))
+
+  abess_fit1[["call"]] <- NULL
+  abess_fit2[["call"]] <- NULL
+  expect_true(all.equal(abess_fit1, abess_fit2))
 })
 
 test_that("OPENMP works", {
