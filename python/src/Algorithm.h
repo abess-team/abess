@@ -1127,9 +1127,11 @@ public:
         *this->covariance[Ai] = (*this->x).transpose() * (*this->x).col(Ai);
         this->covariance_update_flag[Ai] = true;
       }
-      for (int j = 0; j < p; j++)
-      {
-        cov_A(j, i) = (*this->covariance[Ai])(U_ind(j));
+      if (p == this->XTy.rows()){
+        cov_A.col(i) = *this->covariance[Ai];
+      }else{
+        for (int j = 0; j < p; j++)
+          cov_A(j, i) = (*this->covariance[Ai])(U_ind(j));
       }
     }
 
@@ -1925,9 +1927,11 @@ public:
         *this->covariance[Ai] = (*this->x).transpose() * (*this->x).col(Ai);
         this->covariance_update_flag[Ai] = true;
       }
-      for (int j = 0; j < p; j++)
-      {
-        cov_A(j, i) = (*this->covariance[Ai])(U_ind(j));
+      if (p == this->XTy.rows()){
+        cov_A.col(i) = *this->covariance[Ai];
+      }else{
+        for (int j = 0; j < p; j++)
+          cov_A(j, i) = (*this->covariance[Ai])(U_ind(j));
       }
     }
 
