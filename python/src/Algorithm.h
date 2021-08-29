@@ -1995,7 +1995,10 @@ public:
 #ifdef TEST
         clock_t t2 = clock();
         std::cout << "covariance_update_f: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-        std::cout << "this->covariance_update_flag sum: " << this->covariance_update_flag.sum() << endl;
+        int flagsum=0;
+        for (int i=0;i<this->XTy.rows();i++) 
+          if (this->covariance_update_flag[i]) flagsum++;
+        std::cout << "this->covariance_update_flag sum: " << flagsum << endl;
         t1 = clock();
 #endif
 

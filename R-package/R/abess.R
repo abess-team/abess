@@ -366,7 +366,8 @@ abess.default <- function(x,
   ## check splicing type
   stopifnot(length(splicing.type) == 1)
   stopifnot(splicing.type %in% c(1, 2))
-  splicing_type <- as.integer(splicing.type)
+  splicing_type <- 2 - splicing.type
+  splicing_type <- as.integer(splicing_type)
 
   ## check max splicing iteration
   stopifnot(is.numeric(max.splicing.iter) & max.splicing.iter >= 1)

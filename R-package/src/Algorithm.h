@@ -354,7 +354,7 @@ public:
 
 #ifdef TEST
     t1 = clock();///
-#endif
+#endif    
 
     this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size, N, this->tau, this->train_loss);
   
@@ -468,13 +468,14 @@ public:
         A_U = Eigen::VectorXi::LinSpaced(T0, 0, T0 - 1);
         I_U = Eigen::VectorXi::LinSpaced(this->U_size - T0, T0, this->U_size - 1);
 
-        int temp[N], s = this->always_select.size();
+        int temp[N] = {0}, s = this->always_select.size();
         for (int i = 0; i < s; i++) temp[this->always_select(i)] = 1;
         for (int i = 0; i < this->U_size; i++){
           if (s <= 0) break;
-          if (temp[U(i)] == 1)
+          if (temp[U(i)] == 1){
             always_select_U(this->always_select.size() - s) = i;
-          s--;
+            s--;
+          }
         }
       }
 
@@ -485,7 +486,7 @@ public:
       t3 = clock();///
 #endif
 
-      int num = 0;
+      int num = -1;
       while (true){
         num ++; 
 #ifdef TEST
@@ -1117,30 +1118,20 @@ public:
   {
     int k = A_ind_U.size(), p = U_ind.size();
     Eigen::MatrixXd cov_A(p, k);
-    Eigen::VectorXi A_ind(k);
-    for (int i = 0; i < k; i++) A_ind(i) = U_ind(A_ind_U(i));
-
-    // for (int i = 0; i < p; i++)
-    //   for (int j = 0; j < k; j++){
-    //     if (this->covariance_update_flag(U_ind(i), A_ind(j)) == 0)
-    //     {
-    //       Eigen::MatrixXd temp = X.col(i).transpose() * X.col(A_ind_U(j));
-    //       this->covariance(U_ind(i), A_ind(j)) = temp(0, 0);
-    //       this->covariance_update_flag(U_ind(i), A_ind(j)) = 1;
-    //     }
-    //     cov_A(i, j) = this->covariance(U_ind(i), A_ind(j));
-    //   }
 
     for (int i = 0; i < k; i++){
-      if (!this->covariance_update_flag[A_ind(i)])
+      int Ai = U_ind(A_ind_U(i));
+      if (!this->covariance_update_flag[Ai])
       {
-        this->covariance[A_ind(i)] = new Eigen::VectorXd;
-        *this->covariance[A_ind(i)] = (*this->x).transpose() * (*this->x).col(A_ind(i));
-        this->covariance_update_flag[A_ind(i)] = true;
+        this->covariance[Ai] = new Eigen::VectorXd;
+        *this->covariance[Ai] = (*this->x).transpose() * (*this->x).col(Ai);
+        this->covariance_update_flag[Ai] = true;
       }
-      for (int j = 0; j < p; j++)
-      {
-        cov_A(j, i) = (*this->covariance[A_ind(i)])(U_ind(j));
+      if (p == this->XTy.rows()){
+        cov_A.col(i) = *this->covariance[Ai];
+      }else{
+        for (int j = 0; j < p; j++)
+          cov_A(j, i) = (*this->covariance[Ai])(U_ind(j));
       }
     }
 
@@ -1927,19 +1918,20 @@ public:
   {
     int k = A_ind_U.size(), p = U_ind.size();
     Eigen::MatrixXd cov_A(p, k);
-    Eigen::VectorXi A_ind(k);
-    for (int i = 0; i < k; i++) A_ind(i) = U_ind(A_ind_U(i));
 
     for (int i = 0; i < k; i++){
-      if (!this->covariance_update_flag[A_ind(i)])
+      int Ai =  U_ind(A_ind_U(i));
+      if (!this->covariance_update_flag[Ai])
       {
-        this->covariance[A_ind(i)] = new Eigen::VectorXd;
-        *this->covariance[A_ind(i)] = (*this->x).transpose() * (*this->x).col(A_ind(i));
-        this->covariance_update_flag[A_ind(i)] = true;
+        this->covariance[Ai] = new Eigen::VectorXd;
+        *this->covariance[Ai] = (*this->x).transpose() * (*this->x).col(Ai);
+        this->covariance_update_flag[Ai] = true;
       }
-      for (int j = 0; j < p; j++)
-      {
-        cov_A(j, i) = (*this->covariance[A_ind(i)])(U_ind(j));
+      if (p == this->XTy.rows()){
+        cov_A.col(i) = *this->covariance[Ai];
+      }else{
+        for (int j = 0; j < p; j++)
+          cov_A(j, i) = (*this->covariance[Ai])(U_ind(j));
       }
     }
 
@@ -2003,7 +1995,10 @@ public:
 #ifdef TEST
         clock_t t2 = clock();
         std::cout << "covariance_update_f: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-        std::cout << "this->covariance_update_flag sum: " << this->covariance_update_flag.sum() << endl;
+        int flagsum=0;
+        for (int i=0;i<this->XTy.rows();i++) 
+          if (this->covariance_update_flag[i]) flagsum++;
+        std::cout << "this->covariance_update_flag sum: " << flagsum << endl;
         t1 = clock();
 #endif
 

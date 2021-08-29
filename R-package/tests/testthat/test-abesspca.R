@@ -54,6 +54,7 @@ test_that("abesspca (KPC) works", {
   )
 
   ## Reasonablity of abesspca
+  skip_on_os("linux")
   ev <- spca_fit[["ev"]]
   ev_len <- length(ev)
   expect_true(all(ev[1:(ev_len - 1)] < ev[2:ev_len]))
