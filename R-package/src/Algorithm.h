@@ -2686,11 +2686,11 @@ public:
 #endif
 
     DenseSymMatProd<double> op(Y);
-    SymEigsSolver<double, LARGEST_ALGE, DenseSymMatProd<double>> eig(&op, 1, 2);
+    SymEigsSolver<DenseSymMatProd<double>> eig(op, 1, 2);
     eig.init();
     eig.compute();
     MatrixXd temp;
-    if (eig.info() == SUCCESSFUL)
+    if (eig.info() == CompInfo::Successful)
     {
       temp = eig.eigenvectors(1);
     }else{

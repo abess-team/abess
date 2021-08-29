@@ -173,6 +173,7 @@ abesspca <- function(x,
         x <- stats::cov(x)
       }
     }
+    # x <- round(x, digits = 13)
   }
 
   if (sparse_type == "fpc") {
