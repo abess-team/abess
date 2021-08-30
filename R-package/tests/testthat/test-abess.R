@@ -421,4 +421,11 @@ test_that("abess (L2 regularization) works", {
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], lambda = 0.1)
   expect_true(all(diff(abess_fit[["edf"]]) > 0))
   expect_true(all(abess_fit[["edf"]] <= abess_fit[["support.size"]]))
+  
+  n <- 20
+  p <- 150
+  dataset <- generate.data(n, p, support_size)
+  abess_fit2 <- abess(dataset[["x"]], dataset[["y"]])
+  expect_gt(extract(abess_fit)[["support.size"]], 
+            extract(abess_fit2)[["support.size"]])
 })
