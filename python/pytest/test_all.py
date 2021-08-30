@@ -331,7 +331,7 @@ class TestClass:
         model5.fit(data.x, data.y, group=group)
 
         nonzero_true = np.unique(np.nonzero(data.coef_)[0])
-        nonzero_fit = np.unique(np.nonzero(model.coef_)[0])
+        nonzero_fit = np.unique(np.nonzero(model5.coef_)[0])
         print(nonzero_true)
         print(nonzero_fit)
         # new_x = data.x[:, nonzero_fit]
@@ -945,7 +945,7 @@ class TestClass:
         model5.fit(data.x, data.y, group=group)
 
         nonzero_true = np.unique(np.nonzero(data.coef_)[0])
-        nonzero_fit = np.unique(np.nonzero(model.coef_)[0])
+        nonzero_fit = np.unique(np.nonzero(model5.coef_)[0])
         print(nonzero_true)
         print(nonzero_fit)
         # new_x = data.x[:, nonzero_fit]
