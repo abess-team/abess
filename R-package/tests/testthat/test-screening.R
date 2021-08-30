@@ -123,7 +123,7 @@ test_that("screening (binomial) works", {
 
 test_that("screening (cox) works", {
   n <- 128
-  p <- 250
+  p <- 128
   support_size <- 3
 
   ## default interface
