@@ -69,23 +69,22 @@ class abessLogistic(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, n_lambda=100, ic_type="ebic", ic_coef=1.0, is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
-                 always_select=[], # tau=0.,
+                 ic_type="ebic", ic_coef=1.0, is_cv=False, Kfold=5, is_screening=False, screening_size=None, 
+                 always_select=[], 
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 # early_stop=False, 
                  approximate_Newton=False,
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=0,
-                 important_search=0
+                 important_search=0,
                  ):
         super(abessLogistic, self).__init__(
             algorithm_type="abess", model_type="Logistic", data_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-            epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, n_lambda=n_lambda, ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
-            always_select=always_select, tau=0.,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
+            ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, 
+            always_select=always_select, 
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
-            early_stop=False, approximate_Newton=approximate_Newton,
+            approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
@@ -195,22 +194,19 @@ class abessLm(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, n_lambda=100, ic_type="ebic", ic_coef=1.0, is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
-                 always_select=[], # tau=0.,
-                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 # early_stop=False, approximate_Newton=False,
+                 ic_type="ebic", ic_coef=1.0, is_cv=False, Kfold=5, is_screening=False, screening_size=None, 
+                 always_select=[], 
                  thread=1, covariance_update=False,
                  sparse_matrix=False,
                  splicing_type=0,
-                 important_search=0
+                 important_search=0,
+                 # primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8, approximate_Newton=False
                  ):
         super(abessLm, self).__init__(
             algorithm_type="abess", model_type="Lm", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-            epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, n_lambda=n_lambda, ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
-            always_select=always_select, tau=0.,
-            primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
-            early_stop=False, approximate_Newton=False,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
+            ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, 
+            always_select=always_select, 
             thread=thread, covariance_update=covariance_update,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
@@ -296,10 +292,9 @@ class abessCox(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, n_lambda=100, ic_type="ebic", ic_coef=1.0, is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
-                 always_select=[], # tau=0.,
+                 ic_type="ebic", ic_coef=1.0, is_cv=False, Kfold=5, is_screening=False, screening_size=None, 
+                 always_select=[], 
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 # early_stop=False, 
                  approximate_Newton=False,
                  thread=1,
                  sparse_matrix=False,
@@ -308,11 +303,11 @@ class abessCox(bess_base):
                  ):
         super(abessCox, self).__init__(
             algorithm_type="abess", model_type="Cox", data_type=3, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-            epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, n_lambda=n_lambda, ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
-            always_select=always_select, tau=0.,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
+            ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, 
+            always_select=always_select, 
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
-            early_stop=False, approximate_Newton=approximate_Newton,
+            approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
@@ -400,10 +395,9 @@ class abessPoisson(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, n_lambda=100, ic_type="ebic", ic_coef=1.0, is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
-                 always_select=[], # tau=0.,
+                 ic_type="ebic", ic_coef=1.0, is_cv=False, Kfold=5, is_screening=False, screening_size=None, 
+                 always_select=[], 
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 # early_stop=False, approximate_Newton=False,
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=0,
@@ -411,11 +405,10 @@ class abessPoisson(bess_base):
                  ):
         super(abessPoisson, self).__init__(
             algorithm_type="abess", model_type="Poisson", data_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-            epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, n_lambda=n_lambda, ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
-            always_select=always_select, tau=0.,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
+            ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, 
+            always_select=always_select, 
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
-            early_stop=False, approximate_Newton=False,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
@@ -505,10 +498,8 @@ class abessMultigaussian(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, n_lambda=100, ic_type="ebic", ic_coef=1.0, is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
-                 always_select=[], # tau=0.,
-                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 # early_stop=False, approximate_Newton=False,
+                 ic_type="ebic", ic_coef=1.0, is_cv=False, Kfold=5, is_screening=False, screening_size=None, 
+                 always_select=[], 
                  thread=1, covariance_update=False,
                  sparse_matrix=False,
                  splicing_type=0,
@@ -516,17 +507,14 @@ class abessMultigaussian(bess_base):
                  ):
         super(abessMultigaussian, self).__init__(
             algorithm_type="abess", model_type="Multigaussian", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-            epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, n_lambda=n_lambda, ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
-            always_select=always_select, tau=0.,
-            primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
-            early_stop=False, approximate_Newton=False,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
+            ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, 
+            always_select=always_select, 
             thread=thread, covariance_update=covariance_update,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
             important_search=important_search
         )
-        self.data_type = 1
 
     def predict(self, X):
         """
@@ -609,10 +597,9 @@ class abessMultinomial(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, n_lambda=100, ic_type="ebic", ic_coef=1.0, is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
-                 always_select=[], # tau=0.,
+                 ic_type="ebic", ic_coef=1.0, is_cv=False, Kfold=5, is_screening=False, screening_size=None, 
+                 always_select=[], 
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 # early_stop=False, 
                  approximate_Newton=False,
                  thread=1,
                  sparse_matrix=False,
@@ -621,11 +608,11 @@ class abessMultinomial(bess_base):
                  ):
         super(abessMultinomial, self).__init__(
             algorithm_type="abess", model_type="Multinomial", data_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-            epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, n_lambda=n_lambda, ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
-            always_select=always_select, tau=0.,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
+            ic_type=ic_type, ic_coef=ic_coef, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, 
+            always_select=always_select, 
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
-            early_stop=False, approximate_Newton=approximate_Newton,
+            approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
@@ -722,12 +709,12 @@ class abessMultinomial(bess_base):
 #     '''
 
 #     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
+#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, Kfold=5, is_screening=False, screening_size=None, powell_path=1,
 #                  always_select=[], tau=0.):
 #         super(PdasLm, self).__init__(
 #             algorithm_type="Pdas", model_type="Lm", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
+#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
 #         self.data_type = 1
 
@@ -763,13 +750,13 @@ class abessMultinomial(bess_base):
 #     """
 
 #     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
+#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, Kfold=5, is_screening=False, screening_size=None, powell_path=1,
 #                  always_select=[], tau=0.
 #                  ):
 #         super(PdasLogistic, self).__init__(
 #             algorithm_type="Pdas", model_type="Logistic", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
+#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
 #         self.data_type = 2
 
@@ -804,13 +791,13 @@ class abessMultinomial(bess_base):
 #     """
 
 #     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
+#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, Kfold=5, is_screening=False, screening_size=None, powell_path=1,
 #                  always_select=[], tau=0.
 #                  ):
 #         super(PdasPoisson, self).__init__(
 #             algorithm_type="Pdas", model_type="Poisson", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
+#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau
 #         )
 #         self.data_type = 2
@@ -825,7 +812,7 @@ class abessMultinomial(bess_base):
 #     >>> from bess.linear import *
 #     >>> import numpy as np
 #     >>> np.random.seed(12345)
-#     >>> data = make_glm_data(100, 200, family="cox", k=5, rho=0, sigma=1, c=10)
+#     >>> data = make_glm_data(100, 200, family="cox", Kfold=5, rho=0, sigma=1, c=10)
 #     >>> model = PdasCox(path_type="seq", support_size=[5])
 #     >>> model.fit(data.x, data.y, is_normal=True)
 #     >>> model.predict(data.x)
@@ -843,13 +830,13 @@ class abessMultinomial(bess_base):
 #     """
 
 #     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
+#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, Kfold=5, is_screening=False, screening_size=None, powell_path=1,
 #                  always_select=[], tau=0.
 #                  ):
 #         super(PdasCox, self).__init__(
 #             algorithm_type="Pdas", model_type="Cox", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
+#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
 #         self.data_type = 3
 
@@ -884,13 +871,13 @@ class abessMultinomial(bess_base):
 #     """
 
 #     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
+#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, Kfold=5, is_screening=False, screening_size=None, powell_path=1,
 #                  always_select=[], tau=0.
 #                  ):
 #         super(L0L2Lm, self).__init__(
 #             algorithm_type="L0L2", model_type="Lm", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
+#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau
 #         )
 #         self.data_type = 1
@@ -926,13 +913,13 @@ class abessMultinomial(bess_base):
 #         """
 
 #     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
+#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, Kfold=5, is_screening=False, screening_size=None, powell_path=1,
 #                  always_select=[], tau=0.
 #                  ):
 #         super(L0L2Logistic, self).__init__(
 #             algorithm_type="L0L2", model_type="Logistic", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
+#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
 #         self.data_type = 2
 
@@ -967,13 +954,13 @@ class abessMultinomial(bess_base):
 #     """
 
 #     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
+#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, Kfold=5, is_screening=False, screening_size=None, powell_path=1,
 #                  always_select=[], tau=0.
 #                  ):
 #         super(L0L2Poisson, self).__init__(
 #             algorithm_type="L0L2", model_type="Poisson", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
+#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau
 #         )
 #         self.data_type = 2
@@ -988,7 +975,7 @@ class abessMultinomial(bess_base):
 #     >>> from bess.linear import *
 #     >>> import numpy as np
 #     >>> np.random.seed(12345)
-#     >>> data = make_glm_data(100, 200, family="cox", k=5, rho=0, sigma=1, c=10)
+#     >>> data = make_glm_data(100, 200, family="cox", Kfold=5, rho=0, sigma=1, c=10)
 #     >>> model = PdasCox(path_type="seq", support_size=[5])
 #     >>> model.fit(data.x, data.y, is_normal=True)
 #     >>> model.predict(data.x)
@@ -1006,13 +993,13 @@ class abessMultinomial(bess_base):
 #     """
 
 #     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
+#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, Kfold=5, is_screening=False, screening_size=None, powell_path=1,
 #                  always_select=[], tau=0.
 #                  ):
 #         super(L0L2Cox, self).__init__(
 #             algorithm_type="L0L2", model_type="Cox", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
+#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
 #         self.data_type = 3
 
@@ -1047,13 +1034,13 @@ class abessMultinomial(bess_base):
 #         """
 
 #     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
+#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, Kfold=5, is_screening=False, screening_size=None, powell_path=1,
 #                  always_select=[], tau=0.
 #                  ):
 #         super(GroupPdasLm, self).__init__(
 #             algorithm_type="GroupPdas", model_type="Lm", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
+#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
 #         self.data_type = 1
 
@@ -1089,13 +1076,13 @@ class abessMultinomial(bess_base):
 #     """
 
 #     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
+#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, Kfold=5, is_screening=False, screening_size=None, powell_path=1,
 #                  always_select=[], tau=0.
 #                  ):
 #         super(GroupPdasLogistic, self).__init__(
 #             algorithm_type="GroupPdas", model_type="Logistic", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
+#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau
 #         )
 #         self.data_type = 2
@@ -1131,13 +1118,13 @@ class abessMultinomial(bess_base):
 #     """
 
 #     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
+#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, Kfold=5, is_screening=False, screening_size=None, powell_path=1,
 #                  always_select=[], tau=0.
 #                  ):
 #         super(GroupPdasPoisson, self).__init__(
 #             algorithm_type="GroupPdas", model_type="Poisson", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
+#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
 #         self.data_type = 2
 
@@ -1151,7 +1138,7 @@ class abessMultinomial(bess_base):
 #     >>> from bess.linear import *
 #     >>> import numpy as np
 #     >>> np.random.seed(12345)
-#     >>> data = make_glm_data(100, 200, family="cox", k=5, rho=0, sigma=1, c=10)
+#     >>> data = make_glm_data(100, 200, family="cox", Kfold=5, rho=0, sigma=1, c=10)
 #     >>> model = GroupPdasCox(path_type="seq", support_size=[5])
 #     >>> model.fit(data.x, data.y, is_normal=True)
 #     >>> model.predict(data.x)
@@ -1169,10 +1156,10 @@ class abessMultinomial(bess_base):
 #     """
 
 #     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1
+#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", is_cv=False, Kfold=5, is_screening=False, screening_size=None, powell_path=1
 #                  ):
 #         super(GroupPdasCox, self).__init__(
 #             algorithm_type="GroupPdas", model_type="Cox", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, K=K, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path)
+#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, is_cv=is_cv, Kfold=Kfold, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path)
 #         self.data_type = 3

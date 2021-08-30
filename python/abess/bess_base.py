@@ -82,17 +82,19 @@ class bess_base(BaseEstimator):
     """
 
     def __init__(self, algorithm_type, model_type, data_type, path_type, max_iter=20, exchange_num=5, is_warm_start=True,
-                 support_size=None, alpha=None, s_min=None, s_max=None, K_max=1, epsilon=0.0001, lambda_min=0, lambda_max=0, n_lambda=100,
+                 support_size=None, alpha=None, s_min=None, s_max=None, 
                  ic_type="ebic", ic_coef=1.0,
-                 is_cv=False, K=5, is_screening=False, screening_size=None, powell_path=1,
-                 always_select=[], tau=0.,
+                 is_cv=False, Kfold=5, is_screening=False, screening_size=None, 
+                 always_select=[], 
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 early_stop=False, approximate_Newton=False,
+                 approximate_Newton=False,
                  thread=1,
                  covariance_update=False,
                  sparse_matrix=False,
                  splicing_type=0,
-                 important_search=0):
+                 important_search=0,
+                 # early_stop=False, tau=0., K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, n_lambda=100, powell_path=1,
+                 ):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
         self.data_type = data_type
@@ -104,23 +106,23 @@ class bess_base(BaseEstimator):
         self.alpha = alpha
         self.s_min = s_min
         self.s_max = s_max
-        self.K_max = K_max
-        self.epsilon = epsilon
-        self.lambda_min = lambda_min
-        self.lambda_max = lambda_max
-        self.n_lambda = n_lambda
+        self.K_max = 1
+        self.epsilon = 0.0001
+        self.lambda_min = None
+        self.lambda_max = None
+        self.n_lambda = 100
         self.ic_type = ic_type
         self.ic_coef = ic_coef
         self.is_cv = is_cv
-        self.K = K
+        self.Kfold = Kfold
         self.is_screening = is_screening
         self.screening_size = screening_size
-        self.powell_path = powell_path
+        self.powell_path = 1
         self.always_select = always_select
-        self.tau = tau
+        self.tau = 0.
         self.primary_model_fit_max_iter = primary_model_fit_max_iter
         self.primary_model_fit_epsilon = primary_model_fit_epsilon
-        self.early_stop = early_stop
+        self.early_stop = False
         self.approximate_Newton = approximate_Newton
         self.thread = thread
         self.covariance_update = covariance_update
@@ -405,7 +407,7 @@ class bess_base(BaseEstimator):
                               is_normal,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
-                              ic_type_int, self.ic_coef, self.is_cv, self.K,
+                              ic_type_int, self.ic_coef, self.is_cv, self.Kfold,
                               g_index,
                               state,
                               support_sizes,
