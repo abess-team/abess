@@ -468,7 +468,8 @@ public:
         A_U = Eigen::VectorXi::LinSpaced(T0, 0, T0 - 1);
         I_U = Eigen::VectorXi::LinSpaced(this->U_size - T0, T0, this->U_size - 1);
 
-        int temp[N] = {0}, s = this->always_select.size();
+        int temp[N], s = this->always_select.size();
+        memset(temp, 0, sizeof(temp));
         for (int i = 0; i < s; i++) temp[this->always_select(i)] = 1;
         for (int i = 0; i < this->U_size; i++){
           if (s <= 0) break;
