@@ -67,7 +67,7 @@ else:
                               )
     pass
 
-with open(path.join(CURRENT_DIR, 'README.md')) as f:
+with open(path.join(CURRENT_DIR, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='abess',
@@ -80,7 +80,7 @@ setup(name='abess',
       packages=find_packages(CURRENT_DIR),
       description="abess Python Package",
       long_description=long_description,
-      long_description_content_type="text/markdown",
+      long_description_content_type="text/x-rst",
       install_requires=[
           "numpy",
           "scipy",
