@@ -677,23 +677,6 @@ class TestClass:
             assert False
 
         try:
-            model = abessPCA(is_screening=True, screening_size=p+1)
-            model.fit(X)
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-
-        try:
-            model = abessPCA(is_screening=True,
-                             screening_size=p-1, support_size=p)
-            model.fit(X)
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-
-        try:
             model = abessPCA(exchange_num=-1)
             model.fit()
         except ValueError as e:
