@@ -261,13 +261,13 @@ public:
     if (N == T0)
     {
       this->A_out = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
-      T2 beta_old = this->beta;
-      T3 coef0_old = this->coef0;
+      // T2 beta_old = this->beta;
+      // T3 coef0_old = this->coef0;
       bool success = this->primary_model_fit(train_x, train_y, train_weight, this->beta, this->coef0, DBL_MAX, this->A_out, g_index, g_size);
-      if (!success){
-        this->beta = beta_old;
-        this->coef0 = coef0_old;
-      }
+      // if (!success){
+      //   this->beta = beta_old;
+      //   this->coef0 = coef0_old;
+      // }
       this->train_loss = neg_loglik_loss(train_x, train_y, train_weight, this->beta, this->coef0, this->A_out, g_index, g_size);
       this->effective_number = effective_number_of_parameter(train_x, train_x, train_y, train_weight, this->beta, this->beta, this->coef0);
       return;
@@ -302,14 +302,14 @@ public:
     // if (this->algorithm_type == 6)
     // {
     
-    T3 coef0_old = this->coef0;
+    // T3 coef0_old = this->coef0;
     bool success = this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
-    if (!success){
-      this->coef0 = coef0_old;
-    }else{
+    // if (!success){
+    //   this->coef0 = coef0_old;
+    // }else{
       slice_restore(beta_A, A_ind, this->beta);
       this->train_loss = neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
-    }
+    // }
     
     // for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl<<"init loss = "<<this->train_loss<<endl; 
     // }
@@ -331,14 +331,14 @@ public:
     slice(this->beta, A_ind, beta_A);
 
     this->primary_model_fit_max_iter += 20;
-    coef0_old = this->coef0;
+    // coef0_old = this->coef0;
     success = this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
-    if (!success){
-      this->coef0 = coef0_old;
-    }else{
+    // if (!success){
+    //   this->coef0 = coef0_old;
+    // }else{
       slice_restore(beta_A, A_ind, this->beta);
       this->train_loss = neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
-    }
+    // }
     this->primary_model_fit_max_iter -= 20;
 
     this->effective_number = effective_number_of_parameter(train_x, X_A, train_y, train_weight, this->beta, beta_A, this->coef0);

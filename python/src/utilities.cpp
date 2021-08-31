@@ -310,17 +310,17 @@ Eigen::VectorXi max_k(Eigen::VectorXd &vec, int k, bool sort_by_value)
     return ind.head(k).eval();
 }
 
-Eigen::VectorXi max_k_2(Eigen::VectorXd &vec, int k)
-{
-    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
-    auto rule = [vec](int i, int j) -> bool
-    {
-        return vec(i) > vec(j);
-    }; // sort rule
-    std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
-    std::sort(ind.data(), ind.data() + k);
-    return ind.head(k).eval();
-}
+// Eigen::VectorXi max_k_2(Eigen::VectorXd &vec, int k)
+// {
+//     Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
+//     auto rule = [vec](int i, int j) -> bool
+//     {
+//         return vec(i) > vec(j);
+//     }; // sort rule
+//     std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
+//     std::sort(ind.data(), ind.data() + k);
+//     return ind.head(k).eval();
+// }
 
 // Ac
 Eigen::VectorXi Ac(Eigen::VectorXi &A, int N)
@@ -363,41 +363,41 @@ Eigen::VectorXi Ac(Eigen::VectorXi &A, int N)
     
 }
 
-// Ac
-Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U)
-{
-    int A_size = A.size();
-    int N = U.size();
-    if (A_size == 0)
-    {
-        return U;
-    }
-    else if (A_size == N)
-    {
-        Eigen::VectorXi I(0);
-        return I;
-    }
-    else
-    {
-        Eigen::VectorXi I(N - A_size);
-        int cur_index = 0;
-        int A_index = 0;
-        for (int i = 0; i < N; i++)
-        {
-            if (A_index < A.size() && U(i) == A(A_index))
-            {
-                A_index += 1;
-                continue;
-            }
-            else
-            {
-                I(cur_index) = U(i);
-                cur_index += 1;
-            }
-        }
-        return I;
-    }
-}
+// // Ac
+// Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U)
+// {
+//     int A_size = A.size();
+//     int N = U.size();
+//     if (A_size == 0)
+//     {
+//         return U;
+//     }
+//     else if (A_size == N)
+//     {
+//         Eigen::VectorXi I(0);
+//         return I;
+//     }
+//     else
+//     {
+//         Eigen::VectorXi I(N - A_size);
+//         int cur_index = 0;
+//         int A_index = 0;
+//         for (int i = 0; i < N; i++)
+//         {
+//             if (A_index < A.size() && U(i) == A(A_index))
+//             {
+//                 A_index += 1;
+//                 continue;
+//             }
+//             else
+//             {
+//                 I(cur_index) = U(i);
+//                 cur_index += 1;
+//             }
+//         }
+//         return I;
+//     }
+// }
 
 void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int axis)
 {
@@ -648,46 +648,46 @@ void add_constant_column(Eigen::SparseMatrix<double> &X)
 //     X.reserve(x.nonZeros() + x.rows());
 // }
 
-void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::VectorXd &Z, Eigen::VectorXd &beta)
-{
-    // Eigen::SparseMatrix<double> XTX = X_new.transpose() * X;
+// void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::VectorXd &Z, Eigen::VectorXd &beta)
+// {
+//     // Eigen::SparseMatrix<double> XTX = X_new.transpose() * X;
     
     
-    // Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
-    // solver.compute(X_new.transpose() * X);
-    // beta = solver.solve(X_new.transpose() * Z);
-    Eigen::MatrixXd XTX = X_new.transpose() * X;
-    beta = (XTX).ldlt().solve(X_new.transpose() * Z);
-    return;
-}
+//     // Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
+//     // solver.compute(X_new.transpose() * X);
+//     // beta = solver.solve(X_new.transpose() * Z);
+//     Eigen::MatrixXd XTX = X_new.transpose() * X;
+//     beta = (XTX).ldlt().solve(X_new.transpose() * Z);
+//     return;
+// }
 
-void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta)
-{
-    // Eigen::SparseMatrix<double> XTX = X_new.transpose() * X;
+// void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta)
+// {
+//     // Eigen::SparseMatrix<double> XTX = X_new.transpose() * X;
     
     
-    // Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
-    // solver.compute(X_new.transpose() * X);
-    // beta = solver.solve(X_new.transpose() * Z);
+//     // Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
+//     // solver.compute(X_new.transpose() * X);
+//     // beta = solver.solve(X_new.transpose() * Z);
     
-    Eigen::MatrixXd XTX = X_new.transpose() * X;
+//     Eigen::MatrixXd XTX = X_new.transpose() * X;
     
-    beta = (XTX).ldlt().solve(X_new.transpose() * Z);
+//     beta = (XTX).ldlt().solve(X_new.transpose() * Z);
     
-    return;
-}
+//     return;
+// }
 
-void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::VectorXd &Z, Eigen::VectorXd &beta)
-{
-    beta = (X_new.transpose() * X).ldlt().solve(X_new.transpose() * Z);
-    return;
-}
+// void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::VectorXd &Z, Eigen::VectorXd &beta)
+// {
+//     beta = (X_new.transpose() * X).ldlt().solve(X_new.transpose() * Z);
+//     return;
+// }
 
-void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta)
-{
-    beta = (X_new.transpose() * X).ldlt().solve(X_new.transpose() * Z);
-    return;
-}
+// void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta)
+// {
+//     beta = (X_new.transpose() * X).ldlt().solve(X_new.transpose() * Z);
+//     return;
+// }
 
 // bool check_ill_condition(Eigen::MatrixXd &M){
 //     Eigen::JacobiSVD<Eigen::MatrixXd> svd(M);

@@ -61,8 +61,11 @@ class TestClass:
                          ic_coef=1., thread=5, covariance_update=True, splicing_type=1)
         model4.fit(data.x, data.y)
 
-        model5 = abessLm(support_size=range(s_max), important_search=100)
+        model5 = abessLm(support_size=range(s_max), important_search=0)
         model5.fit(data.x, data.y)
+
+        model6 = abessLm(support_size=range(s_max), important_search=5, always_select=[0], covariance_update=True)
+        model6.fit(data.x, data.y)
 
         nonzero_true = np.nonzero(data.coef_)[0]
         nonzero_fit = np.nonzero(model5.coef_)[0]
@@ -74,6 +77,7 @@ class TestClass:
         assert model5.coef_[nonzero_fit] == approx(
             reg.coef_, rel=1e-5, abs=1e-5)
         assert (nonzero_true == nonzero_fit).all()
+        assert (model6.coef_[0] != 0)
 
     def test_binomial(self):
         n = 100
@@ -275,6 +279,10 @@ class TestClass:
                                     ic_coef=1., thread=5, covariance_update=True)
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
+
+        model4 = abessMultigaussian(support_size=support_size, important_search=5, covariance_update=True)
+        group = np.linspace(1, p, p)
+        model4.fit(data.x, data.y, group=group)
 
         nonzero_true = np.nonzero(data.coef_)[0]
         nonzero_fit = np.nonzero(model.coef_)[0]
@@ -550,7 +558,7 @@ class TestClass:
         assert len(coef1) == s
 
         # Check2: give Sigma
-        model.fit(Sigma=X.T.dot(X))
+        model.fit(Sigma=X.T.dot(X), n = 10)
         coef2 = np.nonzero(model.coef_)[0]
 
         assert len(coef2) == s
