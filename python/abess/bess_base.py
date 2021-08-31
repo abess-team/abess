@@ -309,9 +309,9 @@ class bess_base(BaseEstimator):
             # unused
             new_s_min = 0
             new_s_max = 0
-            # new_K_max = 0
-            # new_lambda_min = 0
-            # new_lambda_max = 0
+            new_K_max = 0
+            new_lambda_min = 0
+            new_lambda_max = 0
 
         elif path_type_int == 2:    # pgs
             new_s_min = 0 \

@@ -64,7 +64,7 @@ class TestClass:
         model5 = abessLm(support_size=range(s_max), important_search=0)
         model5.fit(data.x, data.y)
 
-        model6 = abessLm(support_size=range(s_max), important_search=5, always_select=[0], covariance_update=True)
+        model6 = abessLm(support_size=range(2, s_max), important_search=5, always_select=[0, 1], covariance_update=True)
         model6.fit(data.x, data.y)
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -176,7 +176,7 @@ class TestClass:
         model3 = abessCox(support_size=support_size, important_search=10)
         model3.fit(data.x, data.y, group=group)
 
-        model4 = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=10,
+        model4 = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
                           s_min=1, s_max=p, is_cv=True, Kfold=5,
                           exchange_num=2, primary_model_fit_epsilon=1,  ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
@@ -324,6 +324,13 @@ class TestClass:
                                  exchange_num=2, 
                                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
+        model.fit(data.x, data.y, group=group)
+        model.predict(data.x)
+
+        model = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=20,
+                                 s_min=1, s_max=p, is_cv=True, Kfold=5,
+                                 exchange_num=2, 
+                                 primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
         model.fit(data.x, data.y, group=group)
         model.predict(data.x)
 
@@ -628,11 +635,7 @@ class TestClass:
             model = abessPCA(ic_type=ic)
             model.fit(X)
 
-        # Check8: screening
-        model = abessPCA(is_screening=True, screening_size=p-1)
-        model.fit(X)
-
-        # Check9: error arg
+        # Check8: error arg
         try:
             model = abessPCA()
             model.fit()
