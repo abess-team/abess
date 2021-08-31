@@ -36,7 +36,7 @@ plt.bar(x = [1, 2, 3, 5, 6, 7], height = temp[:, 0], yerr = temp[:, 1] * 2,
 plt.xlabel('low corr                                           high corr')
 plt.title('Linear')
 plt.ylabel('time(s)')
-# plt.ylim((0,10))
+plt.ylim((0,20))
 plt.legend(handles=[c1, c2, c3])
 # plt.savefig('./lm_time.png')
 
@@ -50,7 +50,7 @@ lm_time = plt.bar(x = [1, 2, 4, 5], height = temp[:, 0], yerr = temp[:, 1] * 2,
     capsize = 10, tick_label = '', color = color[0:2])
 plt.title('Logistic')
 plt.ylabel('time(s)')
-# plt.ylim((0, 10))
+plt.ylim((0, 20))
 plt.legend(handles=[c1, c3])
 plt.xlabel('low corr                                                high corr')
 # plt.savefig('./logi_time.png')
