@@ -55,9 +55,6 @@ Especially, the time complexity of (group) best subset selection for linear regr
 Quick start
 ============
 
-Python package
---------------
-
 Install the stable abess Python package from Pypi: 
 
 .. code-block:: shell
@@ -76,40 +73,15 @@ Import best subset selection solver for linear regression in a Python project:
 See more examples analyzed with Python in the tutorials; the notebooks are available `here <https://abess.readthedocs.io/en/latest/Tutorial/index.html>`_.
 
 
-R package
------------
-
-Install abess from R CRAN by running the following command in R: 
-
-.. code-block:: r
-
-   install.packages("abess")
-
-
-Best subset selection for linear regression on a simulated dataset in R:
-
-.. code-block:: r
-
-   library(abess)
-   sim_dat <- generate.data(n = 300, p = 1000)
-   abess(x = sim_dat[["x"]], y = sim_dat[["y"]])
-
-See more examples analyzed with R in the `R markdowns collections <https://abess-team.github.io/abess/articles/>`_.
-
 Runtime Performance
 ===================
 
 To show the power of abess in computation, 
 we assess its timings of the CPU execution (seconds) on synthetic datasets, and compare to 
 state-of-the-art variable selection methods. 
-The variable selection and estimation results are deferred to `Python performance`_  
-and `R performance`_.
+The variable selection and estimation results are deferred to `performance`_.
 
-.. _Python performance: https://abess.readthedocs.io/en/latest/Tutorial/power_of_abess.html
-.. _R performance: https://abess-team.github.io/abess/articles/v11-power-of-abess.html
-
-Python package   
----------------
+.. _performance: https://abess.readthedocs.io/en/latest/Tutorial/power_of_abess.html
 
 We compare abess Python package with scikit-learn on linear and logistic regression.
 Results are presented in the below figure, and can be reproduce by running the commands in shell:
@@ -121,27 +93,9 @@ Results are presented in the below figure, and can be reproduce by running the c
 
 |pic1| 
 
-.. |pic1| image:: ./perform/timings.png
+.. |pic1| image:: ../docs/perform/timings.png
    :width: 100%
 
-R package    
------------
-
-We compare abess R package with three widely used R packages: glmnet, ncvreg, L0Learn. 
-Conducting the following commands in shell: 
-
-.. code-block:: shell
-
-   $ Rscript ./R-package/example/timings.R
-
-we obtain the runtime comparison picture:
-
-|Rpic1|
-
-.. |Rpic1| image:: ./perform/Rtimings.png
-   :width: 100%
-
-In both Python and R environments, 
 abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
 
 Open source software     
