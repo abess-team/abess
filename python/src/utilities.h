@@ -53,7 +53,6 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x);
 // void VectorXi2Pointer(Eigen::VectorXi x_vector, int *x);
 #endif
 
-
 Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N);
 
 template <class T4>
@@ -171,8 +170,7 @@ void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::VectorXd &
 void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta);
 void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta);
 
-bool check_ill_condition(Eigen::MatrixXd &M);
-
+// bool check_ill_condition(Eigen::MatrixXd &M);
 
 #endif //BESS_UTILITIES_H
 

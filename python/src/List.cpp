@@ -50,15 +50,9 @@ void List::add(string name, double value)
 
 void List::add(string name, MatrixXd &value)
 {
-    //	cout<<"value in MatrixXd add"<<endl;
     std::size_t i;
-    //	int j;
     for (i = 0; i < vector_MatrixXd_name.size(); i++)
     {
-        //		cout<<"value in get MatrixXd"<<endl;
-        //		cout<<vector_MatrixXd_name[i]<<endl;
-        //		cout<<name<<endl;
-        //		cout<<(vector_MatrixXd_name[i] == name)<<endl;
         if (vector_MatrixXd_name[i] == name)
         {
             vector_MatrixXd[i] = value;
@@ -71,11 +65,9 @@ void List::add(string name, MatrixXd &value)
 
 void List::add(string name, VectorXd &value)
 {
-    //	cout<<"value in VectorXd add"<<endl;
     std::size_t i;
     for (i = 0; i < vector_VectorXd_name.size(); i++)
     {
-        //		cout<<"value in get VectorXd"<<endl;
         if (vector_VectorXd_name[i] == name)
         {
             vector_VectorXd[i] = value;
@@ -88,11 +80,9 @@ void List::add(string name, VectorXd &value)
 
 void List::add(string name, VectorXi &value)
 {
-    //	cout<<"value in VectorXi add"<<endl;
     std::size_t i;
     for (i = 0; i < vector_VectorXi_name.size(); i++)
     {
-        //		cout<<"value in get VectorXi"<<endl;
         if (vector_VectorXi_name[i] == name)
         {
             vector_VectorXi[i] = value;
@@ -182,7 +172,6 @@ void List::add(string name, VectorXi &value)
 void List::get_value_by_name(string name, double &value)
 {
     std::size_t i;
-    //		cout<<"value in get double"<<endl;
     for (i = 0; i < vector_double_name.size(); i++)
     {
 
@@ -212,7 +201,6 @@ void List::get_value_by_name(string name, VectorXd &value)
     std::size_t i;
     for (i = 0; i < vector_VectorXd_name.size(); i++)
     {
-        //		cout<<"value in get VectorXd"<<endl;
         if (vector_VectorXd_name[i] == name)
         {
             value = vector_VectorXd[i];
