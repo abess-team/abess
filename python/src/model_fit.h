@@ -76,7 +76,7 @@ void pi(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0
     {
         pr.row(i) = pr.row(i) / sumpi(i);
     }
-    // cout << "pi: " << pi.block(0, 0, 5, y.cols());
+    
     // return pi;
 };
 
@@ -92,26 +92,21 @@ void pi(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &coef, Eigen::MatrixXd &pr)
     {
         pr.row(i) = pr.row(i) / sumpi(i);
     }
-    // cout << "pi: " << pi.block(0, 0, 5, y.cols());
+    
     // return pi;
 };
 
 template <class T4>
 bool multinomial_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
 {
-#ifdef TEST
-    clock_t t1 = clock();
-#endif
-    // cout << "primary_fit-----------" << endl;
+
+    
     // if (X.cols() == 0)
     // {
     //   coef0 = -log(y.colwise().sum().eval() - 1.0);
     //   return;
     // }
 
-#ifdef TEST
-    std::cout << "primary_model_fit 1" << endl;
-#endif
     int n = x.rows();
     int p = x.cols();
     int M = y.cols();
@@ -139,45 +134,43 @@ bool multinomial_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen:
       // ConjugateGradient<MatrixXd, Lower | Upper> cg;
       // cg.compute(X.adjoint() * X);
       Eigen::MatrixXd XTX = X.transpose() * X + lambda * Eigen::MatrixXd::Identity(X.cols(), X.cols());
-      if (check_ill_condition(XTX)) return false;
+      // if (check_ill_condition(XTX)) return false;
       Eigen::MatrixXd invXTX = XTX.ldlt().solve(Eigen::MatrixXd::Identity(p + 1, p + 1));
       
-      // cout << "y: " << y.rows() << " " << y.cols() << endl;
-      // cout << "Pi: " << Pi.rows() << " " << Pi.cols() << endl;
+      
+      
 
-      // cout << "Pi: " << Pi << endl;
-      // cout << "t: " << t << endl;
-      // cout << "invXTX: " << invXTX << endl;
-      // cout << "one: " << invXTX * XTX << endl;
+      
+      
+      
+      
 
       Eigen::MatrixXd beta1;
       for (j = 0; j < primary_model_fit_max_iter; j++)
       {
-        // #ifdef TEST
-        //         std::cout << "primary_model_fit 3: " << j << endl;
-        // #endif
+        // 
 
         // beta1 = beta0 + cg.solve(res);
         beta1 = beta0 + invXTX * res;
-        // cout << "beta1: " << beta1 << endl;
+        
 
         // double app_loss0, app_loss1, app_loss2;
         // app_loss0 = ((y - Pi) / t).squaredNorm();
         // app_loss1 = (-X * beta0 - (y - Pi) / t).squaredNorm();
         // app_loss2 = (X * (beta1 - beta0) - (y - Pi) / t).squaredNorm();
-        // cout << "app_loss0: " << app_loss0 << endl;
-        // cout << "app_loss1: " << app_loss1 << endl;
-        // cout << "app_loss2: " << app_loss2 << endl;
+        
+        
+        
 
         pi(X, y, beta1, Pi);
         log_Pi = Pi.array().log();
         array_product(log_Pi, weights, 1);
         loglik1 = (log_Pi.array() * y.array()).sum();
-        // cout << "loglik1: " << loglik1 << endl;
-        // cout << "loglik0: " << loglik0 << endl;
+        
+        
 
-        // cout << "j=" << j << " loglik: " << loglik1 << endl;
-        // cout << "j=" << j << " loglik diff: " << loglik0 - loglik1 << endl;
+        
+        
         bool condition1 = -(loglik1 + (primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + tau > loss0;
         // bool condition1 = false;
         bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < primary_model_fit_epsilon;
@@ -211,12 +204,9 @@ bool multinomial_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen:
           if (m1 == m2)
           {
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
-#ifdef TEST
-            std::cout << "primary_model_fit 5" << endl;
 
-#endif
             Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
-            // cout << "PiPj: " << PiPj << endl;
+            
             for (int i = 0; i < PiPj.size(); i++)
             {
               if (PiPj(i) < 0.001)
@@ -226,20 +216,13 @@ bool multinomial_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen:
             }
             W.block(m1 * n, m2 * n, n, n).diagonal() = PiPj;
 
-#ifdef TEST
-            std::cout << "primary_model_fit 6" << endl;
-            cout << "W m1 m2: " << W.block(m1 * n, m2 * n, n, n) << endl;
-#endif
           }
           else
           {
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
-#ifdef TEST
-            std::cout << "primary_model_fit 5" << endl;
 
-#endif
             Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array();
-            // cout << "PiPj: " << PiPj << endl;
+            
             for (int i = 0; i < PiPj.size(); i++)
             {
               if (PiPj(i) < 0.001)
@@ -250,15 +233,12 @@ bool multinomial_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen:
             W.block(m1 * n, m2 * n, n, n).diagonal() = -PiPj;
             W.block(m2 * n, m1 * n, n, n) = W.block(m1 * n, m2 * n, n, n);
 
-            // cout << "W m1 m2: " << W.block(m1 * n, m2 * n, n, n) << endl;
+            
           }
         }
       }
 
-#ifdef TEST
-      std::cout << "primary_model_fit 7" << endl;
-#endif
-      // cout << "W: " << W << endl;
+      
 
       Eigen::MatrixXd XTWX(M * (p + 1), M * (p + 1));
       Eigen::MatrixXd XTW(M * (p + 1), M * n);
@@ -273,10 +253,6 @@ bool multinomial_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen:
         }
       }
 
-#ifdef TEST
-      std::cout << "primary_model_fit 8" << endl;
-#endif
-
       // Eigen::Matrix<Eigen::MatrixXd, -1, -1> res(M, 1);
       Eigen::VectorXd res(M * n);
       for (int m1 = 0; m1 < M; m1++)
@@ -284,38 +260,20 @@ bool multinomial_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen:
         res.segment(m1 * n, n) = y.col(m1).eval() - Pi.col(m1).eval();
       }
 
-#ifdef TEST
-      std::cout << "primary_model_fit 9" << endl;
-      cout << "res: " << res << endl;
-#endif
-
       Eigen::VectorXd Xbeta(M * n);
       for (int m1 = 0; m1 < M; m1++)
       {
         Xbeta.segment(m1 * n, n) = X * beta0.col(m1).eval();
       }
 
-#ifdef TEST
-      std::cout << "primary_model_fit 10" << endl;
-      cout << "Xbeta: " << Xbeta << endl;
-#endif
       Eigen::VectorXd Z = Xbeta + W.ldlt().solve(res);
       
-#ifdef TEST
-      std::cout << "primary_model_fit 11" << endl;
-#endif
-
-#ifdef TEST
-      std::cout << "primary_model_fit 2" << endl;
-#endif
 
       Eigen::MatrixXd beta1;
       Eigen::VectorXd beta0_tmp;
       for (j = 0; j < primary_model_fit_max_iter; j++)
       {
-#ifdef TEST
-        std::cout << "primary_model_fit 3: " << j << endl;
-#endif
+
         beta0_tmp = XTWX.ldlt().solve(XTW * Z);
         for (int m1 = 0; m1 < M; m1++)
         {
@@ -325,15 +283,15 @@ bool multinomial_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen:
         {
           beta0.col(m1) = beta0_tmp.segment(m1 * (p + 1), (p + 1));
         }
-        // cout << "beta0" << beta0 << endl;
+        
 
         pi(X, y, beta0, Pi);
         log_Pi = Pi.array().log();
         array_product(log_Pi, weights, 1);
         loglik1 = (log_Pi.array() * y.array()).sum();
-        // cout << "loss" << loglik1 << endl;
-        // cout << "j=" << j << " loglik: " << loglik1 << endl;
-        // cout << "j=" << j << " loglik diff: " << loglik0 - loglik1 << endl;
+        
+        
+        
         bool condition1 = -(loglik1 + (primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + tau > loss0;
         // bool condition1 = false;
         bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < primary_model_fit_epsilon;
@@ -341,9 +299,9 @@ bool multinomial_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen:
         bool condition4 = loglik1 < loglik0;
         if (condition1 || condition2 || condition3 || condition4)
         {
-          // cout << "condition1:" << condition1 << endl;
-          // cout << "condition2:" << condition2 << endl;
-          // cout << "condition3:" << condition3 << endl;
+          
+          
+          
           break;
         }
         loglik0 = loglik1;
@@ -410,12 +368,6 @@ bool multinomial_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen:
       }
     }
 
-#ifdef TEST
-    clock_t t2 = clock();
-    std::cout << "primary fit time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-    cout << "primary fit iter : " << j << endl;
-#endif
-
     beta = beta0.block(1, 0, p, M);
     coef0 = beta0.row(0).eval();
     return true;
@@ -436,7 +388,7 @@ bool multigaussian_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eige
     add_constant_column(X);
     // beta = (X.adjoint() * X + lambda * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
     Eigen::MatrixXd XTX = X.adjoint() * X + lambda * Eigen::MatrixXd::Identity(X.cols(), X.cols());
-    if (check_ill_condition(XTX)) return false;
+    // if (check_ill_condition(XTX)) return false;
     Eigen::MatrixXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
     
     beta = beta0.block(1, 0, p, M);
@@ -447,11 +399,11 @@ bool multigaussian_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eige
     //   // coef0 = y.colwise().sum();
     //   return;
     // }
-    // // cout << "primary_fit 1" << endl;
+    // 
     // // overload_ldlt(X, X, y, beta);
     // Eigen::MatrixXd XTX = X.transpose() * X;
     // beta = (XTX + lambda * Eigen::MatrixXd::Identity(X.cols(), X.cols())).ldlt().solve(X.transpose() * y);
-    // cout << "primary_fit 2" << endl;
+    
 
     // CG
     // ConjugateGradient<T4, Lower | Upper> cg;
@@ -472,10 +424,8 @@ double loglik_logit(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &coef, int n, Eig
 template <class T4>
 bool logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
 {
-#ifdef TEST
-    clock_t t1 = clock();
-#endif
-    // cout << "primary_fit-----------" << endl;
+
+    
     if (x.cols() == 0)
     {
       coef0 = -log(1 / y.mean() - 1);
@@ -491,11 +441,6 @@ bool logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
     add_constant_column(X);
 
     T4 X_new(X);
-
-#ifdef TEST
-    clock_t t2 = clock();
-    std::cout << "primary fit init time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-#endif
 
     Eigen::VectorXd beta0 = Eigen::VectorXd::Zero(p + 1);
     beta0(0) = coef0;
@@ -516,7 +461,7 @@ bool logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
     }
     Eigen::VectorXd Z = X * beta0 + (y - Pi).cwiseQuotient(W);
 
-    // cout << "l0 loglik: " << loglik0 << endl;
+    
 
     int j;
     double step = 1;
@@ -549,8 +494,8 @@ bool logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
           loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
         }
 
-        // cout << "j=" << j << " loglik: " << loglik1 << endl;
-        // cout << "j=" << j << " loglik diff: " << loglik1 - loglik0 << endl;
+        
+        
         bool condition1 = -(loglik1 + (primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + tau > loss0;
         // bool condition1 = false;
         if (condition1)
@@ -575,16 +520,14 @@ bool logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
       }
       else
       {
-#ifdef TEST
-        t1 = clock();
-#endif
+
         for (int i = 0; i < p + 1; i++)
         {
           X_new.col(i) = X.col(i).cwiseProduct(W).cwiseProduct(weights);
         }
 
         Eigen::MatrixXd XTX = 2 * lambda * lambdamat + X_new.transpose() * X;
-        if (check_ill_condition(XTX)) return false;
+        // if (check_ill_condition(XTX)) return false;
         beta0 = XTX.ldlt().solve(X_new.transpose() * Z);
 
         // overload_ldlt(X_new, X, Z, beta0);
@@ -598,8 +541,8 @@ bool logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
         log_Pi = Pi.array().log();
         log_1_Pi = (one - Pi).array().log();
         loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
-        // cout << "j=" << j << " loglik: " << loglik1 << endl;
-        // cout << "j=" << j << " loglik diff: " << loglik0 - loglik1 << endl;
+        
+        
         bool condition1 = -(loglik1 + (primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + tau > loss0;
         bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < primary_model_fit_epsilon;
         bool condition3 = abs(loglik1) < min(1e-3, tau);
@@ -618,11 +561,7 @@ bool logistic_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Ve
         Z = X * beta0 + (y - Pi).cwiseQuotient(W);
       }
     }
-#ifdef TEST
-    t2 = clock();
-    std::cout << "primary fit time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-    cout << "primary fit iter : " << j << endl;
-#endif
+
     beta = beta0.tail(p).eval();
     coef0 = beta0(0);
     return true;
@@ -640,7 +579,7 @@ bool lm_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd
     add_constant_column(X);
     // beta = (X.adjoint() * X + lambda * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
     Eigen::MatrixXd XTX = X.adjoint() * X + lambda * Eigen::MatrixXd::Identity(X.cols(), X.cols());
-    if (check_ill_condition(XTX)) return false;
+    // if (check_ill_condition(XTX)) return false;
     Eigen::VectorXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
     
     beta = beta0.tail(p).eval();
@@ -662,10 +601,8 @@ bool lm_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd
 template <class T4>
 bool poisson_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
 {
-#ifdef TEST
-    clock_t t1 = clock();
-#endif
-    // cout << "primary_fit-----------" << endl;
+
+    
     int n = x.rows();
     int p = x.cols();
     T4 X(n, p + 1);
@@ -696,7 +633,7 @@ bool poisson_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Vec
       }
       z = eta + (y - expeta).cwiseQuotient(expeta);
       Eigen::MatrixXd XTX = X_new.transpose() * X + 2 * lambda * lambdamat;
-      if (check_ill_condition(XTX)) return false;
+      // if (check_ill_condition(XTX)) return false;
       beta0 = (XTX).ldlt().solve(X_new.transpose() * z);
       eta = X * beta0;
       for (int i = 0; i <= n - 1; i++)
@@ -714,18 +651,14 @@ bool poisson_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::Vec
       bool condition3 = abs(loglik1) < min(1e-3, tau);
       if (condition1 || condition2 || condition3)
       {
-        // cout << "condition1:" << condition1 << endl;
-        // cout << "condition2:" << condition2 << endl;
-        // cout << "condition3:" << condition3 << endl;
+        
+        
+        
         break;
       }
       loglik0 = loglik1;
     }
-#ifdef TEST
-    clock_t t2 = clock();
-    std::cout << "primary fit time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-    cout << "primary fit iter : " << j << endl;
-#endif
+
     beta = beta0.tail(p).eval();
     coef0 = beta0(0);
     return true;
@@ -761,11 +694,8 @@ double loglik_cox(T4 &X, Eigen::VectorXd &status, Eigen::VectorXd &beta, Eigen::
 template <class T4>
 bool cox_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd &beta, double &coef0, double loss0, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon, double tau, double lambda)
 {
-#ifdef TEST
-    clock_t t1 = clock();
-#endif
 
-    // cout << "primary_fit-----------" << endl;
+    
     int n = x.rows();
     int p = x.cols();
     Eigen::VectorXd theta(n);
@@ -834,7 +764,7 @@ bool cox_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd
         }
         else
         {
-            if (check_ill_condition(temp)) return false;
+            // if (check_ill_condition(temp)) return false;
             d = (temp).ldlt().solve(x.transpose() * g);
         }
 
@@ -902,7 +832,7 @@ bool cox_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd
         {
             loss0 = -loglik0;
             beta = beta0;
-            // cout << "condition1" << endl;
+            
             return true;
         }
 
@@ -910,23 +840,18 @@ bool cox_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd
         {
             beta0 = beta1;
             loglik0 = loglik1;
-            // cout << "condition1" << endl;
+            
         }
 
         if (step < primary_model_fit_epsilon)
         {
             loss0 = -loglik0;
             beta = beta0;
-            // cout << "condition2" << endl;
+            
             return true;
         }
         return true;
     }
-#ifdef TEST
-    clock_t t2 = clock();
-    std::cout << "primary fit time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-    cout << "primary fit iter : " << l << endl;
-#endif
 
     beta = beta0;
 }

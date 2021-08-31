@@ -36,7 +36,7 @@ class abessLogistic(bess_base):
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0, it would be set as 
+        It should be a non-positive integer and if important_search=128, it would be set as 
         the size of whole inactive set. 
         Default: 0. 
 
@@ -76,7 +76,7 @@ class abessLogistic(bess_base):
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=0,
-                 important_search=0,
+                 important_search=128,
                  ):
         super(abessLogistic, self).__init__(
             algorithm_type="abess", model_type="Logistic", data_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -161,7 +161,7 @@ class abessLm(bess_base):
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0, it would be set as 
+        It should be a non-positive integer and if important_search=128, it would be set as 
         the size of whole inactive set. 
         Default: 0. 
 
@@ -199,7 +199,7 @@ class abessLm(bess_base):
                  thread=1, covariance_update=False,
                  sparse_matrix=False,
                  splicing_type=0,
-                 important_search=0,
+                 important_search=128,
                  # primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8, approximate_Newton=False
                  ):
         super(abessLm, self).__init__(
@@ -259,7 +259,7 @@ class abessCox(bess_base):
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0, it would be set as 
+        It should be a non-positive integer and if important_search=128, it would be set as 
         the size of whole inactive set. 
         Default: 0. 
 
@@ -299,7 +299,7 @@ class abessCox(bess_base):
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=0,
-                 important_search=0
+                 important_search=128
                  ):
         super(abessCox, self).__init__(
             algorithm_type="abess", model_type="Cox", data_type=3, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -362,7 +362,7 @@ class abessPoisson(bess_base):
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0, it would be set as 
+        It should be a non-positive integer and if important_search=128, it would be set as 
         the size of whole inactive set. 
         Default: 0. 
 
@@ -401,7 +401,7 @@ class abessPoisson(bess_base):
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=0,
-                 important_search=0
+                 important_search=128
                  ):
         super(abessPoisson, self).__init__(
             algorithm_type="abess", model_type="Poisson", data_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -465,7 +465,7 @@ class abessMultigaussian(bess_base):
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0, it would be set as 
+        It should be a non-positive integer and if important_search=128, it would be set as 
         the size of whole inactive set. 
         Default: 0. 
 
@@ -503,7 +503,7 @@ class abessMultigaussian(bess_base):
                  thread=1, covariance_update=False,
                  sparse_matrix=False,
                  splicing_type=0,
-                 important_search=0
+                 important_search=128
                  ):
         super(abessMultigaussian, self).__init__(
             algorithm_type="abess", model_type="Multigaussian", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -564,7 +564,7 @@ class abessMultinomial(bess_base):
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0, it would be set as 
+        It should be a non-positive integer and if important_search=128, it would be set as 
         the size of whole inactive set. 
         Default: 0. 
 
@@ -604,7 +604,7 @@ class abessMultinomial(bess_base):
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=0,
-                 important_search=0
+                 important_search=128
                  ):
         super(abessMultinomial, self).__init__(
             algorithm_type="abess", model_type="Multinomial", data_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
