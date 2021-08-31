@@ -113,6 +113,13 @@ class TestClass:
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
 
+        model4 = abessLogistic(path_type="seq", support_size=support_size, ic_type='aic', is_screening=True, screening_size=20,  alpha=[0.001],
+                              s_min=1, s_max=p, is_cv=False, Kfold=5,
+                              exchange_num=2, 
+                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
+        group = np.linspace(1, p, p)
+        model4.fit(data.x, data.y, group=group)
+
         model.predict_proba(data.x)
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -143,7 +150,7 @@ class TestClass:
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
 
-        model = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
+        model = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=20, alpha=[0.001],
                          s_min=1, s_max=p, is_cv=True, Kfold=5,
                          exchange_num=2, 
                          primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
