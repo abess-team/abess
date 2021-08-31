@@ -7,7 +7,7 @@ Welcome to abess's documentation!
    
    |logopic1|
 
-.. |logopic1| image:: /R-package/pkgdown/favicon/icon.png
+.. |logopic1| image:: ../R-package/pkgdown/favicon/icon.png
    :width: 100%
 
 
