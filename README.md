@@ -32,7 +32,8 @@ This framework now supports the detection of best subset under:
 
 ## Quick start
 
-The abess software has both Python and R's interfaces. 
+The abess software has both Python and R's interfaces. Here a quick start will be given and
+for more details, please view: [Installation](https://abess.readthedocs.io/en/latest/Installation.html).
 
 ### Python package
 
@@ -41,8 +42,6 @@ Install the stable version of Python-package from [Pypi](https://pypi.org/projec
 ```shell
 $ pip install abess
 ```
-
-To install abess in source, please view chapter: [Installation](https://abess.readthedocs.io/en/latest/Installation.html).
 
 Best subset selection for linear regression on a simulated dataset in Python:    
 
