@@ -5,7 +5,6 @@ Welcome to abess's documentation!
 
    <!-- badges: start -->
    
-   |logopic1|
 
 .. |logopic1| image:: ../R-package/pkgdown/favicon/icon.png
    :width: 100%
