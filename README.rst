@@ -61,6 +61,11 @@ Especially, the time complexity of (group) best subset selection for linear regr
 Quick start
 ============
 
+The abess software has both Python and R's interfaces. Here a quick start will be given and
+for more details, please view: `Installation`_.
+
+.. _Installation: https://abess.readthedocs.io/en/latest/Installation.html
+
 Python package
 --------------
 
@@ -70,9 +75,6 @@ Install the stable abess Python package from Pypi:
 
    $ pip install abess
 
-.. _Installation: https://abess.readthedocs.io/en/latest/Installation.html
-
-To install abess in source, please view chapter: `Installation`_.
 Best subset selection for linear regression on a simulated dataset in Python:    
 
 .. code-block:: python
@@ -143,7 +145,7 @@ Conducting the following commands in shell:
 
 .. code-block:: shell
 
-   $ Rscript ./R-package/example/timings.R
+   $ Rscript ./docs/example/R/timings.R
 
 we obtain the runtime comparison picture:
 
