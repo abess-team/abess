@@ -176,6 +176,12 @@ class TestClass:
         model3 = abessCox(support_size=support_size, important_search=10)
         model3.fit(data.x, data.y, group=group)
 
+        model4 = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=10,
+                          s_min=1, s_max=p, is_cv=True, Kfold=5,
+                          exchange_num=2, primary_model_fit_epsilon=1,  ic_coef=1., thread=5)
+        group = np.linspace(1, p, p)
+        model4.fit(data.x, data.y, group=group)
+
         nonzero_true = np.nonzero(data.coef_)[0]
         nonzero_fit = np.nonzero(model3.coef_)[0]
         print(nonzero_true)
@@ -308,10 +314,22 @@ class TestClass:
         family = "multinomial"
         rho = 0.5
         M = 3
+        support_size = range(0, 20)
+
+        np.random.seed(5)
+        data = make_multivariate_glm_data(
+            family=family, n=n, p=p,  k=k, rho=rho, M=M + 1)
+        model = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+                                 s_min=1, s_max=p, is_cv=True, Kfold=5,
+                                 exchange_num=2, 
+                                 primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
+        group = np.linspace(1, p, p)
+        model.fit(data.x, data.y, group=group)
+        model.predict(data.x)
+
         np.random.seed(5)
         data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
-        support_size = range(0, 20)
 
         model = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
                                  s_min=1, s_max=p, is_cv=True, Kfold=5,

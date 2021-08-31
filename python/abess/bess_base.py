@@ -309,27 +309,27 @@ class bess_base(BaseEstimator):
             # unused
             new_s_min = 0
             new_s_max = 0
-            new_K_max = 0
-            new_lambda_min = 0
-            new_lambda_max = 0
+            # new_K_max = 0
+            # new_lambda_min = 0
+            # new_lambda_max = 0
 
         elif path_type_int == 2:    # pgs
             new_s_min = 0 \
                 if self.s_min is None else self.s_min
             new_s_max = min(p, int(n / (np.log(np.log(n)) * np.log(p)))) \
                 if self.s_max is None else self.s_max
-            new_lambda_min = 0 \
-                if self.lambda_min is None else self.lambda_min
-            new_lambda_max = 0 \
-                if self.lambda_max is None else self.lambda_max
-            new_K_max = int(math.log(p, 2/(math.sqrt(5) - 1))) \
-                if self.K_max is None else self.K_max
+            new_lambda_min = 0 # \
+                # if self.lambda_min is None else self.lambda_min
+            new_lambda_max = 0 # \
+                # if self.lambda_max is None else self.lambda_max
+            new_K_max = int(math.log(p, 2/(math.sqrt(5) - 1))) # \
+                # if self.K_max is None else self.K_max
 
             if (new_s_max < new_s_min):
                 raise ValueError("s_max should be larger than s_min")
-            if (new_lambda_max < new_lambda_min):
-                raise ValueError(
-                    "lambda_max should be larger than lambda_min.")
+            # if (new_lambda_max < new_lambda_min):
+            #     raise ValueError(
+            #         "lambda_max should be larger than lambda_min.")
 
             # unused
             support_sizes = [0]
