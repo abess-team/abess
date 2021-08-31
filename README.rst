@@ -73,13 +73,17 @@ Install the stable abess Python package from Pypi:
 .. _Installation: https://abess.readthedocs.io/en/latest/Installation.html
 
 To install abess in source, please view chapter: `Installation`_.
-Import best subset selection solver for linear regression in a Python project:    
+Best subset selection for linear regression on a simulated dataset in Python:    
 
 .. code-block:: python
 
    from abess.linear import abessLm
+   from abess.datasets import make_glm_data
+   sim_dat = make_glm_data(n = 300, p = 1000, k = 10, family = "gaussian")
+   model = abessLm()
+   model.fit(sim_dat.x, sim_dat.y)
 
-See more examples analyzed with Python in the tutorials; the notebooks are available `here <https://abess.readthedocs.io/en/latest/Tutorial/index.html>`_.
+See more examples analyzed with Python in the `Python tutorials <https://abess.readthedocs.io/en/latest/Tutorial/index.html>`_.
 
 
 R package
@@ -100,7 +104,7 @@ Best subset selection for linear regression on a simulated dataset in R:
    sim_dat <- generate.data(n = 300, p = 1000)
    abess(x = sim_dat[["x"]], y = sim_dat[["y"]])
 
-See more examples analyzed with R in the `R markdowns collections <https://abess-team.github.io/abess/articles/>`_.
+See more examples analyzed with R in the `R tutorials <https://abess-team.github.io/abess/articles/>`_.
 
 Runtime Performance
 ===================
@@ -122,8 +126,9 @@ Results are presented in the below figure, and can be reproduce by running the c
 
 .. code-block:: shell
 
-   $ python ./python/example/timings.py
+   $ python abess/docs/example/Python/timings.py
 
+we obtain the runtime comparison picture:
 
 |pic1| 
 
