@@ -10,6 +10,7 @@ Welcome to abess's documentation!
 
 .. |logopic| image:: ./perform/icon_long.png
    :scale: 20%       
+   :align: center
 
 
 |GithubAction build status| |codecov| |docs| |cran| |pypi| |pyversions| |License| |Codacy|
