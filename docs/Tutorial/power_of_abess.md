@@ -17,7 +17,7 @@ The simulated data are made by `abess.datasets.make_glm_data()`. The number of p
 All experiments are evaluated on an Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz and under Python 3.8.10. 
 
 ```bash
-$ python abess/python/example/perform.py
+$ python abess/docs/example/Python/perform.py
 ```
 
 ### Results
