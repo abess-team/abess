@@ -26,10 +26,7 @@ using namespace Eigen;
 template <class T1, class T2, class T3, class T4>
 void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algorithm<T1, T2, T3, T4> *algorithm, Metric<T1, T2, T3, T4> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3> &result)
 {
-#ifdef TEST
-    clock_t t0, t1, t2;
 
-#endif
     
     int p = data.get_p();
     int N = data.g_num;
@@ -46,9 +43,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
     Eigen::VectorXd train_weight, test_weight;
     T4 train_x, test_x;
     int train_n = 0, test_n = 0;
-#ifdef TEST
-    t1 = clock();
-#endif
+
     // train & test data
     if (!metric->is_cv)
     {
@@ -71,21 +66,11 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
         train_n = train_mask.size();
         test_n = test_mask.size();
     }
-#ifdef TEST
-    t2 = clock();
-    std::cout << "train_x time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-    cout << "path 1" << endl;
-#endif
+
     Eigen::Matrix<T4, -1, -1> train_group_XTX = group_XTX<T4>(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
-#ifdef TEST
-    cout << "path 1.5" << endl;
-#endif
+
     algorithm->update_group_XTX(train_group_XTX);
     algorithm->PhiG.resize(0, 0);
-
-#ifdef TEST
-    cout << "path 2" << endl;
-#endif
 
     if (algorithm->covariance_update)
     {
@@ -95,9 +80,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
         algorithm->XTy = train_x.transpose() * train_y;
         algorithm->XTone = train_x.transpose() * Eigen::MatrixXd::Ones(train_n, M);
     }
-#ifdef TEST
-    cout << "path 3" << endl;
-#endif
 
     Eigen::Matrix<T2, Dynamic, Dynamic> beta_matrix(sequence_size, lambda_size);
     Eigen::Matrix<T3, Dynamic, Dynamic> coef0_matrix(sequence_size, lambda_size);
@@ -115,16 +97,10 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
 
     for (int i = 0; i < sequence_size; i++)
     {
-#ifdef TEST
-        std::cout << "\n sequence= " << sequence(i);
-#endif
+
         for (int j = (1 - pow(-1, i)) * (lambda_size - 1) / 2; j < lambda_size && j >= 0; j = j + pow(-1, i))
         {
-#ifdef TEST
-            std::cout << " =========j: " << j << ", lambda= " << lambda_seq(j) << ", T: " << sequence(i) << endl;
-            t0 = clock();
-            t1 = clock();
-#endif
+
             algorithm->update_sparsity_level(sequence(i));
             algorithm->update_lambda_level(lambda_seq(j));
             algorithm->update_beta_init(beta_init);
@@ -133,11 +109,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
             algorithm->update_A_init(A_init, N);
 
             algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N, status, sigma);
-#ifdef TEST
-            t2 = clock();
-            std::cout << "fit time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-            t1 = clock();
-#endif
 
             if (algorithm->warm_start)
             {
@@ -145,11 +116,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
                 coef0_init = algorithm->get_coef0();
                 bd_init = algorithm->get_bd();
             }
-#ifdef TEST
-            t2 = clock();
-            std::cout << "warm start time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-            t1 = clock();
-#endif
 
             // evaluate the beta
             if (metric->is_cv)
@@ -160,11 +126,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
             {
                 ic_matrix(i, j) = metric->ic(train_n, M, N, algorithm);
             }
-#ifdef TEST
-            t2 = clock();
-            std::cout << "ic time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-            t1 = clock();
-#endif
 
             // save for best_model fit
             beta_matrix(i, j) = algorithm->beta;
@@ -173,11 +134,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
             bd_matrix(i, j) = algorithm->bd;
             effective_number_matrix(i, j) = algorithm->get_effective_number();
 
-#ifdef TEST
-            t2 = clock();
-            std::cout << "save time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-            std::cout << "path i= " << i << " j= " << j << " time = " << ((double)(t2 - t0) / CLOCKS_PER_SEC) << endl;
-#endif
         }
 
         // To be ensured
@@ -229,15 +185,9 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
     double lambda = lambda_seq[0];
 
     Eigen::Matrix<T4, -1, -1> train_group_XTX = group_XTX<T4>(data.x, data.g_index, data.g_size, data.n, p, data.g_num, algorithm->model_type);
-#ifdef TEST
-    cout << "path 1.5" << endl;
-#endif
+
     algorithm->update_group_XTX(train_group_XTX);
     algorithm->PhiG.resize(0, 0);
-
-#ifdef TEST
-    cout << "path 2" << endl;
-#endif
 
     if (algorithm->covariance_update)
     {
@@ -253,15 +203,9 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
         for (int k = 0; k < metric->Kfold; k++)
         {
             Eigen::Matrix<T4, -1, -1> tmp_group_XTX = group_XTX<T4>(metric->train_X_list[k], data.g_index, data.g_size, metric->train_mask_list[k].size(), data.p, data.g_num, algorithm->model_type);
-#ifdef TEST
-            cout << "path 1.5" << endl;
-#endif
+
             algorithm_list[k]->update_group_XTX(tmp_group_XTX);
             algorithm_list[k]->PhiG.resize(0, 0);
-
-#ifdef TEST
-            cout << "path 2" << endl;
-#endif
 
             if (algorithm_list[k]->covariance_update)
             {
