@@ -743,11 +743,12 @@ abess.default <- function(x,
   
   # check important searching:
   if (is.null(important.search)) {
-    important_search <- min(c(nvars, 1000))
+    important_search <- min(c(nvars, 128))
     important_search <- as.integer(important_search)
   } else {
     stopifnot(is.numeric(important.search))
     stopifnot(important.search >= 0)
+    check_integer_warning(important.search)
     important_search <- as.integer(important.search)
   }
 
