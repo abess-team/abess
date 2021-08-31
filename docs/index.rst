@@ -18,7 +18,7 @@
    R package <https://abess-team.github.io/abess/>
    Contributing <Contributing/index.rst>
    FAQ <./FAQ.md>
-   History <./History.md>
+   Changelog <./Changelog.md>
 
 .. toctree::
    :hidden:
