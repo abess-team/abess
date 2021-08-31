@@ -15,8 +15,7 @@ abess: R & Python Software for Best-Subset Selection in Polynomial Time <img src
 **abess** (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
 find a small subset of predictors such that the resulting model is expected to have the highest accuracy. 
 The selection for best subset shows great value in scientific researches and practical application. 
-For example, clinicians wants to know whether a patient is health or not  
-based on the expression level of a few of important genes.
+For example, clinicians wants to know whether a patient is health or not based on the expression level of a few of important genes.
 
 This library implements a generic algorithm framework to find the optimal solution in an extremely fast way.
 This framework now supports the detection of best subset under: 
@@ -113,7 +112,7 @@ abess reaches a high efficient performance especially in linear regression where
 
 ## Open source software     
 
-abess is a free software and its source code are publicly available in [Github](https://github.com/abess-team/abess).  
+**abess** is a free software and its source code are publicly available in [Github](https://github.com/abess-team/abess).  
 The core framework is programmed in C++, and user-friendly R and Python interfaces are offered.
 You can redistribute it and/or modify it under the terms of the [GPL-v3 License](https://www.gnu.org/licenses/gpl-3.0.html). 
 We welcome contributions for abess, especially stretching abess to the other best subset selection problems. 
