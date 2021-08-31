@@ -39,7 +39,7 @@ The abess software has both Python and R's interfaces.
 Install the stable version of Python-package from [Pypi](https://pypi.org/project/abess/) with:
 
 ```shell
-    $ pip install abess
+$ pip install abess
 ```
 
 To install abess in source, please view chapter: [Installation](https://abess.readthedocs.io/en/latest/Installation.html).
@@ -47,11 +47,11 @@ To install abess in source, please view chapter: [Installation](https://abess.re
 Best subset selection for linear regression on a simulated dataset in Python:    
 
 ```python
-    from abess.linear import abessLm
-    from abess.datasets import make_glm_data
-    sim_dat = make_glm_data(n = 300, p = 1000, k = 10, family = "gaussian")
-    model = abessLm()
-    model.fit(sim_dat.x, sim_dat.y)
+from abess.linear import abessLm
+from abess.datasets import make_glm_data
+sim_dat = make_glm_data(n = 300, p = 1000, k = 10, family = "gaussian")
+model = abessLm()
+model.fit(sim_dat.x, sim_dat.y)
 ```
 
 
@@ -62,16 +62,16 @@ See more examples analyzed with Python in the [Python tutorials](https://abess.r
 
 Install the stable version of R-package from [CRAN](https://cran.r-project.org/web/packages/abess) with:
 
-```shell
-	install.packages("abess")
+```r
+install.packages("abess")
 ```
 
 Best subset selection for linear regression on a simulated dataset in R:
 
 ```r
-	library(abess)
-    sim_dat <- generate.data(n = 300, p = 1000)
-    abess(x = sim_dat[["x"]], y = sim_dat[["y"]])
+library(abess)
+sim_dat <- generate.data(n = 300, p = 1000)
+abess(x = sim_dat[["x"]], y = sim_dat[["y"]])
 ```
 
 See more examples analyzed with R in the [R tutorials](https://abess-team.github.io/abess/articles/).
@@ -87,7 +87,7 @@ We compare abess Python package with scikit-learn on linear and logistic regress
 Results are presented in the below figure, and can be reproduce by running the commands in shell:
 
 ```shell
-   $ python abess/docs/example/Python/timings.py
+$ python abess/docs/example/Python/timings.py
 ```
 
 we obtain the runtime comparison picture:
@@ -100,7 +100,7 @@ We compare abess R package with three widely used R packages: glmnet, ncvreg, L0
 Conducting the following commands in shell: 
 
 ```shell
-   $ Rscript ./R-package/example/timings.R
+$ Rscript ./R-package/example/timings.R
 ```
 
 we obtain the runtime comparison picture:
