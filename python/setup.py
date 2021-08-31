@@ -72,8 +72,8 @@ with open(path.join(CURRENT_DIR, 'README.rst'), encoding='utf-8') as f:
 
 setup(name='abess',
       version='0.0.3',
-      author="Kangkang Jiang, Jin Zhu, Yanhang Zhang, Junxian Zhu, Xueqin Wang",
-      author_email="jiangkk3@mail2.sysu.edu.cn",
+      author="Jin Zhu, Kangkang Jiang, Junhao Huang, Yanhang Zhang, Junxian Zhu, Xueqin Wang",
+      author_email="zhuj37@mail2.sysu.edu.cn",
       maintainer="Kangkang Jiang",
       maintainer_email="jiangkk3@mail2.sysu.edu.cn",
       package_dir={'': CURRENT_DIR},
