@@ -12,7 +12,7 @@ p = 2000
 k = 20
 rho = 0.1
 M = 50
-search_path = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
+search_path = [32, 64, 128, 256, 512, 1024, 2048]
 
 met_save = True
 res_save = True
@@ -48,8 +48,6 @@ if (res_save):
 
 if (figure_save):
     res = np.load("res.npy")
-    ind = [0, 5, 6, 7, 8, 9, 10, 11]
-    res = res[ind]
     # print(res)
 
     plt.figure(figsize = (20, 6))
