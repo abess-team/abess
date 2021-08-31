@@ -4,10 +4,12 @@ Welcome to abess's documentation!
 .. raw:: html
 
    <!-- badges: start -->
-   
 
-.. |logopic1| image:: ./perform/icon.png
-   :width: 100%
+   
+|logopic|      
+
+.. |logopic| image:: ./perform/icon.png
+   :scale: 20%       
 
 
 |GithubAction build status| |codecov| |docs| |cran| |pypi| |pyversions| |License| |Codacy|
