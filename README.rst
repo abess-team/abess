@@ -8,7 +8,7 @@ Welcome to abess's documentation!
    
 |logopic|      
 
-.. |logopic| image:: ./perform/icon.png
+.. |logopic| image:: ./perform/icon_long.png
    :scale: 20%       
 
 
