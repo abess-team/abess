@@ -4,6 +4,11 @@ Welcome to abess's documentation!
 .. raw:: html
 
    <!-- badges: start -->
+   |logopic1|
+
+.. |logopic1| image:: https://github.com/abess-team/abess/blob/master/R-package/pkgdown/favicon/icon.png
+   :width: 100%
+
 
 |GithubAction build status| |codecov| |docs| |cran| |pypi| |pyversions| |License| |Codacy|
 
