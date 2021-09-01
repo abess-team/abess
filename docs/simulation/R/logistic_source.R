@@ -123,6 +123,9 @@ simu <- function(i, n, p, rho, cortype, method = c("glmnet", "ncvreg.MCP",
   {
     res.abess <- res.default
   }
+  
+  # print(rbind(res.glmnet, res.ncvreg.MCP, res.ncvreg.SCAD, res.ncvreg.lasso, 
+  #             res.L0Learn.CD, res.abess))
   return(rbind(res.glmnet, res.ncvreg.MCP, res.ncvreg.SCAD, res.ncvreg.lasso, 
                res.L0Learn.CD, res.abess))
 }
