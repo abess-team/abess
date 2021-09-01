@@ -5,7 +5,7 @@ from abess.linear import abessLm
 from abess.datasets import make_glm_data
 from sklearn.metrics import matthews_corrcoef
 from sklearn.linear_model import LassoCV
-from spams import fistaFlat
+# from spams import fistaFlat
 from sklearn.linear_model import OrthogonalMatchingPursuit
 from sklearn.model_selection import GridSearchCV
 # from glmnet import ElasticNet
