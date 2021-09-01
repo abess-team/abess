@@ -1,10 +1,7 @@
-Welcome to abess's documentation!
-==========================================================================
-
    
 |logopic|      
 
-.. |logopic| image:: ./perform/icon_long.png    
+.. |logopic| image:: ../docs/image/icon_long.png    
 
 
 |GithubAction build status| |codecov| |docs| |cran| |pypi| |pyversions| |License| |Codacy|

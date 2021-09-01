@@ -8,7 +8,7 @@ Welcome to abess's documentation!
    
 |logopic|      
 
-.. |logopic| image:: ./image/icon_long.png    
+.. |logopic| image:: ./docs/image/icon_long.png    
 
 
 |GithubAction build status| |codecov| |docs| |cran| |pypi| |pyversions| |License| |Codacy|
@@ -134,7 +134,7 @@ we obtain the runtime comparison picture:
 
 |pic1| 
 
-.. |pic1| image:: ./image/timings.png
+.. |pic1| image:: ./docs/image/timings.png
    :width: 100%
 
 R package    
@@ -151,7 +151,7 @@ we obtain the runtime comparison picture:
 
 |Rpic1|
 
-.. |Rpic1| image:: ./image/r_runtime.png
+.. |Rpic1| image:: ./docs/image/r_runtime.png
    :width: 100%
 
 In both Python and R environments, 
