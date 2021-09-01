@@ -57,7 +57,7 @@ class abessPCA(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, is_screening=False, screening_size=None, 
+                 ic_type="ebic", ic_coef=1.0, 
                  always_select=[], 
                  thread=1,
                  sparse_matrix=False,
@@ -66,7 +66,7 @@ class abessPCA(bess_base):
         super(abessPCA, self).__init__(
             algorithm_type="abess", model_type="PCA", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, s_min=s_min, s_max=s_max, 
-            ic_type=ic_type, ic_coef=ic_coef, is_screening=is_screening, screening_size=screening_size, 
+            ic_type=ic_type, ic_coef=ic_coef, 
             always_select=always_select, 
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -198,7 +198,6 @@ class abessPCA(bess_base):
                 "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
 
         # Group
-        # Group:
         if group is None:
             g_index = list(range(p))
         else:
@@ -232,41 +231,32 @@ class abessPCA(bess_base):
                 support_sizes = self.support_size
         support_sizes = np.array(support_sizes).astype('int32')
 
-        if self.alpha is None:
-            alphas = [0]
-        else:
-            if isinstance(self.alpha, (numbers.Real, numbers.Integral)):
-                alphas = np.empty(1, dtype=float)
-                alphas[0] = self.alpha
-            else:
-                alphas = self.alpha
-
         # unused
         new_s_min = 0
         new_s_max = 0
         new_K_max = 0
         new_lambda_min = 0
         new_lambda_max = 0
+        alphas = [0]
+        new_screening_size = -1
 
         # Exchange_num
         if (not isinstance(self.exchange_num, int) or self.exchange_num <= 0):
             raise ValueError("exchange_num should be an positive integer.")
-        # elif (self.exchange_num > min(support_sizes)):
-        #     print("[Warning]  exchange_num may be larger than sparsity, and it would be set up to sparsity.")
 
-        # Is_screening
-        if self.is_screening:
-            new_screening_size = p \
-                if self.screening_size is None else self.screening_size
+        # # Is_screening
+        # if self.is_screening:
+        #     new_screening_size = p \
+        #         if self.screening_size is None else self.screening_size
 
-            if self.screening_size > p:
-                raise ValueError(
-                    "screening size should be smaller than X.shape[1].")
-            elif self.screening_size < max(support_sizes):
-                raise ValueError(
-                    "screening size should be more than max(support_size).")
-        else:
-            new_screening_size = -1
+        #     if self.screening_size > p:
+        #         raise ValueError(
+        #             "screening size should be smaller than X.shape[1].")
+        #     elif self.screening_size < max(support_sizes):
+        #         raise ValueError(
+        #             "screening size should be more than max(support_size).")
+        # else:
+        #     new_screening_size = -1
 
         # Thread
         if (not isinstance(self.thread, int) or self.thread < 0):
