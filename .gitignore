@@ -102,3 +102,12 @@ docs/example/R/cox_source.R
 docs/example/R/poisson_source.R
 docs/simulation/R/cox_source.R
 docs/simulation/R/poisson_source.R
+R-package/linear_n_500_p_1000_rho_0.7_cortype_3_M_100.zip
+docs/simulation/R/linear_n_500_p_1000_rho_0.1_cortype_2_M_100.rda
+docs/simulation/R/linear_n_500_p_1000_rho_0.7_cortype_3_M_100.rda
+docs/simulation/R/*.png
+docs/simulation/Python/*.png
+docs/simulation/R/*.rda
+docs/simulation/Python/*.npy
+.vscode/*
+.vs/*
