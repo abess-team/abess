@@ -1,5 +1,4 @@
 // #define R_BUILD
-// #define TEST
 #ifdef R_BUILD
 
 #include <Rcpp.h>
@@ -47,10 +46,6 @@ inline void omp_set_num_threads(int nthread) {}
 inline void omp_set_dynamic(int flag) {}
 #endif
 
-// #ifdef OTHER_ALGORITHM2
-// #include "PrincipalBallAlgorithm.h"
-// #endif
-
 using namespace Eigen;
 using namespace std;
 
@@ -78,8 +73,6 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                int splicing_type,
                int sub_search)
 {
-  // bool is_parallel = thread != 1;
-  // std::cout<<"abess2 enter."<<endl;
 #ifdef _OPENMP
   // Eigen::initParallel();
   int max_thread = omp_get_max_threads();
@@ -93,10 +86,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
   }
   Eigen::setNbThreads(thread);
   omp_set_num_threads(thread);
-#ifdef TEST
-  cout << Eigen::nbThreads() << " Threads for eigen." << endl;
-  cout << omp_get_num_threads() << " Threads for omp." << endl;
-#endif
+
 #endif
 
   int pca_n = -1;
@@ -112,7 +102,6 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 
   //////////////////// function generate_algorithm_pointer() ////////////////////////////
   // to do
-  // std::cout<<"abess new enter."<<endl;
   if (!sparse_matrix)
   {
     if (model_type == 1)
@@ -177,9 +166,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     }
   }
 
-#ifdef TEST
-  cout << "abesscpp2 1" << endl;
-#endif
+
 
   vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(max(Kfold, thread));
   vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> *> algorithm_list_mul_dense(max(Kfold, thread));
@@ -254,19 +241,13 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
       }
     }
   }
-#ifdef TEST
-  cout << "abesscpp2 2" << endl;
-#endif
-  // std::cout<<"abess result enter."<<endl;
+
   List out_result;
   if (!sparse_matrix)
   {
     if (y.cols() == 1)
     {
-#ifdef TEST
-      cout << "abesscpp2 4" << endl;
-      cout << "uni_dense" << endl;
-#endif
+
       Eigen::VectorXd y_vec = y.col(0).eval();
 
       out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p,
@@ -290,16 +271,11 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                        covariance_update,
                                                                                        sparse_matrix,
                                                                                        algorithm_uni_dense, algorithm_list_uni_dense);
-#ifdef TEST
-      cout << "abesscpp2 5" << endl;
-#endif
+
     }
     else
     {
-#ifdef TEST
-      cout << "abesscpp2 5" << endl;
-      cout << "mul_dense" << endl;
-#endif
+
       out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd>(x, y, n, p,
                                                                                                 data_type, weight, sigma,
                                                                                                 is_normal,
@@ -321,16 +297,12 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                 covariance_update,
                                                                                                 sparse_matrix,
                                                                                                 algorithm_mul_dense, algorithm_list_mul_dense);
-#ifdef TEST
-      cout << "abesscpp2 6" << endl;
-#endif
+
     }
   }
   else
   {
-#ifdef TEST
-    clock_t t1 = clock();
-#endif
+
     Eigen::SparseMatrix<double> sparse_x(n, p);
 
     // std::vector<triplet> tripletList;
@@ -348,18 +320,11 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     }
     sparse_x.makeCompressed();
 
-#ifdef TEST
-    cout << "sparse x nonZeros: " << sparse_x.nonZeros() << endl;
-    clock_t t2 = clock();
-    std::cout << "sparse X time: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-#endif
+
 
     if (y.cols() == 1)
     {
-#ifdef TEST
-      cout << "abesscpp2 3" << endl;
-      cout << "uni_sparse" << endl;
-#endif
+
       Eigen::VectorXd y_vec = y.col(0).eval();
 
       out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p,
@@ -383,16 +348,11 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                    covariance_update,
                                                                                                    sparse_matrix,
                                                                                                    algorithm_uni_sparse, algorithm_list_uni_sparse);
-#ifdef TEST
-      cout << "abesscpp2 5" << endl;
-#endif
+
     }
     else
     {
-#ifdef TEST
-      cout << "abesscpp2 5" << endl;
-      cout << "mul_sparse" << endl;
-#endif
+
 
       out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>>(sparse_x, y, n, p,
                                                                                                             data_type, weight, sigma,
@@ -415,9 +375,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                             covariance_update,
                                                                                                             sparse_matrix,
                                                                                                             algorithm_mul_sparse, algorithm_list_mul_sparse);
-#ifdef TEST
-      cout << "abesscpp2 6" << endl;
-#endif
+
     }
   }
 
@@ -476,15 +434,11 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
               Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list)
 {
   // to do: -openmp
-#ifdef TEST
-  clock_t t1, t2;
-  cout << "abessCpp 1" << endl;
-#endif
+
 
 #ifndef R_BUILD
   std::srand(123);
 #endif
-  // std::cout<<"abessCpp enter."<<endl;
   bool is_parallel = thread != 1;
 
   Data<T1, T2, T3, T4> data(x, y, data_type, weight, is_normal, g_index, status, sparse_matrix);
@@ -528,10 +482,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   }
 
   // calculate loss for each parameter parameter combination
-#ifdef TEST
-  t1 = clock();
-  cout << "abessCpp 2" << endl;
-#endif
+
   Result<T2, T3> result;
   vector<Result<T2, T3>> result_list(Kfold);
   if (path_type == 1)
@@ -572,10 +523,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     gs_path(data, algorithm, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, K_max, epsilon, is_parallel, result);
   }
 
-#ifdef TEST
-  t2 = clock();
-  std::cout << "path time : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-#endif
+
 
   // Get bestmodel index && fit bestmodel
   int min_loss_index_row = 0, min_loss_index_col = 0, s_size = sequence.size(), lambda_size = lambda_seq.size();
@@ -612,7 +560,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
       if (is_parallel)
       {
-        // cout << "cv parallel" << endl;
         for (int i = 0; i < max(Kfold, thread); i++)
         {
           if (covariance_update)
@@ -670,9 +617,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           delete[] algorithm_list[i]->covariance;
           delete[] algorithm_list[i]->covariance_update_flag;
         }
-#ifdef TEST
-        std::cout << "parallel cv 2 end--------" << std::endl;
-#endif
+
       }
       else
       {
@@ -728,9 +673,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           delete[] algorithm->covariance_update_flag;
         }
       }
-#ifdef TEST
-      cout << "test_loss: " << test_loss_sum << endl;
-#endif
+
     }
     else
     {
@@ -740,12 +683,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       train_loss_matrix = result.train_loss_matrix;
       effective_number_matrix = result.effective_number_matrix;
       ic_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
-#ifdef TEST
-      std::cout << "train_loss: " << std::endl;
-      std::cout << train_loss_matrix << std::endl;
-      std::cout << "ic: " << std::endl;
-      std::cout << ic_matrix << std::endl;
-#endif
+
     }
   }
   else
@@ -765,19 +703,10 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       ic_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
     }
 
-#ifdef TEST
-    std::cout << "test_loss: " << std::endl;
-    std::cout << test_loss_matrix << std::endl;
-    std::cout << "train_loss: " << std::endl;
-    std::cout << train_loss_matrix << std::endl;
-    std::cout << "ic: " << std::endl;
-    std::cout << ic_matrix << std::endl;
-#endif
+
   }
 
-#ifdef TEST
-  std::cout << "abesscpp 3 end --------" << std::endl;
-#endif
+
 
   // fit best model
   // int best_s = sequence(min_loss_index_row);
@@ -856,17 +785,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       }
     }
   }
-#ifdef TEST
-  std::cout << "lambda_sequence" << lambda_seq << std::endl;
-  std::cout << "lambda_sequence" << lambda_seq[0] << std::endl;
-
-  std::cout << "sequence" << sequence << std::endl;
-  std::cout << "effective_number_matrix: " << effective_number_matrix << std::endl;
-  std::cout << train_loss_matrix << std::endl;
-  std::cout << "ic: " << std::endl;
-  std::cout << ic_matrix << std::endl;
-#endif
-  // cout << "abess 7" << endl;
 
   // List result;
   List out_result;
@@ -903,10 +821,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   // Restore best_fit_result for screening
   if (is_screening)
   {
-#ifdef TEST
-    cout << "screening_A: " << screening_A << endl;
-    cout << "p: " << x.cols() << endl;
-#endif
+
     T2 beta_screening_A;
     T2 beta;
     T3 coef0;
@@ -967,11 +882,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   Eigen::VectorXi always_select_Vec;
 
 
-#ifdef TEST
-  clock_t t1, t2;
-  std::cout<<"abess enter."<<endl;
-#endif
-  // t1 = clock();
+
   x_Mat = Pointer2MatrixXd(x, x_row, x_col);
   y_Mat = Pointer2MatrixXd(y, y_row, y_col);
   sigma_Mat = Pointer2MatrixXd(sigma, sigma_row, sigma_col);
@@ -981,11 +892,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   sequence_Vec = Pointer2VectorXi(sequence, sequence_len);
   lambda_sequence_Vec = Pointer2VectorXd(lambda_sequence, lambda_sequence_len);
   always_select_Vec = Pointer2VectorXi(always_select, always_select_len);
-  // t2 = clock();
-  // std::cout << "pointer to data: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-#ifdef TEST
-  t1 = clock();
-#endif
+
   List mylist = abessCpp2(x_Mat, y_Mat, n, p, data_type, weight_Vec, sigma_Mat,
                           is_normal,
                           algorithm_type, model_type, max_iter, exchange_num,
@@ -1007,12 +914,8 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                           splicing_type,
                           sub_search);
 
-#ifdef TEST
-  t2 = clock();
-  std::cout << "get result : " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
-#endif
 
-  // t1 = clock();
+
   if (y_col == 1)
   {
     Eigen::VectorXd beta;
@@ -1039,14 +942,6 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
     mylist.get_value_by_name("coef0", coef0);
     mylist.get_value_by_name("train_loss", train_loss);
     mylist.get_value_by_name("ic", ic);
-    // cout << "beta" << endl;
-    // cout << beta << endl;
-    // cout << "coef0" << endl;
-    // cout << coef0 << endl;
-    // cout << "train_loss" << endl;
-    // cout << train_loss << endl;
-    // cout << "ic" << endl;
-    // cout << ic << endl;
 
     MatrixXd2Pointer(beta, beta_out);
     VectorXd2Pointer(coef0, coef0_out);
@@ -1054,7 +949,5 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
     ic_out[0] = ic;
   }
 
-  // t2 = clock();
-  // std::cout << "result to pointer: " << ((double)(t2 - t1) / CLOCKS_PER_SEC) << endl;
 }
 #endif

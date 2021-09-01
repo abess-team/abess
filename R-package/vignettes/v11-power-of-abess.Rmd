@@ -45,7 +45,7 @@ All experiments are
 evaluated on an  Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz 3.31 GHz and under R version 3.6.1. 
 
 ```r
-source("R-package/example/perform.R")
+source("docs/example/R/perform.R")
 ```
 
 ### Results
