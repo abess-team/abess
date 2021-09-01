@@ -1,30 +1,21 @@
-predict.prob <- function(newx, beta.fit)
-{
-  y <- newx %*% beta.fit[-1] + beta.fit[1]
-  bi <- stats::binomial()
-  y <- bi[["linkinv"]](y)
-  y
-}
 metrics <- function(beta.fit, dat.test)
 {
   coef.err <- norm(beta.fit - c(0, dat.test$beta), "2")
-  prob <- predict.prob(dat.test$x, beta.fit)
-  prob <- as.vector(prob)
-  auc <- pROC::auc(dat.test$y, prob)
-  auc <- ifelse(auc < 0.5, 1 - auc, auc)
+  y.pred <- dat.test$x %*% beta.fit[-1] + beta.fit[1]
+  pe <- norm(y.pred - dat.test$y, "2")
   nonzero.fit <- as.numeric(abs(beta.fit[-1]) > 1e-05)
   nonzero.true <- as.numeric(abs(dat.test$beta) > 1e-05)
   tpr <- length(which(nonzero.fit > 0 & nonzero.true > 0))/sum(nonzero.true)
   fpr <- length(which(nonzero.fit > 0 & nonzero.true == 0))/sum(!nonzero.true)
   mcc <- mccr(nonzero.true, nonzero.fit)
-  return(c(coef.err = coef.err, auc = auc, tpr = tpr, fpr = fpr, mcc = mcc))
+  return(c(coef.err = coef.err, pe = pe, tpr = tpr, fpr = fpr, mcc = mcc))
 }
 
 
 simu.glmnet <- function(dat, dat.test)
 {
   ptm <- proc.time()
-  res <- cv.glmnet(dat$x, dat$y, family = "binomial", nfold = 5)
+  res <- cv.glmnet(dat$x, dat$y, nfolds = 5)
   t <- (proc.time() - ptm)[3]
   beta.fit <- coef(res, s = res$lambda.min)
   metrics.glmnet <- metrics(beta.fit, dat.test)
@@ -34,8 +25,7 @@ simu.glmnet <- function(dat, dat.test)
 simu.ncvreg <- function(dat, dat.test, penalty)
 {
   ptm <- proc.time()
-  res <- cv.ncvreg(dat$x, dat$y, penalty = penalty, family = "binomial", 
-                   nfold = 5)
+  res <- cv.ncvreg(dat$x, dat$y, penalty = penalty, nfolds = 5)
   t <- (proc.time() - ptm)[3]
   beta.fit <- coef(res, lambda = res$lambda.min)
   metrics.ncvreg <- metrics(beta.fit, dat.test)
@@ -45,8 +35,7 @@ simu.ncvreg <- function(dat, dat.test, penalty)
 simu.L0learn <- function(dat, dat.test, algorithm)
 {
   ptm <- proc.time()
-  res <- L0Learn.cvfit(dat$x, dat$y, algorithm = algorithm, loss = "Logistic", 
-                       nFolds = 5)
+  res <- L0Learn.cvfit(dat$x, dat$y, algorithm = algorithm, nFolds = 5)
   t <- (proc.time() - ptm)[3]
   lambda <- print(res)[, 1]
   beta.fit <- coef(res, lambda = lambda[which.min(res$cvMeans[[1]])])
@@ -57,8 +46,7 @@ simu.L0learn <- function(dat, dat.test, algorithm)
 simu.abess <- function(dat, dat.test)
 {
   ptm <- proc.time()
-  res <- abess(dat$x, dat$y, support.size = 0:99, family = "binomial", 
-               tune.type = "cv")
+  res <- abess(dat$x, dat$y, support.size = 0:99, tune.type = "cv", num.threads = 5)
   t <- (proc.time() - ptm)[3]
   beta.fit <- coef(res, support.size = res$support.size[which.min(res$tune.value)])
   metrics.abess <- metrics(beta.fit, dat.test)
@@ -69,10 +57,10 @@ simu <- function(i, n, p, rho, cortype, method = c("glmnet", "ncvreg.MCP",
                                                    "ncvreg.SCAD", "ncvreg.lasso", "L0Learn.CD", "L0Learn.CDPSI", "abess"))
 {
   set.seed(i)
-  dat <- abess::generate.data(n, p, rho = rho, cortype = cortype, support.size = 10, 
-                              sigma = 0, seed = i, family = "binomial")
-  dat.test <- abess::generate.data(n, p, rho = rho, cortype = cortype, 
-                                   sigma = 0, seed = i + 100, beta = dat$beta, family = "binomial")
+  dat <- generate.data(n, p, rho = rho, cortype = cortype, support.size = 10, 
+                       sigma = 1, seed = i)
+  dat.test <- generate.data(n, p, rho = rho, cortype = cortype, beta = dat$beta, 
+                            sigma = 1, seed = i + 100)
   res.default <- rep(0, 6)
   if ("glmnet" %in% method)
   {
@@ -123,6 +111,9 @@ simu <- function(i, n, p, rho, cortype, method = c("glmnet", "ncvreg.MCP",
   {
     res.abess <- res.default
   }
+  
+  print(rbind(res.glmnet, res.ncvreg.MCP, res.ncvreg.SCAD, res.ncvreg.lasso, 
+              res.L0Learn.CD, res.abess))
   return(rbind(res.glmnet, res.ncvreg.MCP, res.ncvreg.SCAD, res.ncvreg.lasso, 
                res.L0Learn.CD, res.abess))
 }

@@ -93,7 +93,7 @@ Results are presented in the below figure, and can be reproduce by running the c
 
 |pic1| 
 
-.. |pic1| image:: ../docs/perform/timings.png
+.. |pic1| image:: ../docs/image/timings.png
    :width: 100%
 
 abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
