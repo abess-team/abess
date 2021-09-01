@@ -98,8 +98,8 @@ test_batch <- function(n, p, support_size, family, formula) {
 }
 
 test_that("screening (gaussian) works", {
-  n <- 200
-  p <- 2000
+  n <- 100
+  p <- 1000
   support_size <- 3
 
   ## default interface
@@ -110,8 +110,8 @@ test_that("screening (gaussian) works", {
 })
 
 test_that("screening (binomial) works", {
-  n <- 200
-  p <- 2000
+  n <- 100
+  p <- 1000
   support_size <- 3
 
   ## default interface
@@ -134,9 +134,9 @@ test_that("screening (cox) works", {
 })
 
 test_that("screening (poisson) works", {
-  n <- 200
-  p <- 2500
-  support_size <- 4
+  n <- 150
+  p <- 1000
+  support_size <- 3
 
   ## default interface
   test_batch(n, p, support_size, "poisson", FALSE)
@@ -146,8 +146,8 @@ test_that("screening (poisson) works", {
 })
 
 test_that("screening (mgaussian) works", {
-  n <- 200
-  p <- 2000
+  n <- 100
+  p <- 1000
   support_size <- 3
 
   ## default interface
@@ -158,8 +158,8 @@ test_that("screening (mgaussian) works", {
 })
 
 test_that("screening (multinomial) works", {
-  n <- 200
-  p <- 2000
+  n <- 100
+  p <- 1000
   support_size <- 3
 
   ## default interface

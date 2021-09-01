@@ -137,8 +137,8 @@ generate.group <- function(n,
 }
 
 test_that("Group selection: abess (gaussian) works", {
-  n <- 500
-  J <- 200
+  n <- 200
+  J <- 100
   k <- 4
   support_size <- 3
 
@@ -158,8 +158,8 @@ test_that("Group selection: abess (gaussian) works", {
 })
 
 test_that("Group selection: abess (logistic) works", {
-  n <- 500
-  J <- 200
+  n <- 300
+  J <- 50
   k <- 4
   support_size <- 3
 
@@ -186,8 +186,8 @@ test_that("Group selection: abess (logistic) works", {
 })
 
 test_that("Group selection: abess (poisson) works", {
-  n <- 500
-  J <- 200
+  n <- 200
+  J <- 100
   k <- 4
   support_size <- 3
 
@@ -210,8 +210,8 @@ test_that("Group selection: abess (cox) works", {
   if (!require("survival")) {
     install.packages("survival")
   }
-  n <- 300
-  J <- 200
+  n <- 150
+  J <- 50
   k <- 4
   support_size <- 3
 
