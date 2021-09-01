@@ -50,6 +50,8 @@ using namespace Rcpp;
 #include <Eigen/Eigen>
 #include "List.h"
 #include "Algorithm.h"
+#include "AlgorithmPCA.h"
+#include "AlgorithmGLM.h"
 #endif
 
 #include <iostream>
