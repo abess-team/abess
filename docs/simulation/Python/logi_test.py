@@ -95,7 +95,7 @@ for m in range(M):
 
         t_start = time()
         # model = abessLogistic(is_cv = True, path_type = "pgs", s_min = 0, s_max = 99, thread = 0)
-        model = abessLogistic(is_cv = True, support_size = range(100), thread = 5, important_search=100,
+        model = abessLogistic(is_cv = True, support_size = range(100), thread = 5, 
                             approximate_Newton = True, primary_model_fit_epsilon=1e-6)
         fit = model.fit(train.x, train.y)
         t_end = time()
