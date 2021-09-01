@@ -145,7 +145,7 @@ Conducting the following commands in shell:
 
 .. code-block:: shell
 
-   $ Rscript ./docs/example/R/timings.R
+   $ Rscript ./docs/simulation/R/timings.R
 
 we obtain the runtime comparison picture:
 

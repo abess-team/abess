@@ -98,7 +98,7 @@ We compare abess R package with three widely used R packages: glmnet, ncvreg, L0
 Conducting the following commands in shell: 
 
 ```shell
-$ Rscript abess/docs/example/R/timings.R
+$ Rscript abess/docs/simulation/R/timings.R
 ```
 
 we obtain the runtime comparison picture:
