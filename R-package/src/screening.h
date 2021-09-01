@@ -2,7 +2,6 @@
 #define screening_H
 
 //  #define R_BUILD
-// #define TEST
 
 #ifdef R_BUILD
 #include <Rcpp.h>
@@ -43,10 +42,7 @@ Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::VectorXd, double, T4> &da
 
     for (int i = 0; i < g_num; i++)
     {
-#ifdef TEST
-        cout << "i = " << i;
-        cout << "g_index(i)" << g_index(i) << " g_size(i): " << g_size(i) << endl;
-#endif
+
         T4 x_tmp = data.x.middleCols(g_index(i), g_size(i));
         Eigen::VectorXd beta;
         double coef0;
@@ -68,29 +64,12 @@ Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::VectorXd, double, T4> &da
             cox_fit(x_tmp, data.y, data.weight, beta, coef0, DBL_MAX, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon, 0., 0.);
         }
         coef_norm(i) = beta.squaredNorm() / g_size(i);
-#ifdef TEST
-        cout << " beta: " << beta << endl;
-        cout << "coef_norm(i): " << coef_norm(i) << endl;
-#endif
     }
-#ifdef TEST
-    cout << "x_tmp" << data.x.middleCols(0, 1) << endl;
-    cout << "data.y" << data.y << endl;
-#endif
-    // cout << "coef_norm: " << coef_norm << endl;
 
     // keep always_select in active_set
     slice_assignment(coef_norm, always_select, DBL_MAX);
 
     screening_A = max_k(coef_norm, screening_size);
-
-#ifdef TEST
-    for (int i = 0; i < screening_size; i++)
-    {
-
-        cout << "i=" << screening_A(i) << " " << coef_norm(screening_A(i)) << endl;
-    }
-#endif
 
     Eigen::VectorXi new_g_index(screening_size);
     Eigen::VectorXi new_g_size(screening_size);

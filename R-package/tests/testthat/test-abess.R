@@ -375,7 +375,7 @@ test_that("Fast than Lasso (gaussian) works", {
 
 test_that("abess (golden section) works", {
   n <- 200
-  p <- 200
+  p <- 150
   support_size <- 3
   dataset <- generate.data(n, p, support_size)
 
