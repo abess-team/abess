@@ -1,9 +1,9 @@
 //
-// Created by jtwok on 2020/3/8.
+// Created by Jin Zhu on 2020/3/8.
 //
 // #define R_BUILD
-#ifndef BESS_NORMALIZE_H
-#define BESS_NORMALIZE_H
+#ifndef ABESS_NORMALIZE_H
+#define ABESS_NORMALIZE_H
 
 #ifdef R_BUILD
 #include <RcppEigen.h>

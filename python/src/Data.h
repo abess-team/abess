@@ -1,5 +1,5 @@
 //
-// Created by Mamba on 2020/2/18.
+// Created by Jin Zhu on 2020/2/18.
 //
 //  #define R_BUILD
 #ifndef SRC_DATA_H
