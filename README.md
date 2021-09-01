@@ -1,4 +1,5 @@
-abess: R & Python Software for Best-Subset Selection in Polynomial Time <img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/pkgdown/favicon/icon.png' align="right" height="120" /></a>
+abess: A Fast Best-Subset Selection Library in Python & R 
+<img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/pkgdown/favicon/icon.png' align="right" height="120" /></a>
 ---
 
 [![Github action](https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg)](https://github.com/abess-team/abess/actions)
@@ -19,15 +20,15 @@ For example, clinicians wants to know whether a patient is health or not based o
 
 This library implements a generic algorithm framework to find the optimal solution in an extremely fast way.
 This framework now supports the detection of best subset under: 
-
--  [linear regression](https://abess.readthedocs.io/en/latest/Tutorial/LinearRegression.html)
--  [classification (binary or multi-class)](https://abess.readthedocs.io/en/latest/Tutorial/logi_and_multiclass.html)
--  [counting-response modeling](https://abess.readthedocs.io/en/latest/Tutorial/PoissonRegression.html)
--  [censored-response modeling](https://abess.readthedocs.io/en/latest/Tutorial/CoxRegression.html)
--  [multi-response modeling (multi-tasks learning)](https://abess.readthedocs.io/en/latest/Tutorial/MultiTaskLearning.html)
--  [group best subset selection](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Best-group-subset-selection)
--  [nuisance penalized regression](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Nuisance-Regression)
-
+[linear regression](https://abess.readthedocs.io/en/latest/Tutorial/LinearRegression.html),
+[classification (binary or multi-class)](https://abess.readthedocs.io/en/latest/Tutorial/logi_and_multiclass.html),
+[counting-response modeling](https://abess.readthedocs.io/en/latest/Tutorial/PoissonRegression.html),
+[censored-response modeling](https://abess.readthedocs.io/en/latest/Tutorial/CoxRegression.html),
+[multi-response modeling (multi-tasks learning)](https://abess.readthedocs.io/en/latest/Tutorial/MultiTaskLearning.html), etc.
+It also supports the variants of best subset selection like 
+[group best subset selection](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Best-group-subset-selection),
+[nuisance penalized regression](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Nuisance-Regression),
+Especially, the time complexity of (group) best subset selection for linear regression is certifiably polynomial.
 
 ## Quick start
 

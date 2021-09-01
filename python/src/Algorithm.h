@@ -252,10 +252,7 @@ public:
 
     if (this->model_type == 7)
     {
-      if (sigma.cols() == 1 && sigma(0, 0) == -1)
-        this->Sigma = train_x.transpose() * train_x;
-      else
-        this->Sigma = sigma;
+      this->Sigma = sigma;
     }
 
     if (N == T0)
@@ -537,11 +534,11 @@ public:
       coef0_A_exchange = coef0;
 
       bool success = primary_model_fit(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, train_loss, A_exchange, g_index, g_size);
-      if (success){
+      // if (success){
         L = neg_loglik_loss(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, A_exchange, g_index, g_size);
-      }else{
-        L = train_loss + 1;
-      }
+      // }else{
+      //   L = train_loss + 1;
+      // }
 
       
       if (train_loss - L > tau)
