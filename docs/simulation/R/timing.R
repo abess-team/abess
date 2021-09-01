@@ -4,13 +4,18 @@ library(ncvreg)
 library(L0Learn)
 library(mccr)
 library(pROC)
+library(ggplot2)
 M <- 100
 p <- 1000
-n <- 500
 rho_list <- c(0.7, 0.1)
 model_list <- c("linear", "logistic")
 for (model in model_list)
 {
+  if (model == "logistic") {
+    n <- 1000
+  } else {
+    n <- 500
+  }
   source(paste0(model, "_source.R"))
   for (rho in rho_list)
   {
@@ -84,13 +89,17 @@ for (model in model_list)
 
 ################ Visualize result ################
 M = 100
-n = 500
 p = 1000
 rho_list = c(0.1, 0.7)
 model_list = c("linear", "logistic")
 plot_data = NULL
 for (model in model_list)
 {
+  if (model == "logistic") {
+    n <- 1000
+  } else {
+    n <- 500
+  }
   for (rho in rho_list)
   {
     cortype = ifelse(rho < 0.5, 2, 3)
@@ -164,7 +173,7 @@ for (model in model_list)
 
 
 model_names = c("linear" = "Linear",
-                "logistic" = "Logistic", )
+                "logistic" = "Logistic")
 
 color = rev(c(
   '#b2182b',
@@ -175,7 +184,6 @@ color = rev(c(
   '#2166ac'
 ))
 
-library(ggplot2)
 plot_data$rho = as.factor(plot_data$rho)
 plot_data$method = factor(
   plot_data$method,
@@ -226,9 +234,8 @@ p <-
     axis.title = element_blank(),
     legend.text.align = 0
   )
-print(p)
 
 ggsave(p,
-       filename = "mainpage_r_runtime.png",
+       filename = "r_runtime.png",
        width = 11,
        height = 4)
