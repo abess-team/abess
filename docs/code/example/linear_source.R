@@ -46,7 +46,7 @@ simu.L0learn <- function(dat, dat.test, algorithm)
 simu.abess <- function(dat, dat.test)
 {
   ptm <- proc.time()
-  res <- abess(dat$x, dat$y, support.size = 0:99, tune.type = "cv")
+  res <- abess(dat$x, dat$y, support.size = 0:99, tune.type = "cv", num.threads = 5)
   t <- (proc.time() - ptm)[3]
   beta.fit <- coef(res, support.size = res$support.size[which.min(res$tune.value)])
   metrics.abess <- metrics(beta.fit, dat.test)
@@ -111,6 +111,9 @@ simu <- function(i, n, p, rho, cortype, method = c("glmnet", "ncvreg.MCP",
   {
     res.abess <- res.default
   }
+  
+  print(rbind(res.glmnet, res.ncvreg.MCP, res.ncvreg.SCAD, res.ncvreg.lasso, 
+              res.L0Learn.CD, res.abess))
   return(rbind(res.glmnet, res.ncvreg.MCP, res.ncvreg.SCAD, res.ncvreg.lasso, 
                res.L0Learn.CD, res.abess))
 }
