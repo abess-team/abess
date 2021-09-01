@@ -68,7 +68,7 @@ when the correlation between predictors is high.
 
 <center> Figure 2. Runing Time for different packages </center>
 
-<img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/image/time_perform.png' width="70%" height="70%"/>
+<img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/image/r_runtime.png' width="70%" height="70%"/>
 
 Here we see that the spike-and-slab-prior-based best subset selection estimator meets difficulties in recovering the true active set in logistic regression when the predictors are highly correlated, but still enjoys the best prediction performance. 
 This is that when the predictors are highly correlated, we only need a small subset of predictors to 

@@ -1,0 +1,14 @@
+- Kangkang
+  - change python version 1.0.0
+- Junhao 
+  - improve coverage 
+  - update docs
+- liyuan
+  - rerun performance in readme.md
+- shiyun
+  - give some suggestion according to https://www.jmlr.org/mloss/mloss-info.html （to modify)
+- yanhang
+  - recommend to all of your friends 
+- Jin zhu
+  - abesspca 
+  - next version
