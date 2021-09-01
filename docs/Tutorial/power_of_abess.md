@@ -30,9 +30,9 @@ The results are presented in the following pictures. The first column is the res
 - Secondly, the estimator obtained by the abess package can reasonably control FPR in a low level while the TPR stays at 1. (Since all methods' TPR are 1, the figure is not plotted.)
 - Furthermore, our abess package is highly efficient compared with other packages, especially in the linear regression. 
 
-![](../perform/perform.png)
+![](../image/perform.png)
 
-![](../perform/timings.png)
+![](../image/perform.png)
 
 ### R performance
 

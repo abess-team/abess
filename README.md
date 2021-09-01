@@ -91,7 +91,7 @@ $ python abess/docs/example/Python/timings.py
 
 we obtain the runtime comparison picture:
 
-![](./docs/perform/timings.png)
+![](./docs/image/timings.png)
 
 ### R packages
 
@@ -104,7 +104,7 @@ $ Rscript abess/docs/example/R/timings.R
 
 we obtain the runtime comparison picture:
 
-![](docs/perform/Rtimings.png)
+![](docs/image/r_runtime.png)
 
 Results are presented in the following picture. As a package solving the best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
 

@@ -57,14 +57,6 @@ Especially, the time complexity of (group) best subset selection for linear regr
 Quick start
 ============
 
-The abess software has both Python and R's interfaces. Here a quick start will be given and
-for more details, please view: `Installation`_.
-
-.. _Installation: https://abess.readthedocs.io/en/latest/Installation.html
-
-Python package
---------------
-
 Install the stable abess Python package from Pypi: 
 
 .. code-block:: shell
@@ -81,7 +73,7 @@ Best subset selection for linear regression on a simulated dataset in Python:
    model = abessLm()
    model.fit(sim_dat.x, sim_dat.y)
 
-See more examples analyzed with Python in the `Python tutorials <https://abess.readthedocs.io/en/latest/Tutorial/index.html>`_.
+See more examples analyzed with Python in the tutorials; the notebooks are available `here <https://abess.readthedocs.io/en/latest/Tutorial/index.html>`_.
 
 Runtime Performance
 ===================
@@ -89,12 +81,9 @@ Runtime Performance
 To show the power of abess in computation, 
 we assess its timings of the CPU execution (seconds) on synthetic datasets, and compare to 
 state-of-the-art variable selection methods. 
-The variable selection and estimation results are deferred to `Python performance`_  .
+The variable selection and estimation results are deferred to `performance`_.
 
-.. _Python performance: https://abess.readthedocs.io/en/latest/Tutorial/power_of_abess.html
-
-Python package   
----------------
+.. _performance: https://abess.readthedocs.io/en/latest/Tutorial/power_of_abess.html
 
 We compare abess Python package with scikit-learn on linear and logistic regression.
 Results are presented in the below figure, and can be reproduce by running the commands in shell:
@@ -107,8 +96,10 @@ we obtain the runtime comparison picture:
 
 |pic1| 
 
-.. |pic1| image:: ./perform/timings.png
+.. |pic1| image:: ../docs/image/timings.png
    :width: 100%
+
+abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
 
 Open source software     
 ====================

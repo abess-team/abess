@@ -1,7 +1,7 @@
 metrics <- function(beta.fit, dat.test)
 {
   coef.err <- norm(beta.fit - c(0, dat.test$beta), "2")
-  y.pred <- exp(dat.test$x %*% beta.fit[-1] + beta.fit[1])
+  y.pred <- dat.test$x %*% beta.fit[-1] + beta.fit[1]
   pe <- norm(y.pred - dat.test$y, "2")
   nonzero.fit <- as.numeric(abs(beta.fit[-1]) > 1e-05)
   nonzero.true <- as.numeric(abs(dat.test$beta) > 1e-05)
@@ -15,7 +15,7 @@ metrics <- function(beta.fit, dat.test)
 simu.glmnet <- function(dat, dat.test)
 {
   ptm <- proc.time()
-  res <- cv.glmnet(dat$x, dat$y, family = "poisson")
+  res <- cv.glmnet(dat$x, dat$y, nfolds = 5)
   t <- (proc.time() - ptm)[3]
   beta.fit <- coef(res, s = res$lambda.min)
   metrics.glmnet <- metrics(beta.fit, dat.test)
@@ -25,56 +25,28 @@ simu.glmnet <- function(dat, dat.test)
 simu.ncvreg <- function(dat, dat.test, penalty)
 {
   ptm <- proc.time()
-  res <- cv.ncvreg(dat$x, dat$y, penalty = penalty, family = "poisson")
+  res <- cv.ncvreg(dat$x, dat$y, penalty = penalty, nfolds = 5)
   t <- (proc.time() - ptm)[3]
   beta.fit <- coef(res, lambda = res$lambda.min)
   metrics.ncvreg <- metrics(beta.fit, dat.test)
   return(c(metrics.ncvreg, t = t))
 }
 
-ncv.wrapper <- function(dat, dat.test, penalty)
+simu.L0learn <- function(dat, dat.test, algorithm)
 {
-  flag <- 1
-  res.ncvreg <- NULL
-  tryCatch({
-    res.ncvreg <- simu.ncvreg(dat, dat.test, penalty)
-  }, error = function(e)
-  {
-    flag <<- 0
-  })
-  return(list(flag = flag, res = res.ncvreg))
-}
-
-ncv.tryCatch <- function(dat, dat.test, penalty, i)
-{
-  res.ncvreg <- NULL
-  tryCatch({
-    res.ncvreg <- simu.ncvreg(dat, dat.test, penalty)
-  }, error = function(e)
-  {
-    flag <- 0
-    seed <- i
-    while (!flag)
-    {
-      seed <- seed + 100
-      dat <- generate.data(n, p, rho = rho, cortype = cortype, support.size = 10, 
-                           family = "poisson", seed = seed)
-      dat.test <- generate.data(n, p, rho = rho, cortype = cortype, 
-                                beta = dat$beta, family = "poisson", seed = seed + 100)
-      try.res <- ncv.wrapper(dat, dat.test, penalty)
-      flag <- try.res$flag
-      res.ncvreg <<- try.res$res
-    }
-    
-  })
-  return(res.ncvreg)
+  ptm <- proc.time()
+  res <- L0Learn.cvfit(dat$x, dat$y, algorithm = algorithm, nFolds = 5)
+  t <- (proc.time() - ptm)[3]
+  lambda <- print(res)[, 1]
+  beta.fit <- coef(res, lambda = lambda[which.min(res$cvMeans[[1]])])
+  metrics.L0Learn <- metrics(beta.fit, dat.test)
+  return(c(metrics.L0Learn, t = t))
 }
 
 simu.abess <- function(dat, dat.test)
 {
   ptm <- proc.time()
-  res <- abess(dat$x, dat$y, support.size = 0:99, family = "poisson", 
-               tune.type = "cv")
+  res <- abess(dat$x, dat$y, support.size = 0:99, tune.type = "cv", num.threads = 5)
   t <- (proc.time() - ptm)[3]
   beta.fit <- coef(res, support.size = res$support.size[which.min(res$tune.value)])
   metrics.abess <- metrics(beta.fit, dat.test)
@@ -82,13 +54,13 @@ simu.abess <- function(dat, dat.test)
 }
 
 simu <- function(i, n, p, rho, cortype, method = c("glmnet", "ncvreg.MCP", 
-                                                   "ncvreg.SCAD", "ncvreg.lasso", "abess"))
+                                                   "ncvreg.SCAD", "ncvreg.lasso", "L0Learn.CD", "L0Learn.CDPSI", "abess"))
 {
   set.seed(i)
   dat <- generate.data(n, p, rho = rho, cortype = cortype, support.size = 10, 
-                       family = "poisson", seed = i)
+                       sigma = 1, seed = i)
   dat.test <- generate.data(n, p, rho = rho, cortype = cortype, beta = dat$beta, 
-                            family = "poisson", seed = i + 100)
+                            sigma = 1, seed = i + 100)
   res.default <- rep(0, 6)
   if ("glmnet" %in% method)
   {
@@ -99,28 +71,39 @@ simu <- function(i, n, p, rho, cortype, method = c("glmnet", "ncvreg.MCP",
   }
   if ("ncvreg.MCP" %in% method)
   {
-    res.ncvreg.MCP <- ncv.tryCatch(dat, dat.test, penalty = "MCP", 
-                                   i)
+    res.ncvreg.MCP <- simu.ncvreg(dat, dat.test, penalty = "MCP")
   } else
   {
     res.ncvreg.MCP <- res.default
   }
   if ("ncvreg.SCAD" %in% method)
   {
-    res.ncvreg.SCAD <- ncv.tryCatch(dat, dat.test, penalty = "SCAD", 
-                                    i)
+    res.ncvreg.SCAD <- simu.ncvreg(dat, dat.test, penalty = "SCAD")
   } else
   {
     res.ncvreg.SCAD <- res.default
   }
   if ("ncvreg.lasso" %in% method)
   {
-    res.ncvreg.lasso <- ncv.tryCatch(dat, dat.test, penalty = "lasso", 
-                                     i)
+    res.ncvreg.lasso <- simu.ncvreg(dat, dat.test, penalty = "lasso")
   } else
   {
     res.ncvreg.lasso <- res.default
   }
+  if ("L0Learn.CD" %in% method)
+  {
+    res.L0Learn.CD <- simu.L0learn(dat, dat.test, algorithm = "CD")
+  } else
+  {
+    res.L0Learn.CD <- res.default
+  }
+  # if ("L0Learn.CDPSI" %in% method)
+  # {
+  #   res.L0Learn.CDPSI <- simu.L0learn(dat, dat.test, algorithm = "CDPSI")
+  # } else
+  # {
+  #   res.L0Learn.CDPSI <- res.default
+  # }
   if ("abess" %in% method)
   {
     res.abess <- simu.abess(dat, dat.test)
@@ -128,6 +111,9 @@ simu <- function(i, n, p, rho, cortype, method = c("glmnet", "ncvreg.MCP",
   {
     res.abess <- res.default
   }
+  
+  print(rbind(res.glmnet, res.ncvreg.MCP, res.ncvreg.SCAD, res.ncvreg.lasso, 
+              res.L0Learn.CD, res.abess))
   return(rbind(res.glmnet, res.ncvreg.MCP, res.ncvreg.SCAD, res.ncvreg.lasso, 
-               res.abess))
+               res.L0Learn.CD, res.abess))
 }
