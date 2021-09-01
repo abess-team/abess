@@ -109,7 +109,12 @@ generate.data <- function(n,
                           p,
                           support.size = NULL,
                           rho = 0,
-                          family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
+                          family = c("gaussian",
+                                     "binomial",
+                                     "poisson",
+                                     "cox",
+                                     "mgaussian",
+                                     "multinomial"),
                           beta = NULL,
                           cortype = 1,
                           snr = 10,
@@ -119,7 +124,7 @@ generate.data <- function(n,
                           class.num = 3,
                           seed = 1) {
   sigma <- 1
-
+  
   family <- match.arg(family)
   if (family == "mgaussian") {
     y_dim <- y.dim
@@ -129,7 +134,7 @@ generate.data <- function(n,
     y_dim <- 1
   }
   y_cor <- diag(y_dim)
-
+  
   set.seed(seed)
   # if(is.null(beta)){
   #   beta <- rep(0, p)
@@ -137,12 +142,12 @@ generate.data <- function(n,
   # } else{
   #   beta <- beta
   # }
-
+  
   multi_y <- FALSE
   if (family %in% c("mgaussian", "multinomial")) {
     multi_y <- TRUE
   }
-
+  
   if (!is.null(beta)) {
     if (multi_y) {
       stopifnot(is.matrix(beta))
@@ -151,7 +156,7 @@ generate.data <- function(n,
       stopifnot(is.vector(beta))
       support.size <- sum(abs(beta) > 1e-5)
     }
-
+    
     beta[abs(beta) <= 1e-5] <- 0
   } else {
     if (is.null(support.size)) {
@@ -159,12 +164,12 @@ generate.data <- function(n,
     }
     stopifnot(is.numeric(support.size) & support.size >= 1)
   }
-
+  
   if (cortype == 1) {
     Sigma <- diag(p)
   } else if (cortype == 2) {
     Sigma <- matrix(0, p, p)
-    Sigma <- rho^(abs(row(Sigma) - col(Sigma)))
+    Sigma <- rho ^ (abs(row(Sigma) - col(Sigma)))
   } else if (cortype == 3) {
     Sigma <- matrix(rho, p, p)
     diag(Sigma) <- 1
@@ -174,7 +179,7 @@ generate.data <- function(n,
   } else {
     x <- MASS::mvrnorm(n, rep(0, p), Sigma)
   }
-
+  
   ### pre-treatment for beta ###
   input_beta <- beta
   if (multi_y) {
@@ -193,7 +198,7 @@ generate.data <- function(n,
       beta <- input_beta
     }
     sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
-
+    
     y <- x %*% beta + rnorm(n, 0, sigma)
   }
   if (family == "binomial") {
@@ -204,7 +209,7 @@ generate.data <- function(n,
       beta <- input_beta
     }
     sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
-
+    
     eta <- x %*% beta + rnorm(n, 0, sigma)
     PB <- apply(eta, 1, generatedata2)
     y <- stats::rbinom(n, 1, PB)
@@ -217,9 +222,10 @@ generate.data <- function(n,
       beta <- input_beta
     }
     sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
-
+    
     eta <- x %*% beta + rnorm(n, 0, sigma)
-    time <- (-log(stats::runif(n)) / drop(exp(eta)))^(1 / weibull.shape)
+    time <-
+      (-log(stats::runif(n)) / drop(exp(eta))) ^ (1 / weibull.shape)
     ctime <- stats::runif(n, max = uniform.max)
     status <- (time < ctime) * 1
     censoringrate <- 1 - mean(status)
@@ -231,7 +237,7 @@ generate.data <- function(n,
     m <- 5 * sqrt(2 * log(p) / n)
     # m <- sigma * sqrt(2 * log(p) / n) / 3
     if (is.null(input_beta)) {
-      beta[nonzero] <- stats::runif(support.size, -2 * m, 2 * m)
+      beta[nonzero] <- stats::runif(support.size,-2 * m, 2 * m)
       # beta[nonzero] <- stats::rnorm(support.size, sd = m)
     } else {
       beta <- input_beta
@@ -240,7 +246,7 @@ generate.data <- function(n,
     sigma <- 0
     eta <- x %*% beta + stats::rnorm(n, 0, sigma)
     eta <- ifelse(eta > 30, 30, eta)
-    eta <- ifelse(eta < -30, -30, eta)
+    eta <- ifelse(eta < -30,-30, eta)
     eta <- exp(eta)
     # eta[eta<0.0001] <- 0.0001
     # eta[eta>1e5] <- 1e5
@@ -251,16 +257,18 @@ generate.data <- function(n,
     m <- 5 * sqrt(2 * log(p) / n)
     M <- 100 * m
     if (is.null(input_beta)) {
-      beta[nonzero, ] <- matrix(stats::runif(support.size * y_dim, m, M),
-        ncol = y_dim
-      )
+      beta[nonzero,] <- matrix(stats::runif(support.size * y_dim, m, M),
+                               ncol = y_dim)
     } else {
       beta <- input_beta
     }
     sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
     sigma <- diag(sigma)
     sigma <- sigma * y_cor
-    epsilon <- MASS::mvrnorm(n = n, mu = rep(0, y_dim), Sigma = sigma)
+    epsilon <-
+      MASS::mvrnorm(n = n,
+                    mu = rep(0, y_dim),
+                    Sigma = sigma)
     y <- x %*% beta + epsilon
     colnames(y) <- paste0("y", 1:y_dim)
   }
@@ -268,9 +276,8 @@ generate.data <- function(n,
     m <- 5 * sqrt(2 * log(p) / n)
     M <- 100 * m
     if (is.null(input_beta)) {
-      beta[nonzero, ] <- matrix(stats::runif(support.size * y_dim, m, M),
-        ncol = y_dim
-      )
+      beta[nonzero,] <- matrix(stats::runif(support.size * y_dim, m, M),
+                               ncol = y_dim)
     } else {
       beta <- input_beta
     }
@@ -280,13 +287,17 @@ generate.data <- function(n,
     epsilon <- MASS::mvrnorm(n, rep(0, y_dim), sigma)
     prob_y <- x %*% beta
     prob_y <- exp(prob_y)
-    prob_y <- sweep(prob_y, MARGIN = 1, STATS = rowSums(prob_y), FUN = "/")
+    prob_y <-
+      sweep(prob_y,
+            MARGIN = 1,
+            STATS = rowSums(prob_y),
+            FUN = "/")
     y <- apply(prob_y, 1, function(x) {
       sample(0:2, size = 1, prob = x)
     })
   }
   set.seed(NULL)
-
+  
   colnames(x) <- paste0("x", 1:p)
   return(list(x = x, y = y, beta = beta))
 }
@@ -397,17 +408,17 @@ generate.group <- function(n,
   family <- match.arg(family)
   set.seed(seed)
   group.index <- rep(1:J, each = k)
-
+  
   if (is.null(support.size)) {
     stop("Please provide an integer to support.size.")
   }
   stopifnot(is.numeric(support.size) & support.size >= 1)
-
+  
   if (cortype == 1) {
     Sigma <- diag(J)
   } else if (cortype == 2) {
     Sigma <- matrix(0, J, J)
-    Sigma <- rho^(abs(row(Sigma) - col(Sigma)))
+    Sigma <- rho ^ (abs(row(Sigma) - col(Sigma)))
   } else if (cortype == 3) {
     Sigma <- matrix(rho, J, J)
     diag(Sigma) <- 1
@@ -439,7 +450,8 @@ generate.group <- function(n,
   }
   if (family == "cox") {
     eta <- x %*% beta + rnorm(n, 0, sigma1)
-    time <- (-log(stats::runif(n)) / drop(exp(eta)))^(1 / weibull.shape)
+    time <-
+      (-log(stats::runif(n)) / drop(exp(eta))) ^ (1 / weibull.shape)
     ctime <- stats::runif(n, max = uniform.max)
     status <- (time < ctime) * 1
     censoringrate <- 1 - mean(status)
@@ -449,14 +461,20 @@ generate.group <- function(n,
   if (family == "poisson") {
     eta <- x %*% beta + stats::rnorm(n, 0, sigma1)
     eta <- ifelse(eta > 50, 50, eta)
-    eta <- ifelse(eta < -50, -50, eta)
+    eta <- ifelse(eta < -50,-50, eta)
     eta <- exp(eta)
     y <- sapply(eta, stats::rpois, n = 1)
   }
   set.seed(NULL)
-
+  
   colnames(x) <- paste0("x", 1:(J * k))
-  return(list(x = x, y = y, beta = beta, group.index = group.index, true.group = true.group))
+  return(list(
+    x = x,
+    y = y,
+    beta = beta,
+    group.index = group.index,
+    true.group = true.group
+  ))
 }
 
 gen.coef <- function(size, k, sigma, seed) {
@@ -494,10 +512,9 @@ generatedata2 <- function(eta) {
 
 list.beta <- function(beta.mat, object, sparse) {
   beta.all <- matrix(0,
-    nrow = length(object[["best.model"]][["beta"]]),
-    ncol = ncol(beta.mat)
-  )
-  beta.all[object[["screening.index"]], ] <- beta.mat[[1]]
+                     nrow = length(object[["best.model"]][["beta"]]),
+                     ncol = ncol(beta.mat))
+  beta.all[object[["screening.index"]],] <- beta.mat[[1]]
   if (sparse) {
     beta.all <- Matrix::Matrix(beta.all)
   }
@@ -512,9 +529,11 @@ match_support_size <- function(object, support.size) {
   supp_size_index
 }
 
-abess_model_matrix <- function(object, data = environment(object),
+abess_model_matrix <- function(object,
+                               data = environment(object),
                                contrasts.arg = NULL,
-                               xlev = NULL, ...) {
+                               xlev = NULL,
+                               ...) {
   ############################################################
   # The wrapped code refers to model.matrix.default function
   t <- if (missing(data)) {
@@ -528,10 +547,8 @@ abess_model_matrix <- function(object, data = environment(object),
     deparse2 <- function(x) {
       paste(deparse(x, width.cutoff = 500L), collapse = " ")
     }
-    reorder <- match(
-      vapply(attr(t, "variables"), deparse2, "")[-1L],
-      names(data)
-    )
+    reorder <- match(vapply(attr(t, "variables"), deparse2, "")[-1L],
+                     names(data))
     if (anyNA(reorder)) {
       stop("model frame and formula mismatch in model.matrix()")
     }
@@ -542,16 +559,20 @@ abess_model_matrix <- function(object, data = environment(object),
   ############################################################
   if (length(data)) {
     namD <- names(data)
-
+    
     for (i in namD) {
       if (is.character(data[[i]])) {
-        stop("Some columns in data are character!
+        stop(
+          "Some columns in data are character!
              You may convert these columns to a dummy variable via
-             model.matrix function or discard them.")
+             model.matrix function or discard them."
+        )
       } else if (is.factor(data[[i]])) {
-        stop("Some columns in data are factor!.
+        stop(
+          "Some columns in data are factor!.
         You may convert these columns to a dummy variable via
-             model.matrix function or discard them.")
+             model.matrix function or discard them."
+        )
       }
     }
   }
