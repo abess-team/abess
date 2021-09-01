@@ -16,9 +16,10 @@ using namespace Rcpp;
 #include <iostream>
 #include "Data.h"
 #include "Algorithm.h"
+#include "AlgorithmPCA.h"
+#include "AlgorithmGLM.h"
 #include "Metric.h"
 #include "path.h"
-// #include "path.cpp"
 #include "utilities.h"
 #include "abess.h"
 #include "screening.h"
