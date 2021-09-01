@@ -16,7 +16,6 @@
 #include <algorithm>
 #include <vector>
 #include <iostream>
-#include <time.h>
 #include <string.h>
 
 using namespace std;
