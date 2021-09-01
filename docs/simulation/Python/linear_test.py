@@ -5,9 +5,9 @@ from abess.linear import abessLm
 from abess.datasets import make_glm_data
 from sklearn.metrics import matthews_corrcoef
 from sklearn.linear_model import LassoCV
-from spams import fistaFlat
-from sklearn.linear_model import OrthogonalMatchingPursuit
-from sklearn.model_selection import GridSearchCV
+# from spams import fistaFlat
+from sklearn.linear_model import OrthogonalMatchingPursuitCV
+# from sklearn.model_selection import GridSearchCV
 # from glmnet import ElasticNet
 # import statsmodels.api as sm
 # from l0bnb import fit_path
@@ -73,17 +73,13 @@ for m in range(M):
     ## omp
     if "omp" in method:
         ind += 1
-
-        param = {'n_nonzero_coefs': [i for i in range(1, 100)]}
-
         t_start = time()
-        model = GridSearchCV(
-            OrthogonalMatchingPursuit(),
-            param, cv = 5, n_jobs = 5, refit = True)
+
+        model = OrthogonalMatchingPursuitCV(cv = 5, n_jobs = 5, max_iter = 100)
         fit = model.fit(train.x, train.y)
         t_end = time()
 
-        met[ind, m, 0:5] = metrics(fit.best_estimator_.coef_, fit.best_estimator_.predict(test.x), test)
+        met[ind, m, 0:5] = metrics(fit.coef_, fit.predict(test.x), test)
         met[ind, m, 5] = t_end - t_start
         # print("     --> OMP time: " + str(t_end - t_start))
     
@@ -149,7 +145,7 @@ for m in range(M):
 
         t_start = time()
         # model = abessLm(is_cv = True, path_type = "pgs", s_min = 0, s_max = 99, thread = 0)
-        model = abessLm(is_cv = True, support_size = range(100), thread = 5, important_search = 500)
+        model = abessLm(is_cv = True, support_size = range(100), thread = 5)
         fit = model.fit(train.x, train.y)
         t_end = time()
 

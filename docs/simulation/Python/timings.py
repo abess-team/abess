@@ -3,17 +3,22 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
 
-run = ''
-while run != 'y' and run != 'n':
-    run = input('Re-run the simulation? (y/n/c) ')
-    if run == 'c':
-        os._exit(0)
-    elif run == 'y':
-        os.system('python linear_test.py 0.1')
-        os.system('python linear_test.py 0.7')
-        os.system('python logi_test.py 0.1')
-        os.system('python logi_test.py 0.7')
-        break
+# run = ''
+# while run != 'y' and run != 'n':
+#     run = input('Re-run the simulation? (y/n/c) ')
+#     if run == 'c':
+#         os._exit(0)
+#     elif run == 'y':
+#         os.system('python linear_test.py 0.1')
+#         os.system('python linear_test.py 0.7')
+#         os.system('python logi_test.py 0.1')
+#         os.system('python logi_test.py 0.7')
+#         break
+
+os.system('python linear_test.py 0.1')
+os.system('python linear_test.py 0.7')
+os.system('python logi_test.py 0.1')
+os.system('python logi_test.py 0.7')
     
 # simulation results
 lm1 = np.load('./Lm0.1_res.npy')
