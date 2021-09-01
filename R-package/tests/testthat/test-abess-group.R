@@ -3,26 +3,25 @@ library(testthat)
 
 test_batch <- function(abess_fit, dataset, family) {
   support_size <- length(dataset[["true.group"]])
-  k <- ncol(dataset[["x"]]) / length(unique(dataset[["group.index"]]))
+  k <-
+    ncol(dataset[["x"]]) / length(unique(dataset[["group.index"]]))
   true_index <- as.vector(sapply(dataset$true.group, function(i) {
     return(((i - 1) * k + 1):(i * k))
   }))
-
+  
   ## support size
   fit_s_size <- abess_fit[["best.size"]]
-
+  
   ## subset
   coef_value <- coef(abess_fit, support.size = fit_s_size)
   est_index <- coef_value@i[-1]
   expect_equal(extract(abess_fit)[["support.vars"]], paste0("x", true_index))
-
+  
   ## estimation
   # oracle estimation by glm function:
-  dat <- cbind.data.frame(
-    "y" = dataset[["y"]],
-    dataset[["x"]][, true_index]
-  )
-
+  dat <- cbind.data.frame("y" = dataset[["y"]],
+                          dataset[["x"]][, true_index])
+  
   f <- family()
   if (f[["family"]] != "gaussian") {
     oracle_est <- glm(y ~ ., data = dat, family = family)
@@ -38,13 +37,13 @@ test_batch <- function(abess_fit, dataset, family) {
   est_coef0 <- coef_value@x[1]
   names(est_beta) <- NULL
   names(est_coef0) <- NULL
-
+  
   expect_equal(oracle_beta, est_beta, tolerance = 1e-3)
   expect_equal(oracle_coef0, est_coef0, tolerance = 1e-3)
-
+  
   ## deviance
   if (f[["family"]] == "gaussian") {
-    oracle_dev <- mean((oracle_est[["residuals"]])^2)
+    oracle_dev <- mean((oracle_est[["residuals"]]) ^ 2)
     expect_equal(oracle_dev, abess_fit[["dev"]][fit_s_size + 1])
   } else if (f[["family"]] != "poisson") {
     oracle_dev <- deviance(oracle_est) / 2
@@ -68,12 +67,12 @@ generate.group <- function(n,
   family <- match.arg(family)
   set.seed(seed)
   group.index <- rep(1:J, each = k)
-
+  
   if (cortype == 1) {
     Sigma <- diag(J)
   } else if (cortype == 2) {
     Sigma <- matrix(0, J, J)
-    Sigma <- rho^(abs(row(Sigma) - col(Sigma)))
+    Sigma <- rho ^ (abs(row(Sigma) - col(Sigma)))
   } else if (cortype == 3) {
     Sigma <- matrix(rho, J, J)
     diag(Sigma) <- 1
@@ -116,7 +115,8 @@ generate.group <- function(n,
   }
   if (family == "cox") {
     eta <- x %*% beta + rnorm(n, 0, sigma1)
-    time <- (-log(stats::runif(n)) / drop(exp(eta)))^(1 / weibull.shape)
+    time <-
+      (-log(stats::runif(n)) / drop(exp(eta))) ^ (1 / weibull.shape)
     ctime <- stats::runif(n, max = uniform.max)
     status <- (time < ctime) * 1
     censoringrate <- 1 - mean(status)
@@ -126,83 +126,113 @@ generate.group <- function(n,
   if (family == "poisson") {
     eta <- x %*% beta + stats::rnorm(n, 0, sigma1)
     eta <- ifelse(eta > 50, 50, eta)
-    eta <- ifelse(eta < -50, -50, eta)
+    eta <- ifelse(eta < -50,-50, eta)
     eta <- exp(eta)
     y <- sapply(eta, stats::rpois, n = 1)
   }
   set.seed(NULL)
-
+  
   colnames(x) <- paste0("x", 1:(J * k))
-  return(list(x = x, y = y, beta = beta, group.index = group.index, true.group = true.group))
+  return(list(
+    x = x,
+    y = y,
+    beta = beta,
+    group.index = group.index,
+    true.group = true.group
+  ))
 }
 
 test_that("Group selection: abess (gaussian) works", {
-  n <- 500
-  J <- 200
+  n <- 200
+  J <- 100
   k <- 4
   support_size <- 3
-
+  
   dataset <- generate.group(n, J, k, support_size, seed = 1)
-
+  
   ## default interface
-  abess_fit <- abess(dataset[["x"]], dataset[["y"]], group.index = dataset$group.index)
+  abess_fit <-
+    abess(dataset[["x"]], dataset[["y"]], group.index = dataset$group.index)
   test_batch(abess_fit, dataset, gaussian)
-
+  
   ## formula interface
   dat <- cbind.data.frame(dataset[["x"]][, 1:30],
-    "y" = dataset[["y"]],
-    dataset[["x"]][, 31:(J * k)]
-  )
-  abess_fit <- abess(y ~ ., data = dat, group.index = dataset$group.index)
+                          "y" = dataset[["y"]],
+                          dataset[["x"]][, 31:(J * k)])
+  abess_fit <-
+    abess(y ~ ., data = dat, group.index = dataset$group.index)
   test_batch(abess_fit, dataset, gaussian)
 })
 
 test_that("Group selection: abess (logistic) works", {
-  n <- 500
-  J <- 200
+  n <- 300
+  J <- 50
   k <- 4
   support_size <- 3
-
-  dataset <- generate.group(n, J, k, support_size, family = "binomial", seed = 1)
-
+  
+  dataset <-
+    generate.group(n, J, k, support_size, family = "binomial", seed = 1)
+  
   ## default interface
-  abess_fit <- abess(dataset[["x"]], dataset[["y"]],
+  abess_fit <- abess(
+    dataset[["x"]],
+    dataset[["y"]],
     group.index = dataset$group.index,
-    family = "binomial", newton = "exact"
+    family = "binomial",
+    newton = "exact"
   )
   test_batch(abess_fit, dataset, binomial)
-
+  
   ## formula interface
   dat <- cbind.data.frame(dataset[["x"]][, 1:30],
-    "y" = dataset[["y"]],
-    dataset[["x"]][, 31:(J * k)]
-  )
-  abess_fit <- abess(y ~ .,
+                          "y" = dataset[["y"]],
+                          dataset[["x"]][, 31:(J * k)])
+  abess_fit <- abess(
+    y ~ .,
     data = dat,
     group.index = dataset$group.index,
-    family = "binomial", newton = "exact"
+    family = "binomial",
+    newton = "exact"
   )
   test_batch(abess_fit, dataset, binomial)
 })
 
 test_that("Group selection: abess (poisson) works", {
-  n <- 500
-  J <- 200
+  n <- 200
+  J <- 100
   k <- 4
   support_size <- 3
-
-  dataset <- generate.group(n, J, k, support_size, family = "poisson", seed = 1, sigma1 = 0.1)
-
+  
+  dataset <-
+    generate.group(
+      n,
+      J,
+      k,
+      support_size,
+      family = "poisson",
+      seed = 1,
+      sigma1 = 0.1
+    )
+  
   ## default interface
-  abess_fit <- abess::abess(dataset[["x"]], dataset[["y"]], group.index = dataset$group.index, family = "poisson")
+  abess_fit <-
+    abess::abess(dataset[["x"]],
+                 dataset[["y"]],
+                 group.index = dataset$group.index,
+                 family = "poisson")
   test_batch(abess_fit, dataset, poisson)
-
+  
   ## formula interface
   dat <- cbind.data.frame(dataset[["x"]][, 1:30],
-    "y" = dataset[["y"]],
-    dataset[["x"]][, 31:(J * k)]
-  )
-  abess_fit <- abess(y ~ ., data = dat, group.index = dataset$group.index, family = "poisson")
+                          "y" = dataset[["y"]],
+                          dataset[["x"]][, 31:(J * k)])
+  abess_fit <-
+    abess(
+      y ~ .,
+      data = dat,
+      group.index = dataset$group.index,
+      family = "poisson"
+    )
   test_batch(abess_fit, dataset, poisson)
 })
 
@@ -210,22 +240,24 @@ test_that("Group selection: abess (cox) works", {
   if (!require("survival")) {
     install.packages("survival")
   }
-  n <- 300
-  J <- 200
+  n <- 150
+  J <- 50
   k <- 4
   support_size <- 3
-
-  dataset <- generate.group(n, J, k, support_size, family = "cox", seed = 1)
-
+  
+  dataset <-
+    generate.group(n, J, k, support_size, family = "cox", seed = 1)
+  
   ## default interface
-  abess_fit <- abess::abess(dataset[["x"]], dataset[["y"]],
-    group.index = dataset$group.index, family = "cox"
-  )
-
+  abess_fit <- abess::abess(dataset[["x"]],
+                            dataset[["y"]],
+                            group.index = dataset$group.index,
+                            family = "cox")
+  
   ## support size
   fit_s_size <- abess_fit[["best.size"]]
   expect_equal(fit_s_size, support_size)
-
+  
   ## subset
   coef_value <- coef(abess_fit, support.size = fit_s_size)
   est_index <- coef_value@i
@@ -233,18 +265,20 @@ test_that("Group selection: abess (cox) works", {
     return(((i - 1) * k + 1):(i * k))
   }))
   expect_equal(est_index, true_index)
-
+  
   ## estimation
   # true value:
   true_beta <- dataset[["beta"]][true_index]
   # estimated by coxph:
-  dat <- cbind.data.frame(dataset[["y"]], dataset[["x"]][, true_index])
-  oracle_est <- survival::coxph(survival::Surv(time, status) ~ ., data = dat)
+  dat <-
+    cbind.data.frame(dataset[["y"]], dataset[["x"]][, true_index])
+  oracle_est <-
+    survival::coxph(survival::Surv(time, status) ~ ., data = dat)
   oracle_beta <- coef(oracle_est)
   # estimated by abess:
   est_beta <- coef_value@x
   names(est_beta) <- NULL
-
+  
   for (i in 1:support_size) {
     abs_abess_diff <- abs(est_beta[i] - true_beta[i])
     abs_coxph_diff <- abs(oracle_beta[i] - true_beta[i])

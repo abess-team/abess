@@ -17,12 +17,12 @@
 *  See the License for the specific language governing permissions and       *
 *  limitations under the License.                                            *
 *                                                                            *
-*  @file     algorithm.h                                                         *
-*  @brief    the algorithm for fitting.                            *
+*  @file     Algorithm.h                                                     *
+*  @brief    the algorithm for fitting.                                      *
 *                                                                            *
 *                                                                            *
-*  @author   Kangkang Jiang                                                  *
-*  @email    jiangkk3@mail2.sysu.edu.cn                                      *
+*  @author   Jin Zhu, Kangkang Jiang, Junhao Huang                           *
+*  @email    zhuj37@mail2.sysu.edu.cn, jiangkk3@mail2.sysu.edu.cn            *
 *  @version  0.0.1                                                           *
 *  @date     2021-07-31                                                      *
 *  @license  GNU General Public License (GPL)                                *
