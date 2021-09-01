@@ -76,7 +76,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 #ifdef _OPENMP
   // Eigen::initParallel();
   int max_thread = omp_get_max_threads();
-  if (thread == 0 || thread > max_thread){
+  if (thread == 0 || thread > max_thread)
+  {
     thread = max_thread;
   }
 
@@ -90,7 +91,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 #endif
 
   int pca_n = -1;
-  if (algorithm_type == 7 && n != x.rows()){
+  if (algorithm_type == 7 && n != x.rows())
+  {
     pca_n = n;
     n = x.rows();
   }
@@ -131,7 +133,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     else if (model_type == 7)
     {
       algorithm_uni_dense = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
-      if (pca_n != -1) algorithm_uni_dense->pca_n = pca_n;
+      if (pca_n != -1)
+        algorithm_uni_dense->pca_n = pca_n;
     }
   }
   else
@@ -165,8 +168,6 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
       algorithm_uni_sparse = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
     }
   }
-
-
 
   vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(max(Kfold, thread));
   vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> *> algorithm_list_mul_dense(max(Kfold, thread));
@@ -205,7 +206,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
         else if (model_type == 7)
         {
           algorithm_list_uni_dense[i] = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
-          if (pca_n != -1) algorithm_list_uni_dense[i]->pca_n = pca_n;
+          if (pca_n != -1)
+            algorithm_list_uni_dense[i]->pca_n = pca_n;
         }
       }
       else
@@ -271,7 +273,6 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                        covariance_update,
                                                                                        sparse_matrix,
                                                                                        algorithm_uni_dense, algorithm_list_uni_dense);
-
     }
     else
     {
@@ -297,7 +298,6 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                 covariance_update,
                                                                                                 sparse_matrix,
                                                                                                 algorithm_mul_dense, algorithm_list_mul_dense);
-
     }
   }
   else
@@ -319,8 +319,6 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
       sparse_x.insert(int(x(i, 1)), int(x(i, 2))) = x(i, 0);
     }
     sparse_x.makeCompressed();
-
-
 
     if (y.cols() == 1)
     {
@@ -348,11 +346,9 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                    covariance_update,
                                                                                                    sparse_matrix,
                                                                                                    algorithm_uni_sparse, algorithm_list_uni_sparse);
-
     }
     else
     {
-
 
       out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>>(sparse_x, y, n, p,
                                                                                                             data_type, weight, sigma,
@@ -375,7 +371,6 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                             covariance_update,
                                                                                                             sparse_matrix,
                                                                                                             algorithm_mul_sparse, algorithm_list_mul_sparse);
-
     }
   }
 
@@ -434,7 +429,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
               Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list)
 {
   // to do: -openmp
-
 
 #ifndef R_BUILD
   std::srand(123);
@@ -523,8 +517,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     gs_path(data, algorithm, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, K_max, epsilon, is_parallel, result);
   }
 
-
-
   // Get bestmodel index && fit bestmodel
   int min_loss_index_row = 0, min_loss_index_col = 0, s_size = sequence.size(), lambda_size = lambda_seq.size();
   Eigen::Matrix<T2, Dynamic, Dynamic> beta_matrix(s_size, lambda_size);
@@ -534,7 +526,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   Eigen::MatrixXd test_loss_sum = Eigen::MatrixXd::Zero(s_size, lambda_size);
   Eigen::MatrixXd train_loss_matrix(s_size, lambda_size);
   Eigen::MatrixXd effective_number_matrix(s_size, lambda_size);
-
 
   if (path_type == 1)
   {
@@ -564,9 +555,10 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
         {
           if (covariance_update)
           {
-            algorithm_list[i]->covariance = new Eigen::VectorXd*[data.p];
+            algorithm_list[i]->covariance = new Eigen::VectorXd *[data.p];
             algorithm_list[i]->covariance_update_flag = new bool[data.p];
-            for (int j = 0; j < data.p; j++) algorithm_list[i]->covariance_update_flag[j] = false;
+            for (int j = 0; j < data.p; j++)
+              algorithm_list[i]->covariance_update_flag[j] = false;
             algorithm_list[i]->XTy = XTy;
             algorithm_list[i]->XTone = XTone;
           }
@@ -609,23 +601,23 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
         }
 
         if (covariance_update)
-        for (int i = 0; i < max(Kfold, thread); i++)
-        {
-          for (int j = 0; j < p; j++)
+          for (int i = 0; i < max(Kfold, thread); i++)
+          {
+            for (int j = 0; j < p; j++)
               if (algorithm_list[i]->covariance_update_flag[j])
-                  delete algorithm_list[i]->covariance[j];
-          delete[] algorithm_list[i]->covariance;
-          delete[] algorithm_list[i]->covariance_update_flag;
-        }
-
+                delete algorithm_list[i]->covariance[j];
+            delete[] algorithm_list[i]->covariance;
+            delete[] algorithm_list[i]->covariance_update_flag;
+          }
       }
       else
       {
         if (covariance_update)
         {
-          algorithm->covariance = new Eigen::VectorXd*[data.p];
+          algorithm->covariance = new Eigen::VectorXd *[data.p];
           algorithm->covariance_update_flag = new bool[data.p];
-          for (int j = 0; j < data.p; j++) algorithm->covariance_update_flag[j] = false;
+          for (int j = 0; j < data.p; j++)
+            algorithm->covariance_update_flag[j] = false;
           algorithm->XTy = XTy;
           algorithm->XTone = XTone;
         }
@@ -665,15 +657,15 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           effective_number_matrix(s_index, lambda_index) = algorithm->get_effective_number();
         }
 
-        if (covariance_update){
+        if (covariance_update)
+        {
           for (int j = 0; j < p; j++)
-              if (algorithm->covariance_update_flag[j])
-                  delete algorithm->covariance[j];
+            if (algorithm->covariance_update_flag[j])
+              delete algorithm->covariance[j];
           delete[] algorithm->covariance;
           delete[] algorithm->covariance_update_flag;
         }
       }
-
     }
     else
     {
@@ -683,7 +675,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       train_loss_matrix = result.train_loss_matrix;
       effective_number_matrix = result.effective_number_matrix;
       ic_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
-
     }
   }
   else
@@ -702,11 +693,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     {
       ic_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
     }
-
-
   }
-
-
 
   // fit best model
   // int best_s = sequence(min_loss_index_row);
@@ -881,8 +868,6 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   Eigen::VectorXd lambda_sequence_Vec;
   Eigen::VectorXi always_select_Vec;
 
-
-
   x_Mat = Pointer2MatrixXd(x, x_row, x_col);
   y_Mat = Pointer2MatrixXd(y, y_row, y_col);
   sigma_Mat = Pointer2MatrixXd(sigma, sigma_row, sigma_col);
@@ -913,8 +898,6 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                           sparse_matrix,
                           splicing_type,
                           sub_search);
-
-
 
   if (y_col == 1)
   {
@@ -948,6 +931,5 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
     train_loss_out[0] = train_loss;
     ic_out[0] = ic;
   }
-
 }
 #endif

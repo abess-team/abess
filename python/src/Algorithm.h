@@ -84,9 +84,9 @@ public:
   int sparsity_level = 0;  /* Number of non-zero coefficients. */
   double lambda_level = 0; /* l2 normalization coefficients. */
   // Eigen::VectorXi train_mask;
-  int max_iter;            /* Maximum number of iterations taken for the splicing algorithm to converge.  */
-  int exchange_num;        /* Max exchange variable num. */
-  bool warm_start;         /* When tuning the optimal parameter combination, whether to use the last solution as a warm start to accelerate the iterative convergence of the splicing algorithm.*/
+  int max_iter;     /* Maximum number of iterations taken for the splicing algorithm to converge.  */
+  int exchange_num; /* Max exchange variable num. */
+  bool warm_start;  /* When tuning the optimal parameter combination, whether to use the last solution as a warm start to accelerate the iterative convergence of the splicing algorithm.*/
   T4 *x = NULL;
   T1 *y = NULL;
   T2 beta;                 /* coefficients. */
@@ -121,23 +121,23 @@ public:
   Eigen::MatrixXd cox_hessian; /* hessian matrix for cox model. */
   Eigen::VectorXd cox_g;       /* score function for cox model. */
 
-  bool covariance_update;                 /* use covairance update mathod or not. */
-  Eigen::VectorXd **covariance = NULL;            /* covairance matrix. */
-  bool *covariance_update_flag = NULL;            /* each variable have updated in covairance matirx. */
-  T1 XTy;                                 /*X.transpose() * y */
-  T1 XTone;                               /* X.transpose() * Eigen::MatrixXd::one() */
+  bool covariance_update;              /* use covairance update mathod or not. */
+  Eigen::VectorXd **covariance = NULL; /* covairance matrix. */
+  bool *covariance_update_flag = NULL; /* each variable have updated in covairance matirx. */
+  T1 XTy;                              /*X.transpose() * y */
+  T1 XTone;                            /* X.transpose() * Eigen::MatrixXd::one() */
 
   double effective_number; /* effective number of parameter. */
 
   int splicing_type;     /* exchange number update mathod. */
   Eigen::MatrixXd Sigma; /* covariance matrix for pca. */
-  
-  int sub_search; /* size of sub_searching in splicing */ 
+
+  int sub_search; /* size of sub_searching in splicing */
   int U_size;
 
   int pca_n = -1;
 
-  T1 XTy_U; 
+  T1 XTy_U;
   T1 XTone_U;
   Eigen::Matrix<Eigen::MatrixXd, -1, -1> PhiG_U;
   Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhiG_U;
@@ -199,10 +199,14 @@ public:
 
   void update_group_XTX(Eigen::Matrix<T4, -1, -1> &group_XTX) { this->group_XTX = group_XTX; }
 
-  void update_tau(int train_n, int N){
-    if (train_n == 1){
+  void update_tau(int train_n, int N)
+  {
+    if (train_n == 1)
+    {
       this->tau = 0.0;
-    }else{
+    }
+    else
+    {
       this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
     }
   }
@@ -231,7 +235,6 @@ public:
 
   void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::VectorXi &status, Eigen::MatrixXd sigma)
   {
-    
 
     int T0 = this->sparsity_level;
     // this->status = status;
@@ -284,7 +287,7 @@ public:
 
     // input: this->beta_init, this->coef0_init, this->A_init, this->I_init
     // for splicing get A;for the others 0;
-    
+
     Eigen::VectorXi A = inital_screening(train_x, train_y, this->beta, this->coef0, this->A_init, this->I_init, this->bd, train_weight, g_index, g_size, N);
 
     Eigen::VectorXi I = Ac(A, N);
@@ -298,28 +301,27 @@ public:
 
     // if (this->algorithm_type == 6)
     // {
-    
+
     // T3 coef0_old = this->coef0;
     bool success = this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
     // if (!success){
     //   this->coef0 = coef0_old;
     // }else{
-      slice_restore(beta_A, A_ind, this->beta);
-      this->train_loss = neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
+    slice_restore(beta_A, A_ind, this->beta);
+    this->train_loss = neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
     // }
-    
-    // for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl<<"init loss = "<<this->train_loss<<endl; 
+
+    // for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl<<"init loss = "<<this->train_loss<<endl;
     // }
 
     this->beta_warmstart = this->beta;
     this->coef0_warmstart = this->coef0;
 
-    
     int always_select_size = this->always_select.size();
     int C_max = min(min(T0 - always_select_size, this->U_size - T0 - always_select_size), this->exchange_num);
 
     this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size, N, this->tau, this->train_loss);
-  
+
     // final fit
     this->A_out = A;
 
@@ -333,8 +335,8 @@ public:
     // if (!success){
     //   this->coef0 = coef0_old;
     // }else{
-      slice_restore(beta_A, A_ind, this->beta);
-      this->train_loss = neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
+    slice_restore(beta_A, A_ind, this->beta);
+    this->train_loss = neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
     // }
     this->primary_model_fit_max_iter -= 20;
 
@@ -351,28 +353,32 @@ public:
     Eigen::VectorXi U(this->U_size);
     Eigen::VectorXi U_ind;
     Eigen::VectorXi g_index_U(this->U_size);
-    Eigen::VectorXi g_size_U(this->U_size); 
+    Eigen::VectorXi g_size_U(this->U_size);
     T4 *X_U = new T4;
     T2 beta_U;
     Eigen::VectorXi A_U(T0);
     Eigen::VectorXi I_U(this->U_size - T0);
     Eigen::VectorXi always_select_U(this->always_select.size());
 
-    if (this->U_size == N){
+    if (this->U_size == N)
+    {
       U = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
-    }else{
+    }
+    else
+    {
       U = max_k(bd, this->U_size, true);
     }
-    
 
     int p = X.cols();
     int n = X.rows();
     int C = C_max;
     int iter = 0;
-    while (iter++ < this->max_iter){
+    while (iter++ < this->max_iter)
+    {
 
-      // mapping 
-      if (this->U_size == N) {
+      // mapping
+      if (this->U_size == N)
+      {
         delete X_U;
         X_U = &X;
         U_ind = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
@@ -382,16 +388,19 @@ public:
         A_U = A;
         I_U = I;
         always_select_U = this->always_select;
-      }else{
+      }
+      else
+      {
         U_ind = find_ind(U, g_index, g_size, p, N);
         *X_U = X_seg(X, n, U_ind);
         slice(beta, U_ind, beta_U);
-        
+
         int pos = 0;
-        for (int i = 0; i < U.size(); i++){
-            g_size_U(i) = g_size(U(i));
-            g_index_U(i) = pos;
-            pos += g_size_U(i);
+        for (int i = 0; i < U.size(); i++)
+        {
+          g_size_U(i) = g_size(U(i));
+          g_index_U(i) = pos;
+          pos += g_size_U(i);
         }
 
         A_U = Eigen::VectorXi::LinSpaced(T0, 0, T0 - 1);
@@ -399,10 +408,14 @@ public:
 
         int temp[N], s = this->always_select.size();
         memset(temp, 0, sizeof(temp));
-        for (int i = 0; i < s; i++) temp[this->always_select(i)] = 1;
-        for (int i = 0; i < this->U_size; i++){
-          if (s <= 0) break;
-          if (temp[U(i)] == 1){
+        for (int i = 0; i < s; i++)
+          temp[this->always_select(i)] = 1;
+        for (int i = 0; i < this->U_size; i++)
+        {
+          if (s <= 0)
+            break;
+          if (temp[U(i)] == 1)
+          {
             always_select_U(this->always_select.size() - s) = i;
             s--;
           }
@@ -410,17 +423,15 @@ public:
       }
 
       int num = -1;
-      while (true){
-        num ++; 
-      
+      while (true)
+      {
+        num++;
 
-        Eigen::VectorXi A_ind = find_ind(A_U, g_index_U, g_size_U, U_ind.size(), this->U_size); 
+        Eigen::VectorXi A_ind = find_ind(A_U, g_index_U, g_size_U, U_ind.size(), this->U_size);
         T4 X_A = X_seg(*X_U, n, A_ind);
         T2 beta_A;
         slice(beta_U, A_ind, beta_A);
 
-        
-        
         Eigen::VectorXd bd_U = Eigen::VectorXd::Zero(this->U_size);
         this->sacrifice(*X_U, X_A, y, beta_U, beta_A, coef0, A_U, I_U, weights, g_index_U, g_size_U, this->U_size, A_ind, bd_U, U, U_ind, num);
 
@@ -431,28 +442,32 @@ public:
 
         double l0 = train_loss;
         bool exchange = this->splicing(*X_U, y, A_U, I_U, C_max, beta_U, coef0, bd_U, weights,
-                                        g_index_U, g_size_U, this->U_size, tau, l0);                                 
+                                       g_index_U, g_size_U, this->U_size, tau, l0);
 
-        if (exchange) 
-          train_loss = l0; 
-        else 
+        if (exchange)
+          train_loss = l0;
+        else
           break; // A_U is stable
       }
-      
-      if (A_U.size() == 0 || A_U.maxCoeff() == T0 - 1) break; // if A_U not change, stop
+
+      if (A_U.size() == 0 || A_U.maxCoeff() == T0 - 1)
+        break; // if A_U not change, stop
 
       // store beta, A, I
       slice_restore(beta_U, U_ind, beta);
 
       Eigen::VectorXi ind = Eigen::VectorXi::Zero(N);
-      for (int i = 0; i < T0; i++) ind(U(A_U(i))) = 1;
+      for (int i = 0; i < T0; i++)
+        ind(U(A_U(i))) = 1;
 
       int tempA = 0, tempI = 0;
-      for (int i = 0; i < N; i++) 
-          if (ind(i)==0) I(tempI++) = i; else A(tempA++) = i;
-          
+      for (int i = 0; i < N; i++)
+        if (ind(i) == 0)
+          I(tempI++) = i;
+        else
+          A(tempA++) = i;
 
-      // bd in full set        
+      // bd in full set
       Eigen::VectorXi A_ind0 = find_ind(A, g_index, g_size, p, N);
       T4 X_A0 = X_seg(X, n, A_ind0);
       T2 beta_A0;
@@ -461,36 +476,40 @@ public:
       Eigen::VectorXi U_ind0 = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
       this->sacrifice(X, X_A0, y, beta, beta_A0, coef0, A, I, weights, g_index, g_size, N, A_ind0, bd, U0, U_ind0, 0);
 
-     
-      if (this->U_size == N){
+      if (this->U_size == N)
+      {
 
-        for (int i = 0; i < this->always_select.size(); i++) 
+        for (int i = 0; i < this->always_select.size(); i++)
           bd(this->always_select(i)) = DBL_MAX;
 
         break;
+      }
+      else
+      {
 
-      }else{
-        
         // keep A in U_new
-        for (int i = 0; i < T0; i++) bd(A(i)) = DBL_MAX; 
-        
+        for (int i = 0; i < T0; i++)
+          bd(A(i)) = DBL_MAX;
+
         //update U
         Eigen::VectorXi U_new = max_k(bd, this->U_size, true);
 
-        U = U_new;  
+        U = U_new;
         C_max = C;
-      } 
+      }
     }
 
-    if (this->U_size != N) delete X_U;
+    if (this->U_size != N)
+      delete X_U;
 
     return;
   };
-  
+
   bool splicing(T4 &X, T1 &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, T2 &beta, T3 &coef0, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
-             Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss)
+                Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss)
   {
-    if (C_max <= 0) return false;
+    if (C_max <= 0)
+      return false;
 
     // init
     int p = X.cols();
@@ -510,13 +529,11 @@ public:
     {
       d_I_group(i) = bd(I(i));
     }
-    
+
     Eigen::VectorXi A_min_k = min_k(beta_A_group, C_max, true);
     Eigen::VectorXi I_max_k = max_k(d_I_group, C_max, true);
     Eigen::VectorXi s1 = vector_slice(A, A_min_k);
     Eigen::VectorXi s2 = vector_slice(I, I_max_k);
-
-    
 
     Eigen::VectorXi A_exchange(A_size);
     Eigen::VectorXi A_ind_exchage;
@@ -535,12 +552,11 @@ public:
 
       bool success = primary_model_fit(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, train_loss, A_exchange, g_index, g_size);
       // if (success){
-        L = neg_loglik_loss(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, A_exchange, g_index, g_size);
+      L = neg_loglik_loss(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, A_exchange, g_index, g_size);
       // }else{
       //   L = train_loss + 1;
       // }
 
-      
       if (train_loss - L > tau)
       {
         train_loss = L;
@@ -549,7 +565,6 @@ public:
         slice_restore(beta_A_exchange, A_ind_exchage, beta);
         coef0 = coef0_A_exchange;
         C_max = k;
-        
 
         return true;
       }
@@ -570,7 +585,6 @@ public:
   Eigen::VectorXi inital_screening(T4 &X, T1 &y, T2 &beta, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
                                    Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
   {
-    
 
     if (bd.size() == 0)
     {
@@ -584,7 +598,7 @@ public:
       T4 X_A = X_seg(X, n, A_ind);
       T2 beta_A;
       slice(beta, A_ind, beta_A);
-  
+
       Eigen::VectorXi U = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
       Eigen::VectorXi U_ind = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
       this->sacrifice(X, X_A, y, beta, beta_A, coef0, A, I, weights, g_index, g_size, N, A_ind, bd, U, U_ind, 0);
@@ -620,7 +634,6 @@ public:
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
 
-    
     if (x.cols() == 0)
     {
       coef0 = -log(1 / y.mean() - 1);
@@ -656,8 +669,6 @@ public:
     }
     Eigen::VectorXd Z = X * beta0 + (y - Pi).cwiseQuotient(W);
 
-    
-
     int j;
     double step = 1;
     Eigen::VectorXd g(p + 1);
@@ -689,8 +700,6 @@ public:
           loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
         }
 
-        
-        
         bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
         // bool condition1 = false;
         if (condition1)
@@ -736,8 +745,7 @@ public:
         log_Pi = Pi.array().log();
         log_1_Pi = (one - Pi).array().log();
         loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
-        
-        
+
         bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
         bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
         bool condition3 = abs(loglik1) < min(1e-3, this->tau);
@@ -891,7 +899,7 @@ public:
     Eigen::MatrixXd XTX = X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
     // if (check_ill_condition(XTX)) return false;
     Eigen::VectorXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
-    
+
     beta = beta0.tail(p).eval();
     coef0 = beta0(0);
     return true;
@@ -919,12 +927,14 @@ public:
   {
     int N = U.size(), p = U_ind.size();
     if (this->covariance_update)
-      for (int i = 0; i < p; i++){
+      for (int i = 0; i < p; i++)
+      {
         this->XTy_U(i) = this->XTy(U_ind(i), 0);
         this->XTone_U(i) = this->XTone(U_ind(i), 0);
       }
 
-    for (int i = 0; i < N; i++){
+    for (int i = 0; i < N; i++)
+    {
       this->PhiG_U(i, 0) = this->PhiG(U(i), 0);
       this->invPhiG_U(i, 0) = this->invPhiG(U(i), 0);
     }
@@ -936,7 +946,8 @@ public:
     int k = A_ind_U.size(), p = U_ind.size();
     Eigen::MatrixXd cov_A(p, k);
 
-    for (int i = 0; i < k; i++){
+    for (int i = 0; i < k; i++)
+    {
       int Ai = U_ind(A_ind_U(i));
       if (!this->covariance_update_flag[Ai])
       {
@@ -944,9 +955,12 @@ public:
         *this->covariance[Ai] = (*this->x).transpose() * (*this->x).col(Ai);
         this->covariance_update_flag[Ai] = true;
       }
-      if (p == this->XTy.rows()){
+      if (p == this->XTy.rows())
+      {
         cov_A.col(i) = *this->covariance[Ai];
-      }else{
+      }
+      else
+      {
         for (int j = 0; j < p; j++)
           cov_A(j, i) = (*this->covariance[Ai])(U_ind(j));
       }
@@ -961,14 +975,18 @@ public:
     int p = X.cols();
     int n = X.rows();
 
-    if (num == 0){
-      if (p == this->XTy.rows()){
+    if (num == 0)
+    {
+      if (p == this->XTy.rows())
+      {
         this->XTy_U = this->XTy;
         this->XTone_U = this->XTone;
         this->PhiG_U = this->PhiG;
         this->invPhiG_U = this->invPhiG;
-      }else{
-        this->XTy_U.resize(p, 1); 
+      }
+      else
+      {
+        this->XTy_U.resize(p, 1);
         this->XTone_U.resize(p, 1);
         this->mapping_U(U, U_ind);
       }
@@ -978,7 +996,7 @@ public:
     if (!this->covariance_update)
     {
       Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-      
+
       if (beta.size() != 0)
       {
         d = X.adjoint() * (y - XA * beta_A - coef0 * one) / double(n) - 2 * this->lambda_level * beta;
@@ -1025,7 +1043,6 @@ public:
     {
       bd(I[i]) = dbar.segment(g_index(I[i]), g_size(I[i])).squaredNorm() / g_size(I[i]);
     }
-
   }
 
   double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0)
@@ -1052,7 +1069,6 @@ public:
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
 
-    
     int n = x.rows();
     int p = x.cols();
     T4 X(n, p + 1);
@@ -1101,9 +1117,7 @@ public:
       bool condition3 = abs(loglik1) < min(1e-3, this->tau);
       if (condition1 || condition2 || condition3)
       {
-        
-        
-        
+
         break;
       }
       loglik0 = loglik1;
@@ -1175,7 +1189,6 @@ public:
     {
       bd(I[i]) = dbar.segment(g_index(I[i]), g_size(I[i])).squaredNorm() / g_size(I[i]);
     }
-
   }
 
   double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0)
@@ -1244,7 +1257,6 @@ public:
       return true;
     }
 
-    
     int n = x.rows();
     int p = x.cols();
     Eigen::MatrixXd lambdamat = Eigen::MatrixXd::Identity(p, p);
@@ -1389,7 +1401,7 @@ public:
         beta = beta0;
         this->cox_hessian = h;
         this->cox_g = g;
-        
+
         return true;
       }
 
@@ -1399,7 +1411,6 @@ public:
         loglik0 = loglik1;
         this->cox_hessian = h;
         this->cox_g = g;
-        
       }
 
       if (step < this->primary_model_fit_epsilon)
@@ -1408,7 +1419,7 @@ public:
         beta = beta0;
         this->cox_hessian = h;
         this->cox_g = g;
-        
+
         return true;
       }
     }
@@ -1509,7 +1520,6 @@ public:
     {
       bd(I[i]) = dbar.segment(g_index(I[i]), g_size(I[i])).squaredNorm() / g_size(I[i]);
     }
-
   }
 
   double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0)
@@ -1577,7 +1587,7 @@ public:
     Eigen::MatrixXd XTX = X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
     // if (check_ill_condition(XTX)) return false;
     Eigen::MatrixXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
-    
+
     beta = beta0.block(1, 0, p, M);
     coef0 = beta0.row(0).eval();
     return true;
@@ -1586,11 +1596,10 @@ public:
     //   // coef0 = y.colwise().sum();
     //   return;
     // }
-    // 
+    //
     // // overload_ldlt(X, X, y, beta);
     // Eigen::MatrixXd XTX = X.transpose() * X;
     // beta = (XTX + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).ldlt().solve(X.transpose() * y);
-    
 
     // CG
     // ConjugateGradient<T4, Lower | Upper> cg;
@@ -1610,12 +1619,14 @@ public:
     int N = U.size(), p = U_ind.size(), M = this->XTy.cols();
     if (this->covariance_update)
       for (int i = 0; i < p; i++)
-      for (int j = 0; j < M; j++){
-        this->XTy_U(i, j) = this->XTy(U_ind(i), j);
-        this->XTone_U(i, j) = this->XTone(U_ind(i), j);
-      }
+        for (int j = 0; j < M; j++)
+        {
+          this->XTy_U(i, j) = this->XTy(U_ind(i), j);
+          this->XTone_U(i, j) = this->XTone(U_ind(i), j);
+        }
 
-    for (int i = 0; i < N; i++){
+    for (int i = 0; i < N; i++)
+    {
       this->PhiG_U(i, 0) = this->PhiG(U(i), 0);
       this->invPhiG_U(i, 0) = this->invPhiG(U(i), 0);
     }
@@ -1627,17 +1638,21 @@ public:
     int k = A_ind_U.size(), p = U_ind.size();
     Eigen::MatrixXd cov_A(p, k);
 
-    for (int i = 0; i < k; i++){
-      int Ai =  U_ind(A_ind_U(i));
+    for (int i = 0; i < k; i++)
+    {
+      int Ai = U_ind(A_ind_U(i));
       if (!this->covariance_update_flag[Ai])
       {
         this->covariance[Ai] = new Eigen::VectorXd;
         *this->covariance[Ai] = (*this->x).transpose() * (*this->x).col(Ai);
         this->covariance_update_flag[Ai] = true;
       }
-      if (p == this->XTy.rows()){
+      if (p == this->XTy.rows())
+      {
         cov_A.col(i) = *this->covariance[Ai];
-      }else{
+      }
+      else
+      {
         for (int j = 0; j < p; j++)
           cov_A(j, i) = (*this->covariance[Ai])(U_ind(j));
       }
@@ -1654,13 +1669,16 @@ public:
     int M = y.cols();
 
     if (num == 0)
-      if (p == this->XTy.rows()){
+      if (p == this->XTy.rows())
+      {
         this->XTy_U = this->XTy;
         this->XTone_U = this->XTone;
         this->PhiG_U = this->PhiG;
         this->invPhiG_U = this->invPhiG;
-      }else{
-        this->XTy_U.resize(p, M); 
+      }
+      else
+      {
+        this->XTy_U.resize(p, M);
         this->XTone_U.resize(p, M);
         this->mapping_U(U, U_ind);
       }
@@ -1686,7 +1704,6 @@ public:
         Eigen::MatrixXd XTXbeta = this->covariance_update_f_U(U_ind, A_ind) * beta_A;
 
         d = (this->XTy_U - XTXbeta - array_product(this->XTone_U, coef0)) / double(n) - 2 * this->lambda_level * beta;
-
       }
       else
       {
@@ -1717,7 +1734,6 @@ public:
     {
       bd(I[i]) = dbar.block(g_index(I[i]), 0, g_size(I[i]), M).squaredNorm() / g_size(I[i]);
     }
-
   }
 
   double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0)
@@ -1779,32 +1795,23 @@ public:
       Eigen::MatrixXd XTX = X.transpose() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
       // if (check_ill_condition(XTX)) return false;
       Eigen::MatrixXd invXTX = XTX.ldlt().solve(Eigen::MatrixXd::Identity(p + 1, p + 1));
-      
-      
-      
-
-      
-      
-      
-      
 
       Eigen::MatrixXd beta1;
       for (j = 0; j < this->primary_model_fit_max_iter; j++)
       {
         // beta1 = beta0 + cg.solve(res);
         beta1 = beta0 + invXTX * res;
-        
 
         // double app_loss0, app_loss1, app_loss2;
         // app_loss0 = ((y - Pi) / t).squaredNorm();
         // app_loss1 = (-X * beta0 - (y - Pi) / t).squaredNorm();
         // app_loss2 = (X * (beta1 - beta0) - (y - Pi) / t).squaredNorm();
-        
+
         pi(X, y, beta1, Pi);
         log_Pi = Pi.array().log();
         array_product(log_Pi, weights, 1);
         loglik1 = (log_Pi.array() * y.array()).sum();
-        
+
         bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
         // bool condition1 = false;
         bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
@@ -1840,7 +1847,7 @@ public:
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 
             Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
-            
+
             for (int i = 0; i < PiPj.size(); i++)
             {
               if (PiPj(i) < 0.001)
@@ -1849,14 +1856,13 @@ public:
               }
             }
             W.block(m1 * n, m2 * n, n, n).diagonal() = PiPj;
-
           }
           else
           {
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 
             Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array();
-            
+
             for (int i = 0; i < PiPj.size(); i++)
             {
               if (PiPj(i) < 0.001)
@@ -1866,13 +1872,9 @@ public:
             }
             W.block(m1 * n, m2 * n, n, n).diagonal() = -PiPj;
             W.block(m2 * n, m1 * n, n, n) = W.block(m1 * n, m2 * n, n, n);
-
-            
           }
         }
       }
-
-      
 
       Eigen::MatrixXd XTWX(M * (p + 1), M * (p + 1));
       Eigen::MatrixXd XTW(M * (p + 1), M * n);
@@ -1901,7 +1903,6 @@ public:
       }
 
       Eigen::VectorXd Z = Xbeta + W.ldlt().solve(res);
-      
 
       Eigen::MatrixXd beta1;
       Eigen::VectorXd beta0_tmp;
@@ -1917,15 +1918,12 @@ public:
         {
           beta0.col(m1) = beta0_tmp.segment(m1 * (p + 1), (p + 1));
         }
-        
 
         pi(X, y, beta0, Pi);
         log_Pi = Pi.array().log();
         array_product(log_Pi, weights, 1);
         loglik1 = (log_Pi.array() * y.array()).sum();
-        
-        
-        
+
         bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
         // bool condition1 = false;
         bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
@@ -1933,9 +1931,7 @@ public:
         bool condition4 = loglik1 < loglik0;
         if (condition1 || condition2 || condition3 || condition4)
         {
-          
-          
-          
+
           break;
         }
         loglik0 = loglik1;
@@ -2014,9 +2010,9 @@ public:
     pi(X, y, beta, coef0, pr);
     Eigen::MatrixXd log_pr = pr.array().log();
     // Eigen::VectorXd one_vec = Eigen::VectorXd::Ones(X.rows());
-    
+
     array_product(log_pr, weights, 1);
-    
+
     return -((log_pr.array() * y.array()).sum());
   }
 
@@ -2056,7 +2052,7 @@ public:
         XG_new.col(m) = h.col(m).cwiseProduct(XG);
       }
       Eigen::MatrixXd XGbar = -XG_new.transpose() * XG_new;
-      
+
       XGbar.diagonal() = Eigen::VectorXd(XG_new.transpose() * XG) + XGbar.diagonal();
 
       XGbar = XGbar + 2 * this->lambda_level * Eigen::MatrixXd::Identity(M - 1, M - 1);
@@ -2079,7 +2075,6 @@ public:
     // {
     //   bd(I[i]) = dbar.block(g_index(I[i]), 0, g_size(I[i]), M).squaredNorm() / g_size(I[i]);
     // }
-
   }
 
   double effective_number_of_parameter(T4 &x, T4 &XA, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0)
@@ -2122,7 +2117,7 @@ public:
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 
             Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
-            
+
             for (int i = 0; i < PiPj.size(); i++)
             {
               if (PiPj(i) < 0.001)
@@ -2131,14 +2126,13 @@ public:
               }
             }
             W.block(m1 * n, m2 * n, n, n).diagonal() = PiPj;
-
           }
           else
           {
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 
             Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array();
-            
+
             for (int i = 0; i < PiPj.size(); i++)
             {
               if (PiPj(i) < 0.001)
@@ -2148,13 +2142,9 @@ public:
             }
             W.block(m1 * n, m2 * n, n, n).diagonal() = -PiPj;
             W.block(m2 * n, m1 * n, n, n) = W.block(m1 * n, m2 * n, n, n);
-
-            
           }
         }
       }
-
-      
 
       Eigen::MatrixXd XTWX(M * (p + 1), M * (p + 1));
       Eigen::MatrixXd XTW(M * (p + 1), M * n);
@@ -2201,11 +2191,16 @@ public:
 
   ~abessPCA(){};
 
-  void updata_tau(int train_n, int N){
-    if (this->pca_n > 0) train_n = this->pca_n;
-    if (train_n == 1){
+  void updata_tau(int train_n, int N)
+  {
+    if (this->pca_n > 0)
+      train_n = this->pca_n;
+    if (train_n == 1)
+    {
       this->tau = 0.0;
-    }else{
+    }
+    else
+    {
       this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
     }
   }
@@ -2257,7 +2252,9 @@ public:
     if (eig.info() == CompInfo::Successful)
     {
       temp = eig.eigenvectors(1);
-    }else{
+    }
+    else
+    {
       return false;
     }
 
@@ -2289,7 +2286,6 @@ public:
       VectorXd temp = D.segment(g_index(I(i)), g_size(I(i)));
       bd(I(i)) = temp.squaredNorm();
     }
-
   };
 
   double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0)

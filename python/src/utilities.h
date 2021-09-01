@@ -173,4 +173,3 @@ void set_nonzeros(Eigen::SparseMatrix<double> &X, Eigen::SparseMatrix<double> &x
 // bool check_ill_condition(Eigen::MatrixXd &M);
 
 #endif //BESS_UTILITIES_H
-

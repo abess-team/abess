@@ -135,7 +135,7 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
     {
         int mark = 0;
         Eigen::VectorXi ind = Eigen::VectorXi::Zero(p);
-        
+
         for (int i = 0; i < L.size(); i++)
         {
             ind.segment(mark, gsize(L(i))) = Eigen::VectorXi::LinSpaced(gsize(L(i)), index(L(i)), index(L(i)) + gsize(L(i)) - 1);
@@ -360,7 +360,6 @@ Eigen::VectorXi Ac(Eigen::VectorXi &A, int N)
         }
         return I;
     }
-    
 }
 
 // // Ac
@@ -461,7 +460,6 @@ void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::Spars
         }
 
         A = A_row;
-
     }
     else
     {
@@ -651,8 +649,7 @@ void add_constant_column(Eigen::SparseMatrix<double> &X)
 // void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::VectorXd &Z, Eigen::VectorXd &beta)
 // {
 //     // Eigen::SparseMatrix<double> XTX = X_new.transpose() * X;
-    
-    
+
 //     // Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
 //     // solver.compute(X_new.transpose() * X);
 //     // beta = solver.solve(X_new.transpose() * Z);
@@ -664,16 +661,15 @@ void add_constant_column(Eigen::SparseMatrix<double> &X)
 // void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta)
 // {
 //     // Eigen::SparseMatrix<double> XTX = X_new.transpose() * X;
-    
-    
+
 //     // Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver;
 //     // solver.compute(X_new.transpose() * X);
 //     // beta = solver.solve(X_new.transpose() * Z);
-    
+
 //     Eigen::MatrixXd XTX = X_new.transpose() * X;
-    
+
 //     beta = (XTX).ldlt().solve(X_new.transpose() * Z);
-    
+
 //     return;
 // }
 

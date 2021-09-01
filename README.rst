@@ -128,7 +128,7 @@ Results are presented in the below figure, and can be reproduce by running the c
 
 .. code-block:: shell
 
-   $ python abess/docs/example/Python/timings.py
+   $ python abess/docs/simulation/Python/timings.py
 
 we obtain the runtime comparison picture:
 
@@ -145,7 +145,7 @@ Conducting the following commands in shell:
 
 .. code-block:: shell
 
-   $ Rscript ./docs/example/R/timings.R
+   $ Rscript ./docs/simulation/R/timings.R
 
 we obtain the runtime comparison picture:
 
