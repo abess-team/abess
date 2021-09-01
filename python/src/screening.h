@@ -64,7 +64,6 @@ Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::VectorXd, double, T4> &da
             cox_fit(x_tmp, data.y, data.weight, beta, coef0, DBL_MAX, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon, 0., 0.);
         }
         coef_norm(i) = beta.squaredNorm() / g_size(i);
-
     }
 
     // keep always_select in active_set
