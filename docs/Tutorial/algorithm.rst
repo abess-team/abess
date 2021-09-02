@@ -479,7 +479,7 @@ Algorithm 1: Group-Splicing.
          &d_{\mathcal{I}^{0}}^{0}=[\nabla \mathcal{L}({\boldsymbol\beta}^0)]_{\mathcal{I}^0},\ d_{\mathcal{A}^{0}}^{0}=0.\\
          \end{align*}
 
-3. For :math:`k=0,1, \ldots`, do
+3. For :math:`k=0,1, \ldots, k_{\max}`, do
 
       Compute :math:`L=\mathcal{L}({\boldsymbol\beta}^k)` and update
       :math:`\mathcal{S}_1^k, \mathcal{S}_2^k`
