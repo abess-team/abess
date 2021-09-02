@@ -466,17 +466,15 @@ Algorithm 1: Group-Splicing.
 1. Input:
    :math:`X,\ y,\ \{G_j\}_{j=1}^J,\ T, \ \mathcal{A}^0,\ \pi_T, \ C_{\max}`.
 
-2. Initialize
-   :math:`\mathcal{A}^{0}=\left\{j: \sum_{i=1}^{J} \mathrm{I}\left( g_{G_j} \leq g_{G_i}\right) \leq \mathrm{T}\right\}`
-   with :math:`{\boldsymbol\beta} = \boldsymbol{0}`,
-   :math:`\mathcal{I}^{0}=\left(\mathcal{A}^{0}\right)^{c}`, and
-   :math:`\left({\boldsymbol\beta}^{0}, d^{0}\right):`
+2. Initialize $k=0$.
+
+   Solve primal variable :math:`\boldsymbol\beta}^{k}` and dual variable :math:`d^{k}:`
 
    .. math::
 
       \begin{align*}
-         &{{\boldsymbol\beta}}_{\mathcal{A}^{0}}^{0}=[\arg \min _{{{\boldsymbol\beta}}_{\mathcal{I}^{0}}=0} \mathcal{L}({{\boldsymbol\beta}})]_{\mathcal{A}^{0}},\ {{\boldsymbol\beta}}_{\mathcal{I}^{0}}^{0}=0,\\
-         &d_{\mathcal{I}^{0}}^{0}=[\nabla \mathcal{L}({\boldsymbol\beta}^0)]_{\mathcal{I}^0},\ d_{\mathcal{A}^{0}}^{0}=0.\\
+         &{{\boldsymbol\beta}}_{\mathcal{A}^{k}}^{k}=[\arg \min _{{{\boldsymbol\beta}}_{\mathcal{I}^{k}}=0} \mathcal{L}({{\boldsymbol\beta}})]_{\mathcal{A}^{k}},\ {{\boldsymbol\beta}}_{\mathcal{I}^{k}}^{k}=0,\\
+         &d_{\mathcal{I}^{k}}^{k}=[\nabla \mathcal{L}({\boldsymbol\beta}^0)]_{\mathcal{I}^0},\ d_{\mathcal{A}^{k}}^{k}=0.\\
          \end{align*}
 
 3. For :math:`k=0,1, \ldots, k_{\max}`, do
