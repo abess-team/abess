@@ -197,6 +197,12 @@ class abessPCA(bess_base):
             raise ValueError(
                 "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
 
+        # cv
+        if (not isinstance(self.cv, int) or self.cv <= 0):
+            raise ValueError("cv should be an positive integer.")
+        elif (self.cv > 1):
+            self.is_cv = True
+
         # Group
         if group is None:
             g_index = list(range(p))

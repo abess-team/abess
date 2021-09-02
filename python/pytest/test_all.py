@@ -56,7 +56,7 @@ class TestClass:
         model3.fit(data.x, data.y)
 
         model4 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
-                         s_min=1, s_max=p, cv=5,
+                         s_min=1, s_max=p, cv=1,
                          exchange_num=2, 
                          ic_coef=1., thread=5, covariance_update=True, splicing_type=1)
         model4.fit(data.x, data.y)
@@ -107,14 +107,14 @@ class TestClass:
         model2.predict(data.x)
 
         model3 = abessLogistic(path_type="seq", support_size=support_size, ic_type='aic', is_screening=False, screening_size=30,  alpha=[0.001],
-                              s_min=1, s_max=p, cv=5,
+                              s_min=1, s_max=p, cv=1,
                               exchange_num=2, 
                               primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
 
         model4 = abessLogistic(path_type="seq", support_size=support_size, ic_type='aic', is_screening=True, screening_size=20,  alpha=[0.001],
-                              s_min=1, s_max=p, cv=5,
+                              s_min=1, s_max=p, cv=1,
                               exchange_num=2, 
                               primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
@@ -159,7 +159,7 @@ class TestClass:
         model.predict(data.x)
 
         model = abessCox(path_type="seq", support_size=support_size, ic_type='bic', is_screening=True, screening_size=20, alpha=[0.001],
-                         s_min=1, s_max=p, cv=5,
+                         s_min=1, s_max=p, cv=1,
                          exchange_num=2, 
                          primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
@@ -226,7 +226,7 @@ class TestClass:
         model.fit(data.x, data.y, group=group)
 
         model1 = abessPoisson(path_type="seq", support_size=support_size, ic_type='gic', is_screening=True, screening_size=20, alpha=[0.001],
-                              s_min=1, s_max=p, cv=5,
+                              s_min=1, s_max=p, cv=1,
                               exchange_num=2, 
                               primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
@@ -287,7 +287,7 @@ class TestClass:
         model2.fit(data.x, data.y, group=group)
 
         model3 = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
-                                    s_min=1, s_max=p, cv=5,
+                                    s_min=1, s_max=p, cv=1,
                                     exchange_num=2, 
                                     ic_coef=1., thread=5, covariance_update=True)
         group = np.linspace(1, p, p)
@@ -347,7 +347,7 @@ class TestClass:
         model.predict(data.x)
 
         model2 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
-                                  s_min=1, s_max=p, cv=5,
+                                  s_min=1, s_max=p, cv=1,
                                   exchange_num=2, 
                                   primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
@@ -361,7 +361,7 @@ class TestClass:
         model3.fit(data.x, data.y, group=group)
 
         model4 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
-                                  s_min=1, s_max=p, cv=5,
+                                  s_min=1, s_max=p, cv=1,
                                   exchange_num=2, 
                                   primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
@@ -735,7 +735,7 @@ class TestClass:
         model3.fit(data.x, data.y)
 
         model4 = abessLm(path_type="pgs", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                         s_min=1, s_max=p, cv=5,
+                         s_min=1, s_max=p, cv=1,
                          exchange_num=2, 
                          ic_coef=1., thread=0, covariance_update=True)
         model4.fit(data.x, data.y)
@@ -943,7 +943,7 @@ class TestClass:
         model.fit(data.x, data.y, group=group)
 
         model2 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
-                                  s_min=1, s_max=p, cv=5,
+                                  s_min=1, s_max=p, cv=1,
                                   exchange_num=2, 
                                   primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
@@ -1529,13 +1529,13 @@ class TestClass:
         s_max = 20
 
         model = abessLm(path_type="seq", support_size=range(0, 10), ic_type='aic', is_screening=False, screening_size=20,
-                        s_min=1, s_max=p, cv=5,
+                        s_min=1, s_max=p, cv=1,
                         exchange_num=2,  is_warm_start=False,
                         ic_coef=1., thread=5, covariance_update=False)
         model.fit(data.x, data.y)
 
         model = abessLm(path_type="pgs", support_size=range(0, 10), ic_type='aic', is_screening=False, screening_size=20,
-                        s_min=1, s_max=p, cv=5,
+                        s_min=1, s_max=p, cv=1,
                         exchange_num=2,  is_warm_start=False,
                         ic_coef=1., thread=5, covariance_update=False)
         model.fit(data.x, data.y)
