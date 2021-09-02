@@ -103,6 +103,9 @@ def _estimate_concordance_index(event_indicator, event_time, estimate, weights, 
 
 def concordance_index_censored(event_indicator, event_time, estimate, tied_tol=1e-8):
     """Concordance index for right-censored data
+
+    Reference from scikit-survival: `sksurv.metrics.concordance_index_censored`.
+
     The concordance index is defined as the proportion of all comparable pairs
     in which the predictions and outcomes are concordant.
     Two samples are comparable if (i) both of them experienced an event (at different times),
