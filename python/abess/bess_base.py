@@ -32,25 +32,16 @@ class bess_base(BaseEstimator):
     s_max : int, optional
         The higher bound of golden-section-search for sparsity searching.
         Default: s_max = min(n, round(n/(log(log(n))log(p)))).
-    K_max : int, optional
-        The max search time of golden-section-search for sparsity searching.
-        Default: K_max = int(log(p, 2/(math.sqrt(5) - 1))).
-    epsilon : double, optional
-        The stop condition of golden-section-search for sparsity searching.
-        Default: epsilon = 0.0001.
     ic_type : {'aic', 'bic', 'gic', 'ebic'}, optional
         The type of criterion for choosing the support size. Available options are "gic", "ebic", "bic", "aic".
         Default: ic_type = 'ebic'.
-    is_cv : bool, optional
-        Use the Cross-validation method to choose the support size.
-        Default: is_cv = False.
-    K : int, optional
-        The folds number when Use the Cross-validation method.
-        Default: K = 5.
+    cv : int, optional
+        The folds number when Use the Cross-validation method. If cv=1, cross-validation would not be used.
+        Default: cv = 1.
     thread: int, optional
         Max number of multithreads. If thread = 0, the program will use the maximum number supported by the device.
         Default: thread = 1. 
-    is_screen: bool, optional
+    is_screening: bool, optional
         Screen the variables first and use the chosen variables in abess process.
         Default: is_screen = False.
     screen_size: int, optional
@@ -84,7 +75,7 @@ class bess_base(BaseEstimator):
     def __init__(self, algorithm_type, model_type, data_type, path_type, max_iter=20, exchange_num=5, is_warm_start=True,
                  support_size=None, alpha=None, s_min=None, s_max=None, 
                  ic_type="ebic", ic_coef=1.0,
-                 is_cv=False, Kfold=5, is_screening=False, screening_size=None, 
+                 cv=1, is_screening=False, screening_size=None, 
                  always_select=[], 
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
@@ -113,8 +104,8 @@ class bess_base(BaseEstimator):
         self.n_lambda = 100
         self.ic_type = ic_type
         self.ic_coef = ic_coef
-        self.is_cv = is_cv
-        self.Kfold = Kfold
+        self.is_cv = False
+        self.cv = cv
         self.is_screening = is_screening
         self.screening_size = screening_size
         self.powell_path = 1
@@ -246,6 +237,12 @@ class bess_base(BaseEstimator):
         else:
             raise ValueError(
                 "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
+        
+        # cv
+        if (not isinstance(self.cv, int) or self.cv <= 0):
+            raise ValueError("cv should be an positive integer.")
+        elif (self.cv > 1):
+            self.is_cv = True
 
         # Group:
         if group is None:
@@ -407,7 +404,7 @@ class bess_base(BaseEstimator):
                               is_normal,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
-                              ic_type_int, self.ic_coef, self.is_cv, self.Kfold,
+                              ic_type_int, self.ic_coef, self.is_cv, self.cv,
                               g_index,
                               state,
                               support_sizes,

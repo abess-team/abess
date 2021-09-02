@@ -145,7 +145,7 @@ for m in range(M):
 
         t_start = time()
         # model = abessLm(is_cv = True, path_type = "pgs", s_min = 0, s_max = 99, thread = 0)
-        model = abessLm(is_cv = True, support_size = range(100), thread = 5)
+        model = abessLm(cv = 5, support_size = range(100), thread = 5)
         fit = model.fit(train.x, train.y)
         t_end = time()
 

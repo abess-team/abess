@@ -197,6 +197,12 @@ class abessPCA(bess_base):
             raise ValueError(
                 "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
 
+        # cv
+        if (not isinstance(self.cv, int) or self.cv <= 0):
+            raise ValueError("cv should be an positive integer.")
+        elif (self.cv > 1):
+            self.is_cv = True
+
         # Group
         if group is None:
             g_index = list(range(p))
@@ -306,7 +312,7 @@ class abessPCA(bess_base):
                               is_normal,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
-                              ic_type_int, self.ic_coef, self.is_cv, self.Kfold,
+                              ic_type_int, self.ic_coef, self.is_cv, self.cv,
                               g_index,
                               state,
                               support_sizes,
@@ -342,7 +348,7 @@ class abessPCA(bess_base):
                                       is_normal,
                                       algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                                       path_type_int, self.is_warm_start,
-                                      ic_type_int, self.ic_coef, self.is_cv, self.Kfold,
+                                      ic_type_int, self.ic_coef, self.is_cv, self.cv,
                                       g_index,
                                       state,
                                       support_sizes,
