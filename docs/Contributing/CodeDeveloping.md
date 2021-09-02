@@ -11,15 +11,17 @@ The main files related to the core are in `abess/python/src`. Among them, some i
 - `Algorithm.h` records the implement of each concrete algorithm; 
 - `abess.cpp` contain the calling procedure.
 
-If you want to add a new algorithm, both of them should be updated.
+If you want to add a new algorithm, both of them should be noticed.
 
 
 
-In `Algorithm.h`, The concrete algorithms are programmed in the subclass of Algorithm by rewriting the virtual function interfaces of class Algorithm. Besides, the implementation is modularized such that you can easily extend the package. 
+In `Algorithm.h`, we give a base class *Algorithm*, and the new method should inheritate it. The concrete algorithms are programmed in the subclass of Algorithm by rewriting the virtual function interfaces of class *Algorithm*. Besides, the implementation is modularized such that you can easily extend the package. 
+
+We have implemented some GLM algorithms that you can check them on [`abess/python/src/AlgorithmGLM.h`](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h). 
 
 >  The format of a new algorithm's name is "**abess+your_algorithm**", which means that using abess to solve the problem.
 
-Take PCA as an example, the name should be `abessPCA`. Now we can define a concrete algorithm like: [[code link]](https://github.com/abess-team/abess/blob/master/python/src/Algorithm.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessPCA,-%3A%20public%20Algorithm%3CEigen)
+Take PCA as an example, the name should be `abessPCA`. Now we can create a new file, named `AlgorithmPCA.h`, and define a concrete algorithm like: [[code link]](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmPCA.h)
 
 ```Cpp
 template <class T4>
@@ -110,7 +112,9 @@ else if (model_type == 123)
 }
 ```
 
-Now your new method has been connected to the whole frame. In the next section, we focus on how to build R or Python package based on the core code.
+
+
+After that, remember to include your new `.h` file in `abess.cpp`, like [this](https://github.com/abess-team/abess/blob/master/python/src/abess.cpp#:~:text=%23include%20%22AlgorithmPCA.h%22). Now your new method has been connected to the whole frame. In the next section, we focus on how to build R or Python package based on the core code.
 
 ## R & Python Package
 
@@ -223,5 +227,4 @@ A good test code should contain:
 - possible extreme cases;
 
 All test under pytest folder should be checked after coding.
-
 
