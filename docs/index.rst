@@ -6,7 +6,7 @@
 .. .. role:: raw
 ..    :format: html latex 
 
-.. include:: ../README.rst 
+.. include:: ./README.rst 
 
 .. toctree::
    :hidden:
