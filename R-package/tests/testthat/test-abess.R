@@ -146,7 +146,7 @@ test_that("Covariance update works", {
   
   ## p > n case:
   n <- 50
-  p <- 1100
+  p <- 100
   support_size <- 3
   
   dataset <- generate.data(n, p, support_size, seed = 1)
@@ -219,8 +219,8 @@ test_that("abess (gaussian) works", {
 })
 
 test_that("abess (binomial) works", {
-  n <- 75
-  p <- 50
+  n <- 150
+  p <- 100
   support.size <- 3
   
   dataset <- generate.data(n, p, support.size,
@@ -309,8 +309,9 @@ test_that("abess (cox) works", {
 })
 
 test_that("abess (poisson) works", {
-  n <- 100
-  p <- 30
+  skip("poisson")
+  n <- 200
+  p <- 100
   support.size <- 3
   
   dataset <- generate.data(n, p, support.size,
