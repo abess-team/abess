@@ -36,7 +36,7 @@ Welcome to abess's documentation!
 Overview
 ============
 
-**abess** (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
+`abess` (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
 find a small subset of predictors such that the resulting model is expected to have the highest accuracy. 
 The selection for best subset shows great value in scientific researches and practical application. 
 For example, clinicians wants to know whether a patient is health or not  
@@ -61,7 +61,7 @@ Especially, the time complexity of (group) best subset selection for linear regr
 Quick start
 ============
 
-The abess software has both Python and R's interfaces. Here a quick start will be given and
+The `abess` software has both Python and R's interfaces. Here a quick start will be given and
 for more details, please view: `Installation`_.
 
 .. _Installation: https://abess.readthedocs.io/en/latest/Installation.html
@@ -69,7 +69,7 @@ for more details, please view: `Installation`_.
 Python package
 --------------
 
-Install the stable abess Python package from Pypi: 
+Install the stable `abess` Python package from Pypi: 
 
 .. code-block:: shell
 
@@ -91,7 +91,7 @@ See more examples analyzed with Python in the `Python tutorials <https://abess.r
 R package
 -----------
 
-Install abess from R CRAN by running the following command in R: 
+Install `abess` from R CRAN by running the following command in R: 
 
 .. code-block:: r
 
@@ -111,11 +111,11 @@ See more examples analyzed with R in the `R tutorials <https://abess-team.github
 Runtime Performance
 ===================
 
-To show the power of abess in computation, 
+To show the power of `abess` in computation, 
 we assess its timings of the CPU execution (seconds) on synthetic datasets, and compare to 
 state-of-the-art variable selection methods. 
-The variable selection and estimation results are deferred to `Python performance`_  
-and `R performance`_.
+The variable selection and estimation results as well as the details of settings are deferred to `Python performance`_  
+and `R performance`_. All computations are conducted on a Ubuntu platform with Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM.
 
 .. _Python performance: https://abess.readthedocs.io/en/latest/Tutorial/power_of_abess.html
 .. _R performance: https://abess-team.github.io/abess/articles/v11-power-of-abess.html
@@ -123,47 +123,47 @@ and `R performance`_.
 Python package   
 ---------------
 
-We compare abess Python package with scikit-learn on linear and logistic regression.
-Results are presented in the below figure, and can be reproduce by running the commands in shell:
-
-.. code-block:: shell
-
-   $ python /docs/simulation/Python/timings.py
-
-we obtain the runtime comparison picture:
-
+We compare `abess` Python package with scikit-learn on linear regression and logistic regression.
+Results are presented in the below figure:
 |pic1| 
 
 .. |pic1| image:: ./image/timings.png
    :width: 100%
 
-R package    
------------
-
-We compare abess R package with three widely used R packages: glmnet, ncvreg, L0Learn. 
-Conducting the following commands in shell: 
+It can be see that `abess` uses the least runtime to find the solution. This results can be reproduced by running the commands in shell:
 
 .. code-block:: shell
 
-   $ Rscript /docs/simulation/R/timings.R
+   $ python ./docs/simulation/Python/timings.py
 
-we obtain the runtime comparison picture:
+
+R package    
+-----------
+
+We compare `abess` R package with three widely used R packages: `glmnet`, `ncvreg`, and `L0Learn`. 
+We get the runtime comparison result:
 
 |Rpic1|
 
 .. |Rpic1| image:: ./image/r_runtime.png
    :width: 100%
 
-In both Python and R environments, 
-abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
+Compared with the other packages, 
+`abess` shows competitive computational efficiency, and achieves the best computational power when variables have a large correlation.
+
+Conducting the following commands in shell can reproduce the above results: 
+
+.. code-block:: shell
+
+   $ Rscript ./docs/simulation/R/timings.R
 
 Open source software     
 ====================
 
-abess is a free software and its source code are publicly available in `Github`_.  
+`abess` is a free software and its source code are publicly available in `Github`_.  
 The core framework is programmed in C++, and user-friendly R and Python interfaces are offered.
 You can redistribute it and/or modify it under the terms of the `GPL-v3 License`_. 
-We welcome contributions for abess, especially stretching abess to 
+We welcome contributions for `abess`, especially stretching `abess` to 
 the other best subset selection problems. 
 
 .. _github: https://github.com/abess-team/abess

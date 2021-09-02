@@ -14,7 +14,7 @@ Both packages are compared in three aspects including the prediction performance
 
 The simulated data are made by `abess.datasets.make_glm_data()`. The number of predictors is $p=8000$ and the size of data is $n=500$. The true coefficient contains $k=10$ nonzero entries uniformly distributed in $[b,B]$. For linear (gaussian) data, we set $b = 5\sqrt{2\ln p / n}$ and $B = 100b$. For logistic (binomial) data, we set $b = 10\sqrt{2\ln p / n}$ and $B = 5b$. In each regression, we test for both low ($\rho=0.1$) and high correlation ($\rho=0.7$) scenarios. What's more, a random noise generated from a standard Gaussian distribution is added to the linear predictor $x′β$ for linear regression. 
 
-All experiments are evaluated on an *TODO*. 
+All experiments are evaluated on a Ubuntu platform with Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM.
 
 ```bash
 $ python abess/docs/simulation/Python/perform.py
