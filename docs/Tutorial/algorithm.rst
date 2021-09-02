@@ -477,7 +477,7 @@ Algorithm 1: Group-Splicing.
          &d_{\mathcal{I}^{k}}^{k}=[\nabla \mathcal{L}({\boldsymbol\beta}^0)]_{\mathcal{I}^0},\ d_{\mathcal{A}^{k}}^{k}=0.\\
          \end{align*}
 
-3. For :math:`k=0,1, \ldots, k_{\max}`, do
+3. While :math:`\mathcal{A}^{k+1} \neq \mathcal{A}^{k}`, do
 
       Compute :math:`L=\mathcal{L}({\boldsymbol\beta}^k)` and :math:`\{\bar {\boldsymbol\beta}, \bar {\boldsymbol d}\}.
       
@@ -527,7 +527,7 @@ Algorithm 1: Group-Splicing.
       :math:`\left(\mathcal{A}^{k+1}, \mathcal{I}^{k+1}\right)=\left(\mathcal{A}^{k}, \mathcal{I}^{k}\right)`,
       then stop.
 
-   End for
+   End While
 
 5. Output
    :math:`(\hat{\boldsymbol{{\boldsymbol\beta}}}, \hat{\boldsymbol{d}}, \hat{\mathcal{A}}, \hat{\mathcal{I}})=\left(\boldsymbol{{\boldsymbol\beta}}^{m+1}, \boldsymbol{d}^{m+1} \mathcal{A}^{m+1}, \mathcal{I}^{m+1}\right).`
