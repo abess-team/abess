@@ -21,8 +21,8 @@ def metrics(coef, pred, test):
     return np.array([auc, coef_err, tpr, fpr, mcc])
 
 n = 500
-p = 2000
-M = 100
+p = 8000
+M = 20
 rho = float(sys.argv[1])
 model_name = "Logistic"
 method = [
