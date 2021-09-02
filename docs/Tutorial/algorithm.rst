@@ -884,4 +884,4 @@ Algorithm : Important Search
 
       If :math:`U` is unchanged (not in order), break;
 
-4. Return :math:`\mathcal{A}, \mathcal{I}`.
+4. Return :math:`\mathcal{A},  \mathcal{I}`.
