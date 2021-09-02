@@ -177,13 +177,13 @@
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html">Matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>## 6 x 10 sparse Matrix of class "dgCMatrix"
-##                                                                       
-## [1,] 0.8271779 .       . .          . .         .        0.7174193 . .
-## [2,] .         .       . .          . .         .        .         . .
-## [3,] .         .       . 0.42139080 . .         .        .         . .
-## [4,] .         .       . 0.08254893 . .         .        .         . .
-## [5,] .         1.43472 . 2.53825027 . .         .        .         . .
-## [6,] .         .       . .          . 0.9404083 1.165526 .         . .</code></pre>
+##                                                                              
+## [1,] . . .  .           .          .        .  .        -0.9460194  1.6218143
+## [2,] . . .  .          -0.1386014  .        .  .         .          0.2379913
+## [3,] . . . -1.45762984  .          .        .  .         .          .        
+## [4,] . . . -0.02558916 -0.9875168 -1.325672 .  .         .          0.2268277
+## [5,] . . .  .           .          .        . -1.477799  .          .        
+## [6,] . . .  .           .          .        .  .         .         -0.6070925</code></pre>
 <p>Then, we apply ABESS algorithm on Matrix <code>x</code> and record the runtime in <code>t1</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
@@ -192,19 +192,19 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##           [,1]    [,2] [,3]       [,4] [,5]      [,6]
-## [1,] 0.8271779 0.00000    0 0.00000000    0 0.0000000
-## [2,] 0.0000000 0.00000    0 0.00000000    0 0.0000000
-## [3,] 0.0000000 0.00000    0 0.42139080    0 0.0000000
-## [4,] 0.0000000 0.00000    0 0.08254893    0 0.0000000
-## [5,] 0.0000000 1.43472    0 2.53825027    0 0.0000000
-## [6,] 0.0000000 0.00000    0 0.00000000    0 0.9404083</code></pre>
+<pre><code>##      [,1] [,2] [,3]        [,4]       [,5]      [,6]
+## [1,]    0    0    0  0.00000000  0.0000000  0.000000
+## [2,]    0    0    0  0.00000000 -0.1386014  0.000000
+## [3,]    0    0    0 -1.45762984  0.0000000  0.000000
+## [4,]    0    0    0 -0.02558916 -0.9875168 -1.325672
+## [5,]    0    0    0  0.00000000  0.0000000  0.000000
+## [6,]    0    0    0  0.00000000  0.0000000  0.000000</code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></code></pre></div>
 <pre><code>##    user.self sys.self elapsed
-## t1     0.256    0.007   0.263
-## t2     0.310    0.026   0.335</code></pre>
+## t1     0.258    0.007   0.268
+## t2     0.315    0.030   0.362</code></pre>
 <p>From the comparison, we see that the time required by sparse matrix is visibly smaller, and thus, we suggest to assign a sparse matrix to <code>abess</code> when the input matrix have a lot of zero entries.</p>
 </div>
 <div id="golden-section-searching" class="section level2">
@@ -242,8 +242,8 @@
 <code class="sourceCode R"><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></code></pre></div>
 <pre><code>##    user.self sys.self elapsed
-## t1     0.021    0.000   0.021
-## t2     0.060    0.006   0.067</code></pre>
+## t1      0.02    0.001   0.021
+## t2      0.06    0.006   0.067</code></pre>
 </div>
 <div id="early-stop" class="section level2">
 <h2 class="hasAnchor">
@@ -321,8 +321,8 @@
 <code class="sourceCode R"><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></code></pre></div>
 <pre><code>##    user.self sys.self elapsed
-## t1     0.061    0.006   0.067
-## t2     0.060    0.007   0.067</code></pre>
+## t1     0.058    0.006   0.063
+## t2     0.058    0.006   0.064</code></pre>
 <p>we can conclude that early-stopping brings fast computation and might maintain statistical guarantee.</p>
 </div>
   </div>
