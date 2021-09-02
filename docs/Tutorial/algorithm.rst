@@ -481,8 +481,9 @@ Algorithm 1: Group-Splicing.
 
 3. For :math:`k=0,1, \ldots, k_{\max}`, do
 
-      Compute :math:`L=\mathcal{L}({\boldsymbol\beta}^k)` and update
-      :math:`\mathcal{S}_1^k, \mathcal{S}_2^k`
+      Compute :math:`L=\mathcal{L}({\boldsymbol\beta}^k)` and :math:`\{\bar {\boldsymbol\beta}, \bar {\boldsymbol d}\}.
+      
+      Update :math:`\mathcal{S}_1^k, \mathcal{S}_2^k`
 
       .. math::
 
