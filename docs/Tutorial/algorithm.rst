@@ -479,7 +479,7 @@ Algorithm 1: Group-Splicing.
 
 3. While :math:`\mathcal{A}^{k+1} \neq \mathcal{A}^{k}`, do
 
-      Compute :math:`L=\mathcal{L}({\boldsymbol\beta}^k)` and :math:`( \bar{\boldsymbol\beta}, \bar{\boldsymbol d} )`.
+      Compute :math:`L=\mathcal{L}({\boldsymbol\beta}^k)` and :math:`( {\bar{\boldsymbol\beta}}, {\bar{\boldsymbol d}} )`.
       
       Update :math:`\mathcal{S}_1^k, \mathcal{S}_2^k`
 
