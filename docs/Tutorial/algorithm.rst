@@ -588,7 +588,7 @@ Algorithm 2: Sequential Group-Splicing (SGSplicing).
    .. math:: T_{\min }=\arg \min _{T} \operatorname{GIC}\left(\hat{\mathcal{A}}_{T}\right).
 
 4. Output
-   :math:`\left(\hat{\boldsymbol{{\boldsymbol\beta}}}_{T_{\operatorname{min}}}, \hat{\boldsymbol{d}}_{T_{\min }}, \hat{A}_{T_{\min }}, \hat{\mathcal{I}}_{T_{\min }}\right) .`
+   :math:`\left(\hat{\boldsymbol{{\boldsymbol\beta}}}_{T_{\operatorname{min}}}, \hat{\boldsymbol{d}}_{T_{\min }}, \hat{\mathcal{A}}_{T_{\min }}, \hat{\mathcal{I}}_{T_{\min }}\right) .`
 
 Nuisance selection 
 ------------------
