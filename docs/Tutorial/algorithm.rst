@@ -543,16 +543,17 @@ Determining the best support size with information criterion
 | For any selected group subset :math:`\mathcal{A}`, define an group
   information criterion(GIC) as follows:
 
-.. math:: \operatorname{GIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| \log J \log \log n,
+.. math:: \operatorname{GIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+ \log J \log \log n \#\{\mathcal{A}\},
 
 | where
-  :math:`\mathcal{L}_{\mathcal{A}}=\min _{{\boldsymbol\beta}_{\mathcal{I}}=0} \mathcal{L}_{n}({\boldsymbol\beta}), \mathcal{I}=(\mathcal{A})^{c}`.
+  :math:`\mathcal{L}_{\mathcal{A}}=\min _{{\boldsymbol\beta}_{\mathcal{I}}=0} \mathcal{L}_{n}({\boldsymbol\beta}), \mathcal{I}=(\mathcal{A})^{c}` and
+  :math:`\#\{\mathcal{A}\}` is the number of variables contained in :math:`\cup_{j\in \mathcal{A}}G_j`.
   To identify the true model, the
   model complexity penalty is :math:`\log J` and the slow diverging rate
   :math:`\log \log n` is set to prevent underfitting. Besides, we define
   the Bayesian group information criterion (BGIC) as follows:
 
-.. math:: \operatorname{BGIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| (\gamma \log J +\log n),
+.. math:: \operatorname{BGIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+ (\gamma \log J +\log n)\#\{\mathcal{A}\},
 
 where :math:`\gamma` is a pre-determined positive constant, controlling
 the diverging rate of group numbers :math:`J`.
