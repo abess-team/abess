@@ -402,7 +402,7 @@ public:
         I_U = Eigen::VectorXi::LinSpaced(this->U_size - T0, T0, this->U_size - 1);
 
         int *temp = new int[N], s = this->always_select.size();
-        memset(temp, 0, sizeof(temp));
+        memset(temp, 0, N);
         for (int i = 0; i < s; i++)
           temp[this->always_select(i)] = 1;
         for (int i = 0; i < this->U_size; i++)
