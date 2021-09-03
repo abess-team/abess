@@ -1,7 +1,8 @@
 <img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/image/icon_long.png' align="center"/></a>     
 
-<center> abess: A Fast Best-Subset Selection Library in Python and R </center> 
----
+<center> abess: A Fast Best-Subset Selection Library in Python and R </center>
+ 
+-------
 
 <!-- badges: start -->
 [![Github action](https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg)](https://github.com/abess-team/abess/actions)
