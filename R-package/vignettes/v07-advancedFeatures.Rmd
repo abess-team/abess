@@ -53,7 +53,7 @@ coef(abess_fit, support.size = abess_fit$support.size[which.min(abess_fit$tune.v
 
 ## Regularized Adaptive Best Subset Selection
 
-In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vallina type of $L_0$ constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the `abess` pakcage provides option of best subset selection with $L_2$ norm regularization called the regularized bess. The model has this following form:
+In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vallina type of $L_0$ constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the `abess` package provides option of best subset selection with $L_2$ norm regularization called the regularized bess. The model has this following form:
 
 \begin{align}
 \min_\beta L(\beta) + \lambda \|\beta\|_2^2
