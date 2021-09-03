@@ -15,8 +15,8 @@
 ## Overview
 **abess** (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
 find a small subset of predictors such that the resulting model is expected to have the highest accuracy. 
-The selection for best subset shows great value in scientific researches and practical application. 
-For example, clinicians wants to know whether a patient is health or not based on the expression level of a few of important genes.
+The selection for best subset shows great value in scientific researches and practical applications. 
+For example, clinicians want to know whether a patient is healthy or not based on the expression levels of a few of important genes.
 
 This library implements a generic algorithm framework to find the optimal solution in an extremely fast way.
 This framework now supports the detection of best subset under: 
@@ -82,7 +82,7 @@ To show the power of abess in computation, we assess its timings of the CPU exec
 
 ### Python package   
 
-We compare `abess` Python package with scikit-learn on linear regression and logistic regression. Results are presented in the below figure:
+We compare `abess` Python package with `scikit-learn` on linear regression and logistic regression. Results are presented in the below figure:
 
 ![](./docs/image/timings.png)
 
@@ -93,14 +93,14 @@ $ python abess/docs/simulation/Python/timings.py
 ```
 
 
-### R packages
+### R package
 
 We compare `abess` R package with three widely used R packages: `glmnet`, `ncvreg`, and `L0Learn`. 
 We get the runtime comparison results:
 
 ![](docs/image/r_runtime.png)
 
-Compared with the other packages, 
+Compared with other packages, 
 `abess` shows competitive computational efficiency, 
 and achieves the best computational power when variables have a large correlation.
 
@@ -112,7 +112,7 @@ $ Rscript abess/docs/simulation/R/timings.R
 
 ## Open source software     
 
-**abess** is a free software and its source code are publicly available in [Github](https://github.com/abess-team/abess).  
+**abess** is a free software and its source code is publicly available on [Github](https://github.com/abess-team/abess).  
 The core framework is programmed in C++, and user-friendly R and Python interfaces are offered.
 You can redistribute it and/or modify it under the terms of the [GPL-v3 License](https://www.gnu.org/licenses/gpl-3.0.html). 
 We welcome contributions for abess, especially stretching abess to the other best subset selection problems. 
