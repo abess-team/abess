@@ -13,7 +13,7 @@ It is the third stable release for `abess`. This version improve the runtime per
     * Bug fixed
 
 * R package
-  * Support important searching for generalized linear model `abess`
+  * Support important searching for generalized linear model in `abess`
   * A new release in CRAN.
 
 * Python package
@@ -22,15 +22,17 @@ It is the third stable release for `abess`. This version improve the runtime per
   * A new release in Pypi.
 
 * Project development
-  * Code coverage for line covering rate for both Python and R. And the coverage rates are summarized and report. 
+  * Code coverage
+    * Check line covering rate for both Python and R. And the coverage rates are summarized and report. 
+    * Add more test suites to improve coverage and stability
   * Documentation
     * Add docs2search for the R package's website
-    * Add algorithm details and simulation results into Tutorial. 
-    * Add a logo for our project
-  * Improve code coverage.
+    * Add a logo for the project
+    * Improve documentation by adding two tutorial sections: ``detail of algorithm`` and ``power of abess``.
+  * Improve code coverage
   * Continuous integration
-    * Automatically generate the .whl files and publish the Python package into Pypi when tagging the project.
-    * Check the installation in
+    * Check the installation in Windows, Mac, and Linux
+    * Automatically generate the `.whl` files and publish the Python package into Pypi when tagging the project in github.
 
 ## Version 0.2.0
 
@@ -67,7 +69,7 @@ We also significantly enhancements to the project' documentation.
   * Documentation
     * A more clear project website layout.
     * Add an instruction for 
-    * Add tutorials to show simple use-cases and non-trival examples of typical use-cases of the software.
+    * Add tutorials to show simple use-cases and non-trival examples of typical use-cases of the software. 
     * Link to R-package website.
     * Add an instruction to help package development. 
   * Code coverage for line covering rate for Python.
