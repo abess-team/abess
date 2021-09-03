@@ -26,7 +26,7 @@
   important.search = NULL,
   warm.start = TRUE,
   nfolds = 5,
-  cov.update = TRUE,
+  cov.update = FALSE,
   newton = c("exact", "approx"),
   newton.thresh = 1e-06,
   max.newton.iter = NULL,
