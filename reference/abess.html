@@ -88,7 +88,7 @@ multi-response modeling in polynomial times." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -334,7 +334,7 @@ marginal maximum likelihood estimator before running algorithm.</p></td>
       <td><p>An integer number indicating the number of 
 important variables to be splicing. 
 When <code>important.search</code> \(\ll\) <code>p</code> variables, 
-it would greatly reduce runtimes. Default: <code>important.search = 1000</code>.</p></td>
+it would greatly reduce runtimes. Default: <code>important.search = 128</code>.</p></td>
     </tr>
     <tr>
       <th>warm.start</th>
@@ -348,8 +348,8 @@ it would greatly reduce runtimes. Default: <code>important.search = 1000</code>.
       <th>cov.update</th>
       <td><p>A logical value only used for <code>family = "gaussian"</code>. If <code>cov.update = TRUE</code>,
 use a covariance-based implementation; otherwise, a naive implementation.
-The naive method is more efficient than covariance-based method only when \(p &gt;&gt; n\).
-Default: <code>cov.update = TRUE</code>.</p></td>
+The naive method is more efficient than covariance-based method when \(p &gt;&gt; n\) and <code>important.search</code> is much large than its default value.
+Default: <code>cov.update = FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>newton</th>
@@ -795,7 +795,7 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
 
       <footer>
       <div class="copyright">
-  <p>Developed by Jin Zhu, Kangkang Jiang, Yanhang Zhang, Liyuan Hu, Junhao Huang, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p>Developed by Jin Zhu, Kangkang Jiang, Junhao Huang, Liyuan Hu, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">

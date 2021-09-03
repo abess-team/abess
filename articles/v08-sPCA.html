@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -169,7 +169,7 @@
 <code class="sourceCode R"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">'./communities.data'</span>, header <span class="op">=</span> <span class="cn">FALSE</span>, na.strings <span class="op">=</span> <span class="st">'?'</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 1994  128</code></pre>
-<p>The dataset contain 128 variables but a part of them have mising values or categorical variables. We simply drop these variables, and retain 99 predictive variables as our data example.</p>
+<p>The dataset contain 128 variables but a part of them have missing values or categorical variables. We simply drop these variables, and retain 99 predictive variables as our data example.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">X</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span>, <span class="fl">6</span><span class="op">:</span><span class="fl">127</span><span class="op">]</span>
 <span class="va">na_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">2</span>, <span class="va">anyNA</span><span class="op">)</span>
@@ -397,7 +397,7 @@ This result shows that using less than half of all 99 variables can be close to 
 <p><span class="math display">\[
 \Sigma' = (1-vv^{\top})\Sigma(1-vv^{\top})
 \]</span></p>
-<p>where <span class="math inline">\(\Sigma\)</span> is the currect covariance matrix and <span class="math inline">\(v\)</span> is its (sparse) loading vector. We map it into <span class="math inline">\(\Sigma'\)</span>, which indicates the orthogonal space of <span class="math inline">\(v\)</span>, and then solve the sparse principal component for <span class="math inline">\(\Sigma'\)</span> again. By this iteration process, we can acquire multiple principal components and they are sorted from the largest to the smallest. In our program, there is an additional argument <code>sparse.type</code> to support this feature. By setting <code>sparse.type = "kpc"</code>, then best subset selection performs on the first <span class="math inline">\(K\)</span> principal components where <span class="math inline">\(K\)</span> is decided by argument <code>support.size</code>.</p>
+<p>where <span class="math inline">\(\Sigma\)</span> is the correct covariance matrix and <span class="math inline">\(v\)</span> is its (sparse) loading vector. We map it into <span class="math inline">\(\Sigma'\)</span>, which indicates the orthogonal space of <span class="math inline">\(v\)</span>, and then solve the sparse principal component for <span class="math inline">\(\Sigma'\)</span> again. By this iteration process, we can acquire multiple principal components and they are sorted from the largest to the smallest. In our program, there is an additional argument <code>sparse.type</code> to support this feature. By setting <code>sparse.type = "kpc"</code>, then best subset selection performs on the first <span class="math inline">\(K\)</span> principal components where <span class="math inline">\(K\)</span> is decided by argument <code>support.size</code>.</p>
 <p>Suppose we are interested in the first two principal components, and the support size is 50 in the first loading vector and is 40 in the second loading vector. In other words, we consecutively solve two problem: <span class="math display">\[
     v_1 \leftarrow \arg\max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq 10,
 \]</span> <span class="math display">\[
@@ -441,7 +441,7 @@ This result shows that using less than half of all 99 variables can be close to 
 
 
       <footer><div class="copyright">
-  <p>Developed by Jin Zhu, Kangkang Jiang, Yanhang Zhang, Liyuan Hu, Junhao Huang, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p>Developed by Jin Zhu, Kangkang Jiang, Junhao Huang, Liyuan Hu, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">
