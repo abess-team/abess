@@ -474,7 +474,7 @@ Algorithm 1: Group-Splicing.
 
       \begin{align*}
          &{{\boldsymbol\beta}}_{\mathcal{A}^{k}}^{k}=[\arg \min _{{{\boldsymbol\beta}}_{\mathcal{I}^{k}}=0} \mathcal{L}({{\boldsymbol\beta}})]_{\mathcal{A}^{k}},\ {{\boldsymbol\beta}}_{\mathcal{I}^{k}}^{k}=0,\\
-         &d_{\mathcal{I}^{k}}^{k}=[\nabla \mathcal{L}({\boldsymbol\beta}^0)]_{\mathcal{I}^0},\ d_{\mathcal{A}^{k}}^{k}=0.\\
+         &d_{\mathcal{I}^{k}}^{k}=[\nabla \mathcal{L}({\boldsymbol\beta}^k)]_{\mathcal{I}^k},\ d_{\mathcal{A}^{k}}^{k}=0.\\
          \end{align*}
 
 3. While :math:`\mathcal{A}^{k+1} \neq \mathcal{A}^{k}`, do
