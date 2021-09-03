@@ -1,0 +1,9 @@
+Please see the included file COPYRIGHTS for per-file (or per-directory) 
+details on licenses as well as copyrights.
+
+In short: 
+
+ - Eigen and Spectra (as two upstream projects) in licensed under the MPL-2 (a 
+   version of which is included in the file COPYRIGHT), and 
+
+ - the C++, R, and Python code in abess is licensed as GPL-3.
