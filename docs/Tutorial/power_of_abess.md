@@ -32,7 +32,7 @@ The results are presented in the following pictures. The first column is the res
 
 ![](../image/perform.png)
 
-![](../image/perform.png)
+![](../image/timings.png)
 
 ### R performance
 

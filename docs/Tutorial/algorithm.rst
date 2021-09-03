@@ -466,23 +466,22 @@ Algorithm 1: Group-Splicing.
 1. Input:
    :math:`X,\ y,\ \{G_j\}_{j=1}^J,\ T, \ \mathcal{A}^0,\ \pi_T, \ C_{\max}`.
 
-2. Initialize
-   :math:`\mathcal{A}^{0}=\left\{j: \sum_{i=1}^{J} \mathrm{I}\left( g_{G_j} \leq g_{G_i}\right) \leq \mathrm{T}\right\}`
-   with :math:`{\boldsymbol\beta} = \boldsymbol{0}`,
-   :math:`\mathcal{I}^{0}=\left(\mathcal{A}^{0}\right)^{c}`, and
-   :math:`\left({\boldsymbol\beta}^{0}, d^{0}\right):`
+2. Initialize :math:`k=0`.
+
+   Solve primal variable :math:`{\boldsymbol\beta}^{k}` and dual variable :math:`d^{k}:`
 
    .. math::
 
       \begin{align*}
-         &{{\boldsymbol\beta}}_{\mathcal{A}^{0}}^{0}=[\arg \min _{{{\boldsymbol\beta}}_{\mathcal{I}^{0}}=0} \mathcal{L}({{\boldsymbol\beta}})]_{\mathcal{A}^{0}},\ {{\boldsymbol\beta}}_{\mathcal{I}^{0}}^{0}=0,\\
-         &d_{\mathcal{I}^{0}}^{0}=[\nabla \mathcal{L}({\boldsymbol\beta}^0)]_{\mathcal{I}^0},\ d_{\mathcal{A}^{0}}^{0}=0.\\
+         &{{\boldsymbol\beta}}_{\mathcal{A}^{k}}^{k}=[\arg \min _{{{\boldsymbol\beta}}_{\mathcal{I}^{k}}=0} \mathcal{L}({{\boldsymbol\beta}})]_{\mathcal{A}^{k}},\ {{\boldsymbol\beta}}_{\mathcal{I}^{k}}^{k}=0,\\
+         &d_{\mathcal{I}^{k}}^{k}=[\nabla \mathcal{L}({\boldsymbol\beta}^0)]_{\mathcal{I}^0},\ d_{\mathcal{A}^{k}}^{k}=0.\\
          \end{align*}
 
-3. For :math:`k=0,1, \ldots`, do
+3. While :math:`\mathcal{A}^{k+1} \neq \mathcal{A}^{k}`, do
 
-      Compute :math:`L=\mathcal{L}({\boldsymbol\beta}^k)` and update
-      :math:`\mathcal{S}_1^k, \mathcal{S}_2^k`
+      Compute :math:`L=\mathcal{L}({\boldsymbol\beta}^k)` and :math:`( {\bar{\boldsymbol\beta}}, {\bar{d}} )`.
+      
+      Update :math:`\mathcal{S}_1^k, \mathcal{S}_2^k`
 
       .. math::
 
@@ -528,7 +527,7 @@ Algorithm 1: Group-Splicing.
       :math:`\left(\mathcal{A}^{k+1}, \mathcal{I}^{k+1}\right)=\left(\mathcal{A}^{k}, \mathcal{I}^{k}\right)`,
       then stop.
 
-   End for
+   End While
 
 5. Output
    :math:`(\hat{\boldsymbol{{\boldsymbol\beta}}}, \hat{\boldsymbol{d}}, \hat{\mathcal{A}}, \hat{\mathcal{I}})=\left(\boldsymbol{{\boldsymbol\beta}}^{m+1}, \boldsymbol{d}^{m+1} \mathcal{A}^{m+1}, \mathcal{I}^{m+1}\right).`
@@ -543,16 +542,17 @@ Determining the best support size with information criterion
 | For any selected group subset :math:`\mathcal{A}`, define an group
   information criterion(GIC) as follows:
 
-.. math:: \operatorname{GIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| \log J \log \log n,
+.. math:: \operatorname{GIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+ \log J \log \log n \#\{\mathcal{A}\},
 
 | where
-  :math:`\mathcal{L}_{\mathcal{A}}=\min _{{\boldsymbol\beta}_{\mathcal{I}}=0} \mathcal{L}_{n}({\boldsymbol\beta}), \mathcal{I}=(\mathcal{A})^{c}`.
+  :math:`\mathcal{L}_{\mathcal{A}}=\min _{{\boldsymbol\beta}_{\mathcal{I}}=0} \mathcal{L}_{n}({\boldsymbol\beta}), \mathcal{I}=(\mathcal{A})^{c}` and
+  :math:`\#\{\mathcal{A}\}` is the number of variables contained in :math:`\cup_{j\in \mathcal{A}}G_j`.
   To identify the true model, the
   model complexity penalty is :math:`\log J` and the slow diverging rate
   :math:`\log \log n` is set to prevent underfitting. Besides, we define
   the Bayesian group information criterion (BGIC) as follows:
 
-.. math:: \operatorname{BGIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| (\gamma \log J +\log n),
+.. math:: \operatorname{BGIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+ (\gamma \log J +\log n)\#\{\mathcal{A}\},
 
 where :math:`\gamma` is a pre-determined positive constant, controlling
 the diverging rate of group numbers :math:`J`.
@@ -588,7 +588,7 @@ Algorithm 2: Sequential Group-Splicing (SGSplicing).
    .. math:: T_{\min }=\arg \min _{T} \operatorname{GIC}\left(\hat{\mathcal{A}}_{T}\right).
 
 4. Output
-   :math:`\left(\hat{\boldsymbol{{\boldsymbol\beta}}}_{T_{\operatorname{min}}}, \hat{\boldsymbol{d}}_{T_{\min }}, \hat{A}_{T_{\min }}, \hat{\mathcal{I}}_{T_{\min }}\right) .`
+   :math:`\left(\hat{\boldsymbol{{\boldsymbol\beta}}}_{T_{\operatorname{min}}}, \hat{\boldsymbol{d}}_{T_{\min }}, \hat{\mathcal{A}}_{T_{\min }}, \hat{\mathcal{I}}_{T_{\min }}\right) .`
 
 Nuisance selection 
 ------------------
@@ -884,4 +884,4 @@ Algorithm : Important Search
 
       If :math:`U` is unchanged (not in order), break;
 
-4. Return :math:`\mathcal{A}, \mathcal{I}`.
+4. Return :math:`\mathcal{A},  \mathcal{I}`.
