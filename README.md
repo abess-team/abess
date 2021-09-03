@@ -1,6 +1,6 @@
 <img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/image/icon_long.png' align="center"/></a>     
 
-<span style="font-size:larger; text-align: center">abess: A Fast Best-Subset Selection Library in Python and R</span>
+# abess: A Fast Best-Subset Selection Library in Python and R
 
 [![Github action](https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg)](https://github.com/abess-team/abess/actions)
 [![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://codecov.io/gh/abess-team/abess)
