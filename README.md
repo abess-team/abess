@@ -82,7 +82,7 @@ To show the power of abess in computation, we assess its timings of the CPU exec
 
 ### Python package   
 
-We compare `abess` Python package with scikit-learn on linear regression and logistic regression. Results are presented in the below figure:
+We compare `abess` Python package with `scikit-learn` on linear regression and logistic regression. Results are presented in the below figure:
 
 ![](./docs/image/timings.png)
 
@@ -93,14 +93,14 @@ $ python abess/docs/simulation/Python/timings.py
 ```
 
 
-### R packages
+### R package
 
 We compare `abess` R package with three widely used R packages: `glmnet`, `ncvreg`, and `L0Learn`. 
 We get the runtime comparison results:
 
 ![](docs/image/r_runtime.png)
 
-Compared with the other packages, 
+Compared with other packages, 
 `abess` shows competitive computational efficiency, 
 and achieves the best computational power when variables have a large correlation.
 
