@@ -15,8 +15,8 @@
 ## Overview
 **abess** (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
 find a small subset of predictors such that the resulting model is expected to have the highest accuracy. 
-The selection for best subset shows great value in scientific researches and practical application. 
-For example, clinicians wants to know whether a patient is health or not based on the expression level of a few of important genes.
+The selection for best subset shows great value in scientific researches and practical applications. 
+For example, clinicians want to know whether a patient is healthy or not based on the expression levels of a few of important genes.
 
 This library implements a generic algorithm framework to find the optimal solution in an extremely fast way.
 This framework now supports the detection of best subset under: 
