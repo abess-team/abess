@@ -1,5 +1,5 @@
 ---
-title: 'Power of abess'
+title: "Power of abess"
 author: "Liyuan Hu"
 date: "8/2/2021"
 output:
@@ -14,13 +14,10 @@ output:
   word_document: 
     toc: yes
     keep_md: yes
-editor_options: 
-  markdown: 
-    wrap: sentence
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,warning = F, message = F)
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 ```
 In this part, we are going to explore the power of the abess package using simulated data. 
 We compare the abess package with popular R libraries: glmnet, ncvreg for linear and logistic regressions in the following section.
@@ -36,11 +33,11 @@ and the false positive rate (FPR, which is the proportion of the varibales in th
 Timings of the CPU execution are recorded in seconds and all the performances are averaged over 100 replications on a sequence
 of 100 regularization parameters.
 
-The designed matrix is formed by i.i.d samples generated from a multivariate normal distribution with mean 0 and covariance matrix $\Sigma = (\sigma_{ij})$. We consider two settings—low correlation and high correlation of the predictors. For the low correlation scenario, we set $\sigma_{ij} = 0.1^{|i-j|}$ and for the high correlation $\sigma_{ij} = 0.7$. The number of predictors is 1000. The true coefficient $\beta^*$ is a vector with 10 nonzero entries uniformly distributed in $[b,B]$. We set $b=5\sqrt{2\log(p)/n}$, $B = 100b$ for linear regression $b = 10\sqrt{2\log(p)/n}$, $B = 5*b$ for logistic regression and $b = -10 \sqrt{2  \log(p) / n}$, $B=10 \sqrt{2 \log(p) / n}$ for poisson regression. A random noise generated from a standard Gaussian distribution is added to the linear predictor $x^\prime\beta$ for linear regression. The size of training data for linear regression is 500 and 1000 for logistic regression.
+The designed matrix is formed by i.i.d samples generated from a multivariate normal distribution with mean 0 and covariance matrix $\Sigma = (\sigma_{ij})$. We consider two settings—low correlation and high correlation of the predictors. For the low correlation scenario, we set $\sigma_{ij} = 0.1^{|i-j|}$ and for the high correlation $\sigma_{ij} = 0.7$. The number of predictors is 1000. The true coefficient $\beta^*$ is a vector with 10 nonzero entries uniformly distributed in $[b,B]$. We set $b=5\sqrt{2\log(p)/n}$, $B = 100b$ for linear regression $b = 10\sqrt{2\log(p)/n}$, $B = 5 \times b$ for logistic regression and $b = -10 \sqrt{2  \log(p) / n}$, $B=10 \sqrt{2 \log(p) / n}$ for poisson regression. A random noise generated from a standard Gaussian distribution is added to the linear predictor $x^\prime\beta$ for linear regression. The size of training data for linear regression is 500 and 1000 for logistic regression.
 
 
 All experiments are
-evaluated on an  Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz 3.31 GHz and under R version 3.6.1. 
+evaluated on an Ubuntu system with Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz 3.31 GHz and under R version 3.6.3. 
 
 ```r
 source("docs/simulation/R/timings.R")
