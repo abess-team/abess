@@ -813,6 +813,7 @@ bool cox_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd
   }
 
   beta = beta0;
+  return true;
 }
 
 template <class T4>

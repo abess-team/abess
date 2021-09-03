@@ -58,7 +58,7 @@ X <- read.csv('./communities.data', header = FALSE, na.strings = '?')
 dim(X)
 ```
 
-The dataset contain 128 variables but a part of them have mising values or categorical variables. 
+The dataset contain 128 variables but a part of them have missing values or categorical variables. 
 We simply drop these variables, and 
 retain 99 predictive variables as our data example.
 
@@ -147,7 +147,7 @@ $$
 \Sigma' = (1-vv^{\top})\Sigma(1-vv^{\top})
 $$
 
-where $\Sigma$ is the currect covariance matrix and $v$ is its (sparse) loading vector. 
+where $\Sigma$ is the correct covariance matrix and $v$ is its (sparse) loading vector. 
 We map it into $\Sigma'$, which indicates the orthogonal space of $v$, 
 and then solve the sparse principal component for $\Sigma'$ again. 
 By this iteration process, we can acquire multiple principal components and they are sorted from the largest to the smallest.

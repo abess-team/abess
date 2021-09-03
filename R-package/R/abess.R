@@ -85,7 +85,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param important.search An integer number indicating the number of 
 #' important variables to be splicing. 
 #' When \code{important.search} \eqn{\ll} \code{p} variables, 
-#' it would greatly reduce runtimes. Default: \code{important.search = 1000}.
+#' it would greatly reduce runtimes. Default: \code{important.search = 128}.
 #' @param normalize Options for normalization. \code{normalize = 0} for no normalization.
 #' \code{normalize = 1} for subtracting the mean of columns of \code{x}.
 #' \code{normalize = 2} for scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
@@ -103,8 +103,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param nfolds The number of folds in cross-validation. Default is \code{nfolds = 5}.
 #' @param cov.update A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE},
 #' use a covariance-based implementation; otherwise, a naive implementation.
-#' The naive method is more efficient than covariance-based method only when \eqn{p >> n}.
-#' Default: \code{cov.update = TRUE}.
+#' The naive method is more efficient than covariance-based method when \eqn{p >> n} and \code{important.search} is much large than its default value.
+#' Default: \code{cov.update = FALSE}.
 # @param n The number of rows of the design matrix. A must if \code{x} in triplet form.
 # @param p The number of columns of the design matrix. A must if \code{x} in triplet form.
 # @param sparse.matrix A logical value indicating whether the input is a sparse matrix.
@@ -331,7 +331,7 @@ abess.default <- function(x,
                           important.search = NULL, 
                           warm.start = TRUE,
                           nfolds = 5,
-                          cov.update = TRUE,
+                          cov.update = FALSE,
                           newton = c("exact", "approx"),
                           newton.thresh = 1e-6,
                           max.newton.iter = NULL,
