@@ -119,7 +119,7 @@ marginal maximum likelihood estimator before running algorithm.}
 \item{important.search}{An integer number indicating the number of 
 important variables to be splicing. 
 When \code{important.search} \eqn{\ll} \code{p} variables, 
-it would greatly reduce runtimes. Default: \code{important.search = 1000}.}
+it would greatly reduce runtimes. Default: \code{important.search = 128}.}
 
 \item{warm.start}{Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.}
 
@@ -127,8 +127,8 @@ it would greatly reduce runtimes. Default: \code{important.search = 1000}.}
 
 \item{cov.update}{A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE},
 use a covariance-based implementation; otherwise, a naive implementation.
-The naive method is more efficient than covariance-based method only when \eqn{p >> n}.
-Default: \code{cov.update = TRUE}.}
+The naive method is more efficient than covariance-based method when \eqn{p >> n} and \code{important.search} is much large than its default value.
+Default: \code{cov.update = FALSE}.}
 
 \item{newton}{A character specify the Newton's method for fitting generalized linear models,
 it should be either \code{newton = "exact"} or \code{newton = "approx"}.
