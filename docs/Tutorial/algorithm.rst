@@ -466,9 +466,7 @@ Algorithm 1: Group-Splicing.
 1. Input:
    :math:`X,\ y,\ \{G_j\}_{j=1}^J,\ T, \ \mathcal{A}^0,\ \pi_T, \ C_{\max}`.
 
-2. Initialize :math:`k=0`.
-
-   Solve primal variable :math:`{\boldsymbol\beta}^{k}` and dual variable :math:`d^{k}:`
+2. Initialize :math:`k=0` and solve primal variable :math:`{\boldsymbol\beta}^{k}` and dual variable :math:`d^{k}:`
 
    .. math::
 
