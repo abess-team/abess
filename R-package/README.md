@@ -1,4 +1,7 @@
-# abess: An R package for Fast Best-Subset Selection <img src='https://raw.githubusercontent.com/abess-team/abess/master/R-package/pkgdown/favicon/icon.png' align="right" height="120" /></a>
+<img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/image/icon_long.png' align="center"/></a>     
+
+<center> abess: A Fast Best-Subset Selection Library in Python and R </center> 
+---
 
 <!-- badges: start -->
 [![Github action](https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg)](https://github.com/abess-team/abess/actions)
@@ -7,21 +10,26 @@
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 <!-- badges: end -->
 
-Best-subset selection aims to find a small subset of predictors such that the resulting linear model is expected to have the most desirable prediction accuracy. This project implements a polynomial algorithm proposed by Zhu et al (2020) to solve the problem. It supports:
-<!-- Moreover, the softwares includes helpful features for high-dimensional data analysis. -->
+`abess` (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
+find a small subset of predictors such that the resulting model is expected to have the highest accuracy. 
+The selection for best subset shows great value in scientific researches and practical application. 
+For example, clinicians wants to know whether a patient is health or not based on the expression level of a few of important genes.
 
-- various model:
-  - linear regression
-  - classification (binary or multi-class)
-  - counting-response modeling
-  - censored-response modeling
-  - multi-response modeling (multi-tasks learning)
-- sure independence screening
-- nuisance penalized regression
+This library implements a generic algorithm framework to find the optimal solution in an extremely fast way.
+This framework now supports the detection of best subset under: 
+[linear regression](https://abess.readthedocs.io/en/latest/Tutorial/LinearRegression.html),
+[classification (binary or multi-class)](https://abess.readthedocs.io/en/latest/Tutorial/logi_and_multiclass.html),
+[counting-response modeling](https://abess.readthedocs.io/en/latest/Tutorial/PoissonRegression.html),
+[censored-response modeling](https://abess.readthedocs.io/en/latest/Tutorial/CoxRegression.html),
+[multi-response modeling (multi-tasks learning)](https://abess.readthedocs.io/en/latest/Tutorial/MultiTaskLearning.html), etc.
+It also supports the variants of best subset selection like 
+[group best subset selection](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Best-group-subset-selection),
+[nuisance penalized regression](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Nuisance-Regression),
+Especially, the time complexity of (group) best subset selection for linear regression is certifiably polynomial.
 
 ## Installation
 
-To install the Ball R package from CRAN, just run:
+To install the `abess` R package from CRAN, just run:
 
 ``` r
 install.packages("abess")
@@ -33,31 +41,34 @@ Alternative, you can install the newest version of abess from [github](https://g
 remotes::install_github("abess-team/abess")
 ```
 
-## Performance
+## Runtime Performance
 
-To show the computational efficiency of abess, 
-we compare abess R package with popular R libraries: glmnet, ncvreg for linear and logistic regressions; 
-Timings of the CPU execution are recorded in seconds and averaged over 100 replications on a sequence
-of 100 regularization parameters.
+To show the power of abess in computation, we assess its timings of the CPU execution (seconds) on synthetic datasets, and compare to state-of-the-art variable selection methods. The variable selection and estimation results are deferred to [performance](https://abess-team.github.io/abess/articles/v11-power-of-abess.html). All computations are conducted on a Ubuntu platform with Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM. We compare `abess` R package with three widely used R packages: `glmnet`, `ncvreg`, and `L0Learn`. We get the runtime comparison results:
 
-<!-- The designed matrix is formed by i.i.d sample generated from a multivariate normal distribution with mean 0 and covariance matrix $\Sigma = (\sigma_{ij})$. We consider two settings—low correlation and high correlation. For the low correlation scenario, we set $\sigma_{ij} = 0.1^{|i-j|}$ and for the high correlation $\sigma_{ij} = 0.7$. The number of predictors is 1000. The true coefficient $\beta^*$ is a vector with 10 nonzero entries uniformly distributed in $[b,B]$. We set $b=5\sqrt{2\log(p)/n}$, $B = 100b$ for linear regression $b = 10\sqrt{2\log(p)/n}$, $B = 5*b$ for logistic regression and $b = -10 \sqrt{2  \log(p) / n}$, $B=10 \sqrt{2 \log(p) / n}$ for poisson regression. A random noise generated from a standard Gaussian distribution is added to the linear predictor $x^\prime\beta$ for linear regression. The size of training data is 500. -->
-All experiments are
-evaluated on an  Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz 3.31 GHz and under R version 3.6.1. 
-
-```r
-source("R-package/example/timing.R")
-```
-
-Results are presented in the following picture. As a package solving the best subset selection, abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.
-
-<!-- ![avatar](../docs/image/RTiming.png) -->
 <img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/image/r_runtime.png'/></a>
 
-## Citation
-If you use **abess** package or reference our examples in a presentation or publication, we would appreciate citations of our package.
+Compared with the other packages, 
+`abess` shows competitive computational efficiency, 
+and achieves the best computational power when variables have a large correlation.
 
-## Reference
-A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117    
-Fan, J. and Lv, J. (2008), Sure independence screening for ultrahigh dimensional feature space. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x    
-Qiang Sun & Heping Zhang (2020) Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079     
-Zhang, Y., Zhu, J., Zhu, J. and Wang, X., 2021. Certifiably Polynomial Algorithm for Best Group Subset Selection. arXiv preprint arXiv:2104.12576.
+Conducting the following command in shell can reproduce the above results in R: 
+
+```shell
+$ Rscript abess/docs/simulation/R/timings.R
+```
+
+
+## Open source software     
+
+`abess` is a free software and its source code are publicly available in [Github](https://github.com/abess-team/abess). The core framework is programmed in C++.
+You can redistribute it and/or modify it under the terms of the [GPL-v3 License](https://www.gnu.org/licenses/gpl-3.0.html). We welcome contributions for `abess`, especially stretching `abess` to the other best subset selection problems. 
+
+## References
+
+- Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang (2020). A polynomial algorithm for best-subset selection problem. Proceedings of the National Academy of Sciences, 117(52):33117-33123.
+
+- Pölsterl, S (2020). scikit-survival: A Library for Time-to-Event Analysis Built on Top of scikit-learn. J. Mach. Learn. Res., 21(212), 1-6.
+
+- Yanhang Zhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). Certifiably Polynomial Algorithm for Best Group Subset Selection. arXiv preprint arXiv:2104.12576.
+
+- Qiang Sun and Heping Zhang (2020). Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079.
