@@ -2,7 +2,7 @@
 
 Before developing the code, please make sure:
 - following the [Installation](../Installation.md), the code in github works on your device;
-- read the [Architecture](Architecture.md) of abess library.
+- read the [Architecture](Before.md) of abess library.
 
 ## Core C++
 
@@ -164,7 +164,7 @@ class abessPCA(bess_base):
 
 As an example, we define two new functions (`ratio` and `transform`) and override the `fit` function for `abessPCA`. [[code link]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py).
 
-Then, the final step is to link this Python class with the model type number (it has been defined in the [Core C++](#Core C++)). In `bess_base.py`, you can find somewhere like (in the `fit` function): 
+Then, the final step is to link this Python class with the model type number (it has been defined in Section **Core C++**). In `bess_base.py`, you can find somewhere like (in the `fit` function): 
 
 ```Python
 if self.model_type == "Lm":
