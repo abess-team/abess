@@ -196,7 +196,7 @@ class bess_base(BaseEstimator):
      #...
 ```
 
-Actually, it is based on `sklearn.base.BaseEstimator` [[document link]](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html). Two methods, `get_params` and `set_params` are offered in this base class. 
+Actually, it is based on `sklearn.base.BaseEstimator` [[link]](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html). Two methods, `get_params` and `set_params` are offered in this base class. 
 
 In our package, we write an method called `fit` to realize the abess process. Of cause, you can also override it like `abessPCA`.
 
@@ -218,7 +218,7 @@ We use [testthat](https://cran.r-project.org/web/packages/testthat) for unit tes
 You can find some examples here and please feel free to add your test code into it (or create a new test file) under the test folder: 
 
 - [R test folder](https://github.com/abess-team/abess/tree/master/R-package/tests/testthat): `abess/R-package/tests/testthat`.
-- [Python test folder](https://github.com/abess-team/abess/tree/master/python/pytest): `abess/pytest`.
+- [Python test folder](https://github.com/abess-team/abess/tree/master/python/pytest): `abess/python/pytest`.
 
 A good test code should contain:
 
