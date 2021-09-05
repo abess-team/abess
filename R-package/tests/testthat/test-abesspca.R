@@ -2,6 +2,23 @@ library(testthat)
 library(abess)
 require(Matrix)
 
+test_that("standard PCA", {
+  # skip("Skip standard PCA")
+  set.seed(1)
+  num <- 100
+  x <- matrix(rnorm(num * 10), nrow = num)
+  ev1 <- princomp(covmat = (num - 1) * cov(x) / num)[["sdev"]]^2
+  ev2 <- princomp(x)[["sdev"]]^2
+  ev3 <- (svd(scale(x, scale = FALSE))[["d"]])^2 / num
+  ev4 <- eigen((num - 1) * cov(x) / num, only.values = TRUE)[["values"]]
+  
+  names(ev1) <- NULL
+  names(ev2) <- NULL
+  expect_equal(ev1, ev2, tolerance = 1e-10)
+  expect_equal(ev2, ev3, tolerance = 1e-10)
+  expect_equal(ev2, ev4, tolerance = 1e-10)
+})
+
 test_that("abesspca (FPC) works", {
   data(USArrests)
   
@@ -19,12 +36,13 @@ test_that("abesspca (FPC) works", {
   expect_true(all(spca_fit[["pev"]] <= 1))
   
   ## oracle estimation by svd function:
-  svdobj <- svd(cov(USArrests))
-  expect_equal(spca_fit[["var.all"]], svdobj[["d"]][1])
+  pca_var <- sum(princomp(USArrests)[["sdev"]]^2)
+  expect_equal(spca_fit[["var.all"]], pca_var)
   
   ## check identity:
   spca_fit1 <- abesspca(USArrests)
-  spca_fit2 <- abesspca(cov(USArrests), type = "gram")
+  spca_fit2 <- abesspca(cov(USArrests) * (nrow(USArrests) - 1) / nrow(USArrests), 
+                        type = "gram")
   spca_fit1[["call"]] <- NULL
   spca_fit2[["call"]] <- NULL
   expect_true(all.equal(spca_fit1, spca_fit2))
@@ -56,23 +74,16 @@ test_that("abesspca (KPC) works", {
   skip_on_os("linux")
   ev <- spca_fit[["ev"]]
   ev_len <- length(ev)
-  expect_true(all(ev[1:(ev_len - 1)] < ev[2:ev_len]))
-  
-  ev_diff <- as.vector(diff(ev))
-  ev_diff_len <- ev_len - 1
-  expect_true(all(ev_diff[1:(ev_diff_len - 1)] > ev_diff[2:ev_diff_len]))
+  expect_true(all(ev[1:(ev_len - 1)] > ev[2:ev_len]))
   
   expect_true(all(spca_fit[["pev"]] <= 1))
-  
-  ## oracle estimation by svd function:
-  svdobj <- svd(cov(USArrests))
-  expect_equal(spca_fit[["var.all"]], sum(svdobj[["d"]]))
   
   ## Input 2:
   spca_fit1 <- abesspca(USArrests,
                         sparse.type = "kpc",
                         support.size = rep(4, 4))
   expect_true(all(spca_fit1[["pev"]] <= (1 + 1e-8)))
+  expect_equal(expected = 1, object = sum(spca_fit1[["pev"]]), tolerance = 1e-8)
   
   ## Input 3 (default input):
   spca_fit1 <- abesspca(USArrests, sparse.type = "kpc")

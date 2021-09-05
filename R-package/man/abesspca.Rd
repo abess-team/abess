@@ -83,7 +83,9 @@ where each row is a variable and each column is a support size;}
 \item{sparse.type}{The same as input.}
 \item{support.size}{The actual support.size values used. Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.}
 \item{ev}{A vector with size \code{length(support.size)}. It records the explained variance at each support size.}
+\item{cum.ev}{Cumulative sums of explained variance.}
 \item{pev}{A vector with the same length as \code{ev}. It records the percentage of explained variance at each support size.}
+\item{cum.pev}{Cumulative sums of the percentage of explained variance.}
 \item{var.all}{If \code{sparse.type = "fpc"},
 it is the total variance of the explained by first principal component;
 otherwise, the total standard deviations of all principal components.}
@@ -96,7 +98,10 @@ Adaptive best subset selection for principal component analysis
 Adaptive best subset selection for principal component analysis aim
 to solve the non-convex optimization problem:
 \deqn{\arg\max_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
-where \eqn{s} is support size. A generic splicing technique is implemented to
+where \eqn{s} is support size. 
+Here, \eqn{\Sigma} is covariance matrix, i.e., 
+\deqn{\Sigma = \frac{1}{n} X^{\top} X.}
+A generic splicing technique is implemented to
 solve this problem.
 By exploiting the warm-start initialization, the non-convex optimization
 problem at different support size (specified by \code{support.size})
@@ -112,8 +117,9 @@ pca_fit <- abesspca(USArrests)
 pca_fit
 
 ## covariance matrix input:
-pca_fit <- abesspca(stats::cov(USArrests), type = "gram")
-pca_fit
+cov_mat <- stats::cov(USArrests) * (nrow(USArrests) - 1) / nrow(USArrests)
+pca_fit <- abesspca(cov_mat, type = "gram")
+pca_fit  
 
 ## robust covariance matrix input:
 rob_cov <- MASS::cov.rob(USArrests)[["cov"]]

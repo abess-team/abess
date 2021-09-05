@@ -14,7 +14,7 @@
 <!-- [![Build Status](https://travis-ci.com/abess-team/abess.svg?branch=master)](https://travis-ci.com/abess-team/abess) -->
 
 ## Overview
-**abess** (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
+`abess` (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
 find a small subset of predictors such that the resulting model is expected to have the highest accuracy. 
 The selection for best subset shows great value in scientific researches and practical applications. 
 For example, clinicians want to know whether a patient is healthy or not based on the expression levels of a few of important genes.
@@ -33,8 +33,7 @@ Especially, the time complexity of (group) best subset selection for linear regr
 
 ## Quick start
 
-The abess software has both Python and R's interfaces. Here a quick start will be given and
-for more details, please view: [Installation](https://abess.readthedocs.io/en/latest/Installation.html).
+The `abess` software has both Python and R's interfaces. Here a quick start will be given and for more details, please view: [Installation](https://abess.readthedocs.io/en/latest/Installation.html).
 
 ### Python package
 
@@ -113,10 +112,7 @@ $ Rscript abess/docs/simulation/R/timings.R
 
 ## Open source software     
 
-**abess** is a free software and its source code is publicly available on [Github](https://github.com/abess-team/abess).  
-The core framework is programmed in C++, and user-friendly R and Python interfaces are offered.
-You can redistribute it and/or modify it under the terms of the [GPL-v3 License](https://www.gnu.org/licenses/gpl-3.0.html). 
-We welcome contributions for abess, especially stretching abess to the other best subset selection problems. 
+**abess** is a free software and its source code is publicly available on [Github](https://github.com/abess-team/abess). The core framework is programmed in C++, and user-friendly R and Python interfaces are offered. You can redistribute it and/or modify it under the terms of the [GPL-v3 License](https://www.gnu.org/licenses/gpl-3.0.html). We welcome contributions for `abess`, especially stretching `abess` to the other best subset selection problems. 
 
 ## References
 
