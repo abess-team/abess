@@ -33,7 +33,10 @@
 #' @details Adaptive best subset selection for principal component analysis aim
 #' to solve the non-convex optimization problem:
 #' \deqn{\arg\max_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
-#' where \eqn{s} is support size. A generic splicing technique is implemented to
+#' where \eqn{s} is support size. 
+#' Here, \eqn{\Sigma} is covariance matrix, i.e., 
+#' \deqn{\Sigma = \frac{1}{n} X^{\top} X.}
+#' A generic splicing technique is implemented to
 #' solve this problem.
 #' By exploiting the warm-start initialization, the non-convex optimization
 #' problem at different support size (specified by \code{support.size})
@@ -47,7 +50,9 @@
 #' \item{sparse.type}{The same as input.}
 #' \item{support.size}{The actual support.size values used. Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.}
 #' \item{ev}{A vector with size \code{length(support.size)}. It records the explained variance at each support size.}
+#' \item{cum.ev}{Cumulative sums of explained variance.}
 #' \item{pev}{A vector with the same length as \code{ev}. It records the percentage of explained variance at each support size.}
+#' \item{cum.pev}{Cumulative sums of the percentage of explained variance.}
 #' \item{var.all}{If \code{sparse.type = "fpc"},
 #' it is the total variance of the explained by first principal component;
 #' otherwise, the total standard deviations of all principal components.}
@@ -74,8 +79,9 @@
 #' pca_fit
 #'
 #' ## covariance matrix input:
-#' pca_fit <- abesspca(stats::cov(USArrests), type = "gram")
-#' pca_fit
+#' cov_mat <- stats::cov(USArrests) * (nrow(USArrests) - 1) / nrow(USArrests)
+#' pca_fit <- abesspca(cov_mat, type = "gram")
+#' pca_fit  
 #'
 #' ## robust covariance matrix input:
 #' rob_cov <- MASS::cov.rob(USArrests)[["cov"]]
@@ -153,12 +159,18 @@ abesspca <- function(x,
     stopifnot(all(t(x) == x))
     ## eigen values:
     eigen_value <- eigen(x, only.values = TRUE)[["values"]]
+    eigen_value <- (eigen_value + abs(eigen_value)) / 2
+    # singular_value <- sqrt(eigen_value)
   } else {
     stopifnot(length(cor) == 1)
     stopifnot(is.logical(cor))
     ## eigen values:
-    eigen_value <- (svd(scale(x, center = TRUE, scale = cor))[["d"]])^2 # improve runtimes
-    eigen_value <- eigen_value / (dim(x)[1] - 1)
+    if (!cor) {
+      singular_value <- (svd(scale(x, center = TRUE, scale = FALSE))[["d"]])^2 # improve runtimes
+      eigen_value <- singular_value / nobs
+    } else {
+      eigen_value <- rep(1, nvars)
+    }
 
     if (sparse_X) {
       if (cor) {
@@ -173,12 +185,15 @@ abesspca <- function(x,
         x <- stats::cov(x)
       }
     }
+    if (!cor) {
+      x <- ((nobs - 1) / nobs) * x
+    }
     # x <- round(x, digits = 13)
   }
 
-  if (sparse_type == "fpc") {
-    eigen_value <- eigen_value[1]
-  }
+  # if (sparse_type == "fpc") {
+  #   eigen_value <- eigen_value[1]
+  # }
   total_variance <- sum(eigen_value)
 
   ## total variance:
@@ -409,18 +424,21 @@ abesspca <- function(x,
   )
 
   if (sparse_type == "kpc") {
-    k_num <- ncol(result[["coef"]])
-    ev_vec <- numeric(k_num)
-    for (i in 1:k_num) {
-      ev_vec[i] <- variance_explained(
-        x_copy,
-        result[["coef"]][, 1:i, drop = FALSE]
-      )
-    }
+    # k_num <- ncol(result[["coef"]])
+    # ev_vec <- numeric(k_num)
+    # for (i in 1:k_num) {
+    #   ev_vec[i] <- variance_explained(
+    #     x_copy,
+    #     result[["coef"]][, 1:i, drop = FALSE]
+    #   )
+    # }
+    ev_vec <- adjusted_variance_explained(x_copy, result[["coef"]])
     result[["ev"]] <- ev_vec
+    result[["cum.ev"]] <- cumsum(ev_vec)
   }
 
   result[["pev"]] <- result[["ev"]] / total_variance
+  result[["cum.pev"]] <- cumsum(result[["pev"]])
   result[["var.all"]] <- total_variance
 
   result[["call"]] <- match.call()
@@ -430,11 +448,13 @@ abesspca <- function(x,
   out
 }
 
-variance_explained <- function(X, loading) {
-  pc <- X %*% loading
-  Z <- qr(pc)
-  ev <- sum(abs(diag(qr.R(Z))))
-  # ev <- sum((diag(qr.R(Z)))^2)
+adjusted_variance_explained <- function(covmat, loading) {
+  loading <- as.matrix(loading)
+  normloading <- sqrt(apply(loading^2, 2, sum))
+  pc <- covmat %*% t(t(loading)/normloading)
+  # since it is covariance matrix, it is no need to square the diagonal values.
+  ev <- abs(diag(qr.R(qr(pc))))   
+  # ev <- (diag(qr.R(qr(pc))))^2
   ev
 }
 
