@@ -3,6 +3,9 @@ version: 2
 build:
   image: latest
 
+# Build PDF & ePub & htmlzip
+formats: all
+
 python:
   version: 3.7
   install:
