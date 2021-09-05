@@ -289,7 +289,9 @@ where each row is a variable and each column is a support size;</p></dd>
 <dt>sparse.type</dt><dd><p>The same as input.</p></dd>
 <dt>support.size</dt><dd><p>The actual support.size values used. Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.</p></dd>
 <dt>ev</dt><dd><p>A vector with size <code><a href='https://rdrr.io/r/base/length.html'>length(support.size)</a></code>. It records the explained variance at each support size.</p></dd>
+<dt>cum.ev</dt><dd><p>Cumulative sums of explained variance.</p></dd>
 <dt>pev</dt><dd><p>A vector with the same length as <code>ev</code>. It records the percentage of explained variance at each support size.</p></dd>
+<dt>cum.pev</dt><dd><p>Cumulative sums of the percentage of explained variance.</p></dd>
 <dt>var.all</dt><dd><p>If <code>sparse.type = "fpc"</code>,
 it is the total variance of the explained by first principal component;
 otherwise, the total standard deviations of all principal components.</p></dd>
@@ -300,7 +302,10 @@ otherwise, the total standard deviations of all principal components.</p></dd>
     <p>Adaptive best subset selection for principal component analysis aim
 to solve the non-convex optimization problem:
 $$\arg\max_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, $$
-where \(s\) is support size. A generic splicing technique is implemented to
+where \(s\) is support size. 
+Here, \(\Sigma\) is covariance matrix, i.e., 
+$$\Sigma = \frac{1}{n} X^{\top} X.$$
+A generic splicing technique is implemented to
 solve this problem.
 By exploiting the warm-start initialization, the non-convex optimization
 problem at different support size (specified by <code>support.size</code>)
@@ -335,21 +340,22 @@ can be efficiently solved.</p>
 #&gt; abesspca(x = USArrests)
 #&gt; 
 #&gt;   support.size       ev       pev
-#&gt; 1            1 6945.166 0.9905936
-#&gt; 2            2 6984.264 0.9961702
-#&gt; 3            3 6998.933 0.9982624
-#&gt; 4            4 7011.115 1.0000000</div><div class='input'>
+#&gt; 1            1 6806.262 0.9564520
+#&gt; 2            2 6844.578 0.9618364
+#&gt; 3            3 6858.954 0.9638565
+#&gt; 4            4 6870.893 0.9655342</div><div class='input'>
 <span class='co'>## covariance matrix input:</span>
-<span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/cor.html'>cov</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span>, type <span class='op'>=</span> <span class='st'>"gram"</span><span class='op'>)</span>
-<span class='va'>pca_fit</span>
+<span class='va'>cov_mat</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/cor.html'>cov</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span> <span class='op'>*</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>1</span><span class='op'>)</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span>
+<span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>cov_mat</span>, type <span class='op'>=</span> <span class='st'>"gram"</span><span class='op'>)</span>
+<span class='va'>pca_fit</span>  
 </div><div class='output co'>#&gt; Call:
-#&gt; abesspca(x = stats::cov(USArrests), type = "gram")
+#&gt; abesspca(x = cov_mat, type = "gram")
 #&gt; 
 #&gt;   support.size       ev       pev
-#&gt; 1            1 6945.166 0.9905936
-#&gt; 2            2 6984.264 0.9961702
-#&gt; 3            3 6998.933 0.9982624
-#&gt; 4            4 7011.115 1.0000000</div><div class='input'>
+#&gt; 1            1 6806.262 0.9564520
+#&gt; 2            2 6844.578 0.9618364
+#&gt; 3            3 6858.954 0.9638565
+#&gt; 4            4 6870.893 0.9655342</div><div class='input'>
 <span class='co'>## robust covariance matrix input:</span>
 <span class='va'>rob_cov</span> <span class='op'>&lt;-</span> <span class='fu'>MASS</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/MASS/man/cov.rob.html'>cov.rob</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span><span class='op'>[[</span><span class='st'>"cov"</span><span class='op'>]</span><span class='op'>]</span>
 <span class='va'>rob_cov</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>rob_cov</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>rob_cov</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>2</span>
@@ -359,10 +365,10 @@ can be efficiently solved.</p>
 #&gt; abesspca(x = rob_cov, type = "gram")
 #&gt; 
 #&gt;   support.size       ev       pev
-#&gt; 1            1 7348.351 0.9921834
-#&gt; 2            2 7379.945 0.9964492
-#&gt; 3            3 7393.238 0.9982440
-#&gt; 4            4 7406.243 1.0000000</div><div class='input'>
+#&gt; 1            1 6438.462 0.9577956
+#&gt; 2            2 6477.269 0.9635685
+#&gt; 3            3 6516.075 0.9693415
+#&gt; 4            4 6526.479 0.9708892</div><div class='input'>
 <span class='co'>## K-component principal component analysis</span>
 <span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span>,
   sparse.type <span class='op'>=</span> <span class='st'>"kpc"</span>,
