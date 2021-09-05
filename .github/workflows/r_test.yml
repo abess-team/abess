@@ -4,6 +4,9 @@ on:
   push:
     paths:
     - 'R-package/*'
+  pull_request:
+    paths:
+    - 'R-package/*'
 
 jobs:
   pkgdown:

@@ -4,6 +4,9 @@ on:
   push:
     paths:
     - 'python/*'
+  pull_request:
+    paths:
+    - 'python/*'
 
 jobs:
   codecovPy:
