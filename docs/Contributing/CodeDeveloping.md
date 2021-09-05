@@ -2,7 +2,7 @@
 
 Before developing the code, please make sure:
 - following the [Installation](../Installation.md), the code in github works on your device;
-- read the [Architecture](Architecture.md) of abess library.
+- read the [Architecture](Before.md) of abess library.
 
 ## Core C++
 
@@ -164,7 +164,7 @@ class abessPCA(bess_base):
 
 As an example, we define two new functions (`ratio` and `transform`) and override the `fit` function for `abessPCA`. [[code link]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py).
 
-Then, the final step is to link this Python class with the model type number (it has been defined in the [Core C++](#Core C++)). In `bess_base.py`, you can find somewhere like (in the `fit` function): 
+Then, the final step is to link this Python class with the model type number (it has been defined in Section **Core C++**). In `bess_base.py`, you can find somewhere like (in the `fit` function): 
 
 ```Python
 if self.model_type == "Lm":
@@ -196,7 +196,7 @@ class bess_base(BaseEstimator):
      #...
 ```
 
-Actually, it is based on `sklearn.base.BaseEstimator` [[document link]](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html). Two methods, `get_params` and `set_params` are offered in this base class. 
+Actually, it is based on `sklearn.base.BaseEstimator` [[link]](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html). Two methods, `get_params` and `set_params` are offered in this base class. 
 
 In our package, we write an method called `fit` to realize the abess process. Of cause, you can also override it like `abessPCA`.
 
@@ -218,7 +218,7 @@ We use [testthat](https://cran.r-project.org/web/packages/testthat) for unit tes
 You can find some examples here and please feel free to add your test code into it (or create a new test file) under the test folder: 
 
 - [R test folder](https://github.com/abess-team/abess/tree/master/R-package/tests/testthat): `abess/R-package/tests/testthat`.
-- [Python test folder](https://github.com/abess-team/abess/tree/master/python/pytest): `abess/pytest`.
+- [Python test folder](https://github.com/abess-team/abess/tree/master/python/pytest): `abess/python/pytest`.
 
 A good test code should contain:
 

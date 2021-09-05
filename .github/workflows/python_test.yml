@@ -1,0 +1,98 @@
+name: Python Build
+
+on: 
+  push:
+    paths:
+    - 'python/*'
+
+jobs:
+  codecovPy:
+    name: Codecov workflow for Python-package
+    runs-on: ubuntu-latest
+    env:
+      PYTHON: '3.9.6'
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup Python
+        uses: actions/setup-python@master
+        with:
+          python-version: 3.9.6
+      - name: Install abess & dependencies
+        run: |
+          pip install pytest
+          pip install pytest-cov
+          pip install lifelines
+          pip install pandas
+          pip install codecov
+          # pip install gcovr
+          # export CFLAGS="--coverage"
+          python ./python/setup.py install
+          ls *
+      - name: Generate coverage report
+        run: |
+          pytest ./python/pytest --cov=abess --cov-report=xml
+          # gcovr ./python/src/ --xml 
+          ls *
+          codecov -F Python
+    
+  InstallUb:
+    name: Installation test on Ubuntu
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup Python
+        uses: actions/setup-python@master
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y swig bash mingw-w64
+      - name: Install abess
+        run: |
+          cd ./python
+          python setup.py install
+        
+  InstallWins:  
+    name: Installation test on Windows
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest]
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup Python
+        uses: actions/setup-python@master
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          choco install swig mingw git 
+      - name: Install abess
+        run: |
+          cd python
+          python setup.py install
+        
+  InstallMac:
+    name: Installation test on Mac
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest]
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup Python
+        uses: actions/setup-python@master
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          brew install swig mingw-w64 bash
+      - name: Install abess
+        run: |
+          python ./python/setup.py install
