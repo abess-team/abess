@@ -3,7 +3,8 @@
 # abess: Fast Best-Subset Selection in Python and R
 
 <!-- badges: start -->
-[![Github action](https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg)](https://github.com/abess-team/abess/actions)
+[![Python Build](https://github.com/abess-team/abess/actions/workflows/python_test.yml/badge.svg)](https://github.com/abess-team/abess/actions/workflows/python_test.yml)
+[![R Build](https://github.com/abess-team/abess/actions/workflows/r_test.yml/badge.svg)](https://github.com/abess-team/abess/actions/workflows/r_test.yml)
 [![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://codecov.io/gh/abess-team/abess)
 [![cran](https://img.shields.io/cran/v/abess?logo=R)](https://cran.r-project.org/package=abess)
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
@@ -37,7 +38,8 @@ install.packages("abess")
 Alternative, you can install the newest version of abess from [github](https://github.com/) with:
 
 ``` r
-remotes::install_github("abess-team/abess")
+library(devtools)
+install_github(repo = "abess-team/abess", subdir = "R-package")
 ```
 
 ## Runtime Performance

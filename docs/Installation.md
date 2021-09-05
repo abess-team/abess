@@ -52,7 +52,7 @@ To install the development version from GitHub, run the following code in R cons
 
 ```r
 library(devtools)
-install_github("abess-team/abess", build_vignettes = TRUE)
+install_github("abess-team/abess", subdir = "R-package")
 ```
 
 Windows user will need to install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) first.
@@ -63,7 +63,7 @@ Windows user will need to install [Rtools](https://cran.r-project.org/bin/window
 
 Our core C++ code is based on some dependencies, which can be found in [abess/python/include](https://github.com/abess-team/abess/tree/master/python/include):
 
-- [Eigen](https://gitlab.com/libeigen/eigen/-/releases) (version 3.3.4):
+- [Eigen](https://gitlab.com/libeigen/eigen/-/releases/3.3.4) (version 3.3.4):
     a C++ template library for linear algebra: matrices, vectors, numerical solvers, and related algorithms.
 - [Spectra](https://github.com/yixuan/spectra/releases/tag/v1.0.0) (version 1.0.0):
     a header-only C++ library for large scale eigenvalue problems.
