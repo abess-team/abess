@@ -33,7 +33,7 @@ jobs:
           python setup.py bdist_wheel
           twine upload dist/*
 
-  deploy source:
+  deploy_source:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
