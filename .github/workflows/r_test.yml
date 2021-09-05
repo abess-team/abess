@@ -1,4 +1,4 @@
-name: R Update
+name: R Build
 
 on: 
   push:

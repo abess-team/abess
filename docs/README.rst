@@ -11,14 +11,15 @@ Welcome to abess's documentation!
 .. |logopic| image:: ./image/icon_long.png    
 
 
-|GithubAction build status| |codecov| |docs| |cran| |pypi| |pyversions| |License| |Codacy|
-
+|Python build status| |R build status| |codecov| |docs| |cran| |pypi| |pyversions| |License| |Codacy|
 .. |Codacy| image:: https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76 
    :target: https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abess-team/abess&amp;utm_campaign=Badge_Grade
 .. |Travis build status| image:: https://travis-ci.com/abess-team/abess.svg?branch=master
    :target: https://travis-ci.com/abess-team/abess
-.. |GithubAction build status| image:: https://github.com/abess-team/abess/actions/workflows/main.yml/badge.svg?branch=master
-   :target: https://github.com/abess-team/abess/actions
+.. |Python build status| image:: https://github.com/abess-team/abess/actions/workflows/python_test.yml/badge.svg?branch=master
+   :target: https://github.com/abess-team/abess/actions/workflows/python_test.yml
+.. |R build status| image:: https://github.com/abess-team/abess/actions/workflows/r_test.yml/badge.svg?branch=master
+   :target: https://github.com/abess-team/abess/actions/workflows/r_test.yml
 .. |codecov| image:: https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00
    :target: https://codecov.io/gh/abess-team/abess
 .. |docs| image:: https://readthedocs.org/projects/abess/badge/?version=latest
