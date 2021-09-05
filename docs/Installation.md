@@ -52,7 +52,7 @@ To install the development version from GitHub, run the following code in R cons
 
 ```r
 library(devtools)
-install_github("abess-team/abess", build_vignettes = TRUE)
+install_github("abess-team/abess", subdir = "R-package")
 ```
 
 Windows user will need to install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) first.
