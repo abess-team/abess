@@ -52,8 +52,6 @@ jobs:
           git config --local user.email "zhuj37@mail2.sysu.edu.cn"
           git config --local user.name "Mamba413"
           Rscript -e 'pkgdown::deploy_to_branch("./R-package", new_process = FALSE, clean = TRUE)'
-  
-  
 
   codecovR:
     name: Codecov for R-package
@@ -100,3 +98,32 @@ jobs:
           pip install --upgrade pip
           pip3 install --user codecov
           codecov -F rpackage -f rpackage.xml
+  
+  codecovPy:
+    name: Codecov workflow for Python-package
+    runs-on: ubuntu-latest
+    env:
+      PYTHON: '3.9.6'
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup Python
+        uses: actions/setup-python@master
+        with:
+          python-version: 3.9.6
+      - name: Install abess & dependencies
+        run: |
+          pip install pytest
+          pip install pytest-cov
+          pip install lifelines
+          pip install pandas
+          pip install codecov
+          # pip install gcovr
+          # export CFLAGS="--coverage"
+          python ./python/setup.py install
+          ls *
+      - name: Generate coverage report
+        run: |
+          pytest ./python/pytest --cov=abess --cov-report=xml
+          # gcovr ./python/src/ --xml 
+          ls *
+          codecov -F Python
