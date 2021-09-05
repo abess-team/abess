@@ -1,10 +1,10 @@
 name: Upload Python Package
 
-on:
-  release:
-    types: [created]
+# on:
+#   release:
+#     types: [created]
 
-# on: [push]
+on: [push]
 
 jobs:
   deploy_whl:
