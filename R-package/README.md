@@ -38,7 +38,8 @@ install.packages("abess")
 Alternative, you can install the newest version of abess from [github](https://github.com/) with:
 
 ``` r
-remotes::install_github("abess-team/abess")
+library(devtools)
+install_github(repo = "abess-team/abess", subdir = "R-package")
 ```
 
 ## Runtime Performance
