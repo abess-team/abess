@@ -120,6 +120,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param early.stop A boolean value decide whether early stopping.
 #' If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one.
 #' Default: \code{early.stop = FALSE}.
+#' @param ic.scale A non-negative value used for multiplying the penalty term 
+#' in information criterion. Default: \code{ic.scale = 1}.
 #' @param num.threads An integer decide the number of threads to be
 #' concurrently used for cross-validation (i.e., \code{tune.type = "cv"}).
 #' If \code{num.threads = 0}, then all of available cores will be used.
@@ -336,6 +338,7 @@ abess.default <- function(x,
                           newton.thresh = 1e-6,
                           max.newton.iter = NULL,
                           early.stop = FALSE,
+                          ic.scale = 1.0, 
                           num.threads = 0,
                           seed = 1,
                           ...) {
@@ -672,11 +675,13 @@ abess.default <- function(x,
     stopifnot(is.numeric(nfolds) & nfolds >= 2)
     check_integer_warning(
       nfolds,
-      "nfolds should be an integer value.
-                          It is coerced to be as.integer(nfolds). "
+      "nfolds should be an integer value. It is coerced to be as.integer(nfolds). "
     )
     nfolds <- as.integer(nfolds)
   }
+  stopifnot(is.numeric(ic.scale))
+  stopifnot(ic.scale >= 0)
+  ic_scale <- as.integer(ic.scale)
 
   ## normalize strategy:
   if (is.null(normalize)) {
@@ -811,7 +816,7 @@ abess.default <- function(x,
     path_type = path_type,
     is_warm_start = warm.start,
     ic_type = ic_type,
-    ic_coef = 1.0,
+    ic_coef = ic_scale,
     is_cv = is_cv,
     Kfold = nfolds,
     status = c(0),
