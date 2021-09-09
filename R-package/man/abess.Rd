@@ -31,6 +31,7 @@
   newton.thresh = 1e-06,
   max.newton.iter = NULL,
   early.stop = FALSE,
+  ic.scale = 1,
   num.threads = 0,
   seed = 1,
   ...
@@ -145,6 +146,9 @@ Default is \code{max.newton.iter = 10} if \code{newton = "exact"}, and \code{max
 \item{early.stop}{A boolean value decide whether early stopping.
 If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one.
 Default: \code{early.stop = FALSE}.}
+
+\item{ic.scale}{A non-negative value used for multiplying the penalty term 
+in information criterion. Default: \code{ic.scale = 1}.}
 
 \item{num.threads}{An integer decide the number of threads to be
 concurrently used for cross-validation (i.e., \code{tune.type = "cv"}).
