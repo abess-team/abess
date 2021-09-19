@@ -124,8 +124,12 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x)
 // }
 #endif
 
-Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N)
+Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N, int model_type)
 {
+    if (model_type == 8)
+    {
+        return L;
+    }
     if (L.size() == N)
     {
         return Eigen::VectorXi::LinSpaced(p, 0, p - 1);

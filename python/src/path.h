@@ -87,9 +87,15 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
     Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(sequence_size, lambda_size);
     Eigen::MatrixXd effective_number_matrix(sequence_size, lambda_size);
 
+    //init beta & coef0
     T2 beta_init;
     T3 coef0_init;
-    coef_set_zero(p, M, beta_init, coef0_init);
+    if (algorithm->model_type == 8){
+        coef_set_zero(p*p, 1, beta_init, coef0_init);
+    }else{
+        coef_set_zero(p, M, beta_init, coef0_init);
+    }
+    
     Eigen::VectorXi A_init;
     Eigen::VectorXd bd_init;
 
@@ -104,7 +110,11 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
             algorithm->update_beta_init(beta_init);
             algorithm->update_bd_init(bd_init);
             algorithm->update_coef0_init(coef0_init);
-            algorithm->update_A_init(A_init, N);
+            if (algorithm->model_type == 8){
+                algorithm->update_A_init(A_init, N*N);
+            }else{
+                algorithm->update_A_init(A_init, N);
+            }
 
             algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N, status, sigma);
 

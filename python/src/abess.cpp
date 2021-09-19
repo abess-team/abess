@@ -18,6 +18,7 @@ using namespace Rcpp;
 #include "Algorithm.h"
 #include "AlgorithmPCA.h"
 #include "AlgorithmGLM.h"
+#include "AlgorithmIsing.h"
 #include "Metric.h"
 #include "path.h"
 #include "utilities.h"
@@ -137,6 +138,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
       if (pca_n != -1)
         algorithm_uni_dense->pca_n = pca_n;
     }
+    else if (model_type == 8)
+    {
+      algorithm_uni_dense = new abessIsing<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+    }
   }
   else
   {
@@ -167,6 +172,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     else if (model_type == 7)
     {
       algorithm_uni_sparse = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+    }
+    else if (model_type == 8)
+    {
+      algorithm_uni_sparse = new abessIsing<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
     }
   }
 
@@ -210,6 +219,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
           if (pca_n != -1)
             algorithm_list_uni_dense[i]->pca_n = pca_n;
         }
+        else if (model_type == 7)
+        {
+          algorithm_list_uni_dense[i] = new abessIsing<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        }
       }
       else
       {
@@ -240,6 +253,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
         else if (model_type == 7)
         {
           algorithm_list_uni_sparse[i] = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        }
+        else if (model_type == 8)
+        {
+          algorithm_list_uni_sparse[i] = new abessIsing<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
         }
       }
     }
@@ -497,6 +514,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       {
         for (int i = 0; i < Kfold; i++)
         {
+          cout<<"Path"<<endl;
           sequential_path_cv<T1, T2, T3, T4>(data, sigma, algorithm, metric, sequence, lambda_seq, early_stop, i, result_list[i]);
         }
       }
@@ -517,6 +535,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     // }
     gs_path(data, algorithm, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, K_max, epsilon, is_parallel, result);
   }
+
+  cout<<"End Path"<<endl;///
 
   // Get bestmodel index && fit bestmodel
   int min_loss_index_row = 0, min_loss_index_col = 0, s_size = sequence.size(), lambda_size = lambda_seq.size();
