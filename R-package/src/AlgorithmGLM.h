@@ -528,41 +528,40 @@ public:
     int n = X.rows();
 
     Eigen::VectorXd coef = Eigen::VectorXd::Ones(n) * coef0;
-    Eigen::VectorXd xbeta_exp = XA * beta_A + coef; // 这里初始化的xbeta_exp还没有经过exp指数函数，只是普通的被接受集A限制后的线性预测器Xb
-    for (int i = 0; i <= n - 1; i++) // 设置阈值，防止溢出，但难道不会污染数据？
+    Eigen::VectorXd xbeta_exp = XA * beta_A + coef;
+    for (int i = 0; i <= n - 1; i++) 
     {
       if (xbeta_exp(i) > 30.0)
         xbeta_exp(i) = 30.0;
       if (xbeta_exp(i) < -30.0)
         xbeta_exp(i) = -30.0;
     }
-    xbeta_exp = xbeta_exp.array().exp(); // 现在经过exp，名副其实了
+    xbeta_exp = xbeta_exp.array().exp(); 
 
-// 损失函数的负梯度方向，
-// 损失函数见https://scikit-learn.org/stable/modules/linear_model.html#generalized-linear-regression
+
     Eigen::VectorXd d = X.transpose() * (y - xbeta_exp) - 2 * this->lambda_level * beta; 
-    Eigen::VectorXd h = xbeta_exp; // h_i = e^{x_i^T * b}   其中x_i是X^A的第i行
+    Eigen::VectorXd h = xbeta_exp; 
 
-    int A_size = A.size(); // 接受集大小
-    int I_size = I.size(); // 拒绝集大小
+    int A_size = A.size(); 
+    int I_size = I.size(); 
 
-    Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p); // 用于计算Backward  sacrifice
-    Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);    // 用于计算Forward sacrifice
+    Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p); 
+    Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);  
 
-    for (int i = 0; i < N; i++) // N是Group_num
+    for (int i = 0; i < N; i++) 
     {
-      T4 XG = X.middleCols(g_index(i), g_size(i)); // XG是X中的第i组Group数据, 大小为 n*g_size(i)
+      T4 XG = X.middleCols(g_index(i), g_size(i)); 
       T4 XG_new = XG;
       for (int j = 0; j < g_size(i); j++)
       {
-        XG_new.col(j) = XG.col(j).cwiseProduct(h); // XG_new = diag{h} %*% XG, 新列的第k个元素为 x_kj' * e^{x_k^T * b} , 其中j'= g_index(i)+j
+        XG_new.col(j) = XG.col(j).cwiseProduct(h);
       }
       Eigen::MatrixXd XGbar;
-      XGbar = XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i)); // 损失函数的Hesse阵
+      XGbar = XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i)); 
 
       Eigen::MatrixXd phiG;
       XGbar.sqrt().evalTo(phiG);
-      Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));// ldlt: 上三角矩阵L %*% 对角矩阵D %*% L^T
+      Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
       betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
       dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
     }
