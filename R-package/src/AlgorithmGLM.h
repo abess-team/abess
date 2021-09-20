@@ -562,7 +562,7 @@ public:
 
       Eigen::MatrixXd phiG;
       XGbar.sqrt().evalTo(phiG);
-      Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
+      Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));// ldlt: 上三角矩阵L %*% 对角矩阵D %*% L^T
       betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
       dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
     }
