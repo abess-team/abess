@@ -468,7 +468,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       algorithm->always_select = always_select;
       for (int i = 0; i < algorithm_list.size(); i++)
       {
-
         algorithm_list[i]->always_select = always_select;
       }
     }
@@ -497,6 +496,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
   Result<T2, T3> result;
   vector<Result<T2, T3>> result_list(Kfold);
+  cout<<"Path"<<endl;///
   if (path_type == 1)
   {
     if (is_cv)
@@ -514,7 +514,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       {
         for (int i = 0; i < Kfold; i++)
         {
-          cout<<"Path"<<endl;
           sequential_path_cv<T1, T2, T3, T4>(data, sigma, algorithm, metric, sequence, lambda_seq, early_stop, i, result_list[i]);
         }
       }

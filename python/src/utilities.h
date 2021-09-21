@@ -56,9 +56,14 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x);
 Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N, int model_type = 0);
 
 template <class T4>
-T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind)
+T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type = 0)
 {
-    if (ind.size() == X.cols())
+    if (model_type == 8)
+    {
+        // Ising model
+        return X;
+    }
+    else if (ind.size() == X.cols())
     {
         return X;
     }
@@ -90,11 +95,6 @@ void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
     }
 };
 
-template <class T4>
-T4 X_seg_graph(T4 &X, int n, Eigen::VectorXi &ind)
-{
-    return X;///
-}
 
 template <class T4>
 Eigen::Matrix<T4, -1, -1> group_XTX(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)

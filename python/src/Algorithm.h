@@ -125,7 +125,7 @@ public:
   double effective_number; /* effective number of parameter. */
 
   int splicing_type;     /* exchange number update mathod. */
-  Eigen::MatrixXd Sigma; /* covariance matrix for pca. */
+  Eigen::MatrixXd Sigma; /* covariance matrix for pca, or theta in Ising*/
 
   int sub_search; /* size of sub_searching in splicing */
   int U_size;
@@ -241,26 +241,26 @@ public:
     this->coef0 = this->coef0_init;
     this->bd = this->bd_init;
 
-    int full_size;
-    if (this->model_type == 8){
-      full_size = N*N;
+    if (this->sub_search == 0 || this->sparsity_level + this->sub_search > N){
+      this->U_size = N;
     }else{
-      full_size = N;
-    }
-
-    if (this->sub_search == 0 || this->sparsity_level + this->sub_search > full_size){
-      this->U_size = full_size;
-    }else
       this->U_size = this->sparsity_level + this->sub_search;
-
-    if (this->model_type == 7)
-    {
-      this->Sigma = sigma;
     }
 
-    if (full_size <= T0)
+    // special initial
+    switch (this->model_type){
+      case 7:
+        this->Sigma = sigma;
+        break;
+      case 8:
+        this->Sigma = this->beta;
+        this->Sigma.resize(train_x.cols(), train_x.cols());
+        break;
+    }
+
+    if (N <= T0)
     {
-      this->A_out = Eigen::VectorXi::LinSpaced(full_size, 0, full_size - 1);
+      this->A_out = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
       
       // T2 beta_old = this->beta;
       // T3 coef0_old = this->coef0;
@@ -289,17 +289,13 @@ public:
     // input: this->beta_init, this->coef0_init, this->A_init, this->I_init
     // for splicing get A;for the others 0;
 
+    cout<<"==> initial screen"<<endl;///
     Eigen::VectorXi I, A = this->inital_screening(train_x, train_y, this->beta, this->coef0, this->A_init, this->I_init, this->bd, train_weight, g_index, g_size, N);
 
-    I = Ac(A, full_size);
+    I = Ac(A, N);
     
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N, this->model_type);;
-    T4 X_A;
-    if (this->model_type == 8){
-      X_A = X_seg_graph(train_x, train_n, A_ind);///
-    }else{
-      X_A = X_seg(train_x, train_n, A_ind);
-    }
+    T4 X_A = X_seg(train_x, train_n, A_ind, this->model_type);
     T2 beta_A;
     slice(this->beta, A_ind, beta_A);
 
@@ -324,17 +320,14 @@ public:
     int always_select_size = this->always_select.size();
     int C_max = min(min(T0 - always_select_size, this->U_size - T0 - always_select_size), this->exchange_num);
 
+    cout<<"==> get A"<<endl;///
     this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size, N, this->tau, this->train_loss);
 
     // final fit
-    cout<<"==> Final fit"<<endl;
+    cout<<"==> Final fit"<<endl;///
     this->A_out = A;
     A_ind = find_ind(A, g_index, g_size, p, N, this->model_type);
-    if (this->model_type == 8){
-      X_A = X_seg_graph(train_x, train_n, A_ind);///
-    }else{
-      X_A = X_seg(train_x, train_n, A_ind);
-    }
+    X_A = X_seg(train_x, train_n, A_ind, this->model_type);
     slice(this->beta, A_ind, beta_A);
 
     this->primary_model_fit_max_iter += 20;
@@ -400,33 +393,35 @@ public:
       }
       else
       {
-        U_ind = find_ind(U, g_index, g_size, p, N);
-        *X_U = X_seg(X, n, U_ind);
+        U_ind = find_ind(U, g_index, g_size, p, N, this->model_type);
+        *X_U = X_seg(X, n, U_ind, this->model_type);
         slice(beta, U_ind, beta_U);
 
-        int pos = 0;
-        for (int i = 0; i < U.size(); i++)
-        {
-          g_size_U(i) = g_size(U(i));
-          g_index_U(i) = pos;
-          pos += g_size_U(i);
+        if (this->model_type != 8){ // group is not supported in Ising now 
+          int pos = 0;
+          for (int i = 0; i < U.size(); i++)
+          {
+            g_size_U(i) = g_size(U(i));
+            g_index_U(i) = pos;
+            pos += g_size_U(i);
+          }
         }
 
         A_U = Eigen::VectorXi::LinSpaced(T0, 0, T0 - 1);
         I_U = Eigen::VectorXi::LinSpaced(this->U_size - T0, T0, this->U_size - 1);
 
-        int *temp = new int[N], s = this->always_select.size();
+        int *temp = new int[N], as = this->always_select.size();
         memset(temp, 0, N);
-        for (int i = 0; i < s; i++)
+        for (int i = 0; i < as; i++)
           temp[this->always_select(i)] = 1;
         for (int i = 0; i < this->U_size; i++)
         {
-          if (s <= 0)
+          if (as <= 0)
             break;
           if (temp[U(i)] == 1)
           {
-            always_select_U(this->always_select.size() - s) = i;
-            s--;
+            always_select_U(this->always_select.size() - as) = i;
+            as--;
           }
         }
         delete[] temp;
@@ -437,8 +432,8 @@ public:
       {
         num++;
 
-        Eigen::VectorXi A_ind = find_ind(A_U, g_index_U, g_size_U, U_ind.size(), this->U_size);
-        T4 X_A = X_seg(*X_U, n, A_ind);
+        Eigen::VectorXi A_ind = find_ind(A_U, g_index_U, g_size_U, U_ind.size(), this->U_size, this->model_type);
+        T4 X_A = X_seg(*X_U, n, A_ind, this->model_type);
         T2 beta_A;
         slice(beta_U, A_ind, beta_A);
 
@@ -481,12 +476,16 @@ public:
       delete[] temp;
 
       // bd in full set
-      Eigen::VectorXi A_ind0 = find_ind(A, g_index, g_size, p, N);
-      T4 X_A0 = X_seg(X, n, A_ind0);
+      Eigen::VectorXi A_ind0 = find_ind(A, g_index, g_size, p, N, this->model_type);
+      T4 X_A0 = X_seg(X, n, A_ind0, this->model_type);
       T2 beta_A0;
       slice(beta, A_ind0, beta_A0);
-      Eigen::VectorXi U0 = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
-      Eigen::VectorXi U_ind0 = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
+      Eigen::VectorXi U_ind0, U0 = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
+      if (model_type == 8){
+        U_ind0 = Eigen::VectorXi::LinSpaced(p*p, 0, p*p - 1);
+      }else{
+        U_ind0 = Eigen::VectorXi::LinSpaced(p, 0, p - 1);
+      }
       this->sacrifice(X, X_A0, y, beta, beta_A0, coef0, A, I, weights, g_index, g_size, N, A_ind0, bd, U0, U_ind0, 0);
 
       if (this->U_size == N)
@@ -521,7 +520,7 @@ public:
   virtual bool splicing(T4 &X, T1 &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, T2 &beta, T3 &coef0, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
                 Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss)
   {
-    cout<<"==> splicing | A = ";///
+    cout<<" --> splicing | A = ";///
     for (int i = 0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl;///
     if (C_max <= 0)
       return false;
@@ -561,8 +560,8 @@ public:
     {
       cout<<"   ~~> k = "<<k<<endl;///
       A_exchange = diff_union(A, s1, s2);
-      A_ind_exchage = find_ind(A_exchange, g_index, g_size, p, N);
-      X_A_exchage = X_seg(X, n, A_ind_exchage);
+      A_ind_exchage = find_ind(A_exchange, g_index, g_size, p, N, this->model_type);
+      X_A_exchage = X_seg(X, n, A_ind_exchage, this->model_type);
       slice(beta, A_ind_exchage, beta_A_exchange);
       coef0_A_exchange = coef0;
 

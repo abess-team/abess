@@ -263,8 +263,8 @@ class abessIsing(bess_base):
                               self.sparse_matrix,
                               self.splicing_type,
                               self.important_search,
-                              p * M,
-                              1 * M, 1, 1, 1, 1, 1, p
+                              p * p * M,
+                              1 * M, 1, 1, 1, 1, 1, p * p
                               )
 
         self.coef_ = result[0]

@@ -27,6 +27,9 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
 
     int p = data.get_p();
     int N = data.g_num;
+    if (algorithm->model_type == 8){
+        N = p*p;
+    }
     int M = data.y.cols();
     Eigen::VectorXi g_index = data.g_index;
     Eigen::VectorXi g_size = data.g_size;
@@ -64,10 +67,11 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
         test_n = test_mask.size();
     }
 
-    Eigen::Matrix<T4, -1, -1> train_group_XTX = group_XTX<T4>(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
-
-    algorithm->update_group_XTX(train_group_XTX);
-    algorithm->PhiG.resize(0, 0);
+    if (algorithm->model_type == 1 || algorithm->model_type == 5){
+        Eigen::Matrix<T4, -1, -1> train_group_XTX = group_XTX<T4>(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
+        algorithm->update_group_XTX(train_group_XTX);
+        algorithm->PhiG.resize(0, 0);
+    }
 
     if (algorithm->covariance_update)
     {
@@ -91,7 +95,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
     T2 beta_init;
     T3 coef0_init;
     if (algorithm->model_type == 8){
-        coef_set_zero(p*p, 1, beta_init, coef0_init);
+        coef_set_zero(p*p, M, beta_init, coef0_init);
     }else{
         coef_set_zero(p, M, beta_init, coef0_init);
     }
@@ -110,11 +114,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
             algorithm->update_beta_init(beta_init);
             algorithm->update_bd_init(bd_init);
             algorithm->update_coef0_init(coef0_init);
-            if (algorithm->model_type == 8){
-                algorithm->update_A_init(A_init, N*N);
-            }else{
-                algorithm->update_A_init(A_init, N);
-            }
+            algorithm->update_A_init(A_init, N);
 
             algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N, status, sigma);
 
