@@ -112,3 +112,5 @@ docs/simulation/Python/*.npy
 .vscode/*
 .vs/*
 TODO.md
+
+R-package/R/tmp
