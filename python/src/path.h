@@ -28,7 +28,8 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
     int p = data.get_p();
     int N = data.g_num;
     if (algorithm->model_type == 8){
-        N = p*p;
+        N = p*(p-1) / 2;
+        cout<<"[Ising: chang N]"<<endl;///
     }
     int M = data.y.cols();
     Eigen::VectorXi g_index = data.g_index;
@@ -95,7 +96,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
     T2 beta_init;
     T3 coef0_init;
     if (algorithm->model_type == 8){
-        coef_set_zero(p*p, M, beta_init, coef0_init);
+        coef_set_zero(p*(p-1) / 2, M, beta_init, coef0_init);
     }else{
         coef_set_zero(p, M, beta_init, coef0_init);
     }
@@ -191,10 +192,11 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
     sequence = Eigen::VectorXi::Zero(sequence_size);
     double lambda = lambda_seq[0];
 
-    Eigen::Matrix<T4, -1, -1> train_group_XTX = group_XTX<T4>(data.x, data.g_index, data.g_size, data.n, p, data.g_num, algorithm->model_type);
-
-    algorithm->update_group_XTX(train_group_XTX);
-    algorithm->PhiG.resize(0, 0);
+    if (algorithm->model_type == 1 || algorithm->model_type == 5){
+        Eigen::Matrix<T4, -1, -1> train_group_XTX = group_XTX<T4>(data.x, data.g_index, data.g_size, data.n, p, data.g_num, algorithm->model_type);
+        algorithm->update_group_XTX(train_group_XTX);
+        algorithm->PhiG.resize(0, 0);
+    }
 
     if (algorithm->covariance_update)
     {
@@ -210,10 +212,11 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
     {
         for (int k = 0; k < metric->Kfold; k++)
         {
-            Eigen::Matrix<T4, -1, -1> tmp_group_XTX = group_XTX<T4>(metric->train_X_list[k], data.g_index, data.g_size, metric->train_mask_list[k].size(), data.p, data.g_num, algorithm->model_type);
-
-            algorithm_list[k]->update_group_XTX(tmp_group_XTX);
-            algorithm_list[k]->PhiG.resize(0, 0);
+            if (algorithm->model_type == 1 || algorithm->model_type == 5){
+                Eigen::Matrix<T4, -1, -1> tmp_group_XTX = group_XTX<T4>(metric->train_X_list[k], data.g_index, data.g_size, metric->train_mask_list[k].size(), data.p, data.g_num, algorithm->model_type);
+                algorithm_list[k]->update_group_XTX(tmp_group_XTX);
+                algorithm_list[k]->PhiG.resize(0, 0);
+            }
 
             if (algorithm_list[k]->covariance_update)
             {
@@ -256,7 +259,11 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
 
     T2 beta_init;
     T3 coef0_init;
-    coef_set_zero(data.p, data.M, beta_init, coef0_init);
+    if (algorithm->model_type == 8){
+        coef_set_zero(data.p * (data.p - 1) / 2, data.M, beta_init, coef0_init);
+    }else{
+        coef_set_zero(data.p, data.M, beta_init, coef0_init);
+    }
     Eigen::VectorXi A_init;
     Eigen::VectorXd bd_init;
 

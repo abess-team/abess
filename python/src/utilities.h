@@ -56,14 +56,9 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x);
 Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N, int model_type = 0);
 
 template <class T4>
-T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type = 0)
+T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind)
 {
-    if (model_type == 8)
-    {
-        // Ising model
-        return X;
-    }
-    else if (ind.size() == X.cols())
+    if (ind.size() == X.cols())
     {
         return X;
     }
@@ -78,22 +73,38 @@ T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type = 0)
     }
 };
 
-template <class T4>
-void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
-{
-    if (ind.size() == X.cols())
-    {
-        X_seg = X;
+// template <class T4>
+// void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
+// {
+//     if (ind.size() == X.cols())
+//     {
+//         X_seg = X;
+//     }
+//     else
+//     {
+//         X_seg.resize(n, ind.size());
+//         for (int k = 0; k < ind.size(); k++)
+//         {
+//             X_seg.col(k) = X.col(ind(k));
+//         }
+//     }
+// };
+
+VectorXi find_ind_graph(Eigen::VectorXi &ind, Eigen::VectorXi &map, int p){
+    // for graph
+    VectorXi temp = Eigen::VectorXi::Zero(p);
+
+    for (int i = 0; i < ind.size(); i++){
+      temp(map(ind(i), 0)) = 1;
+      temp(map(ind(i), 1)) = 1;
     }
-    else
-    {
-        X_seg.resize(n, ind.size());
-        for (int k = 0; k < ind.size(); k++)
-        {
-            X_seg.col(k) = X.col(ind(k));
-        }
-    }
-};
+
+    int len = 0;
+    for (int i = 0; i < p; i++)
+      if (temp(i) == 1) temp(len++) = i;
+    
+    return temp.head(len).eval();
+  }
 
 
 template <class T4>
