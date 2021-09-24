@@ -532,7 +532,7 @@ public:
     //? assert xbeta > smallNum
     xbeta_inverse = xbeta_inverse.array().inverse(); // xbeta_inverse = E(Y)
 
-    Eigen::VectorXd d = X.transpose() * (xbeta_inverse - y) - 2 * this->lambda_level * beta; // negative gradient direction
+    Eigen::VectorXd d = X.transpose() * ( (xbeta_inverse - y).cwiseProduct(weights) ) - 2 * this->lambda_level * beta; // negative gradient direction
 
   
 
@@ -546,7 +546,7 @@ public:
       T4 XG_new = XG;
       for (int j = 0; j < g_size(i); j++)
       {
-        XG_new.col(j) = XG.col(j).cwiseProduct(xbeta_inverse.array().square());
+        XG_new.col(j) = XG.col(j).cwiseProduct(xbeta_inverse.array().square().cwiseProduct(weights));
       }
       // hessianG is the ith group diagonal sub-matrix of hessian matrix of Loss.
       Eigen::MatrixXd hessianG = XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));    
