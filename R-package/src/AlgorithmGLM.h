@@ -518,7 +518,9 @@ public:
     Eigen::VectorXd coef = Eigen::VectorXd::Ones(p + 1);
     coef(0) = coef0;
     coef.tail(p) = beta;
-    return -loglik_poiss(X, y, coef, n, weights);
+    Eigen::VectorXd xbeta = X * coef;
+    //? TODO: how to  guarantee xbeta>0
+    return (xbeta.cwiseProduct(y)-xbeta.array().log()).dot(weights);
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
@@ -529,8 +531,8 @@ public:
 
     Eigen::VectorXd coef = Eigen::VectorXd::Ones(n) * coef0;
     Eigen::VectorXd xbeta_inverse = XA * beta_A + coef; // Now, it hasn't been inversed.
-    //? assert xbeta > smallNum
-    xbeta_inverse = xbeta_inverse.array().inverse(); // xbeta_inverse = E(Y)
+    // assert xbeta > smallNum needn't
+    xbeta_inverse = xbeta_inverse.cwiseInverse(); // xbeta_inverse = E(Y)
 
     Eigen::VectorXd d = X.transpose() * ( (xbeta_inverse - y).cwiseProduct(weights) ) - 2 * this->lambda_level * beta; // negative gradient direction
 
