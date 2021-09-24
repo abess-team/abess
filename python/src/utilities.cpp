@@ -128,9 +128,9 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
 {
     if (model_type == 8)
     {
-        return L;
+        return Eigen::VectorXi::LinSpaced(p, 0, p - 1);
     }
-    if (L.size() == N)
+    else if (L.size() == N)
     {
         return Eigen::VectorXi::LinSpaced(p, 0, p - 1);
     }
@@ -146,6 +146,23 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
         }
         return ind.head(mark).eval();
     }
+}
+
+Eigen::VectorXi find_ind_graph(Eigen::VectorXi &ind, Eigen::MatrixXi &map, int p)
+{
+    // for graph
+    Eigen::VectorXi temp = Eigen::VectorXi::Zero(p);
+
+    for (int i = 0; i < ind.size(); i++){
+        temp(map(ind(i), 0)) = 1;
+        temp(map(ind(i), 1)) = 1;
+    }
+
+    int len = 0;
+    for (int i = 0; i < p; i++)
+        if (temp(i) == 1) temp(len++) = i;
+
+    return temp.head(len).eval();
 }
 
 Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &Phi, int N)
@@ -294,7 +311,46 @@ Eigen::VectorXi min_k(Eigen::VectorXd &vec, int k, bool sort_by_value)
     return ind.head(k).eval();
 }
 
+Eigen::VectorXi min_k(Eigen::Vector<long double, Eigen::Dynamic> &vec, int k, bool sort_by_value)
+{
+    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
+    auto rule = [vec](int i, int j) -> bool
+    {
+        return vec(i) < vec(j);
+    }; // sort rule
+    std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
+    if (sort_by_value)
+    {
+        std::sort(ind.data(), ind.data() + k, rule);
+    }
+    else
+    {
+        std::sort(ind.data(), ind.data() + k);
+    }
+
+    return ind.head(k).eval();
+}
+
 Eigen::VectorXi max_k(Eigen::VectorXd &vec, int k, bool sort_by_value)
+{
+    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
+    auto rule = [vec](int i, int j) -> bool
+    {
+        return vec(i) > vec(j);
+    }; // sort rule
+    std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
+    if (sort_by_value)
+    {
+        std::sort(ind.data(), ind.data() + k, rule);
+    }
+    else
+    {
+        std::sort(ind.data(), ind.data() + k);
+    }
+    return ind.head(k).eval();
+}
+
+Eigen::VectorXi max_k(Eigen::Vector<long double, Eigen::Dynamic> &vec, int k, bool sort_by_value)
 {
     Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
     auto rule = [vec](int i, int j) -> bool
@@ -418,6 +474,23 @@ void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int 
     return;
 }
 
+void slice(Eigen::Vector<long double, Eigen::Dynamic> &nums, Eigen::VectorXi &ind, Eigen::Vector<long double, Eigen::Dynamic> &A, int axis)
+{
+    if (ind.size() == 0)
+    {
+        A = Eigen::Vector<long double, Eigen::Dynamic>::Zero(0);
+    }
+    else
+    {
+        A = Eigen::Vector<long double, Eigen::Dynamic>::Zero(ind.size());
+        for (int i = 0; i < ind.size(); i++)
+        {
+            A(i) = nums(ind(i));
+        }
+    }
+    return;
+}
+
 void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int axis)
 {
     if (axis == 0)
@@ -496,6 +569,23 @@ void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nu
     return;
 }
 
+void slice_restore(Eigen::Vector<long double, Eigen::Dynamic> &A, Eigen::VectorXi &ind, Eigen::Vector<long double, Eigen::Dynamic> &nums, int axis)
+{
+    if (ind.size() == 0)
+    {
+        nums = Eigen::Vector<long double, Eigen::Dynamic>::Zero(nums.size());
+    }
+    else
+    {
+        nums = Eigen::Vector<long double, Eigen::Dynamic>::Zero(nums.size());
+        for (int i = 0; i < ind.size(); i++)
+        {
+            nums(ind(i)) = A(i);
+        }
+    }
+    return;
+}
+
 void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nums, int axis)
 {
     if (axis == 0)
@@ -537,6 +627,13 @@ void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0)
     return;
 }
 
+void coef_set_zero(int p, int M, Eigen::Vector<long double, Eigen::Dynamic> &beta, double &coef0)
+{
+    beta = Eigen::Vector<long double, Eigen::Dynamic>::Zero(p);
+    coef0 = 0.;
+    return;
+}
+
 // Eigen::VectorXd array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis)
 // {
 //     A = A.array() * B.array();
@@ -567,6 +664,12 @@ void array_quotient(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis)
     A = A.array() / B.array();
     return;
 }
+void array_quotient(Eigen::Vector<long double, Eigen::Dynamic> &A, Eigen::VectorXd &B, int axis)
+{
+    Eigen::Vector<long double, Eigen::Dynamic> B1 = B.cast<long double>();
+    A = A.array() / B1.array();
+    return;
+}
 void array_quotient(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis)
 {
     if (axis == 0)
@@ -591,6 +694,11 @@ double matrix_dot(Eigen::VectorXd &A, Eigen::VectorXd &B)
     return A.dot(B);
 }
 
+double matrix_dot(Eigen::Vector<long double, Eigen::Dynamic> &A, Eigen::VectorXd &B)
+{
+    Eigen::Vector<long double, Eigen::Dynamic> B1 = B.cast<long double>();
+    return A.dot(B1);
+}
 Eigen::VectorXd matrix_dot(Eigen::MatrixXd &A, Eigen::VectorXd &B)
 {
     return A.transpose() * B;

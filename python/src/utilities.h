@@ -19,17 +19,17 @@
 using namespace std;
 using namespace Eigen;
 
-template <class T2, class T3>
+template <class T2, class T3, class T5>
 struct FIT_ARG
 {
     int support_size;
     double lambda;
     T2 beta_init;
     T3 coef0_init;
-    Eigen::VectorXd bd_init;
+    T5 bd_init;
     Eigen::VectorXi A_init;
 
-    FIT_ARG(int _support_size, double _lambda, T2 _beta_init, T3 _coef0_init, VectorXd _bd_init, VectorXi _A_init)
+    FIT_ARG(int _support_size, double _lambda, T2 _beta_init, T3 _coef0_init, T5 _bd_init, VectorXi _A_init)
     {
         support_size = _support_size;
         lambda = _lambda;
@@ -55,6 +55,8 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x);
 
 Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N, int model_type = 0);
 
+Eigen::VectorXi find_ind_graph(Eigen::VectorXi &ind, Eigen::MatrixXi &map, int p);
+
 template <class T4>
 T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind)
 {
@@ -73,39 +75,22 @@ T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind)
     }
 };
 
-// template <class T4>
-// void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
-// {
-//     if (ind.size() == X.cols())
-//     {
-//         X_seg = X;
-//     }
-//     else
-//     {
-//         X_seg.resize(n, ind.size());
-//         for (int k = 0; k < ind.size(); k++)
-//         {
-//             X_seg.col(k) = X.col(ind(k));
-//         }
-//     }
-// };
-
-VectorXi find_ind_graph(Eigen::VectorXi &ind, Eigen::VectorXi &map, int p){
-    // for graph
-    VectorXi temp = Eigen::VectorXi::Zero(p);
-
-    for (int i = 0; i < ind.size(); i++){
-      temp(map(ind(i), 0)) = 1;
-      temp(map(ind(i), 1)) = 1;
+template <class T4>
+void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
+{
+    if (ind.size() == X.cols())
+    {
+        X_seg = X;
     }
-
-    int len = 0;
-    for (int i = 0; i < p; i++)
-      if (temp(i) == 1) temp(len++) = i;
-    
-    return temp.head(len).eval();
-  }
-
+    else
+    {
+        X_seg.resize(n, ind.size());
+        for (int k = 0; k < ind.size(); k++)
+        {
+            X_seg.col(k) = X.col(ind(k));
+        }
+    }
+};
 
 template <class T4>
 Eigen::Matrix<T4, -1, -1> group_XTX(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)
@@ -149,27 +134,33 @@ Eigen::VectorXi Ac(Eigen::VectorXi &A, int N);
 Eigen::VectorXi diff_union(Eigen::VectorXi A, Eigen::VectorXi &B, Eigen::VectorXi &C);
 Eigen::VectorXi min_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
 Eigen::VectorXi max_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
-
+Eigen::VectorXi min_k(Eigen::Vector<long double, Eigen::Dynamic> &nums, int k, bool sort_by_value = false);
+Eigen::VectorXi max_k(Eigen::Vector<long double, Eigen::Dynamic> &nums, int k, bool sort_by_value = false);
 // Eigen::VectorXi max_k_2(Eigen::VectorXd &vec, int k);
 
 // to do
 void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int axis = 0);
 void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int axis = 0);
 void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::SparseMatrix<double> &A, int axis = 0);
+void slice(Eigen::Vector<long double, Eigen::Dynamic> &nums, Eigen::VectorXi &ind, Eigen::Vector<long double, Eigen::Dynamic> &A, int axis = 0);
 
 void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nums, int axis = 0);
 void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nums, int axis = 0);
+void slice_restore(Eigen::Vector<long double, Eigen::Dynamic> &A, Eigen::VectorXi &ind, Eigen::Vector<long double, Eigen::Dynamic> &nums, int axis = 0);
 
 void coef_set_zero(int p, int M, Eigen::VectorXd &beta, double &coef0);
 void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0);
+void coef_set_zero(int p, int M, Eigen::Vector<long double, Eigen::Dynamic> &beta, double &coef0);
 
 // Eigen::VectorXd array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis = 0);
 Eigen::MatrixXd array_product(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis = 0);
 
 void array_quotient(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis = 0);
 void array_quotient(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis = 0);
+void array_quotient(Eigen::Vector<long double, Eigen::Dynamic> &A, Eigen::VectorXd &B, int axis = 0);
 
 double matrix_dot(Eigen::VectorXd &A, Eigen::VectorXd &B);
+double matrix_dot(Eigen::Vector<long double, Eigen::Dynamic> &A, Eigen::VectorXd &B);
 Eigen::VectorXd matrix_dot(Eigen::MatrixXd &A, Eigen::VectorXd &B);
 
 void matrix_sqrt(Eigen::MatrixXd &A, Eigen::MatrixXd &B);

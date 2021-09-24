@@ -21,8 +21,8 @@ using namespace Eigen;
 #include "abess.h"
 #include "utilities.h"
 
-template <class T1, class T2, class T3, class T4>
-void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algorithm<T1, T2, T3, T4> *algorithm, Metric<T1, T2, T3, T4> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3> &result)
+template <class T1, class T2, class T3, class T4, class T5>
+void sequential_path_cv(Data<T1, T2, T3, T4, T5> &data, Eigen::MatrixXd sigma, Algorithm<T1, T2, T3, T4, T5> *algorithm, Metric<T1, T2, T3, T4, T5> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3, T5> &result)
 {
 
     int p = data.get_p();
@@ -89,7 +89,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
     Eigen::MatrixXd train_loss_matrix(sequence_size, lambda_size);
     Eigen::MatrixXd ic_matrix(sequence_size, lambda_size);
     Eigen::MatrixXd test_loss_matrix(sequence_size, lambda_size);
-    Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(sequence_size, lambda_size);
+    Eigen::Matrix<T5, Dynamic, Dynamic> bd_matrix(sequence_size, lambda_size);
     Eigen::MatrixXd effective_number_matrix(sequence_size, lambda_size);
 
     //init beta & coef0
@@ -102,7 +102,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
     }
     
     Eigen::VectorXi A_init;
-    Eigen::VectorXd bd_init;
+    T5 bd_init;
 
     for (int i = 0; i < sequence_size; i++)
     {
@@ -181,8 +181,8 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
     result.effective_number_matrix = effective_number_matrix;
 }
 
-template <class T1, class T2, class T3, class T4>
-void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Metric<T1, T2, T3, T4> *metric, int s_min, int s_max, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, int K_max, double epsilon, bool is_parallel, Result<T2, T3> &result)
+template <class T1, class T2, class T3, class T4, class T5>
+void gs_path(Data<T1, T2, T3, T4, T5> &data, Algorithm<T1, T2, T3, T4, T5> *algorithm, vector<Algorithm<T1, T2, T3, T4, T5> *> algorithm_list, Metric<T1, T2, T3, T4, T5> *metric, int s_min, int s_max, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, int K_max, double epsilon, bool is_parallel, Result<T2, T3, T5> &result)
 {
     int p = data.get_p();
     // int n = data.get_n();
@@ -254,7 +254,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
     Eigen::MatrixXd train_loss_matrix(sequence_size, 1);
     Eigen::MatrixXd ic_matrix(sequence_size, 1);
     Eigen::MatrixXd test_loss_matrix(sequence_size, 1);
-    Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(sequence_size, 1);
+    Eigen::Matrix<T5, Dynamic, Dynamic> bd_matrix(sequence_size, 1);
     Eigen::MatrixXd effective_number_matrix(sequence_size, 1);
 
     T2 beta_init;
@@ -265,7 +265,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
         coef_set_zero(data.p, data.M, beta_init, coef0_init);
     }
     Eigen::VectorXi A_init;
-    Eigen::VectorXd bd_init;
+    T5 bd_init;
 
     int Tmin = s_min;
     int Tmax = s_max;
@@ -274,7 +274,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
     // double icTl;
     // double icTr;
 
-    FIT_ARG<T2, T3> fit_arg(Tl, lambda, beta_init, coef0_init, bd_init, A_init);
+    FIT_ARG<T2, T3, T5> fit_arg(Tl, lambda, beta_init, coef0_init, bd_init, A_init);
     // algorithm->update_train_mask(full_mask);
     // algorithm->update_sparsity_level(T1);
     // algorithm->update_beta_init(beta_init);
