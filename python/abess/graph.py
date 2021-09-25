@@ -53,7 +53,7 @@ class abessIsing(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, s_min=None, s_max=None,
-                 ic_type="aic", ic_coef=1.0, 
+                 ic_type="aic", ic_coef=1.0, primary_model_fit_max_iter=500, primary_model_fit_epsilon=0.001,
                  always_select=[], 
                  thread=1,
                  sparse_matrix=False,
@@ -62,7 +62,7 @@ class abessIsing(bess_base):
         super(abessIsing, self).__init__(
             algorithm_type="abess", model_type="Ising", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, s_min=s_min, s_max=s_max, 
-            ic_type=ic_type, ic_coef=ic_coef, 
+            ic_type=ic_type, ic_coef=ic_coef, primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_max_iter,
             always_select=always_select, 
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -263,10 +263,21 @@ class abessIsing(bess_base):
                               self.sparse_matrix,
                               self.splicing_type,
                               self.important_search,
-                              p * p * M,
-                              1 * M, 1, 1, 1, 1, 1, p * p
+                              p * M,
+                              1 * M, 1, 1, 1, 1, 1, p * (p - 1) / 2
                               )
+        self.coef_ = result[9].reshape(p * (p - 1) / 2, 1)
+        self.theta = np.zeros((p, p))
 
-        self.coef_ = result[0]
+        i = 0
+        j = 0
+        for k in range(0, p * (p - 1) / 2):
+            if (i == j):
+                i = 0
+                j += 1
+            self.theta[i, j] = self.coef_[k, 0]
+            self.theta[j, i] = self.coef_[k, 0]
+            i += 1
+
         return self
 
