@@ -80,15 +80,17 @@ public:
 
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, VL &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
-    cout<<" --> primary fit"<<endl;///
+    cout<<" --> primary fit | beta size = "<<beta.size()<<endl;///
     // inner_loop3
 
     ML prob, first_der, delta_theta, last_theta = this->theta;
-    long double loglik = loss0, step = 1.0, alpha = 0.1, scale = 0.5;
+    long double loglik, step = 1.0, alpha = 0.1, scale = 0.5;
     
     // Newton
     int iter = 0;
-    while(iter++ <= this->primary_model_fit_max_iter) {
+    while(iter++ <= 1/*this->primary_model_fit_max_iter*/) {
+      cout << "   ~~> iter = "<<iter<<" | loss = "<<loss0;///
+
       prob = 1.0 / (1.0 + this->exp_odd.array());
       first_der = first_derivative(x, weights, prob, A);
       delta_theta = compute_delta_theta(x, first_der, weights, prob, A);
@@ -97,16 +99,33 @@ public:
       this->update_exp_odd(x);
 
       loglik = this->neg_loglik_loss(x, y, weights, beta, coef0, A, g_index, g_size);
+
+      // cout << "first_der:\n";///
+      // for (int i=0;i<first_der.rows();i++){
+      //   for (int j=0;j<first_der.cols();j++)
+      //     cout<<first_der(i,j)<<" ";
+      //   cout<<endl;
+      // }
+
+      // cout << "delta_theta:\n";///
+      // for (int i=0;i<delta_theta.rows();i++){
+      //   for (int j=0;j<delta_theta.cols();j++)
+      //     cout<<delta_theta(i,j)<<" ";
+      //   cout<<endl;
+      // }
+
+      // cout << "loglik = "<<loglik<<endl;
       
-      // need max iter?
       int t=0;
-      while(step > 0 && loglik <= loss0 + alpha * step * (first_der.cwiseProduct(delta_theta)).sum()) {
-        cout<<"   ~~> t = "<<t++<<" | loglik = "<<loglik<<" | step = "<<step<<endl;
+      while(step > 1e-8 && loglik <= loss0 + alpha * step * (first_der.cwiseProduct(delta_theta)).sum()) {
+        t++;
+        // cout<<"   ~~> t = "<<t<<" | loglik = "<<loglik<<" | step = "<<step<<endl;
         step *= scale; 
-        this->theta += step * delta_theta;
+        this->theta = last_theta + step * delta_theta;
         this->update_exp_odd(x);
         loglik = this->neg_loglik_loss(x, y, weights, beta, coef0, A, g_index, g_size);
       }
+      cout<<" | conv = "<<t<<endl;
       
       // fail to find
       if(!isfinite(loglik - loss0)) {
@@ -123,28 +142,47 @@ public:
     // update beta
     this->update_beta(beta, A);
 
+    // cout<<"beta size = "<<beta.size()<<" :\n";///
+    // for (int i=0;i<beta.size();i++) cout<<beta(i)<<" ";cout<<endl;
+
+    // cout << "theta:\n";///
+    // for (int i=0;i<this->theta.rows();i++){
+    //   for (int j=0;j<this->theta.cols();j++)
+    //     cout<<this->theta(i,j)<<" ";
+    //   cout<<endl;
+    // }
+
     return true;
   };
 
   double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, VL &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
-    cout<<" --> loss"<<endl;///
+    // cout<<" --> loss = ";///
 
     int n = X.rows();
     int p = X.cols();
 
     VL w = weights.cast<long double>();
+    // cout<<" isingn = "<<this->ising_n<<" | weights\n";///
+    // for (int i=0;i<w.size();i++) cout<<w(i)<<" ";cout<<endl;
 
     ML log_par = (ML::Ones(n, p) + this->exp_odd).array().log();
-    double loss = - ((log_par.rowwise().sum()).dot(w)) / this->ising_n - 
+    // cout << "log par:\n";///
+    // for (int i=0;i<log_par.rows();i++){
+    //   for (int j=0;j<log_par.cols();j++)
+    //     cout<<log_par(i,j)<<" ";
+    //   cout<<endl;
+    // }
+    long double loglik = - ((log_par.rowwise().sum()).dot(w)) / this->ising_n - 
       this->gamma * (this->theta.cwiseProduct(this->theta).sum());
     
-    return loss;
+    // cout << loss << endl;
+    return - loglik;
   };
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, VL &beta, VL &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, VL &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
-    cout<<" --> sacrifice"<<endl;///
+    // cout<<" --> sacrifice"<<endl;///
 
     // backward
     for (int i = 0; i < A.size(); i++){
@@ -166,7 +204,7 @@ public:
   };
 
   void update_exp_odd(T4 &x) {
-    cout<<" --> update_exp_odd\n";///
+    // cout<<" --> update_exp_odd\n";///
 
     ML x1 = x.template cast<long double>();
     
@@ -175,7 +213,7 @@ public:
   }
 
   void update_beta(VL &beta, Eigen::VectorXi &A_ind){
-    cout<<" --> update_beta\n";///
+    // cout<<" --> update_beta\n";///
     for (int i = 0; i < A_ind.size(); i++){
       int mi = this->map1(A_ind(i), 0);
       int mj = this->map1(A_ind(i), 1);
@@ -189,12 +227,12 @@ public:
                                       ML &prob, Eigen::VectorXi &A) {
     // without penalty term
     // gradient of PL, not gradient of loss
-    cout<<" --> compute_delta_theta\n";///
+    // cout<<" --> compute_delta_theta\n";///
     int p = x.cols();
     ML delta_theta = ML::Zero(p, p);
     VL w = weights.cast<long double>();
     
-    for(int i = 0; i < this->sparsity_level; i++) {
+    for(int i = 0; i < A.size(); i++) {
       // only for off-diagonal elements
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
@@ -212,7 +250,7 @@ public:
   ML first_derivative(T4 &x,
                                    Eigen::VectorXd &weights, 
                                    ML &prob, Eigen::VectorXi &A) {
-    cout<<" --> first_derivative\n";///
+    // cout<<" --> first_derivative\n";///
     // gradient of PL, not gradient of loss
     int p = x.cols();
     ML first_der = ML::Zero(p, p);
@@ -221,10 +259,11 @@ public:
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
 
+      VL w = weights.cast<long double>();
+      
       Eigen::VectorXd temp = x.col(mi).cwiseProduct(x.col(mj));
       VL xij = temp.cast<long double>();
       VL ans =  2.0 * xij - xij.cwiseProduct(prob.col(mi) + prob.col(mj));
-      VL w = weights.cast<long double>();
       
       first_der(mi, mj) = (2.0 * ans.dot(w)) / this->ising_n - 
         4.0 * this->gamma * this->theta(mi, mj);

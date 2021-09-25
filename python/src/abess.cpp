@@ -454,6 +454,11 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     }
   }
 
+  cout<<"beta in abess 3 ";///
+  Eigen::Vector<long double, Eigen::Dynamic> temp;
+  out_result.get_value_by_name("beta", temp);
+  for (int i=0;i<temp.size();i++) cout<<temp(i)<<" ";cout<<endl;
+
   delete algorithm_uni_dense;
   delete algorithm_mul_dense;
   delete algorithm_uni_sparse;
@@ -813,6 +818,9 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   best_ic = ic_matrix(min_loss_index_row, min_loss_index_col);
   best_test_loss = test_loss_sum(min_loss_index_row, min_loss_index_col);
 
+  cout<<"beta in abess 2 | min = ("<<min_loss_index_row<<","<<min_loss_index_col<<") : ";///
+  for (int i=0;i<best_beta.size();i++) cout<<best_beta(i)<<" ";cout<<endl;
+
   //////////////Restore best_fit_result for normal//////////////
   // to do
   if (data.is_normal && !sparse_matrix)
@@ -960,7 +968,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                   double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
-                  int A_out_len, int *l_out)
+                  int A_out_len, long double *beta_long_out, int beta_long_out_len)
 {
   Eigen::MatrixXd x_Mat;
   Eigen::MatrixXd y_Mat;
@@ -1005,16 +1013,23 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
 
   if (y_col == 1)
   {
-    Eigen::VectorXd beta;
+    if (model_type == 8){
+      Eigen::Vector<long double, Eigen::Dynamic> beta_long;
+      mylist.get_value_by_name("beta", beta_long);
+      VectorXd2Pointer(beta_long, beta_long_out);
+    }else{
+      Eigen::VectorXd beta;
+      mylist.get_value_by_name("beta", beta);
+      VectorXd2Pointer(beta, beta_out);
+    }
     double coef0 = 0;
     double train_loss = 0;
     double ic = 0;
-    mylist.get_value_by_name("beta", beta);
+
     mylist.get_value_by_name("coef0", coef0);
     mylist.get_value_by_name("train_loss", train_loss);
     mylist.get_value_by_name("ic", ic);
 
-    VectorXd2Pointer(beta, beta_out);
     *coef0_out = coef0;
     *train_loss_out = train_loss;
     *ic_out = ic;

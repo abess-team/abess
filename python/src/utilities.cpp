@@ -107,7 +107,19 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x)
 
     for (i = 0; i < x_matrix_len; i++)
     {
-        x[i] = x_vector[i];
+        x[i] = x_vector(i);
+    }
+    return;
+}
+
+void VectorXd2Pointer(Eigen::Vector<long double, Eigen::Dynamic> x_vector, long double *x)
+{
+    int x_matrix_len, i;
+    x_matrix_len = x_vector.size();
+
+    for (i = 0; i < x_matrix_len; i++)
+    {
+        x[i] = x_vector(i);
     }
     return;
 }
@@ -128,7 +140,7 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
 {
     if (model_type == 8)
     {
-        return Eigen::VectorXi::LinSpaced(p, 0, p - 1);
+        return L;
     }
     else if (L.size() == N)
     {

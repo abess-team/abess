@@ -51,6 +51,7 @@ void MatrixXd2Pointer(Eigen::MatrixXd x_matrix, double *x);
 // void MatrixXi2Pointer(Eigen::MatrixXi x_matrix, int *x);
 void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x);
 // void VectorXi2Pointer(Eigen::VectorXi x_vector, int *x);
+void VectorXd2Pointer(Eigen::Vector<long double, Eigen::Dynamic> x_vector, long double *x);
 #endif
 
 Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N, int model_type = 0);
