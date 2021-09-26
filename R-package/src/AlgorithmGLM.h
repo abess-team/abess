@@ -450,8 +450,8 @@ public:
   ~abessGamma(){};
   
   // before log, use this func
-  template <class num_vector>
-  void log_threshold(num_vector &x)
+  template <class VEC>
+  void log_threshold(VEC &x)
   {
     double threshold = 1e-5;
     for(int i=0; i < x.size(); i++){
@@ -459,76 +459,155 @@ public:
     }
   }
 
+ 
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
-    
+    if (x.cols() == 0)
+    {
+      // we needn't lambda here 
+      coef0 = weights.sum() / weights.dot(y);
+      return true;
+    }
+
     int n = x.rows();
     int p = x.cols();
+
+    // expand dim p to p+1
     T4 X(n, p + 1);
+    Eigen::VectorXd beta0 = Eigen::VectorXd::Zero(p + 1);
     X.rightCols(p) = x;
     add_constant_column(X);
+    beta0(0) = coef0;
+    beta0.tail(p) = beta;
 
+    Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
     Eigen::MatrixXd lambdamat = Eigen::MatrixXd::Identity(p + 1, p + 1);
     lambdamat(0, 0) = 0;
 
-    // Eigen::MatrixXd X_trans = X.transpose();
-    T4 X_new(n, p + 1);
-    Eigen::VectorXd beta0 = Eigen::VectorXd::Zero(p + 1);
-    beta0.tail(p) = beta;
-    beta0(0) = coef0;
-    Eigen::VectorXd eta = X * beta0;
-    Eigen::VectorXd expeta = eta.array().exp();
-    Eigen::VectorXd z = Eigen::VectorXd::Zero(n);
-    double loglik0 = (y.cwiseProduct(eta) - expeta).dot(weights);
-    double loglik1;
+    // TODO 调用函数loglik_logit
+    Eigen::VectorXd Pi = pi(X, y, beta0);
+    Eigen::VectorXd log_Pi = Pi.array().log();
+    Eigen::VectorXd log_1_Pi = (one - Pi).array().log();
+    double loglik1 = DBL_MAX, loglik0 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
+    Eigen::VectorXd W = Pi.cwiseProduct(one - Pi);
+
+    // TODO 这里使用了对倒数的数值检查，该行为应在所有类似的环境下统一
+    for (int i = 0; i < n; i++)
+    {
+      if (W(i) < 0.001)
+        W(i) = 0.001;
+    }
+    // 放到IWLS法内部
+    T4 X_new(X);
+    Eigen::VectorXd Z = X * beta0 + (y - Pi).cwiseQuotient(W);
 
     int j;
+    double step = 1;
+    Eigen::VectorXd g(p + 1);
+    Eigen::VectorXd beta1;
     for (j = 0; j < this->primary_model_fit_max_iter; j++)
     {
-      for (int i = 0; i < p + 1; i++)
+      // To do: Approximate Newton method
+      if (this->approximate_Newton)
       {
-        // temp.col(i) = X_trans.col(i) * expeta(i) * weights(i);
-        X_new.col(i) = X.col(i).cwiseProduct(expeta).cwiseProduct(weights);
+        Eigen::VectorXd h_diag(p + 1);
+        for (int i = 0; i < p + 1; i++)
+        {
+          h_diag(i) = 1.0 / X.col(i).cwiseProduct(W).cwiseProduct(weights).dot(X.col(i)); // Hessian阵对角元的逆 TODO 是否需要考虑正则项？
+        }
+        g = X.transpose() * ((y - Pi).cwiseProduct(weights)); // 负梯度方向
+        beta1 = beta0 + step * g.cwiseProduct(h_diag); // Approximate Newton method
+        // TODO 调用函数loglik_logit(X,y,beta1)
+        Pi = pi(X, y, beta1);
+        log_Pi = Pi.array().log();
+        log_1_Pi = (one - Pi).array().log();
+        loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
+
+        while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon)
+        {
+          step = step / 2;
+          // TODO g.cwiseProduct(h_diag)可以不用反复计算
+          beta1 = beta0 + step * g.cwiseProduct(h_diag);
+          Pi = pi(X, y, beta1);
+          log_Pi = Pi.array().log();
+          log_1_Pi = (one - Pi).array().log();
+          loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
+        }
+
+        bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
+        // bool condition1 = false;
+        if (condition1)
+          break;
+
+        if (loglik1 > loglik0)
+        {
+          beta0 = beta1;
+          loglik0 = loglik1;
+          W = Pi.cwiseProduct(one - Pi);
+          for (int i = 0; i < n; i++)
+          {
+            if (W(i) < 0.001)
+              W(i) = 0.001;
+          }
+        }
+
+        if (step < this->primary_model_fit_epsilon)
+        {
+          break;
+        }
       }
-      z = eta + (y - expeta).cwiseQuotient(expeta);
-      Eigen::MatrixXd XTX = X_new.transpose() * X + 2 * this->lambda_level * lambdamat;
-      // if (check_ill_condition(XTX)) return false;
-      beta0 = (XTX).ldlt().solve(X_new.transpose() * z);
-      eta = X * beta0;
-      for (int i = 0; i < n; i++)
-      {
-        if (eta(i) < -30.0)
-          eta(i) = -30.0;
-        if (eta(i) > 30.0)
-          eta(i) = 30.0;
-      }
-      expeta = eta.array().exp();
-      loglik1 = (y.cwiseProduct(eta) - expeta).dot(weights);
-      bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
-      // bool condition1 = false;
-      bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
-      bool condition3 = abs(loglik1) < min(1e-3, this->tau);
-      if (condition1 || condition2 || condition3)
+      else // if (this->approximate_Newton)
       {
 
-        break;
+        for (int i = 0; i < p + 1; i++)
+        {
+          X_new.col(i) = X.col(i).cwiseProduct(W).cwiseProduct(weights);
+        }
+
+        Eigen::MatrixXd XTX = 2 * this->lambda_level * lambdamat + X_new.transpose() * X; // Hessian
+        // if (check_ill_condition(XTX)) return false;
+        beta0 = XTX.ldlt().solve(X_new.transpose() * Z);
+
+        // overload_ldlt(X_new, X, Z, beta0);
+
+        // CG
+        // ConjugateGradient<T4, Lower | Upper> cg;
+        // cg.compute(X_new.transpose() * X);
+        // beta0 = cg.solve(X_new.transpose() * Z);
+
+        Pi = pi(X, y, beta0);
+        log_Pi = Pi.array().log();
+        log_1_Pi = (one - Pi).array().log();
+        loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
+
+        bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
+        bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
+        bool condition3 = abs(loglik1) < min(1e-3, this->tau);
+        if (condition1 || condition2 || condition3)
+        {
+          break;
+        }
+
+        loglik0 = loglik1;
+        W = Pi.cwiseProduct(one - Pi);
+        for (int i = 0; i < n; i++)
+        {
+          if (W(i) < 0.001)
+            W(i) = 0.001;
+        }
+        Z = X * beta0 + (y - Pi).cwiseQuotient(W);
       }
-      loglik0 = loglik1;
     }
 
     beta = beta0.tail(p).eval();
     coef0 = beta0(0);
     return true;
-  };
-
+  }
+  
   double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
     int n = X.rows();
-    int p = X.cols();
-    Eigen::VectorXd coef = Eigen::VectorXd::Ones(p + 1);
-    coef(0) = coef0;
-    coef.tail(p) = beta;
-    Eigen::VectorXd xbeta = X * coef;
+    Eigen::VectorXd xbeta = X * beta + Eigen::VectorXd::Ones(n) * coef0;
     log_threshold(xbeta);
     return (xbeta.cwiseProduct(y)-xbeta.array().log()).dot(weights) + this->lambda_level * coef.squareNorm();
   }
@@ -539,8 +618,7 @@ public:
     int p = X.cols();
     int n = X.rows();
 
-    Eigen::VectorXd coef = Eigen::VectorXd::Ones(n) * coef0;
-    Eigen::VectorXd xbeta_inverse = XA * beta_A + coef; // Now, it hasn't been inversed.
+    Eigen::VectorXd xbeta_inverse = XA * beta_A + Eigen::VectorXd::Ones(n) * coef0; // Now, it hasn't been inversed.
     // assert xbeta > smallNum needn't
     xbeta_inverse = xbeta_inverse.cwiseInverse(); // xbeta_inverse = E(Y)
     // negative gradient direction
