@@ -448,10 +448,20 @@ public:
   abessGamma(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select, false, splicing_type, sub_search){};
 
   ~abessGamma(){};
+  
+  // before log, use this func
+  template <class num_vector>
+  void log_threshold(num_vector &x)
+  {
+    double threshold = 1e-5;
+    for(int i=0; i < x.size(); i++){
+      if(x(i) < threshold){ x = threshold;}     
+    }
+  }
 
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
-
+    
     int n = x.rows();
     int p = x.cols();
     T4 X(n, p + 1);
@@ -485,7 +495,7 @@ public:
       // if (check_ill_condition(XTX)) return false;
       beta0 = (XTX).ldlt().solve(X_new.transpose() * z);
       eta = X * beta0;
-      for (int i = 0; i <= n - 1; i++)
+      for (int i = 0; i < n; i++)
       {
         if (eta(i) < -30.0)
           eta(i) = -30.0;
@@ -519,8 +529,8 @@ public:
     coef(0) = coef0;
     coef.tail(p) = beta;
     Eigen::VectorXd xbeta = X * coef;
-    //? TODO: how to  guarantee xbeta>0
-    return (xbeta.cwiseProduct(y)-xbeta.array().log()).dot(weights);
+    log_threshold(xbeta);
+    return (xbeta.cwiseProduct(y)-xbeta.array().log()).dot(weights) + this->lambda_level * coef.squareNorm();
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
@@ -533,14 +543,11 @@ public:
     Eigen::VectorXd xbeta_inverse = XA * beta_A + coef; // Now, it hasn't been inversed.
     // assert xbeta > smallNum needn't
     xbeta_inverse = xbeta_inverse.cwiseInverse(); // xbeta_inverse = E(Y)
-
-    Eigen::VectorXd d = X.transpose() * ( (xbeta_inverse - y).cwiseProduct(weights) ) - 2 * this->lambda_level * beta; // negative gradient direction
-
-  
+    // negative gradient direction
+    Eigen::VectorXd d = X.transpose() * ((xbeta_inverse - y).cwiseProduct(weights)) - 2 * this->lambda_level * beta; 
 
     Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p); 
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);  
-
     // we only need N diagonal sub-matrix of hessian of Loss, X^T %*% diag(xbeta_inverse^2) %*% X is OK, but waste.
     for (int i = 0; i < N; i++) 
     {
