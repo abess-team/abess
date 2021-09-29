@@ -126,8 +126,6 @@ public:
 
   int splicing_type;     /* exchange number update mathod. */
   Eigen::MatrixXd Sigma; /* covariance matrix for pca*/
-  Eigen::Matrix<long double, Eigen::Dynamic, Eigen::Dynamic> theta;
-  Eigen::Matrix<long double, Eigen::Dynamic, Eigen::Dynamic> exp_odd;
 
   int sub_search; /* size of sub_searching in splicing */
   int U_size;
@@ -200,7 +198,7 @@ public:
 
   void update_group_XTX(Eigen::Matrix<T4, -1, -1> &group_XTX) { this->group_XTX = group_XTX; }
 
-  void update_tau(int train_n, int N)
+  virtual void update_tau(int train_n, int N)
   {
     if (train_n == 1)
     {
@@ -269,8 +267,10 @@ public:
         this->Sigma = sigma;
         break;
       case 8: // Ising
-        this->theta = Eigen::Matrix<long double, Eigen::Dynamic, Eigen::Dynamic>::Zero(train_x.cols(), train_x.cols());
         this->ising_n = (long int) train_weight.sum();
+        // if (0.1 / this->ising_n < this->tau){
+        //   this->tau = 0.1 / this->ising_n;
+        // }
         this->map1 = Eigen::MatrixXi::Zero(N, 2);
         this->map2 = Eigen::MatrixXi::Zero(train_x.cols(), train_x.cols());
         int i = 0, j = 0;
@@ -282,8 +282,6 @@ public:
           this->map1(k, 1) = j;
           this->map2(i, j) = k;
           this->map2(j, i) = k;
-          this->theta(i, j) = this->beta(k);
-          this->theta(j, i) = this->beta(k);
           i++;
         }
         break;
@@ -313,7 +311,7 @@ public:
     Eigen::VectorXi I, A = this->inital_screening(train_x, train_y, this->beta, this->coef0, this->A_init, this->I_init, this->bd, train_weight, g_index, g_size, N);
     
     cout<<" A_init = ";///
-    for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl;
+    for (int i=0;i<A.size();i++) cout<<this->map1(A(i), 0)<<","<<this->map1(A(i), 1)<<endl;
     I = Ac(A, N);
     
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N, this->model_type);
@@ -339,6 +337,8 @@ public:
       slice_restore(beta_A, A_ind, this->beta);
       this->train_loss = this->neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
     }
+
+    cout<<"train_loss = "<<this->train_loss<<endl;///
 
     // for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl<<"init loss = "<<this->train_loss<<endl;
     // }
@@ -403,8 +403,6 @@ public:
     {
       U = max_k(bd, this->U_size, true);
     }
-
-    cout<<"betasize 3 = "<<beta.size();///
 
     int p = X.cols();
     int n = X.rows();
@@ -472,12 +470,12 @@ public:
         delete[] temp;
       }
 
-      cout<<"beta_U size = "<<beta_U.size()<<endl;///
-
       int num = -1;
       while (true)
       {
         num++;
+        cout<<" A_U = ";///
+        for (int i=0;i<A_U.size();i++) cout<<A_U(i)<<"("<<this->map1(A_U(i), 0)<<","<<this->map1(A_U(i), 1)<<") ";cout<<endl;
 
         Eigen::VectorXi A_ind = find_ind(A_U, g_index_U, g_size_U, U_ind.size(), this->U_size, this->model_type);
         T4 X_A;
@@ -506,8 +504,8 @@ public:
         bool exchange = this->splicing(*X_U, y, A_U, I_U, C_max, beta_U, coef0, bd_U, weights,
                                        g_index_U, g_size_U, this->U_size, tau, l0);
 
-        cout<<"  --> splicing num = "<<num<<" | exchange = "<<exchange<<" | A = ";///
-        for (int i=0;i<A.size();i++) cout<<A_U(i)<<" ";cout<<endl;
+        // cout<<"  --> splicing num = "<<num<<endl;///
+        // break;
 
         if (exchange)
           train_loss = l0;
@@ -515,8 +513,10 @@ public:
           break; // A_U is stable
       }
 
-      if (A_U.size() == 0 || A_U.maxCoeff() == T0 - 1)
+      if (A_U.size() == 0 || A_U.maxCoeff() == T0 - 1){
+        cout<<"End get A"<<endl;///
         break; // if A_U not change, stop
+      }
 
       // store beta, A, I
       slice_restore(beta_U, U_ind, beta);
@@ -633,10 +633,14 @@ public:
     T2 beta_A_exchange;
     T3 coef0_A_exchange;
 
+    cout << " | A_min_k : ";
+    for (int i=0;i<A_min_k.size();i++) cout<<A(A_min_k(i))<<"("<<this->map1(A(A_min_k(i)), 0)<<","<<this->map1(A(A_min_k(i)), 1)<<") ";cout<<endl;
+    cout << " | I_max_k : ";
+    for (int i=0;i<I_max_k.size();i++) cout<<I(I_max_k(i))<<"("<<this->map1(I(I_max_k(i)), 0)<<","<<this->map1(I(I_max_k(i)), 1)<<") ";cout<<endl;
+
     double L;
     for (int k = C_max; k >= 1;)
     {
-      cout<<"   ~~> exchange k = "<<k<<endl;///
       A_exchange = diff_union(A, s1, s2);
       A_ind_exchange = find_ind(A_exchange, g_index, g_size, p, N, this->model_type);
       if (this->model_type == 8){
@@ -664,6 +668,8 @@ public:
         slice_restore(beta_A_exchange, A_ind_exchange, beta);
         coef0 = coef0_A_exchange;
         C_max = k;
+
+        cout<<"   ~~> exchange k = "<<k<<endl;///
 
         return true;
       }

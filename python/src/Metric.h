@@ -114,32 +114,60 @@ public:
   //   this->cv_initial_coef0[k] = coef0;
   // }
 
-  void set_cv_train_test_mask(Data<T1, T2, T3, T4, T5> &data, int n)
+  void set_cv_train_test_mask(Data<T1, T2, T3, T4, T5> &data, int n, Eigen::VectorXi &cv_mask)
   {
     Eigen::VectorXi index_list(n);
     std::vector<int> index_vec((unsigned int)n);
+    std::vector<Eigen::VectorXi> group_list((unsigned int)this->Kfold);
     for (int i = 0; i < n; i++)
     {
       index_vec[i] = i;
     }
-    // std::random_device rd;
-    std::mt19937 g(123);
-    std::shuffle(index_vec.begin(), index_vec.end(), g);
 
-    for (int i = 0; i < n; i++)
+    if (cv_mask.size() == 0){ 
+      cout<<"no cv mask"<<endl;///
+      // std::random_device rd;
+      std::mt19937 g(123);
+      std::shuffle(index_vec.begin(), index_vec.end(), g); // rand index
+
+      for (int i = 0; i < n; i++)
+      {
+        index_list(i) = index_vec[i];
+      }
+
+      Eigen::VectorXd loss_list(this->Kfold);
+      int group_size = int(n / this->Kfold); // size of one group
+      for (int k = 0; k < (this->Kfold - 1); k++)
+      {
+        group_list[k] = index_list.segment(int(k * group_size), group_size);
+      }
+      group_list[this->Kfold - 1] = index_list.segment(int((this->Kfold - 1) * group_size),
+                                                      n - int(int(this->Kfold - 1) * group_size)); 
+    }
+    else
     {
-      index_list(i) = index_vec[i];
+      // given cv_mask
+      auto rule = [cv_mask](int i, int j) -> bool
+      {
+          return cv_mask(i) < cv_mask(j);
+      }; 
+      std::sort(index_vec.begin(), index_vec.end(), rule);
+
+      for (int i = 0; i < n; i++)
+      {
+        index_list(i) = index_vec[i];
+      }
+
+      int k = 0, st = 0, ed = 1;
+      while (k < this->Kfold && ed < n){
+        int mask = cv_mask(index_list(st));
+        while (ed < n && mask == cv_mask(index_list(ed))) ed++;
+
+        group_list[k] = index_list.segment(st, ed - st);
+        st = ed; ed++; k++;
+      }
     }
 
-    Eigen::VectorXd loss_list(this->Kfold);
-    std::vector<Eigen::VectorXi> group_list((unsigned int)this->Kfold);
-    int group_size = int(n / this->Kfold);
-    for (int k = 0; k < (this->Kfold - 1); k++)
-    {
-      group_list[k] = index_list.segment(int(k * group_size), group_size);
-    }
-    group_list[this->Kfold - 1] = index_list.segment(int((this->Kfold - 1) * group_size),
-                                                     n - int(int(this->Kfold - 1) * group_size));
     for (int k = 0; k < this->Kfold; k++)
     {
       std::sort(group_list[k].data(), group_list[k].data() + group_list[k].size());

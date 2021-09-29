@@ -75,7 +75,7 @@ class bess_base(BaseEstimator):
     def __init__(self, algorithm_type, model_type, data_type, path_type, max_iter=20, exchange_num=5, is_warm_start=True,
                  support_size=None, alpha=None, s_min=None, s_max=None, 
                  ic_type="ebic", ic_coef=1.0,
-                 cv=1, is_screening=False, screening_size=None, 
+                 cv=1, cv_mask=[], is_screening=False, screening_size=None, 
                  always_select=[], 
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
@@ -106,6 +106,7 @@ class bess_base(BaseEstimator):
         self.ic_coef = ic_coef
         self.is_cv = False
         self.cv = cv
+        self.cv_mask = cv_mask
         self.is_screening = is_screening
         self.screening_size = screening_size
         self.powell_path = 1
@@ -244,6 +245,16 @@ class bess_base(BaseEstimator):
         elif (self.cv > 1):
             self.is_cv = True
 
+        # cv_mask
+        cv_mask = np.array(self.cv_mask)
+        if len(cv_mask) > 0:
+            if (cv_mask.dtype != "int"):
+                raise ValueError("cv_mask should be integer.")
+            elif cv_mask.ndim > 1:
+                raise ValueError("cv_mask should be a 1-D array.")
+            elif cv_mask.size != n:
+                raise ValueError("X.shape[0] should be equal to cv_mask.size")
+
         # Group:
         if group is None:
             g_index = list(range(p))
@@ -274,6 +285,7 @@ class bess_base(BaseEstimator):
                 raise ValueError("weight should be a 1-D array.")
             elif weight.size != n:
                 raise ValueError("X.shape[0] should be equal to weight.size")
+        
 
         # Path parameters
         if path_type_int == 1:  # seq
@@ -420,6 +432,7 @@ class bess_base(BaseEstimator):
                               self.sparse_matrix,
                               self.splicing_type,
                               self.important_search,
+                            #   cv_mask,
                               p * M,
                               1 * M, 1, 1, 1, 1, 1, p
                               )

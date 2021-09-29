@@ -202,6 +202,16 @@ class abessPCA(bess_base):
             raise ValueError("cv should be an positive integer.")
         elif (self.cv > 1):
             self.is_cv = True
+        
+        # cv_mask
+        cv_mask = np.array(self.cv_mask)
+        if len(cv_mask) > 0:
+            if (cv_mask.dtype != "int"):
+                raise ValueError("cv_mask should be integer.")
+            elif cv_mask.ndim > 1:
+                raise ValueError("cv_mask should be a 1-D array.")
+            elif cv_mask.size != n:
+                raise ValueError("X.shape[0] should be equal to cv_mask.size")
 
         # Group
         if group is None:
@@ -328,6 +338,7 @@ class abessPCA(bess_base):
                               self.sparse_matrix,
                               self.splicing_type,
                               self.important_search,
+                            #   cv_mask,
                               p * M,
                               1 * M, 1, 1, 1, 1, 1, p
                               )
@@ -364,6 +375,7 @@ class abessPCA(bess_base):
                                       self.sparse_matrix,
                                       self.splicing_type,
                                       self.important_search,
+                                    #   cv_mask,
                                       p * M,
                                       1 * M, 1, 1, 1, 1, 1, p
                                       )

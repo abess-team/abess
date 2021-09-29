@@ -21,8 +21,8 @@ public:
 	void add(string name, VectorXd &value);
 	void get_value_by_name(string name, VectorXd &value);
 	void add(string name, VectorXi &value);
-	void add(string name, Vector<long double, Dynamic> &value);
-	void get_value_by_name(string name, Vector<long double, Dynamic> &value);
+	void get_value_by_name(string name, Eigen::Vector<long double, Dynamic> &value);
+	void add(string name, Eigen::Vector<long double, Dynamic> &value);
 	// void get_value_by_name(string name, VectorXi &value);
 	// void add(string name, Eigen::Matrix<VectorXd, Dynamic, Dynamic> &value);
 	// void get_value_by_name(string name, Eigen::Matrix<VectorXd, Dynamic, Dynamic> &value);

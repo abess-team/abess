@@ -74,7 +74,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                bool covariance_update,
                bool sparse_matrix,
                int splicing_type,
-               int sub_search)
+               int sub_search,
+               Eigen::VectorXi cv_mask_Vec)
 {
 #ifdef _OPENMP
   // Eigen::initParallel();
@@ -298,6 +299,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                        thread,
                                                                                        covariance_update,
                                                                                        sparse_matrix,
+                                                                                       cv_mask_Vec, 
                                                                                        algorithm_uni_dense_long, algorithm_list_uni_dense_long);
     }
     else if (y.cols() == 1)
@@ -325,6 +327,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                        thread,
                                                                                        covariance_update,
                                                                                        sparse_matrix,
+                                                                                       cv_mask_Vec,
                                                                                        algorithm_uni_dense, algorithm_list_uni_dense);
     }
     else
@@ -350,6 +353,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                 thread,
                                                                                                 covariance_update,
                                                                                                 sparse_matrix,
+                                                                                                cv_mask_Vec,
                                                                                                 algorithm_mul_dense, algorithm_list_mul_dense);
     }
   }
@@ -397,6 +401,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                    thread,
                                                                                                    covariance_update,
                                                                                                    sparse_matrix,
+                                                                                                   cv_mask_Vec,
                                                                                                    algorithm_uni_sparse_long, algorithm_list_uni_sparse_long);
 
     }
@@ -425,6 +430,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                    thread,
                                                                                                    covariance_update,
                                                                                                    sparse_matrix,
+                                                                                                   cv_mask_Vec,
                                                                                                    algorithm_uni_sparse, algorithm_list_uni_sparse);
     }
     else
@@ -450,14 +456,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                             thread,
                                                                                                             covariance_update,
                                                                                                             sparse_matrix,
+                                                                                                            cv_mask_Vec,
                                                                                                             algorithm_mul_sparse, algorithm_list_mul_sparse);
     }
   }
-
-  cout<<"beta in abess 3 ";///
-  Eigen::Vector<long double, Eigen::Dynamic> temp;
-  out_result.get_value_by_name("beta", temp);
-  for (int i=0;i<temp.size();i++) cout<<temp(i)<<" ";cout<<endl;
 
   delete algorithm_uni_dense;
   delete algorithm_mul_dense;
@@ -521,6 +523,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
               int thread,
               bool covariance_update,
               bool sparse_matrix,
+              Eigen::VectorXi cv_mask_Vec,
               Algorithm<T1, T2, T3, T4, T5> *algorithm, vector<Algorithm<T1, T2, T3, T4, T5> *> algorithm_list)
 {
   // to do: -openmp
@@ -560,7 +563,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   // 3:group_XTX
   if (is_cv)
   {
-    metric->set_cv_train_test_mask(data, data.get_n());
+    metric->set_cv_train_test_mask(data, data.get_n(), cv_mask_Vec);
     metric->set_cv_init_fit_arg(data.p, data.M);
     // metric->set_cv_initial_model_param(Kfold, data.get_p());
     // metric->set_cv_initial_A(Kfold, data.get_p());
@@ -818,9 +821,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   best_ic = ic_matrix(min_loss_index_row, min_loss_index_col);
   best_test_loss = test_loss_sum(min_loss_index_row, min_loss_index_col);
 
-  cout<<"beta in abess 2 | min = ("<<min_loss_index_row<<","<<min_loss_index_col<<") : ";///
-  for (int i=0;i<best_beta.size();i++) cout<<best_beta(i)<<" ";cout<<endl;
-
   //////////////Restore best_fit_result for normal//////////////
   // to do
   if (data.is_normal && !sparse_matrix)
@@ -965,10 +965,11 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                   bool sparse_matrix,
                   int splicing_type,
                   int sub_search,
+                  // int *cv_mask, int cv_mask_len,
                   double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
-                  int A_out_len, long double *beta_long_out, int beta_long_out_len)
+                  int A_out_len)
 {
   Eigen::MatrixXd x_Mat;
   Eigen::MatrixXd y_Mat;
@@ -979,6 +980,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   Eigen::VectorXi sequence_Vec;
   Eigen::VectorXd lambda_sequence_Vec;
   Eigen::VectorXi always_select_Vec;
+  Eigen::VectorXi cv_mask_Vec(0);///
 
   x_Mat = Pointer2MatrixXd(x, x_row, x_col);
   y_Mat = Pointer2MatrixXd(y, y_row, y_col);
@@ -989,6 +991,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   sequence_Vec = Pointer2VectorXi(sequence, sequence_len);
   lambda_sequence_Vec = Pointer2VectorXd(lambda_sequence, lambda_sequence_len);
   always_select_Vec = Pointer2VectorXi(always_select, always_select_len);
+  // cv_mask_Vec = Pointer2VectorXi(cv_mask, cv_mask_len);
 
   List mylist = abessCpp2(x_Mat, y_Mat, n, p, data_type, weight_Vec, sigma_Mat,
                           is_normal,
@@ -1009,27 +1012,28 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                           covariance_update,
                           sparse_matrix,
                           splicing_type,
-                          sub_search);
+                          sub_search,
+                          cv_mask_Vec);
 
   if (y_col == 1)
   {
-    if (model_type == 8){
-      Eigen::Vector<long double, Eigen::Dynamic> beta_long;
-      mylist.get_value_by_name("beta", beta_long);
-      VectorXd2Pointer(beta_long, beta_long_out);
-    }else{
-      Eigen::VectorXd beta;
-      mylist.get_value_by_name("beta", beta);
-      VectorXd2Pointer(beta, beta_out);
-    }
+    Eigen::VectorXd beta;
     double coef0 = 0;
     double train_loss = 0;
     double ic = 0;
 
+    if (model_type == 8){
+      Eigen::Vector<long double, Eigen::Dynamic> beta_long;
+      mylist.get_value_by_name("beta", beta_long);
+      beta = beta_long.cast<double>();
+    }else{
+      mylist.get_value_by_name("beta", beta);
+    }
     mylist.get_value_by_name("coef0", coef0);
     mylist.get_value_by_name("train_loss", train_loss);
     mylist.get_value_by_name("ic", ic);
 
+    VectorXd2Pointer(beta, beta_out);
     *coef0_out = coef0;
     *train_loss_out = train_loss;
     *ic_out = ic;

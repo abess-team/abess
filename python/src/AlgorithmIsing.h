@@ -2,6 +2,7 @@
 #define SRC_ALGORITHMISING_H
 
 #include "Algorithm.h"
+#include<cmath>
 
 using VL = Eigen::Vector<long double, Eigen::Dynamic>;
 using ML = Eigen::Matrix<long double, Eigen::Dynamic, Eigen::Dynamic>;
@@ -14,26 +15,27 @@ public:
 
   ~abessIsing(){};
 
-  long double gamma = 0.0;
-
-  ML thetaA(Eigen::VectorXi &ind, int p)
+  void update_tau(int train_n, int N)
   {
-    if (ind.size() == p){
-      return this->theta;
-    }
-
-    int len = ind.size();
-    ML tA(len, len);
-    
-    for (int i = 0; i < len; i++)
-      for (int j = 0; j < i + 1; j++)
-      {
-        tA(i, j) = this->theta(ind(i), ind(j));
-        tA(j, i) = this->theta(ind(j), ind(i));
-      }
-
-    return tA;
+    cout<<"init tau"<<endl;
+    this->tau = 1e-5;
   }
+
+  // ML thetaA(Eigen::VectorXi &ind, int p)
+  // {
+  //   if (ind.size() == p){
+  //     return this->theta;
+  //   }
+  //   int len = ind.size();
+  //   ML tA(len, len);
+  //   for (int i = 0; i < len; i++)
+  //     for (int j = 0; j < i + 1; j++)
+  //     {
+  //       tA(i, j) = this->theta(ind(i), ind(j));
+  //       tA(j, i) = this->theta(ind(j), ind(i));
+  //     }
+  //   return tA;
+  // }
 
   Eigen::VectorXi inital_screening(T4 &X, Eigen::VectorXd &y, VL &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, VL &bd, Eigen::VectorXd &weights,
                                    Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
@@ -42,30 +44,44 @@ public:
 
     if (bd.size() == 0)
     {
-      // variable initialization
+      // chisq
       int p = X.cols();
+      int n = X.rows();
       bd = VL::Zero(N);
 
-      // calculate beta & d & h
-      Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N, this->model_type);
-      // Eigen::VectorXi XA_ind = find_ind_graph(A_ind, this->map1, p);
-      // T4 X_A = X_seg(X, n, XA_ind);
-      T4 X_A = X;
-      VL beta_A;
-      slice(beta, A_ind, beta_A);
+      ML chisq_matrix = ML::Zero(p, p);
+      VL chisq_res = VL::Zero(N);
+      int num = 0;
 
-      this->update_exp_odd(X);
+      for (int j = 1; j < p; j++){
+        for (int i = 0; i < j; i++){
+          ML obs = ML::Zero(2, 2);
+          for (int k = 0; k < n; k++){
+            double x1 = X.coeff(k, i), x2 = X.coeff(k, j);
+            if (x1 == -1){
+              if (x2 == -1) obs(0, 0) += (long double) weights(k);
+                else obs(0, 1) += (long double) weights(k);
+            }else{
+              if (x2 == -1) obs(1, 0) += (long double) weights(k);
+                else obs(1, 1) += (long double) weights(k);
+            }
+          }
+          //chisq test
+          ML exp = ML::Zero(2, 2);
+          exp(0, 0) = (obs(0, 0) + obs(1, 0)) * obs(0, 0) / (obs(0, 0) + obs(0, 1));
+          exp(0, 1) = (obs(0, 1) + obs(1, 1)) * obs(0, 1) / (obs(0, 0) + obs(0, 1));
+          exp(1, 0) = (obs(0, 0) + obs(1, 0)) * obs(1, 0) / (obs(1, 0) + obs(1, 1));
+          exp(1, 1) = (obs(0, 1) + obs(1, 1)) * obs(1, 1) / (obs(1, 0) + obs(1, 1));
 
-      // cout<<" --> exp_odd:\n";
-      // for (int i=0;i<this->exp_odd.rows();i++){
-      //   for (int j=0;j<this->exp_odd.cols();j++)
-      //     cout<<this->exp_odd(i,j)<<" ";
-      //   cout<<endl;
-      // }
+          // chisq_res
+          bd(num) = pow(obs(0, 0) - exp(0, 0), 2) / exp(0, 0);
+          bd(num) += pow(obs(0, 1) - exp(0, 1), 2) / exp(0, 1);
+          bd(num) += pow(obs(1, 0) - exp(1, 0), 2) / exp(1, 0);
+          bd(num) += pow(obs(1, 1) - exp(1, 1), 2) / exp(1, 1);
+          num++;
+        }
+      }
 
-      Eigen::VectorXi U = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
-      Eigen::VectorXi U_ind = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
-      this->sacrifice(X, X_A, y, beta, beta_A, coef0, A, I, weights, g_index, g_size, N, A_ind, bd, U, U_ind, 0);
       for (int i = 0; i < this->always_select.size(); i++)
       {
         bd(this->always_select(i)) = DBL_MAX;
@@ -83,74 +99,71 @@ public:
     cout<<" --> primary fit | beta size = "<<beta.size()<<endl;///
     // inner_loop3
 
-    ML prob, first_der, delta_theta, last_theta = this->theta;
-    long double loglik, step = 1.0, alpha = 0.1, scale = 0.5;
-    
+    ML theta = this->set_theta(beta, A, x.cols());
+    ML prob, first_der, delta_theta, last_theta, exp_odd;
+    long double l0 = loss0, l1, step = 1.0, alpha = 0.1, scale = 0.5;
+
+    // if (l0 == DBL_MAX){
+      l0 = (long double) this->neg_loglik_loss(x, y, weights, beta, coef0, A, g_index, g_size);
+    // }
+
     // Newton
     int iter = 0;
-    while(iter++ <= 1/*this->primary_model_fit_max_iter*/) {
-      cout << "   ~~> iter = "<<iter<<" | loss = "<<loss0;///
+    while (iter++ <= this->primary_model_fit_max_iter) {
+      // cout << "   ~~> iter = "<<iter<<" | loss = "<<l0<<endl;///
 
-      prob = 1.0 / (1.0 + this->exp_odd.array());
-      first_der = first_derivative(x, weights, prob, A);
+      last_theta = theta;
+
+      exp_odd = this->compute_exp_odd(x, theta);
+      prob = 1.0 / (1.0 + exp_odd.array());
+      first_der = compute_first_derivative(x, weights, theta, prob, A);
       delta_theta = compute_delta_theta(x, first_der, weights, prob, A);
       
-      this->theta += step * delta_theta;
-      this->update_exp_odd(x);
+      // step = 1.0;
+      step *= 2;
+      theta += step * delta_theta;
 
-      loglik = this->neg_loglik_loss(x, y, weights, beta, coef0, A, g_index, g_size);
+      VL beta_temp = this->set_beta(theta, A);
+      l1 = (long double) this->neg_loglik_loss(x, y, weights, beta_temp, coef0, A, g_index, g_size);
 
-      // cout << "first_der:\n";///
-      // for (int i=0;i<first_der.rows();i++){
-      //   for (int j=0;j<first_der.cols();j++)
-      //     cout<<first_der(i,j)<<" ";
-      //   cout<<endl;
-      // }
-
-      // cout << "delta_theta:\n";///
-      // for (int i=0;i<delta_theta.rows();i++){
-      //   for (int j=0;j<delta_theta.cols();j++)
-      //     cout<<delta_theta(i,j)<<" ";
-      //   cout<<endl;
-      // }
-
-      // cout << "loglik = "<<loglik<<endl;
-      
-      int t=0;
-      while(step > 1e-8 && loglik <= loss0 + alpha * step * (first_der.cwiseProduct(delta_theta)).sum()) {
-        t++;
-        // cout<<"   ~~> t = "<<t<<" | loglik = "<<loglik<<" | step = "<<step<<endl;
+      int c=0;
+      while (step > 0 && l1 >= l0 - alpha * step * (first_der.cwiseProduct(delta_theta)).sum()) {
+        c++;
         step *= scale; 
-        this->theta = last_theta + step * delta_theta;
-        this->update_exp_odd(x);
-        loglik = this->neg_loglik_loss(x, y, weights, beta, coef0, A, g_index, g_size);
+        theta = last_theta + step * delta_theta;
+        beta_temp = this->set_beta(theta, A);
+        l1 = (long double) this->neg_loglik_loss(x, y, weights, beta_temp, coef0, A, g_index, g_size);
       }
-      cout<<" | conv = "<<t<<endl;
       
-      // fail to find
-      if(!isfinite(loglik - loss0)) {
-        this->theta = last_theta;
+      if(!isfinite(l0 - l1)) {
         return false;
       }
       
       // stop iter
-      if (fabs(loglik - loss0) < this->primary_model_fit_epsilon) break;
+      // if (fabs(l0 - l1) < this->primary_model_fit_epsilon) break;
+      if (fabs(l0 - l1) < this->tau * 0.1) break;
 
-      loss0 = loglik;
+      l0 = l1;
+
+      // cout<<"step = "<<step<<endl;///
+      // cout<<"last_theta | iter = "<<iter<<endl;
+      // for (int i = 0; i < last_theta.rows();i++){
+      //   for (int j = 0; j < last_theta.cols();j++)
+      //     cout<<last_theta(i, j)<<" ";
+      //   cout<<endl;
+      // }
+      // cout<<"delta_theta | iter = "<<iter<<endl;
+      // for (int i = 0; i < delta_theta.rows();i++){
+      //   for (int j = 0; j < delta_theta.cols();j++)
+      //     cout<<delta_theta(i, j)<<" ";
+      //   cout<<endl;
+      // }
+      // cout<<"loss "<<l0<<endl<<endl;
     }
+    cout << " --> primary fit loss = "<<l0<<endl;///
     
     // update beta
-    this->update_beta(beta, A);
-
-    // cout<<"beta size = "<<beta.size()<<" :\n";///
-    // for (int i=0;i<beta.size();i++) cout<<beta(i)<<" ";cout<<endl;
-
-    // cout << "theta:\n";///
-    // for (int i=0;i<this->theta.rows();i++){
-    //   for (int j=0;j<this->theta.cols();j++)
-    //     cout<<this->theta(i,j)<<" ";
-    //   cout<<endl;
-    // }
+    beta = this->set_beta(theta, A);
 
     return true;
   };
@@ -163,10 +176,10 @@ public:
     int p = X.cols();
 
     VL w = weights.cast<long double>();
-    // cout<<" isingn = "<<this->ising_n<<" | weights\n";///
-    // for (int i=0;i<w.size();i++) cout<<w(i)<<" ";cout<<endl;
 
-    ML log_par = (ML::Ones(n, p) + this->exp_odd).array().log();
+    ML theta = this->set_theta(beta, A, p);
+    ML exp_odd = this->compute_exp_odd(X, theta);
+    ML log_par = (ML::Ones(n, p) + exp_odd).array().log();
     // cout << "log par:\n";///
     // for (int i=0;i<log_par.rows();i++){
     //   for (int j=0;j<log_par.cols();j++)
@@ -174,7 +187,7 @@ public:
     //   cout<<endl;
     // }
     long double loglik = - ((log_par.rowwise().sum()).dot(w)) / this->ising_n - 
-      this->gamma * (this->theta.cwiseProduct(this->theta).sum());
+      (long double) this->lambda_level * (theta.cwiseProduct(theta).sum());
     
     // cout << loss << endl;
     return - loglik;
@@ -182,18 +195,21 @@ public:
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, VL &beta, VL &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, VL &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
-    // cout<<" --> sacrifice"<<endl;///
+    cout<<" --> sacrifice : \n";///
+
+    ML theta = this->set_theta(beta_A, A, X.cols());
+    ML exp_odd = this->compute_exp_odd(X, theta);
 
     // backward
     for (int i = 0; i < A.size(); i++){
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
-      bd(A(i)) = fabs(this->theta(mi, mj));
+      bd(A(i)) = fabs(theta(mi, mj));
     }
 
     // forward
-    ML prob = 1.0 / (1.0 + this->exp_odd.array());
-    ML first_der = first_derivative(X, weights, prob, A);
+    ML prob = 1.0 / (1.0 + exp_odd.array());
+    ML first_der = compute_first_derivative(X, weights, theta, prob, I);
 
     for (int i = 0; i < I.size(); i++){
       int mi = this->map1(I(i), 0);
@@ -201,30 +217,46 @@ public:
       bd(I(i)) = fabs(first_der(mi, mj));
     }
 
+    // for (int i=0;i<bd.size();i++) cout<<bd(i)<<"("<<this->map1(i, 0)<<","<<this->map1(i, 1)<<") ";cout<<endl;///
   };
 
-  void update_exp_odd(T4 &x) {
+
+  VL set_beta(ML &theta, Eigen::VectorXi &A){
+
+    VL beta = VL::Zero(A.size());
+    for (int i = 0; i < A.size(); i++){
+      int mi = this->map1(A(i), 0);
+      int mj = this->map1(A(i), 1);
+      beta(i) = theta(mi, mj);
+    }
+    return beta;
+    // for (int i = 0; i < beta.size(); i++) cout<<beta(i)<<" ";cout<<endl;
+  }
+
+  ML set_theta(VL &beta, Eigen::VectorXi &A, int p){
+
+    ML theta = ML::Zero(p, p);
+    for (int i = 0; i < A.size(); i++){
+      int mi = this->map1(A(i), 0);
+      int mj = this->map1(A(i), 1);
+      theta(mi, mj) = beta(i);
+      theta(mj, mi) = beta(i);
+    }
+    return theta;
+  }
+
+  ML compute_exp_odd(T4 &x, ML &theta) {
     // cout<<" --> update_exp_odd\n";///
 
     ML x1 = x.template cast<long double>();
-    
-    this->exp_odd = - 2.0 * (x1 * this->theta).cwiseProduct(x1);
-    this->exp_odd = this->exp_odd.array().exp();
+
+    ML odd = - 2.0 * (x1 * theta).cwiseProduct(x1);
+    return odd.array().exp();
   }
 
-  void update_beta(VL &beta, Eigen::VectorXi &A_ind){
-    // cout<<" --> update_beta\n";///
-    for (int i = 0; i < A_ind.size(); i++){
-      int mi = this->map1(A_ind(i), 0);
-      int mj = this->map1(A_ind(i), 1);
-      beta(i) = this->theta(mi, mj);
-    }
-  }
-
-  ML compute_delta_theta(T4 &x,
-                                      ML &first_der, 
-                                      Eigen::VectorXd &weights, 
-                                      ML &prob, Eigen::VectorXi &A) {
+  ML compute_delta_theta(T4 &x, ML &first_der, 
+                         Eigen::VectorXd &weights, 
+                         ML &prob, Eigen::VectorXi &A) {
     // without penalty term
     // gradient of PL, not gradient of loss
     // cout<<" --> compute_delta_theta\n";///
@@ -240,33 +272,31 @@ public:
       VL ans = ( prob.col(mi).cwiseProduct(prob.col(mi)) - prob.col(mi) ) + 
         ( prob.col(mj).cwiseProduct(prob.col(mj)) - prob.col(mj) );
       
-      long double second_der = (4.0 * ans.dot(w)) / this->ising_n;
-      delta_theta(mi, mj) =  - (first_der(mi, mj) / second_der);
+      long double second_der =  (long double) (ans.dot(w) * 4.0) /  (long double) this->ising_n;
+      delta_theta(mi, mj) =  -  (long double) (first_der(mi, mj) / second_der);
       delta_theta(mj, mi) = delta_theta(mi, mj);
     }
     return delta_theta;
   }
 
-  ML first_derivative(T4 &x,
-                                   Eigen::VectorXd &weights, 
-                                   ML &prob, Eigen::VectorXi &A) {
+  ML compute_first_derivative(T4 &x, Eigen::VectorXd &weights, ML &theta,
+                      ML &prob, Eigen::VectorXi &A) {
     // cout<<" --> first_derivative\n";///
     // gradient of PL, not gradient of loss
     int p = x.cols();
     ML first_der = ML::Zero(p, p);
+    VL w = weights.cast<long double>();
     
-    for(int i = 0; i < A.size(); i++) {
+    for (int i = 0; i < A.size(); i++) {
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
-
-      VL w = weights.cast<long double>();
       
       Eigen::VectorXd temp = x.col(mi).cwiseProduct(x.col(mj));
       VL xij = temp.cast<long double>();
-      VL ans =  2.0 * xij - xij.cwiseProduct(prob.col(mi) + prob.col(mj));
+      VL ans =  xij * 2.0 - xij.cwiseProduct(prob.col(mi) + prob.col(mj));
       
-      first_der(mi, mj) = (2.0 * ans.dot(w)) / this->ising_n - 
-        4.0 * this->gamma * this->theta(mi, mj);
+      first_der(mi, mj) =  (long double) (ans.dot(w) * 2.0) /  (long double) this->ising_n - 
+        this->lambda_level * 4.0 * theta(mi, mj);
       first_der(mj, mi) = first_der(mi, mj);
     }
 
