@@ -232,7 +232,7 @@ public:
 
   void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::VectorXi &status, Eigen::MatrixXd sigma)
   {
-    cout<<"Fit for sparsity = "<<this->sparsity_level<<endl;///
+    // cout<<"Fit for sparsity = "<<this->sparsity_level<<endl;///
     int T0 = this->sparsity_level;
     // this->status = status;
     this->cox_g = Eigen::VectorXd::Zero(0);
@@ -268,9 +268,9 @@ public:
         break;
       case 8: // Ising
         this->ising_n = (long int) train_weight.sum();
-        // if (0.1 / this->ising_n < this->tau){
-        //   this->tau = 0.1 / this->ising_n;
-        // }
+        if (0.1 / this->ising_n < this->tau){
+          this->tau = 0.1 / this->ising_n;
+        }
         this->map1 = Eigen::MatrixXi::Zero(N, 2);
         this->map2 = Eigen::MatrixXi::Zero(train_x.cols(), train_x.cols());
         int i = 0, j = 0;
@@ -307,7 +307,7 @@ public:
     // input: this->beta_init, this->coef0_init, this->A_init, this->I_init
     // for splicing get A;for the others 0;
 
-    cout<<"==> initial screen "<<endl;///
+    // cout<<"==> initial screen "<<endl;///
     Eigen::VectorXi I, A = this->inital_screening(train_x, train_y, this->beta, this->coef0, this->A_init, this->I_init, this->bd, train_weight, g_index, g_size, N);
     
     // cout<<" A_init = ";///
@@ -353,7 +353,7 @@ public:
 
     // final fit
     if (this->model_type < 7){
-      cout<<"==> Final fit"<<endl;///
+      // cout<<"==> Final fit"<<endl;///
       A_ind = find_ind(A, g_index, g_size, p, N, this->model_type);
       X_A = X_seg(train_x, train_n, A_ind);
       slice(this->beta, A_ind, beta_A);
@@ -510,7 +510,7 @@ public:
       }
 
       if (A_U.size() == 0 || A_U.maxCoeff() == T0 - 1){
-        cout<<"End get A"<<endl;///
+        // cout<<"End get A"<<endl;///
         break; // if A_U not change, stop
       }
 

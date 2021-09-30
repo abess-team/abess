@@ -576,7 +576,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
   Result<T2, T3, T5> result;
   vector<Result<T2, T3, T5>> result_list(Kfold);
-  cout<<"Path"<<endl;///
+  // cout<<"Path"<<endl;///
   if (path_type == 1)
   {
     if (is_cv)
@@ -615,7 +615,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     gs_path(data, algorithm, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, K_max, epsilon, is_parallel, result);
   }
 
-  cout<<"End Path"<<endl;///
+  // cout<<"End Path"<<endl;///
 
   // Get bestmodel index && fit bestmodel
   int min_loss_index_row = 0, min_loss_index_col = 0, s_size = sequence.size(), lambda_size = lambda_seq.size();

@@ -29,7 +29,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4, T5> &data, Eigen::MatrixXd sigma, A
     int N = data.g_num;
     if (algorithm->model_type == 8){
         N = p*(p-1) / 2;
-        cout<<"[Ising: chang N]"<<endl;///
+        // cout<<"[Ising: chang N]"<<endl;///
     }
     int M = data.y.cols();
     Eigen::VectorXi g_index = data.g_index;

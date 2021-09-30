@@ -17,7 +17,7 @@ public:
 
   void update_tau(int train_n, int N)
   {
-    cout<<"init tau"<<endl;
+    // cout<<"init tau"<<endl;
     this->tau = 1e-5;
   }
 
@@ -40,7 +40,7 @@ public:
   Eigen::VectorXi inital_screening(T4 &X, Eigen::VectorXd &y, VL &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, VL &bd, Eigen::VectorXd &weights,
                                    Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
   {
-    cout<<"==> init | N = "<<N<<" | Asize = "<<A.size()<<endl;
+    // cout<<"==> init | N = "<<N<<" | Asize = "<<A.size()<<endl;
 
     if (bd.size() == 0)
     {
@@ -95,8 +95,8 @@ public:
     // get Active-set A according to max_k bd
     Eigen::VectorXi A_new = max_k(bd, this->sparsity_level);
 
-    cout<<" A_init = ";///
-    for (int i=0;i<A_new.size();i++) cout<<this->map1(A_new(i), 0)<<","<<this->map1(A_new(i), 1)<<endl;cout<<endl;
+    // cout<<" A_init = ";///
+    // for (int i=0;i<A_new.size();i++) cout<<this->map1(A_new(i), 0)<<","<<this->map1(A_new(i), 1)<<endl;cout<<endl;
 
     // cout<<" chisq = ";///
     // for (int i=0;i<bd.size();i++) cout<<bd(i)<<"("<<this->map1(i, 0)<<","<<this->map1(i, 1)<<") "<<endl;cout<<endl;
@@ -171,7 +171,7 @@ public:
       l0 = l1;
 
     }
-    cout << " --> primary fit loss = "<<l0<<" | iter = "<<iter<<endl;///
+    // cout << " --> primary fit loss = "<<l0<<" | iter = "<<iter<<endl;///
     
     // update beta
     beta = this->set_beta(theta, A);
