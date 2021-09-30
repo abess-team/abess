@@ -954,6 +954,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                   int *status, int status_len,
                   int *sequence, int sequence_len,
                   double *lambda_sequence, int lambda_sequence_len,
+                  int *cv_mask, int cv_mask_len,
                   int s_min, int s_max, int K_max, double epsilon,
                   double lambda_min, double lambda_max, int n_lambda,
                   bool is_screening, int screening_size, int powell_path,
@@ -965,7 +966,6 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                   bool sparse_matrix,
                   int splicing_type,
                   int sub_search,
-                  // int *cv_mask, int cv_mask_len,
                   double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
@@ -980,7 +980,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   Eigen::VectorXi sequence_Vec;
   Eigen::VectorXd lambda_sequence_Vec;
   Eigen::VectorXi always_select_Vec;
-  Eigen::VectorXi cv_mask_Vec(0);///
+  Eigen::VectorXi cv_mask_Vec;
 
   x_Mat = Pointer2MatrixXd(x, x_row, x_col);
   y_Mat = Pointer2MatrixXd(y, y_row, y_col);
@@ -991,7 +991,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   sequence_Vec = Pointer2VectorXi(sequence, sequence_len);
   lambda_sequence_Vec = Pointer2VectorXd(lambda_sequence, lambda_sequence_len);
   always_select_Vec = Pointer2VectorXi(always_select, always_select_len);
-  // cv_mask_Vec = Pointer2VectorXi(cv_mask, cv_mask_len);
+  cv_mask_Vec = Pointer2VectorXi(cv_mask, cv_mask_len);
 
   List mylist = abessCpp2(x_Mat, y_Mat, n, p, data_type, weight_Vec, sigma_Mat,
                           is_normal,

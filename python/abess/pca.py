@@ -212,6 +212,7 @@ class abessPCA(bess_base):
                 raise ValueError("cv_mask should be a 1-D array.")
             elif cv_mask.size != n:
                 raise ValueError("X.shape[0] should be equal to cv_mask.size")
+        cv_mask = np.array(cv_mask, dtype = "int32")
 
         # Group
         if group is None:
@@ -327,6 +328,7 @@ class abessPCA(bess_base):
                               state,
                               support_sizes,
                               alphas,
+                              cv_mask,
                               new_s_min, new_s_max, new_K_max, self.epsilon,
                               new_lambda_min, new_lambda_max, self.n_lambda,
                               self.is_screening, new_screening_size, self.powell_path,
@@ -338,7 +340,6 @@ class abessPCA(bess_base):
                               self.sparse_matrix,
                               self.splicing_type,
                               self.important_search,
-                            #   cv_mask,
                               p * M,
                               1 * M, 1, 1, 1, 1, 1, p
                               )
@@ -364,6 +365,7 @@ class abessPCA(bess_base):
                                       state,
                                       support_sizes,
                                       alphas,
+                                      cv_mask,
                                       new_s_min, new_s_max, new_K_max, self.epsilon,
                                       new_lambda_min, new_lambda_max, self.n_lambda,
                                       self.is_screening, new_screening_size, self.powell_path,
@@ -375,7 +377,6 @@ class abessPCA(bess_base):
                                       self.sparse_matrix,
                                       self.splicing_type,
                                       self.important_search,
-                                    #   cv_mask,
                                       p * M,
                                       1 * M, 1, 1, 1, 1, 1, p
                                       )

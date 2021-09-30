@@ -53,8 +53,10 @@ public:
       VL chisq_res = VL::Zero(N);
       int num = 0;
 
-      for (int j = 1; j < p; j++){
-        for (int i = 0; i < j; i++){
+      for (int i = 1; i < p; i++){
+        for (int j = 0; j < i; j++){
+          //chisq test
+
           ML obs = ML::Zero(2, 2);
           for (int k = 0; k < n; k++){
             double x1 = X.coeff(k, i), x2 = X.coeff(k, j);
@@ -66,14 +68,15 @@ public:
                 else obs(1, 1) += (long double) weights(k);
             }
           }
-          //chisq test
+          
           ML exp = ML::Zero(2, 2);
-          exp(0, 0) = (obs(0, 0) + obs(1, 0)) * obs(0, 0) / (obs(0, 0) + obs(0, 1));
-          exp(0, 1) = (obs(0, 1) + obs(1, 1)) * obs(0, 1) / (obs(0, 0) + obs(0, 1));
-          exp(1, 0) = (obs(0, 0) + obs(1, 0)) * obs(1, 0) / (obs(1, 0) + obs(1, 1));
-          exp(1, 1) = (obs(0, 1) + obs(1, 1)) * obs(1, 1) / (obs(1, 0) + obs(1, 1));
+          exp(0, 0) = (obs(0, 0) + obs(1, 0)) * (obs(0, 0) + obs(0, 1));
+          exp(0, 1) = (obs(0, 1) + obs(1, 1)) * (obs(0, 0) + obs(0, 1));
+          exp(1, 0) = (obs(0, 0) + obs(1, 0)) * (obs(1, 0) + obs(1, 1));
+          exp(1, 1) = (obs(0, 1) + obs(1, 1)) * (obs(1, 0) + obs(1, 1));
+          exp = exp / this->ising_n;
 
-          // chisq_res
+          // chisq_res -> bd
           bd(num) = pow(obs(0, 0) - exp(0, 0), 2) / exp(0, 0);
           bd(num) += pow(obs(0, 1) - exp(0, 1), 2) / exp(0, 1);
           bd(num) += pow(obs(1, 0) - exp(1, 0), 2) / exp(1, 0);
@@ -86,17 +89,24 @@ public:
       {
         bd(this->always_select(i)) = DBL_MAX;
       }
+      
     }
 
     // get Active-set A according to max_k bd
     Eigen::VectorXi A_new = max_k(bd, this->sparsity_level);
+
+    cout<<" A_init = ";///
+    for (int i=0;i<A_new.size();i++) cout<<this->map1(A_new(i), 0)<<","<<this->map1(A_new(i), 1)<<endl;cout<<endl;
+
+    // cout<<" chisq = ";///
+    // for (int i=0;i<bd.size();i++) cout<<bd(i)<<"("<<this->map1(i, 0)<<","<<this->map1(i, 1)<<") "<<endl;cout<<endl;
 
     return A_new;
   }
 
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, VL &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
-    cout<<" --> primary fit | beta size = "<<beta.size()<<endl;///
+    // cout<<" --> primary fit | beta size = "<<beta.size()<<endl;///
     // inner_loop3
 
     ML theta = this->set_theta(beta, A, x.cols());
@@ -138,14 +148,8 @@ public:
       if(!isfinite(l0 - l1)) {
         return false;
       }
-      
-      // stop iter
-      // if (fabs(l0 - l1) < this->primary_model_fit_epsilon) break;
-      if (fabs(l0 - l1) < this->tau * 0.1) break;
 
-      l0 = l1;
-
-      // cout<<"step = "<<step<<endl;///
+      // cout<<"step = "<<step<<" | c = "<<c<<endl;///
       // cout<<"last_theta | iter = "<<iter<<endl;
       // for (int i = 0; i < last_theta.rows();i++){
       //   for (int j = 0; j < last_theta.cols();j++)
@@ -158,9 +162,16 @@ public:
       //     cout<<delta_theta(i, j)<<" ";
       //   cout<<endl;
       // }
-      // cout<<"loss "<<l0<<endl<<endl;
+      // cout<<"l0 = "<<l0<<" | l0 - l1 = "<<l0-l1<<endl<<endl;
+      
+      // stop iter
+      // if (fabs(l0 - l1) < this->primary_model_fit_epsilon) break;
+      if (fabs(l0 - l1) < this->tau * 0.1) break;
+
+      l0 = l1;
+
     }
-    cout << " --> primary fit loss = "<<l0<<endl;///
+    cout << " --> primary fit loss = "<<l0<<" | iter = "<<iter<<endl;///
     
     // update beta
     beta = this->set_beta(theta, A);
@@ -195,7 +206,7 @@ public:
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, VL &beta, VL &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, VL &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
-    cout<<" --> sacrifice : \n";///
+    // cout<<" --> sacrifice : \n";///
 
     ML theta = this->set_theta(beta_A, A, X.cols());
     ML exp_odd = this->compute_exp_odd(X, theta);

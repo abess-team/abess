@@ -310,8 +310,8 @@ public:
     cout<<"==> initial screen "<<endl;///
     Eigen::VectorXi I, A = this->inital_screening(train_x, train_y, this->beta, this->coef0, this->A_init, this->I_init, this->bd, train_weight, g_index, g_size, N);
     
-    cout<<" A_init = ";///
-    for (int i=0;i<A.size();i++) cout<<this->map1(A(i), 0)<<","<<this->map1(A(i), 1)<<endl;
+    // cout<<" A_init = ";///
+    // for (int i=0;i<A.size();i++) cout<<this->map1(A(i), 0)<<","<<this->map1(A(i), 1)<<endl;
     I = Ac(A, N);
     
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N, this->model_type);
@@ -338,7 +338,7 @@ public:
       this->train_loss = this->neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
     }
 
-    cout<<"train_loss = "<<this->train_loss<<endl;///
+    // cout<<"train_loss = "<<this->train_loss<<endl;///
 
     // for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl<<"init loss = "<<this->train_loss<<endl;
     // }
@@ -352,33 +352,29 @@ public:
     this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size, N, this->tau, this->train_loss);
 
     // final fit
-    cout<<"==> Final fit"<<endl;///
-    this->A_out = A;
-    A_ind = find_ind(A, g_index, g_size, p, N, this->model_type);
-    if (this->model_type == 8){
-      // Eigen::VectorXi XA_ind = find_ind_graph(A_ind, this->map1, p);
-      // X_A = X_seg(train_x, train_n, XA_ind);
-      X_A = train_x;
-    }else{
+    if (this->model_type < 7){
+      cout<<"==> Final fit"<<endl;///
+      A_ind = find_ind(A, g_index, g_size, p, N, this->model_type);
       X_A = X_seg(train_x, train_n, A_ind);
-    }
-    slice(this->beta, A_ind, beta_A);
+      slice(this->beta, A_ind, beta_A);
 
-    this->primary_model_fit_max_iter += 20;
-    coef0_old = this->coef0;
-    success = this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
-    if (!success){
-      this->coef0 = coef0_old;
-    }else{
-      slice_restore(beta_A, A_ind, this->beta);
-      this->train_loss = this->neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
+      this->primary_model_fit_max_iter += 20;
+      coef0_old = this->coef0;
+      success = this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
+      if (!success){
+        this->coef0 = coef0_old;
+      }else{
+        slice_restore(beta_A, A_ind, this->beta);
+        this->train_loss = this->neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
+      }
+      this->primary_model_fit_max_iter -= 20;
     }
-    this->primary_model_fit_max_iter -= 20;
 
+    this->A_out = A;
     this->effective_number = this->effective_number_of_parameter(train_x, X_A, train_y, train_weight, this->beta, beta_A, this->coef0);
     this->group_df = A_ind.size();
 
-    cout<<"End Fit"<<endl;///
+    // cout<<"End Fit"<<endl;///
     return;
   };
 
@@ -410,7 +406,7 @@ public:
     int iter = 0;
     while (iter++ < this->max_iter)
     {
-      cout<<"==> get_A | iter = "<<iter<<" | T0 = "<<T0<<" | Usize = "<<this->U_size<<" | N = "<<N<<" | p = "<<p<<endl;///
+      // cout<<"==> get_A | iter = "<<iter<<" | T0 = "<<T0<<" | Usize = "<<this->U_size<<" | N = "<<N<<" | p = "<<p<<endl;///
       // mapping
       if (this->U_size == N)
       {
@@ -474,8 +470,8 @@ public:
       while (true)
       {
         num++;
-        cout<<" A_U = ";///
-        for (int i=0;i<A_U.size();i++) cout<<A_U(i)<<"("<<this->map1(A_U(i), 0)<<","<<this->map1(A_U(i), 1)<<") ";cout<<endl;
+        // cout<<" A_U = ";///
+        // for (int i=0;i<A_U.size();i++) cout<<A_U(i)<<"("<<this->map1(A_U(i), 0)<<","<<this->map1(A_U(i), 1)<<") ";cout<<endl;
 
         Eigen::VectorXi A_ind = find_ind(A_U, g_index_U, g_size_U, U_ind.size(), this->U_size, this->model_type);
         T4 X_A;
@@ -633,10 +629,10 @@ public:
     T2 beta_A_exchange;
     T3 coef0_A_exchange;
 
-    cout << " | A_min_k : ";
-    for (int i=0;i<A_min_k.size();i++) cout<<A(A_min_k(i))<<"("<<this->map1(A(A_min_k(i)), 0)<<","<<this->map1(A(A_min_k(i)), 1)<<") ";cout<<endl;
-    cout << " | I_max_k : ";
-    for (int i=0;i<I_max_k.size();i++) cout<<I(I_max_k(i))<<"("<<this->map1(I(I_max_k(i)), 0)<<","<<this->map1(I(I_max_k(i)), 1)<<") ";cout<<endl;
+    // cout << " | A_min_k : ";
+    // for (int i=0;i<A_min_k.size();i++) cout<<A(A_min_k(i))<<"("<<this->map1(A(A_min_k(i)), 0)<<","<<this->map1(A(A_min_k(i)), 1)<<") ";cout<<endl;
+    // cout << " | I_max_k : ";
+    // for (int i=0;i<I_max_k.size();i++) cout<<I(I_max_k(i))<<"("<<this->map1(I(I_max_k(i)), 0)<<","<<this->map1(I(I_max_k(i)), 1)<<") ";cout<<endl;
 
     double L;
     for (int k = C_max; k >= 1;)
@@ -669,7 +665,7 @@ public:
         coef0 = coef0_A_exchange;
         C_max = k;
 
-        cout<<"   ~~> exchange k = "<<k<<endl;///
+        // cout<<"   ~~> exchange k = "<<k<<endl;///
 
         return true;
       }
