@@ -550,6 +550,7 @@ public:
 
         bool condition1 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
         bool condition2 = abs(loglik - loglik_new) / (0.1 + abs(loglik_new)) < this->primary_model_fit_epsilon;
+        // TODO
         bool condition3 = abs(loglik_new) < min(1e-3, this->tau);
         if (condition1 || condition2 || condition3)
         {
