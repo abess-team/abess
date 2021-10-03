@@ -389,7 +389,8 @@ abess.default <- function(x,
     "poisson" = 3,
     "cox" = 4,
     "mgaussian" = 5,
-    "multinomial" = 6
+    "multinomial" = 6,
+    "gamma" = 8
   )
 
   ## check predictors:
