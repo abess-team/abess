@@ -245,7 +245,7 @@ class abessPCA(bess_base):
         new_lambda_max = 0
         alphas = [0]
         new_screening_size = -1
-        cv_mask = []
+        cv_mask = np.array([], dtype = "int32")
 
         # Exchange_num
         if (not isinstance(self.exchange_num, int) or self.exchange_num <= 0):
