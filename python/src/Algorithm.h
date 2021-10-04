@@ -236,9 +236,6 @@ public:
     int T0 = this->sparsity_level;
     // this->status = status;
     this->cox_g = Eigen::VectorXd::Zero(0);
-
-    this->update_tau(train_n, N);
-
     this->x = &train_x;
     this->y = &train_y;
     this->beta = this->beta_init;
@@ -268,9 +265,6 @@ public:
         break;
       case 8: // Ising
         this->ising_n = (long int) train_weight.sum();
-        if (0.1 / this->ising_n < this->tau){
-          this->tau = 0.1 / this->ising_n;
-        }
         this->map1 = Eigen::MatrixXi::Zero(N, 2);
         this->map2 = Eigen::MatrixXi::Zero(train_x.cols(), train_x.cols());
         int i = 0, j = 0;
@@ -286,6 +280,8 @@ public:
         }
         break;
     }
+
+    this->update_tau(train_n, N);
 
     if (N <= T0)
     {

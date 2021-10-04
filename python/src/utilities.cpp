@@ -112,7 +112,7 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x)
     return;
 }
 
-void VectorXd2Pointer(Eigen::Vector<long double, Eigen::Dynamic> x_vector, long double *x)
+void VectorXd2Pointer(Eigen::Matrix<long double, Eigen::Dynamic, 1> x_vector, long double *x)
 {
     int x_matrix_len, i;
     x_matrix_len = x_vector.size();
@@ -323,7 +323,7 @@ Eigen::VectorXi min_k(Eigen::VectorXd &vec, int k, bool sort_by_value)
     return ind.head(k).eval();
 }
 
-Eigen::VectorXi min_k(Eigen::Vector<long double, Eigen::Dynamic> &vec, int k, bool sort_by_value)
+Eigen::VectorXi min_k(Eigen::Matrix<long double, Eigen::Dynamic, 1> &vec, int k, bool sort_by_value)
 {
     Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
     auto rule = [vec](int i, int j) -> bool
@@ -362,7 +362,7 @@ Eigen::VectorXi max_k(Eigen::VectorXd &vec, int k, bool sort_by_value)
     return ind.head(k).eval();
 }
 
-Eigen::VectorXi max_k(Eigen::Vector<long double, Eigen::Dynamic> &vec, int k, bool sort_by_value)
+Eigen::VectorXi max_k(Eigen::Matrix<long double, Eigen::Dynamic, 1> &vec, int k, bool sort_by_value)
 {
     Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
     auto rule = [vec](int i, int j) -> bool
@@ -486,15 +486,15 @@ void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int 
     return;
 }
 
-void slice(Eigen::Vector<long double, Eigen::Dynamic> &nums, Eigen::VectorXi &ind, Eigen::Vector<long double, Eigen::Dynamic> &A, int axis)
+void slice(Eigen::Matrix<long double, Eigen::Dynamic, 1> &nums, Eigen::VectorXi &ind, Eigen::Matrix<long double, Eigen::Dynamic, 1> &A, int axis)
 {
     if (ind.size() == 0)
     {
-        A = Eigen::Vector<long double, Eigen::Dynamic>::Zero(0);
+        A = Eigen::Matrix<long double, Eigen::Dynamic, 1>::Zero(0);
     }
     else
     {
-        A = Eigen::Vector<long double, Eigen::Dynamic>::Zero(ind.size());
+        A = Eigen::Matrix<long double, Eigen::Dynamic, 1>::Zero(ind.size());
         for (int i = 0; i < ind.size(); i++)
         {
             A(i) = nums(ind(i));
@@ -581,15 +581,15 @@ void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nu
     return;
 }
 
-void slice_restore(Eigen::Vector<long double, Eigen::Dynamic> &A, Eigen::VectorXi &ind, Eigen::Vector<long double, Eigen::Dynamic> &nums, int axis)
+void slice_restore(Eigen::Matrix<long double, Eigen::Dynamic, 1> &A, Eigen::VectorXi &ind, Eigen::Matrix<long double, Eigen::Dynamic, 1> &nums, int axis)
 {
     if (ind.size() == 0)
     {
-        nums = Eigen::Vector<long double, Eigen::Dynamic>::Zero(nums.size());
+        nums = Eigen::Matrix<long double, Eigen::Dynamic, 1>::Zero(nums.size());
     }
     else
     {
-        nums = Eigen::Vector<long double, Eigen::Dynamic>::Zero(nums.size());
+        nums = Eigen::Matrix<long double, Eigen::Dynamic, 1>::Zero(nums.size());
         for (int i = 0; i < ind.size(); i++)
         {
             nums(ind(i)) = A(i);
@@ -639,9 +639,9 @@ void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0)
     return;
 }
 
-void coef_set_zero(int p, int M, Eigen::Vector<long double, Eigen::Dynamic> &beta, double &coef0)
+void coef_set_zero(int p, int M, Eigen::Matrix<long double, Eigen::Dynamic, 1> &beta, double &coef0)
 {
-    beta = Eigen::Vector<long double, Eigen::Dynamic>::Zero(p);
+    beta = Eigen::Matrix<long double, Eigen::Dynamic, 1>::Zero(p);
     coef0 = 0.;
     return;
 }
@@ -676,9 +676,9 @@ void array_quotient(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis)
     A = A.array() / B.array();
     return;
 }
-void array_quotient(Eigen::Vector<long double, Eigen::Dynamic> &A, Eigen::VectorXd &B, int axis)
+void array_quotient(Eigen::Matrix<long double, Eigen::Dynamic, 1> &A, Eigen::VectorXd &B, int axis)
 {
-    Eigen::Vector<long double, Eigen::Dynamic> B1 = B.cast<long double>();
+    Eigen::Matrix<long double, Eigen::Dynamic, 1> B1 = B.cast<long double>();
     A = A.array() / B1.array();
     return;
 }
@@ -706,9 +706,9 @@ double matrix_dot(Eigen::VectorXd &A, Eigen::VectorXd &B)
     return A.dot(B);
 }
 
-double matrix_dot(Eigen::Vector<long double, Eigen::Dynamic> &A, Eigen::VectorXd &B)
+double matrix_dot(Eigen::Matrix<long double, Eigen::Dynamic, 1> &A, Eigen::VectorXd &B)
 {
-    Eigen::Vector<long double, Eigen::Dynamic> B1 = B.cast<long double>();
+    Eigen::Matrix<long double, Eigen::Dynamic, 1> B1 = B.cast<long double>();
     return A.dot(B1);
 }
 Eigen::VectorXd matrix_dot(Eigen::MatrixXd &A, Eigen::VectorXd &B)

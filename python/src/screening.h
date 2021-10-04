@@ -204,7 +204,7 @@ Eigen::VectorXi screening(Data<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd
 }
 
 template <class T4>
-Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::Vector<long double, Eigen::Dynamic>, double, T4, Eigen::Vector<long double, Eigen::Dynamic>> &data, int model_type, int screening_size, Eigen::VectorXi &always_select, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon)
+Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::Matrix<long double, Eigen::Dynamic, 1>, double, T4, Eigen::Matrix<long double, Eigen::Dynamic, 1>> &data, int model_type, int screening_size, Eigen::VectorXi &always_select, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon)
 {
     // to do
     return Eigen::VectorXi::LinSpaced(screening_size, 0, screening_size - 1);

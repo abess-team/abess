@@ -917,7 +917,7 @@ public:
         return 0.;
 
       // int p = X.cols();
-      int n = X.rows();
+      // int n = X.rows();
 
       Eigen::VectorXd d;
       Eigen::MatrixXd h;
@@ -1051,7 +1051,7 @@ public:
     int n = X.rows();
     int M = y.cols();
 
-    if (num == 0)
+    if (num == 0){
       if (p == this->XTy.rows())
       {
         this->XTy_U = this->XTy;
@@ -1065,6 +1065,7 @@ public:
         this->XTone_U.resize(p, M);
         this->mapping_U(U, U_ind);
       }
+    }
 
     Eigen::MatrixXd d;
     if (!this->covariance_update)

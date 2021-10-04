@@ -4,7 +4,7 @@
 #include "Algorithm.h"
 #include<cmath>
 
-using VL = Eigen::Vector<long double, Eigen::Dynamic>;
+using VL = Eigen::Matrix<long double, Eigen::Dynamic, 1>;
 using ML = Eigen::Matrix<long double, Eigen::Dynamic, Eigen::Dynamic>;
 
 template <class T4>
@@ -15,10 +15,13 @@ public:
 
   ~abessIsing(){};
 
+  ML Xij;
+  Eigen::VectorXi Xij_flag;
+
   void update_tau(int train_n, int N)
   {
     // cout<<"init tau"<<endl;
-    this->tau = 1e-5;
+    this->tau = min(1e-5, 0.1 / this->ising_n);
   }
 
   // ML thetaA(Eigen::VectorXi &ind, int p)
@@ -89,7 +92,9 @@ public:
       {
         bd(this->always_select(i)) = DBL_MAX;
       }
-      
+
+      this->Xij = ML::Zero(n, N + p);
+      this->Xij_flag = Eigen::VectorXi::Zero(N + p);
     }
 
     // get Active-set A according to max_k bd
@@ -297,13 +302,13 @@ public:
     int p = x.cols();
     ML first_der = ML::Zero(p, p);
     VL w = weights.cast<long double>();
+    ML x1 = x.template cast<long double>();
     
     for (int i = 0; i < A.size(); i++) {
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
       
-      Eigen::VectorXd temp = x.col(mi).cwiseProduct(x.col(mj));
-      VL xij = temp.cast<long double>();
+      VL xij = compute_Xij(x1, mi, mj);
       VL ans =  xij * 2.0 - xij.cwiseProduct(prob.col(mi) + prob.col(mj));
       
       first_der(mi, mj) =  (long double) (ans.dot(w) * 2.0) /  (long double) this->ising_n - 
@@ -312,6 +317,18 @@ public:
     }
 
     return first_der;
+  }
+
+  VL compute_Xij(ML &x, int i, int j){
+    int N = (int) x.cols() * (x.cols() - 1) / 2;
+    int ind = (i != j) ? (this->map2(i, j)) : (N + i);
+
+    if (this->Xij_flag(ind) == 0){
+      this->Xij.col(ind) = x.col(i).cwiseProduct(x.col(j));
+      this->Xij_flag(ind) = 1;
+    }
+
+    return this->Xij.col(ind);
   }
 };
 

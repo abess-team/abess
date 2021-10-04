@@ -27,7 +27,7 @@ using namespace Rcpp;
 #include <vector>
 
 typedef Eigen::Triplet<double> triplet;
-using VL = Eigen::Vector<long double, Eigen::Dynamic>;
+using VL = Eigen::Matrix<long double, Eigen::Dynamic, 1>;
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -1023,7 +1023,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
     double ic = 0;
 
     if (model_type == 8){
-      Eigen::Vector<long double, Eigen::Dynamic> beta_long;
+      Eigen::Matrix<long double, Eigen::Dynamic, 1> beta_long;
       mylist.get_value_by_name("beta", beta_long);
       beta = beta_long.cast<double>();
     }else{

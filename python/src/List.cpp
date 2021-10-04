@@ -93,7 +93,7 @@ void List::add(string name, VectorXi &value)
     vector_VectorXi_name.push_back(name);
 }
 
-void List::add(string name, Vector<long double, Dynamic> &value)
+void List::add(string name, Matrix<long double, Dynamic, 1> &value)
 {
     std::size_t i;
     for (i = 0; i < vector_Vector_long_name.size(); i++)
