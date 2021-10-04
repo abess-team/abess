@@ -11,7 +11,7 @@
 
 * Project development
   * Documentation
-    * Add introduction for new features.
+    * Add instruction for user-specified cross validation division.
 
 ## Version 0.3.0    
 
