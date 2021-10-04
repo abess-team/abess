@@ -160,7 +160,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
               int thread,
               bool covariance_update,
               bool sparse_matrix,
-              Eigen::VectorXi cv_mask,
+              Eigen::VectorXi &cv_mask,
               Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list);
 
 #ifndef R_BUILD
