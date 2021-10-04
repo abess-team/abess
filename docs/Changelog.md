@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+* Cpp
+  * New features: (currently supported only by Python)
+    * Support user-specified cross validation division.
+
+* Python package
+  * Support user-specified cross validation division by additional argument `cv_mask`. 
+
+* Project development
+  * Documentation
+    * Add introduction for new features.
 
 ## Version 0.3.0    
 
