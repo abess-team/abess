@@ -249,7 +249,7 @@ class bess_base(BaseEstimator):
         
         # cv_mask
         if cv_mask is None:
-            cv_mask = []
+            cv_mask = np.array([], dtype = "int32")
         else:
             cv_mask = np.array(cv_mask, dtype = "int32")
             if cv_mask.ndim > 1:
