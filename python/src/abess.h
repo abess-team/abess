@@ -136,7 +136,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                bool covariance_update,
                bool sparse_matrix,
                int splicing_type,
-               int sub_search);
+               int sub_search,
+               Eigen::VectorXi cv_mask);
 
 template <class T1, class T2, class T3, class T4>
 List abessCpp(T4 &x, T1 &y, int n, int p,
@@ -159,6 +160,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
               int thread,
               bool covariance_update,
               bool sparse_matrix,
+              Eigen::VectorXi cv_mask,
               Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list);
 
 #ifndef R_BUILD
@@ -171,6 +173,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, 
                   int *status, int status_len,
                   int *sequence, int sequence_len,
                   double *lambda_sequence, int lambda_sequence_len,
+                  int *cv_mask, int cv_mask_len,
                   int s_min, int s_max, int K_max, double epsilon,
                   double lambda_min, double lambda_max, int n_lambda,
                   bool is_screening, int screening_size, int powell_path,
