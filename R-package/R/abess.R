@@ -316,7 +316,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' }
 abess.default <- function(x,
                           y,
-                          family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
+                          family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial","gamma"),
                           tune.path = c("sequence", "gsection"),
                           tune.type = c("gic", "ebic", "bic", "aic", "cv"),
                           weight = NULL,
@@ -389,7 +389,8 @@ abess.default <- function(x,
     "poisson" = 3,
     "cox" = 4,
     "mgaussian" = 5,
-    "multinomial" = 6
+    "multinomial" = 6,
+    "gamma" = 8
   )
 
   ## check predictors:

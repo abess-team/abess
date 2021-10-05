@@ -248,6 +248,24 @@ test_that("abess (binomial) works", {
   expect_true(all(abs(beta - beta1) < 1e-3))
 })
 
+test_that("abess (gamma) works", {
+  n <- 150
+  p <- 100
+  support.size <- 3
+  print('test gamma')
+  dataset <- generate.data(n, p, support.size,
+                           family = "gamma", seed = 1)
+  abess_fit <- abess(
+    dataset[["x"]],
+    dataset[["y"]],
+    family = "gamma",
+    tune.type = "cv",
+    newton = "exact",
+    newton.thresh = 1e-8
+  )
+  test_batch(abess_fit, dataset, Gamma)
+})
+
 test_that("abess (cox) works", {
   if (!require("survival")) {
     install.packages("survival")

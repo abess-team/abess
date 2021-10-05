@@ -114,7 +114,8 @@ generate.data <- function(n,
                                      "poisson",
                                      "cox",
                                      "mgaussian",
-                                     "multinomial"),
+                                     "multinomial",
+                                     "gamma"),
                           beta = NULL,
                           cortype = 1,
                           snr = 10,
@@ -295,6 +296,21 @@ generate.data <- function(n,
     y <- apply(prob_y, 1, function(x) {
       sample(0:2, size = 1, prob = x)
     })
+  }
+  if (family == "gamma") {
+    m <- 5 * sqrt(2 * log(p) / n)
+    if (is.null(input_beta)) {
+      # TODO 
+      beta[nonzero] <- stats::runif(support.size, m, 100 * m)
+    } else {
+      beta <- input_beta
+    }
+    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    eta <- x %*% beta + stats::rnorm(n, 0, sigma)
+    eta <- abs(eta)
+    # TODO the shape para of gamma is uniform in [0.1,100.1]
+    shape_para <- 100 * runif(n) + 0.1
+    y <- stats::rgamma(n,shape=shape_para,rate=shape_para*eta)
   }
   set.seed(NULL)
   
