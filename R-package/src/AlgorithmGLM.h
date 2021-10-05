@@ -1574,16 +1574,6 @@ class abessGamma : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4
 public:
   abessGamma(int algorithm_type, int model_type, int maX_iter = 30, int primary_model_fit_maX_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int eXchange_num = 5, bool approXimate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, maX_iter, primary_model_fit_maX_iter, primary_model_fit_epsilon, warm_start, eXchange_num, approXimate_Newton, always_select, false, splicing_type, sub_search){};
   ~abessGamma(){};
-  
-  // TODO threshold is OK?
-  template <class T>
-  void log_threshold(T &X)
-  {
-    double threshold = 1e-5;
-    for(int i=0; i < X.size(); i++){
-      if(X(i) < threshold){ X = threshold;}     
-    }
-  }
  
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size)
   {
@@ -1595,36 +1585,39 @@ public:
     }
     int n = x.rows();
     int p = x.cols();
-    // eXpand data matriX to design matriX
+    // expand data matriX to design matriX
     T4 X(n, p + 1);
     Eigen::VectorXd coef = Eigen::VectorXd::Zero(p + 1);
     X.rightCols(p) = x;
     add_constant_column(X);
     coef(0) = coef0;
     coef.tail(p) = beta;
+    // all methods need
     double loglik_new = DBL_MAX, loglik = -neg_loglik_loss(X,y,weights,coef);
-    // ApproXimate Newton method
-    if (this->approXimate_Newton){
+    Eigen::VectorXd EY = (X * coef).cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
+    Eigen::VectorXd EY_square = EY.array().square();
+    // Approximate Newton method
+    if (this->approximate_Newton){
       double step = 1;
       Eigen::VectorXd g(p + 1);
       Eigen::VectorXd coef_new;
-      Eigen::VectorXd EY = (X * coef).cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
       Eigen::VectorXd h_diag(p + 1);
       Eigen::VectorXd desend_direction; // coef_new = coef + step * desend_direction
-      for (int j = 0; j < this->primary_model_fit_maX_iter; j++){
+      
+      for (int j = 0; j < this->primary_model_fit_max_iter; j++){
         for (int i = 0; i < p + 1; i++){
-          h_diag(i) = 1.0 / (X.col(i).cwiseProduct(EY.array().square()).cwiseProduct(weights).dot(X.col(i)) + 2 * this->lambda_level); // the inverse of diag of Hessian 
+          h_diag(i) = 1.0 / (X.col(i).cwiseProduct(EY_square).cwiseProduct(weights).dot(X.col(i)) + 2 * this->lambda_level); // the inverse of diag of Hessian 
         }
         g = X.transpose() * (EY-y).cwiseProduct(weights) - 2 * this->lambda_level * coef; // negtive gradient direction
         desend_direction = g.cwiseProduct(h_diag); 
         coef_new = coef + step * desend_direction; // ApproXimate Newton method
-        loglik_new = -neg_loglik_loss(X,y,weights,coef_new));
+        loglik_new = -neg_loglik_loss(X,y,weights,coef_new);
         while (loglik_new < loglik && step > this->primary_model_fit_epsilon){
           step = step / 2;
           coef_new = coef + step * desend_direction;
-          loglik_new = -neg_loglik_loss(X,y,weights,coef_new));
+          loglik_new = -neg_loglik_loss(X,y,weights,coef_new);
         }
-        bool condition1 = -(loglik_new + (this->primary_model_fit_maX_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
+        bool condition1 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
         // bool condition1 = false;
         if (condition1)
           break;
@@ -1644,11 +1637,10 @@ public:
       Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
       Eigen::MatrixXd lambdamat = Eigen::MatrixXd::Identity(p + 1, p + 1);
       lambdamat(0, 0) = 0;
-      Eigen::VectorXd EY = (X * coef).cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
       // TODO this weight is right?
-      Eigen::VectorXd W = EY.array().square().cwiseProduct(weights); // the weight matriX of IW(eight)LS method
-      Eigen::VectorXd Z = X * coef - (y - EY).cwiseProduct(EY.cwiseInverse().square()); 
-      for (int j = 0; j < this->primary_model_fit_maX_iter; j++){
+      Eigen::VectorXd W = EY_square.cwiseProduct(weights); // the weight matriX of IW(eight)LS method
+      Eigen::VectorXd Z = X * coef - (y - EY).cwiseQuotient(EY_square); 
+      for (int j = 0; j < this->primary_model_fit_max_iter; j++){
         for (int i = 0; i < p + 1; i++)
         {
           X_new.col(i) = X.col(i).cwiseProduct(W);
@@ -1657,7 +1649,7 @@ public:
         coef = XTX.ldlt().solve(X_new.transpose() * Z);
          
         loglik_new = -neg_loglik_loss(X,y,weights,coef);
-        bool condition1 = -(loglik_new + (this->primary_model_fit_maX_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
+        bool condition1 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
         bool condition2 = abs(loglik - loglik_new) / (0.1 + abs(loglik_new)) < this->primary_model_fit_epsilon;
         // TODO maybe here should be abs(loglik - loglik_new)
         bool condition3 = abs(loglik_new) < min(1e-3, this->tau);
@@ -1666,9 +1658,10 @@ public:
           break;
         }
         EY = (X * coef).array().inverse();
+        EY_square = EY.array().square();
         loglik = loglik_new;
-        W = EY.array().square().cwiseProduct(weights);
-        Z = X * coef - (y - EY).cwiseProduct(EY.array().inverse().square());
+        W = EY_square.cwiseProduct(weights);
+        Z = X * coef - (y - EY).cwiseQuotient(EY_square);
       }
     }
     
@@ -1676,32 +1669,33 @@ public:
     coef0 = coef(0);
     return true;
   }
+
   double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size)
   {
     int n = X.rows();
     Eigen::VectorXd Xbeta = X * beta + Eigen::VectorXd::Ones(n) * coef0;
     log_threshold(Xbeta);
-    return (Xbeta.cwiseProduct(y)-Xbeta.array().log()).dot(weights) + this->lambda_level * (beta.squareNorm() + coef0*coef0);
+    return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) + this->lambda_level * (beta.squaredNorm() + coef0*coef0);
   }
+
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
     int p = X.cols();
     int n = X.rows();
-    Eigen::VectorXd Xbeta_inverse = XA * beta_A + Eigen::VectorXd::Ones(n) * coef0; // Now, it hasn't been inversed.
-    // assert Xbeta > smallNum needn't
-    Xbeta_inverse = Xbeta_inverse.cwiseInverse(); // Xbeta_inverse = E(Y)
+    Eigen::VectorXd EY = (XA * beta_A + Eigen::VectorXd::Ones(n) * coef0).cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
+    Eigen::VectorXd EY_square_weights = EY.array().square().matrix().cwiseProduct(weights);
     // negative gradient direction
-    Eigen::VectorXd d = X.transpose() * ((Xbeta_inverse - y).cwiseProduct(weights)) - 2 * this->lambda_level * beta; 
+    Eigen::VectorXd d = X.transpose() * ((EY - y).cwiseProduct(weights)) - 2 * this->lambda_level * beta; 
     Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p); 
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);  
-    // we only need N diagonal sub-matriX of hessian of Loss, X^T %*% diag(Xbeta_inverse^2) %*% X is OK, but waste.
+    // we only need N diagonal sub-matriX of hessian of Loss, X^T %*% diag(EY^2) %*% X is OK, but waste.
     for (int i = 0; i < N; i++) 
     {
       T4 XG = X.middleCols(g_indeX(i), g_size(i)); 
       T4 XG_new = XG;
       for (int j = 0; j < g_size(i); j++)
       {
-        XG_new.col(j) = XG.col(j).cwiseProduct(Xbeta_inverse.array().square().cwiseProduct(weights));
+        XG_new.col(j) = XG.col(j).cwiseProduct(EY_square_weights);
       }
       // hessianG is the ith group diagonal sub-matriX of hessian matriX of Loss.
       Eigen::MatrixXd hessianG = XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));    
@@ -1748,13 +1742,22 @@ public:
     
   }
   private:
-  @override
-  double neg_loglik_loss(T4 &design, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef)
-  {
-    Eigen::VectorXd Xbeta = design * coef;
-    log_threshold(Xbeta);
-    return (Xbeta.cwiseProduct(y)-Xbeta.array().log()).dot(weights) + this->lambda_level * coef.squareNorm();
-  }
+    double neg_loglik_loss(T4 &design, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef)
+    {
+      Eigen::VectorXd Xbeta = design * coef;
+      log_threshold(Xbeta);
+      return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) + this->lambda_level * coef.squaredNorm();
+    }
+
+    // TODO threshold is OK?
+    template <class T>
+    void log_threshold(T &X)
+    {
+      double threshold = 1e-5;
+      for(int i=0; i < X.size(); i++){
+        if(X(i) < threshold){ X(i) = threshold;}     
+      }
+    }
 };
 
 #endif // SRC_ALGORITHMGLM_H

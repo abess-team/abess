@@ -252,7 +252,6 @@ test_that("abess (gamma) works", {
   n <- 150
   p <- 100
   support.size <- 3
-  print('test gamma')
   dataset <- generate.data(n, p, support.size,
                            family = "gamma", seed = 1)
   abess_fit <- abess(
