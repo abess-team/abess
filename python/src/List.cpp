@@ -224,7 +224,7 @@ void List::get_value_by_name(string name, VectorXd &value)
     }
 }
 
-void List::get_value_by_name(string name, Vector<long double, Dynamic> &value)
+void List::get_value_by_name(string name, Matrix<long double, Dynamic, 1> &value)
 {
     std::size_t i;
     for (i = 0; i < vector_Vector_long_name.size(); i++)

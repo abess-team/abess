@@ -173,7 +173,7 @@ class abessIsing(bess_base):
 
         # path parameter (note that: path_type_int = 1)
         if self.support_size is None:
-            support_sizes = list(range(0, p * (p - 1) / 2))
+            support_sizes = list(range(0, int(p * (p - 1) / 2)))
         else:
             if isinstance(self.support_size, (numbers.Real, numbers.Integral)):
                 support_sizes = np.empty(1, dtype=int)
