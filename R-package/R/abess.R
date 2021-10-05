@@ -316,7 +316,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' }
 abess.default <- function(x,
                           y,
-                          family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
+                          family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial","gamma"),
                           tune.path = c("sequence", "gsection"),
                           tune.type = c("gic", "ebic", "bic", "aic", "cv"),
                           weight = NULL,
