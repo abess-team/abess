@@ -1511,6 +1511,15 @@ class TestClass:
             print(e)
         else:
             assert False
+        
+        try:
+            model = abessLm(cv = 2)
+            model.fit([[1], [2]], [1, 2], cv_mask = [1, 1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
 
     def test_other(self):
         n = 100
@@ -1539,3 +1548,7 @@ class TestClass:
                         exchange_num=2,  is_warm_start=False,
                         ic_coef=1., thread=5, covariance_update=False)
         model.fit(data.x, data.y)
+
+        model = abessLm(support_size=range(0, 10),  cv=2)
+        cv_mask = [1 for i in range(50)] + [2 for i in range(n - 50)]
+        model.fit(data.x, data.y, cv_mask = cv_mask)
