@@ -18,6 +18,7 @@ using namespace Rcpp;
 #include "Algorithm.h"
 #include "AlgorithmPCA.h"
 #include "AlgorithmGLM.h"
+#include "AlgorithmIsing.h"
 #include "Metric.h"
 #include "path.h"
 #include "utilities.h"
@@ -26,6 +27,7 @@ using namespace Rcpp;
 #include <vector>
 
 typedef Eigen::Triplet<double> triplet;
+using VL = Eigen::Matrix<long double, Eigen::Dynamic, 1>;
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -73,7 +75,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                bool sparse_matrix,
                int splicing_type,
                int sub_search,
-               Eigen::VectorXi cv_mask)
+               Eigen::VectorXi cv_mask_Vec)
 {
 #ifdef _OPENMP
   // Eigen::initParallel();
@@ -99,10 +101,14 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     n = x.rows();
   }
 
-  Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *algorithm_uni_dense = nullptr;
-  Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> *algorithm_mul_dense = nullptr;
-  Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *algorithm_uni_sparse = nullptr;
-  Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>> *algorithm_mul_sparse = nullptr;
+  Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd, Eigen::VectorXd> *algorithm_uni_dense = nullptr;
+  Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd, Eigen::VectorXd> *algorithm_mul_dense = nullptr;
+  Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>, Eigen::VectorXd> *algorithm_uni_sparse = nullptr;
+  Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>, Eigen::VectorXd> *algorithm_mul_sparse = nullptr;
+
+  Algorithm<Eigen::VectorXd, VL, double, Eigen::MatrixXd, VL> *algorithm_uni_dense_long = nullptr;
+  Algorithm<Eigen::VectorXd, VL, double, Eigen::SparseMatrix<double>, VL> *algorithm_uni_sparse_long = nullptr;
+
 
   //////////////////// function generate_algorithm_pointer() ////////////////////////////
   // to do
@@ -138,6 +144,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
       if (pca_n != -1)
         algorithm_uni_dense->pca_n = pca_n;
     }
+    else if (model_type == 8)
+    {
+      algorithm_uni_dense_long = new abessIsing<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+    }
   }
   else
   {
@@ -169,12 +179,20 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     {
       algorithm_uni_sparse = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
     }
+    else if (model_type == 8)
+    {
+      algorithm_uni_sparse_long = new abessIsing<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+    }
   }
 
-  vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(max(Kfold, thread));
-  vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> *> algorithm_list_mul_dense(max(Kfold, thread));
-  vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *> algorithm_list_uni_sparse(max(Kfold, thread));
-  vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>> *> algorithm_list_mul_sparse(max(Kfold, thread));
+  vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd, Eigen::VectorXd> *> algorithm_list_uni_dense(max(Kfold, thread));
+  vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd, Eigen::VectorXd> *> algorithm_list_mul_dense(max(Kfold, thread));
+  vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>, Eigen::VectorXd> *> algorithm_list_uni_sparse(max(Kfold, thread));
+  vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>, Eigen::VectorXd> *> algorithm_list_mul_sparse(max(Kfold, thread));
+  
+  vector<Algorithm<Eigen::VectorXd, VL, double, Eigen::MatrixXd, VL> *> algorithm_list_uni_dense_long(max(Kfold, thread));
+  vector<Algorithm<Eigen::VectorXd, VL, double, Eigen::SparseMatrix<double>, VL> *> algorithm_list_uni_sparse_long(max(Kfold, thread));
+
   if (is_cv)
   {
     for (int i = 0; i < max(Kfold, thread); i++)
@@ -211,6 +229,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
           if (pca_n != -1)
             algorithm_list_uni_dense[i]->pca_n = pca_n;
         }
+        else if (model_type == 8)
+        {
+          algorithm_list_uni_dense_long[i] = new abessIsing<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        }
       }
       else
       {
@@ -242,6 +264,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
         {
           algorithm_list_uni_sparse[i] = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
         }
+        else if (model_type == 8)
+        {
+          algorithm_list_uni_sparse_long[i] = new abessIsing<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        }
       }
     }
   }
@@ -249,12 +275,11 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
   List out_result;
   if (!sparse_matrix)
   {
-    if (y.cols() == 1)
+    if (model_type == 8)
     {
-
       Eigen::VectorXd y_vec = y.col(0).eval();
-
-      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p,
+      
+      out_result = abessCpp<Eigen::VectorXd, VL, double, Eigen::MatrixXd, VL>(x, y_vec, n, p,
                                                                                        data_type, weight, sigma,
                                                                                        is_normal,
                                                                                        algorithm_type, model_type, max_iter, exchange_num,
@@ -274,13 +299,41 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                        thread,
                                                                                        covariance_update,
                                                                                        sparse_matrix,
-                                                                                       cv_mask,
+                                                                                       cv_mask_Vec, 
+                                                                                       algorithm_uni_dense_long, algorithm_list_uni_dense_long);
+    }
+    else if (y.cols() == 1)
+    {
+
+      Eigen::VectorXd y_vec = y.col(0).eval();
+
+      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd, Eigen::VectorXd>(x, y_vec, n, p,
+                                                                                       data_type, weight, sigma,
+                                                                                       is_normal,
+                                                                                       algorithm_type, model_type, max_iter, exchange_num,
+                                                                                       path_type, is_warm_start,
+                                                                                       ic_type, ic_coef, is_cv, Kfold,
+                                                                                       status,
+                                                                                       sequence,
+                                                                                       lambda_seq,
+                                                                                       s_min, s_max, K_max, epsilon,
+                                                                                       lambda_min, lambda_max, nlambda,
+                                                                                       is_screening, screening_size, powell_path,
+                                                                                       g_index,
+                                                                                       always_select,
+                                                                                       tau,
+                                                                                       primary_model_fit_max_iter, primary_model_fit_epsilon,
+                                                                                       early_stop, approximate_Newton,
+                                                                                       thread,
+                                                                                       covariance_update,
+                                                                                       sparse_matrix,
+                                                                                       cv_mask_Vec,
                                                                                        algorithm_uni_dense, algorithm_list_uni_dense);
     }
     else
     {
 
-      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd>(x, y, n, p,
+      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd, Eigen::VectorXd>(x, y, n, p,
                                                                                                 data_type, weight, sigma,
                                                                                                 is_normal,
                                                                                                 algorithm_type, model_type, max_iter, exchange_num,
@@ -300,7 +353,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                 thread,
                                                                                                 covariance_update,
                                                                                                 sparse_matrix,
-                                                                                                cv_mask,
+                                                                                                cv_mask_Vec,
                                                                                                 algorithm_mul_dense, algorithm_list_mul_dense);
     }
   }
@@ -324,12 +377,11 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     }
     sparse_x.makeCompressed();
 
-    if (y.cols() == 1)
+    if (model_type == 8)
     {
-
       Eigen::VectorXd y_vec = y.col(0).eval();
 
-      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p,
+      out_result = abessCpp<Eigen::VectorXd, VL, double, Eigen::SparseMatrix<double>, VL>(sparse_x, y_vec, n, p,
                                                                                                    data_type, weight, sigma,
                                                                                                    is_normal,
                                                                                                    algorithm_type, model_type, max_iter, exchange_num,
@@ -349,13 +401,42 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                    thread,
                                                                                                    covariance_update,
                                                                                                    sparse_matrix,
-                                                                                                   cv_mask,
+                                                                                                   cv_mask_Vec,
+                                                                                                   algorithm_uni_sparse_long, algorithm_list_uni_sparse_long);
+
+    }
+    else if (y.cols() == 1)
+    {
+
+      Eigen::VectorXd y_vec = y.col(0).eval();
+
+      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>, Eigen::VectorXd>(sparse_x, y_vec, n, p,
+                                                                                                   data_type, weight, sigma,
+                                                                                                   is_normal,
+                                                                                                   algorithm_type, model_type, max_iter, exchange_num,
+                                                                                                   path_type, is_warm_start,
+                                                                                                   ic_type, ic_coef, is_cv, Kfold,
+                                                                                                   status,
+                                                                                                   sequence,
+                                                                                                   lambda_seq,
+                                                                                                   s_min, s_max, K_max, epsilon,
+                                                                                                   lambda_min, lambda_max, nlambda,
+                                                                                                   is_screening, screening_size, powell_path,
+                                                                                                   g_index,
+                                                                                                   always_select,
+                                                                                                   tau,
+                                                                                                   primary_model_fit_max_iter, primary_model_fit_epsilon,
+                                                                                                   early_stop, approximate_Newton,
+                                                                                                   thread,
+                                                                                                   covariance_update,
+                                                                                                   sparse_matrix,
+                                                                                                   cv_mask_Vec,
                                                                                                    algorithm_uni_sparse, algorithm_list_uni_sparse);
     }
     else
     {
 
-      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>>(sparse_x, y, n, p,
+      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>, Eigen::VectorXd>(sparse_x, y, n, p,
                                                                                                             data_type, weight, sigma,
                                                                                                             is_normal,
                                                                                                             algorithm_type, model_type, max_iter, exchange_num,
@@ -375,7 +456,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                             thread,
                                                                                                             covariance_update,
                                                                                                             sparse_matrix,
-                                                                                                            cv_mask,
+                                                                                                            cv_mask_Vec,
                                                                                                             algorithm_mul_sparse, algorithm_list_mul_sparse);
     }
   }
@@ -384,6 +465,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
   delete algorithm_mul_dense;
   delete algorithm_uni_sparse;
   delete algorithm_mul_sparse;
+  delete algorithm_uni_dense_long;
+  delete algorithm_uni_sparse_long;
   for (unsigned int i = 0; i < algorithm_list_uni_dense.size(); i++)
   {
     delete algorithm_list_uni_dense[i];
@@ -400,6 +483,14 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
   {
     delete algorithm_list_mul_sparse[i];
   }
+  for (unsigned int i = 0; i < algorithm_list_uni_dense_long.size(); i++)
+  {
+    delete algorithm_list_uni_dense_long[i];
+  }
+  for (unsigned int i = 0; i < algorithm_list_uni_sparse_long.size(); i++)
+  {
+    delete algorithm_list_uni_sparse_long[i];
+  }
   return out_result;
 };
 
@@ -411,7 +502,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 //  <Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double> > for Univariate Sparse
 //  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> for Multivariable Dense
 //  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double> > for Multivariable Sparse
-template <class T1, class T2, class T3, class T4>
+template <class T1, class T2, class T3, class T4, class T5>
 List abessCpp(T4 &x, T1 &y, int n, int p,
               int data_type, Eigen::VectorXd weight, Eigen::MatrixXd sigma,
               bool is_normal,
@@ -432,8 +523,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
               int thread,
               bool covariance_update,
               bool sparse_matrix,
-              Eigen::VectorXi &cv_mask,
-              Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list)
+              Eigen::VectorXi cv_mask_Vec,
+              Algorithm<T1, T2, T3, T4, T5> *algorithm, vector<Algorithm<T1, T2, T3, T4, T5> *> algorithm_list)
 {
   // to do: -openmp
 
@@ -442,7 +533,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 #endif
   bool is_parallel = thread != 1;
 
-  Data<T1, T2, T3, T4> data(x, y, data_type, weight, is_normal, g_index, status, sparse_matrix);
+  Data<T1, T2, T3, T4, T5> data(x, y, data_type, weight, is_normal, g_index, status, sparse_matrix);
 
   Eigen::VectorXi screening_A;
   if (is_screening)
@@ -455,9 +546,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     if (is_cv)
     {
       algorithm->always_select = always_select;
-      for (int i = 0; i < algorithm_list.size(); i++)
+      for (int i = 0; i < (int) algorithm_list.size(); i++)
       {
-
         algorithm_list[i]->always_select = always_select;
       }
     }
@@ -465,7 +555,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
   int M = data.y.cols();
 
-  Metric<T1, T2, T3, T4> *metric = new Metric<T1, T2, T3, T4>(ic_type, ic_coef, is_cv, Kfold);
+  Metric<T1, T2, T3, T4, T5> *metric = new Metric<T1, T2, T3, T4, T5>(ic_type, ic_coef, is_cv, Kfold);
 
   // For CV:
   // 1:mask
@@ -473,7 +563,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   // 3:group_XTX
   if (is_cv)
   {
-    metric->set_cv_train_test_mask(data, data.get_n(), cv_mask);
+    metric->set_cv_train_test_mask(data, data.get_n(), cv_mask_Vec);
     metric->set_cv_init_fit_arg(data.p, data.M);
     // metric->set_cv_initial_model_param(Kfold, data.get_p());
     // metric->set_cv_initial_A(Kfold, data.get_p());
@@ -484,8 +574,9 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
   // calculate loss for each parameter parameter combination
 
-  Result<T2, T3> result;
-  vector<Result<T2, T3>> result_list(Kfold);
+  Result<T2, T3, T5> result;
+  vector<Result<T2, T3, T5>> result_list(Kfold);
+  // cout<<"Path"<<endl;///
   if (path_type == 1)
   {
     if (is_cv)
@@ -496,20 +587,20 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 #pragma omp parallel for
         for (int i = 0; i < Kfold; i++)
         {
-          sequential_path_cv<T1, T2, T3, T4>(data, sigma, algorithm_list[i], metric, sequence, lambda_seq, early_stop, i, result_list[i]);
+          sequential_path_cv<T1, T2, T3, T4, T5>(data, sigma, algorithm_list[i], metric, sequence, lambda_seq, early_stop, i, result_list[i]);
         }
       }
       else
       {
         for (int i = 0; i < Kfold; i++)
         {
-          sequential_path_cv<T1, T2, T3, T4>(data, sigma, algorithm, metric, sequence, lambda_seq, early_stop, i, result_list[i]);
+          sequential_path_cv<T1, T2, T3, T4, T5>(data, sigma, algorithm, metric, sequence, lambda_seq, early_stop, i, result_list[i]);
         }
       }
     }
     else
     {
-      sequential_path_cv<T1, T2, T3, T4>(data, sigma, algorithm, metric, sequence, lambda_seq, early_stop, -1, result);
+      sequential_path_cv<T1, T2, T3, T4, T5>(data, sigma, algorithm, metric, sequence, lambda_seq, early_stop, -1, result);
     }
   }
   else
@@ -524,11 +615,13 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     gs_path(data, algorithm, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, K_max, epsilon, is_parallel, result);
   }
 
+  // cout<<"End Path"<<endl;///
+
   // Get bestmodel index && fit bestmodel
   int min_loss_index_row = 0, min_loss_index_col = 0, s_size = sequence.size(), lambda_size = lambda_seq.size();
   Eigen::Matrix<T2, Dynamic, Dynamic> beta_matrix(s_size, lambda_size);
   Eigen::Matrix<T3, Dynamic, Dynamic> coef0_matrix(s_size, lambda_size);
-  Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(s_size, lambda_size);
+  Eigen::Matrix<T5, Dynamic, Dynamic> bd_matrix(s_size, lambda_size);
   Eigen::MatrixXd ic_matrix(s_size, lambda_size);
   Eigen::MatrixXd test_loss_sum = Eigen::MatrixXd::Zero(s_size, lambda_size);
   Eigen::MatrixXd train_loss_matrix(s_size, lambda_size);
@@ -582,8 +675,14 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
           T2 beta_init;
           T3 coef0_init;
-          coef_set_zero(data.p, M, beta_init, coef0_init);
-          Eigen::VectorXd bd_init = Eigen::VectorXd::Zero(data.p);
+          T5 bd_init;
+          if (algorithm_list[algorithm_index]->model_type == 8){
+            coef_set_zero(data.p * (data.p - 1) / 2, M, beta_init, coef0_init);
+            bd_init = T5::Zero(data.p * (data.p - 1) / 2);
+          }else{
+            coef_set_zero(data.p, M, beta_init, coef0_init);
+            bd_init = T5::Zero(data.p);
+          }
 
           for (int j = 0; j < Kfold; j++)
           {
@@ -639,8 +738,14 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
           T2 beta_init;
           T3 coef0_init;
-          coef_set_zero(data.p, M, beta_init, coef0_init);
-          Eigen::VectorXd bd_init = Eigen::VectorXd::Zero(data.p);
+          T5 bd_init;
+          if (algorithm->model_type == 8){
+            coef_set_zero(data.p * (data.p - 1) / 2, M, beta_init, coef0_init);
+            bd_init = T5::Zero(data.p * (data.p - 1) / 2);
+          }else{
+            coef_set_zero(data.p, M, beta_init, coef0_init);
+            bd_init = T5::Zero(data.p);
+          }
 
           for (int j = 0; j < Kfold; j++)
           {
@@ -864,7 +969,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                   double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
-                  int A_out_len, int *l_out)
+                  int A_out_len)
 {
   Eigen::MatrixXd x_Mat;
   Eigen::MatrixXd y_Mat;
@@ -916,7 +1021,14 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
     double coef0 = 0;
     double train_loss = 0;
     double ic = 0;
-    mylist.get_value_by_name("beta", beta);
+
+    if (model_type == 8){
+      Eigen::Matrix<long double, Eigen::Dynamic, 1> beta_long;
+      mylist.get_value_by_name("beta", beta_long);
+      beta = beta_long.cast<double>();
+    }else{
+      mylist.get_value_by_name("beta", beta);
+    }
     mylist.get_value_by_name("coef0", coef0);
     mylist.get_value_by_name("train_loss", train_loss);
     mylist.get_value_by_name("ic", ic);

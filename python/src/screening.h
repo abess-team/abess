@@ -27,7 +27,7 @@ using namespace std;
 using namespace Eigen;
 
 template <class T4>
-Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::VectorXd, double, T4> &data, int model_type, int screening_size, Eigen::VectorXi &always_select, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon)
+Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::VectorXd, double, T4, Eigen::VectorXd> &data, int model_type, int screening_size, Eigen::VectorXi &always_select, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon)
 {
     // int n = data.x.rows();
     int p = data.x.cols();
@@ -120,7 +120,7 @@ Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::VectorXd, double, T4> &da
 }
 
 template <class T4>
-Eigen::VectorXi screening(Data<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4> &data, int model_type, int screening_size, Eigen::VectorXi &always_select, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon)
+Eigen::VectorXi screening(Data<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4, Eigen::VectorXd> &data, int model_type, int screening_size, Eigen::VectorXi &always_select, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon)
 {
     // int n = data.x.rows();
     int p = data.x.cols();
@@ -201,6 +201,13 @@ Eigen::VectorXi screening(Data<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd
     }
 
     return screening_A_ind;
+}
+
+template <class T4>
+Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::Matrix<long double, Eigen::Dynamic, 1>, double, T4, Eigen::Matrix<long double, Eigen::Dynamic, 1>> &data, int model_type, int screening_size, Eigen::VectorXi &always_select, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon)
+{
+    // to do
+    return Eigen::VectorXi::LinSpaced(screening_size, 0, screening_size - 1);
 }
 
 #endif

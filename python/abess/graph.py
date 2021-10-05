@@ -26,116 +26,60 @@ def fix_docs(cls):
 
 
 @fix_docs
-class abessPCA(bess_base):
+class abessIsing(bess_base):
     """
-    Adaptive Best-Subset Selection(ABESS) algorithm for principal component analysis.
+    Adaptive Best-Subset Selection(ABESS) algorithm for Ising model.
 
     Parameters
     ----------
     splicing_type: {0, 1}, optional
         The type of splicing in `fit()` (in Algorithm.h). 
         "0" for decreasing by half, "1" for decresing by one.
-        Default: splicing_type = 1.
+        Default: splicing_type = 0.
 
     Examples
     --------
     >>> ### Sparsity known
     >>>
-    >>> from abess.pca import abessPCA
+    >>> from abess.graph import abessIsing
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> model = abessPCA(support_size = 10)
+    >>> model = abessIsing(support_size = 10)
     >>>
     >>> ### X known
-    >>> X = np.random.randn(100, 50)
+    >>> 
     >>> model.fit(X)
-    >>> print(model.coef_)
-    >>>
-    >>> ### X unknown, but Sigma known
-    >>> model.fit(Sigma = np.cov(X.T))
     >>> print(model.coef_)
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, is_warm_start=True, support_size=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, 
-                 always_select=[], 
+    def __init__(self, max_iter=200, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, s_min=None, s_max=None,
+                 ic_type="aic", ic_coef=1.0, primary_model_fit_max_iter=500, primary_model_fit_epsilon=1e-6,
+                 always_select=[], alpha = None, cv_mask = [],
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=1
                  ):
-        super(abessPCA, self).__init__(
-            algorithm_type="abess", model_type="PCA", data_type=1, path_type="seq", max_iter=max_iter, exchange_num=exchange_num,
+        super(abessIsing, self).__init__(
+            algorithm_type="abess", model_type="Ising", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, s_min=s_min, s_max=s_max, 
-            ic_type=ic_type, ic_coef=ic_coef, 
-            always_select=always_select, 
+            ic_type=ic_type, ic_coef=ic_coef, primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
+            always_select=always_select, alpha = alpha,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type
         )
 
-    def transform(self, X):
-        """
-        For PCA model, apply dimensionality reduction 
-        to given data.
-
-        Parameters
-        ----------
-        X : array-like of shape (n_samples, p_features)
-            Test data.
-
-        """
-        X = self.new_data_check(X)
-
-        return X.dot(self.coef_)
-
-    def ratio(self, X):
-        """
-        Give new data, and it returns the explained ratio.
-
-        Parameters
-        ----------
-        X : array-like of shape (n_samples, n_features)
-            Test data.
-        """
-        X = self.new_data_check(X)
-        s = np.cov(X.T)
-        if len(self.coef_.shape) == 1:
-            explain = self.coef_.T.dot(s).dot(self.coef_)
-        else:
-            explain = np.sum(np.diag(self.coef_.T.dot(s).dot(self.coef_)))
-        if isinstance(s, (int, float)):
-            full = s
-        else:
-            full = np.sum(np.diag(s))
-        return explain / full
-
-    def fit(self, X=None, is_normal=True, group=None, Sigma=None, number=1, n=None):
+    def fit(self, X=None, frequence=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
         Parameters
         ----------
         X : array-like of shape (n_samples, p_features)
-            Training data
-        is_normal : bool, optional
-            whether normalize the variables array before fitting the algorithm.
-            Default: is_normal=True.
-        weight : array-like of shape (n_samples,)
-            Individual weights for each sample. Only used for is_weight=True.
+            Training data.
+        frequence : array-like of shape (n_samples,)
+            The frequence for each sample. 
             Default is 1 for each observation.
-        group : int, optional
-            The group index for each variable.
-            Default: group = \code{numpy.ones(p)}.
-        Sigma : array-like of shape (n_features, n_features), optional
-            Sample covariance matrix.
-            For PCA, it can be given as input, instead of X. But if X is given, Sigma will be set to \code{np.cov(X.T)}.
-            Default: Sigma = \code{np.cov(X.T)}.
-        number : int, optional 
-            Indicates the number of PCs returned. 
-            Default: 1
-        n : int, optional
-            Sample size. If X is given, it would be X.shape[0]; if Sigma is given, it would be 1 by default.
-            Default: X.shape[0] or 1.
         """
 
         # Input check
@@ -148,28 +92,10 @@ class abessPCA(bess_base):
             p = X.shape[1]
             M = 1
             y = np.zeros((n, 1))
-            X = X - X.mean(axis=0)
-            Sigma = np.cov(X.T)
             self.n_features_in_ = p
 
-        elif isinstance(Sigma, (list, np.ndarray, np.matrix)):
-            Sigma = check_array(Sigma)
-
-            if (Sigma.shape[0] != Sigma.shape[1] or np.any(Sigma.T != Sigma)):
-                raise ValueError("Sigma should be symmetrical matrix.")
-            elif np.any(np.linalg.eigvals(Sigma) < 0):
-                raise ValueError("Sigma should be semi-positive definite.")
-
-            if (n is None): 
-                n = 1
-            p = Sigma.shape[0]
-            X = np.zeros((1, p))
-            y = np.zeros((1, 1))
-            M = 1
-            self.n_features_in_ = p
-            is_normal = False
         else:
-            raise ValueError("X or Sigma should be given in PCA.")
+            raise ValueError("X should be given in Ising model.")
 
         # Algorithm_type
         if self.algorithm_type == "abess":
@@ -178,10 +104,10 @@ class abessPCA(bess_base):
             raise ValueError("algorithm_type should not be " +
                              str(self.algorithm_type))
 
-        # for PCA,
-        #   model_type_int = 7,
+        # for Ising,
+        #   model_type_int = 8,
         #   path_type_int = 1 (seq)
-        model_type_int = 7
+        model_type_int = 8
         path_type_int = 1
 
         # Ic_type
@@ -213,34 +139,46 @@ class abessPCA(bess_base):
             elif cv_mask.size != n:
                 raise ValueError("X.shape[0] should be equal to cv_mask.size")
         cv_mask = np.array(cv_mask, dtype = "int32")
+        
+        # frequence:
+        if frequence is None:
+            frequence = np.ones(n)
+        else:
+            frequence = np.array(frequence)
+            if (frequence.dtype != "int" and frequence.dtype != "float"):
+                raise ValueError("frequence should be numeric.")
+            elif frequence.ndim > 1:
+                raise ValueError("frequence should be a 1-D array.")
+            elif frequence.size != n:
+                raise ValueError("X.shape[0] should be equal to frequence.size")
 
         # Group
-        if group is None:
-            g_index = list(range(p))
-        else:
-            group = np.array(group)
-            if group.ndim > 1:
-                raise ValueError("group should be an 1D array of integers.")
-            elif group.size != p:
-                raise ValueError(
-                    "The length of group should be equal to X.shape[1].")
-            g_index = []
-            group.sort()
-            group_set = list(set(group))
-            j = 0
-            for i in group_set:
-                while(group[j] != i):
-                    j += 1
-                g_index.append(j)
+        # if group is None:
+        #     g_index = list(range(p))
+        # else:
+        #     group = np.array(group)
+        #     if group.ndim > 1:
+        #         raise ValueError("group should be an 1D array of integers.")
+        #     elif group.size != p:
+        #         raise ValueError(
+        #             "The length of group should be equal to X.shape[1].")
+        #     g_index = []
+        #     group.sort()
+        #     group_set = list(set(group))
+        #     j = 0
+        #     for i in group_set:
+        #         while(group[j] != i):
+        #             j += 1
+        #         g_index.append(j)
 
         # path parameter (note that: path_type_int = 1)
         if self.support_size is None:
-            support_sizes = list(range(0, p))
+            support_sizes = list(range(0, int(p * (p - 1) / 2)))
         else:
             if isinstance(self.support_size, (numbers.Real, numbers.Integral)):
                 support_sizes = np.empty(1, dtype=int)
                 support_sizes[0] = self.support_size
-            elif (np.any(np.array(self.support_size) > p) or
+            elif (np.any(np.array(self.support_size) > p * (p - 1) / 2) or
                     np.any(np.array(self.support_size) < 0)):
                 raise ValueError(
                     "All support_size should be between 0 and X.shape[1]")
@@ -248,15 +186,15 @@ class abessPCA(bess_base):
                 support_sizes = self.support_size
         support_sizes = np.array(support_sizes).astype('int32')
 
-        # unused
-        new_s_min = 0
-        new_s_max = 0
-        new_K_max = 0
-        new_lambda_min = 0
-        new_lambda_max = 0
-        alphas = [0]
-        new_screening_size = -1
-        cv_mask = np.array([], dtype = "int32")
+        # alpha
+        if self.alpha is None:
+            alphas = [0]
+        else:
+            if isinstance(self.alpha, (numbers.Real, numbers.Integral)):
+                alphas = np.empty(1, dtype=float)
+                alphas[0] = self.alpha
+            else:
+                alphas = self.alpha
 
         # Exchange_num
         if (not isinstance(self.exchange_num, int) or self.exchange_num <= 0):
@@ -285,11 +223,6 @@ class abessPCA(bess_base):
         if (self.splicing_type != 0 and self.splicing_type != 1):
             raise ValueError("splicing type should be 0 or 1.")
 
-        # number
-        if (not isinstance(number, int) or number <= 0 or number > p):
-            raise ValueError(
-                "number should be an positive integer and not bigger than X.shape[1].")
-        
         # Important_search
         if (not isinstance(self.important_search, int) or self.important_search < 0):
             raise ValueError(
@@ -317,10 +250,20 @@ class abessPCA(bess_base):
                 ind = np.lexsort((tmp[:, 2], tmp[:, 1]))
                 X = tmp[ind, :]
 
-        # wrap with cpp
-        weight = np.ones(n)
+        # unused
+        new_s_min = 0
+        new_s_max = 0
+        new_K_max = 0
+        new_lambda_min = 0
+        new_lambda_max = 0
+        new_screening_size = -1
+        g_index = list(range(p))
         state = [0]
-        result = pywrap_abess(X, y, n, p, self.data_type, weight, Sigma,
+        Sigma = np.matrix(-1)
+        is_normal = False
+
+        # wrap with cpp
+        result = pywrap_abess(X, y, n, p, self.data_type, frequence, Sigma,
                               is_normal,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
@@ -341,57 +284,22 @@ class abessPCA(bess_base):
                               self.sparse_matrix,
                               self.splicing_type,
                               self.important_search,
-                              p * M,
-                              1 * M, 1, 1, 1, 1, 1, p
+                              int(p * (p - 1) / 2),
+                              1 * 1, 1, 1, 1, 1, 1, int(p * (p - 1) / 2)
                               )
+                              
+        self.coef_ = result[0].reshape(int(p * (p - 1) / 2), 1)
+        self.theta_ = np.zeros((p, p))
 
-        self.coef_ = result[0]
-
-        # for PCA, "number" indicates the number of PCs returned
-        if (number > 1):
-            v = self.coef_.copy()
-            v = v.reshape(len(v), 1)
-            v_all = v.copy()
-            while (number > 1):
-                number = number - 1
-                temp = v.dot(v.T).dot(Sigma)
-                Sigma = Sigma + temp.dot(v).dot(v.T) - temp - temp.T
-
-                result = pywrap_abess(X, y, n, p, self.data_type, weight, Sigma,
-                                      is_normal,
-                                      algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
-                                      path_type_int, self.is_warm_start,
-                                      ic_type_int, self.ic_coef, self.is_cv, self.cv,
-                                      g_index,
-                                      state,
-                                      support_sizes,
-                                      alphas,
-                                      cv_mask,
-                                      new_s_min, new_s_max, new_K_max, self.epsilon,
-                                      new_lambda_min, new_lambda_max, self.n_lambda,
-                                      self.is_screening, new_screening_size, self.powell_path,
-                                      self.always_select, self.tau,
-                                      self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
-                                      self.early_stop, self.approximate_Newton,
-                                      self.thread,
-                                      self.covariance_update,
-                                      self.sparse_matrix,
-                                      self.splicing_type,
-                                      self.important_search,
-                                      p * M,
-                                      1 * M, 1, 1, 1, 1, 1, p
-                                      )
-                v = result[0]
-                v = v.reshape(len(v), 1)
-                v_all = np.hstack((v_all, v))
-
-            self.coef_ = v_all
-            self.intercept_ = None
-            self.train_loss_ = None
-            self.ic_ = None
+        i = 0
+        j = 0
+        for k in range(0, int(p * (p - 1) / 2)):
+            if (i == j):
+                i = 0
+                j += 1
+            self.theta_[i, j] = self.coef_[k, 0]
+            self.theta_[j, i] = self.coef_[k, 0]
+            i += 1
 
         return self
 
-    def fit_transform(self, X=None, is_normal=True, group=None, Sigma=None, number=1):
-        self.fit(X, is_normal, group, Sigma, number)
-        return X.dot(self.coef_)

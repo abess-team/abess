@@ -59,7 +59,7 @@ using namespace Rcpp;
 /** Result struct
  * @brief Save the sequential fitting result along the parameter searching.
  */
-template <class T2, class T3>
+template <class T2, class T3, class T5>
 struct Result
 {
     Eigen::Matrix<T2, Eigen::Dynamic, Eigen::Dynamic> beta_matrix;            /*!<  */
@@ -67,7 +67,7 @@ struct Result
     Eigen::MatrixXd ic_matrix;                                                /*!<  */
     Eigen::MatrixXd test_loss_matrix;                                         /*!<  */
     Eigen::MatrixXd train_loss_matrix;                                        /*!<  */
-    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> bd_matrix; /*!<  */
+    Eigen::Matrix<T5, Eigen::Dynamic, Eigen::Dynamic> bd_matrix; /*!<  */
     Eigen::MatrixXd effective_number_matrix;                                  /*!<  */
 };
 
@@ -137,9 +137,9 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                bool sparse_matrix,
                int splicing_type,
                int sub_search,
-               Eigen::VectorXi cv_mask);
+               Eigen::VectorXi cv_mask_Vec);
 
-template <class T1, class T2, class T3, class T4>
+template <class T1, class T2, class T3, class T4, class T5>
 List abessCpp(T4 &x, T1 &y, int n, int p,
               int data_type, Eigen::VectorXd weight, Eigen::MatrixXd sigma,
               bool is_normal,
@@ -160,8 +160,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
               int thread,
               bool covariance_update,
               bool sparse_matrix,
-              Eigen::VectorXi &cv_mask,
-              Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list);
+              Eigen::VectorXi cv_mask_Vec, 
+              Algorithm<T1, T2, T3, T4, T5> *algorithm, vector<Algorithm<T1, T2, T3, T4, T5> *> algorithm_list);
 
 #ifndef R_BUILD
 void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, int p, int y_col, int data_type, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
@@ -188,7 +188,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, 
                   double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
-                  int A_out_len, int *l_out);
+                  int A_out_len);
 #endif
 
 #endif //BESS_BESS_H

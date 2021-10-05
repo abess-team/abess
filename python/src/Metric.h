@@ -14,7 +14,7 @@
 #include <algorithm>
 #include "utilities.h"
 
-template <class T1, class T2, class T3, class T4>
+template <class T1, class T2, class T3, class T4, class T5>
 // To do: calculate loss && all to one && lm poisson cox
 class Metric
 {
@@ -38,7 +38,7 @@ public:
   std::vector<Eigen::VectorXd> train_weight_list;
   std::vector<Eigen::VectorXd> test_weight_list;
 
-  std::vector<FIT_ARG<T2, T3>> cv_init_fit_arg;
+  std::vector<FIT_ARG<T2, T3, T5>> cv_init_fit_arg;
 
   // std::vector<std::vector<T4>> group_XTX_list;
 
@@ -72,9 +72,9 @@ public:
       T3 coef0_init;
       coef_set_zero(p, M, beta_init, coef0_init);
       Eigen::VectorXi A_init;
-      Eigen::VectorXd bd_init;
+      T5 bd_init;
 
-      FIT_ARG<T2, T3> fit_arg(0, 0., beta_init, coef0_init, bd_init, A_init);
+      FIT_ARG<T2, T3, T5> fit_arg(0, 0., beta_init, coef0_init, bd_init, A_init);
 
       cv_init_fit_arg[i] = fit_arg;
     }
@@ -114,7 +114,7 @@ public:
   //   this->cv_initial_coef0[k] = coef0;
   // }
 
-  void set_cv_train_test_mask(Data<T1, T2, T3, T4> &data, int n, Eigen::VectorXi &cv_mask)
+  void set_cv_train_test_mask(Data<T1, T2, T3, T4, T5> &data, int n, Eigen::VectorXi &cv_mask)
   {
     Eigen::VectorXi index_list(n);
     std::vector<int> index_vec((unsigned int)n);
@@ -124,10 +124,11 @@ public:
       index_vec[i] = i;
     }
 
-    if (cv_mask.size() == 0){
+    if (cv_mask.size() == 0){ 
+      cout<<"no cv mask"<<endl;///
       // std::random_device rd;
       std::mt19937 g(123);
-      std::shuffle(index_vec.begin(), index_vec.end(), g);
+      std::shuffle(index_vec.begin(), index_vec.end(), g); // rand index
 
       for (int i = 0; i < n; i++)
       {
@@ -135,14 +136,16 @@ public:
       }
 
       Eigen::VectorXd loss_list(this->Kfold);
-      int group_size = int(n / this->Kfold);
+      int group_size = int(n / this->Kfold); // size of one group
       for (int k = 0; k < (this->Kfold - 1); k++)
       {
         group_list[k] = index_list.segment(int(k * group_size), group_size);
       }
       group_list[this->Kfold - 1] = index_list.segment(int((this->Kfold - 1) * group_size),
-                                                      n - int(int(this->Kfold - 1) * group_size));
-    }else{
+                                                      n - int(int(this->Kfold - 1) * group_size)); 
+    }
+    else
+    {
       // given cv_mask
       auto rule = [cv_mask](int i, int j) -> bool
       {
@@ -164,6 +167,7 @@ public:
         st = ed; ed++; k++;
       }
     }
+
     for (int k = 0; k < this->Kfold; k++)
     {
       std::sort(group_list[k].data(), group_list[k].data() + group_list[k].size());
@@ -227,7 +231,7 @@ public:
   //   this->group_XTX_list = group_XTX_list_tmp;
   // }
 
-  double ic(int train_n, int M, int N, Algorithm<T1, T2, T3, T4> *algorithm)
+  double ic(int train_n, int M, int N, Algorithm<T1, T2, T3, T4, T5> *algorithm)
   {
     double loss;
     if (algorithm->model_type == 1 || algorithm->model_type == 5)
@@ -259,7 +263,7 @@ public:
       return 0;
   };
 
-  double neg_loglik_loss(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm<T1, T2, T3, T4> *algorithm)
+  double neg_loglik_loss(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm<T1, T2, T3, T4, T5> *algorithm)
   {
     Eigen::VectorXi A = algorithm->get_A_out();
     T2 beta = algorithm->get_beta();
@@ -282,9 +286,12 @@ public:
   }
 
   // to do
-  double fit_and_evaluate_in_metric(Algorithm<T1, T2, T3, T4> *algorithm, Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, FIT_ARG<T2, T3> &fit_arg)
+  double fit_and_evaluate_in_metric(Algorithm<T1, T2, T3, T4, T5> *algorithm, Data<T1, T2, T3, T4, T5> &data, std::vector<Algorithm<T1, T2, T3, T4, T5> *> algorithm_list, FIT_ARG<T2, T3, T5> &fit_arg)
   {
-    int N = data.g_num;
+    int N= data.g_num;;
+    if (algorithm->model_type == 8){
+      N = N * (N - 1) / 2;
+    }
     algorithm->update_sparsity_level(fit_arg.support_size);
     algorithm->update_lambda_level(fit_arg.lambda);
 
@@ -293,7 +300,7 @@ public:
     algorithm->update_coef0_init(fit_arg.coef0_init);
     algorithm->update_A_init(fit_arg.A_init, N);
 
-    algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, data.status, algorithm->Sigma);
+    algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, N, data.status, algorithm->Sigma);
 
     if (algorithm->get_warm_start())
     {
@@ -307,7 +314,6 @@ public:
       Eigen::VectorXi g_index = data.g_index;
       Eigen::VectorXi g_size = data.g_size;
       int p = data.p;
-      int N = data.g_num;
 
       Eigen::VectorXd loss_list(this->Kfold);
 
