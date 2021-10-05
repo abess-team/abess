@@ -137,7 +137,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                bool sparse_matrix,
                int splicing_type,
                int sub_search,
-               Eigen::VectorXi cv_mask_Vec);
+               Eigen::VectorXi cv_mask);
 
 template <class T1, class T2, class T3, class T4, class T5>
 List abessCpp(T4 &x, T1 &y, int n, int p,
@@ -160,7 +160,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
               int thread,
               bool covariance_update,
               bool sparse_matrix,
-              Eigen::VectorXi cv_mask_Vec, 
+              Eigen::VectorXi cv_mask, 
               Algorithm<T1, T2, T3, T4, T5> *algorithm, vector<Algorithm<T1, T2, T3, T4, T5> *> algorithm_list);
 
 #ifndef R_BUILD
