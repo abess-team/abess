@@ -14,12 +14,20 @@ test_batch <- function(abess_fit, dataset, family) {
   true_index <- which(dataset[["beta"]] != 0)
   expect_equal(est_index, true_index)
   
+  
   ## estimation
   # oracle estimation by glm function:
   dat <- cbind.data.frame("y" = dataset[["y"]],
                           dataset[["x"]][, true_index])
   
-  oracle_est <- glm(y ~ ., data = dat, family = family)
+  # in gamma model, we have to set a start point of coef to ensure eta=Xb is positive  
+  if(family()[["family"]] == "Gamma"){
+    oracle_est <- glm(y ~ ., data = dat, family = family,start = rep(1,length(true_index)+1))
+  }
+  else{
+    oracle_est <- glm(y ~ ., data = dat, family = family)
+  }
+  
   oracle_beta <- coef(oracle_est)[-1]
   oracle_coef0 <- coef(oracle_est)[1]
   names(oracle_beta) <- NULL
@@ -49,6 +57,7 @@ test_batch <- function(abess_fit, dataset, family) {
     oracle_dev <- extract(abess_fit)[["dev"]]
   }
   expect_equal(oracle_dev, extract(abess_fit)[["dev"]])
+ 
 }
 
 test_batch_multivariate <-

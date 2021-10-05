@@ -693,7 +693,8 @@ abess.default <- function(x,
       "poisson" = 2,
       "cox" = 3,
       "mgaussian" = 1,
-      "multinomial" = 2
+      "multinomial" = 2,
+      "gamma" = 2
     )
   } else {
     stopifnot(normalize %in% 0:3)

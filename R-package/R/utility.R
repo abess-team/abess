@@ -311,12 +311,14 @@ generate.data <- function(n,
   if (family == "gamma") {
     m <- 5 * sqrt(2 * log(p) / n)
     if (is.null(input_beta)) {
-      # TODO 
+      # TODO here is the value of true_beta
       beta[nonzero] <- stats::runif(support.size, m, 100 * m)
     } else {
       beta <- input_beta
     }
     sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    # TODO we only make positive data  
+    x <- abs(x)
     eta <- x %*% beta + stats::rnorm(n, 0, sigma)
     eta <- abs(eta)
     # TODO the shape para of gamma is uniform in [0.1,100.1]
