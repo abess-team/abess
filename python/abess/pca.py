@@ -203,17 +203,6 @@ class abessPCA(bess_base):
         elif (self.cv > 1):
             self.is_cv = True
         
-        # cv_mask
-        cv_mask = np.array(self.cv_mask)
-        if len(cv_mask) > 0:
-            if (cv_mask.dtype != "int"):
-                raise ValueError("cv_mask should be integer.")
-            elif cv_mask.ndim > 1:
-                raise ValueError("cv_mask should be a 1-D array.")
-            elif cv_mask.size != n:
-                raise ValueError("X.shape[0] should be equal to cv_mask.size")
-        cv_mask = np.array(cv_mask, dtype = "int32")
-
         # Group
         if group is None:
             g_index = list(range(p))

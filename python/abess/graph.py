@@ -54,7 +54,7 @@ class abessIsing(bess_base):
 
     def __init__(self, max_iter=200, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, s_min=None, s_max=None,
                  ic_type="aic", ic_coef=1.0, primary_model_fit_max_iter=500, primary_model_fit_epsilon=1e-6,
-                 always_select=[], alpha = None, cv_mask = [],
+                 always_select=[], alpha = None, 
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=1
@@ -69,7 +69,7 @@ class abessIsing(bess_base):
             splicing_type=splicing_type
         )
 
-    def fit(self, X=None, frequence=None):
+    def fit(self, X=None, frequence=None, cv_mask=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -80,6 +80,9 @@ class abessIsing(bess_base):
         frequence : array-like of shape (n_samples,)
             The frequence for each sample. 
             Default is 1 for each observation.
+        cv_mask: array_like of shape (n_samples,) , optional
+            An array indicates different folds in CV. Samples in the same fold should be given the same number.
+            Default: cv_mask=None
         """
 
         # Input check
@@ -128,18 +131,21 @@ class abessIsing(bess_base):
             raise ValueError("cv should be an positive integer.")
         elif (self.cv > 1):
             self.is_cv = True
-        
+
         # cv_mask
-        cv_mask = np.array(self.cv_mask)
-        if len(cv_mask) > 0:
-            if (cv_mask.dtype != "int"):
-                raise ValueError("cv_mask should be integer.")
-            elif cv_mask.ndim > 1:
-                raise ValueError("cv_mask should be a 1-D array.")
+        if cv_mask is None:
+            cv_mask = np.array([], dtype = "int32")
+        else:
+            cv_mask = np.array(cv_mask, dtype = "int32")
+            if cv_mask.ndim > 1:
+                raise ValueError("group should be an 1D array of integers.")
             elif cv_mask.size != n:
-                raise ValueError("X.shape[0] should be equal to cv_mask.size")
-        cv_mask = np.array(cv_mask, dtype = "int32")
-        
+                raise ValueError(
+                    "The length of group should be equal to X.shape[0].")
+            elif len(set(cv_mask)) != self.cv:
+                raise ValueError(
+                    "The number of different masks should be equal to `cv`.")
+
         # frequence:
         if frequence is None:
             frequence = np.ones(n)
