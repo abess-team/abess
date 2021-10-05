@@ -139,7 +139,7 @@ class bess_base(BaseEstimator):
 
         return X
 
-    def fit(self, X=None, y=None, is_normal=True, weight=None, group=None):
+    def fit(self, X=None, y=None, is_normal=True, weight=None, group=None, cv_mask=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -161,6 +161,9 @@ class bess_base(BaseEstimator):
         group : int, optional
             The group index for each variable.
             Default: group = \code{numpy.ones(p)}.
+        cv_mask: array_like of shape (n_samples,) , optional
+            An array indicates different folds in CV. Samples in the same fold should be given the same number.
+            Default: cv_mask=None
         """
 
         # print("fit enter.")#///
@@ -244,6 +247,20 @@ class bess_base(BaseEstimator):
             raise ValueError("cv should be an positive integer.")
         elif (self.cv > 1):
             self.is_cv = True
+        
+        # cv_mask
+        if cv_mask is None:
+            cv_mask = np.array([], dtype = "int32")
+        else:
+            cv_mask = np.array(cv_mask, dtype = "int32")
+            if cv_mask.ndim > 1:
+                raise ValueError("group should be an 1D array of integers.")
+            elif cv_mask.size != n:
+                raise ValueError(
+                    "The length of group should be equal to X.shape[0].")
+            elif len(set(cv_mask)) != self.cv:
+                raise ValueError(
+                    "The number of different masks should be equal to `cv`.")
 
         # cv_mask
         cv_mask = np.array(self.cv_mask)

@@ -305,7 +305,7 @@ generate.data <- function(n,
     prob_y <- exp(prob_y)
     prob_y <- sweep(prob_y, MARGIN = 1, STATS = rowSums(prob_y), FUN = "/")
     y <- apply(prob_y, 1, function(x) {
-      sample(0:2, size = 1, prob = x)
+      sample(0:(length(x) - 1), size = 1, prob = x)
     })
   }
   set.seed(NULL)

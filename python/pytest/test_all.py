@@ -1511,6 +1511,15 @@ class TestClass:
             print(e)
         else:
             assert False
+        
+        try:
+            model = abessLm(cv = 2, cv_mask = [1, 1])
+            model.fit([[1], [2]], [1, 2])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
 
     def test_other(self):
         n = 100
