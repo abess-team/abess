@@ -245,7 +245,7 @@ class abessPCA(bess_base):
         new_lambda_max = 0
         alphas = [0]
         new_screening_size = -1
-        cv_mask = np.array([], dtype = "int32")
+        cv_fold_id = np.array([], dtype = "int32")
 
         # Exchange_num
         if (not isinstance(self.exchange_num, int) or self.exchange_num <= 0):
@@ -318,7 +318,7 @@ class abessPCA(bess_base):
                               state,
                               support_sizes,
                               alphas,
-                              cv_mask,
+                              cv_fold_id,
                               new_s_min, new_s_max, new_K_max, self.epsilon,
                               new_lambda_min, new_lambda_max, self.n_lambda,
                               self.is_screening, new_screening_size, self.powell_path,
@@ -355,7 +355,7 @@ class abessPCA(bess_base):
                                       state,
                                       support_sizes,
                                       alphas,
-                                      cv_mask,
+                                      cv_fold_id,
                                       new_s_min, new_s_max, new_K_max, self.epsilon,
                                       new_lambda_min, new_lambda_max, self.n_lambda,
                                       self.is_screening, new_screening_size, self.powell_path,
