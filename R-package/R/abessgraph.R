@@ -6,14 +6,7 @@
 #' @export
 #'
 #' @examples
-#' 
-#' library(readr)
-#' train <- read_csv("~/abess/ising-data/train.csv")
-#' train <- as.matrix(train)
-#' weight <- train[, 2]
-#' X <- train[, -(1:2)]
-#' res <- abessbmn(X, weight = weight, support.size = 10)
-#' res
+#' library(abess)
 abessbmn <- function(x,
                      tune.type = c("gic", "bic", "cv", "ebic", "aic"),
                      weight = NULL,
@@ -21,16 +14,15 @@ abessbmn <- function(x,
                      support.size = NULL,
                      gs.range = NULL,
                      always.include = NULL,
-                     splicing.type = 2,
+                     splicing.type = 0,
                      max.splicing.iter = 20,
                      warm.start = TRUE,
                      nfolds = 5,
                      foldid = NULL,
-                     newton = c("approx", "exact"),
-                     newton.thresh = 1e-12,
+                     newton.thresh = 1e-6,
                      max.newton.iter = 500,
                      ic.scale = 1.0,
-                     num.threads = 0,
+                     num.threads = 1,
                      seed = 1,
                      ...)
 {
@@ -108,18 +100,20 @@ abessbmn <- function(x,
   
   # check always included variables:
   if (is.null(always.include)) {
-    always_include <- numeric(0)
+    always_include <- integer(0)
   } else {
     always_include <- always.include - 1
   }
   
-  newton <- match.arg(newton)
-  newton_type <- switch(newton,
-                        "exact" = 0,
-                        "approx" = 1,
-                        "auto" = 2
-  )
-  approximate_newton <- ifelse(newton_type == 1, TRUE, FALSE)
+  # newton <- c("approx", "exact")
+  # newton <- match.arg(newton)
+  # newton_type <- switch(newton,
+  #                       "exact" = 0,
+  #                       "approx" = 1,
+  #                       "auto" = 2
+  # )
+  # approximate_newton <- ifelse(newton_type == 1, TRUE, FALSE)
+  approximate_newton <- FALSE
   
   res <- abessCpp2(
     x = x,
@@ -151,22 +145,49 @@ abessbmn <- function(x,
     lambda_max = as.double(0),
     nlambda = as.integer(0),
     is_screening = FALSE,
-    screening_size = 0,
+    screening_size = -1,
     powell_path = as.integer(1),
     g_index = g_index,
     always_select = always_include,
     tau = 0,
     primary_model_fit_max_iter = max.newton.iter,
-    primary_model_fit_epsilon = newton.thresh,
+    primary_model_fit_epsilon = as.double(newton.thresh),
     early_stop = FALSE,
     approximate_Newton = approximate_newton,
     thread = num.threads,
     covariance_update = FALSE,
     sparse_matrix = FALSE,
-    splicing_type = 2,
-    sub_search = 0,
+    splicing_type = as.integer(splicing.type),
+    sub_search = as.integer(0),
     cv_fold_id = cv_fold_id
   )
   
-  res
+  omega <- lapply(res[["beta_all"]], recovery_adjacent_matrix, p = nvars)
+  omega <- simplify2array(omega)
+  
+  return(list(omega = omega, 
+              support.size = support_size, 
+              pseudo.loglik = res[["train_loss_all"]], 
+              tune.value = res[["ic_all"]], 
+              nobs = nobs, 
+              nvars = nvars, 
+              tune.type = tune.type))
+}
+
+recovery_adjacent_matrix <- function(x, p) {
+  zero_mat <- matrix(data = 0, nrow = p, ncol = p)
+  # zero_mat[lower.tri(zero_mat)] <- x
+  # zero_mat <- zero_mat + t(zero_mat)
+  # diag(zero_mat) <- diag(zero_mat) / 2
+  i <- 1
+  j <- 1
+  for (k in 1:as.integer(p * (p - 1) / 2)) {
+    if (i == j) {
+      i <- 1
+      j <- j + 1
+    }
+    zero_mat[j, i] <- zero_mat[i, j] <- x[k]
+    i <- i + 1
+  }
+  zero_mat
 }

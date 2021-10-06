@@ -6,23 +6,21 @@
 \usage{
 abessbmn(
   x,
-  tune.path = c("sequence", "gsection"),
   tune.type = c("gic", "bic", "cv", "ebic", "aic"),
   weight = NULL,
   c.max = 5,
   support.size = NULL,
   gs.range = NULL,
   always.include = NULL,
-  splicing.type = 2,
+  splicing.type = 0,
   max.splicing.iter = 20,
   warm.start = TRUE,
   nfolds = 5,
   foldid = NULL,
-  newton = c("exact", "approx"),
-  newton.thresh = 1e-12,
+  newton.thresh = 1e-06,
   max.newton.iter = 500,
   ic.scale = 1,
-  num.threads = 0,
+  num.threads = 1,
   seed = 1,
   ...
 )
@@ -31,11 +29,6 @@ abessbmn(
 \item{x}{Input matrix, of dimension \eqn{n \times p}; each row is an observation
 vector and each column is a predictor/feature/variable.
 Can be in sparse matrix format (inherit from class \code{"dgCMatrix"} in package \code{Matrix}).}
-
-\item{tune.path}{The method to be used to select the optimal support size. For
-\code{tune.path = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
-For \code{tune.path = "gsection"}, we solve the best subset selection problem with support size ranged in \code{gs.range},
-where the specific support size to be considered is determined by golden section.}
 
 \item{tune.type}{The type of criterion for choosing the support size.
 Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
@@ -70,12 +63,6 @@ Default is \code{max.splicing.iter = 20}.}
 
 \item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.}
 
-\item{newton}{A character specify the Newton's method for fitting generalized linear models,
-it should be either \code{newton = "exact"} or \code{newton = "approx"}.
-If \code{newton = "exact"}, then the exact hessian is used,
-while \code{newton = "approx"} uses diagonal entry of the hessian,
-and can be faster (especially when \code{family = "cox"}).}
-
 \item{newton.thresh}{a numeric value for controlling positive convergence tolerance.
 The Newton's iterations converge when \eqn{|dev - dev_{old}|/(|dev| + 0.1)<} \code{newton.thresh}.}
 
@@ -102,12 +89,5 @@ Default is \code{seed = 1}.}
 Title
 }
 \examples{
-
-library(readr)
-train <- read_csv("~/abess/ising-data/train.csv")
-train <- as.matrix(train)
-weight <- train[, 2]
-X <- train[, -(1:2)]
-res <- abessbmn(X)
-res
+library(abess)
 }
