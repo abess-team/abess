@@ -7,7 +7,7 @@
     * Support user-specified cross validation division.
 
 * Python package
-  * Support user-specified cross validation division by additional argument `cv_mask`. 
+  * Support user-specified cross validation division by additional argument `cv_fold_id`. 
 
 * Project development
   * Documentation
