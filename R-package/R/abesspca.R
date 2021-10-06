@@ -381,7 +381,8 @@ abesspca <- function(x,
       covariance_update = FALSE,
       sparse_matrix = FALSE, ### to change
       splicing_type = splicing_type, 
-      sub_search = important_search
+      sub_search = important_search, 
+      cv_fold_id = integer(0)
     )
 
     if (sparse_type != "fpc") {
