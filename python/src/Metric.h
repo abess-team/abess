@@ -127,7 +127,7 @@ public:
     if (cv_fold_id.size() == 0){
       // std::random_device rd;
       std::mt19937 g(123);
-      std::shuffle(index_vec.begin(), index_vec.end(), g); // rand index
+      std::shuffle(index_vec.begin(), index_vec.end(), g);
 
       for (int i = 0; i < n; i++)
       {
@@ -135,7 +135,7 @@ public:
       }
 
       Eigen::VectorXd loss_list(this->Kfold);
-      int group_size = int(n / this->Kfold); // size of one group
+      int group_size = int(n / this->Kfold);
       for (int k = 0; k < (this->Kfold - 1); k++)
       {
         group_list[k] = index_list.segment(int(k * group_size), group_size);
@@ -164,7 +164,6 @@ public:
         st = ed; ed++; k++;
       }
     }
-
     for (int k = 0; k < this->Kfold; k++)
     {
       std::sort(group_list[k].data(), group_list[k].data() + group_list[k].size());

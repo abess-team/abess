@@ -299,7 +299,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                        thread,
                                                                                        covariance_update,
                                                                                        sparse_matrix,
-                                                                                       cv_mask_Vec, 
+                                                                                       cv_fold_id, 
                                                                                        algorithm_uni_dense_long, algorithm_list_uni_dense_long);
     }
     else if (y.cols() == 1)
@@ -401,7 +401,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                                    thread,
                                                                                                    covariance_update,
                                                                                                    sparse_matrix,
-                                                                                                   cv_mask_Vec,
+                                                                                                   cv_fold_id,
                                                                                                    algorithm_uni_sparse_long, algorithm_list_uni_sparse_long);
 
     }
@@ -524,7 +524,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
               bool covariance_update,
               bool sparse_matrix,
               Eigen::VectorXi &cv_fold_id,
-              Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list)
+              Algorithm<T1, T2, T3, T4, T5> *algorithm, vector<Algorithm<T1, T2, T3, T4, T5> *> algorithm_list)
 {
   // to do: -openmp
 
