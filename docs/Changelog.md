@@ -7,7 +7,10 @@
     * Support user-specified cross validation division.
 
 * Python package
-  * Support user-specified cross validation division by additional argument `cv_mask`. 
+  * Support user-specified cross validation division by additional argument `cv_fold_id`. 
+
+* R package
+  * Support user-specified cross validation division for `abess` function by additional argument `foldid`. 
 
 * Project development
   * Documentation

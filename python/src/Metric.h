@@ -124,8 +124,7 @@ public:
       index_vec[i] = i;
     }
 
-    if (cv_fold_id.size() == 0){ 
-      cout<<"no cv mask"<<endl;///
+    if (cv_fold_id.size() == 0){
       // std::random_device rd;
       std::mt19937 g(123);
       std::shuffle(index_vec.begin(), index_vec.end(), g); // rand index
@@ -142,10 +141,8 @@ public:
         group_list[k] = index_list.segment(int(k * group_size), group_size);
       }
       group_list[this->Kfold - 1] = index_list.segment(int((this->Kfold - 1) * group_size),
-                                                      n - int(int(this->Kfold - 1) * group_size)); 
-    }
-    else
-    {
+                                                      n - int(int(this->Kfold - 1) * group_size));
+    }else{
       // given cv_fold_id
       auto rule = [cv_fold_id](int i, int j) -> bool
       {

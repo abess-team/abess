@@ -1549,6 +1549,6 @@ class TestClass:
                         ic_coef=1., thread=5, covariance_update=False)
         model.fit(data.x, data.y)
 
-        model = abessLm(support_size=range(0, 10), cv = 2)
+        model = abessLm(support_size=range(0, 10),  cv=2)
         cv_fold_id = [1 for i in range(50)] + [2 for i in range(n - 50)]
         model.fit(data.x, data.y, cv_fold_id = cv_fold_id)
