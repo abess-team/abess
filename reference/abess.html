@@ -204,11 +204,13 @@ multi-response modeling in polynomial times.</p>
   important.search <span class='op'>=</span> <span class='cn'>NULL</span>,
   warm.start <span class='op'>=</span> <span class='cn'>TRUE</span>,
   nfolds <span class='op'>=</span> <span class='fl'>5</span>,
+  foldid <span class='op'>=</span> <span class='cn'>NULL</span>,
   cov.update <span class='op'>=</span> <span class='cn'>FALSE</span>,
   newton <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"exact"</span>, <span class='st'>"approx"</span><span class='op'>)</span>,
   newton.thresh <span class='op'>=</span> <span class='fl'>1e-06</span>,
   max.newton.iter <span class='op'>=</span> <span class='cn'>NULL</span>,
   early.stop <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  ic.scale <span class='op'>=</span> <span class='fl'>1</span>,
   num.threads <span class='op'>=</span> <span class='fl'>0</span>,
   seed <span class='op'>=</span> <span class='fl'>1</span>,
   <span class='va'>...</span>
@@ -374,6 +376,11 @@ Default is <code>max.newton.iter = 10</code> if <code>newton = "exact"</code>, a
       <td><p>A boolean value decide whether early stopping.
 If <code>early.stop = TRUE</code>, algorithm will stop if the last tuning value less than the existing one.
 Default: <code>early.stop = FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>ic.scale</th>
+      <td><p>A non-negative value used for multiplying the penalty term 
+in information criterion. Default: <code>ic.scale = 1</code>.</p></td>
     </tr>
     <tr>
       <th>num.threads</th>
@@ -655,29 +662,29 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; $`3`
 #&gt;                  1            2             
-#&gt;  [1,] 1.151436e-01 8.848556e-01 8.456141e-07
-#&gt;  [2,] 9.968388e-01 1.023366e-08 3.161202e-03
-#&gt;  [3,] 2.787221e-10 5.420332e-09 1.000000e+00
-#&gt;  [4,] 2.683698e-11 1.000000e+00 1.267306e-13
-#&gt;  [5,] 9.986704e-01 1.496576e-10 1.329551e-03
-#&gt;  [6,] 8.574357e-01 1.107919e-01 3.177236e-02
-#&gt;  [7,] 1.486598e-05 9.189430e-01 8.104210e-02
-#&gt;  [8,] 9.959149e-07 9.979372e-01 2.061792e-03
-#&gt;  [9,] 2.183950e-04 1.042307e-02 9.893585e-01
-#&gt; [10,] 4.706825e-04 2.838957e-10 9.995293e-01
+#&gt;  [1,] 3.195016e-01 6.796457e-01 8.526170e-04
+#&gt;  [2,] 9.926804e-01 2.440772e-07 7.319345e-03
+#&gt;  [3,] 1.994464e-08 1.143640e-05 9.999885e-01
+#&gt;  [4,] 1.922589e-09 1.000000e+00 1.508267e-08
+#&gt;  [5,] 9.983970e-01 1.644070e-08 1.602938e-03
+#&gt;  [6,] 4.380697e-01 4.031366e-01 1.587937e-01
+#&gt;  [7,] 1.752322e-05 6.737499e-01 3.262325e-01
+#&gt;  [8,] 1.397247e-06 9.834317e-01 1.656692e-02
+#&gt;  [9,] 2.634463e-04 1.642882e-01 8.354483e-01
+#&gt; [10,] 5.926381e-03 2.231758e-07 9.940734e-01
 #&gt; 
 #&gt; $`4`
 #&gt;                  1            2             
-#&gt;  [1,] 1.014746e-01 8.985253e-01 1.007691e-07
-#&gt;  [2,] 9.999362e-01 2.756834e-10 6.377254e-05
-#&gt;  [3,] 1.802978e-10 1.755785e-09 1.000000e+00
-#&gt;  [4,] 6.027158e-13 1.000000e+00 5.835881e-15
-#&gt;  [5,] 9.854477e-01 1.809980e-11 1.455232e-02
-#&gt;  [6,] 9.284165e-01 7.027233e-02 1.311183e-03
-#&gt;  [7,] 7.235534e-06 9.575538e-01 4.243895e-02
-#&gt;  [8,] 1.697461e-07 9.992300e-01 7.698018e-04
-#&gt;  [9,] 2.665817e-05 4.046738e-03 9.959266e-01
-#&gt; [10,] 7.975191e-04 2.645104e-11 9.992025e-01
+#&gt;  [1,] 1.483046e-01 8.516877e-01 7.775864e-06
+#&gt;  [2,] 9.997506e-01 1.127507e-06 2.483045e-04
+#&gt;  [3,] 5.751059e-11 3.022517e-09 1.000000e+00
+#&gt;  [4,] 3.633755e-11 1.000000e+00 7.527286e-13
+#&gt;  [5,] 9.911478e-01 5.630004e-10 8.852224e-03
+#&gt;  [6,] 5.815429e-01 1.173098e-01 3.011473e-01
+#&gt;  [7,] 3.581717e-06 2.443244e-02 9.755640e-01
+#&gt;  [8,] 9.683075e-07 9.846617e-01 1.533729e-02
+#&gt;  [9,] 2.219998e-04 7.084179e-01 2.913601e-01
+#&gt; [10,] 2.934310e-03 1.071389e-07 9.970656e-01
 #&gt; </div><div class='input'>
 <span class='co'>########## Best group subset selection #############</span>
 <span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span><span class='op'>)</span>
