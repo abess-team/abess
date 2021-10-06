@@ -486,6 +486,11 @@ abess.default <- function(x,
       stop("y must be positive integer value when family = 'poisson'.")
     }
   }
+  if (family == "gamma") {
+    if (any(y < 0)) {
+      stop("y must be positive integer value when family = 'gamma'.")
+    }
+  }
   if (family == "cox") {
     if (!is.matrix(y)) {
       y <- as.matrix(y)
@@ -630,7 +635,7 @@ abess.default <- function(x,
   ## check parameters for sub-optimization:
   # 1:
   if (length(newton) == 2) {
-    if (family %in% c("binomial", "cox", "multinomial")) {
+    if (family %in% c("binomial", "cox", "multinomial", "gamma")) {
       newton <- "approx"
     }
   }
