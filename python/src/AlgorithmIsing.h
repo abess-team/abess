@@ -172,6 +172,10 @@ public:
       // stop iter
       // if (fabs(l0 - l1) < this->primary_model_fit_epsilon) break;
       if (fabs(l0 - l1) < this->tau * 0.1) break;
+      bool condition1 = l1 - (this->primary_model_fit_max_iter - iter - 1) * (l0 - l1) + this->tau > loss0;
+      if (condition1) {
+        false;
+      }
 
       l0 = l1;
 
