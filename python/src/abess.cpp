@@ -535,6 +535,11 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
   Data<T1, T2, T3, T4, T5> data(x, y, data_type, weight, is_normal, g_index, status, sparse_matrix);
 
+  int N = data.g_num;
+  if (model_type == 8){
+    N = data.p * (data.p - 1) / 2;
+  }
+
   Eigen::VectorXi screening_A;
   if (is_screening)
   {
@@ -564,7 +569,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   if (is_cv)
   {
     metric->set_cv_train_test_mask(data, data.get_n(), cv_fold_id);
-    metric->set_cv_init_fit_arg(data.p, data.M);
+    metric->set_cv_init_fit_arg(data.p, data.M, model_type);
     // metric->set_cv_initial_model_param(Kfold, data.get_p());
     // metric->set_cv_initial_A(Kfold, data.get_p());
     // metric->set_cv_initial_coef0(Kfold, data.get_p());
@@ -615,7 +620,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     gs_path(data, algorithm, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, K_max, epsilon, is_parallel, result);
   }
 
-  // cout<<"End Path"<<endl;///
 
   // Get bestmodel index && fit bestmodel
   int min_loss_index_row = 0, min_loss_index_col = 0, s_size = sequence.size(), lambda_size = lambda_seq.size();
@@ -635,11 +639,17 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       for (int i = 0; i < Kfold; i++)
       {
         test_loss_tmp = result_list[i].test_loss_matrix;
+        // cout<<"test loss matrix "<<i<<endl;///
+        // for (int i = 0;i<test_loss_tmp.rows();i++){///
+        //   for (int j = 0;j<test_loss_tmp.cols();j++)
+        //     cout<<test_loss_tmp(i,j)<<" ";
+        //   cout<<endl;
+        // }
         test_loss_sum = test_loss_sum + test_loss_tmp / Kfold;
       }
       test_loss_sum.minCoeff(&min_loss_index_row, &min_loss_index_col);
 
-      Eigen::Matrix<T4, -1, -1> full_group_XTX = group_XTX(data.x, data.g_index, data.g_size, data.n, data.p, data.g_num, model_type);
+      Eigen::Matrix<T4, -1, -1> full_group_XTX = group_XTX(data.x, data.g_index, data.g_size, data.n, data.p, N, model_type);
 
       T1 XTy;
       T1 XTone;
@@ -697,12 +707,12 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           algorithm_list[algorithm_index]->update_coef0_init(coef0_init);
           algorithm_list[algorithm_index]->update_bd_init(bd_init);
 
-          algorithm_list[algorithm_index]->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, data.status, sigma);
+          algorithm_list[algorithm_index]->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, N, data.status, sigma);
 
           beta_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_beta();
           coef0_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_coef0();
           train_loss_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_train_loss();
-          ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.M, data.g_num, algorithm_list[algorithm_index]);
+          ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.M, N, algorithm_list[algorithm_index]);
           effective_number_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_effective_number();
         }
 
@@ -718,6 +728,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       }
       else
       {
+        cout<<"final fit\n";///
         if (covariance_update)
         {
           algorithm->covariance = new Eigen::VectorXd *[data.p];
@@ -759,13 +770,13 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           algorithm->update_beta_init(beta_init);
           algorithm->update_coef0_init(coef0_init);
           algorithm->update_bd_init(bd_init);
-
-          algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, data.status, sigma);
+          
+          algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, N, data.status, sigma);
 
           beta_matrix(s_index, lambda_index) = algorithm->get_beta();
           coef0_matrix(s_index, lambda_index) = algorithm->get_coef0();
           train_loss_matrix(s_index, lambda_index) = algorithm->get_train_loss();
-          ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.M, data.g_num, algorithm);
+          ic_matrix(s_index, lambda_index) = metric->ic(data.n, data.M, N, algorithm);
           effective_number_matrix(s_index, lambda_index) = algorithm->get_effective_number();
         }
 

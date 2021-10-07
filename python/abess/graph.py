@@ -54,7 +54,7 @@ class abessIsing(bess_base):
 
     def __init__(self, max_iter=200, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, s_min=None, s_max=None,
                  ic_type="aic", ic_coef=1.0, primary_model_fit_max_iter=500, primary_model_fit_epsilon=1e-6,
-                 always_select=[], alpha = None, 
+                 always_select=[], alpha = None, cv = 1,
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=1
@@ -63,7 +63,7 @@ class abessIsing(bess_base):
             algorithm_type="abess", model_type="Ising", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, s_min=s_min, s_max=s_max, 
             ic_type=ic_type, ic_coef=ic_coef, primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
-            always_select=always_select, alpha = alpha,
+            always_select=always_select, alpha = alpha, cv = cv,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type
