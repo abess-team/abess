@@ -15,8 +15,8 @@ public:
 
   ~abessIsing(){};
 
-  ML Xij;
-  Eigen::VectorXi Xij_flag;
+  // ML Xij;
+  // Eigen::VectorXi Xij_flag;
 
   void update_tau(int train_n, int N)
   {
@@ -93,8 +93,8 @@ public:
         bd(this->always_select(i)) = DBL_MAX;
       }
 
-      this->Xij = ML::Zero(n, N + p);
-      this->Xij_flag = Eigen::VectorXi::Zero(N + p);
+      // this->Xij = ML::Zero(n, N + p);
+      // this->Xij_flag = Eigen::VectorXi::Zero(N + p);
     }
 
     // get Active-set A according to max_k bd
@@ -308,7 +308,8 @@ public:
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
       
-      VL xij = compute_Xij(x1, mi, mj);
+      // VL xij = compute_Xij(x1, mi, mj);
+      VL xij = x1.col(mi).cwiseProduct(x1.col(mj));
       VL ans =  xij * 2.0 - xij.cwiseProduct(prob.col(mi) + prob.col(mj));
       
       first_der(mi, mj) =  (long double) (ans.dot(w) * 2.0) /  (long double) this->ising_n - 
@@ -319,17 +320,17 @@ public:
     return first_der;
   }
 
-  VL compute_Xij(ML &x, int i, int j){
-    int N = (int) x.cols() * (x.cols() - 1) / 2;
-    int ind = (i != j) ? (this->map2(i, j)) : (N + i);
+  // VL compute_Xij(ML &x, int i, int j){
+  //   int N = (int) x.cols() * (x.cols() - 1) / 2;
+  //   int ind = (i != j) ? (this->map2(i, j)) : (N + i);
 
-    if (this->Xij_flag(ind) == 0){
-      this->Xij.col(ind) = x.col(i).cwiseProduct(x.col(j));
-      this->Xij_flag(ind) = 1;
-    }
+  //   if (this->Xij_flag(ind) == 0){
+  //     this->Xij.col(ind) = x.col(i).cwiseProduct(x.col(j));
+  //     this->Xij_flag(ind) = 1;
+  //   }
 
-    return this->Xij.col(ind);
-  }
+  //   return this->Xij.col(ind);
+  // }
 };
 
 #endif // SRC_ALGORITHMISING_H

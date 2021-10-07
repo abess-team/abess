@@ -64,13 +64,17 @@ public:
     }
   };
 
-  void set_cv_init_fit_arg(int p, int M)
+  void set_cv_init_fit_arg(int p, int M, int model_type)
   {
     for (int i = 0; i < this->Kfold; i++)
     {
       T2 beta_init;
       T3 coef0_init;
-      coef_set_zero(p, M, beta_init, coef0_init);
+      if (model_type == 8){
+        coef_set_zero(p*(p-1)/2, M, beta_init, coef0_init);
+      }else{
+        coef_set_zero(p, M, beta_init, coef0_init);
+      }
       Eigen::VectorXi A_init;
       T5 bd_init;
 
@@ -265,8 +269,13 @@ public:
     T2 beta = algorithm->get_beta();
     T3 coef0 = algorithm->get_coef0();
 
-    Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
-    T4 X_A = X_seg(train_x, train_n, A_ind);
+    Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N, algorithm->model_type);
+    T4 X_A;
+    if (algorithm->model_type == 8){
+      X_A = train_x;
+    }else{
+      X_A = X_seg(train_x, train_n, A_ind);
+    }
 
     T2 beta_A;
     slice(beta, A_ind, beta_A);
@@ -286,7 +295,7 @@ public:
   {
     int N= data.g_num;;
     if (algorithm->model_type == 8){
-      N = N * (N - 1) / 2;
+      N = data.p * (data.p - 1) / 2;
     }
     algorithm->update_sparsity_level(fit_arg.support_size);
     algorithm->update_lambda_level(fit_arg.lambda);
