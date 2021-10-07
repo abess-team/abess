@@ -22,7 +22,7 @@ abessbmn <- function(x,
                      newton.thresh = 1e-6,
                      max.newton.iter = 500,
                      ic.scale = 1.0,
-                     num.threads = 1,
+                     num.threads = 0,
                      seed = 1,
                      ...)
 {
@@ -115,7 +115,7 @@ abessbmn <- function(x,
   # approximate_newton <- ifelse(newton_type == 1, TRUE, FALSE)
   approximate_newton <- FALSE
   
-  res <- abessCpp2(
+  result <- abessCpp2(
     x = x,
     y = y,
     n = nobs,
@@ -150,7 +150,7 @@ abessbmn <- function(x,
     g_index = g_index,
     always_select = always_include,
     tau = 0,
-    primary_model_fit_max_iter = max.newton.iter,
+    primary_model_fit_max_iter = as.integer(max.newton.iter),
     primary_model_fit_epsilon = as.double(newton.thresh),
     early_stop = FALSE,
     approximate_Newton = approximate_newton,
@@ -162,13 +162,21 @@ abessbmn <- function(x,
     cv_fold_id = cv_fold_id
   )
   
-  omega <- lapply(res[["beta_all"]], recovery_adjacent_matrix, p = nvars)
+  omega <- lapply(result[["beta_all"]], recovery_adjacent_matrix, p = nvars)
   omega <- simplify2array(omega)
+  
+  if (is_cv) {
+    names(result)[which(names(result) == "test_loss_all")] <- "tune.value"
+    result[["ic_all"]] <- NULL
+  } else {
+    names(result)[which(names(result) == "ic_all")] <- "tune.value"
+    result[["test_loss_all"]] <- NULL
+  }
   
   return(list(omega = omega, 
               support.size = support_size, 
-              pseudo.loglik = res[["train_loss_all"]], 
-              tune.value = res[["ic_all"]], 
+              pseudo.loglik = result[["train_loss_all"]], 
+              tune.value = result[["tune.value"]], 
               nobs = nobs, 
               nvars = nvars, 
               tune.type = tune.type))
