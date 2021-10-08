@@ -268,9 +268,12 @@ test_that("abess (gamma) works", {
     dataset[["y"]],
     family = "gamma",
     tune.type = "cv",
-    newton = "exact",
-    newton.thresh = 1e-8
+    #newton = "exact",
+    newton.thresh = 1e-8,
+    support.size = 3,
+    always.include = which(dataset[["beta"]] != 0)
   )
+  
   test_batch(abess_fit, dataset, Gamma)
 })
 

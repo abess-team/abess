@@ -3,7 +3,8 @@
 
 #include "Algorithm.h"
 #include "model_fit.h"
-
+#include <stdlib.h>
+#include <stdio.h> //test
 using namespace std;
 
 template <class T4>
@@ -1585,7 +1586,7 @@ public:
     }
     int n = x.rows();
     int p = x.cols();
-    // expand data matriX to design matriX
+    // expand data matrix to design matrix
     T4 X(n, p + 1);
     Eigen::VectorXd coef = Eigen::VectorXd::Zero(p + 1);
     X.rightCols(p) = x;
@@ -1603,8 +1604,11 @@ public:
       Eigen::VectorXd coef_new;
       Eigen::VectorXd h_diag(p + 1);
       Eigen::VectorXd desend_direction; // coef_new = coef + step * desend_direction
-      
-      for (int j = 0; j < this->primary_model_fit_max_iter; j++){
+      //test
+      int j = 0;
+      bool condition1;
+      bool condition2;
+      for (j = 0; j < this->primary_model_fit_max_iter; j++){
         for (int i = 0; i < p + 1; i++){
           h_diag(i) = 1.0 / (X.col(i).cwiseProduct(EY_square).cwiseProduct(weights).dot(X.col(i)) + 2 * this->lambda_level); // the inverse of diag of Hessian 
         }
@@ -1612,24 +1616,41 @@ public:
         desend_direction = g.cwiseProduct(h_diag); 
         coef_new = coef + step * desend_direction; // ApproXimate Newton method
         loglik_new = -neg_loglik_loss(X,y,weights,coef_new);
+
         while (loglik_new < loglik && step > this->primary_model_fit_epsilon){
           step = step / 2;
           coef_new = coef + step * desend_direction;
           loglik_new = -neg_loglik_loss(X,y,weights,coef_new);
         }
-        bool condition1 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
-        // bool condition1 = false;
-        if (condition1)
-          break;
-        if (loglik_new > loglik){
-          coef = coef_new;
-          loglik = loglik_new;
-          EY = (X * coef).array().inverse();
-        }
-        if (step < this->primary_model_fit_epsilon){
+
+        condition1 = step < this->primary_model_fit_epsilon;
+        condition2 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
+        if (condition1||condition2){
           break;
         }
+ 
+        coef = coef_new;
+        loglik = loglik_new;
+        EY = (X * coef).array().inverse();
+        EY_square = EY.array().square();
+     
       }
+      //test
+      static int _num = 0;
+      FILE *fp = fopen("~/Desktop/log.txt","a");
+      fprintf(fp,"%dth approximate Newton method: loglik_new=%f, loglik=%f, max_iter=%d, this_iter=%d, tau=%f, loss0=%f\n", ++_num,loglik_new,loglik,this->primary_model_fit_max_iter,j,this->tau,loss0);
+      fprintf(fp,"condition1=%d,condition2=%d\n",condition1,condition2);
+      fprintf(fp,"negtive gradient direction:%f\n",g.squaredNorm());
+      for(int i = 0; i<p+1; i++){
+        fprintf(fp,"%f ",g(i));
+      }
+      fputs("\n",fp);  
+      for(int i = 0; i<p+1; i++){
+        fprintf(fp,"%f ",coef(i));
+      }
+      fputs("\n\n",fp);
+      fclose(fp);
+     
     }
     // IWLS method
     else{ 
@@ -1674,7 +1695,10 @@ public:
   {
     int n = X.rows();
     Eigen::VectorXd Xbeta = X * beta + Eigen::VectorXd::Ones(n) * coef0;
-    log_threshold(Xbeta);
+    for(int i=0; i < Xbeta.size(); i++){
+      if(Xbeta(i) < 0)
+        return DBL_MAX;
+    }
     return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) + this->lambda_level * (beta.squaredNorm() + coef0*coef0);
   }
 
@@ -1684,8 +1708,7 @@ public:
     int n = X.rows();
     Eigen::VectorXd EY = (XA * beta_A + Eigen::VectorXd::Ones(n) * coef0).cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
     Eigen::VectorXd EY_square_weights = EY.array().square().matrix().cwiseProduct(weights);
-    // negative gradient direction
-    Eigen::VectorXd d = X.transpose() * ((EY - y).cwiseProduct(weights)) - 2 * this->lambda_level * beta; 
+    Eigen::VectorXd d = X.transpose() * ((EY - y).cwiseProduct(weights)) - 2 * this->lambda_level * beta; // negative gradient direction
     Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p); 
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);  
     // we only need N diagonal sub-matriX of hessian of Loss, X^T %*% diag(EY^2) %*% X is OK, but waste.
@@ -1741,23 +1764,16 @@ public:
     return enp;
     
   }
-  private:
-    double neg_loglik_loss(T4 &design, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef)
-    {
-      Eigen::VectorXd Xbeta = design * coef;
-      log_threshold(Xbeta);
-      return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) + this->lambda_level * coef.squaredNorm();
+private:
+  double neg_loglik_loss(T4 &design, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef)
+  {
+    Eigen::VectorXd Xbeta = design * coef;
+    for(int i=0; i < Xbeta.size(); i++){
+      if(Xbeta(i) < 0)
+        return DBL_MAX;
     }
-
-    // TODO threshold is OK?
-    template <class T>
-    void log_threshold(T &X)
-    {
-      double threshold = 1e-5;
-      for(int i=0; i < X.size(); i++){
-        if(X(i) < threshold){ X(i) = threshold;}     
-      }
-    }
+    return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) + this->lambda_level * coef.squaredNorm();
+  }
 };
 
 #endif // SRC_ALGORITHMGLM_H
