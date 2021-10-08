@@ -1595,7 +1595,7 @@ public:
     coef.tail(p) = beta;
     // all methods need
     double loglik_new = DBL_MAX, loglik = -neg_loglik_loss(X,y,weights,coef);
-    Eigen::VectorXd EY = (X * coef).cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
+    Eigen::VectorXd EY = expect_y(X,coef);
     Eigen::VectorXd EY_square = EY.array().square();
     // Approximate Newton method
     if (this->approximate_Newton){
@@ -1631,25 +1631,10 @@ public:
  
         coef = coef_new;
         loglik = loglik_new;
-        EY = (X * coef).array().inverse();
+        EY = expect_y(X,coef);
         EY_square = EY.array().square();
      
       }
-      //test
-      static int _num = 0;
-      FILE *fp = fopen("~/Desktop/log.txt","a");
-      fprintf(fp,"%dth approximate Newton method: loglik_new=%f, loglik=%f, max_iter=%d, this_iter=%d, tau=%f, loss0=%f\n", ++_num,loglik_new,loglik,this->primary_model_fit_max_iter,j,this->tau,loss0);
-      fprintf(fp,"condition1=%d,condition2=%d\n",condition1,condition2);
-      fprintf(fp,"negtive gradient direction:%f\n",g.squaredNorm());
-      for(int i = 0; i<p+1; i++){
-        fprintf(fp,"%f ",g(i));
-      }
-      fputs("\n",fp);  
-      for(int i = 0; i<p+1; i++){
-        fprintf(fp,"%f ",coef(i));
-      }
-      fputs("\n\n",fp);
-      fclose(fp);
      
     }
     // IWLS method
@@ -1696,18 +1681,19 @@ public:
     int n = X.rows();
     Eigen::VectorXd Xbeta = X * beta + Eigen::VectorXd::Ones(n) * coef0;
     for(int i=0; i < Xbeta.size(); i++){
-      if(Xbeta(i) < 0)
+      if(Xbeta(i) < 1e-7)
         return DBL_MAX;
     }
-    return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) + this->lambda_level * (beta.squaredNorm() + coef0*coef0);
+    return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) / X.rows();
+    // return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) + this->lambda_level * (beta.squaredNorm() + coef0*coef0);
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
     int p = X.cols();
     int n = X.rows();
-    Eigen::VectorXd EY = (XA * beta_A + Eigen::VectorXd::Ones(n) * coef0).cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
-    Eigen::VectorXd EY_square_weights = EY.array().square().matrix().cwiseProduct(weights);
+    Eigen::VectorXd EY = expect_y(XA,beta_A,coef0);
+    Eigen::VectorXd EY_square_weights = EY.array().square() * weights.array();
     Eigen::VectorXd d = X.transpose() * ((EY - y).cwiseProduct(weights)) - 2 * this->lambda_level * beta; // negative gradient direction
     Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p); 
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);  
@@ -1746,12 +1732,12 @@ public:
     
     if (XA.cols() == 0)
       return 0.;
-    Eigen::VectorXd EY = (XA * beta_A + Eigen::VectorXd::Ones(XA.rows()) * coef0).array().inverse();
-    Eigen::VectorXd h = weights.array() * EY.array().square();
+    Eigen::VectorXd EY = expect_y(XA,beta_A,coef0);
+    Eigen::VectorXd EY_square_weights = weights.array() * EY.array().square();
     T4 XA_new = XA;
     for (int j = 0; j < XA.cols(); j++)
     {
-      XA_new.col(j) = XA.col(j).cwiseProduct(h);
+      XA_new.col(j) = XA.col(j).cwiseProduct(EY_square_weights);
     }
     Eigen::MatrixXd XGbar = XA_new.transpose() * XA;
     
@@ -1769,11 +1755,39 @@ private:
   {
     Eigen::VectorXd Xbeta = design * coef;
     for(int i=0; i < Xbeta.size(); i++){
-      if(Xbeta(i) < 0)
+      if(Xbeta(i) < 1e-7)
         return DBL_MAX;
     }
-    return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) + this->lambda_level * coef.squaredNorm();
+    return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) / design.rows();
+    //return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) + this->lambda_level * coef.squaredNorm();
   }
+  Eigen::VectorXd expect_y(T4 &design, Eigen::VectorXd &coef){
+    double threshold = 1e-7;
+    Eigen::VectorXd eta = design * coef;
+    for(int i = 0; i < eta.size(); i++){
+      if(abs(eta(i)) < threshold){
+        if(eta(i) < 0)
+          eta(i) = -threshold;
+        else 
+          eta(i) = threshold;
+      }   
+    }
+    return eta.cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
+  }
+  Eigen::VectorXd expect_y(T4 &data_matrix, Eigen::VectorXd &beta, double &coef0){
+    double threshold = 1e-7;
+    Eigen::VectorXd eta = data_matrix * beta + Eigen::VectorXd::Ones(data_matrix.rows()) * coef0;
+    for(int i = 0; i < eta.size(); i++){
+      if(abs(eta(i)) < threshold){
+        if(eta(i) < 0)
+          eta(i) = -threshold;
+        else 
+          eta(i) = threshold;
+      }   
+    }
+    return eta.cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
+  }
+ 
 };
 
 #endif // SRC_ALGORITHMGLM_H
