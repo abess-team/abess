@@ -116,11 +116,9 @@ public:
 
     ML theta = this->set_theta(beta, A, x.cols());
     ML prob, first_der, delta_theta, last_theta, exp_odd;
-    long double l0 = loss0, l1, step = 1.0, alpha = 0.1, scale = 0.5;
+    long double l0, l1, step = 1.0, alpha = 0.1, scale = 0.5;
 
-    // if (l0 == DBL_MAX){
-      l0 = (long double) this->neg_loglik_loss(x, y, weights, beta, coef0, A, g_index, g_size);
-    // }
+    l0 = (long double) this->neg_loglik_loss(x, y, weights, beta, coef0, A, g_index, g_size);
 
     // Newton
     int iter = 0;
@@ -150,42 +148,28 @@ public:
         l1 = (long double) this->neg_loglik_loss(x, y, weights, beta_temp, coef0, A, g_index, g_size);
       }
       
-      if(!isfinite(l0 - l1)) {
+      bool condition1 = l1 - (this->primary_model_fit_max_iter - iter - 1) * (l0 - l1) + this->tau > loss0;
+      if(condition1 || (!isfinite(l0 - l1))) {
         return false;
       }
 
-      // cout<<"step = "<<step<<" | c = "<<c<<endl;///
-      // cout<<"last_theta | iter = "<<iter<<endl;
-      // for (int i = 0; i < last_theta.rows();i++){
-      //   for (int j = 0; j < last_theta.cols();j++)
-      //     cout<<last_theta(i, j)<<" ";
-      //   cout<<endl;
-      // }
-      // cout<<"delta_theta | iter = "<<iter<<endl;
-      // for (int i = 0; i < delta_theta.rows();i++){
-      //   for (int j = 0; j < delta_theta.cols();j++)
-      //     cout<<delta_theta(i, j)<<" ";
-      //   cout<<endl;
-      // }
-      // cout<<"l0 = "<<l0<<" | l0 - l1 = "<<l0-l1<<endl<<endl;
-      
       // stop iter
-      // if (fabs(l0 - l1) < this->primary_model_fit_epsilon) break;
-      if (fabs(l0 - l1) < this->tau * 0.1) break;
-      bool condition1 = l1 - (this->primary_model_fit_max_iter - iter - 1) * (l0 - l1) + this->tau > loss0;
-      if (condition1) {
-        false;
-      }
-
+      // this->primary_model_fit_epsilon = this->tau * 0.1;
+      if (l0 - l1 < this->tau * 0.1) break;
+      
       l0 = l1;
 
     }
     // cout << " --> primary fit loss = "<<l0<<" | iter = "<<iter<<endl;///
-    
-    // update beta
-    beta = this->set_beta(theta, A);
 
-    return true;
+    if (l1 > loss0){
+      return false;
+    }else{
+      // update beta
+      beta = this->set_beta(theta, A);
+      return true;
+    }
+    
   };
 
   double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, VL &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
