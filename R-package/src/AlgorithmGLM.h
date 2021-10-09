@@ -3,8 +3,7 @@
 
 #include "Algorithm.h"
 #include "model_fit.h"
-#include <stdlib.h>
-#include <stdio.h> //test
+#include <iostream> //test
 using namespace std;
 
 template <class T4>
@@ -1593,10 +1592,14 @@ public:
     add_constant_column(X);
     coef(0) = coef0;
     coef.tail(p) = beta;
-    // all methods need
-    double loglik_new = DBL_MAX, loglik = -neg_loglik_loss(X,y,weights,coef);
-    Eigen::VectorXd EY = expect_y(X,coef);
-    Eigen::VectorXd EY_square = EY.array().square();
+
+    //test
+    this->primary_model_fit_max_iter = 500;
+    int j = 0;
+    bool condition1;
+    bool condition2;
+    bool condition3;
+
     // Approximate Newton method
     if (this->approximate_Newton){
       double step = 1;
@@ -1604,14 +1607,20 @@ public:
       Eigen::VectorXd coef_new;
       Eigen::VectorXd h_diag(p + 1);
       Eigen::VectorXd desend_direction; // coef_new = coef + step * desend_direction
-      //test
-      int j = 0;
-      bool condition1;
-      bool condition2;
+      Eigen::VectorXd EY = expect_y(X,coef);
+      Eigen::VectorXd W = EY.array().square() * weights.array();
+      double loglik_new = DBL_MAX, loglik = -neg_loglik_loss(X,y,weights,coef);
+
       for (j = 0; j < this->primary_model_fit_max_iter; j++){
         for (int i = 0; i < p + 1; i++){
-          h_diag(i) = 1.0 / (X.col(i).cwiseProduct(EY_square).cwiseProduct(weights).dot(X.col(i)) + 2 * this->lambda_level); // the inverse of diag of Hessian 
+          h_diag(i) = X.col(i).cwiseProduct(W).dot(X.col(i)) + 2 * this->lambda_level; // diag of Hessian 
+          // we can find h_diag(i) >= 0
+          if(h_diag(i) < 1e-7)
+            h_diag(i) = 1e7;
+          else
+            h_diag(i) = 1.0 / h_diag(i);
         }
+
         g = X.transpose() * (EY-y).cwiseProduct(weights) - 2 * this->lambda_level * coef; // negtive gradient direction
         desend_direction = g.cwiseProduct(h_diag); 
         coef_new = coef + step * desend_direction; // ApproXimate Newton method
@@ -1632,21 +1641,23 @@ public:
         coef = coef_new;
         loglik = loglik_new;
         EY = expect_y(X,coef);
-        EY_square = EY.array().square();
+        W = EY.array().square() * weights.array();
      
       }
-     
     }
     // IWLS method
     else{ 
       T4 X_new(X);
-      Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
       Eigen::MatrixXd lambdamat = Eigen::MatrixXd::Identity(p + 1, p + 1);
       lambdamat(0, 0) = 0;
-      // TODO this weight is right?
+      Eigen::VectorXd EY = expect_y(X,coef);
+      Eigen::VectorXd EY_square = EY.array().square();
       Eigen::VectorXd W = EY_square.cwiseProduct(weights); // the weight matriX of IW(eight)LS method
       Eigen::VectorXd Z = X * coef - (y - EY).cwiseQuotient(EY_square); 
-      for (int j = 0; j < this->primary_model_fit_max_iter; j++){
+      double loglik_new = DBL_MAX, loglik = -neg_loglik_loss(X,y,weights,coef);
+
+      for (j = 0; j < this->primary_model_fit_max_iter; j++){
+
         for (int i = 0; i < p + 1; i++)
         {
           X_new.col(i) = X.col(i).cwiseProduct(W);
@@ -1655,22 +1666,36 @@ public:
         coef = XTX.ldlt().solve(X_new.transpose() * Z);
          
         loglik_new = -neg_loglik_loss(X,y,weights,coef);
-        bool condition1 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
-        bool condition2 = abs(loglik - loglik_new) / (0.1 + abs(loglik_new)) < this->primary_model_fit_epsilon;
+        condition1 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
+        condition2 = abs(loglik - loglik_new) / (0.1 + abs(loglik_new)) < this->primary_model_fit_epsilon;
         // TODO maybe here should be abs(loglik - loglik_new)
-        bool condition3 = abs(loglik_new) < min(1e-3, this->tau);
-        if (condition1 || condition2 || condition3)
-        {
+        condition3 = abs(loglik_new) < min(1e-3, this->tau);
+        if (condition1 || condition2 || condition3){
           break;
         }
-        EY = (X * coef).array().inverse();
+
+        EY = expect_y(X,coef);
         EY_square = EY.array().square();
         loglik = loglik_new;
         W = EY_square.cwiseProduct(weights);
         Z = X * coef - (y - EY).cwiseQuotient(EY_square);
       }
+      
     }
     
+    //test
+    static int _num = 0;
+    static int _max_num = 0;
+
+    if(_num == 0){
+      cout << endl << "max iter:" << this->primary_model_fit_max_iter << ", isAppro:" << this->approximate_Newton;
+    }
+    _num++;
+    Eigen::VectorXd g = X.transpose() * (expect_y(X,coef)-y).cwiseProduct(weights);
+    cout << endl << _num << "th numIter:" << j << ", gradNorm:" << g.squaredNorm() << ", c1:" << condition1 << ", c2:" << condition2 ;
+
+
+
     beta = coef.tail(p).eval();
     coef0 = coef(0);
     return true;
