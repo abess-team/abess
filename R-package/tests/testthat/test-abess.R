@@ -14,12 +14,20 @@ test_batch <- function(abess_fit, dataset, family) {
   true_index <- which(dataset[["beta"]] != 0)
   expect_equal(est_index, true_index)
   
+  
   ## estimation
   # oracle estimation by glm function:
   dat <- cbind.data.frame("y" = dataset[["y"]],
                           dataset[["x"]][, true_index])
   
-  oracle_est <- glm(y ~ ., data = dat, family = family)
+  # in gamma model, we have to set a start point of coef to ensure eta=Xb is positive  
+  if(family()[["family"]] == "Gamma"){
+    oracle_est <- glm(y ~ ., data = dat, family = family,start = rep(1,length(true_index)+1))
+  }
+  else{
+    oracle_est <- glm(y ~ ., data = dat, family = family)
+  }
+  
   oracle_beta <- coef(oracle_est)[-1]
   oracle_coef0 <- coef(oracle_est)[1]
   names(oracle_beta) <- NULL
@@ -49,6 +57,7 @@ test_batch <- function(abess_fit, dataset, family) {
     oracle_dev <- extract(abess_fit)[["dev"]]
   }
   expect_equal(oracle_dev, extract(abess_fit)[["dev"]])
+ 
 }
 
 test_batch_multivariate <-
@@ -249,20 +258,34 @@ test_that("abess (binomial) works", {
 })
 
 test_that("abess (gamma) works", {
-  n <- 150
+  n <- 2000
   p <- 100
   support.size <- 3
-  print('test gamma')
   dataset <- generate.data(n, p, support.size,
-                           family = "gamma", seed = 1)
+                           family = "gamma", seed = 13)
+
   abess_fit <- abess(
     dataset[["x"]],
     dataset[["y"]],
     family = "gamma",
     tune.type = "cv",
-    newton = "exact",
-    newton.thresh = 1e-8
+    #newton = "exact",
+    newton.thresh = 1e-8,
+    support.size = support.size,
+    always.include = which(dataset[["beta"]] != 0)
   )
+  
+  
+  ## support size
+  fit_s_size <- abess_fit[["best.size"]]
+  coef_value <- coef(abess_fit, support.size = fit_s_size)
+  est_index <- coef_value@i[-1]
+  true_index <- which(dataset[["beta"]]!= 0)
+  
+  #cat("ture:",true_index)
+  #cat(";value:",dataset[["beta"]][true_index])
+  #cat(" est:",est_index)
+  
   test_batch(abess_fit, dataset, Gamma)
 })
 
