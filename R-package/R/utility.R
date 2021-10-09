@@ -321,7 +321,7 @@ generate.data <- function(n,
     x <- abs(x)
     eta <- x %*% beta + stats::rnorm(n, 0, sigma)
     eta <- abs(eta)
-    cat(min(eta))
+    
     # TODO the shape para of gamma is uniform in [0.1,100.1]
     shape_para <- 100 * runif(n) + 0.1
     y <- stats::rgamma(n,shape=shape_para,rate=shape_para*eta)

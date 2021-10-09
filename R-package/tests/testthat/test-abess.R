@@ -282,9 +282,9 @@ test_that("abess (gamma) works", {
   est_index <- coef_value@i[-1]
   true_index <- which(dataset[["beta"]]!= 0)
   
-  cat("ture:",true_index)
-  cat(";value:",dataset[["beta"]][true_index])
-  cat(" est:",est_index)
+  #cat("ture:",true_index)
+  #cat(";value:",dataset[["beta"]][true_index])
+  #cat(" est:",est_index)
   
   test_batch(abess_fit, dataset, Gamma)
 })
