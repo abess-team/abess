@@ -1589,9 +1589,15 @@ public:
     T4 X(n, p + 1);
     Eigen::VectorXd coef = Eigen::VectorXd::Zero(p + 1);
     X.rightCols(p) = x;
-    add_constant_column(X);
+    X.col(0) = Eigen::MatrixXd::Ones(n, 1);
     coef(0) = coef0;
     coef.tail(p) = beta;
+
+    // modify start point to make sure Xbeta > this->gamma_threshold
+    double min_xb = min(X*coef);
+    if(min_xb < this->gamma_threshold){
+      coef(0) += abs(min_xb);
+    }
 
     //test
     this->primary_model_fit_max_iter = 500;
@@ -1599,7 +1605,9 @@ public:
     bool condition1;
     bool condition2;
     bool condition3;
-
+    static int _num = 0;
+    //test end
+    
     // Approximate Newton method
     if (this->approximate_Newton){
       double step = 1;
@@ -1625,11 +1633,20 @@ public:
         desend_direction = g.cwiseProduct(h_diag); 
         coef_new = coef + step * desend_direction; // ApproXimate Newton method
         loglik_new = -neg_loglik_loss(X,y,weights,coef_new);
-
+        //test
+        if(_num == 11){
+          cout << loglik_new << "; ";
+        }
+        // test end
         while (loglik_new < loglik && step > this->primary_model_fit_epsilon){
           step = step / 2;
           coef_new = coef + step * desend_direction;
           loglik_new = -neg_loglik_loss(X,y,weights,coef_new);
+          //test
+          if(_num == 11){
+            cout << loglik_new << "; ";
+          }
+          // test end
         }
 
         condition1 = step < this->primary_model_fit_epsilon;
@@ -1684,16 +1701,13 @@ public:
     }
     
     //test
-    static int _num = 0;
-    static int _max_num = 0;
-
     if(_num == 0){
-      cout << endl << "max iter:" << this->primary_model_fit_max_iter << ", isAppro:" << this->approximate_Newton;
+      cout << endl << "max iter:" << this->primary_model_fit_max_iter << ", isAppro:" << this->approximate_Newton << endl;
     }
     _num++;
     Eigen::VectorXd g = X.transpose() * (expect_y(X,coef)-y).cwiseProduct(weights);
-    cout << endl << _num << "th numIter:" << j << ", gradNorm:" << g.squaredNorm() << ", c1:" << condition1 << ", c2:" << condition2 ;
-
+    cout << _num << "th numIter:" << j << ", gradNorm:" << g.squaredNorm() << ", c1:" << condition1 << ", c2:" << condition2 << endl ;
+    //test end
 
 
     beta = coef.tail(p).eval();
@@ -1706,7 +1720,7 @@ public:
     int n = X.rows();
     Eigen::VectorXd Xbeta = X * beta + Eigen::VectorXd::Ones(n) * coef0;
     for(int i=0; i < Xbeta.size(); i++){
-      if(Xbeta(i) < 1e-7)
+      if(Xbeta(i) < this->gamma_threshold)
         return DBL_MAX;
     }
     return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) / X.rows();
@@ -1776,38 +1790,37 @@ public:
     
   }
 private:
+  double gamma_threshold = 1e-7; // use before log or inverse
   double neg_loglik_loss(T4 &design, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef)
   {
     Eigen::VectorXd Xbeta = design * coef;
     for(int i=0; i < Xbeta.size(); i++){
-      if(Xbeta(i) < 1e-7)
+      if(Xbeta(i) < this->gamma_threshold)
         return DBL_MAX;
     }
     return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) / design.rows();
     //return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) + this->lambda_level * coef.squaredNorm();
   }
   Eigen::VectorXd expect_y(T4 &design, Eigen::VectorXd &coef){
-    double threshold = 1e-7;
     Eigen::VectorXd eta = design * coef;
     for(int i = 0; i < eta.size(); i++){
-      if(abs(eta(i)) < threshold){
+      if(abs(eta(i)) < this->gamma_threshold){
         if(eta(i) < 0)
-          eta(i) = -threshold;
+          eta(i) = -this->gamma_threshold;
         else 
-          eta(i) = threshold;
+          eta(i) = this->gamma_threshold;
       }   
     }
     return eta.cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
   }
   Eigen::VectorXd expect_y(T4 &data_matrix, Eigen::VectorXd &beta, double &coef0){
-    double threshold = 1e-7;
     Eigen::VectorXd eta = data_matrix * beta + Eigen::VectorXd::Ones(data_matrix.rows()) * coef0;
     for(int i = 0; i < eta.size(); i++){
-      if(abs(eta(i)) < threshold){
+      if(abs(eta(i)) < this->gamma_threshold){
         if(eta(i) < 0)
-          eta(i) = -threshold;
+          eta(i) = -this->gamma_threshold;
         else 
-          eta(i) = threshold;
+          eta(i) = this->gamma_threshold;
       }   
     }
     return eta.cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
