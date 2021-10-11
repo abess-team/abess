@@ -361,35 +361,35 @@ def make_ising_data(n = 1000, p = 10, theta = None, seed = None, type = 1, alpha
         raise ValueError("Sorry! Generation for theta have not finished yet. It should be given at present.")
         
     # gene data
-    # if (p <= 20):
-    #     seed = random.sample(range(1, 31415926), 2)
-    #     m = np.power(2, p)
-    #     result = ising_sample_by_conf_wrap(
-    #         n, theta, seed[0], seed[1], 
-    #         int(m*(p + 1)), int(m*(p + 1))
-    #     )
-    #     train = result[0].reshape(m, p + 1)
-    #     valid = result[1].reshape(m, p + 1)
-    #     train = train[train[:, 0] != 0, :]
-    #     valid = valid[valid[:, 0] != 0, :]
-    #     train_freq = train[:, 0].reshape(-1)
-    #     valid_freq = valid[:, 0].reshape(-1)
-    #     train = train[:, 1:]
-    #     valid = valid[:, 1:]
-    # else:
-    # Gibbs
-    burn = int(1e5)
-    skip = 50
-    value = np.array([-1, 1], dtype = 'float')
-    result = ising_gibbs_wrap(
-        theta, n, burn, skip, value, using_seed, seed,
-        int(2*n*p)
-    )
-    dt = result.reshape(2*n, p)
-    train = dt[0:2*n:2, :]
-    valid = dt[1:2*n:2, :]
-    train_freq = np.ones(n)
-    valid_freq = np.ones(n)
+    if (p <= 20):
+        seed = random.sample(range(1, 31415926), 2)
+        m = np.power(2, p)
+        result = ising_sample_by_conf_wrap(
+            n, theta, seed[0], seed[1], 
+            int(m*(p + 1)), int(m*(p + 1))
+        )
+        train = result[0].reshape(m, p + 1)
+        valid = result[1].reshape(m, p + 1)
+        train = train[train[:, 0] != 0, :]
+        valid = valid[valid[:, 0] != 0, :]
+        train_freq = train[:, 0].reshape(-1)
+        valid_freq = valid[:, 0].reshape(-1)
+        train = train[:, 1:]
+        valid = valid[:, 1:]
+    else:
+        # Gibbs
+        burn = int(1e5)
+        skip = 50
+        value = np.array([-1, 1], dtype = 'float')
+        result = ising_gibbs_wrap(
+            theta, n, burn, skip, value, using_seed, seed,
+            int(2*n*p)
+        )
+        dt = result.reshape(2*n, p)
+        train = dt[0:2*n:2, :]
+        valid = dt[1:2*n:2, :]
+        train_freq = np.ones(n)
+        valid_freq = np.ones(n)
 
     # print('train\n', train)
     # print('train_freq\n', train_freq)
