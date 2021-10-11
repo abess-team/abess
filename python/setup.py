@@ -19,7 +19,7 @@ if sys.platform.startswith('win32'):
 
     cabess_module = Extension(name='abess._cabess',
                               sources=[CURRENT_DIR + '/src/abess.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
-                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/abess.i'],
+                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/make_ising_data.cpp', CURRENT_DIR + '/src/abess.i'],
                               language='c++',
                               extra_compile_args=["-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-mavx", "-mfma", "-march=native",
                                                   "-std=c++11", "-mtune=generic", "-D%s" % os_type, path1, path2],
@@ -35,7 +35,7 @@ elif sys.platform.startswith('darwin'):
     # eigen_path = "/usr/local/include/eigen3/Eigen"
     cabess_module = Extension(name='abess._cabess',
                               sources=[CURRENT_DIR + '/src/abess.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
-                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/abess.i'],
+                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/make_ising_data.cpp', CURRENT_DIR + '/src/abess.i'],
                               language='c++',
                               extra_compile_args=[
                                   "-DNDEBUG", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native"],
@@ -48,7 +48,7 @@ else:
     # eigen_path = "/usr/local/include/eigen3/Eigen"
     cabess_module = Extension(name='abess._cabess',
                               sources=[CURRENT_DIR + '/src/abess.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
-                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/abess.i'],
+                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/make_ising_data.cpp', CURRENT_DIR + '/src/abess.i'],
                               language='c++',
                               extra_compile_args=[
                                   "-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native"],
