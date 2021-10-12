@@ -22,7 +22,9 @@ test_batch <- function(abess_fit, dataset, family) {
   
   # in gamma model, we have to set a start point of coef to ensure eta=Xb is positive  
   if(family()[["family"]] == "Gamma"){
-    oracle_est <- glm(y ~ ., data = dat, family = family,start = rep(1,length(true_index)+1))
+    start_point <- c(0,rep(1,length(true_index)))
+    start_point[1] <- abs(min(dataset[["x"]] %*% start_point)) + 1
+    oracle_est <- glm(y ~ ., data = dat, family = family,start = start_point)
   }
   else{
     oracle_est <- glm(y ~ ., data = dat, family = family)
@@ -271,8 +273,8 @@ test_that("abess (gamma) works", {
     tune.type = "cv",
     #newton = "exact",
     newton.thresh = 1e-8,
-    support.size = support.size,
-    always.include = which(dataset[["beta"]] != 0)
+    #support.size = support.size,
+    #always.include = which(dataset[["beta"]] != 0)
   )
   
   
