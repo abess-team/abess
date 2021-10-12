@@ -1172,16 +1172,9 @@ class TestClass:
     def test_ising(self):
         s = 10
         theta = np.ones((10, 10))
-        theta1 = np.ones((30, 30))
-        data = make_ising_data(theta = theta, seed = 0)
-        data1 = make_ising_data(theta = theta1)
-
-        try:
-            make_ising_data() # no theta
-        except ValueError:
-            assert True
-        else:
-            assert False
+        theta1 = np.ones((21, 21))
+        data = make_ising_data(theta = theta, seed = 1)
+        # data1 = make_ising_data(theta = theta1)
 
         model1 = abessIsing(support_size = s, cv = 2)
         model1.fit(data.x, data.freq, data.cv_fold_id)
