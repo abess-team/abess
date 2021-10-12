@@ -728,7 +728,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
       }
       else
       {
-        cout<<"final fit\n";///
+        // cout<<"final fit\n";///
         if (covariance_update)
         {
           algorithm->covariance = new Eigen::VectorXd *[data.p];

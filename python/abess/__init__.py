@@ -9,4 +9,4 @@
 from abess.linear import abessLogistic, abessLm, abessCox, abessPoisson, abessMultigaussian, abessMultinomial
 from abess.pca import abessPCA
 from abess.graph import abessIsing
-from abess.datasets import make_glm_data, make_multivariate_glm_data
+from abess.datasets import make_glm_data, make_multivariate_glm_data, make_ising_data

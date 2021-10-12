@@ -185,7 +185,7 @@ class bess_base(BaseEstimator):
             # Init
             n = X.shape[0]
             p = X.shape[1]
-            Sigma = np.matrix(-1)
+            Sigma = np.array([[-1.0]])
             self.n_features_in_ = p
 
             if y.ndim == 1:

@@ -265,7 +265,7 @@ class abessIsing(bess_base):
         new_screening_size = -1
         g_index = list(range(p))
         state = [0]
-        Sigma = np.matrix(-1)
+        Sigma = np.array([[-1.0]])
         is_normal = False
 
         # wrap with cpp

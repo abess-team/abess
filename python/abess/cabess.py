@@ -65,4 +65,10 @@ class _SwigNonDynamicMeta(type):
 def pywrap_abess(arg1, arg2, n, p, data_type, arg6, arg7, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, is_cv, K, arg19, arg20, arg21, arg22, arg23, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, n_lambda, is_screening, screening_size, powell_path, arg34, tau, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, thread, covariance_update, sparse_matrix, splicing_type, sub_search, arg45, arg46, arg47, arg48, arg49, arg50, arg51, arg52):
     return _cabess.pywrap_abess(arg1, arg2, n, p, data_type, arg6, arg7, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, is_cv, K, arg19, arg20, arg21, arg22, arg23, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, n_lambda, is_screening, screening_size, powell_path, arg34, tau, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, thread, covariance_update, sparse_matrix, splicing_type, sub_search, arg45, arg46, arg47, arg48, arg49, arg50, arg51, arg52)
 
+def ising_sample_by_conf_wrap(n, theta, seed_train, seed_valid, train_out, valid_out):
+    return _cabess.ising_sample_by_conf_wrap(n, theta, seed_train, seed_valid, train_out, valid_out)
+
+def ising_gibbs_wrap(theta, n_sample, burn, skip, value, using_seed, set_seed, data_out):
+    return _cabess.ising_gibbs_wrap(theta, n_sample, burn, skip, value, using_seed, set_seed, data_out)
+
 

@@ -2,6 +2,7 @@
 
 %{
 #include "abess.h"
+#include "make_ising_data.h"
 #define SWIG_FILE_WITH_INIT
 %}
 
@@ -35,4 +36,19 @@ void pywrap_abess(double* IN_ARRAY2, int DIM1, int DIM2, double* IN_ARRAY2, int 
                  int sub_search,
                  double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* OUTPUT, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, double* ARGOUT_ARRAY1, int DIM1, int* ARGOUT_ARRAY1, int DIM1);
 
+%apply (double *IN_ARRAY2, int DIM1, int DIM2) {(double *theta, int theta_row, int theta_col)}
+%apply (double *IN_ARRAY1, int DIM1) {(double *value, int value_len)}
+%apply (double *ARGOUT_ARRAY1, int DIM1) {(double *train_out, int train_out_len),
+                                          (double *valid_out, int valid_out_len),
+                                          (double *data_out, int data_out_len)}
+
+void ising_sample_by_conf_wrap(long long n, double *theta, int theta_row, int theta_col, 
+                               int seed_train, int seed_valid,
+                               double *train_out, int train_out_len,
+                               double *valid_out, int valid_out_len);
+
+void ising_gibbs_wrap(double *theta, int theta_row, int theta_col, 
+                      int n_sample, int burn, int skip,
+                      double *value, int value_len, bool using_seed, int set_seed,
+                      double *data_out, int data_out_len);
 
