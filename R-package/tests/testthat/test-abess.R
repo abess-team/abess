@@ -480,11 +480,11 @@ test_that("abess (L2 regularization) works", {
 })
 
 test_that("abess (gamma) works", {
-  n <- 200
+  n <- 1000
   p <- 100
   support.size <- 3
   dataset <- generate.data(n, p, support.size,
-                           family = "gamma", seed = 13)
+                           family = "gamma", seed = 3)
   
   abess_fit <- abess(
     dataset[["x"]],
@@ -497,7 +497,6 @@ test_that("abess (gamma) works", {
     always.include = which(dataset[["beta"]] != 0)
   )
   
-  
   ## support size
   fit_s_size <- abess_fit[["best.size"]]
   coef_value <- coef(abess_fit, support.size = fit_s_size)
@@ -509,4 +508,17 @@ test_that("abess (gamma) works", {
   #cat(";est:",est_index)
   
   test_batch(abess_fit, dataset, Gamma)
+  
+  
+  abess_fit <- abess(
+    dataset[["x"]],
+    dataset[["y"]],
+    family = "gamma",
+    tune.type = "cv",
+    #newton = "exact",
+    newton.thresh = 1e-8,
+    support.size = 0:support.size
+  )
+  plot(abess_fit, type = "tune")
+  
 })
