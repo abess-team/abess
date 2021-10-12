@@ -337,9 +337,15 @@ def make_ising_data(n = 1000, p = 10, theta = None, seed = None, type = 1, alpha
     valid: array_like, shape(_, p)
         Sample matrix for validation.
     train_freq: array_like, shape(train.shape[0],)
-        The frequence for each train samples.
+        The frequence for each train sample.
     train_freq: array_like, shape(test.shape[0],)
-        The frequence for each valid samples.
+        The frequence for each valid sample.
+    x: array_like
+        full sample, i.e. `np.concatenate((train, valid))`
+    freq: array_like
+        full frequence, i.e. `np.concatenate((train_freq, valid_freq))`
+    cv_fold_id: array_like
+        `1` for train data and `2` for valid data.
 
     """
     # seed
@@ -396,6 +402,11 @@ def make_ising_data(n = 1000, p = 10, theta = None, seed = None, type = 1, alpha
     # print('valid\n', valid)
     # print('valid_freq\n', valid_freq)
 
-    Ising_Data = namedtuple('Ising_Data', 'train train_freq valid valid_freq theta_')
-    output = Ising_Data(train, train_freq, valid, valid_freq, theta)
+    # combine
+    x = np.concatenate((train, valid), axis = 0)
+    freq = np.concatenate((train_freq, valid_freq), axis = 0)
+    cv_fold_id = np.repeat([1, 2], [train.shape[0], valid.shape[0]])
+
+    Ising_Data = namedtuple('Ising_Data', 'x freq cv_fold_id train train_freq valid valid_freq theta_')
+    output = Ising_Data(x, freq, cv_fold_id, train, train_freq, valid, valid_freq, theta)
     return output

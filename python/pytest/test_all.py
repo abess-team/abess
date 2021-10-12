@@ -1,7 +1,8 @@
 import numpy as np
 from abess.linear import *
 from abess.pca import *
-from abess.datasets import make_glm_data, make_multivariate_glm_data
+from abess.graph import *
+from abess.datasets import *
 import pandas as pd
 from pytest import approx
 import sys
@@ -1167,6 +1168,28 @@ class TestClass:
             model2.coef_[np.nonzero(model2.coef_)[0]], rel=1e-1, abs=1e-1)
         assert model.intercept_ == approx(
             model2.intercept_, rel=1e-1, abs=1e-1)
+    
+    def test_ising(self):
+        s = 10
+        theta = np.ones((10, 10))
+        theta1 = np.ones((30, 30))
+        data = make_ising_data(theta = theta, seed = 0)
+        data1 = make_ising_data(theta = theta1)
+
+        try:
+            make_ising_data() # no theta
+        except ValueError:
+            assert True
+        else:
+            assert False
+
+        model1 = abessIsing(support_size = s, cv = 2)
+        model1.fit(data.x, data.freq, data.cv_fold_id)
+        assert (len(np.nonzero(model1.coef_)[0]) == s)
+
+        model2 = abessIsing(support_size = s)
+        model2.fit(data.x, data.freq)
+        assert (len(np.nonzero(model2.coef_)[0]) == s)
 
     def test_wrong_arg(self):
         n = 100
