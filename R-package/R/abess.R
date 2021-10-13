@@ -1047,7 +1047,7 @@ abess.formula <- function(formula, data, subset, na.action, ...) {
   mf <- eval(mf, parent.frame())
   mt <- attr(mf, "terms")
 
-  y <- model.response(mf, "numeric")
+  suppressWarnings(y <- model.response(mf, "numeric"))
   x <- abess_model_matrix(mt, mf, contrasts)[, -1]
   x <- as.matrix(x)
 
