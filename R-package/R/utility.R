@@ -370,9 +370,10 @@ abess_model_matrix <- function(object, data = environment(object),
     }
   }
   ############################################################
+  y_name <- strsplit(deparse(t), split = " ~ ")[[1]][1]
   if (length(data)) {
     namD <- names(data)
-
+    namD <- setdiff(namD, y_name)
     for (i in namD) {
       if (is.character(data[[i]])) {
         stop("Some columns in data are character! You may convert these columns to a dummy variable via model.matrix function or discard them.")
