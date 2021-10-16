@@ -1,20 +1,20 @@
 library(abess)
 
-for(seed in 1:10){
-  n <- 2000
+num <- 0
+#for(seed in 1:100){
+  n <- 1000
   p <- 100
   support.size <- 3
   dataset <- generate.data(n, p, support.size,
-                           family = "gamma", seed = seed*18)
+                           family = "gamma", seed = 16)
   
   abess_fit <- abess(
     dataset[["x"]],
     dataset[["y"]],
     family = "gamma",
     tune.type = "cv",
-    #newton = "exact",
     newton.thresh = 1e-8,
-    support.size = support.size,
+    support.size = 0:10,
     #always.include = which(dataset[["beta"]] != 0)
   )
   
@@ -25,14 +25,13 @@ for(seed in 1:10){
   est_index <- coef_value@i[-1]
   true_index <- which(dataset[["beta"]]!= 0)
   
-  cat(true_index-est_index,";")
+  cat(true_index,':',est_index,";")
   
-  start_point <- rep(1,length(true_index))
-  coef0 <- abs(min(dataset[["x"]][, true_index] %*% start_point)) + 1
-  #oracle_est <- glm(y ~ ., data = dat, family = "Gamma",start = c(coef0,start_point))
-  
-  #cat(oracle_est)
-}
+  if(length(est_index)==support.size && true_index==est_index){
+    cat(seed," ")
+    num = num+1
+  }
+#}
 
 
 

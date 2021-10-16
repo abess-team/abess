@@ -1599,18 +1599,11 @@ public:
       coef(0) += abs(min_xb) + 0.1;
     }
 
-    //test
-    this->primary_model_fit_max_iter = 500;
-    int j = 0;
-    bool condition1;
-    bool condition2;
-    bool condition3;
-    static int _num_item = 0;
-    _num_item++;
-    //test end
-    
+
+    this->primary_model_fit_max_iter = 200;
     // Approximate Newton method
-    if (this->approximate_Newton){
+    //if (this->approximate_Newton)
+    {
       double step = 1;
       Eigen::VectorXd g(p + 1);
       Eigen::VectorXd coef_new;
@@ -1620,13 +1613,12 @@ public:
       Eigen::VectorXd W = EY.array().square() * weights.array();
       double loglik_new = DBL_MAX, loglik = -neg_loglik_loss(X,y,weights,coef);
 
-      for (j = 0; j < this->primary_model_fit_max_iter; j++){
+      for (int j = 0; j < this->primary_model_fit_max_iter; j++){
         for (int i = 0; i < p + 1; i++){
           h_diag(i) = X.col(i).cwiseProduct(W).dot(X.col(i)) + 2 * this->lambda_level; // diag of Hessian 
           // we can find h_diag(i) >= 0
           if(h_diag(i) < 1e-7){
             h_diag(i) = 1e7;
-            //cout << _num_item << "th:h_diag(" << i << ") < 1e-7" << endl; //test
           } 
           else 
             h_diag(i) = 1.0 / h_diag(i);
@@ -1643,8 +1635,8 @@ public:
           loglik_new = -neg_loglik_loss(X,y,weights,coef_new);
         }
 
-        condition1 = step < this->primary_model_fit_epsilon;
-        condition2 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
+        bool condition1 = step < this->primary_model_fit_epsilon;
+        bool condition2 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
         if (condition1||condition2){
           break;
         }
@@ -1657,6 +1649,7 @@ public:
       }
     }
     // IWLS method
+    /*
     else{ 
       T4 X_new(X);
       Eigen::MatrixXd lambdamat = Eigen::MatrixXd::Identity(p + 1, p + 1);
@@ -1693,17 +1686,7 @@ public:
       }
       
     }
-    
-    //test
-    if(_num_item == 1){
-      cout << endl << "max iter:" << this->primary_model_fit_max_iter << ", isAppro:" << this->approximate_Newton << endl;
-    }
-    
-    //Eigen::VectorXd g = X.transpose() * (expect_y(X,coef)-y).cwiseProduct(weights);
-    //cout << _num_item << "th numIter:" << j << ", gradNorm:" << g.squaredNorm() << ", c1:" << condition1 << ", c2:" << condition2 << endl ;
-    //test end
-
-
+    */
     beta = coef.tail(p).eval();
     coef0 = coef(0);
     return true;
@@ -1718,8 +1701,7 @@ public:
         return DBL_MAX;
     }
     return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) / X.rows();
-    // return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) + this->lambda_level * (beta.squaredNorm() + coef0*coef0);
-  }
+   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
   {
@@ -1781,10 +1763,9 @@ public:
       enp += adjoint_eigen_solver.eigenvalues()(i) / (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
     }
     return enp;
-    
   }
 private:
-  double log_threshold = 1e-7; // use before log 
+  double log_threshold = 0; // use before log 
   double neg_loglik_loss(T4 &design, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef)
   {
     Eigen::VectorXd Xbeta = design * coef;
@@ -1793,8 +1774,7 @@ private:
         return DBL_MAX;
     }
     return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) / design.rows();
-    //return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) + this->lambda_level * coef.squaredNorm();
-  }
+   }
   Eigen::VectorXd expect_y(T4 &design, Eigen::VectorXd &coef){
     Eigen::VectorXd eta = design * coef;
     //assert(eta.minCoeff() >= 0);
