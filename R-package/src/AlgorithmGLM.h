@@ -3,7 +3,7 @@
 
 #include "Algorithm.h"
 #include "model_fit.h"
-#include <iostream> //test
+
 using namespace std;
 
 template <class T4>
@@ -1578,8 +1578,7 @@ public:
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size)
   {
     if (x.cols() == 0)
-    {
-      // coef0 needn't lambda 
+    { 
       coef0 = weights.sum() / weights.dot(y);
       return true;
     }
@@ -1595,7 +1594,7 @@ public:
 
     // modify start point to make sure Xbeta > 0
     double min_xb = (X*coef).minCoeff();
-    if(min_xb < this->log_threshold){
+    if(min_xb < this->threshold){
       coef(0) += abs(min_xb) + 0.1;
     }
 
@@ -1697,8 +1696,8 @@ public:
     int n = X.rows();
     Eigen::VectorXd Xbeta = X * beta + Eigen::VectorXd::Ones(n) * coef0;
     for(int i=0; i < Xbeta.size(); i++){
-      if(Xbeta(i) < this->log_threshold) {
-        Xbeta(i) = this->log_threshold;
+      if(Xbeta(i) < this->threshold) {
+        Xbeta(i) = this->threshold;
       }
     }
     return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) / X.rows();
@@ -1766,33 +1765,33 @@ public:
     return enp;
   }
 private:
-  double log_threshold = 0; // use before log 
+  double threshold = 1e-20; // use before log or inverse to avoid inf
   double neg_loglik_loss(T4 &design, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef)
   {
     Eigen::VectorXd Xbeta = design * coef;
     for(int i=0; i < Xbeta.size(); i++){
-      if(Xbeta(i) < this->log_threshold) {
-        Xbeta(i) = this->log_threshold;
+      if(Xbeta(i) < this->threshold) {
+        Xbeta(i) = this->threshold;
       }
     }
     return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) / design.rows();
    }
   Eigen::VectorXd expect_y(T4 &design, Eigen::VectorXd &coef){
     Eigen::VectorXd eta = design * coef;
-    //assert(eta.minCoeff() >= 0);
+    //assert(eta.minCoeff() >= 0); // only use expect_y in where this can be guaranteed.
     for(int i = 0; i < eta.size(); i++){
-      if(eta(i) < 1e-20){
-        eta(i) = 1e-20; 
+      if(eta(i) < this->threshold){
+        eta(i) = this->threshold; 
       }
     }
     return eta.cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
   }
   Eigen::VectorXd expect_y(T4 &data_matrix, Eigen::VectorXd &beta, double &coef0){
     Eigen::VectorXd eta = data_matrix * beta + Eigen::VectorXd::Ones(data_matrix.rows()) * coef0;
-    //assert(eta.minCoeff() >= 0);
+    //assert(eta.minCoeff() >= 0); // only use expect_y in where this can be guaranteed.
     for(int i = 0; i < eta.size(); i++){
-      if(eta(i) < 1e-20){
-        eta(i) = 1e-20; 
+      if(eta(i) < this->threshold){
+        eta(i) = this->threshold; 
       }
     }
     return eta.cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
