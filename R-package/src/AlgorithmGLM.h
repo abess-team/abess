@@ -1697,8 +1697,9 @@ public:
     int n = X.rows();
     Eigen::VectorXd Xbeta = X * beta + Eigen::VectorXd::Ones(n) * coef0;
     for(int i=0; i < Xbeta.size(); i++){
-      if(Xbeta(i) < this->log_threshold)
-        return DBL_MAX;
+      if(Xbeta(i) < this->log_threshold) {
+        Xbeta(i) = this->log_threshold;
+      }
     }
     return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) / X.rows();
    }
@@ -1770,8 +1771,9 @@ private:
   {
     Eigen::VectorXd Xbeta = design * coef;
     for(int i=0; i < Xbeta.size(); i++){
-      if(Xbeta(i) < this->log_threshold)
-        return DBL_MAX;
+      if(Xbeta(i) < this->log_threshold) {
+        Xbeta(i) = this->log_threshold;
+      }
     }
     return (Xbeta.cwiseProduct(y)-Xbeta.array().log().matrix()).dot(weights) / design.rows();
    }
