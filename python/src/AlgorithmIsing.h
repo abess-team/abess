@@ -116,7 +116,7 @@ public:
 
     ML theta = this->set_theta(beta, A, x.cols());
     ML prob, first_der, delta_theta, last_theta, exp_odd;
-    long double l0, l1, step = 1.0, alpha = 0.1, scale = 0.5;
+    long double l0, l1 = loss0 + 1, step = 1.0, alpha = 0.1, scale = 0.5;
 
     l0 = (long double) this->neg_loglik_loss(x, y, weights, beta, coef0, A, g_index, g_size);
 

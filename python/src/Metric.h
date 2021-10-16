@@ -70,7 +70,7 @@ public:
     {
       T2 beta_init;
       T3 coef0_init;
-      if (model_type == 8){
+      if (model_type == 8 || model_type == 9){
         coef_set_zero(p*(p-1)/2, M, beta_init, coef0_init);
       }else{
         coef_set_zero(p, M, beta_init, coef0_init);
@@ -271,7 +271,7 @@ public:
 
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N, algorithm->model_type);
     T4 X_A;
-    if (algorithm->model_type == 8){
+    if (algorithm->model_type == 8 || algorithm->model_type == 9){
       X_A = train_x;
     }else{
       X_A = X_seg(train_x, train_n, A_ind);
@@ -294,7 +294,7 @@ public:
   double fit_and_evaluate_in_metric(Algorithm<T1, T2, T3, T4, T5> *algorithm, Data<T1, T2, T3, T4, T5> &data, std::vector<Algorithm<T1, T2, T3, T4, T5> *> algorithm_list, FIT_ARG<T2, T3, T5> &fit_arg)
   {
     int N= data.g_num;;
-    if (algorithm->model_type == 8){
+    if (algorithm->model_type == 8 || algorithm->model_type == 9){
       N = data.p * (data.p - 1) / 2;
     }
     algorithm->update_sparsity_level(fit_arg.support_size);

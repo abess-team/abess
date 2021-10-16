@@ -19,6 +19,7 @@ using namespace Rcpp;
 #include "AlgorithmPCA.h"
 #include "AlgorithmGLM.h"
 #include "AlgorithmIsing.h"
+#include "AlgorithmGraph.h"
 #include "Metric.h"
 #include "path.h"
 #include "utilities.h"
@@ -148,6 +149,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     {
       algorithm_uni_dense_long = new abessIsing<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
     }
+    else if (model_type == 9)
+    {
+      algorithm_uni_dense = new abessGraph<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+    }
   }
   else
   {
@@ -182,6 +187,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     else if (model_type == 8)
     {
       algorithm_uni_sparse_long = new abessIsing<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+    }
+    else if (model_type == 9)
+    {
+      algorithm_uni_sparse = new abessGraph<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
     }
   }
 
@@ -233,6 +242,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
         {
           algorithm_list_uni_dense_long[i] = new abessIsing<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
         }
+        else if (model_type == 9)
+        {
+          algorithm_list_uni_dense[i] = new abessGraph<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        }
       }
       else
       {
@@ -267,6 +280,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
         else if (model_type == 8)
         {
           algorithm_list_uni_sparse_long[i] = new abessIsing<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        }
+        else if (model_type == 9)
+        {
+          algorithm_list_uni_sparse[i] = new abessGraph<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
         }
       }
     }
@@ -532,11 +549,12 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   std::srand(123);
 #endif
   bool is_parallel = thread != 1;
+  cout<<"abessCpp in\n";///
 
   Data<T1, T2, T3, T4, T5> data(x, y, data_type, weight, is_normal, g_index, status, sparse_matrix);
 
   int N = data.g_num;
-  if (model_type == 8){
+  if (model_type == 8 || model_type == 9){
     N = data.p * (data.p - 1) / 2;
   }
 
@@ -581,7 +599,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
   Result<T2, T3, T5> result;
   vector<Result<T2, T3, T5>> result_list(Kfold);
-  // cout<<"Path"<<endl;///
+  cout<<"Path\n";///
   if (path_type == 1)
   {
     if (is_cv)
@@ -620,7 +638,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     gs_path(data, algorithm, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, K_max, epsilon, is_parallel, result);
   }
 
-
+  cout<<"Get best\n";///
   // Get bestmodel index && fit bestmodel
   int min_loss_index_row = 0, min_loss_index_col = 0, s_size = sequence.size(), lambda_size = lambda_seq.size();
   Eigen::Matrix<T2, Dynamic, Dynamic> beta_matrix(s_size, lambda_size);
@@ -686,7 +704,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           T2 beta_init;
           T3 coef0_init;
           T5 bd_init;
-          if (algorithm_list[algorithm_index]->model_type == 8){
+          if (algorithm_list[algorithm_index]->model_type == 8 || algorithm_list[algorithm_index]->model_type == 9){
             coef_set_zero(data.p * (data.p - 1) / 2, M, beta_init, coef0_init);
             bd_init = T5::Zero(data.p * (data.p - 1) / 2);
           }else{
@@ -750,7 +768,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           T2 beta_init;
           T3 coef0_init;
           T5 bd_init;
-          if (algorithm->model_type == 8){
+          if (algorithm->model_type == 8 || algorithm->model_type == 9){
             coef_set_zero(data.p * (data.p - 1) / 2, M, beta_init, coef0_init);
             bd_init = T5::Zero(data.p * (data.p - 1) / 2);
           }else{

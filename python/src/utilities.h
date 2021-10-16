@@ -181,4 +181,6 @@ void set_nonzeros(Eigen::SparseMatrix<double> &X, Eigen::SparseMatrix<double> &x
 
 // bool check_ill_condition(Eigen::MatrixXd &M);
 
+double matrix_relative_difference(const Eigen::MatrixXd&, const Eigen::MatrixXd&);
+
 #endif //BESS_UTILITIES_H

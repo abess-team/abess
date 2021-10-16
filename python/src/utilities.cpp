@@ -138,7 +138,7 @@ void VectorXd2Pointer(Eigen::Matrix<long double, Eigen::Dynamic, 1> x_vector, lo
 
 Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N, int model_type)
 {
-    if (model_type == 8)
+    if (model_type == 8 || model_type == 9)
     {
         return L;
     }
@@ -814,3 +814,9 @@ void add_constant_column(Eigen::SparseMatrix<double> &X)
 //     double l2 = svd.singularValues()(svd.singularValues().size()-1);
 //     return ((l2 == 0 || l1 / l2 > 1e+10) ? true : false);
 // }
+
+double matrix_relative_difference(const Eigen::MatrixXd &S1, const Eigen::MatrixXd &S2) {
+  double mean_value = (S1.norm() + S2.norm()) / 2;
+  Eigen::MatrixXd mat = S1 - S2;
+  return mat.norm() / mean_value;
+}
