@@ -434,7 +434,7 @@ public:
         }
         slice(beta, U_ind, beta_U);
 
-        if (this->model_type != 8){ // group is not supported in Ising now 
+        if (this->model_type != 8 || this->model_type != 9){ // group is not supported in Ising
           int pos = 0;
           for (int i = 0; i < this->U_size; i++)
           {
@@ -464,6 +464,13 @@ public:
         delete[] temp;
       }
 
+      // cout<<"beta_U:\n";
+      // for (int i=0;i<beta_U.size();i++){
+      //   int mi=this->map1(i, 0);
+      //   int mj=this->map1(i, 1);
+      //   cout<<" ("<<mi<<","<<mj<<") -> "<<beta_U(i)<<endl;
+      // }
+
       int num = -1;
       while (true)
       {
@@ -488,7 +495,7 @@ public:
 
         T5 bd_U = T5::Zero(this->U_size);
         this->sacrifice(*X_U, X_A, y, beta_U, beta_A, coef0, A_U, I_U, weights, g_index_U, g_size_U, this->U_size, A_ind, bd_U, U, U_ind, num);
-
+        
         for (int i = 0; i < always_select_U.size(); i++)
         {
           bd_U(always_select_U(i)) = DBL_MAX;
@@ -629,10 +636,10 @@ public:
     T2 beta_A_exchange;
     T3 coef0_A_exchange;
 
-    // cout << " | A_min_k : ";
-    // for (int i=0;i<A_min_k.size();i++) cout<<A(A_min_k(i))<<"("<<this->map1(A(A_min_k(i)), 0)<<","<<this->map1(A(A_min_k(i)), 1)<<") ";cout<<endl;
-    // cout << " | I_max_k : ";
-    // for (int i=0;i<I_max_k.size();i++) cout<<I(I_max_k(i))<<"("<<this->map1(I(I_max_k(i)), 0)<<","<<this->map1(I(I_max_k(i)), 1)<<") ";cout<<endl;
+    cout << " | A_min_k : \n";
+    for (int i=0;i<A_min_k.size();i++) cout<<" | ("<<this->map1(A(A_min_k(i)), 0)<<","<<this->map1(A(A_min_k(i)), 1)<<") -> "<<bd(A(A_min_k(i)))<<endl;
+    cout << " | I_max_k : \n";
+    for (int i=0;i<I_max_k.size();i++) cout<<" | ("<<this->map1(I(I_max_k(i)), 0)<<","<<this->map1(I(I_max_k(i)), 1)<<") -> "<<bd(I(I_max_k(i)))<<endl;
 
     double L;
     for (int k = C_max; k >= 1;)

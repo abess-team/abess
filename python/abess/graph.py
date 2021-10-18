@@ -52,7 +52,7 @@ class abessGraph(bess_base):
     """
 
     def __init__(self, max_iter=200, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, s_min=None, s_max=None,
-                 ic_type="aic", ic_coef=1.0, primary_model_fit_max_iter=200, primary_model_fit_epsilon=1e-3,
+                 ic_type="aic", ic_coef=1.0, primary_model_fit_max_iter=20, primary_model_fit_epsilon=1e-3,
                  always_select=[], alpha = None, cv = 1,
                  thread=1,
                  sparse_matrix=False,

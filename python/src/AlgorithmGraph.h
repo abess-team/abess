@@ -75,7 +75,9 @@ public:
       A2(T0 + i, 1) = mi;
       dense_number_vec(mi)++;
       dense_number_vec(mj)++;
+      cout<<"("<<mi<<","<<mj<<") ";///
     }
+    cout<<endl;///
 
     for (int i = 0; i < p; i++) {
       if (dense_number_vec(i) > 0) {
@@ -217,8 +219,14 @@ public:
             trp.push_back(triplet(i, i, 1 / this->S(i, i)));
           }
         }
-        
       }
+
+      // cout<<"\n iter = "<<iter<<" | W: \n";
+      // for (int i=0;i<W.rows();i++){
+      //   for (int j=0;j<W.cols();j++)
+      //     cout<<W(i, j)<<" ";
+      //   cout<<endl;
+      // }
 
       if (iter == (this->primary_model_fit_max_iter - 1)){
         break;
@@ -269,7 +277,14 @@ public:
   {
     cout<<"==> sacrifice\n";///
     int p = X.cols();
-    SparseMatrix<double> Omega = set_Omega(beta, A, p);
+    SparseMatrix<double> Omega = set_Omega(beta_A, A, p);
+
+    cout<<"Omega:\n";///
+    for (int i = 0; i < Omega.rows();i++){///
+        for (int j = 0; j < Omega.cols();j++)
+          cout<<Omega.coeff(i, j)<<" ";
+      cout<<endl;
+    }
 
     // CholmodSimplicialLLT<SparseMatrix<double> > solverD;
     SimplicialLLT<SparseMatrix<double> > solverD;
@@ -284,7 +299,8 @@ public:
     for (int i = 0; i < A.size(); i++){
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
-      bd(A(i)) =  - fabs(Omega.coeff(mi, mj));
+      bd(A(i)) = fabs(Omega.coeff(mi, mj));
+      // cout<<" > backward: ("<<mi<<","<<mj<<") "<<bd(A(i))<<endl;
       // Alter method
       // double delta_ij = W(mi, mi) * W(mj, mj) - W(mi, mj) * W(mi, mj);
       // bd(A(i)) = fabs(-2 * S(mi, mj) * Omega.coeff(mi, mj) - log(1 - 2 * W(mi, mj) * Omega.coeff(mi, mj) - delta_ij * Omega.coeff(mi, mj) * Omega.coeff(mi, mj)));
@@ -295,6 +311,7 @@ public:
       int mi = this->map1(I(i), 0);
       int mj = this->map1(I(i), 1);
       bd(I(i)) = fabs(D(mi, mj));
+      // cout<<" > forward: ("<<mi<<","<<mj<<") "<<bd(I(i))<<endl;
       // Alter method
       // double delta_ij = W(mi, mi) * W(mj, mj) - W(mi, mj) * W(mi, mj);
       // double t_ij = W(mi, mj) / delta_ij;
