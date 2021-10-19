@@ -25,20 +25,18 @@ public:
   // }
 
   MatrixXd S;
-  VectorXd Omega_diag;
 
   VectorXi inital_screening(T4 &X, VectorXd &y, VectorXd &beta, double &coef0, VectorXi &A, VectorXi &I, VectorXd &bd, VectorXd &weights,
                             VectorXi &g_index, VectorXi &g_size, int &N)
   {
-    cout<<"==> init\n";///
+    // cout<<"==> init\n";///
     if (bd.size() == 0)
     {
       // variable initialization
       // int n = X.rows();
       int p = X.cols();
-      cout<<"p = "<<p<<", betasize = "<<beta.size()<<endl;///
-      bd = VectorXd::Zero(p*(p - 1)/2);
-      this->Omega_diag = VectorXd::Zero(p);
+      // cout<<"p = "<<p<<", betasize = "<<beta.size()<<endl;///
+      bd = VectorXd::Zero(p*(p + 1)/2);
 
       // cov
       MatrixXd X1 = X;
@@ -49,42 +47,49 @@ public:
         int mj = this->map1(i, 1);
         bd(i) = fabs(this->S(mi, mj) / sqrtf(this->S(mi, mi) * this->S(mj, mj)));
       }
+
+      for (int i = 0; i < this->always_select.size(); i++)
+      {
+        bd(this->always_select(i)) = DBL_MAX;
+      }
     }
 
     // get Active-set A according to max_k bd
     VectorXi A_new = max_k(bd, this->sparsity_level);
-    cout<<"==> init end\n";///
+    // cout<<"==> init end\n";///
     return A_new;
   };
 
   bool primary_model_fit(T4 &x, VectorXd &y, VectorXd &weights, VectorXd &beta, double &coef0, double loss0, VectorXi &A, VectorXi &g_index, VectorXi &g_size)
   {
-    int T0 = A.size(), p = (this->S).cols();
-    cout<<"==> primary fit | T0 = "<<T0<<" | p = "<<p<<"\n";///
+    int T0 = A.size(), p = (this->S).cols(), T1 = A.size() - this->always_select.size();
     VectorXi dense_number_vec = VectorXi::Zero(p);
     vector<VectorXi> vec_non_zero_index_list(p);
     MatrixXd W = this->S, last_W = this->S;
-    MatrixXd A2(2 * T0, 2);
+    MatrixXd A2(2 * T1, 2);
     vector<triplet> trp;
 
+    int ind = 0;
     for (int i = 0; i < T0; i++){
       int mi = this->map1(A(i), 0), mj = this->map1(A(i), 1);
-      A2(i, 0) = mi;
-      A2(i, 1) = mj;
-      A2(T0 + i, 0) = mj;
-      A2(T0 + i, 1) = mi;
+      if (mi == mj) continue; 
+      A2(ind, 0) = mi;
+      A2(ind, 1) = mj;
+      A2(T1 + ind, 0) = mj;
+      A2(T1 + ind, 1) = mi;
       dense_number_vec(mi)++;
       dense_number_vec(mj)++;
-      cout<<"("<<mi<<","<<mj<<") ";///
+      ind++;
+      // cout<<"("<<mi<<","<<mj<<") ";///
     }
-    cout<<endl;///
+    // cout<<endl;///
 
     for (int i = 0; i < p; i++) {
       if (dense_number_vec(i) > 0) {
         int dense_number = dense_number_vec(i);
         VectorXi vec_non_zero_index(dense_number);
         int t = 0;
-        for (int j = 0; j < 2 * T0; j++) {
+        for (int j = 0; j < 2 * T1; j++) {
           if (A2(j, 1) == i) {
             if (A2(j, 0) == (p - 1)) {
               vec_non_zero_index(t++) = i;// ???
@@ -98,7 +103,7 @@ public:
       }
     }
 
-    cout<<" --> iter\n";///
+    // cout<<" --> iter\n";///
     int iter = 0;
     while (iter < this->primary_model_fit_max_iter) {
       for (int i = 0; i < p; ++i) {
@@ -238,8 +243,8 @@ public:
       }
     }
 
-    cout<<" --> iter end | iter = "<<iter<<"\n";///
-    for (int i = 0; i < 2 * T0 + p; i++) {
+    // cout<<" --> iter end | iter = "<<iter<<"\n";///
+    for (int i = 0; i < 2 * T1 + p; i++) {
       if (!isfinite(trp[i].value())) 
         // throw 1;
         return false;
@@ -257,34 +262,42 @@ public:
 
     // cout<<" --> restore beta\n";///
     beta = set_beta(Omega, A);
-    cout<<"==> primary fit end\n";///
+    // cout<<"==> primary fit end\n";///
     return true;
   };
 
   double neg_loglik_loss(T4 &X, VectorXd &y, VectorXd &weights, VectorXd &beta, double &coef0, VectorXi &A, VectorXi &g_index, VectorXi &g_size)
   {
-    cout<<"==> loss\n";///
+    // cout<<"==> loss\n";///
     int p = X.cols();
+    // cout<<"betasize "<<beta.size()<<" | p "<<p<<endl;///
     SparseMatrix<double> Omega = set_Omega(beta, A, p);
+    // cout<<"Omega:\n";///
+    // for (int i = 0; i < Omega.rows();i++){///
+    //     for (int j = 0; j < Omega.cols();j++)
+    //       cout<<Omega.coeff(i, j)<<" ";
+    //   cout<<endl;
+    // }
+
     SparseLU<SparseMatrix<double>, COLAMDOrdering<int> > SPARSELUSOLVER;
     SPARSELUSOLVER.compute(Omega);
     double log_Omega_det = SPARSELUSOLVER.logAbsDeterminant();
-    cout<<"==> loss end\n";///
+    // cout<<"==> loss end\n";///
     return (this->S * Omega).trace() - log_Omega_det;
   };
 
   void sacrifice(T4 &X, T4 &XA, VectorXd &y, VectorXd &beta, VectorXd &beta_A, double &coef0, VectorXi &A, VectorXi &I, VectorXd &weights, VectorXi &g_index, VectorXi &g_size, int N, VectorXi &A_ind, VectorXd &bd, VectorXi &U, VectorXi &U_ind, int num)
   {
-    cout<<"==> sacrifice\n";///
+    // cout<<"==> sacrifice\n";///
     int p = X.cols();
     SparseMatrix<double> Omega = set_Omega(beta_A, A, p);
 
-    cout<<"Omega:\n";///
-    for (int i = 0; i < Omega.rows();i++){///
-        for (int j = 0; j < Omega.cols();j++)
-          cout<<Omega.coeff(i, j)<<" ";
-      cout<<endl;
-    }
+    // cout<<"Omega:\n";///
+    // for (int i = 0; i < Omega.rows();i++){///
+    //     for (int j = 0; j < Omega.cols();j++)
+    //       cout<<Omega.coeff(i, j)<<" ";
+    //   cout<<endl;
+    // }
 
     // CholmodSimplicialLLT<SparseMatrix<double> > solverD;
     SimplicialLLT<SparseMatrix<double> > solverD;
@@ -294,6 +307,20 @@ public:
     solverD.compute(Omega);
     MatrixXd W = solverD.solve(eye);
     MatrixXd D = W - this->S;
+
+    // cout<<"W:\n";///
+    // for (int i = 0; i < W.rows();i++){///
+    //     for (int j = 0; j < W.cols();j++)
+    //       cout<<W.coeff(i, j)<<" ";
+    //   cout<<endl;
+    // }
+
+    // cout<<"D:\n";///
+    // for (int i = 0; i < D.rows();i++){///
+    //     for (int j = 0; j < D.cols();j++)
+    //       cout<<D.coeff(i, j)<<" ";
+    //   cout<<endl;
+    // }
 
     // backward
     for (int i = 0; i < A.size(); i++){
@@ -320,7 +347,7 @@ public:
       // }
       // bd(I(i)) = fabs(-2 * S(mi, mj) * t_ij + log(1 + 2 * W(mi, mj) * t_ij - delta_ij * t_ij * t_ij));
     }
-    cout<<"==> sacrifice end\n";///
+    // cout<<"==> sacrifice end\n";///
     return;
   };
 
@@ -330,9 +357,6 @@ public:
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
       beta(i) = Omega.coeff(mi, mj);
-    }
-    for (int i = 0; i < Omega.cols(); i++){
-      this->Omega_diag(i) = Omega.coeff(i, i);
     }
     return beta;
     // for (int i = 0; i < beta.size(); i++) cout<<beta(i)<<" ";cout<<endl;
@@ -344,10 +368,9 @@ public:
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
       Omega.insert(mi, mj) = beta(i);
-      Omega.insert(mj, mi) = beta(i);
-    }
-    for (int i = 0; i < p; i++){
-      Omega.insert(i, i) = this->Omega_diag(i);
+      if (mi != mj){
+        Omega.insert(mj, mi) = beta(i);
+      }
     }
     return Omega;
   }

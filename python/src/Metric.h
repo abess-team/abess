@@ -71,7 +71,7 @@ public:
       T2 beta_init;
       T3 coef0_init;
       if (model_type == 8 || model_type == 9){
-        coef_set_zero(p*(p-1)/2, M, beta_init, coef0_init);
+        coef_set_zero(p*(p+1)/2, M, beta_init, coef0_init);
       }else{
         coef_set_zero(p, M, beta_init, coef0_init);
       }
@@ -295,7 +295,7 @@ public:
   {
     int N= data.g_num;;
     if (algorithm->model_type == 8 || algorithm->model_type == 9){
-      N = data.p * (data.p - 1) / 2;
+      N = data.p * (data.p + 1) / 2;
     }
     algorithm->update_sparsity_level(fit_arg.support_size);
     algorithm->update_lambda_level(fit_arg.lambda);

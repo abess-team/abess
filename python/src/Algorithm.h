@@ -232,7 +232,7 @@ public:
 
   void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::VectorXi &status, Eigen::MatrixXd sigma)
   {
-    cout<<" Fit for sparsity = "<<this->sparsity_level<<endl;///
+    // cout<<" Fit for sparsity = "<<this->sparsity_level<<endl;///
     int T0 = this->sparsity_level;
     // this->status = status;
     this->cox_g = Eigen::VectorXd::Zero(0);
@@ -263,21 +263,21 @@ public:
       case 7: // PCA
         this->Sigma = sigma;
         break;
-      case 8: // Ising
+      case 8: // Ising (also Graph)
         this->ising_n = (long int) train_weight.sum();
       case 9: // Graph
         this->map1 = Eigen::MatrixXi::Zero(N, 2);
         this->map2 = Eigen::MatrixXi::Zero(train_x.cols(), train_x.cols());
         int i = 0, j = 0;
         for (int k = 0; k < N; k++){
-          if (i == j) {
-            i = 0; j++;
-          }
           this->map1(k, 0) = i;
           this->map1(k, 1) = j;
           this->map2(i, j) = k;
           this->map2(j, i) = k;
           i++;
+          if (i > j) {
+            i = 0; j++;
+          }
         }
         break;
     }
@@ -304,11 +304,11 @@ public:
     // input: this->beta_init, this->coef0_init, this->A_init, this->I_init
     // for splicing get A;for the others 0;
 
-    cout<<" initial screen "<<endl;///
+    // cout<<" initial screen "<<endl;///
     Eigen::VectorXi I, A = this->inital_screening(train_x, train_y, this->beta, this->coef0, this->A_init, this->I_init, this->bd, train_weight, g_index, g_size, N);
     
-    cout<<" A_init = ";///
-    for (int i=0;i<A.size();i++) cout<<"("<<this->map1(A(i), 0)<<","<<this->map1(A(i), 1)<<") ";cout<<endl;///
+    // cout<<" A_init = ";///
+    // for (int i=0;i<A.size();i++) cout<<"("<<this->map1(A(i), 0)<<","<<this->map1(A(i), 1)<<") ";cout<<endl;///
     I = Ac(A, N);
     
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N, this->model_type);
@@ -346,7 +346,7 @@ public:
     int always_select_size = this->always_select.size();
     int C_max = min(min(T0 - always_select_size, this->U_size - T0 - always_select_size), this->exchange_num);
 
-    cout<<" get_A"<<endl;///
+    // cout<<" get_A"<<endl;///
     this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size, N, this->tau, this->train_loss);
 
     // final fit
@@ -372,7 +372,7 @@ public:
     this->effective_number = this->effective_number_of_parameter(train_x, X_A, train_y, train_weight, this->beta, beta_A, this->coef0);
     this->group_df = A_ind.size();
 
-    cout<<" End Fit"<<endl;///
+    // cout<<" End Fit"<<endl;///
     return;
   };
 
@@ -505,8 +505,8 @@ public:
         bool exchange = this->splicing(*X_U, y, A_U, I_U, C_max, beta_U, coef0, bd_U, weights,
                                        g_index_U, g_size_U, this->U_size, tau, l0);
 
-        cout << "exchange A: ";
-        for (int i=0;i<A_U.size();i++) cout<<"("<<this->map1(A_U(i), 0)<<","<<this->map1(A_U(i), 1)<<") ";cout<<endl;///
+        // cout << "exchange A: ";
+        // for (int i=0;i<A_U.size();i++) cout<<"("<<this->map1(A_U(i), 0)<<","<<this->map1(A_U(i), 1)<<") ";cout<<endl;///
         // cout<<"  --> splicing num = "<<num<<endl;///
         // break;
 
@@ -517,7 +517,6 @@ public:
       }
 
       if (A_U.size() == 0 || A_U.maxCoeff() == T0 - 1){
-        // cout<<"End get A"<<endl;///
         break; // if A_U not change, stop
       }
 
@@ -636,10 +635,14 @@ public:
     T2 beta_A_exchange;
     T3 coef0_A_exchange;
 
-    cout << " | A_min_k : \n";
-    for (int i=0;i<A_min_k.size();i++) cout<<" | ("<<this->map1(A(A_min_k(i)), 0)<<","<<this->map1(A(A_min_k(i)), 1)<<") -> "<<bd(A(A_min_k(i)))<<endl;
-    cout << " | I_max_k : \n";
-    for (int i=0;i<I_max_k.size();i++) cout<<" | ("<<this->map1(I(I_max_k(i)), 0)<<","<<this->map1(I(I_max_k(i)), 1)<<") -> "<<bd(I(I_max_k(i)))<<endl;
+    // cout << " | A_min_k : \n";///
+    // for (int i=0;i<A_min_k.size();i++) cout<<" | ("<<this->map1(A(A_min_k(i)), 0)<<","<<this->map1(A(A_min_k(i)), 1)<<") -> "<<bd(A(A_min_k(i)))<<endl;
+    // cout << " | I_max_k : \n";
+    // for (int i=0;i<I_max_k.size();i++) cout<<" | ("<<this->map1(I(I_max_k(i)), 0)<<","<<this->map1(I(I_max_k(i)), 1)<<") -> "<<bd(I(I_max_k(i)))<<endl;
+
+    if (this->model_type == 9){
+      tau = train_loss * this->primary_model_fit_epsilon;
+    }
 
     double L;
     for (int k = C_max; k >= 1;)
@@ -663,21 +666,15 @@ public:
         L = train_loss + 1;
       }
 
-      if (this->model_type == 9){
-        tau = train_loss * this->primary_model_fit_epsilon;
-      }
-
       if (train_loss - L > tau)
       {
+        // cout<<"   ~~> exchange k = "<<k<<endl;///
         train_loss = L;
         A = A_exchange;
         I = Ac(A_exchange, N);
         slice_restore(beta_A_exchange, A_ind_exchange, beta);
         coef0 = coef0_A_exchange;
         C_max = k;
-
-        // cout<<"   ~~> exchange k = "<<k<<endl;///
-
         return true;
       }
       else

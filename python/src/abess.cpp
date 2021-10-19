@@ -549,13 +549,13 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   std::srand(123);
 #endif
   bool is_parallel = thread != 1;
-  cout<<"abessCpp in\n";///
+  // cout<<"abessCpp in\n";///
 
   Data<T1, T2, T3, T4, T5> data(x, y, data_type, weight, is_normal, g_index, status, sparse_matrix);
 
   int N = data.g_num;
   if (model_type == 8 || model_type == 9){
-    N = data.p * (data.p - 1) / 2;
+    N = data.p * (data.p + 1) / 2;
   }
 
   Eigen::VectorXi screening_A;
@@ -599,7 +599,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
   Result<T2, T3, T5> result;
   vector<Result<T2, T3, T5>> result_list(Kfold);
-  cout<<"Path\n";///
+  // cout<<"Path\n";///
   if (path_type == 1)
   {
     if (is_cv)
@@ -638,7 +638,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
     gs_path(data, algorithm, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, K_max, epsilon, is_parallel, result);
   }
 
-  cout<<"Get best\n";///
+  // cout<<"Get best\n";///
   // Get bestmodel index && fit bestmodel
   int min_loss_index_row = 0, min_loss_index_col = 0, s_size = sequence.size(), lambda_size = lambda_seq.size();
   Eigen::Matrix<T2, Dynamic, Dynamic> beta_matrix(s_size, lambda_size);
@@ -705,8 +705,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           T3 coef0_init;
           T5 bd_init;
           if (algorithm_list[algorithm_index]->model_type == 8 || algorithm_list[algorithm_index]->model_type == 9){
-            coef_set_zero(data.p * (data.p - 1) / 2, M, beta_init, coef0_init);
-            bd_init = T5::Zero(data.p * (data.p - 1) / 2);
+            coef_set_zero(data.p * (data.p + 1) / 2, M, beta_init, coef0_init);
+            bd_init = T5::Zero(data.p * (data.p + 1) / 2);
           }else{
             coef_set_zero(data.p, M, beta_init, coef0_init);
             bd_init = T5::Zero(data.p);
@@ -769,8 +769,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
           T3 coef0_init;
           T5 bd_init;
           if (algorithm->model_type == 8 || algorithm->model_type == 9){
-            coef_set_zero(data.p * (data.p - 1) / 2, M, beta_init, coef0_init);
-            bd_init = T5::Zero(data.p * (data.p - 1) / 2);
+            coef_set_zero(data.p * (data.p + 1) / 2, M, beta_init, coef0_init);
+            bd_init = T5::Zero(data.p * (data.p + 1) / 2);
           }else{
             coef_set_zero(data.p, M, beta_init, coef0_init);
             bd_init = T5::Zero(data.p);

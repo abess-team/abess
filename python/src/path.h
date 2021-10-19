@@ -28,7 +28,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4, T5> &data, Eigen::MatrixXd sigma, A
     int p = data.get_p();
     int N = data.g_num;
     if (algorithm->model_type == 8 || algorithm->model_type == 9){
-        N = p*(p-1) / 2;
+        N = p*(p+1) / 2;
     }
     int M = data.y.cols();
     Eigen::VectorXi g_index = data.g_index;
@@ -95,7 +95,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4, T5> &data, Eigen::MatrixXd sigma, A
     T2 beta_init;
     T3 coef0_init;
     if (algorithm->model_type == 8 || algorithm->model_type == 9){
-        coef_set_zero(p*(p-1) / 2, M, beta_init, coef0_init);
+        coef_set_zero(p*(p+1) / 2, M, beta_init, coef0_init);
     }else{
         coef_set_zero(p, M, beta_init, coef0_init);
     }
@@ -259,7 +259,7 @@ void gs_path(Data<T1, T2, T3, T4, T5> &data, Algorithm<T1, T2, T3, T4, T5> *algo
     T2 beta_init;
     T3 coef0_init;
     if (algorithm->model_type == 8 || algorithm->model_type == 9){
-        coef_set_zero(data.p * (data.p - 1) / 2, data.M, beta_init, coef0_init);
+        coef_set_zero(data.p * (data.p + 1) / 2, data.M, beta_init, coef0_init);
     }else{
         coef_set_zero(data.p, data.M, beta_init, coef0_init);
     }
