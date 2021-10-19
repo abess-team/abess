@@ -9,6 +9,9 @@
 * Python package
   * Support user-specified cross validation division by additional argument `cv_mask`. 
 
+* R package 
+  * Support generalized linear model when the link function is gamma distribution. It is help for the dataset with a positive valued and skewed response. 
+
 * Project development
   * Documentation
     * Add instruction for user-specified cross validation division.

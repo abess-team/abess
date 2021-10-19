@@ -485,23 +485,20 @@ test_that("abess (L2 regularization) works", {
 })
 
 test_that("abess (gamma) works", {
-  n <- 1000
+  skip_on_ci()
+  n <- 2000
   p <- 100
   support.size <- 3
   dataset <- generate.data(n, p, support.size,
-                           family = "gamma", seed = 16)
+                           family = "gamma", seed = 1)
   
   abess_fit <- abess(
     dataset[["x"]],
     dataset[["y"]],
     family = "gamma",
-    tune.type = "cv",
-    #newton = "exact",
-    newton.thresh = 1e-8,
+    tune.type = "cv", 
     support.size = 0:support.size
   )
-  plot(abess_fit, type = "tune")
   
   test_batch(abess_fit, dataset, Gamma)
-  
 })

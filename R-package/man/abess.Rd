@@ -9,7 +9,8 @@
 \method{abess}{default}(
   x,
   y,
-  family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
+  family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial",
+    "gamma"),
   tune.path = c("sequence", "gsection"),
   tune.type = c("gic", "ebic", "bic", "aic", "cv"),
   weight = NULL,
@@ -60,7 +61,9 @@ if y is presented as a numerical vector, it will be coerced into a factor.}
 \code{"binomial"} (binary response),
 \code{"poisson"} (non-negative count),
 \code{"cox"} (left-censored response),
-\code{"mgaussian"} (multivariate continuous response).
+\code{"mgaussian"} (multivariate continuous response), 
+\code{"multinomial"} (multi-class response), 
+\code{"gamma"} (positive continuous response). 
 Depending on the response. Any unambiguous substring can be given.}
 
 \item{tune.path}{The method to be used to select the optimal support size. For
