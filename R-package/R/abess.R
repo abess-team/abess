@@ -488,7 +488,7 @@ abess.default <- function(x,
   }
   if (family == "gamma") {
     if (any(y < 0)) {
-      stop("y must be positive integer value when family = 'gamma'.")
+      stop("y must be positive value when family = 'gamma'.")
     }
   }
   if (family == "cox") {
@@ -635,7 +635,7 @@ abess.default <- function(x,
   ## check parameters for sub-optimization:
   # 1:
   if (length(newton) == 2) {
-    if (family %in% c("binomial", "cox", "multinomial", "gamma")) {
+    if (family %in% c("binomial", "cox", "multinomial", "gamma", "poisson")) {
       newton <- "approx"
     }
   }
@@ -647,7 +647,7 @@ abess.default <- function(x,
   #     newton <- "auto"
   #   }
   # }
-  if (family %in% c("gaussian", "mgaussian", "poisson")) {
+  if (family %in% c("gaussian", "mgaussian")) {
     newton <- "exact"
   }
   newton_type <- switch(newton,

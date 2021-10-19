@@ -322,19 +322,22 @@ test_that("abess (cox) works", {
 })
 
 test_that("abess (poisson) works", {
-  skip("poisson")
+  #skip("poisson")
   n <- 200
   p <- 100
   support.size <- 3
   
   dataset <- generate.data(n, p, support.size,
-                           family = "poisson", seed = 1)
+                           family = "poisson", seed = 78)
   abess_fit <- abess(
     dataset[["x"]],
     dataset[["y"]],
     family = "poisson",
+    #newton = "exact",
     tune.type = "cv",
-    newton.thresh = 1e-8
+    newton.thresh = 1e-8,
+    #support.size = 0:support.size,
+    #always.include = which(dataset[['beta']]!=0)
   )
   test_batch(abess_fit, dataset, poisson)
 })
@@ -495,7 +498,7 @@ test_that("abess (gamma) works", {
     tune.type = "cv",
     #newton = "exact",
     newton.thresh = 1e-8,
-    #support.size = 0:support.size
+    support.size = 0:support.size
   )
   plot(abess_fit, type = "tune")
   

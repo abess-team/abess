@@ -451,63 +451,148 @@ public:
 
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
-
+    if (x.cols() == 0)
+    {
+      coef0 =  log(weights.dot(y) / weights.sum());
+      return true;
+    }
     int n = x.rows();
     int p = x.cols();
+    // expand data matrix to design matrix
     T4 X(n, p + 1);
+    Eigen::VectorXd coef = Eigen::VectorXd::Zero(p + 1);
     X.rightCols(p) = x;
     add_constant_column(X);
+    coef(0) = coef0;
+    coef.tail(p) = beta;
 
-    Eigen::MatrixXd lambdamat = Eigen::MatrixXd::Identity(p + 1, p + 1);
-    lambdamat(0, 0) = 0;
-
-    // Eigen::MatrixXd X_trans = X.transpose();
-    T4 X_new(n, p + 1);
-    Eigen::VectorXd beta0 = Eigen::VectorXd::Zero(p + 1);
-    beta0.tail(p) = beta;
-    beta0(0) = coef0;
-    Eigen::VectorXd eta = X * beta0;
-    Eigen::VectorXd expeta = eta.array().exp();
-    Eigen::VectorXd z = Eigen::VectorXd::Zero(n);
-    double loglik0 = (y.cwiseProduct(eta) - expeta).dot(weights);
-    double loglik1;
-
-    int j;
-    for (j = 0; j < this->primary_model_fit_max_iter; j++)
+    // Approximate Newton method
+    if (this->approximate_Newton)
     {
-      for (int i = 0; i < p + 1; i++)
-      {
-        // temp.col(i) = X_trans.col(i) * expeta(i) * weights(i);
-        X_new.col(i) = X.col(i).cwiseProduct(expeta).cwiseProduct(weights);
-      }
-      z = eta + (y - expeta).cwiseQuotient(expeta);
-      Eigen::MatrixXd XTX = X_new.transpose() * X + 2 * this->lambda_level * lambdamat;
-      // if (check_ill_condition(XTX)) return false;
-      beta0 = (XTX).ldlt().solve(X_new.transpose() * z);
-      eta = X * beta0;
+      this->primary_model_fit_max_iter = 200;
+      
+      double step = 1;
+      Eigen::VectorXd g(p + 1);
+      Eigen::VectorXd coef_new;
+      Eigen::VectorXd h_diag(p + 1);
+      Eigen::VectorXd desend_direction; // coef_new = coef + step * desend_direction
+      Eigen::VectorXd eta = X * coef;
       for (int i = 0; i <= n - 1; i++)
-      {
-        if (eta(i) < -30.0)
-          eta(i) = -30.0;
-        if (eta(i) > 30.0)
-          eta(i) = 30.0;
-      }
-      expeta = eta.array().exp();
-      loglik1 = (y.cwiseProduct(eta) - expeta).dot(weights);
-      bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
-      // bool condition1 = false;
-      bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
-      bool condition3 = abs(loglik1) < min(1e-3, this->tau);
-      if (condition1 || condition2 || condition3)
-      {
+        {
+          if (eta(i) < -30.0)
+            eta(i) = -30.0;
+          if (eta(i) > 30.0)
+            eta(i) = 30.0;
+        }
+      Eigen::VectorXd expeta = eta.array().exp();
+      double loglik_new = DBL_MAX, loglik = (y.cwiseProduct(eta) - expeta).dot(weights);
+     
+      for (int j = 0; j < this->primary_model_fit_max_iter; j++){
+        for (int i = 0; i < p + 1; i++){
+          if(i == 0){
+            h_diag(i) = X.col(i).cwiseProduct(expeta).cwiseProduct(weights).dot(X.col(i));// it shouldn't use lambda in h_diag(0)
+          }
+          else{
+            h_diag(i) = X.col(i).cwiseProduct(expeta).cwiseProduct(weights).dot(X.col(i)) + 2 * this->lambda_level; // diag of Hessian
+          }          
+          // we can find h_diag(i) >= 0
+          if (h_diag(i) < 1e-7)
+          {
+            h_diag(i) = 1e7;
+          }
+          else
+            h_diag(i) = 1.0 / h_diag(i);
+        }
+        
+        g = X.transpose() * (y - expeta).cwiseProduct(weights) - 2 * this->lambda_level * coef; // negtive gradient direction
+        desend_direction = g.cwiseProduct(h_diag);
+        coef_new = coef + step * desend_direction; // ApproXimate Newton method
+        eta = X * coef_new;
+        for (int i = 0; i <= n - 1; i++)
+        {
+          if (eta(i) < -30.0)
+            eta(i) = -30.0;
+          if (eta(i) > 30.0)
+            eta(i) = 30.0;
+        }
+        expeta = eta.array().exp();
+        loglik_new = (y.cwiseProduct(eta) - expeta).dot(weights);
+        
+        while (loglik_new < loglik && step > this->primary_model_fit_epsilon)
+        {
+          step = step / 2;
+          coef_new = coef + step * desend_direction;
+          eta = X * coef_new;
+          for (int i = 0; i <= n - 1; i++)
+          {
+          if (eta(i) < -30.0)
+            eta(i) = -30.0;
+          if (eta(i) > 30.0)
+            eta(i) = 30.0;
+          }
+          expeta = eta.array().exp();
+          loglik_new = (y.cwiseProduct(eta) - expeta).dot(weights);
+        }
 
-        break;
+        bool condition1 = step < this->primary_model_fit_epsilon;
+        bool condition2 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
+        if (condition1 || condition2)
+        {
+          break;
+        }
+
+        coef = coef_new;
+        loglik = loglik_new;
       }
-      loglik0 = loglik1;
+    }
+    else {
+      Eigen::MatrixXd lambdamat = Eigen::MatrixXd::Identity(p + 1, p + 1);
+      lambdamat(0, 0) = 0;
+
+      // Eigen::MatrixXd X_trans = X.transpose();
+      T4 X_new(n, p + 1);
+      Eigen::VectorXd eta = X * coef;
+      Eigen::VectorXd expeta = eta.array().exp();
+      Eigen::VectorXd z = Eigen::VectorXd::Zero(n);
+      double loglik0 = (y.cwiseProduct(eta) - expeta).dot(weights);
+      double loglik1;
+
+      for (int j = 0; j < this->primary_model_fit_max_iter; j++)
+      {
+        for (int i = 0; i < p + 1; i++)
+        {
+          // temp.col(i) = X_trans.col(i) * expeta(i) * weights(i);
+          X_new.col(i) = X.col(i).cwiseProduct(expeta).cwiseProduct(weights);
+        }
+        z = eta + (y - expeta).cwiseQuotient(expeta);
+        Eigen::MatrixXd XTX = X_new.transpose() * X + 2 * this->lambda_level * lambdamat;
+        // if (check_ill_condition(XTX)) return false;
+        coef = (XTX).ldlt().solve(X_new.transpose() * z);
+        eta = X * coef;
+        for (int i = 0; i <= n - 1; i++)
+        {
+          if (eta(i) < -30.0)
+            eta(i) = -30.0;
+          if (eta(i) > 30.0)
+            eta(i) = 30.0;
+        }
+        expeta = eta.array().exp();
+        loglik1 = (y.cwiseProduct(eta) - expeta).dot(weights);
+        bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
+        // bool condition1 = false;
+        bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
+        bool condition3 = abs(loglik1) < min(1e-3, this->tau);
+        if (condition1 || condition2 || condition3)
+        {
+
+          break;
+        }
+        loglik0 = loglik1;
+      }
     }
 
-    beta = beta0.tail(p).eval();
-    coef0 = beta0(0);
+    beta = coef.tail(p).eval();
+    coef0 = coef(0);
     return true;
   };
 
