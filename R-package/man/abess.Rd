@@ -9,7 +9,8 @@
 \method{abess}{default}(
   x,
   y,
-  family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
+  family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial",
+    "gamma"),
   tune.path = c("sequence", "gsection"),
   tune.type = c("gic", "ebic", "bic", "aic", "cv"),
   weight = NULL,
@@ -26,6 +27,7 @@
   important.search = NULL,
   warm.start = TRUE,
   nfolds = 5,
+  foldid = NULL,
   cov.update = FALSE,
   newton = c("exact", "approx"),
   newton.thresh = 1e-06,
@@ -60,7 +62,9 @@ if y is presented as a numerical vector, it will be coerced into a factor.}
 \code{"binomial"} (binary response),
 \code{"poisson"} (non-negative count),
 \code{"cox"} (left-censored response),
-\code{"mgaussian"} (multivariate continuous response).
+\code{"mgaussian"} (multivariate continuous response), 
+\code{"multinomial"} (multi-class response), 
+\code{"gamma"} (positive continuous response). 
 Depending on the response. Any unambiguous substring can be given.}
 
 \item{tune.path}{The method to be used to select the optimal support size. For
@@ -125,6 +129,9 @@ it would greatly reduce runtimes. Default: \code{important.search = 128}.}
 \item{warm.start}{Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.}
 
 \item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.}
+
+\item{foldid}{an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in. 
+The default \code{foldid = NULL} would generate a random foldid.}
 
 \item{cov.update}{A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE},
 use a covariance-based implementation; otherwise, a naive implementation.

@@ -3,6 +3,7 @@ python/src/test.cpp
 python/src/test.exe
 R-package/.Rproj.user/
 *.o
+*.exe
 .Rhistory
 .Rproj.user
 abess.Rcheck/*

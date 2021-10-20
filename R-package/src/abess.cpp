@@ -138,6 +138,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
       if (pca_n != -1)
         algorithm_uni_dense->pca_n = pca_n;
     }
+    else if(model_type == 8)
+    {
+      algorithm_uni_dense = new abessGamma<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+    }
   }
   else
   {
@@ -210,6 +214,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
           algorithm_list_uni_dense[i] = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
           if (pca_n != -1)
             algorithm_list_uni_dense[i]->pca_n = pca_n;
+        }
+        else if(model_type == 8)
+        {
+          algorithm_list_uni_dense[i] = new abessGamma<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
         }
       }
       else
