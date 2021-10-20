@@ -200,7 +200,7 @@ test_that("Group selection: abess (logistic) works", {
 test_that("Group selection: abess (poisson) works", {
   n <- 200
   J <- 100
-  k <- 4
+  k <- 3
   support_size <- 3
   
   dataset <-
