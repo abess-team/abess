@@ -38,8 +38,8 @@ test_batch <- function(abess_fit, dataset, family) {
   names(est_beta) <- NULL
   names(est_coef0) <- NULL
   
-  expect_equal(oracle_beta, est_beta, tolerance = 1e-3)
-  expect_equal(oracle_coef0, est_coef0, tolerance = 1e-3)
+  expect_equal(oracle_beta, est_beta, tolerance = 1e-2)
+  expect_equal(oracle_coef0, est_coef0, tolerance = 1e-2)
   
   ## deviance
   if (f[["family"]] == "gaussian") {
