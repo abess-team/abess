@@ -1681,7 +1681,6 @@ public:
       coef(0) += abs(min_xb) + 0.1;
     }
 
-    this->primary_model_fit_max_iter = 200;
     // Approximate Newton method
     if (this->approximate_Newton)
     {
