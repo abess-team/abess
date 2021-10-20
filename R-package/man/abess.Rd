@@ -27,6 +27,7 @@
   important.search = NULL,
   warm.start = TRUE,
   nfolds = 5,
+  foldid = NULL,
   cov.update = FALSE,
   newton = c("exact", "approx"),
   newton.thresh = 1e-06,
