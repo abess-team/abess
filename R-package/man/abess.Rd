@@ -130,6 +130,9 @@ it would greatly reduce runtimes. Default: \code{important.search = 128}.}
 
 \item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.}
 
+\item{foldid}{an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in. 
+The default \code{foldid = NULL} would generate a random foldid.}
+
 \item{cov.update}{A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE},
 use a covariance-based implementation; otherwise, a naive implementation.
 The naive method is more efficient than covariance-based method when \eqn{p >> n} and \code{important.search} is much large than its default value.
