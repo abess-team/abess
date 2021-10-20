@@ -666,6 +666,9 @@ abess.default <- function(x,
     max_newton_iter <- as.integer(max.newton.iter)
   } else {
     max_newton_iter <- ifelse(newton_type == 0, 10, 60)
+    if(family == "gamma" && newton_type == 1){
+      max_newton_iter <- 200
+    }    
   }
   # 3:
   stopifnot(is.numeric(newton.thresh) & newton.thresh > 0)
