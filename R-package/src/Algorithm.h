@@ -419,6 +419,7 @@ public:
       }
 
       int num = -1;
+      
       while (true)
       {
         num++;

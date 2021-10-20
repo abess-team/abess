@@ -118,7 +118,9 @@ generate.data <- function(n,
                           p,
                           support.size = NULL,
                           rho = 0,
-                          family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
+                          family = c("gaussian", "binomial", "poisson", 
+                                     "cox", "mgaussian", "multinomial", 
+                                     "gamma"),
                           beta = NULL,
                           cortype = 1,
                           snr = 10,
@@ -307,6 +309,23 @@ generate.data <- function(n,
     y <- apply(prob_y, 1, function(x) {
       sample(0:(length(x) - 1), size = 1, prob = x)
     })
+  }
+  if (family == "gamma") {
+    m <- 5 * sqrt(2 * log(p) / n)
+    if (is.null(input_beta)) {
+      # this is the true value of beta
+      beta[nonzero] <- stats::runif(support.size, m, 100 * m)
+    } else {
+      beta <- input_beta
+    }
+    # add noise
+    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    eta <- x %*% beta + stats::rnorm(n, 0, sigma)
+    # set coef_0 as + abs(min(eta)) + 1
+    eta <- eta + abs(min(eta)) + 1
+    # set the shape para of gamma uniformly in [0.1,100.1]
+    shape_para <- 100 * runif(n) + 0.1
+    y <- stats::rgamma(n,shape=shape_para,rate=shape_para*eta)
   }
   set.seed(NULL)
 

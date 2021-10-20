@@ -32,7 +32,9 @@ abess <- function(x, ...) UseMethod("abess")
 #' \code{"binomial"} (binary response),
 #' \code{"poisson"} (non-negative count),
 #' \code{"cox"} (left-censored response),
-#' \code{"mgaussian"} (multivariate continuous response).
+#' \code{"mgaussian"} (multivariate continuous response), 
+#' \code{"multinomial"} (multi-class response), 
+#' \code{"gamma"} (positive continuous response). 
 #' Depending on the response. Any unambiguous substring can be given.
 #' @param tune.path The method to be used to select the optimal support size. For
 #' \code{tune.path = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
@@ -316,7 +318,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' }
 abess.default <- function(x,
                           y,
-                          family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
+                          family = c("gaussian", "binomial", "poisson", "cox", 
+                                     "mgaussian", "multinomial", "gamma"),
                           tune.path = c("sequence", "gsection"),
                           tune.type = c("gic", "ebic", "bic", "aic", "cv"),
                           weight = NULL,
@@ -390,7 +393,8 @@ abess.default <- function(x,
     "poisson" = 3,
     "cox" = 4,
     "mgaussian" = 5,
-    "multinomial" = 6
+    "multinomial" = 6,
+    "gamma" = 8
   )
 
   ## check predictors:
@@ -484,6 +488,11 @@ abess.default <- function(x,
   if (family == "poisson") {
     if (any(y < 0)) {
       stop("y must be positive integer value when family = 'poisson'.")
+    }
+  }
+  if (family == "gamma") {
+    if (any(y < 0)) {
+      stop("y must be positive value when family = 'gamma'.")
     }
   }
   if (family == "cox") {
@@ -630,7 +639,7 @@ abess.default <- function(x,
   ## check parameters for sub-optimization:
   # 1:
   if (length(newton) == 2) {
-    if (family %in% c("binomial", "cox", "multinomial")) {
+    if (family %in% c("binomial", "cox", "multinomial", "gamma", "poisson")) {
       newton <- "approx"
     }
   }
@@ -642,7 +651,7 @@ abess.default <- function(x,
   #     newton <- "auto"
   #   }
   # }
-  if (family %in% c("gaussian", "mgaussian", "poisson")) {
+  if (family %in% c("gaussian", "mgaussian")) {
     newton <- "exact"
   }
   newton_type <- switch(newton,
@@ -657,6 +666,9 @@ abess.default <- function(x,
     max_newton_iter <- as.integer(max.newton.iter)
   } else {
     max_newton_iter <- ifelse(newton_type == 0, 10, 60)
+    if(family == "gamma" && newton_type == 1){
+      max_newton_iter <- 200
+    }    
   }
   # 3:
   stopifnot(is.numeric(newton.thresh) & newton.thresh > 0)
@@ -709,7 +721,8 @@ abess.default <- function(x,
       "poisson" = 2,
       "cox" = 3,
       "mgaussian" = 1,
-      "multinomial" = 2
+      "multinomial" = 2,
+      "gamma" = 2
     )
   } else {
     stopifnot(normalize %in% 0:3)
