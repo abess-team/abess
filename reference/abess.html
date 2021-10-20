@@ -187,7 +187,8 @@ multi-response modeling in polynomial times.</p>
 <span class='fu'>abess</span><span class='op'>(</span>
   <span class='va'>x</span>,
   <span class='va'>y</span>,
-  family <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"gaussian"</span>, <span class='st'>"binomial"</span>, <span class='st'>"poisson"</span>, <span class='st'>"cox"</span>, <span class='st'>"mgaussian"</span>, <span class='st'>"multinomial"</span><span class='op'>)</span>,
+  family <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"gaussian"</span>, <span class='st'>"binomial"</span>, <span class='st'>"poisson"</span>, <span class='st'>"cox"</span>, <span class='st'>"mgaussian"</span>, <span class='st'>"multinomial"</span>,
+    <span class='st'>"gamma"</span><span class='op'>)</span>,
   tune.path <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"sequence"</span>, <span class='st'>"gsection"</span><span class='op'>)</span>,
   tune.type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"gic"</span>, <span class='st'>"ebic"</span>, <span class='st'>"bic"</span>, <span class='st'>"aic"</span>, <span class='st'>"cv"</span><span class='op'>)</span>,
   weight <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -248,7 +249,9 @@ if y is presented as a numerical vector, it will be coerced into a factor.</p></
 <code>"binomial"</code> (binary response),
 <code>"poisson"</code> (non-negative count),
 <code>"cox"</code> (left-censored response),
-<code>"mgaussian"</code> (multivariate continuous response).
+<code>"mgaussian"</code> (multivariate continuous response), 
+<code>"multinomial"</code> (multi-class response), 
+<code>"gamma"</code> (positive continuous response). 
 Depending on the response. Any unambiguous substring can be given.</p></td>
     </tr>
     <tr>
@@ -345,6 +348,11 @@ it would greatly reduce runtimes. Default: <code>important.search = 128</code>.<
     <tr>
       <th>nfolds</th>
       <td><p>The number of folds in cross-validation. Default is <code>nfolds = 5</code>.</p></td>
+    </tr>
+    <tr>
+      <th>foldid</th>
+      <td><p>an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in. 
+The default <code>foldid = NULL</code> would generate a random foldid.</p></td>
     </tr>
     <tr>
       <th>cov.update</th>
@@ -616,28 +624,28 @@ we provide various criterion like GIC, AIC, BIC and cross-validation error to de
 #&gt; abess.default(x = dataset[["x"]], y = dataset[["y"]], family = "poisson", 
 #&gt;     tune.type = "cv")
 #&gt; 
-#&gt;    support.size        dev         cv
-#&gt; 1             0   44.95340  10.193650
-#&gt; 2             1  -31.62397   4.293688
-#&gt; 3             2 -100.57515 -10.572951
-#&gt; 4             3 -157.18472 -30.454725
-#&gt; 5             4 -160.75596 -31.017680
-#&gt; 6             5 -163.01916 -30.639520
-#&gt; 7             6 -164.82977 -30.130278
-#&gt; 8             7 -166.39686 -26.741696
-#&gt; 9             8 -167.33059 -27.338236
-#&gt; 10            9 -168.30048 -27.422068
-#&gt; 11           10 -168.98526 -27.256885
-#&gt; 12           11 -169.76250 -26.648112
-#&gt; 13           12 -170.25995 -27.385316
-#&gt; 14           13 -171.31745 -28.110821
-#&gt; 15           14 -171.54370 -28.381293
-#&gt; 16           15 -171.74975 -28.633670
-#&gt; 17           16 -171.85325 -28.087246
-#&gt; 18           17 -171.91807 -27.938664
-#&gt; 19           18 -171.94049 -28.146866
-#&gt; 20           19 -171.94879 -27.961969
-#&gt; 21           20 -171.95969 -27.895575</div><div class='input'>
+#&gt;    support.size        dev        cv
+#&gt; 1             0   44.95340  10.19365
+#&gt; 2             1  -31.62397   3.28437
+#&gt; 3             2 -100.57515 -10.57295
+#&gt; 4             3 -157.18472 -30.45472
+#&gt; 5             4 -160.75596 -31.01768
+#&gt; 6             5 -163.01916 -30.63952
+#&gt; 7             6 -164.82977 -30.13028
+#&gt; 8             7 -166.39686 -26.74170
+#&gt; 9             8 -167.33059 -27.33824
+#&gt; 10            9 -168.30048 -27.42207
+#&gt; 11           10 -168.98526 -27.25689
+#&gt; 12           11 -169.76250 -26.64814
+#&gt; 13           12 -170.25995 -27.38532
+#&gt; 14           13 -171.31745 -28.11082
+#&gt; 15           14 -171.54370 -28.38131
+#&gt; 16           15 -171.74975 -28.63372
+#&gt; 17           16 -171.85325 -28.85538
+#&gt; 18           17 -171.91807 -28.35201
+#&gt; 19           18 -171.94049 -28.14750
+#&gt; 20           19 -171.94879 -27.96317
+#&gt; 21           20 -171.95952 -27.89898</div><div class='input'>
 <span class='co'>################ Cox model ################</span>
 <span class='va'>dataset</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generate.data.html'>generate.data</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>p</span>, <span class='va'>support.size</span>, family <span class='op'>=</span> <span class='st'>"cox"</span><span class='op'>)</span>
 <span class='va'>abess_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abess</span><span class='op'>(</span><span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"x"</span><span class='op'>]</span><span class='op'>]</span>, <span class='va'>dataset</span><span class='op'>[[</span><span class='st'>"y"</span><span class='op'>]</span><span class='op'>]</span>,
