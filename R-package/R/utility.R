@@ -288,8 +288,8 @@ generate.data <- function(n,
     colnames(y) <- paste0("y", 1:y_dim)
   }
   if (family == "multinomial") {
-    m <- 5 * sqrt(2 * log(p) / n)
-    M <- 100 * m
+    m <- 2.5 * sqrt(2 * log(p) / n)
+    M <- 50 * m
     if (is.null(input_beta)) {
       beta[nonzero, ] <- matrix(stats::runif(support.size * y_dim, m, M),
         ncol = y_dim
@@ -389,9 +389,10 @@ abess_model_matrix <- function(object, data = environment(object),
     }
   }
   ############################################################
+  y_name <- strsplit(deparse(t), split = " ~ ")[[1]][1]
   if (length(data)) {
     namD <- names(data)
-
+    namD <- setdiff(namD, y_name)
     for (i in namD) {
       if (is.character(data[[i]])) {
         stop("Some columns in data are character! You may convert these columns to a dummy variable via model.matrix function or discard them.")

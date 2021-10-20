@@ -336,6 +336,7 @@ abess.default <- function(x,
                           important.search = NULL, 
                           warm.start = TRUE,
                           nfolds = 5,
+                          foldid = NULL, 
                           cov.update = FALSE,
                           newton = c("exact", "approx"),
                           newton.thresh = 1e-6,
@@ -687,6 +688,22 @@ abess.default <- function(x,
       "nfolds should be an integer value. It is coerced to be as.integer(nfolds). "
     )
     nfolds <- as.integer(nfolds)
+    
+    if (is.null(foldid)) {
+      cv_fold_id <- integer(0)
+    } else {
+      stopifnot(is.vector(foldid))
+      stopifnot(is.numeric(foldid))
+      stopifnot(length(foldid) == nobs)
+      check_integer_warning(
+        foldid,
+        "nfolds should be an integer value. It is coerced to be as.integer(foldid). "
+      )
+      foldid <- as.integer(foldid)
+      cv_fold_id <- foldid
+    }
+  } else {
+    cv_fold_id <- integer(0)
   }
   stopifnot(is.numeric(ic.scale))
   stopifnot(ic.scale >= 0)
@@ -853,7 +870,8 @@ abess.default <- function(x,
     covariance_update = covariance_update,
     sparse_matrix = sparse_X,
     splicing_type = splicing_type, 
-    sub_search = important_search
+    sub_search = important_search, 
+    cv_fold_id = cv_fold_id
   )
   t2 <- proc.time()
   # print(t2 - t1)
@@ -1039,7 +1057,7 @@ abess.formula <- function(formula, data, subset, na.action, ...) {
   mf <- eval(mf, parent.frame())
   mt <- attr(mf, "terms")
 
-  y <- model.response(mf, "numeric")
+  suppressWarnings(y <- model.response(mf, "numeric"))
   x <- abess_model_matrix(mt, mf, contrasts)[, -1]
   x <- as.matrix(x)
 

@@ -462,9 +462,27 @@ test_that("abess (always-include) works", {
   p <- 20
   support_size <- 3
   dataset <- generate.data(n, p, support_size)
-  abess_fit <-
-    abess(dataset[["x"]], dataset[["y"]], always.include = c(1))
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], always.include = c(1))
   expect_true(all((abess_fit[["beta"]][1, , drop = TRUE][-1] != 0)))
+})
+
+test_that("abess (L2 regularization, ridge estimation) works", {
+  n <- 50
+  p <- 20
+  support_size <- 3
+  lambda_value <- 1
+  dataset <- generate.data(n, p, support_size)
+  true_index <- which(dataset[["beta"]] != 0)
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], always.include = true_index, 
+                     lambda = lambda_value, support.size = length(true_index))
+  coef_est <- as.vector(coef(abess_fit))
+  coef_est <- coef_est[coef_est != 0]
+  if (!require("MASS")) {
+    install.packages("MASS")
+  }
+  dat <- cbind.data.frame("y" = dataset[["y"]], "x" = dataset[["x"]][, true_index])
+  oracle_est <- coef(lm.ridge(y ~ ., data = dat, lambda = lambda_value))
+  expect_equal(as.numeric(coef_est), as.numeric(oracle_est), tolerance = 1e-10)
 })
 
 test_that("abess (L2 regularization) works", {
@@ -475,13 +493,8 @@ test_that("abess (L2 regularization) works", {
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], lambda = 0.1)
   expect_true(all(diff(abess_fit[["edf"]]) > 0))
   expect_true(all(abess_fit[["edf"]] <= abess_fit[["support.size"]]))
-  
-  n <- 20
-  p <- 100
-  dataset <- generate.data(n, p, support_size)
   abess_fit2 <- abess(dataset[["x"]], dataset[["y"]])
-  expect_gt(extract(abess_fit)[["support.size"]],
-            extract(abess_fit2)[["support.size"]])
+  expect_true(extract(abess_fit)[["support.size"]] >= extract(abess_fit2)[["support.size"]])
 })
 
 test_that("abess (gamma) works", {

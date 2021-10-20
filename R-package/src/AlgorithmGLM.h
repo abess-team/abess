@@ -43,7 +43,7 @@ public:
     Eigen::VectorXd Pi = pi(X, y, beta0);
     Eigen::VectorXd log_Pi = Pi.array().log();
     Eigen::VectorXd log_1_Pi = (one - Pi).array().log();
-    double loglik1 = DBL_MAX, loglik0 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
+    double loglik1 = DBL_MAX, loglik0 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) - this->lambda_level * beta.cwiseAbs2().sum();
     Eigen::VectorXd W = Pi.cwiseProduct(one - Pi);
     for (int i = 0; i < n; i++)
     {
@@ -71,7 +71,7 @@ public:
         Pi = pi(X, y, beta1);
         log_Pi = Pi.array().log();
         log_1_Pi = (one - Pi).array().log();
-        loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
+        loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) - this->lambda_level * beta.cwiseAbs2().sum();
 
         while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon)
         {
@@ -80,7 +80,7 @@ public:
           Pi = pi(X, y, beta1);
           log_Pi = Pi.array().log();
           log_1_Pi = (one - Pi).array().log();
-          loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
+          loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) - this->lambda_level * beta.cwiseAbs2().sum();
         }
 
         bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
@@ -127,7 +127,7 @@ public:
         Pi = pi(X, y, beta0);
         log_Pi = Pi.array().log();
         log_1_Pi = (one - Pi).array().log();
-        loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
+        loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) - this->lambda_level * beta.cwiseAbs2().sum();
 
         bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
         bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
@@ -160,7 +160,7 @@ public:
     Eigen::VectorXd coef = Eigen::VectorXd::Ones(p + 1);
     coef(0) = coef0;
     coef.tail(p) = beta;
-    return -loglik_logit(X, y, coef, n, weights);
+    return -loglik_logit(X, y, coef, n, weights) + this->lambda_level * beta.cwiseAbs2().sum();
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
@@ -303,7 +303,7 @@ public:
   {
     int n = X.rows();
     Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-    return (y - X * beta - coef0 * one).array().square().sum() / n;
+    return (y - X * beta - coef0 * one).array().square().sum() / n + this->lambda_level * beta.cwiseAbs2().sum();
   }
 
   void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind)
@@ -469,8 +469,6 @@ public:
     // Approximate Newton method
     if (this->approximate_Newton)
     {
-      this->primary_model_fit_max_iter = 200;
-      
       double step = 1;
       Eigen::VectorXd g(p + 1);
       Eigen::VectorXd coef_new;
@@ -603,7 +601,7 @@ public:
     Eigen::VectorXd coef = Eigen::VectorXd::Ones(p + 1);
     coef(0) = coef0;
     coef.tail(p) = beta;
-    return -loglik_poiss(X, y, coef, n, weights);
+    return -loglik_poiss(X, y, coef, n, weights) + this->lambda_level * beta.cwiseAbs2().sum();
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
@@ -898,7 +896,7 @@ public:
 
   double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
-    return -loglik_cox(X, y, beta, weights);
+    return -loglik_cox(X, y, beta, weights) + this->lambda_level * beta.cwiseAbs2().sum();
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
@@ -1002,7 +1000,7 @@ public:
         return 0.;
 
       // int p = X.cols();
-      int n = X.rows();
+      // int n = X.rows();
 
       Eigen::VectorXd d;
       Eigen::MatrixXd h;
@@ -1079,7 +1077,7 @@ public:
   {
     int n = X.rows();
     Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, y.cols());
-    return (y - X * beta - array_product(one, coef0)).array().square().sum() / n / 2.0;
+    return (y - X * beta - array_product(one, coef0)).array().square().sum() / n / 2.0 + this->lambda_level * beta.cwiseAbs2().sum();
   }
 
   void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind)
@@ -1136,7 +1134,7 @@ public:
     int n = X.rows();
     int M = y.cols();
 
-    if (num == 0)
+    if (num == 0){
       if (p == this->XTy.rows())
       {
         this->XTy_U = this->XTy;
@@ -1150,6 +1148,7 @@ public:
         this->XTone_U.resize(p, M);
         this->mapping_U(U, U_ind);
       }
+    }
 
     Eigen::MatrixXd d;
     if (!this->covariance_update)
@@ -1250,7 +1249,7 @@ public:
     pi(X, y, beta0, Pi);
     Eigen::MatrixXd log_Pi = Pi.array().log();
     array_product(log_Pi, weights, 1);
-    double loglik1 = DBL_MAX, loglik0 = (log_Pi.array() * y.array()).sum();
+    double loglik1 = DBL_MAX, loglik0 = (log_Pi.array() * y.array()).sum() - this->lambda_level * beta.cwiseAbs2().sum();
 
     int j;
     if (this->approximate_Newton)
@@ -1278,7 +1277,7 @@ public:
         pi(X, y, beta1, Pi);
         log_Pi = Pi.array().log();
         array_product(log_Pi, weights, 1);
-        loglik1 = (log_Pi.array() * y.array()).sum();
+        loglik1 = (log_Pi.array() * y.array()).sum() - this->lambda_level * beta.cwiseAbs2().sum();
 
         bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
         // bool condition1 = false;
@@ -1390,7 +1389,7 @@ public:
         pi(X, y, beta0, Pi);
         log_Pi = Pi.array().log();
         array_product(log_Pi, weights, 1);
-        loglik1 = (log_Pi.array() * y.array()).sum();
+        loglik1 = (log_Pi.array() * y.array()).sum() - this->lambda_level * beta.cwiseAbs2().sum();
 
         bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
         // bool condition1 = false;
@@ -1481,7 +1480,7 @@ public:
 
     array_product(log_pr, weights, 1);
 
-    return -((log_pr.array() * y.array()).sum());
+    return -((log_pr.array() * y.array()).sum()) + this->lambda_level * beta.cwiseAbs2().sum();
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
