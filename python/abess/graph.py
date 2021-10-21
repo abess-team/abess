@@ -537,6 +537,14 @@ class abessIsing(bess_base):
 
                 ind = np.lexsort((tmp[:, 2], tmp[:, 1]))
                 X = tmp[ind, :]
+        
+        # always select (diag)
+        temp = -1
+        for i in range(p):
+            temp += (i + 1)
+            if temp not in self.always_select:
+                self.always_select += [temp]
+                support_sizes += 1
 
         # unused
         new_s_min = 0
@@ -572,22 +580,22 @@ class abessIsing(bess_base):
                               self.sparse_matrix,
                               self.splicing_type,
                               self.important_search,
-                              int(p * (p - 1) / 2),
-                              1 * 1, 1, 1, 1, 1, 1, int(p * (p - 1) / 2)
+                              int(p * (p + 1) / 2),
+                              1 * 1, 1, 1, 1, 1, 1, int(p * (p + 1) / 2)
                               )
                               
-        self.coef_ = result[0].reshape(int(p * (p - 1) / 2), 1)
+        self.coef_ = result[0].reshape(int(p * (p + 1) / 2), 1)
         self.theta_ = np.zeros((p, p))
 
         i = 0
         j = 0
-        for k in range(0, int(p * (p - 1) / 2)):
-            if (i == j):
-                i = 0
-                j += 1
+        for k in range(0, int(p * (p + 1) / 2)):
             self.theta_[i, j] = self.coef_[k, 0]
             self.theta_[j, i] = self.coef_[k, 0]
             i += 1
+            if (i > j):
+                i = 0
+                j += 1
 
         return self
 

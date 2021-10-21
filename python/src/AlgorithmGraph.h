@@ -272,18 +272,16 @@ public:
     int p = X.cols();
     // cout<<"betasize "<<beta.size()<<" | p "<<p<<endl;///
     SparseMatrix<double> Omega = set_Omega(beta, A, p);
-    // cout<<"Omega:\n";///
-    // for (int i = 0; i < Omega.rows();i++){///
-    //     for (int j = 0; j < Omega.cols();j++)
-    //       cout<<Omega.coeff(i, j)<<" ";
-    //   cout<<endl;
-    // }
+
+    MatrixXd X1 = X;
+    MatrixXd centered = X1.rowwise() - X1.colwise().mean();
+    MatrixXd S = (centered.adjoint() * centered) / (X1.rows() - 1);
 
     SparseLU<SparseMatrix<double>, COLAMDOrdering<int> > SPARSELUSOLVER;
     SPARSELUSOLVER.compute(Omega);
     double log_Omega_det = SPARSELUSOLVER.logAbsDeterminant();
     // cout<<"==> loss end\n";///
-    return (this->S * Omega).trace() - log_Omega_det;
+    return (S * Omega).trace() - log_Omega_det;
   };
 
   void sacrifice(T4 &X, T4 &XA, VectorXd &y, VectorXd &beta, VectorXd &beta_A, double &coef0, VectorXi &A, VectorXi &I, VectorXd &weights, VectorXi &g_index, VectorXi &g_size, int N, VectorXi &A_ind, VectorXd &bd, VectorXi &U, VectorXi &U_ind, int num)

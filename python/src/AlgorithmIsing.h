@@ -54,7 +54,6 @@ public:
 
       ML chisq_matrix = ML::Zero(p, p);
       VL chisq_res = VL::Zero(N);
-      int num = 0;
 
       for (int i = 1; i < p; i++){
         for (int j = 0; j < i; j++){
@@ -80,11 +79,11 @@ public:
           exp = exp / this->ising_n;
 
           // chisq_res -> bd
-          bd(num) = pow(obs(0, 0) - exp(0, 0), 2) / exp(0, 0);
-          bd(num) += pow(obs(0, 1) - exp(0, 1), 2) / exp(0, 1);
-          bd(num) += pow(obs(1, 0) - exp(1, 0), 2) / exp(1, 0);
-          bd(num) += pow(obs(1, 1) - exp(1, 1), 2) / exp(1, 1);
-          num++;
+          int ind = this->map2(i, j);
+          bd(ind) = pow(obs(0, 0) - exp(0, 0), 2) / exp(0, 0);
+          bd(ind) += pow(obs(0, 1) - exp(0, 1), 2) / exp(0, 1);
+          bd(ind) += pow(obs(1, 0) - exp(1, 0), 2) / exp(1, 0);
+          bd(ind) += pow(obs(1, 1) - exp(1, 1), 2) / exp(1, 1);
         }
       }
 
@@ -231,6 +230,7 @@ public:
     for (int i = 0; i < A.size(); i++){
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
+      if (mi == mj) continue; // keep diag zero
       beta(i) = theta(mi, mj);
     }
     return beta;
@@ -243,6 +243,7 @@ public:
     for (int i = 0; i < A.size(); i++){
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
+      if (mi == mj) continue; // keep diag zero
       theta(mi, mj) = beta(i);
       theta(mj, mi) = beta(i);
     }
@@ -268,10 +269,11 @@ public:
     ML delta_theta = ML::Zero(p, p);
     VL w = weights.cast<long double>();
     
-    for(int i = 0; i < A.size(); i++) {
+    for (int i = 0; i < A.size(); i++) {
       // only for off-diagonal elements
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
+      if (mi == mj) continue;
 
       VL ans = ( prob.col(mi).cwiseProduct(prob.col(mi)) - prob.col(mi) ) + 
         ( prob.col(mj).cwiseProduct(prob.col(mj)) - prob.col(mj) );
@@ -295,6 +297,7 @@ public:
     for (int i = 0; i < A.size(); i++) {
       int mi = this->map1(A(i), 0);
       int mj = this->map1(A(i), 1);
+      if (mi == mj) continue;
       
       // VL xij = compute_Xij(x1, mi, mj);
       VL xij = x1.col(mi).cwiseProduct(x1.col(mj));
