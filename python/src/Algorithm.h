@@ -640,10 +640,6 @@ public:
     // cout << " | I_max_k : \n";
     // for (int i=0;i<I_max_k.size();i++) cout<<" | ("<<this->map1(I(I_max_k(i)), 0)<<","<<this->map1(I(I_max_k(i)), 1)<<") -> "<<bd(I(I_max_k(i)))<<endl;
 
-    if (this->model_type == 9){
-      tau = train_loss * this->primary_model_fit_epsilon;
-    }
-
     double L;
     for (int k = C_max; k >= 1;)
     {
