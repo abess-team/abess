@@ -246,9 +246,59 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
   }
 
   List out_result;
+  List out_result_pca;
+  // out_result.add("beta", best_beta);
+  // out_result.add("coef0", best_coef0);
+  // out_result.add("train_loss", best_train_loss);
+  // out_result.add("test_loss", best_test_loss);
+  // out_result.add("ic", best_ic);
+  // out_result.add("lambda", best_lambda);
   if (!sparse_matrix)
   {
-    if (y.cols() == 1)
+    if (model_type == 7)
+    {
+      int num = 0, pca_num = 3;/// number of PCs
+      Eigen::VectorXd y_vec = y.col(0).eval();
+
+      while (num++ < pca_num){
+      
+        out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p,
+                                                                                        weight, sigma,
+                                                                                        is_normal,
+                                                                                        algorithm_type, model_type, max_iter, exchange_num,
+                                                                                        path_type, is_warm_start,
+                                                                                        ic_type, ic_coef, is_cv, Kfold,
+                                                                                        sequence,
+                                                                                        lambda_seq,
+                                                                                        s_min, s_max, K_max, epsilon,
+                                                                                        lambda_min, lambda_max, nlambda,
+                                                                                        screening_size, powell_path,
+                                                                                        g_index,
+                                                                                        always_select,
+                                                                                        tau,
+                                                                                        primary_model_fit_max_iter, primary_model_fit_epsilon,
+                                                                                        early_stop, approximate_Newton,
+                                                                                        thread,
+                                                                                        covariance_update,
+                                                                                        sparse_matrix,
+                                                                                        cv_fold_id,
+                                                                                        algorithm_uni_dense, algorithm_list_uni_dense);
+        Eigen::VectorXd beta_next;
+        if (num == 1){
+          out_result_pca = out_result;
+        }else{
+          out_result.get_value_by_name("beta", beta_next);
+          out_result_pca.combine_beta(beta_next);
+        }
+
+        if (num < pca_num){
+          Eigen::MatrixXd temp = beta_next * beta_next.transpose();
+          Eigen::MatrixXd temp1 = temp * sigma;
+          sigma += temp1 * temp - temp1 - temp1.transpose();
+        }
+      }
+    }
+    else if (y.cols() == 1)
     {
 
       Eigen::VectorXd y_vec = y.col(0).eval();
