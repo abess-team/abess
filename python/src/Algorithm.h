@@ -111,8 +111,6 @@ public:
   T2 beta_warmstart;  /*warmstart beta.*/
   T3 coef0_warmstart; /*warmstart intercept.*/
 
-  Eigen::VectorXi status;
-
   Eigen::MatrixXd cox_hessian; /* hessian matrix for cox model. */
   Eigen::VectorXd cox_g;       /* score function for cox model. */
 
@@ -228,11 +226,10 @@ public:
 
   int get_l() { return this->l; }
 
-  void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::VectorXi &status, Eigen::MatrixXd sigma)
+  void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::MatrixXd sigma)
   {
 
     int T0 = this->sparsity_level;
-    // this->status = status;
     this->cox_g = Eigen::VectorXd::Zero(0);
 
     this->update_tau(train_n, N);

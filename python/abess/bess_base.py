@@ -416,20 +416,18 @@ class bess_base(BaseEstimator):
 
         # wrap with cpp
         # print("wrap enter.")#///
-        state = [0]
-        result = pywrap_abess(X, y, n, p, self.data_type, weight, Sigma,
+        result = pywrap_abess(X, y, n, p, weight, Sigma,
                               is_normal,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
                               ic_type_int, self.ic_coef, self.is_cv, self.cv,
                               g_index,
-                              state,
                               support_sizes,
                               alphas,
                               cv_fold_id,
                               new_s_min, new_s_max, new_K_max, self.epsilon,
                               new_lambda_min, new_lambda_max, self.n_lambda,
-                              self.is_screening, new_screening_size, self.powell_path,
+                              new_screening_size, self.powell_path,
                               self.always_select, self.tau,
                               self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
                               self.early_stop, self.approximate_Newton,
