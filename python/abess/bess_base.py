@@ -416,6 +416,7 @@ class bess_base(BaseEstimator):
 
         # wrap with cpp
         # print("wrap enter.")#///
+        number = 1
         result = pywrap_abess(X, y, n, p, weight, Sigma,
                               is_normal,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
@@ -436,6 +437,7 @@ class bess_base(BaseEstimator):
                               self.sparse_matrix,
                               self.splicing_type,
                               self.important_search,
+                              number,
                               p * M,
                               1 * M, 1, 1, 1, 1, 1, p
                               )

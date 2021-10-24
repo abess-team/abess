@@ -72,7 +72,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                bool sparse_matrix,
                int splicing_type,
                int sub_search,
-               Eigen::VectorXi cv_fold_id)
+               Eigen::VectorXi cv_fold_id,
+               int pca_num)
 {
 #ifdef _OPENMP
   // Eigen::initParallel();
@@ -246,23 +247,16 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
   }
 
   List out_result;
-  List out_result_pca;
-  // out_result.add("beta", best_beta);
-  // out_result.add("coef0", best_coef0);
-  // out_result.add("train_loss", best_train_loss);
-  // out_result.add("test_loss", best_test_loss);
-  // out_result.add("ic", best_ic);
-  // out_result.add("lambda", best_lambda);
   if (!sparse_matrix)
   {
     if (model_type == 7)
     {
-      int num = 0, pca_num = 3;/// number of PCs
+      int num = 0;/// number of PCs
       Eigen::VectorXd y_vec = y.col(0).eval();
 
       while (num++ < pca_num){
-      
-        out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p,
+        List out_result_pca;
+        out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p,
                                                                                         weight, sigma,
                                                                                         is_normal,
                                                                                         algorithm_type, model_type, max_iter, exchange_num,
@@ -284,11 +278,11 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                                                                                         cv_fold_id,
                                                                                         algorithm_uni_dense, algorithm_list_uni_dense);
         Eigen::VectorXd beta_next;
+        out_result_pca.get_value_by_name("beta", beta_next);
         if (num == 1){
-          out_result_pca = out_result;
+          out_result = out_result_pca;
         }else{
-          out_result.get_value_by_name("beta", beta_next);
-          out_result_pca.combine_beta(beta_next);
+          out_result.combine_beta(beta_next);
         }
 
         if (num < pca_num){
@@ -371,7 +365,50 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     }
     sparse_x.makeCompressed();
 
-    if (y.cols() == 1)
+    if (model_type == 7)
+    {
+      int num = 0;/// number of PCs
+      Eigen::VectorXd y_vec = y.col(0).eval();
+
+      while (num++ < pca_num){
+        List out_result_pca;
+        out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p,
+                                                                                                   weight, sigma,
+                                                                                                   is_normal,
+                                                                                                   algorithm_type, model_type, max_iter, exchange_num,
+                                                                                                   path_type, is_warm_start,
+                                                                                                   ic_type, ic_coef, is_cv, Kfold,
+                                                                                                   sequence,
+                                                                                                   lambda_seq,
+                                                                                                   s_min, s_max, K_max, epsilon,
+                                                                                                   lambda_min, lambda_max, nlambda,
+                                                                                                   screening_size, powell_path,
+                                                                                                   g_index,
+                                                                                                   always_select,
+                                                                                                   tau,
+                                                                                                   primary_model_fit_max_iter, primary_model_fit_epsilon,
+                                                                                                   early_stop, approximate_Newton,
+                                                                                                   thread,
+                                                                                                   covariance_update,
+                                                                                                   sparse_matrix,
+                                                                                                   cv_fold_id,
+                                                                                                   algorithm_uni_sparse, algorithm_list_uni_sparse);
+        Eigen::VectorXd beta_next;
+        out_result_pca.get_value_by_name("beta", beta_next);
+        if (num == 1){
+          out_result = out_result_pca;
+        }else{
+          out_result.combine_beta(beta_next);
+        }
+
+        if (num < pca_num){
+          Eigen::MatrixXd temp = beta_next * beta_next.transpose();
+          Eigen::MatrixXd temp1 = temp * sigma;
+          sigma += temp1 * temp - temp1 - temp1.transpose();
+        }
+      }
+    }
+    else if (y.cols() == 1)
     {
 
       Eigen::VectorXd y_vec = y.col(0).eval();
@@ -920,6 +957,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                   bool sparse_matrix,
                   int splicing_type,
                   int sub_search,
+                  int pca_num,
                   double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
@@ -964,9 +1002,10 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                           sparse_matrix,
                           splicing_type,
                           sub_search,
-                          cv_fold_id_Vec);
+                          cv_fold_id_Vec,
+                          pca_num);
 
-  if (y_col == 1)
+  if (y_col == 1 && pca_num == 1)
   {
     Eigen::VectorXd beta;
     double coef0 = 0;

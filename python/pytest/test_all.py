@@ -599,7 +599,7 @@ class TestClass:
         model = abessPCA(support_size=range(3, 4))
         model.fit(X, group=g_index, is_normal=False)
 
-        coef3 = np.unique(g_index[np.nonzero(model.coef_)])
+        coef3 = np.unique(g_index[np.nonzero(model.coef_)[0]])
         assert (coef3.size == 3)
 
         # Check4: multi

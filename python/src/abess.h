@@ -134,7 +134,8 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                bool sparse_matrix,
                int splicing_type,
                int sub_search,
-               Eigen::VectorXi cv_fold_id);
+               Eigen::VectorXi cv_fold_id,
+               int pca_num);
 
 template <class T1, class T2, class T3, class T4>
 List abessCpp(T4 &x, T1 &y, int n, int p,
@@ -180,6 +181,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, 
                   bool sparse_matrix,
                   int splicing_type,
                   int sub_search,
+                  int pca_num,
                   double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
