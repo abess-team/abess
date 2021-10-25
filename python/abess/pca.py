@@ -308,20 +308,18 @@ class abessPCA(bess_base):
 
         # wrap with cpp
         weight = np.ones(n)
-        state = [0]
-        result = pywrap_abess(X, y, n, p, self.data_type, weight, Sigma,
+        result = pywrap_abess(X, y, n, p, weight, Sigma,
                               is_normal,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
                               ic_type_int, self.ic_coef, self.is_cv, self.cv,
                               g_index,
-                              state,
                               support_sizes,
                               alphas,
                               cv_fold_id,
                               new_s_min, new_s_max, new_K_max, self.epsilon,
                               new_lambda_min, new_lambda_max, self.n_lambda,
-                              self.is_screening, new_screening_size, self.powell_path,
+                              new_screening_size, self.powell_path,
                               self.always_select, self.tau,
                               self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
                               self.early_stop, self.approximate_Newton,
@@ -330,54 +328,55 @@ class abessPCA(bess_base):
                               self.sparse_matrix,
                               self.splicing_type,
                               self.important_search,
-                              p * M,
-                              1 * M, 1, 1, 1, 1, 1, p
+                              number,
+                              p * number,
+                              1, 1, 1, 1, 1, 1, p
                               )
 
-        self.coef_ = result[0]
+        self.coef_ = result[0].reshape(p, number)
 
-        # for PCA, "number" indicates the number of PCs returned
-        if (number > 1):
-            v = self.coef_.copy()
-            v = v.reshape(len(v), 1)
-            v_all = v.copy()
-            while (number > 1):
-                number = number - 1
-                temp = v.dot(v.T).dot(Sigma)
-                Sigma = Sigma + temp.dot(v).dot(v.T) - temp - temp.T
+        # # for PCA, "number" indicates the number of PCs returned
+        # if (number > 1):
+        #     v = self.coef_.copy()
+        #     v = v.reshape(len(v), 1)
+        #     v_all = v.copy()
+        #     while (number > 1):
+        #         number = number - 1
+        #         temp = v.dot(v.T).dot(Sigma)
+        #         Sigma = Sigma + temp.dot(v).dot(v.T) - temp - temp.T
 
-                result = pywrap_abess(X, y, n, p, self.data_type, weight, Sigma,
-                                      is_normal,
-                                      algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
-                                      path_type_int, self.is_warm_start,
-                                      ic_type_int, self.ic_coef, self.is_cv, self.cv,
-                                      g_index,
-                                      state,
-                                      support_sizes,
-                                      alphas,
-                                      cv_fold_id,
-                                      new_s_min, new_s_max, new_K_max, self.epsilon,
-                                      new_lambda_min, new_lambda_max, self.n_lambda,
-                                      self.is_screening, new_screening_size, self.powell_path,
-                                      self.always_select, self.tau,
-                                      self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
-                                      self.early_stop, self.approximate_Newton,
-                                      self.thread,
-                                      self.covariance_update,
-                                      self.sparse_matrix,
-                                      self.splicing_type,
-                                      self.important_search,
-                                      p * M,
-                                      1 * M, 1, 1, 1, 1, 1, p
-                                      )
-                v = result[0]
-                v = v.reshape(len(v), 1)
-                v_all = np.hstack((v_all, v))
+        #         result = pywrap_abess(X, y, n, p, weight, Sigma,
+        #                               is_normal,
+        #                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
+        #                               path_type_int, self.is_warm_start,
+        #                               ic_type_int, self.ic_coef, self.is_cv, self.cv,
+        #                               g_index,
+        #                               support_sizes,
+        #                               alphas,
+        #                               cv_fold_id,
+        #                               new_s_min, new_s_max, new_K_max, self.epsilon,
+        #                               new_lambda_min, new_lambda_max, self.n_lambda,
+        #                               new_screening_size, self.powell_path,
+        #                               self.always_select, self.tau,
+        #                               self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
+        #                               self.early_stop, self.approximate_Newton,
+        #                               self.thread,
+        #                               self.covariance_update,
+        #                               self.sparse_matrix,
+        #                               self.splicing_type,
+        #                               self.important_search,
+        #                               1,
+        #                               p * M,
+        #                               1 * M, 1, 1, 1, 1, 1, p
+        #                               )
+        #         v = result[0]
+        #         v = v.reshape(len(v), 1)
+        #         v_all = np.hstack((v_all, v))
 
-            self.coef_ = v_all
-            self.intercept_ = None
-            self.train_loss_ = None
-            self.ic_ = None
+        #     self.coef_ = v_all
+        #     self.intercept_ = None
+        #     self.train_loss_ = None
+        #     self.ic_ = None
 
         return self
 
