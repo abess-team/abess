@@ -19,6 +19,14 @@ test_that("standard PCA", {
   expect_equal(ev2, ev4, tolerance = 1e-10)
 })
 
+test_that("primary model fit for PCA", {
+  data(USArrests)
+  abess_fit <- abesspca(USArrests, always.include = c(1:3), support.size = 3)
+  princomp_fit <- loadings(princomp(USArrests[, 1:3]))[, 1]
+  names(princomp_fit) <- NULL
+  expect_equal(princomp_fit, abs(as.vector(spca_fit[["coef"]])[1:3]))
+})
+
 test_that("abesspca (FPC) works", {
   data(USArrests)
   
