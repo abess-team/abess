@@ -121,7 +121,7 @@ If you are a experienced programmer, you might want to help new features develop
 
     It is preferred to work on your own branch instead of the master one;
 
-5. While developing code, make sure to read the abess style guide (**TODO**) which will make sure that your new code and documentation matches the existing style. This makes the review process much smoother. For more details about code developing, read the [Code Developing](CodeDeveloping.md) description for abess library;
+5. While developing code, make sure to read the abess style guide (PEP8 for Python, tidyverse for R) which will make sure that your new code and documentation matches the existing style. This makes the review process much smoother. For more details about code developing, read the [Code Developing](CodeDeveloping.md) description for abess library;
 
 6. After finishing the development and making sure it works well, you can push them onto your repository:
 
