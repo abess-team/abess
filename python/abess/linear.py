@@ -79,7 +79,7 @@ class abessLogistic(bess_base):
                  important_search=128,
                  ):
         super(abessLogistic, self).__init__(
-            algorithm_type="abess", model_type="Logistic", data_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            algorithm_type="abess", model_type="Logistic", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, is_screening=is_screening, screening_size=screening_size, 
             always_select=always_select, 
@@ -203,7 +203,7 @@ class abessLm(bess_base):
                  # primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8, approximate_Newton=False
                  ):
         super(abessLm, self).__init__(
-            algorithm_type="abess", model_type="Lm", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            algorithm_type="abess", model_type="Lm", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, is_screening=is_screening, screening_size=screening_size, 
             always_select=always_select, 
@@ -302,7 +302,7 @@ class abessCox(bess_base):
                  important_search=128
                  ):
         super(abessCox, self).__init__(
-            algorithm_type="abess", model_type="Cox", data_type=3, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            algorithm_type="abess", model_type="Cox", normalize_type=3, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, is_screening=is_screening, screening_size=screening_size, 
             always_select=always_select, 
@@ -404,7 +404,7 @@ class abessPoisson(bess_base):
                  important_search=128
                  ):
         super(abessPoisson, self).__init__(
-            algorithm_type="abess", model_type="Poisson", data_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            algorithm_type="abess", model_type="Poisson", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, is_screening=is_screening, screening_size=screening_size, 
             always_select=always_select, 
@@ -506,7 +506,7 @@ class abessMultigaussian(bess_base):
                  important_search=128
                  ):
         super(abessMultigaussian, self).__init__(
-            algorithm_type="abess", model_type="Multigaussian", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            algorithm_type="abess", model_type="Multigaussian", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, is_screening=is_screening, screening_size=screening_size, 
             always_select=always_select, 
@@ -607,7 +607,7 @@ class abessMultinomial(bess_base):
                  important_search=128
                  ):
         super(abessMultinomial, self).__init__(
-            algorithm_type="abess", model_type="Multinomial", data_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            algorithm_type="abess", model_type="Multinomial", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, is_screening=is_screening, screening_size=screening_size, 
             always_select=always_select, 
@@ -716,7 +716,7 @@ class abessMultinomial(bess_base):
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
 #             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
-#         self.data_type = 1
+#         self.normalize_type = 1
 
 
 # @fix_docs
@@ -758,7 +758,7 @@ class abessMultinomial(bess_base):
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
 #             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
-#         self.data_type = 2
+#         self.normalize_type = 2
 
 
 # @fix_docs
@@ -800,7 +800,7 @@ class abessMultinomial(bess_base):
 #             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau
 #         )
-#         self.data_type = 2
+#         self.normalize_type = 2
 
 
 # @fix_docs
@@ -838,7 +838,7 @@ class abessMultinomial(bess_base):
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
 #             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
-#         self.data_type = 3
+#         self.normalize_type = 3
 
 
 # @fix_docs
@@ -880,7 +880,7 @@ class abessMultinomial(bess_base):
 #             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau
 #         )
-#         self.data_type = 1
+#         self.normalize_type = 1
 
 
 # @fix_docs
@@ -921,7 +921,7 @@ class abessMultinomial(bess_base):
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
 #             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
-#         self.data_type = 2
+#         self.normalize_type = 2
 
 
 # @fix_docs
@@ -963,7 +963,7 @@ class abessMultinomial(bess_base):
 #             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau
 #         )
-#         self.data_type = 2
+#         self.normalize_type = 2
 
 
 # @fix_docs
@@ -1001,7 +1001,7 @@ class abessMultinomial(bess_base):
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
 #             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
-#         self.data_type = 3
+#         self.normalize_type = 3
 
 
 # @fix_docs
@@ -1042,7 +1042,7 @@ class abessMultinomial(bess_base):
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
 #             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
-#         self.data_type = 1
+#         self.normalize_type = 1
 
 
 # @fix_docs
@@ -1085,7 +1085,7 @@ class abessMultinomial(bess_base):
 #             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau
 #         )
-#         self.data_type = 2
+#         self.normalize_type = 2
 
 
 # @fix_docs
@@ -1126,7 +1126,7 @@ class abessMultinomial(bess_base):
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
 #             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path,
 #             always_select=always_select, tau=tau)
-#         self.data_type = 2
+#         self.normalize_type = 2
 
 
 # @fix_docs
@@ -1162,4 +1162,4 @@ class abessMultinomial(bess_base):
 #             algorithm_type="GroupPdas", model_type="Cox", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
 #             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
 #             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, is_screening=is_screening, screening_size=screening_size, powell_path=powell_path)
-#         self.data_type = 3
+#         self.normalize_type = 3
