@@ -118,7 +118,9 @@ generate.data <- function(n,
                           p,
                           support.size = NULL,
                           rho = 0,
-                          family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
+                          family = c("gaussian", "binomial", "poisson", 
+                                     "cox", "mgaussian", "multinomial", 
+                                     "gamma"),
                           beta = NULL,
                           cortype = 1,
                           snr = 10,
@@ -286,8 +288,8 @@ generate.data <- function(n,
     colnames(y) <- paste0("y", 1:y_dim)
   }
   if (family == "multinomial") {
-    m <- 5 * sqrt(2 * log(p) / n)
-    M <- 100 * m
+    m <- 2.5 * sqrt(2 * log(p) / n)
+    M <- 50 * m
     if (is.null(input_beta)) {
       beta[nonzero, ] <- matrix(stats::runif(support.size * y_dim, m, M),
         ncol = y_dim
@@ -307,6 +309,23 @@ generate.data <- function(n,
     y <- apply(prob_y, 1, function(x) {
       sample(0:(length(x) - 1), size = 1, prob = x)
     })
+  }
+  if (family == "gamma") {
+    m <- 5 * sqrt(2 * log(p) / n)
+    if (is.null(input_beta)) {
+      # this is the true value of beta
+      beta[nonzero] <- stats::runif(support.size, m, 100 * m)
+    } else {
+      beta <- input_beta
+    }
+    # add noise
+    sigma <- sqrt((t(beta) %*% Sigma %*% beta) / snr)
+    eta <- x %*% beta + stats::rnorm(n, 0, sigma)
+    # set coef_0 as + abs(min(eta)) + 1
+    eta <- eta + abs(min(eta)) + 1
+    # set the shape para of gamma uniformly in [0.1,100.1]
+    shape_para <- 100 * runif(n) + 0.1
+    y <- stats::rgamma(n,shape=shape_para,rate=shape_para*eta)
   }
   set.seed(NULL)
 
@@ -370,9 +389,10 @@ abess_model_matrix <- function(object, data = environment(object),
     }
   }
   ############################################################
+  y_name <- strsplit(deparse(t), split = " ~ ")[[1]][1]
   if (length(data)) {
     namD <- names(data)
-
+    namD <- setdiff(namD, y_name)
     for (i in namD) {
       if (is.character(data[[i]])) {
         stop("Some columns in data are character! You may convert these columns to a dummy variable via model.matrix function or discard them.")

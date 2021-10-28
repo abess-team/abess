@@ -153,14 +153,14 @@ public:
     return true;
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
     int n = X.rows();
     int p = X.cols();
     Eigen::VectorXd coef = Eigen::VectorXd::Ones(p + 1);
     coef(0) = coef0;
     coef.tail(p) = beta;
-    return -loglik_logit(X, y, coef, n, weights) + this->lambda_level * beta.cwiseAbs2().sum();
+    return -loglik_logit(X, y, coef, n, weights) + lambda * beta.cwiseAbs2().sum();
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
@@ -299,11 +299,11 @@ public:
     // beta = cg.solveWithGuess(X.adjoint() * y, beta);
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
     int n = X.rows();
     Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-    return (y - X * beta - coef0 * one).array().square().sum() / n + this->lambda_level * beta.cwiseAbs2().sum();
+    return (y - X * beta - coef0 * one).array().square().sum() / n + lambda * beta.cwiseAbs2().sum();
   }
 
   void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind)
@@ -511,7 +511,7 @@ public:
     return true;
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
     int n = X.rows();
     int p = X.cols();
@@ -657,7 +657,7 @@ public:
     Eigen::VectorXd eta;
 
     Eigen::VectorXd d(p);
-    double loglik1, loglik0 = -neg_loglik_loss(x, y, weight, beta0, coef0, A, g_index, g_size);
+    double loglik1, loglik0 = -neg_loglik_loss(x, y, weight, beta0, coef0, A, g_index, g_size, this->lambda_level);
     // beta = Eigen::VectorXd::Zero(p);
 
     double step = 1.0;
@@ -768,13 +768,13 @@ public:
 
       beta1 = beta0 + step * d;
 
-      loglik1 = -neg_loglik_loss(x, y, weight, beta1, coef0, A, g_index, g_size);
+      loglik1 = -neg_loglik_loss(x, y, weight, beta1, coef0, A, g_index, g_size, this->lambda_level);
 
       while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon)
       {
         step = step / 2;
         beta1 = beta0 + step * d;
-        loglik1 = -neg_loglik_loss(x, y, weight, beta1, coef0, A, g_index, g_size);
+        loglik1 = -neg_loglik_loss(x, y, weight, beta1, coef0, A, g_index, g_size, this->lambda_level);
       }
 
       bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - l - 1) * (loglik1 - loglik0)) + this->tau > loss0;
@@ -811,9 +811,9 @@ public:
     return true;
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
-    return -loglik_cox(X, y, beta, weights) + this->lambda_level * beta.cwiseAbs2().sum();
+    return -loglik_cox(X, y, beta, weights) + lambda * beta.cwiseAbs2().sum();
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
@@ -990,11 +990,11 @@ public:
     // beta = cg.solveWithGuess(X.adjoint() * y, beta);
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  double neg_loglik_loss(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
     int n = X.rows();
     Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, y.cols());
-    return (y - X * beta - array_product(one, coef0)).array().square().sum() / n / 2.0 + this->lambda_level * beta.cwiseAbs2().sum();
+    return (y - X * beta - array_product(one, coef0)).array().square().sum() / n / 2.0 + lambda * beta.cwiseAbs2().sum();
   }
 
   void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind)
@@ -1387,7 +1387,7 @@ public:
     return true;
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  double neg_loglik_loss(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
     // weight
     Eigen::MatrixXd pr;
@@ -1397,7 +1397,7 @@ public:
 
     array_product(log_pr, weights, 1);
 
-    return -((log_pr.array() * y.array()).sum()) + this->lambda_level * beta.cwiseAbs2().sum();
+    return -((log_pr.array() * y.array()).sum()) + lambda * beta.cwiseAbs2().sum();
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)

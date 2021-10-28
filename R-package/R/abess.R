@@ -32,7 +32,9 @@ abess <- function(x, ...) UseMethod("abess")
 #' \code{"binomial"} (binary response),
 #' \code{"poisson"} (non-negative count),
 #' \code{"cox"} (left-censored response),
-#' \code{"mgaussian"} (multivariate continuous response).
+#' \code{"mgaussian"} (multivariate continuous response), 
+#' \code{"multinomial"} (multi-class response), 
+#' \code{"gamma"} (positive continuous response). 
 #' Depending on the response. Any unambiguous substring can be given.
 #' @param tune.path The method to be used to select the optimal support size. For
 #' \code{tune.path = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
@@ -101,6 +103,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' Default is \code{max.splicing.iter = 20}.
 #' @param warm.start Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.
 #' @param nfolds The number of folds in cross-validation. Default is \code{nfolds = 5}.
+#' @param foldid an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in. 
+#' The default \code{foldid = NULL} would generate a random foldid.
 #' @param cov.update A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE},
 #' use a covariance-based implementation; otherwise, a naive implementation.
 #' The naive method is more efficient than covariance-based method when \eqn{p >> n} and \code{important.search} is much large than its default value.
@@ -316,7 +320,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' }
 abess.default <- function(x,
                           y,
-                          family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
+                          family = c("gaussian", "binomial", "poisson", "cox", 
+                                     "mgaussian", "multinomial", "gamma"),
                           tune.path = c("sequence", "gsection"),
                           tune.type = c("gic", "ebic", "bic", "aic", "cv"),
                           weight = NULL,
@@ -333,6 +338,7 @@ abess.default <- function(x,
                           important.search = NULL, 
                           warm.start = TRUE,
                           nfolds = 5,
+                          foldid = NULL, 
                           cov.update = FALSE,
                           newton = c("exact", "approx"),
                           newton.thresh = 1e-6,
@@ -389,7 +395,8 @@ abess.default <- function(x,
     "poisson" = 3,
     "cox" = 4,
     "mgaussian" = 5,
-    "multinomial" = 6
+    "multinomial" = 6,
+    "gamma" = 8
   )
 
   ## check predictors:
@@ -483,6 +490,11 @@ abess.default <- function(x,
   if (family == "poisson") {
     if (any(y < 0)) {
       stop("y must be positive integer value when family = 'poisson'.")
+    }
+  }
+  if (family == "gamma") {
+    if (any(y < 0)) {
+      stop("y must be positive value when family = 'gamma'.")
     }
   }
   if (family == "cox") {
@@ -629,7 +641,7 @@ abess.default <- function(x,
   ## check parameters for sub-optimization:
   # 1:
   if (length(newton) == 2) {
-    if (family %in% c("binomial", "cox", "multinomial")) {
+    if (family %in% c("binomial", "cox", "multinomial", "gamma", "poisson")) {
       newton <- "approx"
     }
   }
@@ -641,7 +653,7 @@ abess.default <- function(x,
   #     newton <- "auto"
   #   }
   # }
-  if (family %in% c("gaussian", "mgaussian", "poisson")) {
+  if (family %in% c("gaussian", "mgaussian")) {
     newton <- "exact"
   }
   newton_type <- switch(newton,
@@ -656,6 +668,9 @@ abess.default <- function(x,
     max_newton_iter <- as.integer(max.newton.iter)
   } else {
     max_newton_iter <- ifelse(newton_type == 0, 10, 60)
+    if(family == "gamma" && newton_type == 1){
+      max_newton_iter <- 200
+    }    
   }
   # 3:
   stopifnot(is.numeric(newton.thresh) & newton.thresh > 0)
@@ -678,6 +693,22 @@ abess.default <- function(x,
       "nfolds should be an integer value. It is coerced to be as.integer(nfolds). "
     )
     nfolds <- as.integer(nfolds)
+    
+    if (is.null(foldid)) {
+      cv_fold_id <- integer(0)
+    } else {
+      stopifnot(is.vector(foldid))
+      stopifnot(is.numeric(foldid))
+      stopifnot(length(foldid) == nobs)
+      check_integer_warning(
+        foldid,
+        "nfolds should be an integer value. It is coerced to be as.integer(foldid). "
+      )
+      foldid <- as.integer(foldid)
+      cv_fold_id <- foldid
+    }
+  } else {
+    cv_fold_id <- integer(0)
   }
   stopifnot(is.numeric(ic.scale))
   stopifnot(ic.scale >= 0)
@@ -692,7 +723,8 @@ abess.default <- function(x,
       "poisson" = 2,
       "cox" = 3,
       "mgaussian" = 1,
-      "multinomial" = 2
+      "multinomial" = 2,
+      "gamma" = 2
     )
   } else {
     stopifnot(normalize %in% 0:3)
@@ -843,7 +875,8 @@ abess.default <- function(x,
     covariance_update = covariance_update,
     sparse_matrix = sparse_X,
     splicing_type = splicing_type, 
-    sub_search = important_search
+    sub_search = important_search, 
+    cv_fold_id = cv_fold_id
   )
   t2 <- proc.time()
   # print(t2 - t1)
@@ -1029,7 +1062,7 @@ abess.formula <- function(formula, data, subset, na.action, ...) {
   mf <- eval(mf, parent.frame())
   mt <- attr(mf, "terms")
 
-  y <- model.response(mf, "numeric")
+  suppressWarnings(y <- model.response(mf, "numeric"))
   x <- abess_model_matrix(mt, mf, contrasts)[, -1]
   x <- as.matrix(x)
 

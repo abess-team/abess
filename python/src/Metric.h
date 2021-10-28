@@ -232,11 +232,11 @@ public:
     double loss;
     if (algorithm->model_type == 1 || algorithm->model_type == 5)
     {
-      loss = train_n * log(algorithm->get_train_loss());
+      loss = train_n * log(algorithm->get_train_loss() - algorithm->lambda_level  * algorithm->beta.cwiseAbs2().sum());
     }
     else
     {
-      loss = 2 * algorithm->get_train_loss();
+      loss = 2 * (algorithm->get_train_loss() - algorithm->lambda_level * algorithm->beta.cwiseAbs2().sum());
     }
 
     if (ic_type == 1)
@@ -276,7 +276,7 @@ public:
     // {
     //   beta_A(k) = beta(A_ind(k));
     // }
-    double L0 = algorithm->neg_loglik_loss(X_A, train_y, train_weight, beta_A, coef0, A, g_index, g_size);
+    double L0 = algorithm->neg_loglik_loss(X_A, train_y, train_weight, beta_A, coef0, A, g_index, g_size, 0.0);
 
     return L0;
   }

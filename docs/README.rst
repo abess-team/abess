@@ -171,13 +171,23 @@ the other best subset selection problems.
 .. _github: https://github.com/abess-team/abess
 .. _GPL-v3 License: https://www.gnu.org/licenses/gpl-3.0.html
 
-.. Citation         
-.. ==========
+Citation         
+==========
 
-.. If you use abess or reference our tutorials in a presentation or publication, we would appreciate citations of our library.
-.. | Zhu J, Pan W, Zheng W, Wang X (2021). “Ball: An R Package for Detecting Distribution Difference and Association in Metric Spaces.” arXiv, 97(6), 1–31. doi: 10.18637/jss.v097.i06.
+If you use `abess` or reference our tutorials in a presentation or publication, we would appreciate citations of our library.
 
-.. The corresponding BibteX entry:
+| Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). “abess: A Fast Best Subset Selection Library in Python and R.” arXiv:2110.09697.
+
+The corresponding BibteX entry:
+
+.. code-block:: shell
+
+   @article{zhu-abess-arxiv,
+      author  = {Jin Zhu and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu and Xueqin Wang},
+      title   = {abess: A Fast Best Subset Selection Library in Python and R},
+      journal = {arXiv:2110.09697},
+      year    = {2021},
+   }
 
 References
 ==========
