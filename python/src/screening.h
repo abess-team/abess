@@ -30,8 +30,9 @@ template <class T4>
 Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::VectorXd, double, T4> &data, int model_type, int screening_size, Eigen::VectorXi &always_select, bool approximate_Newton, int primary_model_fit_max_iter, double primary_model_fit_epsilon)
 {
     // int n = data.x.rows();
-    int p = data.x.cols();
-    int M = data.y.cols();
+    int p = data.p;
+    int M = data.M;
+    int beta_size = data.beta_size;
     Eigen::VectorXi screening_A(screening_size);
 
     int g_num = data.g_num;
@@ -87,7 +88,7 @@ Eigen::VectorXi screening(Data<Eigen::VectorXd, Eigen::VectorXd, double, T4> &da
         new_g_index(i + 1) = new_g_index(i) + g_size(screening_A(i));
     }
 
-    Eigen::VectorXi screening_A_ind = find_ind(screening_A, g_index, g_size, p, g_num);
+    Eigen::VectorXi screening_A_ind = find_ind(screening_A, g_index, g_size, beta_size, g_num);
     T4 x_A;
     slice(data.x, screening_A_ind, x_A, 1);
 
@@ -124,6 +125,7 @@ Eigen::VectorXi screening(Data<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd
 {
     // int n = data.x.rows();
     int p = data.x.cols();
+    int beta_size = data.beta_size;
     int M = data.y.cols();
     Eigen::VectorXi screening_A(screening_size);
 
@@ -171,7 +173,7 @@ Eigen::VectorXi screening(Data<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd
         new_g_index(i + 1) = new_g_index(i) + g_size(screening_A(i));
     }
 
-    Eigen::VectorXi screening_A_ind = find_ind(screening_A, g_index, g_size, p, g_num);
+    Eigen::VectorXi screening_A_ind = find_ind(screening_A, g_index, g_size, beta_size, g_num);
     T4 x_A;
     slice(data.x, screening_A_ind, x_A, 1);
 

@@ -53,12 +53,12 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x);
 // void VectorXi2Pointer(Eigen::VectorXi x_vector, int *x);
 #endif
 
-Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N);
+Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int beta_size, int N);
 
 template <class T4>
-T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind)
+T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type)
 {
-    if (ind.size() == X.cols())
+    if (ind.size() == X.cols() || model_type == 10)
     {
         return X;
     }
@@ -73,22 +73,22 @@ T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind)
     }
 };
 
-template <class T4>
-void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
-{
-    if (ind.size() == X.cols())
-    {
-        X_seg = X;
-    }
-    else
-    {
-        X_seg.resize(n, ind.size());
-        for (int k = 0; k < ind.size(); k++)
-        {
-            X_seg.col(k) = X.col(ind(k));
-        }
-    }
-};
+// template <class T4>
+// void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
+// {
+//     if (ind.size() == X.cols())
+//     {
+//         X_seg = X;
+//     }
+//     else
+//     {
+//         X_seg.resize(n, ind.size());
+//         for (int k = 0; k < ind.size(); k++)
+//         {
+//             X_seg.col(k) = X.col(ind(k));
+//         }
+//     }
+// };
 
 template <class T4>
 Eigen::Matrix<T4, -1, -1> group_XTX(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)

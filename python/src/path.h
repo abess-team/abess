@@ -24,10 +24,10 @@ using namespace Eigen;
 template <class T1, class T2, class T3, class T4>
 void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algorithm<T1, T2, T3, T4> *algorithm, Metric<T1, T2, T3, T4> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3> &result)
 {
-
-    int p = data.get_p();
+    int beta_size = data.beta_size;
+    int p = data.p;
     int N = data.g_num;
-    int M = data.y.cols();
+    int M = data.M;
     Eigen::VectorXi g_index = data.g_index;
     Eigen::VectorXi g_size = data.g_size;
     int sequence_size = sequence.size();
@@ -88,7 +88,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
 
     T2 beta_init;
     T3 coef0_init;
-    coef_set_zero(p, M, beta_init, coef0_init);
+    coef_set_zero(beta_size, M, beta_init, coef0_init);
     Eigen::VectorXi A_init;
     Eigen::VectorXd bd_init;
 
@@ -172,8 +172,8 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
 template <class T1, class T2, class T3, class T4>
 void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Metric<T1, T2, T3, T4> *metric, int s_min, int s_max, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, int K_max, double epsilon, bool is_parallel, Result<T2, T3> &result)
 {
-    int p = data.get_p();
-    // int n = data.get_n();
+    int p = data.p;
+    // int n = data.n;
     // int i;
 
     int sequence_size = s_max - s_min + 5;
@@ -245,7 +245,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
 
     T2 beta_init;
     T3 coef0_init;
-    coef_set_zero(data.p, data.M, beta_init, coef0_init);
+    coef_set_zero(data.beta_size, data.M, beta_init, coef0_init);
     Eigen::VectorXi A_init;
     Eigen::VectorXd bd_init;
 
