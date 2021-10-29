@@ -286,7 +286,7 @@ public:
     // Eigen::MatrixXi A_list(T0, max_iter + 2);
     // A_list.col(0) = A;
 
-    Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, (this->beta).size(), N);
+    Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, (this->beta).rows(), N);
     T4 X_A = X_seg(train_x, train_n, A_ind, this->model_type);
     T2 beta_A;
     slice(this->beta, A_ind, beta_A);
@@ -317,7 +317,7 @@ public:
     // final fit
     this->A_out = A;
 
-    A_ind = find_ind(A, g_index, g_size, (this->beta).size(), N);
+    A_ind = find_ind(A, g_index, g_size, (this->beta).rows(), N);
     X_A = X_seg(train_x, train_n, A_ind, this->model_type);
     slice(this->beta, A_ind, beta_A);
 
@@ -383,7 +383,7 @@ public:
       }
       else
       {
-        U_ind = find_ind(U, g_index, g_size, (this->beta).size(), N);
+        U_ind = find_ind(U, g_index, g_size, (this->beta).rows(), N);
         *X_U = X_seg(X, n, U_ind, this->model_type);
         slice(beta, U_ind, beta_U);
 
@@ -461,7 +461,7 @@ public:
           A(tempA++) = i;
 
       // bd in full set
-      Eigen::VectorXi A_ind0 = find_ind(A, g_index, g_size, (this->beta).size(), N);
+      Eigen::VectorXi A_ind0 = find_ind(A, g_index, g_size, (this->beta).rows(), N);
       T4 X_A0 = X_seg(X, n, A_ind0, this->model_type);
       T2 beta_A0;
       slice(beta, A_ind0, beta_A0);
@@ -538,7 +538,7 @@ public:
     for (int k = C_max; k >= 1;)
     {
       A_exchange = diff_union(A, s1, s2);
-      A_ind_exchage = find_ind(A_exchange, g_index, g_size, (this->beta).size(), N);
+      A_ind_exchage = find_ind(A_exchange, g_index, g_size, (this->beta).rows(), N);
       X_A_exchage = X_seg(X, n, A_ind_exchage, this->model_type);
       slice(beta, A_ind_exchage, beta_A_exchange);
       coef0_A_exchange = coef0;
@@ -583,7 +583,7 @@ public:
     {
       // variable initialization
       int n = X.rows();
-      int beta_size = beta.size();
+      int beta_size = beta.rows();
       bd = Eigen::VectorXd::Zero(N);
 
       // calculate beta & d & h
