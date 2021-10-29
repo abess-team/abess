@@ -135,6 +135,9 @@ public:
   Eigen::Matrix<Eigen::MatrixXd, -1, -1> PhiG_U;
   Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhiG_U;
 
+  Eigen::VectorXi map1;  // single index -> full index
+  Eigen::MatrixXi map2;  // full index -> single index
+
   Algorithm() = default;
 
   virtual ~Algorithm(){};
@@ -245,9 +248,22 @@ public:
     else
       this->U_size = this->sparsity_level + this->sub_search;
 
-    if (this->model_type == 7)
+    // spcifical init
+    switch (this->model_type)
     {
-      this->Sigma = sigma;
+      case 1:   // Gaussian
+      case 5:   // Multi-Gaussian
+        if ((this->algorithm_type == 6 && this->PhiG.rows() == 0) || this->lambda_change)
+        {
+          this->PhiG = Phi(train_x, g_index, g_size, train_n, p, N, this->lambda_level, this->group_XTX);
+          this->invPhiG = invPhi(PhiG, N);
+          this->PhiG_U.resize(N, 1);
+          this->invPhiG_U.resize(N, 1);
+        }
+        break;
+      case 7:   // PCA
+        this->Sigma = sigma; 
+        break;
     }
 
     if (N == T0)
@@ -263,18 +279,6 @@ public:
       this->train_loss = neg_loglik_loss(train_x, train_y, train_weight, this->beta, this->coef0, this->A_out, g_index, g_size, this->lambda_level);
       this->effective_number = effective_number_of_parameter(train_x, train_x, train_y, train_weight, this->beta, this->beta, this->coef0);
       return;
-    }
-
-    if (this->model_type == 1 || this->model_type == 5)
-    {
-      // this->covariance = Eigen::MatrixXd::Zero(train_x.cols(), train_x.cols());
-      if ((this->algorithm_type == 6 && this->PhiG.rows() == 0) || this->lambda_change)
-      {
-        this->PhiG = Phi(train_x, g_index, g_size, train_n, p, N, this->lambda_level, this->group_XTX);
-        this->invPhiG = invPhi(PhiG, N);
-        this->PhiG_U.resize(N, 1);
-        this->invPhiG_U.resize(N, 1);
-      }
     }
 
     // input: this->beta_init, this->coef0_init, this->A_init, this->I_init
