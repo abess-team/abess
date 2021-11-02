@@ -1,7 +1,7 @@
 ---
-title: "Poisson Regression and Gamma Regression"
-author: "Liyuan Hu, Jin Zhu"
-date: "2021/5/30"
+title: "Positive response: Poisson and Gamma regression"
+author: "Liyuan Hu, Jin Zhu, Borui Tang"
+date: "2021/11/3"
 output:
   html_document: 
     toc: yes
@@ -109,7 +109,7 @@ The return is a list containing the basic information of the estimated model. Th
 
 ## Gamma Regression
 
-Gamma regression can be used when you have positive continuous response variables. It is well known that the density of Gamma distribution can be represented as a function of a mean parameter ($\mu$) and a shape parameter ($\alpha$), specifically,
+Gamma regression can be used when you have positive continuous response variables such as payments for insurance claims, or the lifetime of a redundant system. It is well known that the density of Gamma distribution can be represented as a function of a mean parameter ($\mu$) and a shape parameter ($\alpha$), specifically,
 $$
 f(y \mid \mu, \alpha)=\frac{1}{y \Gamma(\alpha)}\left(\frac{\alpha y}{\mu}\right)^{\alpha} e^{-\alpha y / \mu} {I}_{(0, \infty)}(y),
 $$
