@@ -232,8 +232,8 @@ it is set as <code>support.size = 1:min(ncol(x), 100)</code> if <code>group.inde
 otherwise, <code>support.size = 1:min(length(unique(group.index)), 100)</code>.
 When <code>sparse.type = "kpc"</code> but <code>support.size</code> is not supplied,
 then for 20% principal components,
-it is set as <code><a href='https://rdrr.io/r/base/Extremes.html'>min(ncol(x), 100)</a></code> if <code>group.index = NULL</code>;
-otherwise, <code><a href='https://rdrr.io/r/base/Extremes.html'>min(length(unique(group.index)), 100)</a></code>.</p></td>
+it is set as <code>min(ncol(x), 100)</code> if <code>group.index = NULL</code>;
+otherwise, <code>min(length(unique(group.index)), 100)</code>.</p></td>
     </tr>
     <tr>
       <th>c.max</th>
@@ -283,12 +283,12 @@ Default is <code>max.splicing.iter = 20</code>.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A S3 <code>abesspca</code> class object, which is a <code>list</code> with the following components:</p>
-<dt>coef</dt><dd><p>A \(p\)-by-<code><a href='https://rdrr.io/r/base/length.html'>length(support.size)</a></code> loading matrix of sparse principal components (PC),
+<dt>coef</dt><dd><p>A \(p\)-by-<code>length(support.size)</code> loading matrix of sparse principal components (PC),
 where each row is a variable and each column is a support size;</p></dd>
 <dt>nvars</dt><dd><p>The number of variables.</p></dd>
 <dt>sparse.type</dt><dd><p>The same as input.</p></dd>
 <dt>support.size</dt><dd><p>The actual support.size values used. Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.</p></dd>
-<dt>ev</dt><dd><p>A vector with size <code><a href='https://rdrr.io/r/base/length.html'>length(support.size)</a></code>. It records the explained variance at each support size.</p></dd>
+<dt>ev</dt><dd><p>A vector with size <code>length(support.size)</code>. It records the explained variance at each support size.</p></dd>
 <dt>cum.ev</dt><dd><p>Cumulative sums of explained variance.</p></dd>
 <dt>pev</dt><dd><p>A vector with the same length as <code>ev</code>. It records the percentage of explained variance at each support size.</p></dd>
 <dt>cum.pev</dt><dd><p>Cumulative sums of the percentage of explained variance.</p></dd>
@@ -323,65 +323,70 @@ can be efficiently solved.</p>
     <p>Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/abess-team/abess'>abess</a></span><span class='op'>)</span>
-
-<span class='co'>## predictor matrix input:</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;            Murder Assault UrbanPop Rape
-#&gt; Alabama      13.2     236       58 21.2
-#&gt; Alaska       10.0     263       48 44.5
-#&gt; Arizona       8.1     294       80 31.0
-#&gt; Arkansas      8.8     190       50 19.5
-#&gt; California    9.0     276       91 40.6
-#&gt; Colorado      7.9     204       78 38.7</div><div class='input'><span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span>
-<span class='va'>pca_fit</span>
-</div><div class='output co'>#&gt; Call:
-#&gt; abesspca(x = USArrests)
-#&gt; 
-#&gt;   support.size       ev       pev
-#&gt; 1            1 6806.262 0.9564520
-#&gt; 2            2 6844.578 0.9618364
-#&gt; 3            3 6858.954 0.9638565
-#&gt; 4            4 6870.893 0.9655342</div><div class='input'>
-<span class='co'>## covariance matrix input:</span>
-<span class='va'>cov_mat</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/cor.html'>cov</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span> <span class='op'>*</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>1</span><span class='op'>)</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span>
-<span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>cov_mat</span>, type <span class='op'>=</span> <span class='st'>"gram"</span><span class='op'>)</span>
-<span class='va'>pca_fit</span>  
-</div><div class='output co'>#&gt; Call:
-#&gt; abesspca(x = cov_mat, type = "gram")
-#&gt; 
-#&gt;   support.size       ev       pev
-#&gt; 1            1 6806.262 0.9564520
-#&gt; 2            2 6844.578 0.9618364
-#&gt; 3            3 6858.954 0.9638565
-#&gt; 4            4 6870.893 0.9655342</div><div class='input'>
-<span class='co'>## robust covariance matrix input:</span>
-<span class='va'>rob_cov</span> <span class='op'>&lt;-</span> <span class='fu'>MASS</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/MASS/man/cov.rob.html'>cov.rob</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span><span class='op'>[[</span><span class='st'>"cov"</span><span class='op'>]</span><span class='op'>]</span>
-<span class='va'>rob_cov</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>rob_cov</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>rob_cov</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>2</span>
-<span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>rob_cov</span>, type <span class='op'>=</span> <span class='st'>"gram"</span><span class='op'>)</span>
-<span class='va'>pca_fit</span>
-</div><div class='output co'>#&gt; Call:
-#&gt; abesspca(x = rob_cov, type = "gram")
-#&gt; 
-#&gt;   support.size       ev       pev
-#&gt; 1            1 6382.479 0.9612693
-#&gt; 2            2 6410.324 0.9654631
-#&gt; 3            3 6427.720 0.9680830
-#&gt; 4            4 6442.404 0.9702946</div><div class='input'>
-<span class='co'>## K-component principal component analysis</span>
-<span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span>,
-  sparse.type <span class='op'>=</span> <span class='st'>"kpc"</span>,
-  support.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>
-<span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 4 x 2 sparse Matrix of class "dgCMatrix"
-#&gt;          1          2
-#&gt; Murder   .  .        
-#&gt; Assault  1  .        
-#&gt; UrbanPop . -0.9320592
-#&gt; Rape     . -0.3623060</div><div class='input'><span class='co'># }</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># \donttest{</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/abess-team/abess'>abess</a></span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## predictor matrix input:</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>            Murder Assault UrbanPop Rape</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Alabama      13.2     236       58 21.2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Alaska       10.0     263       48 44.5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Arizona       8.1     294       80 31.0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Arkansas      8.8     190       50 19.5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> California    9.0     276       91 40.6</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Colorado      7.9     204       78 38.7</span>
+<span class='r-in'><span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pca_fit</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Call:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> abesspca(x = USArrests)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   support.size       ev       pev</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1            1 6806.262 0.9564520</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2            2 6844.578 0.9618364</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3            3 6858.954 0.9638565</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4            4 6870.893 0.9655342</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## covariance matrix input:</span></span>
+<span class='r-in'><span class='va'>cov_mat</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/cor.html'>cov</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span> <span class='op'>*</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>1</span><span class='op'>)</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>cov_mat</span>, type <span class='op'>=</span> <span class='st'>"gram"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pca_fit</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Call:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> abesspca(x = cov_mat, type = "gram")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   support.size       ev       pev</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1            1 6806.262 0.9564520</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2            2 6844.578 0.9618364</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3            3 6858.954 0.9638565</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4            4 6870.893 0.9655342</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## robust covariance matrix input:</span></span>
+<span class='r-in'><span class='va'>rob_cov</span> <span class='op'>&lt;-</span> <span class='fu'>MASS</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/MASS/man/cov.rob.html'>cov.rob</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span><span class='op'>[[</span><span class='st'>"cov"</span><span class='op'>]</span><span class='op'>]</span></span>
+<span class='r-in'><span class='va'>rob_cov</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>rob_cov</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>rob_cov</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>2</span></span>
+<span class='r-in'><span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>rob_cov</span>, type <span class='op'>=</span> <span class='st'>"gram"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pca_fit</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Call:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> abesspca(x = rob_cov, type = "gram")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   support.size       ev       pev</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1            1 4197.583 0.9433358</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2            2 4227.249 0.9500027</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3            3 4253.043 0.9557996</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4            4 4267.542 0.9590580</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## K-component principal component analysis</span></span>
+<span class='r-in'><span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span>,</span>
+<span class='r-in'>  sparse.type <span class='op'>=</span> <span class='st'>"kpc"</span>,</span>
+<span class='r-in'>  support.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4 x 2 sparse Matrix of class "dgCMatrix"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          1          2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Murder   .  .        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Assault  1  .        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> UrbanPop . -0.9320592</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Rape     . -0.3623060</span>
+<span class='r-in'><span class='co'># }</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

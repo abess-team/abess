@@ -10,6 +10,9 @@
     <loc>https://abess-team.github.io/abess//reference/abess.html</loc>
   </url>
   <url>
+    <loc>https://abess-team.github.io/abess//reference/abessbmn.html</loc>
+  </url>
+  <url>
     <loc>https://abess-team.github.io/abess//reference/abesspca.html</loc>
   </url>
   <url>
@@ -25,7 +28,16 @@
     <loc>https://abess-team.github.io/abess//reference/extract.abess.html</loc>
   </url>
   <url>
+    <loc>https://abess-team.github.io/abess//reference/generate.bmn.data.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess//reference/generate.bmn.freq.data.html</loc>
+  </url>
+  <url>
     <loc>https://abess-team.github.io/abess//reference/generate.data.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess//reference/nodewise_L0.html</loc>
   </url>
   <url>
     <loc>https://abess-team.github.io/abess//reference/plot.abess.html</loc>
