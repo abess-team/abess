@@ -824,7 +824,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   // to do
   if (data.is_normal && !sparse_matrix)
   {
-    cout<<1<<endl;
     if (data.normalize_type == 1)
     {
       array_quotient(best_beta, data.x_norm, 1);
@@ -848,7 +847,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   // to do
   if (data.is_normal && !sparse_matrix)
   {
-    cout<<1<<endl;
     if (data.normalize_type == 1)
     {
       for (int j = 0; j < beta_matrix.cols(); j++)
