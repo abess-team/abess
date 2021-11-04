@@ -138,6 +138,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
       if (pca_n != -1)
         algorithm_uni_dense->pca_n = pca_n;
     }
+    else if (model_type == 10)
+    {
+      algorithm_uni_dense = new abessRPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+    }
   }
   else
   {
@@ -168,6 +172,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
     else if (model_type == 7)
     {
       algorithm_uni_sparse = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+    }
+    else if (model_type == 10)
+    {
+      algorithm_uni_sparse = new abessRPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
     }
   }
 
@@ -211,6 +219,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
           if (pca_n != -1)
             algorithm_list_uni_dense[i]->pca_n = pca_n;
         }
+        else if (model_type == 10)
+        {
+          algorithm_list_uni_dense[i] = new abessRPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        }
       }
       else
       {
@@ -241,6 +253,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
         else if (model_type == 7)
         {
           algorithm_list_uni_sparse[i] = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        }
+        else if (model_type == 10)
+        {
+          algorithm_list_uni_sparse[i] = new abessRPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
         }
       }
     }
@@ -808,6 +824,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   // to do
   if (data.is_normal && !sparse_matrix)
   {
+    cout<<1<<endl;
     if (data.normalize_type == 1)
     {
       array_quotient(best_beta, data.x_norm, 1);
@@ -831,6 +848,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   // to do
   if (data.is_normal && !sparse_matrix)
   {
+    cout<<1<<endl;
     if (data.normalize_type == 1)
     {
       for (int j = 0; j < beta_matrix.cols(); j++)
