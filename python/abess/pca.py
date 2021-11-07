@@ -622,7 +622,7 @@ class abessRPCA(bess_base):
                               1, 1, 1, 1, 1, 1, p
                               )
 
-        self.coef_ = result[0].reshape(n, p)
+        self.coef_ = result[0].reshape(p, n).T
         self.train_loss_ = result[2]
         return self
 

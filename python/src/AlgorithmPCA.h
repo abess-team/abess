@@ -162,7 +162,7 @@ public:
     int p = x.cols();
 
     MatrixXd L_old = this->L;
-    this->L = this->HardImpute(x, A, 10, 1e-5);
+    this->L = this->HardImpute(x, A, 1000, 1e-5);
     for (int i = 0; i < A.size(); i++){
       int mi = A(i) % n;
       int mj = int(A(i) / n);
