@@ -520,7 +520,7 @@ class abessRPCA(bess_base):
             if isinstance(self.support_size, (numbers.Real, numbers.Integral)):
                 support_sizes = np.empty(1, dtype=int)
                 support_sizes[0] = self.support_size
-            elif (np.any(np.array(self.support_size) > p) or
+            elif (np.any(np.array(self.support_size) > n*p) or
                     np.any(np.array(self.support_size) < 0)):
                 raise ValueError(
                     "All support_size should be between 0 and X.shape[1]")
@@ -622,7 +622,7 @@ class abessRPCA(bess_base):
                               1, 1, 1, 1, 1, 1, p
                               )
 
-        self.coef_ = result[0].reshape(n, p)
+        self.coef_ = result[0].reshape(p, n).T
         self.train_loss_ = result[2]
         return self
 

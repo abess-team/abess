@@ -163,15 +163,13 @@ public:
 
     MatrixXd L_old = this->L;
     this->L = this->HardImpute(x, A, 1000, 1e-5);
-    MatrixXd S = MatrixXd::Zero(n, p);
     for (int i = 0; i < A.size(); i++){
       int mi = A(i) % n;
       int mj = int(A(i) / n);
-      S(mi, mj) = x.coeff(mi, mj) - this->L(mi, mj);
-      beta(i) = S(mi, mj);
+      beta(i) = x.coeff(mi, mj) - this->L(mi, mj);
     }
 
-    double loss1 = (x - this->L - S).squaredNorm() / n / p;
+    double loss1 = this->neg_loglik_loss(x, y, weights, beta, coef0, A, g_index, g_size, 0);
     if (loss0 - loss1 <= this->tau){
       this->L = L_old;
     }
@@ -306,15 +304,15 @@ public:
     return S;
   };
 
-  VectorXd compute_beta(MatrixXd &S, VectorXi &A, int n)
-  {
-    VectorXd beta = VectorXd(A.size());
-    for (int i = 0; i < A.size(); i++){
-      int mi = A(i) % n;
-      int mj = int(A(i) / n);
-      beta(i) = S(mi, mj);
-    }
-    return beta;
-  };
+  // VectorXd compute_beta(MatrixXd &S, VectorXi &A, int n)
+  // {
+  //   VectorXd beta = VectorXd(A.size());
+  //   for (int i = 0; i < A.size(); i++){
+  //     int mi = A(i) % n;
+  //     int mj = int(A(i) / n);
+  //     beta(i) = S(mi, mj);
+  //   }
+  //   return beta;
+  // };
 };
 #endif // SRC_ALGORITHMPCA_H
