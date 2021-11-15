@@ -111,8 +111,6 @@ public:
   T2 beta_warmstart;  /*warmstart beta.*/
   T3 coef0_warmstart; /*warmstart intercept.*/
 
-  Eigen::VectorXi status;
-
   Eigen::MatrixXd cox_hessian; /* hessian matrix for cox model. */
   Eigen::VectorXd cox_g;       /* score function for cox model. */
 
@@ -228,11 +226,10 @@ public:
 
   int get_l() { return this->l; }
 
-  void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::VectorXi &status, Eigen::MatrixXd sigma)
+  void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::MatrixXd sigma)
   {
 
     int T0 = this->sparsity_level;
-    // this->status = status;
     this->cox_g = Eigen::VectorXd::Zero(0);
 
     this->update_tau(train_n, N);
@@ -263,7 +260,7 @@ public:
       //   this->beta = beta_old;
       //   this->coef0 = coef0_old;
       // }
-      this->train_loss = neg_loglik_loss(train_x, train_y, train_weight, this->beta, this->coef0, this->A_out, g_index, g_size);
+      this->train_loss = neg_loglik_loss(train_x, train_y, train_weight, this->beta, this->coef0, this->A_out, g_index, g_size, this->lambda_level);
       this->effective_number = effective_number_of_parameter(train_x, train_x, train_y, train_weight, this->beta, this->beta, this->coef0);
       return;
     }
@@ -303,7 +300,7 @@ public:
     //   this->coef0 = coef0_old;
     // }else{
     slice_restore(beta_A, A_ind, this->beta);
-    this->train_loss = neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
+    this->train_loss = neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size, this->lambda_level);
     // }
 
     // for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl<<"init loss = "<<this->train_loss<<endl;
@@ -331,7 +328,7 @@ public:
     //   this->coef0 = coef0_old;
     // }else{
     slice_restore(beta_A, A_ind, this->beta);
-    this->train_loss = neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size);
+    this->train_loss = neg_loglik_loss(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size, this->lambda_level);
     // }
     this->primary_model_fit_max_iter -= 20;
 
@@ -419,7 +416,6 @@ public:
       }
 
       int num = -1;
-      
       while (true)
       {
         num++;
@@ -549,7 +545,7 @@ public:
 
       bool success = primary_model_fit(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, train_loss, A_exchange, g_index, g_size);
       // if (success){
-      L = neg_loglik_loss(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, A_exchange, g_index, g_size);
+      L = neg_loglik_loss(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, A_exchange, g_index, g_size, this->lambda_level);
       // }else{
       //   L = train_loss + 1;
       // }
@@ -611,7 +607,7 @@ public:
     return A_new;
   }
 
-  virtual double neg_loglik_loss(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) = 0;
+  virtual double neg_loglik_loss(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda) = 0;
 
   virtual void sacrifice(T4 &X, T4 &XA, T1 &y, T2 &beta, T2 &beta_A, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num) = 0;
 

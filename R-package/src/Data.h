@@ -31,21 +31,19 @@ public:
     int n;
     int p;
     int M;
-    int data_type;
+    int normalize_type;
     bool is_normal;
     int g_num;
     Eigen::VectorXi g_index;
     Eigen::VectorXi g_size;
 
-    Eigen::VectorXi status;
-
     Data() = default;
 
-    Data(T4 &x, T1 &y, int data_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, Eigen::VectorXi &status, bool sparse_matrix)
+    Data(T4 &x, T1 &y, int normalize_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, bool sparse_matrix)
     {
         this->x = x;
         this->y = y;
-        this->data_type = data_type;
+        this->normalize_type = normalize_type;
         this->n = x.rows();
         this->p = x.cols();
         this->M = y.cols();
@@ -54,8 +52,6 @@ public:
         this->is_normal = is_normal;
         this->x_mean = Eigen::VectorXd::Zero(this->p);
         this->x_norm = Eigen::VectorXd::Zero(this->p);
-
-        this->status = status;
 
         // to do !!!!!!!!!!!!!!!!!!!!!!!!!
         if (is_normal && !sparse_matrix)
@@ -85,11 +81,11 @@ public:
 
     void normalize()
     {
-        if (this->data_type == 1)
+        if (this->normalize_type == 1)
         {
             Normalize(this->x, this->y, this->weight, this->x_mean, this->y_mean, this->x_norm);
         }
-        else if (this->data_type == 2)
+        else if (this->normalize_type == 2)
         {
             Normalize3(this->x, this->weight, this->x_mean, this->x_norm);
         }

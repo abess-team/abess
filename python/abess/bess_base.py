@@ -72,7 +72,7 @@ class bess_base(BaseEstimator):
 
     """
 
-    def __init__(self, algorithm_type, model_type, data_type, path_type, max_iter=20, exchange_num=5, is_warm_start=True,
+    def __init__(self, algorithm_type, model_type, normalize_type, path_type, max_iter=20, exchange_num=5, is_warm_start=True,
                  support_size=None, alpha=None, s_min=None, s_max=None, 
                  ic_type="ebic", ic_coef=1.0,
                  cv=1, is_screening=False, screening_size=None, 
@@ -88,7 +88,7 @@ class bess_base(BaseEstimator):
                  ):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
-        self.data_type = data_type
+        self.normalize_type = normalize_type
         self.path_type = path_type
         self.max_iter = max_iter
         self.exchange_num = exchange_num
@@ -417,7 +417,7 @@ class bess_base(BaseEstimator):
         # wrap with cpp
         # print("wrap enter.")#///
         number = 1
-        result = pywrap_abess(X, y, n, p, weight, Sigma,
+        result = pywrap_abess(X, y, n, p, self.normalize_type, weight, Sigma,
                               is_normal,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,

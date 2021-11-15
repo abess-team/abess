@@ -80,7 +80,6 @@ struct Result
  *                                      For count data, \code{y} should be a $n \time 1$ numpy array of non-negative integer.
  * @param n                             Sample size.
  * @param p                             Variable dimension.
- * @param data_type                     Data type.
  * @param weight                        Individual weights for each sample. Only used for is_weight=True.
  * @param sigma                         Sample covariance matrix.For PCA, it can be given as input, instead of X. But if X is given, Sigma will be set to \code{np.cov(X.T)}.
  * @param is_normal                     Whether normalize the variables array before fitting the algorithm.
@@ -102,9 +101,8 @@ struct Result
  * @param s_max                         The higher bound of golden-section-search for sparsity searching.
  * @param K_max                         The max search time of golden-section-search for sparsity searching.
  * @param epsilon                       The stop condition of golden-section-search for sparsity searching.
- * @param thread                        Max number of multithreads. If thread = 0, the program will use the maximum number supported by the device.
- * @param is_screen                     Screen the variables first and use the chosen variables in abess process.
- * @param screen_size                   This parameter is only useful when is_screen = True. 
+ * @param thread                        Max number of multithreads. If thread = 0, the program will use the maximum number supported by the device.       
+ * @param screen_size                   Screen the variables first and use the chosen variables in abess process. If screen_size = -1, screening will not be used.
  *                                      The number of variables remaining after screening. It should be a non-negative number smaller than p.
  * @param g_index                       The group index for each variable.
  * @param always_select                 An array contains the indexes of variables we want to consider in the model.
@@ -115,18 +113,17 @@ struct Result
  * @param sub_search                    The number of inactive sets that are split when splicing. It should be positive integer.
  * @return result list.
  */
-List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
-               int data_type, Eigen::VectorXd weight, Eigen::MatrixXd sigma,
+List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize_type,
+               Eigen::VectorXd weight, Eigen::MatrixXd sigma,
                bool is_normal,
                int algorithm_type, int model_type, int max_iter, int exchange_num,
                int path_type, bool is_warm_start,
                int ic_type, double ic_coef, bool is_cv, int Kfold,
-               Eigen::VectorXi status,
                Eigen::VectorXi sequence,
                Eigen::VectorXd lambda_seq,
                int s_min, int s_max, int K_max, double epsilon,
                double lambda_min, double lambda_max, int nlambda,
-               bool is_screening, int screening_size, int powell_path,
+               int screening_size, int powell_path,
                Eigen::VectorXi g_index,
                Eigen::VectorXi always_select,
                double tau,
@@ -137,21 +134,21 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                bool sparse_matrix,
                int splicing_type,
                int sub_search,
-               Eigen::VectorXi cv_fold_id);
+               Eigen::VectorXi cv_fold_id,
+               int pca_num);
 
 template <class T1, class T2, class T3, class T4>
-List abessCpp(T4 &x, T1 &y, int n, int p,
-              int data_type, Eigen::VectorXd weight, Eigen::MatrixXd sigma,
+List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
+              Eigen::VectorXd weight, Eigen::MatrixXd sigma,
               bool is_normal,
               int algorithm_type, int model_type, int max_iter, int exchange_num,
               int path_type, bool is_warm_start,
               int ic_type, double ic_coef, bool is_cv, int Kfold,
-              Eigen::VectorXi status,
               Eigen::VectorXi sequence,
               Eigen::VectorXd lambda_seq,
               int s_min, int s_max, int K_max, double epsilon,
               double lambda_min, double lambda_max, int nlambda,
-              bool is_screening, int screening_size, int powell_path,
+              int screening_size, int powell_path,
               Eigen::VectorXi g_index,
               Eigen::VectorXi always_select,
               double tau,
@@ -164,19 +161,18 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
               Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list);
 
 #ifndef R_BUILD
-void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, int p, int y_col, int data_type, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
+void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, int p, int normalize_type, int y_col, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
                   bool is_normal,
                   int algorithm_type, int model_type, int max_iter, int exchange_num,
                   int path_type, bool is_warm_start,
                   int ic_type, double ic_coef, bool is_cv, int K,
                   int *gindex, int gindex_len,
-                  int *status, int status_len,
                   int *sequence, int sequence_len,
                   double *lambda_sequence, int lambda_sequence_len,
                   int *cv_fold_id, int cv_fold_id_len,
                   int s_min, int s_max, int K_max, double epsilon,
                   double lambda_min, double lambda_max, int n_lambda,
-                  bool is_screening, int screening_size, int powell_path,
+                  int screening_size, int powell_path,
                   int *always_select, int always_select_len, double tau,
                   int primary_model_fit_max_iter, double primary_model_fit_epsilon,
                   bool early_stop, bool approximate_Newton,
@@ -185,6 +181,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, 
                   bool sparse_matrix,
                   int splicing_type,
                   int sub_search,
+                  int pca_num,
                   double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
                   int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
                   int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
