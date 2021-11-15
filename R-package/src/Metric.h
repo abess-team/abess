@@ -232,11 +232,11 @@ public:
     double loss;
     if (algorithm->model_type == 1 || algorithm->model_type == 5)
     {
-      loss = train_n * log(algorithm->get_train_loss());
+      loss = train_n * log(algorithm->get_train_loss() - algorithm->lambda_level  * algorithm->beta.cwiseAbs2().sum());
     }
     else
     {
-      loss = 2 * algorithm->get_train_loss();
+      loss = 2 * (algorithm->get_train_loss() - algorithm->lambda_level * algorithm->beta.cwiseAbs2().sum());
     }
 
     if (ic_type == 1)
@@ -276,7 +276,7 @@ public:
     // {
     //   beta_A(k) = beta(A_ind(k));
     // }
-    double L0 = algorithm->neg_loglik_loss(X_A, train_y, train_weight, beta_A, coef0, A, g_index, g_size);
+    double L0 = algorithm->neg_loglik_loss(X_A, train_y, train_weight, beta_A, coef0, A, g_index, g_size, 0.0);
 
     return L0;
   }
@@ -293,7 +293,7 @@ public:
     algorithm->update_coef0_init(fit_arg.coef0_init);
     algorithm->update_A_init(fit_arg.A_init, N);
 
-    algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, data.status, algorithm->Sigma);
+    algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, algorithm->Sigma);
 
     if (algorithm->get_warm_start())
     {
@@ -345,7 +345,7 @@ public:
         }
         // algorithm->update_train_mask(this->train_mask_list[k]);
         /// ??????????????????????????????????????????????????????????????
-        algorithm_list[k]->fit(this->train_X_list[k], this->train_y_list[k], this->train_weight_list[k], g_index, g_size, train_n, p, N, data.status, algorithm_list[k]->Sigma);
+        algorithm_list[k]->fit(this->train_X_list[k], this->train_y_list[k], this->train_weight_list[k], g_index, g_size, train_n, p, N, algorithm_list[k]->Sigma);
 
         if (algorithm_list[k]->get_warm_start())
         {

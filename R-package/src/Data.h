@@ -37,11 +37,9 @@ public:
     Eigen::VectorXi g_index;
     Eigen::VectorXi g_size;
 
-    Eigen::VectorXi status;
-
     Data() = default;
 
-    Data(T4 &x, T1 &y, int data_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, Eigen::VectorXi &status, bool sparse_matrix)
+    Data(T4 &x, T1 &y, int data_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, bool sparse_matrix)
     {
         this->x = x;
         this->y = y;
@@ -54,8 +52,6 @@ public:
         this->is_normal = is_normal;
         this->x_mean = Eigen::VectorXd::Zero(this->p);
         this->x_norm = Eigen::VectorXd::Zero(this->p);
-
-        this->status = status;
 
         // to do !!!!!!!!!!!!!!!!!!!!!!!!!
         if (is_normal && !sparse_matrix)
@@ -71,6 +67,23 @@ public:
         temp(g_num - 1) = this->p;
         this->g_size = temp - g_index;
     };
+
+    // void set_data_type(int model_type)
+    // {
+    //     switch (model_type)
+    //     {
+    //         case 1: // gauss
+    //         case 5: // mul-gauss
+    //         case 7: // pca
+    //             this->data_type = 1; break;
+    //         case 2: // logi
+    //         case 3: // poiss
+    //         case 6: // mul-nomial
+    //             this->data_type = 2; break;
+    //         case 4: // cox
+    //             this->data_type = 3; break;
+    //     };
+    // };
 
     // to do
     void add_weight()
