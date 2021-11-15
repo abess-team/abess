@@ -31,7 +31,7 @@ public:
     int n;
     int p;
     int M;
-    int data_type;
+    int normalize_type;
     bool is_normal;
     int g_num;
     Eigen::VectorXi g_index;
@@ -39,11 +39,11 @@ public:
 
     Data() = default;
 
-    Data(T4 &x, T1 &y, int data_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, bool sparse_matrix)
+    Data(T4 &x, T1 &y, int normalize_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, bool sparse_matrix)
     {
         this->x = x;
         this->y = y;
-        this->data_type = data_type;
+        this->normalize_type = normalize_type;
         this->n = x.rows();
         this->p = x.cols();
         this->M = y.cols();
@@ -68,23 +68,6 @@ public:
         this->g_size = temp - g_index;
     };
 
-    // void set_data_type(int model_type)
-    // {
-    //     switch (model_type)
-    //     {
-    //         case 1: // gauss
-    //         case 5: // mul-gauss
-    //         case 7: // pca
-    //             this->data_type = 1; break;
-    //         case 2: // logi
-    //         case 3: // poiss
-    //         case 6: // mul-nomial
-    //             this->data_type = 2; break;
-    //         case 4: // cox
-    //             this->data_type = 3; break;
-    //     };
-    // };
-
     // to do
     void add_weight()
     {
@@ -98,11 +81,11 @@ public:
 
     void normalize()
     {
-        if (this->data_type == 1)
+        if (this->normalize_type == 1)
         {
             Normalize(this->x, this->y, this->weight, this->x_mean, this->y_mean, this->x_norm);
         }
-        else if (this->data_type == 2)
+        else if (this->normalize_type == 2)
         {
             Normalize3(this->x, this->weight, this->x_mean, this->x_norm);
         }

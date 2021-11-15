@@ -113,7 +113,7 @@ struct Result
  * @param sub_search                    The number of inactive sets that are split when splicing. It should be positive integer.
  * @return result list.
  */
-List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
+List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize_type,
                Eigen::VectorXd weight, Eigen::MatrixXd sigma,
                bool is_normal,
                int algorithm_type, int model_type, int max_iter, int exchange_num,
@@ -138,7 +138,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
                int pca_num);
 
 template <class T1, class T2, class T3, class T4>
-List abessCpp(T4 &x, T1 &y, int n, int p,
+List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
               Eigen::VectorXd weight, Eigen::MatrixXd sigma,
               bool is_normal,
               int algorithm_type, int model_type, int max_iter, int exchange_num,
@@ -161,7 +161,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
               Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list);
 
 #ifndef R_BUILD
-void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, int p, int y_col, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
+void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, int p, int normalize_type, int y_col, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
                   bool is_normal,
                   int algorithm_type, int model_type, int max_iter, int exchange_num,
                   int path_type, bool is_warm_start,
