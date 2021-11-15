@@ -51,7 +51,7 @@ using namespace Eigen;
 using namespace std;
 
 // [[Rcpp::export]]
-List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
+List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize_type,
                Eigen::VectorXd weight, Eigen::MatrixXd sigma,
                bool is_normal,
                int algorithm_type, int model_type, int max_iter, int exchange_num,
@@ -256,7 +256,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 
       while (num++ < pca_num){
         List out_result_pca;
-        out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p,
+        out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type, 
                                                                                         weight, sigma,
                                                                                         is_normal,
                                                                                         algorithm_type, model_type, max_iter, exchange_num,
@@ -297,7 +297,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 
       Eigen::VectorXd y_vec = y.col(0).eval();
 
-      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p,
+      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
                                                                                        weight, sigma,
                                                                                        is_normal,
                                                                                        algorithm_type, model_type, max_iter, exchange_num,
@@ -322,7 +322,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     else
     {
 
-      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd>(x, y, n, p,
+      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd>(x, y, n, p, normalize_type,
                                                                                                 weight, sigma,
                                                                                                 is_normal,
                                                                                                 algorithm_type, model_type, max_iter, exchange_num,
@@ -372,7 +372,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 
       while (num++ < pca_num){
         List out_result_pca;
-        out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p,
+        out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
                                                                                                    weight, sigma,
                                                                                                    is_normal,
                                                                                                    algorithm_type, model_type, max_iter, exchange_num,
@@ -413,7 +413,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 
       Eigen::VectorXd y_vec = y.col(0).eval();
 
-      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p,
+      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
                                                                                                    weight, sigma,
                                                                                                    is_normal,
                                                                                                    algorithm_type, model_type, max_iter, exchange_num,
@@ -438,7 +438,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
     else
     {
 
-      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>>(sparse_x, y, n, p,
+      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>>(sparse_x, y, n, p, normalize_type,
                                                                                                             weight, sigma,
                                                                                                             is_normal,
                                                                                                             algorithm_type, model_type, max_iter, exchange_num,
@@ -494,7 +494,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p,
 //  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> for Multivariable Dense
 //  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double> > for Multivariable Sparse
 template <class T1, class T2, class T3, class T4>
-List abessCpp(T4 &x, T1 &y, int n, int p,
+List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
               Eigen::VectorXd weight, Eigen::MatrixXd sigma,
               bool is_normal,
               int algorithm_type, int model_type, int max_iter, int exchange_num,
@@ -523,23 +523,22 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 #endif
   bool is_parallel = thread != 1;
 
-  int data_type;
-  switch (model_type)
-  {
-      case 1: // gauss
-      case 5: // mul-gauss
-      case 7: // pca
-          data_type = 1; break;
-      case 2: // logi
-      case 3: // poiss
-      case 6: // mul-nomial
-          data_type = 2; break;
-      case 4: // cox
-          data_type = 3; break;
-  };
+  // int normalize_type;
+  // switch (model_type)
+  // {
+  //     case 1: // gauss
+  //     case 5: // mul-gauss
+  //     case 7: // pca
+  //         normalize_type = 1; break;
+  //     case 2: // logi
+  //     case 3: // poiss
+  //     case 6: // mul-nomial
+  //         normalize_type = 2; break;
+  //     case 4: // cox
+  //         normalize_type = 3; break;
+  // };
 
-  Data<T1, T2, T3, T4> data(x, y, data_type, weight, is_normal, g_index, sparse_matrix);
-  // data.set_data_type(model_type);
+  Data<T1, T2, T3, T4> data(x, y, normalize_type, weight, is_normal, g_index, sparse_matrix);
 
   Eigen::VectorXi screening_A;
   if (screening_size >= 0)
@@ -817,13 +816,13 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   // to do
   if (data.is_normal && !sparse_matrix)
   {
-    if (data.data_type == 1)
+    if (data.normalize_type == 1)
     {
       array_quotient(best_beta, data.x_norm, 1);
       best_beta = best_beta * sqrt(double(data.n));
       best_coef0 = data.y_mean - matrix_dot(best_beta, data.x_mean);
     }
-    else if (data.data_type == 2)
+    else if (data.normalize_type == 2)
     {
       array_quotient(best_beta, data.x_norm, 1);
       best_beta = best_beta * sqrt(double(data.n));
@@ -840,7 +839,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
   // to do
   if (data.is_normal && !sparse_matrix)
   {
-    if (data.data_type == 1)
+    if (data.normalize_type == 1)
     {
       for (int j = 0; j < beta_matrix.cols(); j++)
       {
@@ -852,7 +851,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
         }
       }
     }
-    else if (data.data_type == 2)
+    else if (data.normalize_type == 2)
     {
       for (int j = 0; j < beta_matrix.cols(); j++)
       {
@@ -937,7 +936,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p,
 
 #ifndef R_BUILD
 
-void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_col, int n, int p, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
+void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_col, int n, int p, int normalize_type, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
                   bool is_normal,
                   int algorithm_type, int model_type, int max_iter, int exchange_num,
                   int path_type, bool is_warm_start,
@@ -983,7 +982,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   always_select_Vec = Pointer2VectorXi(always_select, always_select_len);
   cv_fold_id_Vec = Pointer2VectorXi(cv_fold_id, cv_fold_id_len);
 
-  List mylist = abessCpp2(x_Mat, y_Mat, n, p, weight_Vec, sigma_Mat,
+  List mylist = abessCpp2(x_Mat, y_Mat, n, p, normalize_type, weight_Vec, sigma_Mat,
                           is_normal,
                           algorithm_type, model_type, max_iter, exchange_num,
                           path_type, is_warm_start,

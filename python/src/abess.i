@@ -31,7 +31,7 @@ import_array();
 %apply (double *OUTPUT) {(double *nullloss_out)}
 %apply (int *OUTPUT) {(int *l_out)}
 
-void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_col, int n, int p, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
+void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_col, int n, int p, int normalize_type, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
                   bool is_normal,
                   int algorithm_type, int model_type, int max_iter, int exchange_num,
                   int path_type, bool is_warm_start,

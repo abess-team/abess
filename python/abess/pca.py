@@ -64,7 +64,7 @@ class abessPCA(bess_base):
                  splicing_type=1
                  ):
         super(abessPCA, self).__init__(
-            algorithm_type="abess", model_type="PCA", data_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            algorithm_type="abess", model_type="PCA", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, s_min=s_min, s_max=s_max, 
             ic_type=ic_type, ic_coef=ic_coef, 
             always_select=always_select, 
@@ -308,7 +308,7 @@ class abessPCA(bess_base):
 
         # wrap with cpp
         weight = np.ones(n)
-        result = pywrap_abess(X, y, n, p, weight, Sigma,
+        result = pywrap_abess(X, y, n, p, self.normalize_type, weight, Sigma,
                               is_normal,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
@@ -345,7 +345,7 @@ class abessPCA(bess_base):
         #         temp = v.dot(v.T).dot(Sigma)
         #         Sigma = Sigma + temp.dot(v).dot(v.T) - temp - temp.T
 
-        #         result = pywrap_abess(X, y, n, p, weight, Sigma,
+        #         result = pywrap_abess(X, y, n, p, self.normalize_type, weight, Sigma,
         #                               is_normal,
         #                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
         #                               path_type_int, self.is_warm_start,
