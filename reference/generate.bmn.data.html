@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generate a dataset with independent observations from binary markov network — generate.bmn.data • abess</title>
+<title>Generate a dataset from binary markov network — generate.bmn.data • abess</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -52,8 +52,8 @@
 
 
 
-<meta property="og:title" content="Generate a dataset with independent observations from binary markov network — generate.bmn.data" />
-<meta property="og:description" content="Generate a dataset with independent observations from binary markov network" />
+<meta property="og:title" content="Generate a dataset from binary markov network — generate.bmn.data" />
+<meta property="og:description" content="Generate a dataset from binary markov network" />
 <meta property="og:image" content="https://abess-team.github.io/abess/logo.svg" />
 
 
@@ -86,7 +86,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
 
@@ -170,13 +170,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generate a dataset with independent observations from binary markov network</h1>
+    <h1>Generate a dataset from binary markov network</h1>
     <small class="dont-index">Source: <a href='https://github.com/abess-team/abess/tree/master/R-package/R/generate.graph.R'><code>R/generate.graph.R</code></a></small>
     <div class="hidden name"><code>generate.bmn.data.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Generate a dataset with independent observations from binary markov network</p>
+    <p>Generate a dataset from binary markov network</p>
     </div>
 
     <pre class="usage"><span class='fu'>generate.bmn.data</span><span class='op'>(</span>
@@ -187,7 +187,8 @@
   graph.seed <span class='op'>=</span> <span class='cn'>NULL</span>,
   beta <span class='op'>=</span> <span class='fl'>0.7</span>,
   degree <span class='op'>=</span> <span class='fl'>3</span>,
-  alpha <span class='op'>=</span> <span class='fl'>0.4</span>
+  alpha <span class='op'>=</span> <span class='fl'>0.4</span>,
+  method <span class='op'>=</span> <span class='st'>"freq"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -195,18 +196,23 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>n</th>
-      <td></td>
+      <td><p>The number of observations.</p></td>
     </tr>
     <tr>
       <th>p</th>
-      <td></td>
-    </tr>
-    <tr>
-      <th>type</th>
-      <td></td>
+      <td><p>The number of predictors of interest.</p></td>
     </tr>
     <tr>
       <th>seed</th>
+      <td><p>random seed. Default: <code>seed = 1</code>.</p></td>
+    </tr>
+    <tr>
+      <th>beta</th>
+      <td><p>The coefficient values in the underlying regression model.
+If it is supplied, <code>support.size</code> would be omitted.</p></td>
+    </tr>
+    <tr>
+      <th>alpha</th>
       <td></td>
     </tr>
     </table>
