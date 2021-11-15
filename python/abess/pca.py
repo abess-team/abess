@@ -413,7 +413,7 @@ class abessRPCA(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, is_warm_start=True, support_size=None, 
-                 ic_type="ebic", ic_coef=1.0, 
+                 ic_type="gic", ic_coef=1.0, 
                  always_select=[], 
                  thread=1,
                  sparse_matrix=False,
@@ -429,7 +429,7 @@ class abessRPCA(bess_base):
             splicing_type=splicing_type
         )
 
-    def fit(self, X=None, is_normal=False, group=None):
+    def fit(self, X=None, r = 10, is_normal=False, group=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -469,8 +469,8 @@ class abessRPCA(bess_base):
             raise ValueError("algorithm_type should not be " +
                              str(self.algorithm_type))
 
-        # for PCA,
-        #   model_type_int = 7,
+        # for RPCA,
+        #   model_type_int = 10,
         #   path_type_int = 1 (seq)
         model_type_int = 10
         path_type_int = 1
@@ -528,13 +528,18 @@ class abessRPCA(bess_base):
                 support_sizes = self.support_size
         support_sizes = np.array(support_sizes).astype('int32')
 
+        # alphas
+        if isinstance(r, (numbers.Integral)):
+            alphas = np.array([r], dtype = float)
+        else:
+            raise ValueError("r should be integer")
+
         # unused
         new_s_min = 0
         new_s_max = 0
         new_K_max = 0
         new_lambda_min = 0
         new_lambda_max = 0
-        alphas = [0]
         new_screening_size = -1
         cv_fold_id = np.array([], dtype = "int32")
         Sigma = np.array([[-1]])

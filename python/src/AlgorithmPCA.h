@@ -148,6 +148,8 @@ public:
       {
         bd(this->always_select(i)) = DBL_MAX;
       }
+      
+      this->r = (int) this->lambda_level;
     }
 
     // get Active-set A according to max_k bd
