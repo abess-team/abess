@@ -138,6 +138,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
       if (pca_n != -1)
         algorithm_uni_dense->pca_n = pca_n;
     }
+    else if(model_type == 8)
+    {
+      algorithm_uni_dense = new abessGamma<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+    }
   }
   else
   {
@@ -168,6 +172,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
     else if (model_type == 7)
     {
       algorithm_uni_sparse = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+    }
+    else if(model_type == 8)
+    {
+      algorithm_uni_sparse = new abessGamma<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
     }
   }
 
@@ -211,6 +219,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
           if (pca_n != -1)
             algorithm_list_uni_dense[i]->pca_n = pca_n;
         }
+        else if(model_type == 8)
+        {
+          algorithm_list_uni_dense[i] = new abessGamma<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        }
       }
       else
       {
@@ -242,6 +254,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
         {
           algorithm_list_uni_sparse[i] = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
         }
+        else if (model_type == 8)
+        {
+          algorithm_list_uni_sparse[i] = new abessGamma<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        }
       }
     }
   }
@@ -253,7 +269,6 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
     {
       int num = 0;/// number of PCs
       Eigen::VectorXd y_vec = y.col(0).eval();
-
       while (num++ < pca_num){
         List out_result_pca;
         out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type, 
@@ -277,12 +292,20 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
                                                                                         sparse_matrix,
                                                                                         cv_fold_id,
                                                                                         algorithm_uni_dense, algorithm_list_uni_dense);
-        Eigen::VectorXd beta_next;
-        out_result_pca.get_value_by_name("beta", beta_next);
-        if (num == 1){
+        Eigen::MatrixXd beta_next;
+        if (num == 1) {
           out_result = out_result_pca;
-        }else{
+        } else {
+#ifdef R_BUILD
+          beta_next = out_result_pca["beta"];
+          MatrixXd beta_new(p, num);
+          beta_new << out_result["beta"], beta_next;
+          out_result["beta"] = beta_new;
+#else 
+          Eigen::VectorXd beta_next;
+          out_result_pca.get_value_by_name("beta", beta_next);
           out_result.combine_beta(beta_next);
+#endif
         }
 
         if (num < pca_num){
@@ -369,7 +392,6 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
     {
       int num = 0;/// number of PCs
       Eigen::VectorXd y_vec = y.col(0).eval();
-
       while (num++ < pca_num){
         List out_result_pca;
         out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
@@ -394,13 +416,20 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
                                                                                                    cv_fold_id,
                                                                                                    algorithm_uni_sparse, algorithm_list_uni_sparse);
         Eigen::VectorXd beta_next;
-        out_result_pca.get_value_by_name("beta", beta_next);
-        if (num == 1){
+        if (num == 1) {
           out_result = out_result_pca;
-        }else{
+        } else {
+#ifdef R_BUILD
+          beta_next = out_result_pca["beta"];
+          MatrixXd beta_new(p, num);
+          beta_new << out_result["beta"], beta_next;
+          out_result["beta"] = beta_new;
+#else 
+          out_result_pca.get_value_by_name("beta", beta_next);
           out_result.combine_beta(beta_next);
+#endif
         }
-
+        
         if (num < pca_num){
           Eigen::MatrixXd temp = beta_next * beta_next.transpose();
           Eigen::MatrixXd temp1 = temp * sigma;
