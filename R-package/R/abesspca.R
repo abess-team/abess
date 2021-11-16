@@ -101,6 +101,11 @@ abesspca <- function(x,
                      sparse.type = c("fpc", "kpc"),
                      cor = FALSE,
                      support.size = NULL,
+                     K = 1, 
+                     tune.type = c("cv", "aic", "bic", "gic", "ebic"), 
+                     nfolds = 5,
+                     foldid = NULL, 
+                     ic.scale = 1.0,
                      c.max = NULL,
                      lambda = 0,
                      always.include = NULL,
@@ -151,7 +156,10 @@ abesspca <- function(x,
 
   ## check sparse.type
   sparse_type <- match.arg(sparse.type)
-
+  stopifnot(K >= 1)
+  check_integer_warning(K, "K should be an integer. It is coerced to as.integer(K).")
+  sparse_type <- ifelse(K == 1, "fpc", "kpc")
+  
   ## compute gram matrix
   cov_type <- match.arg(type)
   if (cov_type == "gram") {
@@ -314,85 +322,51 @@ abesspca <- function(x,
   }
 
   ## Cpp interface:
-  res_list <- list()
-  k <- 0
-  s_list_copy <- s_list
-  x_copy <- x
-  while (k_num > 0) {
-    k_num <- k_num - 1
-    k <- k + 1
-    if (sparse_type == "fpc") {
-      s_list_tmp <- s_list_copy
-    } else {
-      s_list_tmp <- s_list_copy[1]
-    }
-    # print(nobs)
-    # print(nvars)
-    # print(x)
-    # print(max_splicing_iter)
-    # print(c_max)
-    # print(warm.start)
-    # print(as.vector(s_list_tmp))
-    # print(lambda)
-    # print(g_index)
-    # print(always_include)
-    # print(splicing_type)
-    # print(important_search)
-    result <- abessCpp2(
-      x = matrix(0, ncol = nvars, nrow = 1),
-      y = matrix(0),
-      n = nobs,
-      p = nvars,
-      normalize_type = 1,
-      weight = c(1),
-      sigma = x,
-      is_normal = FALSE,
-      algorithm_type = 6,
-      model_type = 7,
-      max_iter = max_splicing_iter,
-      exchange_num = c_max,
-      path_type = 1,
-      is_warm_start = warm.start,
-      ic_type = 1,
-      ic_coef = 1.0,
-      is_cv = FALSE,
-      Kfold = 2,
-      sequence = as.vector(s_list_tmp),
-      lambda_seq = lambda,
-      s_min = 0,
-      s_max = 10,
-      K_max = as.integer(20),
-      epsilon = 0.0001,
-      lambda_max = 0,
-      lambda_min = 0,
-      nlambda = 10,
-      screening_size = 0,
-      powell_path = 1,
-      g_index = g_index,
-      always_select = always_include,
-      tau = 0.0,
-      primary_model_fit_max_iter = 1,
-      primary_model_fit_epsilon = 1e-3,
-      early_stop = FALSE,
-      approximate_Newton = FALSE,
-      thread = 1,
-      covariance_update = FALSE,
-      sparse_matrix = FALSE, ### to change
-      splicing_type = splicing_type, 
-      sub_search = important_search, 
-      cv_fold_id = integer(0), 
-      pca_num = K
-    )
-
-    if (sparse_type != "fpc") {
-      direction_new <- result[["beta_all"]][[1]]
-      x <- project_cov(x, direction_new)
-    }
-    res_list[[k]] <- result
-    s_list_copy <- s_list_copy[-1]
-  }
-
-  result <- list()
+  result <- abessCpp2(
+    x = matrix(0, ncol = nvars, nrow = 1),
+    y = matrix(0),
+    n = nobs,
+    p = nvars,
+    normalize_type = 1,
+    weight = c(1),
+    sigma = x,
+    is_normal = FALSE,
+    algorithm_type = 6,
+    model_type = 7,
+    max_iter = max_splicing_iter,
+    exchange_num = c_max,
+    path_type = 1,
+    is_warm_start = warm.start,
+    ic_type = 1,
+    ic_coef = ic.scale,
+    is_cv = FALSE,
+    Kfold = 2,
+    sequence = as.vector(s_list),
+    lambda_seq = lambda,
+    s_min = 0,
+    s_max = 10,
+    K_max = as.integer(20),
+    epsilon = 0.0001,
+    lambda_max = 0,
+    lambda_min = 0,
+    nlambda = 10,
+    screening_size = 0,
+    powell_path = 1,
+    g_index = g_index,
+    always_select = always_include,
+    tau = 0.0,
+    primary_model_fit_max_iter = 1,
+    primary_model_fit_epsilon = 1e-3,
+    early_stop = FALSE,
+    approximate_Newton = FALSE,
+    thread = 1,
+    covariance_update = FALSE,
+    sparse_matrix = FALSE, ### to change
+    splicing_type = splicing_type, 
+    sub_search = important_search, 
+    cv_fold_id = integer(0), 
+    pca_num = K
+  )
 
   # result[["beta"]] <- NULL
   # result[["coef0"]] <- NULL
