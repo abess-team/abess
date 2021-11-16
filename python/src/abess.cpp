@@ -271,13 +271,19 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
       Eigen::VectorXd y_vec = y.col(0).eval();
       while (num++ < pca_num){
         List out_result_pca;
+        Eigen::VectorXi pca_support_size;
+        if (is_cv) {
+          pca_support_size = sequence;
+        } else {
+          pca_support_size << sequence(num - 1);
+        }
         out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type, 
                                                                                         weight, sigma,
                                                                                         is_normal,
                                                                                         algorithm_type, model_type, max_iter, exchange_num,
                                                                                         path_type, is_warm_start,
                                                                                         ic_type, ic_coef, is_cv, Kfold,
-                                                                                        sequence,
+                                                                                        pca_support_size,
                                                                                         lambda_seq,
                                                                                         s_min, s_max, K_max, epsilon,
                                                                                         lambda_min, lambda_max, nlambda,
