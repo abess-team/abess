@@ -309,7 +309,6 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
                                                                                         cv_fold_id,
                                                                                         algorithm_uni_dense, algorithm_list_uni_dense);
         Eigen::VectorXd beta_next;
-        out_result_pca.get_value_by_name("beta", beta_next);
         if (num == 1) {
           out_result = out_result_pca;
         } else {
@@ -319,6 +318,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
           beta_new << out_result["beta"], beta_next;
           out_result["beta"] = beta_new;
 #else 
+          out_result_pca.get_value_by_name("beta", beta_next);
           out_result.combine_beta(beta_next);
 #endif
         }
@@ -441,7 +441,6 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
                                                                                                    cv_fold_id,
                                                                                                    algorithm_uni_sparse, algorithm_list_uni_sparse);
         Eigen::VectorXd beta_next;
-        out_result_pca.get_value_by_name("beta", beta_next);
         if (num == 1) {
           out_result = out_result_pca;
         } else {
@@ -451,6 +450,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
           beta_new << out_result["beta"], beta_next;
           out_result["beta"] = beta_new;
 #else 
+          out_result_pca.get_value_by_name("beta", beta_next);
           out_result.combine_beta(beta_next);
 #endif
         }
@@ -671,7 +671,6 @@ List abessCpp2_PCA(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int norma
                                                                                       cv_fold_id,
                                                                                       algorithm_uni_dense, algorithm_list_uni_dense);
       Eigen::VectorXd beta_next;
-      out_result_pca.get_value_by_name("beta", beta_next);
       if (num == 1) {
         out_result = out_result_pca;
       } else {
@@ -681,6 +680,7 @@ List abessCpp2_PCA(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int norma
         beta_new << out_result["beta"], beta_next;
         out_result["beta"] = beta_new;
 #else 
+        out_result_pca.get_value_by_name("beta", beta_next);
         out_result.combine_beta(beta_next);
 #endif
       }
@@ -746,7 +746,6 @@ List abessCpp2_PCA(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int norma
                                                                                                   cv_fold_id,
                                                                                                   algorithm_uni_sparse, algorithm_list_uni_sparse);
       Eigen::VectorXd beta_next;
-      out_result_pca.get_value_by_name("beta", beta_next);
       if (num == 1) {
         out_result = out_result_pca;
       } else {
@@ -756,6 +755,7 @@ List abessCpp2_PCA(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int norma
         beta_new << out_result["beta"], beta_next;
         out_result["beta"] = beta_new;
 #else 
+        out_result_pca.get_value_by_name("beta", beta_next);
         out_result.combine_beta(beta_next);
 #endif
       }
