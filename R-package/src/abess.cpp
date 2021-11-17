@@ -543,6 +543,7 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
   return out_result;
 };
 
+// [[Rcpp::export]]
 List abessPCA_API(Eigen::MatrixXd x,
                   int n,
                   int p,

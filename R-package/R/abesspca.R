@@ -11,6 +11,7 @@
 #' @param c.max an integer splicing size. The default of \code{c.max} is the maximum of 2 and \code{max(support.size) / 2}.
 #' @param sparse.type If \code{sparse.type = "fpc"}, then best subset selection performs on the first principal component;
 #' If \code{sparse.type = "kpc"}, then best subset selection performs on the first \eqn{K} principal components.
+#' (The parameter will be discard in future version.)
 #' @param cor A logical value. If \code{cor = TRUE}, perform PCA on the correlation matrix;
 #' otherwise, the covariance matrix.
 #' This option is available only if \code{type = "predictor"}.
@@ -103,6 +104,7 @@ abesspca <- function(x,
                      support.size = NULL,
                      K = 1, 
                      tune.type = c("cv", "aic", "bic", "gic", "ebic"), 
+                     seq.tune = NULL, 
                      nfolds = 5,
                      foldid = NULL, 
                      ic.scale = 1.0,
@@ -159,6 +161,13 @@ abesspca <- function(x,
   stopifnot(K >= 1)
   check_integer_warning(K, "K should be an integer. It is coerced to as.integer(K).")
   sparse_type <- ifelse(K == 1, "fpc", "kpc")
+  if (is.null(seq.tune)) {
+    if (K == 1) {
+      seq.tune <- TRUE
+    } else {
+      seq.tune <- FALSE
+    }
+  }
   
   ## compute gram matrix
   cov_type <- match.arg(type)
@@ -322,9 +331,8 @@ abesspca <- function(x,
   }
 
   ## Cpp interface:
-  result <- abessCpp2(
+  result <- abessPCA_API(
     x = matrix(0, ncol = nvars, nrow = 1),
-    y = matrix(0),
     n = nobs,
     p = nvars,
     normalize_type = 1,
@@ -332,11 +340,11 @@ abesspca <- function(x,
     sigma = x,
     is_normal = FALSE,
     algorithm_type = 6,
-    model_type = 7,
     max_iter = max_splicing_iter,
     exchange_num = c_max,
     path_type = 1,
     is_warm_start = warm.start,
+    is_tune = TRUE, 
     ic_type = 1,
     ic_coef = ic.scale,
     is_cv = FALSE,
@@ -355,12 +363,8 @@ abesspca <- function(x,
     g_index = g_index,
     always_select = always_include,
     tau = 0.0,
-    primary_model_fit_max_iter = 1,
-    primary_model_fit_epsilon = 1e-3,
     early_stop = FALSE,
-    approximate_Newton = FALSE,
     thread = 1,
-    covariance_update = FALSE,
     sparse_matrix = FALSE, ### to change
     splicing_type = splicing_type, 
     sub_search = important_search, 
@@ -380,14 +384,12 @@ abesspca <- function(x,
   result[["support.size"]] <- s_list
   result[["sparse.type"]] <- sparse_type
   if (sparse_type == "fpc") {
-    result[["coef"]] <- res_list[[1]][["beta_all"]]
-    result[["ev"]] <- -res_list[[1]][["train_loss_all"]][, 1]
+    result[["coef"]] <- result[["beta_all"]]
+    result[["ev"]] <- -result[["train_loss_all"]][, 1]
     # names(result)[which(names(result) == "train_loss_all")] <- "ev"
     # result[["ev"]] <- - result[["ev"]][, 1]
   } else {
-    result[["coef"]] <- lapply(res_list, function(x) {
-      x[["beta_all"]][[1]]
-    })
+    result[["coef"]] <- result[["beta"]][[1]]
   }
 
   # names(result)[which(names(result) == 'beta_all')] <- "coef"

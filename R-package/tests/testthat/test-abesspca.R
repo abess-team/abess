@@ -24,7 +24,7 @@ test_that("primary model fit for PCA", {
   abess_fit <- abesspca(USArrests, always.include = c(1:3), support.size = 3)
   princomp_fit <- loadings(princomp(USArrests[, 1:3]))[, 1]
   names(princomp_fit) <- NULL
-  expect_equal(princomp_fit, abs(as.vector(spca_fit[["coef"]])[1:3]))
+  expect_equal(princomp_fit, abs(as.vector(abess_fit[["coef"]])[1:3]))
 })
 
 test_that("abesspca (FPC) works", {
@@ -70,43 +70,43 @@ test_that("abesspca (FPC) works", {
   expect_true(all.equal(spca_fit1, spca_fit2))
 })
 
-test_that("abesspca (KPC) works", {
-  data(USArrests)
-  
-  ## Input 1:
-  spca_fit <- abesspca(USArrests,
-                       support.size = rep(1, ncol(USArrests)),
-                       sparse.type = "kpc")
-  
-  ## Reasonablity of abesspca
-  skip_on_os("linux")
-  ev <- spca_fit[["ev"]]
-  ev_len <- length(ev)
-  expect_true(all(ev[1:(ev_len - 1)] > ev[2:ev_len]))
-  
-  expect_true(all(spca_fit[["pev"]] <= 1))
-  
-  ## Input 2:
-  spca_fit1 <- abesspca(USArrests,
-                        sparse.type = "kpc",
-                        support.size = rep(4, 4))
-  expect_true(all(spca_fit1[["pev"]] <= (1 + 1e-8)))
-  expect_equal(expected = 1, object = sum(spca_fit1[["pev"]]), tolerance = 1e-8)
-  
-  ## Input 3 (default input):
-  spca_fit1 <- abesspca(USArrests, sparse.type = "kpc")
-  expect_true(all(spca_fit1[["pev"]] <= 1))
-})
+# test_that("abesspca (KPC) works", {
+#   data(USArrests)
+# 
+#   ## Input 1:
+#   spca_fit <- abesspca(USArrests,
+#                        support.size = rep(1, ncol(USArrests)),
+#                        K = 4)
+# 
+#   ## Reasonablity of abesspca
+#   skip_on_os("linux")
+#   ev <- spca_fit[["ev"]]
+#   ev_len <- length(ev)
+#   expect_true(all(ev[1:(ev_len - 1)] > ev[2:ev_len]))
+# 
+#   expect_true(all(spca_fit[["pev"]] <= 1))
+# 
+#   ## Input 2:
+#   spca_fit1 <- abesspca(USArrests,
+#                         sparse.type = "kpc",
+#                         support.size = rep(4, 4))
+#   expect_true(all(spca_fit1[["pev"]] <= (1 + 1e-8)))
+#   expect_equal(expected = 1, object = sum(spca_fit1[["pev"]]), tolerance = 1e-8)
+# 
+#   ## Input 3 (default input):
+#   spca_fit1 <- abesspca(USArrests, sparse.type = "kpc")
+#   expect_true(all(spca_fit1[["pev"]] <= 1))
+# })
 
 test_that("abesspca (group) works", {
   data(USArrests)
-  
+
   spca_fit <- abesspca(USArrests, group.index = c(1, 1, 2, 3))
   expect_true(max(spca_fit[["support.size"]]) == 3)
-  
+
   spca_fit1 <- abesspca(USArrests)
   expect_true(all(coef(spca_fit)[, 3] == coef(spca_fit1)[, 4]))
-  
+
   spca_fit2 <- abesspca(USArrests,
                         group.index = c(1, 1, 2, 3),
                         sparse.type = "kpc")
@@ -126,7 +126,7 @@ test_that("abesspca (sparse) works", {
   USArrests <- Matrix(USArrests, sparse = TRUE)
   spca_fit2 <- abesspca(USArrests)
   expect_true(all.equal(spca_fit1, spca_fit2))
-  
+
   ## correlation matrix:
   USArrests <- as.matrix(USArrests)
   spca_fit1 <- abesspca(USArrests, cor = TRUE)

@@ -5,3 +5,7 @@ abessCpp2 <- function(x, y, n, p, normalize_type, weight, sigma, is_normal, algo
     .Call(`_abess_abessCpp2`, x, y, n, p, normalize_type, weight, sigma, is_normal, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, is_cv, Kfold, sequence, lambda_seq, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, nlambda, screening_size, powell_path, g_index, always_select, tau, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, thread, covariance_update, sparse_matrix, splicing_type, sub_search, cv_fold_id, pca_num)
 }
 
+abessPCA_API <- function(x, n, p, normalize_type, weight, sigma, is_normal, algorithm_type, max_iter, exchange_num, path_type, is_warm_start, is_tune, ic_type, ic_coef, is_cv, Kfold, sequence, lambda_seq, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, nlambda, screening_size, powell_path, g_index, always_select, tau, early_stop, thread, sparse_matrix, splicing_type, sub_search, cv_fold_id, pca_num) {
+    .Call(`_abess_abessPCA_API`, x, n, p, normalize_type, weight, sigma, is_normal, algorithm_type, max_iter, exchange_num, path_type, is_warm_start, is_tune, ic_type, ic_coef, is_cv, Kfold, sequence, lambda_seq, s_min, s_max, K_max, epsilon, lambda_min, lambda_max, nlambda, screening_size, powell_path, g_index, always_select, tau, early_stop, thread, sparse_matrix, splicing_type, sub_search, cv_fold_id, pca_num)
+}
+
