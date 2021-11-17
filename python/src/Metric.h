@@ -293,7 +293,7 @@ public:
     algorithm->update_coef0_init(fit_arg.coef0_init);
     algorithm->update_A_init(fit_arg.A_init, N);
 
-    algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, algorithm->Sigma);
+    algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num);
 
     if (algorithm->get_warm_start())
     {
@@ -345,7 +345,7 @@ public:
         }
         // algorithm->update_train_mask(this->train_mask_list[k]);
         /// ??????????????????????????????????????????????????????????????
-        algorithm_list[k]->fit(this->train_X_list[k], this->train_y_list[k], this->train_weight_list[k], g_index, g_size, train_n, p, N, algorithm_list[k]->Sigma);
+        algorithm_list[k]->fit(this->train_X_list[k], this->train_y_list[k], this->train_weight_list[k], g_index, g_size, train_n, p, N);
 
         if (algorithm_list[k]->get_warm_start())
         {

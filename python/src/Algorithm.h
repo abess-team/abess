@@ -123,13 +123,13 @@ public:
   double effective_number; /* effective number of parameter. */
 
   int splicing_type;     /* exchange number update mathod. */
-  Eigen::MatrixXd Sigma; /* covariance matrix for pca. */
 
   int sub_search; /* size of sub_searching in splicing */
   int U_size;
 
-  int pca_n = -1; /* sample size of PCA, if only Sigma is given */
-  bool is_cv = false; /* under cv or not */
+  // Eigen::MatrixXd Sigma; /* covariance matrix for pca. */
+  // int pca_n = -1; /* sample size of PCA, if only Sigma is given */
+  // bool is_cv = false; /* under cv or not */
 
   T1 XTy_U;
   T1 XTone_U;
@@ -227,35 +227,25 @@ public:
 
   int get_l() { return this->l; }
 
-  void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::MatrixXd sigma)
+  void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N)
   {
     int T0 = this->sparsity_level;
     this->cox_g = Eigen::VectorXd::Zero(0);
-
-    this->update_tau(train_n, N);
-
     this->x = &train_x;
     this->y = &train_y;
     this->beta = this->beta_init;
     this->coef0 = this->coef0_init;
     this->bd = this->bd_init;
-
     if (this->sub_search == 0 || this->sparsity_level + this->sub_search > N)
       this->U_size = N;
     else
       this->U_size = this->sparsity_level + this->sub_search;
 
-    if (this->model_type == 7)
-    {
-      if (this->is_cv){
-        MatrixXd X1 = MatrixXd(train_x);
-        MatrixXd centered = X1.rowwise() - X1.colwise().mean();
-        this->Sigma = centered.adjoint() * centered / (X1.rows() - 1);
-      }else{
-        this->Sigma = sigma;
-      }
-    }
 
+    // specific init 
+    this->inital_setting(train_x, train_y, train_weight, g_index, g_size, N);
+
+    // if no need to splicing
     if (N == T0)
     {
       this->A_out = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
@@ -271,7 +261,7 @@ public:
       return;
     }
 
-    if (this->model_type == 1 || this->model_type == 5)
+    if (this->model_type == 1 || this->model_type == 5) // TODO: store in `inital_setting`? 
     {
       // this->covariance = Eigen::MatrixXd::Zero(train_x.cols(), train_x.cols());
       if ((this->algorithm_type == 6 && this->PhiG.rows() == 0) || this->lambda_change)
@@ -283,14 +273,12 @@ public:
       }
     }
 
+    // inital fitting
     // input: this->beta_init, this->coef0_init, this->A_init, this->I_init
     // for splicing get A;for the others 0;
 
     Eigen::VectorXi A = inital_screening(train_x, train_y, this->beta, this->coef0, this->A_init, this->I_init, this->bd, train_weight, g_index, g_size, N);
-
     Eigen::VectorXi I = Ac(A, N);
-    // Eigen::MatrixXi A_list(T0, max_iter + 2);
-    // A_list.col(0) = A;
 
     Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
     T4 X_A = X_seg(train_x, train_n, A_ind);
@@ -312,12 +300,14 @@ public:
     // for (int i=0;i<A.size();i++) cout<<A(i)<<" ";cout<<endl<<"init loss = "<<this->train_loss<<endl;
     // }
 
+    // start splicing
     this->beta_warmstart = this->beta;
     this->coef0_warmstart = this->coef0;
 
     int always_select_size = this->always_select.size();
     int C_max = min(min(T0 - always_select_size, this->U_size - T0 - always_select_size), this->exchange_num);
 
+    this->update_tau(train_n, N);
     this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size, N, this->tau, this->train_loss);
 
     // final fit
@@ -580,6 +570,8 @@ public:
 
     return false;
   };
+
+  virtual void inital_setting(T4 &X, T1 &y, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N) {};
 
   Eigen::VectorXi inital_screening(T4 &X, T1 &y, T2 &beta, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
                                    Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)

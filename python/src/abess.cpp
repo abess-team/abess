@@ -134,9 +134,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
     }
     else if (model_type == 7)
     {
-      algorithm_uni_dense = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
-      if (pca_n != -1)
-        algorithm_uni_dense->pca_n = pca_n;
+      abessPCA<Eigen::MatrixXd>* temp = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+      temp->pca_n = pca_n;
+      temp->sigma = sigma;
+      algorithm_uni_dense = temp;
     }
     else if(model_type == 8)
     {
@@ -171,7 +172,10 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
     }
     else if (model_type == 7)
     {
-      algorithm_uni_sparse = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+      abessPCA<Eigen::SparseMatrix<double>> *temp = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+      temp->pca_n = pca_n;
+      temp->sigma = sigma;
+      algorithm_uni_sparse = temp;
     }
     else if(model_type == 8)
     {
@@ -215,10 +219,11 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
         }
         else if (model_type == 7)
         {
-          algorithm_list_uni_dense[i] = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
-          algorithm_list_uni_dense[i]->is_cv = true;
-          if (pca_n != -1)
-            algorithm_list_uni_dense[i]->pca_n = pca_n;
+          abessPCA<Eigen::MatrixXd> *temp = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+          temp->is_cv = true;
+          temp->pca_n = pca_n;
+          temp->sigma = sigma;
+          algorithm_list_uni_dense[i] = temp;
         }
         else if(model_type == 8)
         {
@@ -253,8 +258,11 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
         }
         else if (model_type == 7)
         {
-          algorithm_list_uni_sparse[i] = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
-          algorithm_list_uni_sparse[i]->is_cv = true;
+          abessPCA<Eigen::SparseMatrix<double>> *temp = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+          temp->is_cv = true;
+          temp->pca_n = pca_n;
+          temp->sigma = sigma;
+          algorithm_list_uni_sparse[i] = temp;
         }
         else if (model_type == 8)
         {
@@ -744,7 +752,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
           algorithm_list[algorithm_index]->update_coef0_init(coef0_init);
           algorithm_list[algorithm_index]->update_bd_init(bd_init);
 
-          algorithm_list[algorithm_index]->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, sigma);
+          algorithm_list[algorithm_index]->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num);
 
           beta_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_beta();
           coef0_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_coef0();
@@ -801,7 +809,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
           algorithm->update_coef0_init(coef0_init);
           algorithm->update_bd_init(bd_init);
 
-          algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num, sigma);
+          algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num);
 
           beta_matrix(s_index, lambda_index) = algorithm->get_beta();
           coef0_matrix(s_index, lambda_index) = algorithm->get_coef0();
