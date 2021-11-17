@@ -28,7 +28,7 @@ public:
     }
   }
 
-  MatrixXd SigmaA(Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
+  MatrixXd SigmaA(Eigen::MatrixXd &Sigma, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
     int len = 0;
     for (int i = 0; i < A.size(); i++)
@@ -46,8 +46,8 @@ public:
       for (int j = 0; j < i + 1; j++)
       {
         int di = ind(i), dj = ind(j);
-        SA(i, j) = this->Sigma(di, dj);
-        SA(j, i) = this->Sigma(dj, di);
+        SA(i, j) = Sigma(di, dj);
+        SA(j, i) = Sigma(dj, di);
       }
 
     return SA;
@@ -65,7 +65,7 @@ public:
       return true;
     }
 
-    MatrixXd Y = SigmaA(A, g_index, g_size);
+    MatrixXd Y = SigmaA(this->Sigma, A, g_index, g_size);
 
     DenseSymMatProd<double> op(Y);
     SymEigsSolver<DenseSymMatProd<double>> eig(op, 1, 2);
@@ -89,7 +89,15 @@ public:
   double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
 
-    MatrixXd Y = SigmaA(A, g_index, g_size);
+    MatrixXd Y;
+    if (this->is_cv){
+      MatrixXd X1 = MatrixXd(X);
+      MatrixXd centered = X1.rowwise() - X1.colwise().mean();
+      MatrixXd Sigma_test = centered.adjoint() * centered / (X1.rows() - 1);
+      Y = SigmaA(Sigma_test, A, g_index, g_size);
+    }else{
+      Y = SigmaA(this->Sigma, A, g_index, g_size);
+    }
 
     return -beta.transpose() * Y * beta;
   };

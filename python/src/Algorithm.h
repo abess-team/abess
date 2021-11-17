@@ -128,7 +128,8 @@ public:
   int sub_search; /* size of sub_searching in splicing */
   int U_size;
 
-  int pca_n = -1;
+  int pca_n = -1; /* sample size of PCA, if only Sigma is given */
+  bool is_cv = false; /* under cv or not */
 
   T1 XTy_U;
   T1 XTone_U;
@@ -228,7 +229,6 @@ public:
 
   void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Eigen::MatrixXd sigma)
   {
-
     int T0 = this->sparsity_level;
     this->cox_g = Eigen::VectorXd::Zero(0);
 
@@ -247,7 +247,13 @@ public:
 
     if (this->model_type == 7)
     {
-      this->Sigma = sigma;
+      if (this->is_cv){
+        MatrixXd X1 = MatrixXd(train_x);
+        MatrixXd centered = X1.rowwise() - X1.colwise().mean();
+        this->Sigma = centered.adjoint() * centered / (X1.rows() - 1);
+      }else{
+        this->Sigma = sigma;
+      }
     }
 
     if (N == T0)
