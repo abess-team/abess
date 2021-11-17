@@ -543,29 +543,44 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
   return out_result;
 };
 
-List abessCpp2_PCA(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize_type,
-               Eigen::VectorXd weight, Eigen::MatrixXd sigma,
-               bool is_normal,
-               int algorithm_type, int model_type, int max_iter, int exchange_num,
-               int path_type, bool is_warm_start,
-               int ic_type, double ic_coef, bool is_cv, int Kfold,
-               Eigen::VectorXi sequence,
-               Eigen::VectorXd lambda_seq,
-               int s_min, int s_max, int K_max, double epsilon,
-               double lambda_min, double lambda_max, int nlambda,
-               int screening_size, int powell_path,
-               Eigen::VectorXi g_index,
-               Eigen::VectorXi always_select,
-               double tau,
-               int primary_model_fit_max_iter, double primary_model_fit_epsilon,
-               bool early_stop, bool approximate_Newton,
-               int thread,
-               bool covariance_update,
-               bool sparse_matrix,
-               int splicing_type,
-               int sub_search,
-               Eigen::VectorXi cv_fold_id,
-               int pca_num)
+List abessPCA_API(Eigen::MatrixXd x,
+                  int n,
+                  int p,
+                  int normalize_type,
+                  Eigen::VectorXd weight,
+                  Eigen::MatrixXd sigma,
+                  bool is_normal,
+                  int algorithm_type,
+                  int max_iter,
+                  int exchange_num,
+                  int path_type,
+                  bool is_warm_start,
+                  bool is_tune,
+                  int ic_type,
+                  double ic_coef,
+                  bool is_cv,
+                  int Kfold,
+                  Eigen::VectorXi sequence,
+                  Eigen::VectorXd lambda_seq,
+                  int s_min,
+                  int s_max,
+                  int K_max,
+                  double epsilon,
+                  double lambda_min,
+                  double lambda_max,
+                  int nlambda,
+                  int screening_size,
+                  int powell_path,
+                  Eigen::VectorXi g_index,
+                  Eigen::VectorXi always_select,
+                  double tau,
+                  bool early_stop,
+                  int thread,
+                  bool sparse_matrix,
+                  int splicing_type,
+                  int sub_search,
+                  Eigen::VectorXi cv_fold_id,
+                  int pca_num)
 {
 #ifdef _OPENMP
   // Eigen::initParallel();
@@ -583,6 +598,13 @@ List abessCpp2_PCA(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int norma
   omp_set_num_threads(thread);
 
 #endif
+  int model_type = 7;
+  int primary_model_fit_max_iter = 1;
+  double primary_model_fit_epsilon = 1e-3;
+  bool approximate_Newton = false;
+  bool covariance_update = false;
+  Eigen::MatrixXd y = Eigen::MatrixXd::Zero(1, 1);
+
   // this function for abessPCA only (model_type == 7)
   int pca_n = -1;
   if (algorithm_type == 7 && n != x.rows())
@@ -596,7 +618,7 @@ List abessCpp2_PCA(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int norma
   Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *algorithm_uni_sparse = nullptr;
   if (!sparse_matrix)
   {
-    abessPCA<Eigen::MatrixXd>* temp = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+    abessPCA<Eigen::MatrixXd> *temp = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
     temp->pca_n = pca_n;
     temp->sigma = sigma;
     algorithm_uni_dense = temp;
@@ -637,59 +659,70 @@ List abessCpp2_PCA(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int norma
   // call `abessCpp` for result
   List out_result;
   List out_result_pca;
-  int num = 0;// number of PCs
+  int num = 0; // number of PCs
 
   if (!sparse_matrix)
   {
     Eigen::VectorXd y_vec = y.col(0).eval();
-    while (num++ < pca_num){
+    while (num++ < pca_num)
+    {
       Eigen::VectorXi pca_support_size;
-      if (is_cv) {
+      if (is_tune)
+      {
         pca_support_size = sequence;
-      } else {
+      }
+      else
+      {
         pca_support_size = sequence.segment(num - 1, 1);
       }
-      out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type, 
-                                                                                      weight, sigma,
-                                                                                      is_normal,
-                                                                                      algorithm_type, model_type, max_iter, exchange_num,
-                                                                                      path_type, is_warm_start,
-                                                                                      ic_type, ic_coef, is_cv, Kfold,
-                                                                                      pca_support_size,
-                                                                                      lambda_seq,
-                                                                                      s_min, s_max, K_max, epsilon,
-                                                                                      lambda_min, lambda_max, nlambda,
-                                                                                      screening_size, powell_path,
-                                                                                      g_index,
-                                                                                      always_select,
-                                                                                      tau,
-                                                                                      primary_model_fit_max_iter, primary_model_fit_epsilon,
-                                                                                      early_stop, approximate_Newton,
-                                                                                      thread,
-                                                                                      covariance_update,
-                                                                                      sparse_matrix,
-                                                                                      cv_fold_id,
-                                                                                      algorithm_uni_dense, algorithm_list_uni_dense);
+      out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
+                                                                                           weight, sigma,
+                                                                                           is_normal,
+                                                                                           algorithm_type, model_type, max_iter, exchange_num,
+                                                                                           path_type, is_warm_start,
+                                                                                           ic_type, ic_coef, is_cv, Kfold,
+                                                                                           pca_support_size,
+                                                                                           lambda_seq,
+                                                                                           s_min, s_max, K_max, epsilon,
+                                                                                           lambda_min, lambda_max, nlambda,
+                                                                                           screening_size, powell_path,
+                                                                                           g_index,
+                                                                                           always_select,
+                                                                                           tau,
+                                                                                           primary_model_fit_max_iter, primary_model_fit_epsilon,
+                                                                                           early_stop, approximate_Newton,
+                                                                                           thread,
+                                                                                           covariance_update,
+                                                                                           sparse_matrix,
+                                                                                           cv_fold_id,
+                                                                                           algorithm_uni_dense, algorithm_list_uni_dense);
       Eigen::VectorXd beta_next;
-      if (num == 1) {
+      if (num == 1)
+      {
         out_result = out_result_pca;
-      } else {
+      }
+      else
+      {
 #ifdef R_BUILD
         beta_next = out_result_pca["beta"];
         MatrixXd beta_new(p, num);
         beta_new << out_result["beta"], beta_next;
         out_result["beta"] = beta_new;
-#else 
+#else
         out_result_pca.get_value_by_name("beta", beta_next);
         out_result.combine_beta(beta_next);
 #endif
       }
 
-      if (num < pca_num){
+      if (num < pca_num)
+      {
         Eigen::MatrixXd temp = beta_next * beta_next.transpose();
-        if (is_cv){
+        if (is_tune)
+        {
           x -= x * temp;
-        }else{
+        }
+        else
+        {
           Eigen::MatrixXd temp1 = temp * sigma;
           sigma += temp1 * temp - temp1 - temp1.transpose();
         }
@@ -717,54 +750,66 @@ List abessCpp2_PCA(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int norma
     sparse_x.makeCompressed();
 
     Eigen::VectorXd y_vec = y.col(0).eval();
-    while (num++ < pca_num){
+    while (num++ < pca_num)
+    {
       Eigen::VectorXi pca_support_size;
-      if (is_cv) {
+      if (is_tune)
+      {
         pca_support_size = sequence;
-      } else {
+      }
+      else
+      {
         pca_support_size = sequence.segment(num - 1, 1);
       }
       out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
-                                                                                                  weight, sigma,
-                                                                                                  is_normal,
-                                                                                                  algorithm_type, model_type, max_iter, exchange_num,
-                                                                                                  path_type, is_warm_start,
-                                                                                                  ic_type, ic_coef, is_cv, Kfold,
-                                                                                                  pca_support_size,
-                                                                                                  lambda_seq,
-                                                                                                  s_min, s_max, K_max, epsilon,
-                                                                                                  lambda_min, lambda_max, nlambda,
-                                                                                                  screening_size, powell_path,
-                                                                                                  g_index,
-                                                                                                  always_select,
-                                                                                                  tau,
-                                                                                                  primary_model_fit_max_iter, primary_model_fit_epsilon,
-                                                                                                  early_stop, approximate_Newton,
-                                                                                                  thread,
-                                                                                                  covariance_update,
-                                                                                                  sparse_matrix,
-                                                                                                  cv_fold_id,
-                                                                                                  algorithm_uni_sparse, algorithm_list_uni_sparse);
+                                                                                                       weight, sigma,
+                                                                                                       is_normal,
+                                                                                                       algorithm_type, model_type, max_iter, exchange_num,
+                                                                                                       path_type, is_warm_start,
+                                                                                                       ic_type, ic_coef, is_cv, Kfold,
+                                                                                                       pca_support_size,
+                                                                                                       lambda_seq,
+                                                                                                       s_min, s_max, K_max, epsilon,
+                                                                                                       lambda_min, lambda_max, nlambda,
+                                                                                                       screening_size, powell_path,
+                                                                                                       g_index,
+                                                                                                       always_select,
+                                                                                                       tau,
+                                                                                                       primary_model_fit_max_iter, primary_model_fit_epsilon,
+                                                                                                       early_stop, approximate_Newton,
+                                                                                                       thread,
+                                                                                                       covariance_update,
+                                                                                                       sparse_matrix,
+                                                                                                       cv_fold_id,
+                                                                                                       algorithm_uni_sparse, algorithm_list_uni_sparse);
       Eigen::VectorXd beta_next;
-      if (num == 1) {
+      if (num == 1)
+      {
         out_result = out_result_pca;
-      } else {
+      }
+      else
+      {
 #ifdef R_BUILD
         beta_next = out_result_pca["beta"];
         MatrixXd beta_new(p, num);
         beta_new << out_result["beta"], beta_next;
         out_result["beta"] = beta_new;
-#else 
+#else
         out_result_pca.get_value_by_name("beta", beta_next);
         out_result.combine_beta(beta_next);
 #endif
       }
-      
-      if (num < pca_num){ // update for next PCA
+
+      // update for next PCA
+      if (num < pca_num)
+      {
         Eigen::MatrixXd temp = beta_next * beta_next.transpose();
-        if (is_cv){
+        if (is_tune)
+        {
           sparse_x = sparse_x - sparse_x * temp;
-        }else{
+        }
+        else
+        {
           Eigen::MatrixXd temp1 = temp * sigma;
           sigma += temp1 * temp - temp1 - temp1.transpose();
         }
