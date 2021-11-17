@@ -603,7 +603,7 @@ class TestClass:
         assert (coef3.size == 3)
 
         # Check4: multi
-        model = abessPCA(support_size=range(s, s + 1))
+        model = abessPCA(support_size=[s,s,s])
         model.fit(X, is_normal=False, number=3)
         assert (model.coef_.shape[1] == 3)
 

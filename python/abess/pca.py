@@ -57,7 +57,7 @@ class abessPCA(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, 
+                 ic_type="ebic", ic_coef=1.0, cv=1, 
                  always_select=[], 
                  thread=1,
                  sparse_matrix=False,
@@ -66,7 +66,7 @@ class abessPCA(bess_base):
         super(abessPCA, self).__init__(
             algorithm_type="abess", model_type="PCA", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, s_min=s_min, s_max=s_max, 
-            ic_type=ic_type, ic_coef=ic_coef, 
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, 
             always_select=always_select, 
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -153,6 +153,9 @@ class abessPCA(bess_base):
             self.n_features_in_ = p
 
         elif isinstance(Sigma, (list, np.ndarray, np.matrix)):
+            if (self.cv > 1):
+                raise ValueError("X should be given to use CV.")
+                
             Sigma = check_array(Sigma)
 
             if (Sigma.shape[0] != Sigma.shape[1] or np.any(Sigma.T != Sigma)):
@@ -224,7 +227,7 @@ class abessPCA(bess_base):
 
         # path parameter (note that: path_type_int = 1)
         if self.support_size is None:
-            support_sizes = list(range(0, p))
+            support_sizes = np.ones(number, dtype=int) * (int(p / 3) + 1)
         else:
             if isinstance(self.support_size, (numbers.Real, numbers.Integral)):
                 support_sizes = np.empty(1, dtype=int)
@@ -278,6 +281,8 @@ class abessPCA(bess_base):
         if (not isinstance(number, int) or number <= 0 or number > p):
             raise ValueError(
                 "number should be an positive integer and not bigger than X.shape[1].")
+        if (self.cv == 1 and number != support_sizes.size):
+            raise ValueError("number should have a same length of support_size")
         
         # Important_search
         if (not isinstance(self.important_search, int) or self.important_search < 0):
@@ -334,50 +339,6 @@ class abessPCA(bess_base):
                               )
 
         self.coef_ = result[0].reshape(p, number)
-
-        # # for PCA, "number" indicates the number of PCs returned
-        # if (number > 1):
-        #     v = self.coef_.copy()
-        #     v = v.reshape(len(v), 1)
-        #     v_all = v.copy()
-        #     while (number > 1):
-        #         number = number - 1
-        #         temp = v.dot(v.T).dot(Sigma)
-        #         Sigma = Sigma + temp.dot(v).dot(v.T) - temp - temp.T
-
-        #         result = pywrap_abess(X, y, n, p, self.normalize_type, weight, Sigma,
-        #                               is_normal,
-        #                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
-        #                               path_type_int, self.is_warm_start,
-        #                               ic_type_int, self.ic_coef, self.is_cv, self.cv,
-        #                               g_index,
-        #                               support_sizes,
-        #                               alphas,
-        #                               cv_fold_id,
-        #                               new_s_min, new_s_max, new_K_max, self.epsilon,
-        #                               new_lambda_min, new_lambda_max, self.n_lambda,
-        #                               new_screening_size, self.powell_path,
-        #                               self.always_select, self.tau,
-        #                               self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
-        #                               self.early_stop, self.approximate_Newton,
-        #                               self.thread,
-        #                               self.covariance_update,
-        #                               self.sparse_matrix,
-        #                               self.splicing_type,
-        #                               self.important_search,
-        #                               1,
-        #                               p * M,
-        #                               1 * M, 1, 1, 1, 1, 1, p
-        #                               )
-        #         v = result[0]
-        #         v = v.reshape(len(v), 1)
-        #         v_all = np.hstack((v_all, v))
-
-        #     self.coef_ = v_all
-        #     self.intercept_ = None
-        #     self.train_loss_ = None
-        #     self.ic_ = None
-
         return self
 
     def fit_transform(self, X=None, is_normal=True, group=None, Sigma=None, number=1):

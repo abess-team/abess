@@ -105,7 +105,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algor
             algorithm->update_coef0_init(coef0_init);
             algorithm->update_A_init(A_init, N);
 
-            algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N, sigma);
+            algorithm->fit(train_x, train_y, train_weight, g_index, g_size, train_n, p, N);
 
             if (algorithm->warm_start)
             {
