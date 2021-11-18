@@ -245,7 +245,7 @@ public:
     // specific init 
     this->inital_setting(train_x, train_y, train_weight, g_index, g_size, N);
 
-    // if no need to splicing
+    // no need to splicing?
     if (N == T0)
     {
       this->A_out = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
@@ -261,17 +261,17 @@ public:
       return;
     }
 
-    if (this->model_type == 1 || this->model_type == 5) // TODO: store in `inital_setting`? 
-    {
-      // this->covariance = Eigen::MatrixXd::Zero(train_x.cols(), train_x.cols());
-      if ((this->algorithm_type == 6 && this->PhiG.rows() == 0) || this->lambda_change)
-      {
-        this->PhiG = Phi(train_x, g_index, g_size, train_n, p, N, this->lambda_level, this->group_XTX);
-        this->invPhiG = invPhi(PhiG, N);
-        this->PhiG_U.resize(N, 1);
-        this->invPhiG_U.resize(N, 1);
-      }
-    }
+    // if (this->model_type == 1 || this->model_type == 5) // TODO: store in `inital_setting`? 
+    // {
+    //   // this->covariance = Eigen::MatrixXd::Zero(train_x.cols(), train_x.cols());
+    //   if ((this->algorithm_type == 6 && this->PhiG.rows() == 0) || this->lambda_change)
+    //   {
+    //     this->PhiG = Phi(train_x, g_index, g_size, train_n, p, N, this->lambda_level, this->group_XTX);
+    //     this->invPhiG = invPhi(PhiG, N);
+    //     this->PhiG_U.resize(N, 1);
+    //     this->invPhiG_U.resize(N, 1);
+    //   }
+    // }
 
     // inital fitting
     // input: this->beta_init, this->coef0_init, this->A_init, this->I_init
