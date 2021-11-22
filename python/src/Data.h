@@ -31,6 +31,7 @@ public:
     int n;
     int p;
     int M;
+    int beta_size;
     int normalize_type;
     bool is_normal;
     int g_num;
@@ -39,7 +40,7 @@ public:
 
     Data() = default;
 
-    Data(T4 &x, T1 &y, int normalize_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, bool sparse_matrix)
+    Data(T4 &x, T1 &y, int normalize_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, bool sparse_matrix, int beta_size)
     {
         this->x = x;
         this->y = y;
@@ -47,6 +48,7 @@ public:
         this->n = x.rows();
         this->p = x.cols();
         this->M = y.cols();
+        this->beta_size = beta_size;
 
         this->weight = weight;
         this->is_normal = is_normal;
@@ -57,14 +59,14 @@ public:
         if (is_normal && !sparse_matrix)
         {
             this->normalize();
-        }
+        }        
 
         this->g_index = g_index;
-        this->g_num = (g_index).size();
-        Eigen::VectorXi temp = Eigen::VectorXi::Zero(g_num);
+        this->g_num = g_index.size();
+        Eigen::VectorXi temp = Eigen::VectorXi::Zero(this->g_num);
         for (int i = 0; i < g_num - 1; i++)
             temp(i) = g_index(i + 1);
-        temp(g_num - 1) = this->p;
+        temp(g_num - 1) = this->beta_size;
         this->g_size = temp - g_index;
     };
 
@@ -95,29 +97,29 @@ public:
         }
     };
 
-    Eigen::VectorXi get_g_index()
-    {
-        return this->g_index;
-    };
+    // Eigen::VectorXi get_g_index()
+    // {
+    //     return this->g_index;
+    // };
 
-    int get_g_num()
-    {
-        return this->g_num;
-    };
+    // int get_g_num()
+    // {
+    //     return this->g_num;
+    // };
 
-    Eigen::VectorXi get_g_size()
-    {
-        return this->g_size;
-    };
+    // Eigen::VectorXi get_g_size()
+    // {
+    //     return this->g_size;
+    // };
 
-    int get_n()
-    {
-        return this->n;
-    };
+    // int get_n()
+    // {
+    //     return this->n;
+    // };
 
-    int get_p()
-    {
-        return this->p;
-    };
+    // int get_p()
+    // {
+    //     return this->p;
+    // };
 };
 #endif //SRC_DATA_H

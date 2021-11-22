@@ -124,16 +124,16 @@ void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x)
 // }
 #endif
 
-Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int p, int N)
+Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int beta_size, int N)
 {
-    if (L.size() == N)
+    if (L.size() == N )
     {
-        return Eigen::VectorXi::LinSpaced(p, 0, p - 1);
+        return Eigen::VectorXi::LinSpaced(beta_size, 0, beta_size - 1);
     }
     else
     {
         int mark = 0;
-        Eigen::VectorXi ind = Eigen::VectorXi::Zero(p);
+        Eigen::VectorXi ind = Eigen::VectorXi::Zero(beta_size);
 
         for (int i = 0; i < L.size(); i++)
         {
