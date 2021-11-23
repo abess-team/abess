@@ -163,9 +163,9 @@ abesspca <- function(x,
   sparse_type <- ifelse(K == 1, "fpc", "kpc")
   if (is.null(seq.tune)) {
     if (K == 1) {
-      seq.tune <- TRUE
+      seq_tune <- TRUE
     } else {
-      seq.tune <- FALSE
+      seq_tune <- FALSE
     }
   }
   
@@ -335,8 +335,8 @@ abesspca <- function(x,
     x = matrix(0, ncol = nvars, nrow = 1),
     n = nobs,
     p = nvars,
-    normalize_type = 1,
-    weight = c(1),
+    normalize_type = as.integer(1),
+    weight = c(1.0),
     sigma = x,
     is_normal = FALSE,
     algorithm_type = 6,
@@ -344,7 +344,7 @@ abesspca <- function(x,
     exchange_num = c_max,
     path_type = 1,
     is_warm_start = warm.start,
-    is_tune = TRUE, 
+    is_tune = seq_tune, 
     ic_type = 1,
     ic_coef = ic.scale,
     is_cv = FALSE,
@@ -388,12 +388,12 @@ abesspca <- function(x,
     result[["ev"]] <- -result[["train_loss_all"]][, 1]
     # names(result)[which(names(result) == "train_loss_all")] <- "ev"
     # result[["ev"]] <- - result[["ev"]][, 1]
+    result[["coef"]] <- do.call("cbind", result[["coef"]])
   } else {
-    result[["coef"]] <- result[["beta"]][[1]]
+    result[["coef"]] <- result[["beta"]]
   }
 
   # names(result)[which(names(result) == 'beta_all')] <- "coef"
-  result[["coef"]] <- do.call("cbind", result[["coef"]])
   result[["coef"]] <- Matrix::Matrix(result[["coef"]],
     sparse = TRUE,
     dimnames = list(vn, as.character(s_list))
@@ -408,7 +408,7 @@ abesspca <- function(x,
     #     result[["coef"]][, 1:i, drop = FALSE]
     #   )
     # }
-    ev_vec <- adjusted_variance_explained(x_copy, result[["coef"]])
+    ev_vec <- adjusted_variance_explained(x, result[["coef"]])
     result[["ev"]] <- ev_vec
     result[["cum.ev"]] <- cumsum(ev_vec)
   }

@@ -269,6 +269,18 @@ public:
 
   ~abessLm(){};
 
+  void inital_setting(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
+  {
+    if ((this->algorithm_type == 6 && this->PhiG.rows() == 0) || this->lambda_change)
+    {
+      int n = X.rows(), p = X.cols();
+      this->PhiG = Phi(X, g_index, g_size, n, p, N, this->lambda_level, this->group_XTX);
+      this->invPhiG = invPhi(this->PhiG, N);
+      this->PhiG_U.resize(N, 1);
+      this->invPhiG_U.resize(N, 1);
+    }
+  };
+
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
     int n = x.rows();
@@ -1036,6 +1048,18 @@ public:
   abessMLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), bool covariance_update = true, int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, approximate_Newton, always_select, covariance_update, splicing_type, sub_search){};
 
   ~abessMLm(){};
+
+  void inital_setting(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
+  {
+    if ((this->algorithm_type == 6 && this->PhiG.rows() == 0) || this->lambda_change)
+    {
+      int n = X.rows(), p = X.cols();
+      this->PhiG = Phi(X, g_index, g_size, n, p, N, this->lambda_level, this->group_XTX);
+      this->invPhiG = invPhi(this->PhiG, N);
+      this->PhiG_U.resize(N, 1);
+      this->invPhiG_U.resize(N, 1);
+    }
+  };
 
   bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {

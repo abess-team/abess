@@ -70,33 +70,34 @@ test_that("abesspca (FPC) works", {
   expect_true(all.equal(spca_fit1, spca_fit2))
 })
 
-# test_that("abesspca (KPC) works", {
-#   data(USArrests)
-# 
-#   ## Input 1:
-#   spca_fit <- abesspca(USArrests,
-#                        support.size = rep(1, ncol(USArrests)),
-#                        K = 4)
-# 
-#   ## Reasonablity of abesspca
-#   skip_on_os("linux")
-#   ev <- spca_fit[["ev"]]
-#   ev_len <- length(ev)
-#   expect_true(all(ev[1:(ev_len - 1)] > ev[2:ev_len]))
-# 
-#   expect_true(all(spca_fit[["pev"]] <= 1))
-# 
-#   ## Input 2:
-#   spca_fit1 <- abesspca(USArrests,
-#                         sparse.type = "kpc",
-#                         support.size = rep(4, 4))
-#   expect_true(all(spca_fit1[["pev"]] <= (1 + 1e-8)))
-#   expect_equal(expected = 1, object = sum(spca_fit1[["pev"]]), tolerance = 1e-8)
-# 
-#   ## Input 3 (default input):
-#   spca_fit1 <- abesspca(USArrests, sparse.type = "kpc")
-#   expect_true(all(spca_fit1[["pev"]] <= 1))
-# })
+test_that("abesspca (KPC) works", {
+  data(USArrests)
+
+  ## Input 1:
+  nvars <- ncol(USArrests)
+  spca_fit <- abesspca(USArrests,
+                       support.size = rep(1, nvars),
+                       K = nvars)
+
+  ## Reasonablity of abesspca
+  skip_on_os("linux")
+  ev <- spca_fit[["ev"]]
+  ev_len <- length(ev)
+  expect_true(all(ev[1:(ev_len - 1)] > ev[2:ev_len]))
+
+  expect_true(all(spca_fit[["pev"]] <= 1))
+
+  ## Input 2:
+  spca_fit1 <- abesspca(USArrests,
+                        sparse.type = "kpc",
+                        support.size = rep(4, 4), K = 4)
+  expect_true(all(spca_fit1[["pev"]] <= (1 + 1e-8)))
+  expect_equal(expected = 1, object = sum(spca_fit1[["pev"]]), tolerance = 1e-8)
+
+  ## Input 3 (default input):
+  spca_fit1 <- abesspca(USArrests, sparse.type = "kpc")
+  expect_true(all(spca_fit1[["pev"]] <= 1))
+})
 
 test_that("abesspca (group) works", {
   data(USArrests)

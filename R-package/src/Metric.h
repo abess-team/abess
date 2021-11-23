@@ -64,13 +64,13 @@ public:
     }
   };
 
-  void set_cv_init_fit_arg(int p, int M)
+  void set_cv_init_fit_arg(int beta_size, int M)
   {
     for (int i = 0; i < this->Kfold; i++)
     {
       T2 beta_init;
       T3 coef0_init;
-      coef_set_zero(p, M, beta_init, coef0_init);
+      coef_set_zero(beta_size, M, beta_init, coef0_init);
       Eigen::VectorXi A_init;
       Eigen::VectorXd bd_init;
 
@@ -265,8 +265,8 @@ public:
     T2 beta = algorithm->get_beta();
     T3 coef0 = algorithm->get_coef0();
 
-    Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, p, N);
-    T4 X_A = X_seg(train_x, train_n, A_ind);
+    Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, beta.rows(), N);
+    T4 X_A = X_seg(train_x, train_n, A_ind, algorithm->model_type);
 
     T2 beta_A;
     slice(beta, A_ind, beta_A);
@@ -276,9 +276,7 @@ public:
     // {
     //   beta_A(k) = beta(A_ind(k));
     // }
-    double L0 = algorithm->neg_loglik_loss(X_A, train_y, train_weight, beta_A, coef0, A, g_index, g_size, 0.0);
-
-    return L0;
+    return algorithm->neg_loglik_loss(X_A, train_y, train_weight, beta_A, coef0, A, g_index, g_size, 0.0);
   }
 
   // to do
