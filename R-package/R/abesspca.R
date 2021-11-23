@@ -109,7 +109,6 @@ abesspca <- function(x,
                      foldid = NULL, 
                      ic.scale = 1.0,
                      c.max = NULL,
-                     lambda = 0,
                      always.include = NULL,
                      group.index = NULL,
                      splicing.type = 1,
@@ -220,6 +219,7 @@ abesspca <- function(x,
   # v <- svdobj[["v"]]
 
   ## check lambda:
+  lambda <- 0
   stopifnot(!anyNA(lambda))
   stopifnot(all(lambda >= 0))
 
