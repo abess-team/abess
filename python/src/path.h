@@ -22,7 +22,7 @@ using namespace Eigen;
 #include "utilities.h"
 
 template <class T1, class T2, class T3, class T4>
-void sequential_path_cv(Data<T1, T2, T3, T4> &data, Eigen::MatrixXd sigma, Algorithm<T1, T2, T3, T4> *algorithm, Metric<T1, T2, T3, T4> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3> &result)
+void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, Metric<T1, T2, T3, T4> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3> &result)
 {
     int beta_size = data.beta_size;
     int p = data.p;
