@@ -568,9 +568,9 @@ abess.default <- function(x,
     stopifnot(any(is.numeric(support.size) & support.size >= 0))
     check_integer(support.size, "support.size must be a vector with integer value.")
     if (group_select) {
-      stopifnot(max(support.size) < ngroup)
+      stopifnot(max(support.size) <= ngroup)
     } else {
-      stopifnot(max(support.size) < nvars)
+      stopifnot(max(support.size) <= nvars)
     }
     stopifnot(max(support.size) < nobs)
     support.size <- sort(support.size)
