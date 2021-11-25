@@ -1008,6 +1008,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
 
   //////////////Restore best_fit_result for normal//////////////
   // to do
+  // restore_for_normal<T2, T3>(best_beta, best_coef0, sparse_matrix, 
+  //                            data.normalize_type, data.n, data.x_mean, data.y_mean, data.x_norm);
   if (normalize_type > 0 && !sparse_matrix)
   {
     if (data.normalize_type == 1)

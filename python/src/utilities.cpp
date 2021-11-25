@@ -690,3 +690,29 @@ void add_constant_column(Eigen::SparseMatrix<double> &X)
 //     double l2 = svd.singularValues()(svd.singularValues().size()-1);
 //     return ((l2 == 0 || l1 / l2 > 1e+10) ? true : false);
 // }
+template <class T2, class T3>
+void restore_for_normal(T2 &beta, T3 &coef0, bool sparse_matrix, int normalize_type, int n, Eigen::VectorXd x_mean, T3 y_mean, Eigen::VectorXd x_norm)
+{
+    if (normalize_type == 0 || sparse_matrix){
+        // no need to restore
+        return;
+    }
+    if (normalize_type == 1)
+    {
+      array_quotient(beta, x_norm, 1);
+      beta = beta * sqrt(double(n));
+      coef0 = y_mean - matrix_dot(beta, x_mean);
+    }
+    else if (normalize_type == 2)
+    {
+      array_quotient(beta, x_norm, 1);
+      beta = beta * sqrt(double(n));
+      coef0 = coef0 - matrix_dot(beta, x_mean);
+    }
+    else
+    {
+      array_quotient(beta, x_norm, 1);
+      beta = beta * sqrt(double(n));
+    }
+    return;
+}

@@ -172,4 +172,7 @@ void set_nonzeros(Eigen::SparseMatrix<double> &X, Eigen::SparseMatrix<double> &x
 
 // bool check_ill_condition(Eigen::MatrixXd &M);
 
+template <class T2, class T3>
+void restore_for_normal(T2 &beta, T3 &coef0, bool sparse_matrix, int normalize_type, int n, Eigen::VectorXd x_mean, T3 y_mean, Eigen::VectorXd x_norm);
+
 #endif //BESS_UTILITIES_H
