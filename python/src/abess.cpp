@@ -392,7 +392,6 @@ List abessPCA_API(Eigen::MatrixXd x,
                   int normalize_type,
                   Eigen::VectorXd weight,
                   Eigen::MatrixXd sigma,
-                  int algorithm_type,
                   int max_iter,
                   int exchange_num,
                   int path_type,
@@ -402,20 +401,17 @@ List abessPCA_API(Eigen::MatrixXd x,
                   double ic_coef,
                   int Kfold,
                   Eigen::VectorXi sequence,
-                  Eigen::VectorXd lambda_seq,
                   int s_min,
                   int s_max,
                   double lambda_min,
                   double lambda_max,
                   int nlambda,
-                  int screening_size,
                   Eigen::VectorXi g_index,
                   Eigen::VectorXi always_select,
                   bool early_stop,
                   int thread,
                   bool sparse_matrix,
                   int splicing_type,
-                  int sub_search,
                   Eigen::VectorXi cv_fold_id,
                   int pca_num)
 {
@@ -438,13 +434,16 @@ List abessPCA_API(Eigen::MatrixXd x,
 
 #endif
 
-  int model_type = 7;
+  int model_type = 7, algorithm_type = 6;
+  Eigen::VectorXd lambda_seq = Eigen::VectorXd::Zero(1);
+  int screening_size = -1;
+  int sub_search = 0;
   int primary_model_fit_max_iter = 1;
   double primary_model_fit_epsilon = 1e-3;
   bool approximate_Newton = false;
   bool covariance_update = false;
   int pca_n = -1;
-  if (algorithm_type == 7 && n != x.rows())
+  if (!sparse_matrix && n != x.rows())
   {
     pca_n = n;
     n = x.rows();
@@ -1180,21 +1179,18 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   if (model_type == 7){
     bool is_tune = true;//TODO
     mylist = abessPCA_API(x_Mat, n, p, normalize_type, weight_Vec, sigma_Mat,
-                          algorithm_type, max_iter, exchange_num,
+                          max_iter, exchange_num,
                           path_type, is_warm_start,
                           is_tune, ic_type, ic_coef, Kfold,
                           sequence_Vec,
-                          lambda_sequence_Vec,
                           s_min, s_max, 
                           lambda_min, lambda_max, n_lambda,
-                          screening_size, 
                           gindex_Vec,
                           always_select_Vec, 
                           early_stop, 
                           thread,
                           sparse_matrix,
                           splicing_type,
-                          sub_search,
                           cv_fold_id_Vec,
                           pca_num);
   }else{
