@@ -55,7 +55,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                Eigen::VectorXd weight, 
                int algorithm_type, int model_type, int max_iter, int exchange_num,
                int path_type, bool is_warm_start,
-               int ic_type, double ic_coef, bool is_cv, int Kfold,
+               int ic_type, double ic_coef, int Kfold,
                Eigen::VectorXi sequence,
                Eigen::VectorXd lambda_seq,
                int s_min, int s_max, 
@@ -80,7 +80,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
     thread = max_thread;
   }
 
-  if (is_cv && thread > Kfold)
+  if (Kfold > 1 && thread > Kfold)
   {
     thread = Kfold;
   }
@@ -163,7 +163,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
   vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> *> algorithm_list_mul_dense(max(Kfold, thread));
   vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *> algorithm_list_uni_sparse(max(Kfold, thread));
   vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>> *> algorithm_list_mul_sparse(max(Kfold, thread));
-  if (is_cv)
+  if (Kfold > 1)
   {
     for (int i = 0; i < max(Kfold, thread); i++)
     {
@@ -252,7 +252,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                                                                                        weight, 
                                                                                        algorithm_type, model_type, max_iter, exchange_num,
                                                                                        path_type, is_warm_start,
-                                                                                       ic_type, ic_coef, is_cv, Kfold,
+                                                                                       ic_type, ic_coef, Kfold,
                                                                                        sequence,
                                                                                        lambda_seq,
                                                                                        s_min, s_max, 
@@ -275,7 +275,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                                                                                                 weight, 
                                                                                                 algorithm_type, model_type, max_iter, exchange_num,
                                                                                                 path_type, is_warm_start,
-                                                                                                ic_type, ic_coef, is_cv, Kfold,
+                                                                                                ic_type, ic_coef, Kfold,
                                                                                                 sequence,
                                                                                                 lambda_seq,
                                                                                                 s_min, s_max, 
@@ -321,7 +321,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                                                                                                    weight, 
                                                                                                    algorithm_type, model_type, max_iter, exchange_num,
                                                                                                    path_type, is_warm_start,
-                                                                                                   ic_type, ic_coef, is_cv, Kfold,
+                                                                                                   ic_type, ic_coef, Kfold,
                                                                                                    sequence,
                                                                                                    lambda_seq,
                                                                                                    s_min, s_max, 
@@ -344,7 +344,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                                                                                                             weight, 
                                                                                                             algorithm_type, model_type, max_iter, exchange_num,
                                                                                                             path_type, is_warm_start,
-                                                                                                            ic_type, ic_coef, is_cv, Kfold,
+                                                                                                            ic_type, ic_coef, Kfold,
                                                                                                             sequence,
                                                                                                             lambda_seq,
                                                                                                             s_min, s_max, 
@@ -400,7 +400,6 @@ List abessPCA_API(Eigen::MatrixXd x,
                   bool is_tune,
                   int ic_type,
                   double ic_coef,
-                  bool is_cv,
                   int Kfold,
                   Eigen::VectorXi sequence,
                   Eigen::VectorXd lambda_seq,
@@ -430,7 +429,7 @@ List abessPCA_API(Eigen::MatrixXd x,
     thread = max_thread;
   }
 
-  if (is_cv && thread > Kfold)
+  if (Kfold > 1 && thread > Kfold)
   {
     thread = Kfold;
   }
@@ -472,7 +471,7 @@ List abessPCA_API(Eigen::MatrixXd x,
 
   vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(max(Kfold, thread));
   vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *> algorithm_list_uni_sparse(max(Kfold, thread));
-  if (is_cv)
+  if (Kfold > 1)
   {
     for (int i = 0; i < max(Kfold, thread); i++)
     {
@@ -518,7 +517,7 @@ List abessPCA_API(Eigen::MatrixXd x,
                                                                                            weight, 
                                                                                            algorithm_type, model_type, max_iter, exchange_num,
                                                                                            path_type, is_warm_start,
-                                                                                           ic_type, ic_coef, is_cv, Kfold,
+                                                                                           ic_type, ic_coef, Kfold,
                                                                                            pca_support_size,
                                                                                            lambda_seq,
                                                                                            s_min, s_max, 
@@ -607,7 +606,7 @@ List abessPCA_API(Eigen::MatrixXd x,
                                                                                                        weight, 
                                                                                                        algorithm_type, model_type, max_iter, exchange_num,
                                                                                                        path_type, is_warm_start,
-                                                                                                       ic_type, ic_coef, is_cv, Kfold,
+                                                                                                       ic_type, ic_coef, Kfold,
                                                                                                        pca_support_size,
                                                                                                        lambda_seq,
                                                                                                        s_min, s_max,
@@ -688,7 +687,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
               Eigen::VectorXd weight, 
               int algorithm_type, int model_type, int max_iter, int exchange_num,
               int path_type, bool is_warm_start,
-              int ic_type, double ic_coef, bool is_cv, int Kfold,
+              int ic_type, double ic_coef, int Kfold,
               Eigen::VectorXi sequence,
               Eigen::VectorXd lambda_seq,
               int s_min, int s_max, 
@@ -745,7 +744,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
 
   if (always_select.size() != 0)
   {
-    if (is_cv)
+    if (Kfold > 1)
     {
       algorithm->always_select = always_select;
       for (int i = 0; i < algorithm_list.size(); i++)
@@ -756,13 +755,13 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
     }
   }
 
-  Metric<T1, T2, T3, T4> *metric = new Metric<T1, T2, T3, T4>(ic_type, ic_coef, is_cv, Kfold);
+  Metric<T1, T2, T3, T4> *metric = new Metric<T1, T2, T3, T4>(ic_type, ic_coef, Kfold);
 
   // For CV:
   // 1:mask
   // 2:warm start save
   // 3:group_XTX
-  if (is_cv)
+  if (Kfold > 1)
   {
     metric->set_cv_train_test_mask(data, data.n, cv_fold_id);
     metric->set_cv_init_fit_arg(data.beta_size, data.M);
@@ -779,7 +778,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   vector<Result<T2, T3>> result_list(Kfold);
   if (path_type == 1)
   {
-    if (is_cv)
+    if (Kfold > 1)
     {
       //////////////////////////////////can parallel///////////////////////////////////
       if (is_parallel)
@@ -827,7 +826,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
 
   if (path_type == 1)
   {
-    if (is_cv)
+    if (Kfold > 1)
     {
       Eigen::MatrixXd test_loss_tmp;
       for (int i = 0; i < Kfold; i++)
@@ -982,7 +981,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
     train_loss_matrix = result.train_loss_matrix;
     effective_number_matrix = result.effective_number_matrix;
     Eigen::MatrixXd test_loss_matrix = result.test_loss_matrix;
-    if (is_cv)
+    if (Kfold > 1)
     {
       test_loss_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
     }
@@ -1135,7 +1134,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
 void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_col, int n, int p, int normalize_type, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
                   int algorithm_type, int model_type, int max_iter, int exchange_num,
                   int path_type, bool is_warm_start,
-                  int ic_type, double ic_coef, bool is_cv, int Kfold,
+                  int ic_type, double ic_coef, int Kfold,
                   int *gindex, int gindex_len,
                   int *sequence, int sequence_len,
                   double *lambda_sequence, int lambda_sequence_len,
@@ -1183,7 +1182,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
     mylist = abessPCA_API(x_Mat, n, p, normalize_type, weight_Vec, sigma_Mat,
                           algorithm_type, max_iter, exchange_num,
                           path_type, is_warm_start,
-                          is_tune, ic_type, ic_coef, is_cv, Kfold,
+                          is_tune, ic_type, ic_coef, Kfold,
                           sequence_Vec,
                           lambda_sequence_Vec,
                           s_min, s_max, 
@@ -1202,7 +1201,7 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
     mylist = abessGLM_API(x_Mat, y_Mat, n, p, normalize_type, weight_Vec, 
                             algorithm_type, model_type, max_iter, exchange_num,
                             path_type, is_warm_start,
-                            ic_type, ic_coef, is_cv, Kfold,
+                            ic_type, ic_coef, Kfold,
                             sequence_Vec,
                             lambda_sequence_Vec,
                             s_min, s_max, 

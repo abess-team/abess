@@ -46,9 +46,9 @@ public:
 
   Metric() = default;
 
-  Metric(int ic_type, double ic_coef = 1.0, bool is_cv = false, int Kfold = 5)
+  Metric(int ic_type, double ic_coef = 1.0, int Kfold = 5)
   {
-    this->is_cv = is_cv;
+    this->is_cv = Kfold > 1;
     this->ic_type = ic_type;
     this->Kfold = Kfold;
     this->ic_coef = ic_coef;

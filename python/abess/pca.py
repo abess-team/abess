@@ -203,8 +203,6 @@ class abessPCA(bess_base):
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
-        elif (self.cv > 1):
-            self.is_cv = True
 
         # Group
         if group is None:
@@ -306,7 +304,7 @@ class abessPCA(bess_base):
         result = pywrap_abess(X, y, n, p, normalize, weight, Sigma,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
-                              ic_type_int, self.ic_coef, self.is_cv, self.cv,
+                              ic_type_int, self.ic_coef, self.cv,
                               g_index,
                               support_sizes,
                               alphas,
@@ -484,7 +482,6 @@ class abessRPCA(bess_base):
         cv_fold_id = np.array([], dtype = "int32")
         Sigma = np.array([[-1]])
         number = 1
-        self.is_cv = False
 
         # Exchange_num
         if (not isinstance(self.exchange_num, int) or self.exchange_num <= 0):
@@ -534,7 +531,7 @@ class abessRPCA(bess_base):
         result = pywrap_abess(X, y, n, p, normalize, weight, Sigma,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
-                              ic_type_int, self.ic_coef, self.is_cv, self.cv,
+                              ic_type_int, self.ic_coef, self.cv,
                               g_index,
                               support_sizes,
                               alphas,

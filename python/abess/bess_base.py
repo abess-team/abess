@@ -102,7 +102,6 @@ class bess_base(BaseEstimator):
         self.n_lambda = 100
         self.ic_type = ic_type
         self.ic_coef = ic_coef
-        self.is_cv = False
         self.cv = cv
         self.is_screening = is_screening
         self.screening_size = screening_size
@@ -240,8 +239,6 @@ class bess_base(BaseEstimator):
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
-        elif (self.cv > 1):
-            self.is_cv = True
         
         # cv_fold_id
         if cv_fold_id is None:
@@ -418,7 +415,7 @@ class bess_base(BaseEstimator):
         result = pywrap_abess(X, y, n, p, normalize, weight, Sigma,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
-                              ic_type_int, self.ic_coef, self.is_cv, self.cv,
+                              ic_type_int, self.ic_coef, self.cv,
                               g_index,
                               support_sizes,
                               alphas,
