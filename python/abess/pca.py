@@ -243,7 +243,6 @@ class abessPCA(bess_base):
         # unused
         new_s_min = 0
         new_s_max = 0
-        new_K_max = 0
         new_lambda_min = 0
         new_lambda_max = 0
         alphas = [0]
@@ -312,10 +311,10 @@ class abessPCA(bess_base):
                               support_sizes,
                               alphas,
                               cv_fold_id,
-                              new_s_min, new_s_max, new_K_max, self.epsilon,
+                              new_s_min, new_s_max, 
                               new_lambda_min, new_lambda_max, self.n_lambda,
-                              new_screening_size, self.powell_path,
-                              self.always_select, self.tau,
+                              new_screening_size, 
+                              self.always_select, 
                               self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
                               self.early_stop, self.approximate_Newton,
                               self.thread,
@@ -479,7 +478,6 @@ class abessRPCA(bess_base):
         # unused
         new_s_min = 0
         new_s_max = 0
-        new_K_max = 0
         new_lambda_min = 0
         new_lambda_max = 0
         new_screening_size = -1
@@ -541,10 +539,10 @@ class abessRPCA(bess_base):
                               support_sizes,
                               alphas,
                               cv_fold_id,
-                              new_s_min, new_s_max, new_K_max, self.epsilon,
+                              new_s_min, new_s_max, 
                               new_lambda_min, new_lambda_max, self.n_lambda,
-                              new_screening_size, self.powell_path,
-                              self.always_select, self.tau,
+                              new_screening_size, 
+                              self.always_select, 
                               self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
                               self.early_stop, self.approximate_Newton,
                               self.thread,

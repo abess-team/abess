@@ -170,7 +170,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
 }
 
 template <class T1, class T2, class T3, class T4>
-void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Metric<T1, T2, T3, T4> *metric, int s_min, int s_max, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, int K_max, double epsilon, bool is_parallel, Result<T2, T3> &result)
+void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Metric<T1, T2, T3, T4> *metric, int s_min, int s_max, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool is_parallel, Result<T2, T3> &result)
 {
     int p = data.p;
     // int n = data.n;
