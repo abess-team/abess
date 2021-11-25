@@ -413,12 +413,16 @@ class bess_base(BaseEstimator):
 
                 ind = np.lexsort((tmp[:, 2], tmp[:, 1]))
                 X = tmp[ind, :]
+        
+        # normalize
+        normalize = 0
+        if (is_normal):
+            normalize = self.normalize_type
 
         # wrap with cpp
         # print("wrap enter.")#///
         number = 1
-        result = pywrap_abess(X, y, n, p, self.normalize_type, weight, Sigma,
-                              is_normal,
+        result = pywrap_abess(X, y, n, p, normalize, weight, Sigma,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
                               ic_type_int, self.ic_coef, self.is_cv, self.cv,

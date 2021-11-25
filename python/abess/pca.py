@@ -254,20 +254,6 @@ class abessPCA(bess_base):
         if (not isinstance(self.exchange_num, int) or self.exchange_num <= 0):
             raise ValueError("exchange_num should be an positive integer.")
 
-        # # Is_screening
-        # if self.is_screening:
-        #     new_screening_size = p \
-        #         if self.screening_size is None else self.screening_size
-
-        #     if self.screening_size > p:
-        #         raise ValueError(
-        #             "screening size should be smaller than X.shape[1].")
-        #     elif self.screening_size < max(support_sizes):
-        #         raise ValueError(
-        #             "screening size should be more than max(support_size).")
-        # else:
-        #     new_screening_size = -1
-
         # Thread
         if (not isinstance(self.thread, int) or self.thread < 0):
             raise ValueError(
@@ -310,11 +296,15 @@ class abessPCA(bess_base):
 
                 ind = np.lexsort((tmp[:, 2], tmp[:, 1]))
                 X = tmp[ind, :]
+        
+        # normalize
+        normalize = 0
+        if (is_normal):
+            normalize = self.normalize_type
 
         # wrap with cpp
         weight = np.ones(n)
-        result = pywrap_abess(X, y, n, p, self.normalize_type, weight, Sigma,
-                              is_normal,
+        result = pywrap_abess(X, y, n, p, normalize, weight, Sigma,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
                               ic_type_int, self.ic_coef, self.is_cv, self.cv,
@@ -390,7 +380,7 @@ class abessRPCA(bess_base):
             splicing_type=splicing_type
         )
 
-    def fit(self, X=None, r = 10, is_normal=False, group=None):
+    def fit(self, X=None, r = 10, group=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -398,9 +388,6 @@ class abessRPCA(bess_base):
         ----------
         X : array-like of shape (n_samples, p_features)
             Training data
-        is_normal : bool, optional
-            whether normalize the variables array before fitting the algorithm.
-            Default: is_normal=False.
         weight : array-like of shape (n_samples,)
             Individual weights for each sample. Only used for is_weight=True.
             Default is 1 for each observation.
@@ -448,12 +435,6 @@ class abessRPCA(bess_base):
         else:
             raise ValueError(
                 "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
-
-        # # cv
-        # if (not isinstance(self.cv, int) or self.cv <= 0):
-        #     raise ValueError("cv should be an positive integer.")
-        # elif (self.cv > 1):
-        #     self.is_cv = True
 
         # Group
         if group is None:
@@ -511,20 +492,6 @@ class abessRPCA(bess_base):
         if (not isinstance(self.exchange_num, int) or self.exchange_num <= 0):
             raise ValueError("exchange_num should be an positive integer.")
 
-        # # Is_screening
-        # if self.is_screening:
-        #     new_screening_size = p \
-        #         if self.screening_size is None else self.screening_size
-
-        #     if self.screening_size > p:
-        #         raise ValueError(
-        #             "screening size should be smaller than X.shape[1].")
-        #     elif self.screening_size < max(support_sizes):
-        #         raise ValueError(
-        #             "screening size should be more than max(support_size).")
-        # else:
-        #     new_screening_size = -1
-
         # Thread
         if (not isinstance(self.thread, int) or self.thread < 0):
             raise ValueError(
@@ -561,10 +528,12 @@ class abessRPCA(bess_base):
                 ind = np.lexsort((tmp[:, 2], tmp[:, 1]))
                 X = tmp[ind, :]
 
+        # normalize
+        normalize = 0
+
         # wrap with cpp
         weight = np.ones(n)
-        result = pywrap_abess(X, y, n, p, self.normalize_type, weight, Sigma,
-                              is_normal,
+        result = pywrap_abess(X, y, n, p, normalize, weight, Sigma,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
                               ic_type_int, self.ic_coef, self.is_cv, self.cv,

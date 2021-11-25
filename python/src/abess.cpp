@@ -53,7 +53,6 @@ using namespace std;
 // [[Rcpp::export]]
 List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize_type,
                Eigen::VectorXd weight, 
-               bool is_normal,
                int algorithm_type, int model_type, int max_iter, int exchange_num,
                int path_type, bool is_warm_start,
                int ic_type, double ic_coef, bool is_cv, int Kfold,
@@ -252,7 +251,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
       out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
                                                                                        weight, 
-                                                                                       is_normal,
                                                                                        algorithm_type, model_type, max_iter, exchange_num,
                                                                                        path_type, is_warm_start,
                                                                                        ic_type, ic_coef, is_cv, Kfold,
@@ -277,7 +275,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
       out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd>(x, y, n, p, normalize_type,
                                                                                                 weight, 
-                                                                                                is_normal,
                                                                                                 algorithm_type, model_type, max_iter, exchange_num,
                                                                                                 path_type, is_warm_start,
                                                                                                 ic_type, ic_coef, is_cv, Kfold,
@@ -325,7 +322,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
       out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
                                                                                                    weight, 
-                                                                                                   is_normal,
                                                                                                    algorithm_type, model_type, max_iter, exchange_num,
                                                                                                    path_type, is_warm_start,
                                                                                                    ic_type, ic_coef, is_cv, Kfold,
@@ -350,7 +346,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
       out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>>(sparse_x, y, n, p, normalize_type,
                                                                                                             weight, 
-                                                                                                            is_normal,
                                                                                                             algorithm_type, model_type, max_iter, exchange_num,
                                                                                                             path_type, is_warm_start,
                                                                                                             ic_type, ic_coef, is_cv, Kfold,
@@ -402,7 +397,6 @@ List abessPCA_API(Eigen::MatrixXd x,
                   int normalize_type,
                   Eigen::VectorXd weight,
                   Eigen::MatrixXd sigma,
-                  bool is_normal,
                   int algorithm_type,
                   int max_iter,
                   int exchange_num,
@@ -531,7 +525,6 @@ List abessPCA_API(Eigen::MatrixXd x,
       }
       out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
                                                                                            weight, 
-                                                                                           is_normal,
                                                                                            algorithm_type, model_type, max_iter, exchange_num,
                                                                                            path_type, is_warm_start,
                                                                                            ic_type, ic_coef, is_cv, Kfold,
@@ -622,7 +615,6 @@ List abessPCA_API(Eigen::MatrixXd x,
       }
       out_result_pca = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
                                                                                                        weight, 
-                                                                                                       is_normal,
                                                                                                        algorithm_type, model_type, max_iter, exchange_num,
                                                                                                        path_type, is_warm_start,
                                                                                                        ic_type, ic_coef, is_cv, Kfold,
@@ -705,7 +697,6 @@ List abessPCA_API(Eigen::MatrixXd x,
 template <class T1, class T2, class T3, class T4>
 List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
               Eigen::VectorXd weight, 
-              bool is_normal,
               int algorithm_type, int model_type, int max_iter, int exchange_num,
               int path_type, bool is_warm_start,
               int ic_type, double ic_coef, bool is_cv, int Kfold,
@@ -756,7 +747,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
         beta_size = p; 
   };
 
-  Data<T1, T2, T3, T4> data(x, y, normalize_type, weight, is_normal, g_index, sparse_matrix, beta_size);
+  Data<T1, T2, T3, T4> data(x, y, normalize_type, weight, g_index, sparse_matrix, beta_size);
 
   Eigen::VectorXi screening_A;
   if (screening_size >= 0)
@@ -1029,7 +1020,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
 
   //////////////Restore best_fit_result for normal//////////////
   // to do
-  if (data.is_normal && !sparse_matrix)
+  if (normalize_type > 0 && !sparse_matrix)
   {
     if (data.normalize_type == 1)
     {
@@ -1052,7 +1043,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
 
   ////////////// Restore all_fit_result for normal ////////////////////////
   // to do
-  if (data.is_normal && !sparse_matrix)
+  if (normalize_type > 0 && !sparse_matrix)
   {
     if (data.normalize_type == 1)
     {
@@ -1152,7 +1143,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
 #ifndef R_BUILD
 
 void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_col, int n, int p, int normalize_type, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
-                  bool is_normal,
                   int algorithm_type, int model_type, int max_iter, int exchange_num,
                   int path_type, bool is_warm_start,
                   int ic_type, double ic_coef, bool is_cv, int Kfold,
@@ -1201,7 +1191,6 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
   if (model_type == 7){
     bool is_tune = true;//TODO
     mylist = abessPCA_API(x_Mat, n, p, normalize_type, weight_Vec, sigma_Mat,
-                          is_normal,
                           algorithm_type, max_iter, exchange_num,
                           path_type, is_warm_start,
                           is_tune, ic_type, ic_coef, is_cv, Kfold,
@@ -1221,7 +1210,6 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                           pca_num);
   }else{
     mylist = abessGLM_API(x_Mat, y_Mat, n, p, normalize_type, weight_Vec, 
-                            is_normal,
                             algorithm_type, model_type, max_iter, exchange_num,
                             path_type, is_warm_start,
                             ic_type, ic_coef, is_cv, Kfold,

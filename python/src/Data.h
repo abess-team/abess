@@ -33,14 +33,13 @@ public:
     int M;
     int beta_size;
     int normalize_type;
-    bool is_normal;
     int g_num;
     Eigen::VectorXi g_index;
     Eigen::VectorXi g_size;
 
     Data() = default;
 
-    Data(T4 &x, T1 &y, int normalize_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, bool sparse_matrix, int beta_size)
+    Data(T4 &x, T1 &y, int normalize_type, Eigen::VectorXd &weight, Eigen::VectorXi &g_index, bool sparse_matrix, int beta_size)
     {
         this->x = x;
         this->y = y;
@@ -51,12 +50,11 @@ public:
         this->beta_size = beta_size;
 
         this->weight = weight;
-        this->is_normal = is_normal;
         this->x_mean = Eigen::VectorXd::Zero(this->p);
         this->x_norm = Eigen::VectorXd::Zero(this->p);
 
         // to do !!!!!!!!!!!!!!!!!!!!!!!!!
-        if (is_normal && !sparse_matrix)
+        if (normalize_type > 0 && !sparse_matrix)
         {
             this->normalize();
         }        
