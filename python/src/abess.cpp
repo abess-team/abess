@@ -100,78 +100,98 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
     {
       if (model_type == 1)
       {
-        abessLm<Eigen::MatrixXd> *temp = new abessLm<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessLm<Eigen::MatrixXd> *temp = new abessLm<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
         temp->covariance_update = covariance_update;
         algorithm_list_uni_dense[i] = temp;
       }
       else if (model_type == 2)
       {
-        algorithm_list_uni_dense[i] = new abessLogistic<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessLogistic<Eigen::MatrixXd> *temp = new abessLogistic<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+        temp->approximate_Newton = approximate_Newton;
+        algorithm_list_uni_dense[i] = temp;
       }
       else if (model_type == 3)
       {
-        algorithm_list_uni_dense[i] = new abessPoisson<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessPoisson<Eigen::MatrixXd> *temp = new abessPoisson<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+        temp->approximate_Newton = approximate_Newton;
+        algorithm_list_uni_dense[i] = temp;
       }
       else if (model_type == 4)
       {
-        algorithm_list_uni_dense[i] = new abessCox<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessCox<Eigen::MatrixXd> *temp = new abessCox<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+        temp->approximate_Newton = approximate_Newton;
+        algorithm_list_uni_dense[i] = temp;
       }
       else if (model_type == 5)
       {
-        abessMLm<Eigen::MatrixXd> *temp = new abessMLm<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessMLm<Eigen::MatrixXd> *temp = new abessMLm<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
         temp->covariance_update = covariance_update;
         algorithm_list_mul_dense[i] = temp;
       }
       else if (model_type == 6)
       {
-        algorithm_list_mul_dense[i] = new abessMultinomial<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessMultinomial<Eigen::MatrixXd> *temp = new abessMultinomial<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+        temp->approximate_Newton = approximate_Newton;
+        algorithm_list_mul_dense[i] = temp;
       }
       else if(model_type == 8)
       {
-        algorithm_list_uni_dense[i] = new abessGamma<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessGamma<Eigen::MatrixXd> *temp = new abessGamma<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+        temp->approximate_Newton = approximate_Newton;
+        algorithm_list_uni_dense[i] = temp;
       }
       else if (model_type == 10)
       {
-        algorithm_list_uni_dense[i] = new abessRPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        algorithm_list_uni_dense[i] = new abessRPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
       }
     }
     else
     {
       if (model_type == 1)
       {
-        abessLm<Eigen::SparseMatrix<double>> *temp = new abessLm<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessLm<Eigen::SparseMatrix<double>> *temp = new abessLm<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
         temp->covariance_update = covariance_update;
         algorithm_list_uni_sparse[i] = temp;
       }
       else if (model_type == 2)
       {
-        algorithm_list_uni_sparse[i] = new abessLogistic<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessLogistic<Eigen::SparseMatrix<double>> *temp = new abessLogistic<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+        temp->approximate_Newton = approximate_Newton;
+        algorithm_list_uni_sparse[i] = temp;
       }
       else if (model_type == 3)
       {
-        algorithm_list_uni_sparse[i] = new abessPoisson<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessPoisson<Eigen::SparseMatrix<double>> *temp = new abessPoisson<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+        temp->approximate_Newton = approximate_Newton;
+        algorithm_list_uni_sparse[i] = temp;
       }
       else if (model_type == 4)
       {
-        algorithm_list_uni_sparse[i] = new abessCox<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessCox<Eigen::SparseMatrix<double>> *temp = new abessCox<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+        temp->approximate_Newton = approximate_Newton;
+        algorithm_list_uni_sparse[i] = temp;
       }
       else if (model_type == 5)
       {
-        abessMLm<Eigen::SparseMatrix<double>> *temp = new abessMLm<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessMLm<Eigen::SparseMatrix<double>> *temp = new abessMLm<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
         temp->covariance_update = covariance_update;
         algorithm_list_mul_sparse[i] = temp;
       }
       else if (model_type == 6)
       {
-        algorithm_list_mul_sparse[i] = new abessMultinomial<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessMultinomial<Eigen::SparseMatrix<double>> *temp = new abessMultinomial<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+        temp->approximate_Newton = approximate_Newton;
+        algorithm_list_mul_sparse[i] = temp;
       }
       else if (model_type == 8)
       {
-        algorithm_list_uni_sparse[i] = new abessGamma<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        abessGamma<Eigen::SparseMatrix<double>> *temp = new abessGamma<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+        temp->approximate_Newton = approximate_Newton;
+        algorithm_list_uni_sparse[i] = temp;
       }
       else if (model_type == 10)
       {
-        algorithm_list_uni_sparse[i] = new abessRPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+        algorithm_list_uni_sparse[i] = new abessRPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
       }
     }
   }
@@ -360,7 +380,6 @@ List abessPCA_API(Eigen::MatrixXd x,
   int sub_search = 0;
   int primary_model_fit_max_iter = 1;
   double primary_model_fit_epsilon = 1e-3;
-  bool approximate_Newton = false;
   int pca_n = -1;
   if (!sparse_matrix && n != x.rows())
   {
@@ -376,7 +395,7 @@ List abessPCA_API(Eigen::MatrixXd x,
   {
     if (!sparse_matrix)
     {
-      abessPCA<Eigen::MatrixXd> *temp = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+      abessPCA<Eigen::MatrixXd> *temp = new abessPCA<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
       temp->is_cv = Kfold > 1;
       temp->pca_n = pca_n;
       temp->sigma = sigma;
@@ -384,7 +403,7 @@ List abessPCA_API(Eigen::MatrixXd x,
     }
     else
     {
-      abessPCA<Eigen::SparseMatrix<double>> *temp = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, approximate_Newton, always_select, splicing_type, sub_search);
+      abessPCA<Eigen::SparseMatrix<double>> *temp = new abessPCA<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
       temp->is_cv = Kfold > 1;
       temp->pca_n = pca_n;
       temp->sigma = sigma;

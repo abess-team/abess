@@ -103,36 +103,26 @@ public:
   double tau;                       /* algorithm stop threshold */
   int primary_model_fit_max_iter;   /* The maximal number of iteration for primaty model fit*/
   double primary_model_fit_epsilon; /* The epsilon (threshold) of iteration for primaty model fit*/
-  bool approximate_Newton;          /* use approximate Newton method or not. */
 
   T2 beta_warmstart;  /*warmstart beta.*/
   T3 coef0_warmstart; /*warmstart intercept.*/
 
-  Eigen::MatrixXd cox_hessian; /* hessian matrix for cox model. */
-  Eigen::VectorXd cox_g;       /* score function for cox model. */
-
   double effective_number; /* effective number of parameter. */
-
   int splicing_type;     /* exchange number update mathod. */
-
   int sub_search; /* size of sub_searching in splicing */
   int U_size;
-
-  Eigen::VectorXi map1;  // single index -> full index
-  Eigen::MatrixXi map2;  // full index -> single index
 
   Algorithm() = default;
 
   virtual ~Algorithm(){};
 
-  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
+  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
   {
     this->max_iter = max_iter;
     this->model_type = model_type;
     // this->coef0_init = 0.0;
     this->warm_start = warm_start;
     this->exchange_num = exchange_num;
-    this->approximate_Newton = approximate_Newton;
     this->always_select = always_select;
     this->algorithm_type = algorithm_type;
     this->primary_model_fit_max_iter = primary_model_fit_max_iter;
@@ -205,7 +195,6 @@ public:
   void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N)
   {
     int T0 = this->sparsity_level;
-    this->cox_g = Eigen::VectorXd::Zero(0);
     this->x = &train_x;
     this->y = &train_y;
     this->beta = this->beta_init;
