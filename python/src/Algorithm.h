@@ -97,9 +97,6 @@ public:
   Eigen::VectorXi A_out; /* final active set. */
   Eigen::VectorXi I_out; /* final active set. */
 
-  Eigen::Matrix<Eigen::MatrixXd, -1, -1> PhiG;    /* PhiG for linear model. */
-  Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhiG; /* invPhiG for linear model. */
-  Eigen::Matrix<T4, -1, -1> group_XTX;            /* XTX. */
   bool lambda_change;                             /* lambda_change or not. */
 
   Eigen::VectorXi always_select;    /* always select variable. */
@@ -114,27 +111,12 @@ public:
   Eigen::MatrixXd cox_hessian; /* hessian matrix for cox model. */
   Eigen::VectorXd cox_g;       /* score function for cox model. */
 
-  bool covariance_update;              /* use covairance update mathod or not. */
-  Eigen::VectorXd **covariance = NULL; /* covairance matrix. */
-  bool *covariance_update_flag = NULL; /* each variable have updated in covairance matirx. */
-  T1 XTy;                              /*X.transpose() * y */
-  T1 XTone;                            /* X.transpose() * Eigen::MatrixXd::one() */
-
   double effective_number; /* effective number of parameter. */
 
   int splicing_type;     /* exchange number update mathod. */
 
   int sub_search; /* size of sub_searching in splicing */
   int U_size;
-
-  // Eigen::MatrixXd Sigma; /* covariance matrix for pca. */
-  // int pca_n = -1; /* sample size of PCA, if only Sigma is given */
-  // bool is_cv = false; /* under cv or not */
-
-  T1 XTy_U;
-  T1 XTone_U;
-  Eigen::Matrix<Eigen::MatrixXd, -1, -1> PhiG_U;
-  Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhiG_U;
 
   Eigen::VectorXi map1;  // single index -> full index
   Eigen::MatrixXi map2;  // full index -> single index
@@ -143,7 +125,7 @@ public:
 
   virtual ~Algorithm(){};
 
-  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), bool covariance_update = false, int splicing_type = 0, int sub_search = 0)
+  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, bool approximate_Newton = false, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
   {
     this->max_iter = max_iter;
     this->model_type = model_type;
@@ -156,15 +138,9 @@ public:
     this->primary_model_fit_max_iter = primary_model_fit_max_iter;
     this->primary_model_fit_epsilon = primary_model_fit_epsilon;
 
-    this->covariance_update = covariance_update;
-
     this->splicing_type = splicing_type;
     this->sub_search = sub_search;
   };
-
-  void update_PhiG(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &PhiG) { this->PhiG = PhiG; }
-
-  void update_invPhiG(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &invPhiG) { this->invPhiG = invPhiG; }
 
   void set_warm_start(bool warm_start) { this->warm_start = warm_start; }
 
@@ -193,8 +169,6 @@ public:
   void update_train_mask(Eigen::VectorXi &train_mask) { this->train_mask = train_mask; }
 
   void update_exchange_num(int exchange_num) { this->exchange_num = exchange_num; }
-
-  void update_group_XTX(Eigen::Matrix<T4, -1, -1> &group_XTX) { this->group_XTX = group_XTX; }
 
   virtual void update_tau(int train_n, int N)
   {
@@ -227,8 +201,6 @@ public:
   Eigen::VectorXi get_I_out() { return this->I_out; };
 
   Eigen::VectorXd get_bd() { return this->bd; }
-
-  int get_l() { return this->l; }
 
   void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N)
   {
@@ -564,6 +536,7 @@ public:
   };
 
   virtual void inital_setting(T4 &X, T1 &y, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N) {};
+  virtual void clear_setting(){};
 
   virtual Eigen::VectorXi inital_screening(T4 &X, T1 &y, T2 &beta, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
                                    Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)

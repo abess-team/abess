@@ -177,12 +177,11 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
               Eigen::VectorXi g_index,
               Eigen::VectorXi always_select,
               int primary_model_fit_max_iter, double primary_model_fit_epsilon,
-              bool early_stop, bool approximate_Newton,
+              bool early_stop, 
               int thread,
-              bool covariance_update,
               bool sparse_matrix,
               Eigen::VectorXi &cv_fold_id,
-              Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list);
+              vector<Algorithm<T1, T2, T3, T4> *> algorithm_list);
 
 #ifndef R_BUILD
 void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, int p, int normalize_type, int y_col, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,

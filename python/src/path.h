@@ -63,21 +63,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
         test_n = test_mask.size();
     }
 
-    Eigen::Matrix<T4, -1, -1> train_group_XTX = group_XTX<T4>(train_x, g_index, g_size, train_n, p, N, algorithm->model_type);
-
-    algorithm->update_group_XTX(train_group_XTX);
-    algorithm->PhiG.resize(0, 0);
-
-    if (algorithm->covariance_update)
-    {
-        algorithm->covariance = new Eigen::VectorXd *[p];
-        algorithm->covariance_update_flag = new bool[p];
-        for (int i = 0; i < p; i++)
-            algorithm->covariance_update_flag[i] = false;
-        algorithm->XTy = train_x.transpose() * train_y;
-        algorithm->XTone = train_x.transpose() * Eigen::MatrixXd::Ones(train_n, M);
-    }
-
     Eigen::Matrix<T2, Dynamic, Dynamic> beta_matrix(sequence_size, lambda_size);
     Eigen::Matrix<T3, Dynamic, Dynamic> coef0_matrix(sequence_size, lambda_size);
     Eigen::MatrixXd train_loss_matrix(sequence_size, lambda_size);
@@ -94,10 +79,8 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
 
     for (int i = 0; i < sequence_size; i++)
     {
-
         for (int j = (1 - pow(-1, i)) * (lambda_size - 1) / 2; j < lambda_size && j >= 0; j = j + pow(-1, i))
         {
-
             algorithm->update_sparsity_level(sequence(i));
             algorithm->update_lambda_level(lambda_seq(j));
             algorithm->update_beta_init(beta_init);
@@ -146,15 +129,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
         // }
     }
 
-    if (algorithm->covariance_update)
-    {
-        for (int i = 0; i < p; i++)
-            if (algorithm->covariance_update_flag[i])
-                delete algorithm->covariance[i];
-        delete[] algorithm->covariance;
-        delete[] algorithm->covariance_update_flag;
-    }
-
     // if (early_stop)
     // {
     //     ic_sequence = ic_sequence.block(0, 0, early_stop_s, lambda_size).eval();
@@ -170,71 +144,13 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
 }
 
 template <class T1, class T2, class T3, class T4>
-void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Metric<T1, T2, T3, T4> *metric, int s_min, int s_max, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool is_parallel, Result<T2, T3> &result)
+void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Metric<T1, T2, T3, T4> *metric, int s_min, int s_max, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, Result<T2, T3> &result)
 {
-    int p = data.p;
-    // int n = data.n;
-    // int i;
-
     int sequence_size = s_max - s_min + 5;
     sequence = Eigen::VectorXi::Zero(sequence_size);
     double lambda = lambda_seq[0];
 
-    Eigen::Matrix<T4, -1, -1> train_group_XTX = group_XTX<T4>(data.x, data.g_index, data.g_size, data.n, p, data.g_num, algorithm->model_type);
-
-    algorithm->update_group_XTX(train_group_XTX);
-    algorithm->PhiG.resize(0, 0);
-
-    if (algorithm->covariance_update)
-    {
-        algorithm->covariance = new Eigen::VectorXd *[data.p];
-        algorithm->covariance_update_flag = new bool[data.p];
-        for (int i = 0; i < data.p; i++)
-            algorithm->covariance_update_flag[i] = false;
-        algorithm->XTy = data.x.transpose() * data.y;
-        algorithm->XTone = data.x.transpose() * Eigen::MatrixXd::Ones(data.n, data.M);
-    }
-
-    if (metric->is_cv)
-    {
-        for (int k = 0; k < metric->Kfold; k++)
-        {
-            Eigen::Matrix<T4, -1, -1> tmp_group_XTX = group_XTX<T4>(metric->train_X_list[k], data.g_index, data.g_size, metric->train_mask_list[k].size(), data.p, data.g_num, algorithm->model_type);
-
-            algorithm_list[k]->update_group_XTX(tmp_group_XTX);
-            algorithm_list[k]->PhiG.resize(0, 0);
-
-            if (algorithm_list[k]->covariance_update)
-            {
-                algorithm_list[k]->covariance = new Eigen::VectorXd *[data.p];
-                algorithm_list[k]->covariance_update_flag = new bool[data.p];
-                for (int i = 0; i < data.p; i++)
-                    algorithm_list[k]->covariance_update_flag[i] = false;
-                algorithm_list[k]->XTy = metric->train_X_list[k].transpose() * metric->train_y_list[k];
-                algorithm_list[k]->XTone = metric->train_X_list[k].transpose() * Eigen::MatrixXd::Ones(metric->train_mask_list[k].size(), data.M);
-            }
-        }
-    }
-
-    // Eigen::VectorXi full_mask = Eigen::VectorXi::LinSpaced(n, 0, n - 1);
-
-    // Eigen::Matrix<T2, Dynamic, Dynamic> beta_sequence(sequence_size, lambda_size);
-    // Eigen::Matrix<T3, Dynamic, Dynamic> coef0_matrix(sequence_size, lambda_size);
-    // Eigen::MatrixXd train_loss_matrix(sequence_size, lambda_size);
-    // Eigen::MatrixXd ic_matrix(sequence_size, lambda_size);
-
-    // Eigen::MatrixXd beta_sequence = Eigen::MatrixXd::Zero(p, 4);
-    // Eigen::VectorXd coef0_sequence = Eigen::VectorXd::Zero(4);
-    // Eigen::VectorXd train_loss_sequence = Eigen::VectorXd::Zero(4);
-    Eigen::VectorXd ic_sequence = Eigen::VectorXd::Zero(4);
-
-    // Eigen::MatrixXd beta_all = Eigen::MatrixXd::Zero(p, 100);
-    // Eigen::VectorXd coef0_all = Eigen::VectorXd::Zero(100);
-    // Eigen::VectorXd train_loss_all = Eigen::VectorXd::Zero(100);
-    // Eigen::VectorXd ic_all = Eigen::VectorXd::Zero(100);
-
-    // Eigen::VectorXd beta_init = Eigen::VectorXd::Zero(p);
-    // double coef0_init = 0.0;
+    // golden search 
     Eigen::Matrix<T2, Dynamic, Dynamic> beta_matrix(sequence_size, 1);
     Eigen::Matrix<T3, Dynamic, Dynamic> coef0_matrix(sequence_size, 1);
     Eigen::MatrixXd train_loss_matrix(sequence_size, 1);
@@ -248,366 +164,138 @@ void gs_path(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, v
     coef_set_zero(data.beta_size, data.M, beta_init, coef0_init);
     Eigen::VectorXi A_init;
     Eigen::VectorXd bd_init;
+    FIT_ARG<T2, T3> fit_arg(0, 0, beta_init, coef0_init, bd_init, A_init);
 
-    int Tmin = s_min;
-    int Tmax = s_max;
-    int Tl = round(0.618 * Tmin + 0.382 * Tmax);
-    int Tr = round(0.382 * Tmin + 0.618 * Tmax);
-    // double icTl;
-    // double icTr;
-
-    FIT_ARG<T2, T3> fit_arg(Tl, lambda, beta_init, coef0_init, bd_init, A_init);
-    // algorithm->update_train_mask(full_mask);
-    // algorithm->update_sparsity_level(T1);
-    // algorithm->update_beta_init(beta_init);
-    // algorithm->update_coef0_init(coef0_init);
-    // algorithm->update_group_XTX(full_group_XTX);
-
-    // algorithm->fit();
-
-    ic_sequence(1) = metric->fit_and_evaluate_in_metric(algorithm, data, algorithm_list, fit_arg);
-    sequence(0) = Tl;
-
-    // evaluate the beta
-    if (metric->is_cv)
-    {
-        test_loss_matrix(0, 0) = ic_sequence(1);
-    }
-    else
-    {
-        ic_matrix(0, 0) = ic_sequence(1);
-    }
-
-    if (algorithm->warm_start)
-    {
-        beta_init = algorithm->get_beta();
-        coef0_init = algorithm->get_coef0();
-        bd_init = algorithm->get_bd();
-    }
-
-    beta_matrix(0, 0) = algorithm->beta;
-    coef0_matrix(0, 0) = algorithm->coef0;
-    train_loss_matrix(0, 0) = algorithm->get_train_loss();
-    bd_matrix(0, 0) = algorithm->bd;
-    effective_number_matrix(0, 0) = algorithm->get_effective_number();
-
-    // beta_matrix.col(1) = algorithm->get_beta();
-    // coef0_sequence(1) = algorithm->get_coef0();
-    // // train_loss_sequence(1) = metric->train_loss(algorithm, data);
-    // // ic_sequence(1) = metric->ic(algorithm, data);
-    // beta_all.col(0) = beta_matrix.col(1);
-    // coef0_all(0) = coef0_sequence(1);
-    // train_loss_all(0) = train_loss_sequence(1);
-    // ic_all(0) = ic_sequence(1);
-    // icT1 = ic_sequence(1);
-
-    // algorithm->update_train_mask(full_mask);
-    // algorithm->update_sparsity_level(T2);
-    // algorithm->update_beta_init(beta_init);
-    // algorithm->update_coef0_init(coef0_init);
-    // algorithm->update_group_XTX(full_group_XTX);
-    fit_arg.support_size = Tr;
-    fit_arg.beta_init = beta_init;
-    fit_arg.coef0_init = coef0_init;
-    fit_arg.bd_init = bd_init;
-
-    ic_sequence(2) = metric->fit_and_evaluate_in_metric(algorithm, data, algorithm_list, fit_arg);
-    sequence(1) = Tr;
-
-    // evaluate the beta
-    if (metric->is_cv)
-    {
-        test_loss_matrix(1, 0) = ic_sequence(2);
-    }
-    else
-    {
-        ic_matrix(1, 0) = ic_sequence(2);
-    }
-
-    if (algorithm->warm_start)
-    {
-        beta_init = algorithm->get_beta();
-        coef0_init = algorithm->get_coef0();
-        bd_init = algorithm->get_bd();
-    }
-
-    beta_matrix(1, 0) = algorithm->beta;
-    coef0_matrix(1, 0) = algorithm->coef0;
-    train_loss_matrix(1, 0) = algorithm->get_train_loss();
-    bd_matrix(1, 0) = algorithm->bd;
-    effective_number_matrix(1, 0) = algorithm->get_effective_number();
-
-    // algorithm->fit();
-    // if (algorithm->warm_start)
-    // {
-    //     beta_init = algorithm->get_beta();
-    //     coef0_init = algorithm->get_coef0();
-    // }
-
-    // beta_matrix.col(2) = algorithm->get_beta();
-    // coef0_sequence(2) = algorithm->get_coef0();
-    // train_loss_sequence(2) = metric->train_loss(algorithm, data);
-    // ic_sequence(2) = metric->ic(algorithm, data);
-    // beta_all.col(1) = beta_matrix.col(2);
-    // coef0_all(1) = coef0_sequence(2);
-    // train_loss_all(1) = train_loss_sequence(2);
-    // ic_all(1) = ic_sequence(2);
-
-    // icT2 = metric->ic(algorithm, data);
-
-    int iter = 2;
-    while (Tl != Tr)
-    {
-        if (ic_sequence(1) < ic_sequence(2))
+    int ind = -1;
+    int left = round(0.618 * s_min + 0.382 * s_max);
+    int right = round(0.382 * s_min + 0.618 * s_max);
+    bool fit_l = true, fit_r = (left != right);
+    double loss_l = 0, loss_r = 0;
+    while (true){
+        // cout<<" ==> gs: "<<s_min<<" - "<<s_max<<endl;
+        if (fit_l)
         {
-            Tmax = Tr;
-            // beta_matrix.col(3) = beta_matrix.col(2);
-            // coef0_sequence(3) = coef0_sequence(2);
-            // train_loss_sequence(3) = train_loss_sequence(2);
-            ic_sequence(3) = ic_sequence(2);
+            fit_l = false;
+            fit_arg.support_size = left;
+            loss_l = metric->fit_and_evaluate_in_metric(algorithm_list, data, fit_arg);
 
-            Tr = Tl;
-            // beta_matrix.col(2) = beta_matrix.col(1);
-            // coef0_sequence(2) = coef0_sequence(1);
-            // train_loss_sequence(2) = train_loss_sequence(1);
-            ic_sequence(2) = ic_sequence(1);
-            // icT2 = ic_sequence(1);
-
-            Tl = round(0.618 * Tmin + 0.382 * Tmax);
-
-            fit_arg.support_size = Tl;
-            fit_arg.beta_init = beta_init;
-            fit_arg.coef0_init = coef0_init;
-            fit_arg.bd_init = bd_init;
-            ic_sequence(1) = metric->fit_and_evaluate_in_metric(algorithm, data, algorithm_list, fit_arg);
-            sequence(iter) = Tl;
-
-            // evaluate the beta
+            // record: left
+            sequence(++ind) = left;
             if (metric->is_cv)
             {
-                test_loss_matrix(iter, 0) = ic_sequence(1);
+                test_loss_matrix(ind, 0) = loss_l;
             }
             else
             {
-                ic_matrix(iter, 0) = ic_sequence(1);
+                beta_matrix(ind, 0) = algorithm_list[0]->beta;
+                coef0_matrix(ind, 0) = algorithm_list[0]->coef0;
+                train_loss_matrix(ind, 0) = algorithm_list[0]->get_train_loss();
+                bd_matrix(ind, 0) = algorithm_list[0]->bd;
+                effective_number_matrix(ind, 0) = algorithm_list[0]->get_effective_number();
+                ic_matrix(ind, 0) = loss_l;
             }
-
-            if (algorithm->warm_start)
-            {
-                beta_init = algorithm->get_beta();
-                coef0_init = algorithm->get_coef0();
-                bd_init = algorithm->get_bd();
-            }
-
-            beta_matrix(iter, 0) = algorithm->beta;
-            coef0_matrix(iter, 0) = algorithm->coef0;
-            train_loss_matrix(iter, 0) = algorithm->get_train_loss();
-            bd_matrix(iter, 0) = algorithm->bd;
-            effective_number_matrix(iter, 0) = algorithm->get_effective_number();
-            // algorithm->update_train_mask(full_mask);
-            // algorithm->update_sparsity_level(T1);
-            // algorithm->update_beta_init(beta_init);
-            // algorithm->update_coef0_init(coef0_init);
-            // algorithm->update_group_XTX(full_group_XTX);
-            // algorithm->fit();
-            // if (algorithm->warm_start)
-            // {
-            //     beta_init = algorithm->get_beta();
-            //     coef0_init = algorithm->get_coef0();
-            // }
-            // beta_matrix.col(1) = algorithm->get_beta();
-            // coef0_sequence(1) = algorithm->get_coef0();
-            // train_loss_sequence(1) = metric->train_loss(algorithm, data);
-            // ic_sequence(1) = metric->ic(algorithm, data);
-
-            // beta_all.col(iter) = beta_matrix.col(1);
-            // coef0_all(iter) = coef0_sequence(1);
-            // train_loss_all(iter) = train_loss_sequence(1);
-            // ic_all(iter) = ic_sequence(1);
-            iter++;
-
-            // icT1 = metric->ic(algorithm, data);
         }
-        else
+
+        if (fit_r)
         {
-            Tmin = Tl;
-            // beta_matrix.col(0) = beta_matrix.col(1);
-            // coef0_sequence(0) = coef0_sequence(1);
-            // train_loss_sequence(0) = train_loss_sequence(1);
-            ic_sequence(0) = ic_sequence(1);
+            fit_r = false;
+            fit_arg.support_size = right;
+            loss_r = metric->fit_and_evaluate_in_metric(algorithm_list, data, fit_arg);
 
-            Tl = Tr;
-            // beta_matrix.col(1) = beta_matrix.col(2);
-            // coef0_sequence(1) = coef0_sequence(2);
-            // train_loss_sequence(1) = train_loss_sequence(2);
-            ic_sequence(1) = ic_sequence(2);
-            // icT1 = ic_sequence(2);
-
-            Tr = round(0.382 * Tmin + 0.618 * Tmax);
-            fit_arg.support_size = Tr;
-            fit_arg.beta_init = beta_init;
-            fit_arg.coef0_init = coef0_init;
-            fit_arg.bd_init = bd_init;
-            ic_sequence(2) = metric->fit_and_evaluate_in_metric(algorithm, data, algorithm_list, fit_arg);
-            sequence(iter) = Tr;
-
-            // evaluate the beta
+            // record: pos 2
+            sequence(++ind) = right;
             if (metric->is_cv)
             {
-                test_loss_matrix(iter, 0) = ic_sequence(2);
+                test_loss_matrix(ind, 0) = loss_r;
             }
             else
             {
-                ic_matrix(iter, 0) = ic_sequence(2);
+                beta_matrix(ind, 0) = algorithm_list[0]->beta;
+                coef0_matrix(ind, 0) = algorithm_list[0]->coef0;
+                train_loss_matrix(ind, 0) = algorithm_list[0]->get_train_loss();
+                bd_matrix(ind, 0) = algorithm_list[0]->bd;
+                effective_number_matrix(ind, 0) = algorithm_list[0]->get_effective_number();
+                ic_matrix(ind, 0) = loss_r;
             }
+        }
 
-            if (algorithm->warm_start)
-            {
-                beta_init = algorithm->get_beta();
-                coef0_init = algorithm->get_coef0();
-                bd_init = algorithm->get_bd();
-            }
-
-            beta_matrix(iter, 0) = algorithm->beta;
-            coef0_matrix(iter, 0) = algorithm->coef0;
-            train_loss_matrix(iter, 0) = algorithm->get_train_loss();
-            bd_matrix(iter, 0) = algorithm->bd;
-            effective_number_matrix(iter, 0) = algorithm->get_effective_number();
-            // algorithm->update_train_mask(full_mask);
-            // algorithm->update_sparsity_level(T2);
-            // algorithm->update_beta_init(beta_init);
-            // algorithm->update_coef0_init(coef0_init);
-            // algorithm->update_group_XTX(full_group_XTX);
-            // algorithm->fit();
-            // if (algorithm->warm_start)
-            // {
-            //     beta_init = algorithm->get_beta();
-            //     coef0_init = algorithm->get_coef0();
-            // }
-
-            // beta_matrix.col(2) = algorithm->get_beta();
-            // coef0_sequence(2) = algorithm->get_coef0();
-            // train_loss_sequence(2) = metric->train_loss(algorithm, data);
-            // ic_sequence(2) = metric->ic(algorithm, data);
-
-            // beta_all.col(iter) = beta_matrix.col(2);
-            // coef0_all(iter) = coef0_sequence(2);
-            // train_loss_all(iter) = train_loss_sequence(2);
-            // ic_all(iter) = ic_sequence(2);
-            iter++;
-
-            // icT2 = metric->ic(algorithm, data);
-        };
+        // update split point
+        if (loss_l < loss_r)
+        {
+            s_max = right;
+            right = left;
+            loss_r = loss_l;
+            left = round(0.618 * s_min + 0.382 * s_max);
+            fit_l = true;
+        } 
+        else 
+        {
+            s_min = left;
+            left = right;
+            loss_l = loss_r;
+            right = round(0.382 * s_min + 0.618 * s_max);
+            fit_r = true;
+        }
+        if (left == right) break;
     }
-
+    // cout<<"left==right | s_min = "<<s_min<<" | s_max = "<<s_max<<endl;
+    
     T2 best_beta;
     // T3 best_coef0;
     // double best_train_loss = 0;
-    double best_ic = DBL_MAX;
-
-    for (int T_tmp = Tmin; T_tmp <= Tmax; T_tmp++)
+    double best_loss = DBL_MAX;
+    for (int s = s_min; s <= s_max; s++)
     {
-        fit_arg.support_size = T_tmp;
+        fit_arg.support_size = s;
         fit_arg.beta_init = beta_init;
         fit_arg.coef0_init = coef0_init;
         fit_arg.bd_init = bd_init;
-        double ic_tmp = metric->fit_and_evaluate_in_metric(algorithm, data, algorithm_list, fit_arg);
+        double loss = metric->fit_and_evaluate_in_metric(algorithm_list, data, fit_arg);
 
-        // algorithm->update_train_mask(full_mask);
-        // algorithm->update_sparsity_level(T_tmp);
-        // algorithm->update_beta_init(beta_init);
-        // algorithm->update_coef0_init(coef0_init);
-        // algorithm->update_group_XTX(full_group_XTX);
-        // algorithm->fit();
-        // if (algorithm->warm_start)
-        // {
-        //     beta_init = algorithm->get_beta();
-        //     coef0_init = algorithm->get_coef0();
-        // }
-        // double ic_tmp = metric->ic(algorithm, data);
-        if (ic_tmp < best_ic)
+        if (loss < best_loss)
         {
-            // evaluate the beta
+            // record
+            sequence(++ind) = s;
             if (metric->is_cv)
             {
-                test_loss_matrix(iter, 0) = ic_tmp;
+                test_loss_matrix(ind, 0) = loss;
+                best_loss = loss;
             }
             else
             {
-                ic_matrix(iter, 0) = ic_tmp;
-            }
-
-            if (algorithm->warm_start)
-            {
-                beta_init = algorithm->get_beta();
-                coef0_init = algorithm->get_coef0();
-                bd_init = algorithm->get_bd();
-            }
-
-            beta_matrix(iter, 0) = algorithm->beta;
-            coef0_matrix(iter, 0) = algorithm->coef0;
-            train_loss_matrix(iter, 0) = algorithm->get_train_loss();
-            bd_matrix(iter, 0) = algorithm->bd;
-            effective_number_matrix(iter, 0) = algorithm->get_effective_number();
-
-            sequence(iter) = T_tmp;
-            // best_beta = algorithm->get_beta();
-            // best_coef0 = algorithm->get_coef0();
-            // best_train_loss = metric->train_loss(algorithm, data);
-            // best_ic = ic_tmp;
-
-            // beta_all.col(iter) = best_beta;
-            // coef0_all(iter) = best_coef0;
-            // train_loss_all(iter) = best_train_loss;
-            // ic_all(iter) = best_ic;
-            iter++;
-        }
-    }
-
-    if (algorithm->covariance_update)
-    {
-        for (int i = 0; i < data.p; i++)
-            if (algorithm->covariance_update_flag[i])
-                delete algorithm->covariance[i];
-        delete[] algorithm->covariance;
-        delete[] algorithm->covariance_update_flag;
-    }
-
-    if (metric->is_cv)
-    {
-        for (int k = 0; k < metric->Kfold; k++)
-        {
-            if (algorithm_list[k]->covariance_update)
-            {
-                for (int i = 0; i < data.p; i++)
-                    if (algorithm_list[k]->covariance_update_flag[i])
-                        delete algorithm_list[k]->covariance[i];
-                delete[] algorithm_list[k]->covariance;
-                delete[] algorithm_list[k]->covariance_update_flag;
+                beta_matrix(ind, 0) = algorithm_list[0]->beta;
+                coef0_matrix(ind, 0) = algorithm_list[0]->coef0;
+                train_loss_matrix(ind, 0) = algorithm_list[0]->get_train_loss();
+                bd_matrix(ind, 0) = algorithm_list[0]->bd;
+                effective_number_matrix(ind, 0) = algorithm_list[0]->get_effective_number();
+                ic_matrix(ind, 0) = loss;
+                best_loss = loss;
             }
         }
     }
 
-    result.beta_matrix = beta_matrix.block(0, 0, iter, 1);
-    result.coef0_matrix = coef0_matrix.block(0, 0, iter, 1);
-    result.train_loss_matrix = train_loss_matrix.block(0, 0, iter, 1);
-    result.bd_matrix = bd_matrix.block(0, 0, iter, 1);
-    result.ic_matrix = ic_matrix.block(0, 0, iter, 1);
-    result.test_loss_matrix = test_loss_matrix.block(0, 0, iter, 1);
-    result.effective_number_matrix = effective_number_matrix.block(0, 0, iter, 1);
-    sequence = sequence.head(iter).eval();
+    ind++;
+    result.beta_matrix = beta_matrix.block(0, 0, ind, 1);
+    result.coef0_matrix = coef0_matrix.block(0, 0, ind, 1);
+    result.train_loss_matrix = train_loss_matrix.block(0, 0, ind, 1);
+    result.bd_matrix = bd_matrix.block(0, 0, ind, 1);
+    result.ic_matrix = ic_matrix.block(0, 0, ind, 1);
+    result.test_loss_matrix = test_loss_matrix.block(0, 0, ind, 1);
+    result.effective_number_matrix = effective_number_matrix.block(0, 0, ind, 1);
+    sequence = sequence.head(ind).eval();
+    lambda_seq = lambda_seq.head(1).eval();
 }
 
-double det(double a[], double b[]);
+// double det(double a[], double b[]);
 
 // calculate the intersection of two lines
 // if parallal, need_flag = false.
-void line_intersection(double line1[2][2], double line2[2][2], double intersection[], bool &need_flag);
+// void line_intersection(double line1[2][2], double line2[2][2], double intersection[], bool &need_flag);
 
 // boundary: s=smin, s=max, lambda=lambda_min, lambda_max
 // line: crosses p and is parallal to u
 // calculate the intersections between boundary and line
-void cal_intersections(double p[], double u[], int s_min, int s_max, double lambda_min, double lambda_max, int a[], int b[]);
+// void cal_intersections(double p[], double u[], int s_min, int s_max, double lambda_min, double lambda_max, int a[], int b[]);
 
 // template <class T1, class T2, class T3>
 // void golden_section_search(Data<T1, T2, T3> &data, Algorithm<T1, T2, T3> *algorithm, Metric<T1, T2, T3> *metric, double p[], double u[], int s_min, int s_max, double log_lambda_min, double log_lambda_max, double best_arg[],

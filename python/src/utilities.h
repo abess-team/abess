@@ -91,16 +91,13 @@ T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type)
 // };
 
 template <class T4>
-Eigen::Matrix<T4, -1, -1> group_XTX(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)
+Eigen::Matrix<T4, -1, -1> compute_group_XTX(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N)
 {
     Eigen::Matrix<T4, -1, -1> XTX(N, 1);
-    if (model_type == 1 || model_type == 5)
+    for (int i = 0; i < N; i++)
     {
-        for (int i = 0; i < N; i++)
-        {
-            T4 X_ind = X.block(0, index(i), n, gsize(i));
-            XTX(i, 0) = X_ind.transpose() * X_ind;
-        }
+        T4 X_ind = X.block(0, index(i), n, gsize(i));
+        XTX(i, 0) = X_ind.transpose() * X_ind;
     }
     return XTX;
 }
