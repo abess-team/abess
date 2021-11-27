@@ -148,7 +148,6 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
 {
     int sequence_size = s_max - s_min + 5;
     sequence = Eigen::VectorXi::Zero(sequence_size);
-    double lambda = lambda_seq[0];
 
     // golden search 
     Eigen::Matrix<T2, Dynamic, Dynamic> beta_matrix(sequence_size, 1);
@@ -165,7 +164,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
     coef_set_zero(beta_size, data.M, beta_init, coef0_init);
     Eigen::VectorXi A_init;
     Eigen::VectorXd bd_init;
-    FIT_ARG<T2, T3> fit_arg(0, 0, beta_init, coef0_init, bd_init, A_init);
+    FIT_ARG<T2, T3> fit_arg(0, lambda_seq[0], beta_init, coef0_init, bd_init, A_init);
 
     int ind = -1;
     int left = round(0.618 * s_min + 0.382 * s_max);

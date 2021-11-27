@@ -185,7 +185,6 @@ public:
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
     int n = x.rows();
-    int p = x.cols();
 
     MatrixXd L_old = this->L;
     this->L = this->HardImpute(x, A, 1000, 1e-5);

@@ -10,18 +10,13 @@ using namespace Rcpp;
 // [[Rcpp::depends(RcppEigen)]]
 #else
 #include <Eigen/Eigen>
-#include "List.h"
 #endif
 
-#include <algorithm>
-#include <vector>
-#include <cmath>
-#include "screening.h"
-// #include "model_fit.h"
-#include "utilities.h"
-#include "Data.h"
 #include <iostream>
 #include <cfloat>
+#include <algorithm>
+#include "utilities.h"
+#include "Data.h"
 
 using namespace std;
 using namespace Eigen;
@@ -30,9 +25,9 @@ template <class T1, class T2, class T3, class T4>
 Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, T2, T3, T4>*> algorithm_list, int screening_size, int &beta_size, double lambda)
 {
     int n = data.n;
-    int p = data.p;
     int M = data.M;
     int g_num = data.g_num;
+    
     Eigen::VectorXi g_size = data.g_size;
     Eigen::VectorXi g_index = data.g_index;
     Eigen::VectorXi always_select = algorithm_list[0]->always_select;
@@ -113,7 +108,8 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, 
                 j++;
             new_always_select(i) = j;
         }
-        for (int i = 0; i < algorithm_list.size(); i++){
+        int algorithm_list_size = algorithm_list.size();
+        for (int i = 0; i < algorithm_list_size; i++){
             algorithm_list[i]->always_select = new_always_select;
         }
     }

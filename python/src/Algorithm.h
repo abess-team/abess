@@ -46,7 +46,6 @@
 #include <Eigen/Eigen>
 #endif
 
-#include "Data.h"
 #include "utilities.h"
 #include <iostream>
 #include <cfloat>
@@ -309,7 +308,7 @@ public:
       U = max_k(bd, this->U_size, true);
     }
 
-    int p = X.cols();
+    // int p = X.cols();
     int n = X.rows();
     int C = C_max;
     int iter = 0;
@@ -452,7 +451,7 @@ public:
       return false;
 
     // init
-    int p = X.cols();
+    // int p = X.cols();
     int n = X.rows();
 
     int A_size = A.size();

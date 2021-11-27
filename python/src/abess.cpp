@@ -21,7 +21,6 @@ using namespace Rcpp;
 #include "Metric.h"
 #include "path.h"
 #include "utilities.h"
-#include "abess.h"
 #include "screening.h"
 #include <vector>
 
@@ -306,7 +305,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
     }
   }
 
-  for (unsigned int i = 0; i < algorithm_list_size; i++)
+  for (int i = 0; i < algorithm_list_size; i++)
   {
     delete algorithm_list_uni_dense[i];
     delete algorithm_list_mul_dense[i];
@@ -562,7 +561,7 @@ List abessPCA_API(Eigen::MatrixXd x,
     }
   }
 
-  for (unsigned int i = 0; i < algorithm_list_size; i++)
+  for (int i = 0; i < algorithm_list_size; i++)
   {
     delete algorithm_list_uni_dense[i];
     delete algorithm_list_uni_sparse[i];
