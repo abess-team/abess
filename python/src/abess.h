@@ -50,8 +50,6 @@ using namespace Rcpp;
 #include <Eigen/Eigen>
 #include "List.h"
 #include "Algorithm.h"
-#include "AlgorithmPCA.h"
-#include "AlgorithmGLM.h"
 #endif
 
 #include <iostream>
@@ -113,20 +111,18 @@ struct Result
  * @param sub_search                    The number of inactive sets that are split when splicing. It should be positive integer.
  * @return result list.
  */
-List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize_type,
-               Eigen::VectorXd weight, Eigen::MatrixXd sigma,
-               bool is_normal,
+List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize_type,
+               Eigen::VectorXd weight, 
                int algorithm_type, int model_type, int max_iter, int exchange_num,
                int path_type, bool is_warm_start,
-               int ic_type, double ic_coef, bool is_cv, int Kfold,
+               int ic_type, double ic_coef, int Kfold,
                Eigen::VectorXi sequence,
                Eigen::VectorXd lambda_seq,
-               int s_min, int s_max, int K_max, double epsilon,
+               int s_min, int s_max, 
                double lambda_min, double lambda_max, int nlambda,
-               int screening_size, int powell_path,
+               int screening_size, 
                Eigen::VectorXi g_index,
                Eigen::VectorXi always_select,
-               double tau,
                int primary_model_fit_max_iter, double primary_model_fit_epsilon,
                bool early_stop, bool approximate_Newton,
                int thread,
@@ -134,46 +130,69 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
                bool sparse_matrix,
                int splicing_type,
                int sub_search,
-               Eigen::VectorXi cv_fold_id,
-               int pca_num);
+               Eigen::VectorXi cv_fold_id);
+
+List abessPCA_API(Eigen::MatrixXd x,
+                  int n,
+                  int p,
+                  int normalize_type,
+                  Eigen::VectorXd weight,
+                  Eigen::MatrixXd sigma,
+                  int max_iter,
+                  int exchange_num,
+                  int path_type,
+                  bool is_warm_start,
+                  bool is_tune,
+                  int ic_type,
+                  double ic_coef,
+                  int Kfold,
+                  Eigen::VectorXi sequence,
+                  int s_min,
+                  int s_max,
+                  double lambda_min,
+                  double lambda_max,
+                  int nlambda,
+                  Eigen::VectorXi g_index,
+                  Eigen::VectorXi always_select,
+                  bool early_stop,
+                  int thread,
+                  bool sparse_matrix,
+                  int splicing_type,
+                  Eigen::VectorXi cv_fold_id,
+                  int pca_num);
 
 template <class T1, class T2, class T3, class T4>
 List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
-              Eigen::VectorXd weight, Eigen::MatrixXd sigma,
-              bool is_normal,
+              Eigen::VectorXd weight, 
               int algorithm_type, int model_type, int max_iter, int exchange_num,
               int path_type, bool is_warm_start,
-              int ic_type, double ic_coef, bool is_cv, int Kfold,
+              int ic_type, double ic_coef, int Kfold,
               Eigen::VectorXi sequence,
               Eigen::VectorXd lambda_seq,
-              int s_min, int s_max, int K_max, double epsilon,
+              int s_min, int s_max, 
               double lambda_min, double lambda_max, int nlambda,
-              int screening_size, int powell_path,
+              int screening_size, 
               Eigen::VectorXi g_index,
-              Eigen::VectorXi always_select,
-              double tau,
               int primary_model_fit_max_iter, double primary_model_fit_epsilon,
-              bool early_stop, bool approximate_Newton,
+              bool early_stop, 
               int thread,
-              bool covariance_update,
               bool sparse_matrix,
               Eigen::VectorXi &cv_fold_id,
-              Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list);
+              vector<Algorithm<T1, T2, T3, T4> *> algorithm_list);
 
 #ifndef R_BUILD
 void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, int p, int normalize_type, int y_col, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
-                  bool is_normal,
                   int algorithm_type, int model_type, int max_iter, int exchange_num,
                   int path_type, bool is_warm_start,
-                  int ic_type, double ic_coef, bool is_cv, int K,
+                  int ic_type, double ic_coef, int K,
                   int *gindex, int gindex_len,
                   int *sequence, int sequence_len,
                   double *lambda_sequence, int lambda_sequence_len,
                   int *cv_fold_id, int cv_fold_id_len,
-                  int s_min, int s_max, int K_max, double epsilon,
+                  int s_min, int s_max, 
                   double lambda_min, double lambda_max, int n_lambda,
-                  int screening_size, int powell_path,
-                  int *always_select, int always_select_len, double tau,
+                  int screening_size, 
+                  int *always_select, int always_select_len, 
                   int primary_model_fit_max_iter, double primary_model_fit_epsilon,
                   bool early_stop, bool approximate_Newton,
                   int thread,

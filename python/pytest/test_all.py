@@ -615,7 +615,8 @@ class TestClass:
 
         # Check5: sparse
         model = abessPCA(support_size=[s], sparse_matrix=True)
-        model.fit(X, is_normal=False)
+        cooX = coo_matrix(X)
+        model.fit(cooX, is_normal=False)
         coef5 = np.nonzero(model.coef_)[0]
         assert (coef5 == coef1).all()
 

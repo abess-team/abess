@@ -15,7 +15,6 @@
 #endif
 
 #include <iostream>
-#include <vector>
 using namespace std;
 using namespace Eigen;
 
@@ -91,16 +90,13 @@ T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type)
 // };
 
 template <class T4>
-Eigen::Matrix<T4, -1, -1> group_XTX(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, int model_type)
+Eigen::Matrix<T4, -1, -1> compute_group_XTX(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N)
 {
     Eigen::Matrix<T4, -1, -1> XTX(N, 1);
-    if (model_type == 1 || model_type == 5)
+    for (int i = 0; i < N; i++)
     {
-        for (int i = 0; i < N; i++)
-        {
-            T4 X_ind = X.block(0, index(i), n, gsize(i));
-            XTX(i, 0) = X_ind.transpose() * X_ind;
-        }
+        T4 X_ind = X.block(0, index(i), n, gsize(i));
+        XTX(i, 0) = X_ind.transpose() * X_ind;
     }
     return XTX;
 }
@@ -171,5 +167,59 @@ void set_nonzeros(Eigen::SparseMatrix<double> &X, Eigen::SparseMatrix<double> &x
 // void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::MatrixXd &Z, Eigen::MatrixXd &beta);
 
 // bool check_ill_condition(Eigen::MatrixXd &M);
+
+template <class T2, class T3>
+void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, Dynamic> &beta_matrix, Eigen::Matrix<T3, Dynamic, Dynamic> &coef0_matrix, 
+                        bool sparse_matrix, int normalize_type, int n, Eigen::VectorXd x_mean, T3 y_mean, Eigen::VectorXd x_norm)
+{
+    if (normalize_type == 0 || sparse_matrix){
+        // no need to restore
+        return;
+    }
+    if (normalize_type == 1)
+    {
+      array_quotient(beta, x_norm, 1);
+      beta = beta * sqrt(double(n));
+      coef0 = y_mean - matrix_dot(beta, x_mean);
+      for (int j = 0; j < beta_matrix.cols(); j++)
+      {
+        for (int i = 0; i < beta_matrix.rows(); i++)
+        {
+          array_quotient(beta_matrix(i, j), x_norm, 1);
+          beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(n));
+          coef0_matrix(i, j) = y_mean - matrix_dot(beta_matrix(i, j), x_mean);
+        }
+      }
+    }
+    else if (normalize_type == 2)
+    {
+      array_quotient(beta, x_norm, 1);
+      beta = beta * sqrt(double(n));
+      coef0 = coef0 - matrix_dot(beta, x_mean);
+      for (int j = 0; j < beta_matrix.cols(); j++)
+      {
+        for (int i = 0; i < beta_matrix.rows(); i++)
+        {
+          array_quotient(beta_matrix(i, j), x_norm, 1);
+          beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(n));
+          coef0_matrix(i, j) = coef0_matrix(i, j) - matrix_dot(beta_matrix(i, j), x_mean);
+        }
+      }
+    }
+    else
+    {
+      array_quotient(beta, x_norm, 1);
+      beta = beta * sqrt(double(n));
+      for (int j = 0; j < beta_matrix.cols(); j++)
+      {
+        for (int i = 0; i < beta_matrix.rows(); i++)
+        {
+          array_quotient(beta_matrix(i, j), x_norm, 1);
+          beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(n));
+        }
+      }
+    }
+    return;
+}
 
 #endif //BESS_UTILITIES_H

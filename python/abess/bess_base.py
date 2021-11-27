@@ -84,7 +84,7 @@ class bess_base(BaseEstimator):
                  sparse_matrix=False,
                  splicing_type=0,
                  important_search=0,
-                 # early_stop=False, tau=0., K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, n_lambda=100, powell_path=1,
+                 # early_stop=False, lambda_min=None, lambda_max=None, n_lambda=100, 
                  ):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
@@ -97,20 +97,15 @@ class bess_base(BaseEstimator):
         self.alpha = alpha
         self.s_min = s_min
         self.s_max = s_max
-        self.K_max = 1
-        self.epsilon = 0.0001
         self.lambda_min = None
         self.lambda_max = None
         self.n_lambda = 100
         self.ic_type = ic_type
         self.ic_coef = ic_coef
-        self.is_cv = False
         self.cv = cv
         self.is_screening = is_screening
         self.screening_size = screening_size
-        self.powell_path = 1
         self.always_select = always_select
-        self.tau = 0.
         self.primary_model_fit_max_iter = primary_model_fit_max_iter
         self.primary_model_fit_epsilon = primary_model_fit_epsilon
         self.early_stop = False
@@ -244,8 +239,6 @@ class bess_base(BaseEstimator):
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
-        elif (self.cv > 1):
-            self.is_cv = True
         
         # cv_fold_id
         if cv_fold_id is None:
@@ -323,7 +316,6 @@ class bess_base(BaseEstimator):
             # unused
             new_s_min = 0
             new_s_max = 0
-            new_K_max = 0
             new_lambda_min = 0
             new_lambda_max = 0
 
@@ -336,8 +328,6 @@ class bess_base(BaseEstimator):
                 # if self.lambda_min is None else self.lambda_min
             new_lambda_max = 0 # \
                 # if self.lambda_max is None else self.lambda_max
-            new_K_max = int(math.log(p, 2/(math.sqrt(5) - 1))) # \
-                # if self.K_max is None else self.K_max
 
             if (new_s_max < new_s_min):
                 raise ValueError("s_max should be larger than s_min")
@@ -413,23 +403,27 @@ class bess_base(BaseEstimator):
 
                 ind = np.lexsort((tmp[:, 2], tmp[:, 1]))
                 X = tmp[ind, :]
+        
+        # normalize
+        normalize = 0
+        if (is_normal):
+            normalize = self.normalize_type
 
         # wrap with cpp
         # print("wrap enter.")#///
         number = 1
-        result = pywrap_abess(X, y, n, p, self.normalize_type, weight, Sigma,
-                              is_normal,
+        result = pywrap_abess(X, y, n, p, normalize, weight, Sigma,
                               algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                               path_type_int, self.is_warm_start,
-                              ic_type_int, self.ic_coef, self.is_cv, self.cv,
+                              ic_type_int, self.ic_coef, self.cv,
                               g_index,
                               support_sizes,
                               alphas,
                               cv_fold_id,
-                              new_s_min, new_s_max, new_K_max, self.epsilon,
+                              new_s_min, new_s_max, 
                               new_lambda_min, new_lambda_max, self.n_lambda,
-                              new_screening_size, self.powell_path,
-                              self.always_select, self.tau,
+                              new_screening_size, 
+                              self.always_select, 
                               self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
                               self.early_stop, self.approximate_Newton,
                               self.thread,

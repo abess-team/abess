@@ -7,8 +7,6 @@
 
 #include "Data.h"
 #include "Algorithm.h"
-#include "model_fit.h"
-// #include "path.h"
 #include <vector>
 #include <random>
 #include <algorithm>
@@ -46,9 +44,9 @@ public:
 
   Metric() = default;
 
-  Metric(int ic_type, double ic_coef = 1.0, bool is_cv = false, int Kfold = 5)
+  Metric(int ic_type, double ic_coef = 1.0, int Kfold = 5)
   {
-    this->is_cv = is_cv;
+    this->is_cv = Kfold > 1;
     this->ic_type = ic_type;
     this->Kfold = Kfold;
     this->ic_coef = ic_coef;
@@ -280,27 +278,29 @@ public:
   }
 
   // to do
-  double fit_and_evaluate_in_metric(Algorithm<T1, T2, T3, T4> *algorithm, Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, FIT_ARG<T2, T3> &fit_arg)
+  double fit_and_evaluate_in_metric(std::vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Data<T1, T2, T3, T4> &data, FIT_ARG<T2, T3> &fit_arg)
   {
-    int N = data.g_num;
-    algorithm->update_sparsity_level(fit_arg.support_size);
-    algorithm->update_lambda_level(fit_arg.lambda);
-
-    algorithm->update_beta_init(fit_arg.beta_init);
-    algorithm->update_bd_init(fit_arg.bd_init);
-    algorithm->update_coef0_init(fit_arg.coef0_init);
-    algorithm->update_A_init(fit_arg.A_init, N);
-
-    algorithm->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num);
-
-    if (algorithm->get_warm_start())
+    if (!is_cv)
     {
-      fit_arg.beta_init = algorithm->get_beta();
-      fit_arg.coef0_init = algorithm->get_coef0();
-      fit_arg.bd_init = algorithm->get_bd();
-    }
+      algorithm_list[0]->update_sparsity_level(fit_arg.support_size);
+      algorithm_list[0]->update_lambda_level(fit_arg.lambda);
+      algorithm_list[0]->update_beta_init(fit_arg.beta_init);
+      algorithm_list[0]->update_bd_init(fit_arg.bd_init);
+      algorithm_list[0]->update_coef0_init(fit_arg.coef0_init);
+      algorithm_list[0]->update_A_init(fit_arg.A_init, data.g_num);
 
-    if (is_cv)
+      algorithm_list[0]->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num);
+
+      if (algorithm_list[0]->get_warm_start())
+      {
+        fit_arg.beta_init = algorithm_list[0]->get_beta();
+        fit_arg.coef0_init = algorithm_list[0]->get_coef0();
+        fit_arg.bd_init = algorithm_list[0]->get_bd();
+      }
+
+      return this->ic(data.n, data.M, data.g_num, algorithm_list[0]);
+    }
+    else
     {
       Eigen::VectorXi g_index = data.g_index;
       Eigen::VectorXi g_size = data.g_size;
@@ -342,14 +342,14 @@ public:
           // algorithm->update_A_init(this->cv_initial_A[k], N);
         }
         // algorithm->update_train_mask(this->train_mask_list[k]);
-        /// ??????????????????????????????????????????????????????????????
+        // ??????????????????????????????????????????????????????????????
         algorithm_list[k]->fit(this->train_X_list[k], this->train_y_list[k], this->train_weight_list[k], g_index, g_size, train_n, p, N);
 
         if (algorithm_list[k]->get_warm_start())
         {
-          this->cv_init_fit_arg[k].beta_init = algorithm->get_beta();
-          this->cv_init_fit_arg[k].coef0_init = algorithm->get_coef0();
-          this->cv_init_fit_arg[k].bd_init = algorithm->get_bd();
+          this->cv_init_fit_arg[k].beta_init = algorithm_list[k]->get_beta();
+          this->cv_init_fit_arg[k].coef0_init = algorithm_list[k]->get_coef0();
+          this->cv_init_fit_arg[k].bd_init = algorithm_list[k]->get_bd();
           // this->update_cv_initial_model_param(algorithm->get_beta(), k);
           // this->update_cv_initial_A(algorithm->get_A_out(), k);
           // this->update_cv_initial_coef0(algorithm->get_coef0(), k);
@@ -359,10 +359,6 @@ public:
       }
 
       return loss_list.mean();
-    }
-    else
-    {
-      return this->ic(data.n, data.M, data.g_num, algorithm);
     }
   };
 };
