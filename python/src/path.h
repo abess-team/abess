@@ -20,6 +20,7 @@ using namespace Eigen;
 #include "Metric.h"
 #include "abess.h"
 #include "utilities.h"
+#include <vector>
 
 template <class T1, class T2, class T3, class T4>
 void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, Metric<T1, T2, T3, T4> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3> &result)
@@ -144,19 +145,29 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
 }
 
 template <class T1, class T2, class T3, class T4>
-void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Metric<T1, T2, T3, T4> *metric, int s_min, int s_max, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, Result<T2, T3> &result)
+void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Metric<T1, T2, T3, T4> *metric, int s_min, int s_max, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, vector<Result<T2, T3>> &result_list)
 {
     int sequence_size = s_max - s_min + 5;
+    int Kfold = metric->Kfold;
     sequence = Eigen::VectorXi::Zero(sequence_size);
 
-    // golden search 
-    Eigen::Matrix<T2, Dynamic, Dynamic> beta_matrix(sequence_size, 1);
-    Eigen::Matrix<T3, Dynamic, Dynamic> coef0_matrix(sequence_size, 1);
-    Eigen::MatrixXd train_loss_matrix(sequence_size, 1);
-    Eigen::MatrixXd ic_matrix(sequence_size, 1);
-    Eigen::MatrixXd test_loss_matrix(sequence_size, 1);
-    Eigen::Matrix<VectorXd, Dynamic, Dynamic> bd_matrix(sequence_size, 1);
-    Eigen::MatrixXd effective_number_matrix(sequence_size, 1);
+    // init: store for each fold
+    vector<Eigen::Matrix<T2, -1, -1>> beta_matrix(Kfold);
+    vector<Eigen::Matrix<T3, -1, -1>> coef0_matrix(Kfold);
+    vector<Eigen::MatrixXd> train_loss_matrix(Kfold);
+    vector<Eigen::MatrixXd> ic_matrix(Kfold);
+    vector<Eigen::MatrixXd> test_loss_matrix(Kfold);
+    vector<Eigen::Matrix<VectorXd, -1, -1>> bd_matrix(Kfold);
+    vector<Eigen::MatrixXd> effective_number_matrix(Kfold);
+    for (int k = 0; k < Kfold; k++){
+        beta_matrix[k].resize(sequence_size, 1);
+        coef0_matrix[k].resize(sequence_size, 1);
+        train_loss_matrix[k].resize(sequence_size, 1);
+        ic_matrix[k].resize(sequence_size, 1);
+        test_loss_matrix[k].resize(sequence_size, 1);
+        bd_matrix[k].resize(sequence_size, 1);
+        effective_number_matrix[k].resize(sequence_size, 1);
+    }
 
     T2 beta_init;
     T3 coef0_init;
@@ -164,6 +175,7 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
     coef_set_zero(beta_size, data.M, beta_init, coef0_init);
     Eigen::VectorXi A_init;
     Eigen::VectorXd bd_init;
+    // gs only support the first lambda
     FIT_ARG<T2, T3> fit_arg(0, lambda_seq[0], beta_init, coef0_init, bd_init, A_init);
 
     int ind = -1;
@@ -181,18 +193,16 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
 
             // record: left
             sequence(++ind) = left;
-            if (metric->is_cv)
-            {
-                test_loss_matrix(ind, 0) = loss_l;
-            }
-            else
-            {
-                beta_matrix(ind, 0) = algorithm_list[0]->beta;
-                coef0_matrix(ind, 0) = algorithm_list[0]->coef0;
-                train_loss_matrix(ind, 0) = algorithm_list[0]->get_train_loss();
-                bd_matrix(ind, 0) = algorithm_list[0]->bd;
-                effective_number_matrix(ind, 0) = algorithm_list[0]->get_effective_number();
-                ic_matrix(ind, 0) = loss_l;
+            for (int k = 0; k < Kfold; k++){
+                beta_matrix[k](ind, 0) = algorithm_list[k]->beta;
+                coef0_matrix[k](ind, 0) = algorithm_list[k]->coef0;
+                train_loss_matrix[k](ind, 0) = algorithm_list[k]->get_train_loss();
+                bd_matrix[k](ind, 0) = algorithm_list[k]->bd;
+                effective_number_matrix[k](ind, 0) = algorithm_list[k]->get_effective_number();
+                if (metric->is_cv)
+                    test_loss_matrix[k](ind, 0) = loss_l;
+                else
+                    ic_matrix[k](ind, 0) = loss_l;
             }
         }
 
@@ -204,18 +214,16 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
 
             // record: pos 2
             sequence(++ind) = right;
-            if (metric->is_cv)
-            {
-                test_loss_matrix(ind, 0) = loss_r;
-            }
-            else
-            {
-                beta_matrix(ind, 0) = algorithm_list[0]->beta;
-                coef0_matrix(ind, 0) = algorithm_list[0]->coef0;
-                train_loss_matrix(ind, 0) = algorithm_list[0]->get_train_loss();
-                bd_matrix(ind, 0) = algorithm_list[0]->bd;
-                effective_number_matrix(ind, 0) = algorithm_list[0]->get_effective_number();
-                ic_matrix(ind, 0) = loss_r;
+            for (int k = 0; k < Kfold; k++){
+                beta_matrix[k](ind, 0) = algorithm_list[k]->beta;
+                coef0_matrix[k](ind, 0) = algorithm_list[k]->coef0;
+                train_loss_matrix[k](ind, 0) = algorithm_list[k]->get_train_loss();
+                bd_matrix[k](ind, 0) = algorithm_list[k]->bd;
+                effective_number_matrix[k](ind, 0) = algorithm_list[k]->get_effective_number();
+                if (metric->is_cv)
+                    test_loss_matrix[k](ind, 0) = loss_r;
+                else
+                    ic_matrix[k](ind, 0) = loss_r;
             }
         }
 
@@ -256,32 +264,31 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
         {
             // record
             sequence(++ind) = s;
-            if (metric->is_cv)
-            {
-                test_loss_matrix(ind, 0) = loss;
-                best_loss = loss;
-            }
-            else
-            {
-                beta_matrix(ind, 0) = algorithm_list[0]->beta;
-                coef0_matrix(ind, 0) = algorithm_list[0]->coef0;
-                train_loss_matrix(ind, 0) = algorithm_list[0]->get_train_loss();
-                bd_matrix(ind, 0) = algorithm_list[0]->bd;
-                effective_number_matrix(ind, 0) = algorithm_list[0]->get_effective_number();
-                ic_matrix(ind, 0) = loss;
-                best_loss = loss;
+            best_loss = loss;
+            for (int k = 0; k < Kfold; k++){
+                beta_matrix[k](ind, 0) = algorithm_list[k]->beta;
+                coef0_matrix[k](ind, 0) = algorithm_list[k]->coef0;
+                train_loss_matrix[k](ind, 0) = algorithm_list[k]->get_train_loss();
+                bd_matrix[k](ind, 0) = algorithm_list[k]->bd;
+                effective_number_matrix[k](ind, 0) = algorithm_list[k]->get_effective_number();
+                if (metric->is_cv)
+                    test_loss_matrix[k](ind, 0) = loss_l;
+                else
+                    ic_matrix[k](ind, 0) = loss_l;
             }
         }
     }
 
     ind++;
-    result.beta_matrix = beta_matrix.block(0, 0, ind, 1);
-    result.coef0_matrix = coef0_matrix.block(0, 0, ind, 1);
-    result.train_loss_matrix = train_loss_matrix.block(0, 0, ind, 1);
-    result.bd_matrix = bd_matrix.block(0, 0, ind, 1);
-    result.ic_matrix = ic_matrix.block(0, 0, ind, 1);
-    result.test_loss_matrix = test_loss_matrix.block(0, 0, ind, 1);
-    result.effective_number_matrix = effective_number_matrix.block(0, 0, ind, 1);
+    for (int k = 0; k < Kfold; k++){
+        result_list[k].beta_matrix = beta_matrix[k].block(0, 0, ind, 1);
+        result_list[k].coef0_matrix = coef0_matrix[k].block(0, 0, ind, 1);
+        result_list[k].train_loss_matrix = train_loss_matrix[k].block(0, 0, ind, 1);
+        result_list[k].bd_matrix = bd_matrix[k].block(0, 0, ind, 1);
+        result_list[k].ic_matrix = ic_matrix[k].block(0, 0, ind, 1);
+        result_list[k].test_loss_matrix = test_loss_matrix[k].block(0, 0, ind, 1);
+        result_list[k].effective_number_matrix = effective_number_matrix[k].block(0, 0, ind, 1);
+    }
     sequence = sequence.head(ind).eval();
     lambda_seq = lambda_seq.head(1).eval();
 }

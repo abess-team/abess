@@ -662,7 +662,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
 
     //     result = pgs_path(data, algorithm, metric, s_min, s_max, log_lambda_min, log_lambda_max, powell_path, nlambda);
     // }
-    gs_path<T1, T2, T3, T4>(data, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, result_list[0]);
+    gs_path<T1, T2, T3, T4>(data, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, result_list);
   }
 
   for (int k = 0; k < Kfold; k++)
@@ -692,14 +692,11 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   else 
   { 
     Eigen::MatrixXd test_loss_tmp;
-    if (path_type == 1) //TODO
-      for (int i = 0; i < Kfold; i++)
-      {
-        test_loss_tmp = result_list[i].test_loss_matrix;
-        test_loss_sum = test_loss_sum + test_loss_tmp / Kfold;
-      }
-    else
-      test_loss_sum = result_list[0].test_loss_matrix;
+    for (int i = 0; i < Kfold; i++)
+    {
+      test_loss_tmp = result_list[i].test_loss_matrix;
+      test_loss_sum = test_loss_sum + test_loss_tmp / Kfold;
+    }
     test_loss_sum.minCoeff(&min_loss_index_row, &min_loss_index_col);
 
     Eigen::VectorXi used_algorithm_index = Eigen::VectorXi::Zero(algorithm_list_size);
@@ -719,13 +716,11 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
       Eigen::VectorXd bd_init = Eigen::VectorXd::Zero(data.g_num);
 
       // warmstart from CV's result
-      if (path_type == 1){ // TODO
-        for (int j = 0; j < Kfold; j++)
-        {
-          beta_init = beta_init + result_list[j].beta_matrix(s_index, lambda_index) / Kfold;
-          coef0_init = coef0_init + result_list[j].coef0_matrix(s_index, lambda_index) / Kfold;
-          bd_init = bd_init + result_list[j].bd_matrix(s_index, lambda_index) / Kfold;
-        }
+      for (int j = 0; j < Kfold; j++)
+      {
+        beta_init = beta_init + result_list[j].beta_matrix(s_index, lambda_index) / Kfold;
+        coef0_init = coef0_init + result_list[j].coef0_matrix(s_index, lambda_index) / Kfold;
+        bd_init = bd_init + result_list[j].bd_matrix(s_index, lambda_index) / Kfold;
       }
 
       algorithm_list[algorithm_index]->update_sparsity_level(sequence(s_index));
