@@ -80,21 +80,17 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
     thread = max_thread;
   }
 
-  if (thread > Kfold)
-  {
-    thread = Kfold;
-  }
   Eigen::setNbThreads(thread);
   omp_set_num_threads(thread);
 
 #endif
+  int algorithm_list_size = max(thread, Kfold);
+  vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(algorithm_list_size);
+  vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> *> algorithm_list_mul_dense(algorithm_list_size);
+  vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *> algorithm_list_uni_sparse(algorithm_list_size);
+  vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>> *> algorithm_list_mul_sparse(algorithm_list_size);
 
-  vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(Kfold);
-  vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> *> algorithm_list_mul_dense(Kfold);
-  vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *> algorithm_list_uni_sparse(Kfold);
-  vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>> *> algorithm_list_mul_sparse(Kfold);
-
-  for (int i = 0; i < Kfold; i++)
+  for (int i = 0; i < algorithm_list_size; i++)
   {
     if (!sparse_matrix)
     {
@@ -215,7 +211,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                                                                                        lambda_min, lambda_max, nlambda,
                                                                                        screening_size, 
                                                                                        g_index,
-                                                                                       always_select,
                                                                                        primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                        early_stop, 
                                                                                        thread,
@@ -237,7 +232,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                                                                                                 lambda_min, lambda_max, nlambda,
                                                                                                 screening_size, 
                                                                                                 g_index,
-                                                                                                always_select,
                                                                                                 primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                                 early_stop, 
                                                                                                 thread,
@@ -282,7 +276,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                                                                                                    lambda_min, lambda_max, nlambda,
                                                                                                    screening_size, 
                                                                                                    g_index,
-                                                                                                   always_select,
                                                                                                    primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                                    early_stop, 
                                                                                                    thread,
@@ -304,7 +297,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                                                                                                             lambda_min, lambda_max, nlambda,
                                                                                                             screening_size, 
                                                                                                             g_index,
-                                                                                                            always_select,
                                                                                                             primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                                             early_stop, 
                                                                                                             thread,
@@ -314,7 +306,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
     }
   }
 
-  for (unsigned int i = 0; i < Kfold; i++)
+  for (unsigned int i = 0; i < algorithm_list_size; i++)
   {
     delete algorithm_list_uni_dense[i];
     delete algorithm_list_mul_dense[i];
@@ -365,13 +357,8 @@ List abessPCA_API(Eigen::MatrixXd x,
     thread = max_thread;
   }
 
-  if (thread > Kfold)
-  {
-    thread = Kfold;
-  }
   Eigen::setNbThreads(thread);
   omp_set_num_threads(thread);
-
 #endif
 
   int model_type = 7, algorithm_type = 6;
@@ -389,9 +376,10 @@ List abessPCA_API(Eigen::MatrixXd x,
   Eigen::VectorXd y_vec = Eigen::VectorXd::Zero(n);
 
   //////////////////// function generate_algorithm_pointer() ////////////////////////////
-  vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(Kfold);
-  vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *> algorithm_list_uni_sparse(Kfold);
-  for (int i = 0; i < Kfold; i++)
+  int algorithm_list_size = max(thread, Kfold);
+  vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(algorithm_list_size);
+  vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *> algorithm_list_uni_sparse(algorithm_list_size);
+  for (int i = 0; i < algorithm_list_size; i++)
   {
     if (!sparse_matrix)
     {
@@ -441,7 +429,6 @@ List abessPCA_API(Eigen::MatrixXd x,
                                                                                            lambda_min, lambda_max, nlambda,
                                                                                            screening_size, 
                                                                                            g_index,
-                                                                                           always_select,
                                                                                            primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                            early_stop, 
                                                                                            thread,
@@ -529,7 +516,6 @@ List abessPCA_API(Eigen::MatrixXd x,
                                                                                                        lambda_min, lambda_max, nlambda,
                                                                                                        screening_size, 
                                                                                                        g_index,
-                                                                                                       always_select,
                                                                                                        primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                                        early_stop, 
                                                                                                        thread,
@@ -576,7 +562,7 @@ List abessPCA_API(Eigen::MatrixXd x,
     }
   }
 
-  for (unsigned int i = 0; i < Kfold; i++)
+  for (unsigned int i = 0; i < algorithm_list_size; i++)
   {
     delete algorithm_list_uni_dense[i];
     delete algorithm_list_uni_sparse[i];
@@ -604,7 +590,6 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
               double lambda_min, double lambda_max, int nlambda,
               int screening_size, 
               Eigen::VectorXi g_index,
-              Eigen::VectorXi always_select,
               int primary_model_fit_max_iter, double primary_model_fit_epsilon,
               bool early_stop, 
               int thread,
@@ -631,6 +616,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   //         normalize_type = 3; break;
   // };
   
+  int algorithm_list_size = algorithm_list.size();
   int beta_size = algorithm_list[0]->get_beta_size(n, p); // number of candidate param
 
   // data packing
@@ -640,14 +626,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   Eigen::VectorXi screening_A; 
   if (screening_size >= 0) 
   {
-    screening_A = screening<T1, T2, T3, T4>(data, algorithm_list[0], screening_size, beta_size, always_select, lambda_seq[0]);
-    algorithm_list[0]->clear_setting();
-  }
-
-  // init: `always_select`
-  for (int k = 1; k < Kfold; k++)
-  {
-    algorithm_list[k]->always_select = always_select;
+    screening_A = screening<T1, T2, T3, T4>(data, algorithm_list, screening_size, beta_size, lambda_seq[0]);
   }
 
   // For CV:
@@ -724,9 +703,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
       test_loss_sum = result_list[0].test_loss_matrix;
     test_loss_sum.minCoeff(&min_loss_index_row, &min_loss_index_col);
 
-    bool *used_algorithm_index = new bool[Kfold];
-    for (int k = 0; k < Kfold; k++) 
-      used_algorithm_index[k] = false;
+    Eigen::VectorXi used_algorithm_index = Eigen::VectorXi::Zero(algorithm_list_size);
 
     // refit on full data
 #pragma omp parallel for
@@ -735,7 +712,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
       int s_index = i / lambda_seq.size();
       int lambda_index = i % lambda_seq.size();
       int algorithm_index = omp_get_thread_num();
-      used_algorithm_index[algorithm_index] = true;
+      used_algorithm_index(algorithm_index) = 1;
 
       T2 beta_init;
       T3 coef0_init;
@@ -766,10 +743,10 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
       effective_number_matrix(s_index, lambda_index) = algorithm_list[algorithm_index]->get_effective_number();
     }
 
-    for (int k = 0; k < Kfold; k++)
-      if (used_algorithm_index[k])
+    for (int i = 0; i < algorithm_list_size; i++)
+      if (used_algorithm_index(i) == 1)
       {
-        algorithm_list[k]->clear_setting();
+        algorithm_list[i]->clear_setting();
       }
   }
 

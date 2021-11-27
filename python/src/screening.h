@@ -27,7 +27,7 @@ using namespace std;
 using namespace Eigen;
 
 template <class T1, class T2, class T3, class T4>
-Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, int screening_size, int &beta_size, Eigen::VectorXi &always_select, double lambda)
+Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, T2, T3, T4>*> algorithm_list, int screening_size, int &beta_size, double lambda)
 {
     int n = data.n;
     int p = data.p;
@@ -35,6 +35,7 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> 
     int g_num = data.g_num;
     Eigen::VectorXi g_size = data.g_size;
     Eigen::VectorXi g_index = data.g_index;
+    Eigen::VectorXi always_select = algorithm_list[0]->always_select;
 
     Eigen::VectorXi screening_A(screening_size);
     Eigen::VectorXd coef_norm = Eigen::VectorXd::Zero(g_num);
@@ -52,15 +53,15 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> 
         Eigen::VectorXi g_size_tmp = Eigen::VectorXi::Ones(p_tmp);
         coef_set_zero(p_tmp, M, beta_init, coef0_init);
 
-        algorithm->update_sparsity_level(p_tmp);
-        algorithm->update_lambda_level(lambda);
-        algorithm->update_beta_init(beta_init);
-        algorithm->update_bd_init(bd_init);
-        algorithm->update_coef0_init(coef0_init);
-        algorithm->update_A_init(A_init, p_tmp);
-        algorithm->fit(x_tmp, data.y, data.weight, g_index_tmp, g_size_tmp, n, p_tmp, p_tmp);
+        algorithm_list[0]->update_sparsity_level(p_tmp);
+        algorithm_list[0]->update_lambda_level(lambda);
+        algorithm_list[0]->update_beta_init(beta_init);
+        algorithm_list[0]->update_bd_init(bd_init);
+        algorithm_list[0]->update_coef0_init(coef0_init);
+        algorithm_list[0]->update_A_init(A_init, p_tmp);
+        algorithm_list[0]->fit(x_tmp, data.y, data.weight, g_index_tmp, g_size_tmp, n, p_tmp, p_tmp);
 
-        T2 beta = algorithm->beta;
+        T2 beta = algorithm_list[0]->beta;
         coef_norm(i) = beta.squaredNorm() / p_tmp;
     }
 
@@ -100,7 +101,7 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> 
     data.g_num = screening_size;
     data.g_index = new_g_index;
     data.g_size = new_g_size;
-    beta_size = algorithm->get_beta_size(n, new_p);
+    beta_size = algorithm_list[0]->get_beta_size(n, new_p);
 
     if (always_select.size() != 0)
     {
@@ -112,10 +113,12 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> 
                 j++;
             new_always_select(i) = j;
         }
-        always_select = new_always_select;
+        for (int i = 0; i < algorithm_list.size(); i++){
+            algorithm_list[i]->always_select = new_always_select;
+        }
     }
 
-    cout<<screening_A_ind<<endl;///
+    algorithm_list[0]->clear_setting();
     return screening_A_ind;
 }
 
