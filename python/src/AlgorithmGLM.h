@@ -279,7 +279,7 @@ public:
   Eigen::Matrix<T4, -1, -1> group_XTX;            /* XTX. */
   bool covariance_update;              /* use covairance update mathod or not. */
   Eigen::VectorXd **covariance = NULL; /* covairance matrix. */
-  bool *covariance_update_flag = NULL; /* each variable have updated in covairance matirx. */
+  Eigen::VectorXi covariance_update_flag; /* each variable have updated in covairance matirx. */
 
   abessLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search){};
 
@@ -293,11 +293,9 @@ public:
       this->group_XTX = compute_group_XTX<T4>(X, g_index, g_size, n, p, N);
       if (this->covariance_update)
       {
-        cout<<"create pointer"<<endl;///
+        // cout<<"create pointer"<<endl;
         this->covariance = new Eigen::VectorXd *[p];
-        this->covariance_update_flag = new bool[p];
-        for (int i = 0; i < p; i++)
-            this->covariance_update_flag[i] = false;
+        this->covariance_update_flag = Eigen::VectorXi::Zero(p);
         this->XTy = X.transpose() * y;
         this->XTone = X.transpose() * Eigen::MatrixXd::Ones(n, 1);
       }
@@ -320,12 +318,11 @@ public:
     // delete pointer
     if (this->covariance_update)
     {
-      cout<<"delete pointer"<<endl;///
-      for (int i = 0; i < (*this->x).cols(); i++)
-          if (this->covariance_update_flag[i])
+      // cout<<"delete pointer"<<endl;
+      for (int i = 0; i < (this->covariance_update_flag).size(); i++)
+          if (this->covariance_update_flag(i) == 1)
               delete this->covariance[i];
       delete[] this->covariance;
-      delete[] this->covariance_update_flag;
     }
   };
 
@@ -392,11 +389,11 @@ public:
     for (int i = 0; i < k; i++)
     {
       int Ai = U_ind(A_ind_U(i));
-      if (!this->covariance_update_flag[Ai])
+      if (this->covariance_update_flag(Ai) == 0)
       {
         this->covariance[Ai] = new Eigen::VectorXd;
         *this->covariance[Ai] = (*this->x).transpose() * (*this->x).col(Ai);
-        this->covariance_update_flag[Ai] = true;
+        this->covariance_update_flag(Ai) = 1;
       }
       if (p == this->XTy.rows())
       {
@@ -1116,7 +1113,7 @@ public:
   Eigen::Matrix<T4, -1, -1> group_XTX;            /* XTX. */
   bool covariance_update;              /* use covairance update mathod or not. */
   Eigen::VectorXd **covariance = NULL; /* covairance matrix. */
-  bool *covariance_update_flag = NULL; /* each variable have updated in covairance matirx. */
+  Eigen::VectorXi covariance_update_flag; /* each variable have updated in covairance matirx. */
 
   abessMLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search){};
 
@@ -1131,9 +1128,7 @@ public:
       if (this->covariance_update)
       {
         this->covariance = new Eigen::VectorXd *[p];
-        this->covariance_update_flag = new bool[p];
-        for (int i = 0; i < p; i++)
-            this->covariance_update_flag[i] = false;
+        this->covariance_update_flag = Eigen::VectorXi::Zero(p);
         this->XTy = X.transpose() * y;
         this->XTone = X.transpose() * Eigen::MatrixXd::Ones(n, y.cols());
       }
@@ -1156,14 +1151,12 @@ public:
     // delete pointer
     if (this->covariance_update)
     {
-      for (int i = 0; i < (*this->x).cols(); i++)
-          if (this->covariance_update_flag[i])
+      for (int i = 0; i < (this->covariance_update_flag).size(); i++)
+          if (this->covariance_update_flag(i) == 1)
               delete this->covariance[i];
       delete[] this->covariance;
-      delete[] this->covariance_update_flag;
     }
   };
-
 
   bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
@@ -1235,11 +1228,11 @@ public:
     for (int i = 0; i < k; i++)
     {
       int Ai = U_ind(A_ind_U(i));
-      if (!this->covariance_update_flag[Ai])
+      if (this->covariance_update_flag(Ai) == 0)
       {
         this->covariance[Ai] = new Eigen::VectorXd;
         *this->covariance[Ai] = (*this->x).transpose() * (*this->x).col(Ai);
-        this->covariance_update_flag[Ai] = true;
+        this->covariance_update_flag(Ai) = 1;
       }
       if (p == this->XTy.rows())
       {

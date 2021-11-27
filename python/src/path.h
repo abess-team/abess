@@ -24,7 +24,7 @@ using namespace Eigen;
 template <class T1, class T2, class T3, class T4>
 void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm, Metric<T1, T2, T3, T4> *metric, Eigen::VectorXi &sequence, Eigen::VectorXd &lambda_seq, bool early_stop, int k, Result<T2, T3> &result)
 {
-    int beta_size = data.beta_size;
+    int beta_size = algorithm->get_beta_size(data.n, data.p);
     int p = data.p;
     int N = data.g_num;
     int M = data.M;
@@ -161,7 +161,8 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
 
     T2 beta_init;
     T3 coef0_init;
-    coef_set_zero(data.beta_size, data.M, beta_init, coef0_init);
+    int beta_size = algorithm_list[0]->get_beta_size(data.n, data.p);
+    coef_set_zero(beta_size, data.M, beta_init, coef0_init);
     Eigen::VectorXi A_init;
     Eigen::VectorXd bd_init;
     FIT_ARG<T2, T3> fit_arg(0, 0, beta_init, coef0_init, bd_init, A_init);

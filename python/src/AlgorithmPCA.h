@@ -146,6 +146,8 @@ public:
 
   ~abessRPCA(){};
 
+  int get_beta_size(int n, int p) { return n*p; }
+
   void update_tau(int train_n, int N)
   {
     this->tau = 0.0;

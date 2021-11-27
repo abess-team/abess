@@ -31,7 +31,6 @@ public:
     int n;
     int p;
     int M;
-    int beta_size;
     int normalize_type;
     int g_num;
     Eigen::VectorXi g_index;
@@ -47,7 +46,6 @@ public:
         this->n = x.rows();
         this->p = x.cols();
         this->M = y.cols();
-        this->beta_size = beta_size;
 
         this->weight = weight;
         this->x_mean = Eigen::VectorXd::Zero(this->p);
@@ -64,7 +62,7 @@ public:
         Eigen::VectorXi temp = Eigen::VectorXi::Zero(this->g_num);
         for (int i = 0; i < g_num - 1; i++)
             temp(i) = g_index(i + 1);
-        temp(g_num - 1) = this->beta_size;
+        temp(g_num - 1) = beta_size;
         this->g_size = temp - g_index;
     };
 

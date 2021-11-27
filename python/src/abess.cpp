@@ -631,14 +631,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   //         normalize_type = 3; break;
   // };
   
-  int beta_size; // number of candidate param
-  switch (model_type)
-  {
-      case 10: // RPCA
-        beta_size = n * p; break;
-      default: // include: GLM, PCA
-        beta_size = p; 
-  };
+  int beta_size = algorithm_list[0]->get_beta_size(n, p); // number of candidate param
 
   // data packing
   Data<T1, T2, T3, T4> data(x, y, normalize_type, weight, g_index, sparse_matrix, beta_size);
@@ -647,8 +640,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   Eigen::VectorXi screening_A; 
   if (screening_size >= 0) // TODO
   {
-    screening_A = Eigen::VectorXi::LinSpaced(p, 0, p-1);
-    // screening(data, model_type, screening_size, always_select, approximate_Newton, primary_model_fit_max_iter, primary_model_fit_epsilon);
+    screening_A = screening<T1, T2, T3, T4>(data, algorithm_list[0], screening_size, beta_size, always_select, lambda_seq[0]);
+    algorithm_list[0]->clear_setting();
   }
 
   // init: `always_select`
@@ -664,7 +657,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   Metric<T1, T2, T3, T4> *metric = new Metric<T1, T2, T3, T4>(ic_type, ic_coef, Kfold);
   if (Kfold > 1){
     metric->set_cv_train_test_mask(data, data.n, cv_fold_id);
-    metric->set_cv_init_fit_arg(data.beta_size, data.M);
+    metric->set_cv_init_fit_arg(beta_size, data.M);
     // metric->set_cv_initial_model_param(Kfold, data.p);
     // metric->set_cv_initial_A(Kfold, data.p);
     // metric->set_cv_initial_coef0(Kfold, data.p);
@@ -746,7 +739,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
 
       T2 beta_init;
       T3 coef0_init;
-      coef_set_zero(data.beta_size, data.M, beta_init, coef0_init);
+      coef_set_zero(beta_size, data.M, beta_init, coef0_init);
       Eigen::VectorXd bd_init = Eigen::VectorXd::Zero(data.g_num);
 
       // warmstart from CV's result
@@ -795,7 +788,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   best_test_loss = test_loss_sum(min_loss_index_row, min_loss_index_col);
 
   //////////////Restore best_fit_result for normal//////////////
-  // to do
+  // TODO
   // restore_for_normal<T2, T3>(best_beta, best_coef0, sparse_matrix, 
   //                            data.normalize_type, data.n, data.x_mean, data.y_mean, data.x_norm);
   if (normalize_type > 0 && !sparse_matrix)
@@ -899,7 +892,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
     T2 beta_screening_A;
     T2 beta;
     T3 coef0;
-    coef_set_zero(data.beta_size, data.M, beta, coef0);
+    beta_size = algorithm_list[0]->get_beta_size(n, p);
+    coef_set_zero(beta_size, data.M, beta, coef0);
 
 #ifndef R_BUILD
     out_result.get_value_by_name("beta", beta_screening_A);

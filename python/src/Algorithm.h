@@ -192,6 +192,8 @@ public:
 
   Eigen::VectorXd get_bd() { return this->bd; }
 
+  virtual int get_beta_size(int n, int p) { return p; }
+
   void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N)
   {
     int T0 = this->sparsity_level;
@@ -535,7 +537,7 @@ public:
     {
       // variable initialization
       int n = X.rows();
-      int beta_size = beta.rows();
+      int beta_size = this->get_beta_size(X.rows(), X.cols());
       bd = Eigen::VectorXd::Zero(N);
 
       // calculate beta & d & h
