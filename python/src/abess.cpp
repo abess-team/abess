@@ -638,7 +638,7 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
 
   // screening
   Eigen::VectorXi screening_A; 
-  if (screening_size >= 0) // TODO
+  if (screening_size >= 0) 
   {
     screening_A = screening<T1, T2, T3, T4>(data, algorithm_list[0], screening_size, beta_size, always_select, lambda_seq[0]);
     algorithm_list[0]->clear_setting();
@@ -788,70 +788,8 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   best_test_loss = test_loss_sum(min_loss_index_row, min_loss_index_col);
 
   //////////////Restore best_fit_result for normal//////////////
-  // TODO
-  // restore_for_normal<T2, T3>(best_beta, best_coef0, sparse_matrix, 
-  //                            data.normalize_type, data.n, data.x_mean, data.y_mean, data.x_norm);
-  if (normalize_type > 0 && !sparse_matrix)
-  {
-    if (data.normalize_type == 1)
-    {
-      array_quotient(best_beta, data.x_norm, 1);
-      best_beta = best_beta * sqrt(double(data.n));
-      best_coef0 = data.y_mean - matrix_dot(best_beta, data.x_mean);
-    }
-    else if (data.normalize_type == 2)
-    {
-      array_quotient(best_beta, data.x_norm, 1);
-      best_beta = best_beta * sqrt(double(data.n));
-      best_coef0 = best_coef0 - matrix_dot(best_beta, data.x_mean);
-    }
-    else
-    {
-      array_quotient(best_beta, data.x_norm, 1);
-      best_beta = best_beta * sqrt(double(data.n));
-    }
-  }
-
-  ////////////// Restore all_fit_result for normal ////////////////////////
-  // to do
-  if (normalize_type > 0 && !sparse_matrix)
-  {
-    if (data.normalize_type == 1)
-    {
-      for (int j = 0; j < beta_matrix.cols(); j++)
-      {
-        for (int i = 0; i < beta_matrix.rows(); i++)
-        {
-          array_quotient(beta_matrix(i, j), data.x_norm, 1);
-          beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(data.n));
-          coef0_matrix(i, j) = data.y_mean - matrix_dot(beta_matrix(i, j), data.x_mean);
-        }
-      }
-    }
-    else if (data.normalize_type == 2)
-    {
-      for (int j = 0; j < beta_matrix.cols(); j++)
-      {
-        for (int i = 0; i < beta_matrix.rows(); i++)
-        {
-          array_quotient(beta_matrix(i, j), data.x_norm, 1);
-          beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(data.n));
-          coef0_matrix(i, j) = coef0_matrix(i, j) - matrix_dot(beta_matrix(i, j), data.x_mean);
-        }
-      }
-    }
-    else
-    {
-      for (int j = 0; j < beta_matrix.cols(); j++)
-      {
-        for (int i = 0; i < beta_matrix.rows(); i++)
-        {
-          array_quotient(beta_matrix(i, j), data.x_norm, 1);
-          beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(data.n));
-        }
-      }
-    }
-  }
+  restore_for_normal<T2, T3>(best_beta, best_coef0, beta_matrix, coef0_matrix, sparse_matrix,
+                             data.normalize_type, data.n, data.x_mean, data.y_mean, data.x_norm);
 
   // List result;
   List out_result;
