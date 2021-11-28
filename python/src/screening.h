@@ -1,5 +1,5 @@
-#ifndef screening_H
-#define screening_H
+#ifndef SRC_SCREENING_H
+#define SRC_SCREENING_H
 
 //  #define R_BUILD
 
@@ -118,4 +118,4 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, 
     return screening_A_ind;
 }
 
-#endif
+#endif // SRC_SCREENING_H

@@ -1,5 +1,5 @@
-#ifndef LIST_H
-#define LIST_H
+#ifndef SRC_LIST_H
+#define SRC_LIST_H
 
 #include <iostream>
 #include <Eigen/Eigen>
@@ -45,4 +45,4 @@ private:
 	vector<string> vector_Matrix_VectorXd_name;
 };
 
-#endif //LIST_H
+#endif // SRC_LIST_H

@@ -1,7 +1,7 @@
 %module cabess
 
 %{
-#include "abess.h"
+#include "pywrap.h"
 #define SWIG_FILE_WITH_INIT
 %}
 
