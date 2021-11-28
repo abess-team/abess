@@ -832,15 +832,13 @@ abess.default <- function(x,
   }
 
   t1 <- proc.time()
-  result <- abessCpp2(
+  result <- abessGLM_API(
     x = x,
     y = y,
     n = nobs,
     p = nvars,
     normalize_type = normalize,
     weight = weight,
-    sigma = matrix(0),
-    is_normal = is_normal,
     algorithm_type = 6,
     model_type = model_type,
     max_iter = max_splicing_iter,
@@ -849,22 +847,17 @@ abess.default <- function(x,
     is_warm_start = warm.start,
     ic_type = ic_type,
     ic_coef = ic_scale,
-    is_cv = is_cv,
     Kfold = nfolds,
     sequence = as.vector(s_list),
     lambda_seq = lambda,
     s_min = s_min,
     s_max = s_max,
-    K_max = as.integer(20),
-    epsilon = 0.0001,
     lambda_max = 0,
     lambda_min = 0,
     nlambda = 10,
     screening_size = ifelse(screening_num >= nvars, -1, screening_num),
-    powell_path = 1,
     g_index = g_index,
     always_select = always_include,
-    tau = 0.0,
     primary_model_fit_max_iter = max_newton_iter,
     primary_model_fit_epsilon = newton_thresh,
     early_stop = early_stop,
@@ -874,8 +867,7 @@ abess.default <- function(x,
     sparse_matrix = sparse_X,
     splicing_type = splicing_type, 
     sub_search = important_search, 
-    cv_fold_id = cv_fold_id, 
-    pca_num = 1
+    cv_fold_id = cv_fold_id
   )
   t2 <- proc.time()
   # print(t2 - t1)

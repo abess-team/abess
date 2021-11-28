@@ -31,16 +31,14 @@ public:
     int n;
     int p;
     int M;
-    int beta_size;
     int normalize_type;
-    bool is_normal;
     int g_num;
     Eigen::VectorXi g_index;
     Eigen::VectorXi g_size;
 
     Data() = default;
 
-    Data(T4 &x, T1 &y, int normalize_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, bool sparse_matrix, int beta_size)
+    Data(T4 &x, T1 &y, int normalize_type, Eigen::VectorXd &weight, Eigen::VectorXi &g_index, bool sparse_matrix, int beta_size)
     {
         this->x = x;
         this->y = y;
@@ -48,15 +46,13 @@ public:
         this->n = x.rows();
         this->p = x.cols();
         this->M = y.cols();
-        this->beta_size = beta_size;
 
         this->weight = weight;
-        this->is_normal = is_normal;
         this->x_mean = Eigen::VectorXd::Zero(this->p);
         this->x_norm = Eigen::VectorXd::Zero(this->p);
 
         // to do !!!!!!!!!!!!!!!!!!!!!!!!!
-        if (is_normal && !sparse_matrix)
+        if (normalize_type > 0 && !sparse_matrix)
         {
             this->normalize();
         }        
@@ -66,7 +62,7 @@ public:
         Eigen::VectorXi temp = Eigen::VectorXi::Zero(this->g_num);
         for (int i = 0; i < g_num - 1; i++)
             temp(i) = g_index(i + 1);
-        temp(g_num - 1) = this->beta_size;
+        temp(g_num - 1) = beta_size;
         this->g_size = temp - g_index;
     };
 
