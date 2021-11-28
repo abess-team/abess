@@ -2,7 +2,6 @@
 #define SRC_ALGORITHMGLM_H
 
 #include "Algorithm.h"
-#include "model_fit.h"
 
 using namespace std;
 
@@ -162,7 +161,14 @@ public:
     Eigen::VectorXd coef = Eigen::VectorXd::Ones(p + 1);
     coef(0) = coef0;
     coef.tail(p) = beta;
-    return -loglik_logit(X, y, coef, n, weights) + lambda * beta.cwiseAbs2().sum();
+
+    Eigen::VectorXd Pi = pi(X, y, coef);
+    Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
+    Eigen::VectorXd log_Pi = Pi.array().log();
+    Eigen::VectorXd log_1_Pi = (one - Pi).array().log();
+    double loglik_logit = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
+
+    return -loglik_logit + lambda * beta.cwiseAbs2().sum();
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
@@ -660,7 +666,22 @@ public:
     Eigen::VectorXd coef = Eigen::VectorXd::Ones(p + 1);
     coef(0) = coef0;
     coef.tail(p) = beta;
-    return -loglik_poiss(X, y, coef, n, weights) + this->lambda_level * beta.cwiseAbs2().sum();
+
+    T4 x(n, p + 1);
+    x.rightCols(p) = X;
+    add_constant_column(x);
+    Eigen::VectorXd eta = x * coef;
+    for (int i = 0; i <= n - 1; i++)
+    {
+      if (eta(i) < -30.0)
+        eta(i) = -30.0;
+      if (eta(i) > 30.0)
+        eta(i) = 30.0;
+    }
+    Eigen::VectorXd expeta = eta.array().exp();
+    double loglik_poiss = (y.cwiseProduct(eta) - expeta).dot(weights);
+
+    return -loglik_poiss + this->lambda_level * beta.cwiseAbs2().sum();
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
@@ -964,7 +985,30 @@ public:
 
   double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
-    return -loglik_cox(X, y, beta, weights) + lambda * beta.cwiseAbs2().sum();
+    int n = X.rows();
+    Eigen::VectorXd eta = X * beta;
+    for (int i = 0; i < n; i++)
+    {
+      if (eta(i) > 30)
+      {
+        eta(i) = 30;
+      }
+      else if (eta(i) < -30)
+      {
+        eta(i) = -30;
+      }
+    }
+    Eigen::VectorXd expeta = eta.array().exp();
+    Eigen::VectorXd cum_expeta(n);
+    cum_expeta(n - 1) = expeta(n - 1);
+    for (int i = n - 2; i >= 0; i--)
+    {
+      cum_expeta(i) = cum_expeta(i + 1) + expeta(i);
+    }
+    Eigen::VectorXd ratio = (expeta.cwiseQuotient(cum_expeta)).array().log();
+    double loglik_cox = (ratio.cwiseProduct(y)).dot(weights);
+
+    return -loglik_cox + lambda * beta.cwiseAbs2().sum();
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
