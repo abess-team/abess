@@ -17,13 +17,14 @@ using namespace Rcpp;
 #endif
 
 #include <iostream>
+#include <vector>
 #include "Data.h"
 #include "Algorithm.h"
 #include "Metric.h"
 #include "path.h"
 #include "utilities.h"
 #include "screening.h"
-#include <vector>
+#include "abessOpenMP.h"
 
 typedef Eigen::Triplet<double> triplet;
 

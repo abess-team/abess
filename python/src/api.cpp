@@ -14,33 +14,14 @@ using namespace Rcpp;
 #endif
 
 #include <iostream>
+#include <vector>
 #include "workflow.h"
 #include "Algorithm.h"
 #include "AlgorithmPCA.h"
 #include "AlgorithmGLM.h"
-#include <vector>
+#include "abessOpenMP.h"
 
 typedef Eigen::Triplet<double> triplet;
-
-#ifdef _OPENMP
-#include <omp.h>
-// [[Rcpp::plugins(openmp)]]
-#else
-#ifndef DISABLE_OPENMP
-// use pragma message instead of warning
-#pragma message("Warning: OpenMP is not available, "                 \
-                "project will be compiled into single-thread code. " \
-                "Use OpenMP-enabled compiler to get benefit of multi-threading.")
-#endif
-inline int omp_get_thread_num()
-{
-  return 0;
-}
-inline int omp_get_num_threads() { return 1; }
-inline int omp_get_num_procs() { return 1; }
-inline void omp_set_num_threads(int nthread) {}
-inline void omp_set_dynamic(int flag) {}
-#endif
 
 using namespace Eigen;
 using namespace std;
@@ -330,12 +311,14 @@ List abessPCA_API(Eigen::MatrixXd x,
                   Eigen::VectorXi sequence,
                   int s_min,
                   int s_max,
+                  int screening_size, 
                   Eigen::VectorXi g_index,
                   Eigen::VectorXi always_select,
                   bool early_stop,
                   int thread,
                   bool sparse_matrix,
                   int splicing_type,
+                  int sub_search, 
                   Eigen::VectorXi cv_fold_id,
                   int pca_num)
 {
@@ -355,12 +338,12 @@ List abessPCA_API(Eigen::MatrixXd x,
 
   int model_type = 7, algorithm_type = 6;
   Eigen::VectorXd lambda_seq = Eigen::VectorXd::Zero(1);
-  int screening_size = -1;
-  int sub_search = 0;
   int lambda_min = 0, lambda_max = 0, nlambda = 100;
   int primary_model_fit_max_iter = 1;
   double primary_model_fit_epsilon = 1e-3;
   int pca_n = -1;
+  screening_size = -1;
+  sub_search = 0;
   if (!sparse_matrix && n != x.rows())
   {
     pca_n = n;
