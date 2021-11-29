@@ -257,7 +257,7 @@ public:
       return 0;
   };
 
-  double neg_loglik_loss(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm<T1, T2, T3, T4> *algorithm)
+  double loss_function(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm<T1, T2, T3, T4> *algorithm)
   {
     Eigen::VectorXi A = algorithm->get_A_out();
     T2 beta = algorithm->get_beta();
@@ -274,7 +274,7 @@ public:
     // {
     //   beta_A(k) = beta(A_ind(k));
     // }
-    return algorithm->neg_loglik_loss(X_A, train_y, train_weight, beta_A, coef0, A, g_index, g_size, 0.0);
+    return algorithm->loss_function(X_A, train_y, train_weight, beta_A, coef0, A, g_index, g_size, 0.0);
   }
 
   // to do
@@ -355,7 +355,7 @@ public:
           // this->update_cv_initial_coef0(algorithm->get_coef0(), k);
         }
 
-        loss_list(k) = this->neg_loglik_loss(this->test_X_list[k], this->test_y_list[k], this->test_weight_list[k], g_index, g_size, test_n, p, N, algorithm_list[k]);
+        loss_list(k) = this->loss_function(this->test_X_list[k], this->test_y_list[k], this->test_weight_list[k], g_index, g_size, test_n, p, N, algorithm_list[k]);
       }
 
       return loss_list.mean();

@@ -4,7 +4,7 @@
 void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, int p, int normalize_type, int y_col, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
                   int algorithm_type, int model_type, int max_iter, int exchange_num,
                   int path_type, bool is_warm_start,
-                  int ic_type, double ic_coef, int K,
+                  int ic_type, double ic_coef, int Kfold,
                   int *gindex, int gindex_len,
                   int *sequence, int sequence_len,
                   double *lambda_sequence, int lambda_sequence_len,

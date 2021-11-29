@@ -1,5 +1,5 @@
-#ifndef SRC_ABESS_H
-#define SRC_ABESS_H
+#ifndef SRC_WORKFLOW_H
+#define SRC_WORKFLOW_H
 
 // #define R_BUILD
 #ifdef R_BUILD
@@ -39,7 +39,7 @@ using namespace std;
 //  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> for Multivariable Dense
 //  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double> > for Multivariable Sparse
 template <class T1, class T2, class T3, class T4>
-List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
+List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
               Eigen::VectorXd weight, 
               int algorithm_type, int model_type, int max_iter, int exchange_num,
               int path_type, bool is_warm_start,
@@ -282,4 +282,4 @@ List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
   return out_result;
 }
 
-#endif // SRC_ABESS_H
+#endif // SRC_WORKFLOW_H
