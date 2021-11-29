@@ -2,8 +2,8 @@
 // Created by jiangkangkang on 2020/3/9.
 //
 
-#ifndef BESS_UTILITIES_H
-#define BESS_UTILITIES_H
+#ifndef SRC_UTILITIES_H
+#define SRC_UTILITIES_H
 
 #ifndef R_BUILD
 
@@ -15,8 +15,24 @@
 #endif
 
 #include <iostream>
+#include <cfloat>
 using namespace std;
 using namespace Eigen;
+
+/** Result struct
+ * @brief Save the sequential fitting result along the parameter searching.
+ */
+template <class T2, class T3>
+struct Result
+{
+    Eigen::Matrix<T2, Eigen::Dynamic, Eigen::Dynamic> beta_matrix;            /*!<  */
+    Eigen::Matrix<T3, Eigen::Dynamic, Eigen::Dynamic> coef0_matrix;           /*!<  */
+    Eigen::MatrixXd ic_matrix;                                                /*!<  */
+    Eigen::MatrixXd test_loss_matrix;                                         /*!<  */
+    Eigen::MatrixXd train_loss_matrix;                                        /*!<  */
+    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> bd_matrix; /*!<  */
+    Eigen::MatrixXd effective_number_matrix;                                  /*!<  */
+};
 
 template <class T2, class T3>
 struct FIT_ARG
@@ -222,4 +238,85 @@ void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, Dynamic>
     return;
 }
 
-#endif //BESS_UTILITIES_H
+template <class T4>
+Eigen::VectorXd pi(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &coef)
+{
+  int p = coef.size();
+  int n = X.rows();
+  Eigen::VectorXd Pi = Eigen::VectorXd::Zero(n);
+  if (X.cols() == p - 1)
+  {
+    Eigen::VectorXd intercept = Eigen::VectorXd::Ones(n) * coef(0);
+    Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
+    Eigen::VectorXd eta = X * (coef.tail(p - 1).eval()) + intercept;
+    for (int i = 0; i < n; i++)
+    {
+      if (eta(i) > 30)
+      {
+        eta(i) = 30;
+      }
+      else if (eta(i) < -30)
+      {
+        eta(i) = -30;
+      }
+    }
+    Eigen::VectorXd expeta = eta.array().exp();
+    Pi = expeta.array() / (one + expeta).array();
+    return Pi;
+  }
+  else
+  {
+    Eigen::VectorXd eta = X * coef;
+    Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
+
+    for (int i = 0; i < n; i++)
+    {
+      if (eta(i) > 30)
+      {
+        eta(i) = 30;
+      }
+      else if (eta(i) < -30)
+      {
+        eta(i) = -30;
+      }
+    }
+    Eigen::VectorXd expeta = eta.array().exp();
+    Pi = expeta.array() / (one + expeta).array();
+    return Pi;
+  }
+}
+
+template <class T4>
+void pi(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::MatrixXd &pr)
+{
+  int n = X.rows();
+  Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, 1);
+  Eigen::MatrixXd Xbeta = X * beta + one * coef0.transpose();
+  pr = Xbeta.array().exp();
+  Eigen::VectorXd sumpi = pr.rowwise().sum();
+  for (int i = 0; i < n; i++)
+  {
+    pr.row(i) = pr.row(i) / sumpi(i);
+  }
+
+  // return pi;
+};
+
+template <class T4>
+void pi(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &coef, Eigen::MatrixXd &pr)
+{
+  int n = X.rows();
+  // Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, 1);
+  Eigen::MatrixXd Xbeta = X * coef;
+  pr = Xbeta.array().exp();
+  Eigen::VectorXd sumpi = pr.rowwise().sum();
+  for (int i = 0; i < n; i++)
+  {
+    pr.row(i) = pr.row(i) / sumpi(i);
+  }
+
+  // return pi;
+};
+
+
+#endif // SRC_UTILITIES_H

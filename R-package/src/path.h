@@ -18,7 +18,6 @@ using namespace Eigen;
 #include "Data.h"
 #include "Algorithm.h"
 #include "Metric.h"
-#include "abess.h"
 #include "utilities.h"
 #include <vector>
 
@@ -101,7 +100,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
             // evaluate the beta
             if (metric->is_cv)
             {
-                test_loss_matrix(i, j) = metric->neg_loglik_loss(test_x, test_y, test_weight, g_index, g_size, test_n, p, N, algorithm);
+                test_loss_matrix(i, j) = metric->loss_function(test_x, test_y, test_weight, g_index, g_size, test_n, p, N, algorithm);
             }
             else
             {
