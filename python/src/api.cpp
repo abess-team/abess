@@ -14,7 +14,7 @@ using namespace Rcpp;
 #endif
 
 #include <iostream>
-#include "abess.h"
+#include "workflow.h"
 #include "Algorithm.h"
 #include "AlgorithmPCA.h"
 #include "AlgorithmGLM.h"
@@ -195,7 +195,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
       Eigen::VectorXd y_vec = y.col(0).eval();
 
-      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
+      out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
                                                                                        weight, 
                                                                                        algorithm_type, model_type, max_iter, exchange_num,
                                                                                        path_type, is_warm_start,
@@ -216,7 +216,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
     else
     {
 
-      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd>(x, y, n, p, normalize_type,
+      out_result = abessWorkflow<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd>(x, y, n, p, normalize_type,
                                                                                                 weight, 
                                                                                                 algorithm_type, model_type, max_iter, exchange_num,
                                                                                                 path_type, is_warm_start,
@@ -260,7 +260,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
       Eigen::VectorXd y_vec = y.col(0).eval();
 
-      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
+      out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
                                                                                                    weight, 
                                                                                                    algorithm_type, model_type, max_iter, exchange_num,
                                                                                                    path_type, is_warm_start,
@@ -281,7 +281,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
     else
     {
 
-      out_result = abessCpp<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>>(sparse_x, y, n, p, normalize_type,
+      out_result = abessWorkflow<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>>(sparse_x, y, n, p, normalize_type,
                                                                                                             weight, 
                                                                                                             algorithm_type, model_type, max_iter, exchange_num,
                                                                                                             path_type, is_warm_start,
@@ -411,7 +411,7 @@ List abessPCA_API(Eigen::MatrixXd x,
       {
         pca_support_size = sequence.segment(num - 1, 1);
       }
-      out_result_next = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
+      out_result_next = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
                                                                                            weight, 
                                                                                            algorithm_type, model_type, max_iter, exchange_num,
                                                                                            path_type, is_warm_start,
@@ -498,7 +498,7 @@ List abessPCA_API(Eigen::MatrixXd x,
       {
         pca_support_size = sequence.segment(num - 1, 1);
       }
-      out_result_next = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
+      out_result_next = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
                                                                                                        weight, 
                                                                                                        algorithm_type, model_type, max_iter, exchange_num,
                                                                                                        path_type, is_warm_start,
@@ -624,7 +624,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p,
   if (!sparse_matrix)
   {
 
-      out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
+      out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
                                                                                        weight, 
                                                                                        algorithm_type, model_type, max_iter, exchange_num,
                                                                                        path_type, is_warm_start,
@@ -663,7 +663,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p,
     }
     sparse_x.makeCompressed();
 
-    out_result = abessCpp<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
+    out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
                                                                                                   weight, 
                                                                                                   algorithm_type, model_type, max_iter, exchange_num,
                                                                                                   path_type, is_warm_start,

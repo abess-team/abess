@@ -71,7 +71,7 @@ public:
     return true;
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
+  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
 
     MatrixXd Y;
@@ -194,7 +194,7 @@ public:
       beta(i) = x.coeff(mi, mj) - this->L(mi, mj);
     }
 
-    double loss1 = this->neg_loglik_loss(x, y, weights, beta, coef0, A, g_index, g_size, 0);
+    double loss1 = this->loss_function(x, y, weights, beta, coef0, A, g_index, g_size, 0);
     if (loss0 - loss1 <= this->tau){
       this->L = L_old;
     }
@@ -202,7 +202,7 @@ public:
     return true;
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
+  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
     int n = X.rows();
     int p = X.cols();

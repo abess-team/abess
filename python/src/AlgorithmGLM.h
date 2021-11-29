@@ -154,7 +154,7 @@ public:
     return true;
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
+  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
     int n = X.rows();
     int p = X.cols();
@@ -362,7 +362,7 @@ public:
     // beta = cg.solveWithGuess(X.adjoint() * y, beta);
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
+  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
     int n = X.rows();
     Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
@@ -659,7 +659,7 @@ public:
     return true;
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
+  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
     int n = X.rows();
     int p = X.cols();
@@ -829,7 +829,7 @@ public:
     Eigen::VectorXd eta;
 
     Eigen::VectorXd d(p);
-    double loglik1, loglik0 = -neg_loglik_loss(x, y, weight, beta0, coef0, A, g_index, g_size, this->lambda_level);
+    double loglik1, loglik0 = -this->loss_function(x, y, weight, beta0, coef0, A, g_index, g_size, this->lambda_level);
     // beta = Eigen::VectorXd::Zero(p);
 
     double step = 1.0;
@@ -940,13 +940,13 @@ public:
 
       beta1 = beta0 + step * d;
 
-      loglik1 = -neg_loglik_loss(x, y, weight, beta1, coef0, A, g_index, g_size, this->lambda_level);
+      loglik1 = -this->loss_function(x, y, weight, beta1, coef0, A, g_index, g_size, this->lambda_level);
 
       while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon)
       {
         step = step / 2;
         beta1 = beta0 + step * d;
-        loglik1 = -neg_loglik_loss(x, y, weight, beta1, coef0, A, g_index, g_size, this->lambda_level);
+        loglik1 = -this->loss_function(x, y, weight, beta1, coef0, A, g_index, g_size, this->lambda_level);
       }
 
       bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - l - 1) * (loglik1 - loglik0)) + this->tau > loss0;
@@ -983,7 +983,7 @@ public:
     return true;
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
+  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
     int n = X.rows();
     Eigen::VectorXd eta = X * beta;
@@ -1238,7 +1238,7 @@ public:
     // beta = cg.solveWithGuess(X.adjoint() * y, beta);
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
+  double loss_function(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
     int n = X.rows();
     Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, y.cols());
@@ -1637,7 +1637,7 @@ public:
     return true;
   };
 
-  double neg_loglik_loss(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
+  double loss_function(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
   {
     // weight
     Eigen::MatrixXd pr;
@@ -1860,7 +1860,7 @@ public:
       Eigen::VectorXd desend_direction; // coef_new = coef + step * desend_direction
       Eigen::VectorXd EY = expect_y(X, coef);
       Eigen::VectorXd W = EY.array().square() * weights.array();
-      double loglik_new = DBL_MAX, loglik = -neg_loglik_loss(X, y, weights, coef);
+      double loglik_new = DBL_MAX, loglik = -this->loss_function(X, y, weights, coef);
 
       for (int j = 0; j < this->primary_model_fit_max_iter; j++)
       {
@@ -1879,13 +1879,13 @@ public:
         g = X.transpose() * (EY - y).cwiseProduct(weights) - 2 * this->lambda_level * coef; // negtive gradient direction
         desend_direction = g.cwiseProduct(h_diag);
         coef_new = coef + step * desend_direction; // ApproXimate Newton method
-        loglik_new = -neg_loglik_loss(X, y, weights, coef_new);
+        loglik_new = -this->loss_function(X, y, weights, coef_new);
 
         while (loglik_new < loglik && step > this->primary_model_fit_epsilon)
         {
           step = step / 2;
           coef_new = coef + step * desend_direction;
-          loglik_new = -neg_loglik_loss(X, y, weights, coef_new);
+          loglik_new = -this->loss_function(X, y, weights, coef_new);
         }
 
         bool condition1 = step < this->primary_model_fit_epsilon;
@@ -1910,7 +1910,7 @@ public:
       Eigen::VectorXd EY_square = EY.array().square();
       Eigen::VectorXd W = EY_square.cwiseProduct(weights); // the weight matriX of IW(eight)LS method
       Eigen::VectorXd Z = X * coef - (y - EY).cwiseQuotient(EY_square); 
-      double loglik_new = DBL_MAX, loglik = -neg_loglik_loss(X,y,weights,coef);
+      double loglik_new = DBL_MAX, loglik = -this->loss_function(X,y,weights,coef);
 
       for (int j = 0; j < this->primary_model_fit_max_iter; j++){
 
@@ -1921,7 +1921,7 @@ public:
         Eigen::MatrixXd XTX = 2 * this->lambda_level * lambdamat + X_new.transpose() * X; 
         coef = XTX.ldlt().solve(X_new.transpose() * Z);
          
-        loglik_new = -neg_loglik_loss(X,y,weights,coef);
+        loglik_new = -this->loss_function(X,y,weights,coef);
         bool condition1 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
         bool condition2 = abs(loglik - loglik_new) / (0.1 + abs(loglik_new)) < this->primary_model_fit_epsilon;
         // TODO maybe here should be abs(loglik - loglik_new)
@@ -1949,7 +1949,7 @@ public:
     return true;
   }
 
-  double neg_loglik_loss(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size, double lambda)
+  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size, double lambda)
   {
     int n = X.rows();
     Eigen::VectorXd Xbeta = X * beta + Eigen::VectorXd::Ones(n) * coef0;
@@ -2027,7 +2027,7 @@ public:
 
 private:
   double threshold = 1e-20; // use before log or inverse to avoid inf
-  double neg_loglik_loss(T4 &design, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef)
+  double loss_function(T4 &design, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef)
   {
     Eigen::VectorXd Xbeta = design * coef;
     for (int i = 0; i < Xbeta.size(); i++)
