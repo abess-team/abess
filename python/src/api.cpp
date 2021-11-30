@@ -19,7 +19,6 @@ using namespace Rcpp;
 #include "Algorithm.h"
 #include "AlgorithmPCA.h"
 #include "AlgorithmGLM.h"
-#include "abessOpenMP.h"
 
 typedef Eigen::Triplet<double> triplet;
 
@@ -430,7 +429,7 @@ List abessPCA_API(Eigen::MatrixXd x,
       if (num < pca_num)
       {
         Eigen::MatrixXd temp = beta_next * beta_next.transpose();
-        if (is_tune)
+        if (Kfold > 1)
         {
           x -= x * temp;
         }
@@ -438,6 +437,13 @@ List abessPCA_API(Eigen::MatrixXd x,
         {
           Eigen::MatrixXd temp1 = temp * sigma;
           sigma += temp1 * temp - temp1 - temp1.transpose();
+          for (int i = 0; i < algorithm_list_size; i++){
+            abessPCA<Eigen::MatrixXd> *pca_model = dynamic_cast<abessPCA<Eigen::MatrixXd>*>(algorithm_list_uni_dense[i]);
+            if (pca_model){
+              // cout << "update Sigma"<<endl;
+              pca_model->sigma = sigma;
+            }
+          }
         }
       }
     }
@@ -516,7 +522,7 @@ List abessPCA_API(Eigen::MatrixXd x,
       if (num < pca_num)
       {
         Eigen::MatrixXd temp = beta_next * beta_next.transpose();
-        if (is_tune)
+        if (Kfold > 1)
         {
           sparse_x = sparse_x - sparse_x * temp;
         }
@@ -524,6 +530,13 @@ List abessPCA_API(Eigen::MatrixXd x,
         {
           Eigen::MatrixXd temp1 = temp * sigma;
           sigma += temp1 * temp - temp1 - temp1.transpose();
+          for (int i = 0; i < algorithm_list_size; i++){
+            abessPCA<Eigen::SparseMatrix<double>> *pca_model = dynamic_cast<abessPCA<Eigen::SparseMatrix<double>>*>(algorithm_list_uni_sparse[i]);
+            if (pca_model){
+              // cout << "update Sigma"<<endl;
+              pca_model->sigma = sigma;
+            }
+          }
         }
       }
     }
