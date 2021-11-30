@@ -42,7 +42,7 @@ using namespace std;
 template <class T1, class T2, class T3, class T4>
 List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
               Eigen::VectorXd weight, 
-              int algorithm_type, int model_type, int max_iter, int exchange_num,
+              int algorithm_type, 
               int path_type, bool is_warm_start,
               int ic_type, double ic_coef, int Kfold,
               Eigen::VectorXi sequence,
@@ -51,7 +51,6 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
               double lambda_min, double lambda_max, int nlambda,
               int screening_size, 
               Eigen::VectorXi g_index,
-              int primary_model_fit_max_iter, double primary_model_fit_epsilon,
               bool early_stop, 
               int thread,
               bool sparse_matrix,
@@ -62,21 +61,6 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
   std::srand(123);
 #endif
 
-  // int normalize_type;
-  // switch (model_type)
-  // {
-  //     case 1: // gauss
-  //     case 5: // mul-gauss
-  //     case 7: // pca
-  //         normalize_type = 1; break;
-  //     case 2: // logi
-  //     case 3: // poiss
-  //     case 6: // mul-nomial
-  //         normalize_type = 2; break;
-  //     case 4: // cox
-  //         normalize_type = 3; break;
-  // };
-  
   int algorithm_list_size = algorithm_list.size();
   int beta_size = algorithm_list[0]->get_beta_size(n, p); // number of candidate param
 

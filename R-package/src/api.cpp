@@ -178,7 +178,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
       out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
                                                                                        weight, 
-                                                                                       algorithm_type, model_type, max_iter, exchange_num,
+                                                                                       algorithm_type, 
                                                                                        path_type, is_warm_start,
                                                                                        ic_type, ic_coef, Kfold,
                                                                                        sequence,
@@ -187,7 +187,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                                                                                        lambda_min, lambda_max, nlambda,
                                                                                        screening_size, 
                                                                                        g_index,
-                                                                                       primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                        early_stop, 
                                                                                        thread,
                                                                                        sparse_matrix,
@@ -199,7 +198,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
       out_result = abessWorkflow<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd>(x, y, n, p, normalize_type,
                                                                                                 weight, 
-                                                                                                algorithm_type, model_type, max_iter, exchange_num,
+                                                                                                algorithm_type, 
                                                                                                 path_type, is_warm_start,
                                                                                                 ic_type, ic_coef, Kfold,
                                                                                                 sequence,
@@ -208,7 +207,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                                                                                                 lambda_min, lambda_max, nlambda,
                                                                                                 screening_size, 
                                                                                                 g_index,
-                                                                                                primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                                 early_stop, 
                                                                                                 thread,
                                                                                                 sparse_matrix,
@@ -243,7 +241,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
       out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
                                                                                                    weight, 
-                                                                                                   algorithm_type, model_type, max_iter, exchange_num,
+                                                                                                   algorithm_type, 
                                                                                                    path_type, is_warm_start,
                                                                                                    ic_type, ic_coef, Kfold,
                                                                                                    sequence,
@@ -252,7 +250,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                                                                                                    lambda_min, lambda_max, nlambda,
                                                                                                    screening_size, 
                                                                                                    g_index,
-                                                                                                   primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                                    early_stop, 
                                                                                                    thread,
                                                                                                    sparse_matrix,
@@ -264,7 +261,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
       out_result = abessWorkflow<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>>(sparse_x, y, n, p, normalize_type,
                                                                                                             weight, 
-                                                                                                            algorithm_type, model_type, max_iter, exchange_num,
+                                                                                                            algorithm_type, 
                                                                                                             path_type, is_warm_start,
                                                                                                             ic_type, ic_coef, Kfold,
                                                                                                             sequence,
@@ -273,7 +270,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                                                                                                             lambda_min, lambda_max, nlambda,
                                                                                                             screening_size, 
                                                                                                             g_index,
-                                                                                                            primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                                             early_stop, 
                                                                                                             thread,
                                                                                                             sparse_matrix,
@@ -335,6 +331,7 @@ List abessPCA_API(Eigen::MatrixXd x,
   Eigen::setNbThreads(thread);
   omp_set_num_threads(thread);
 #endif
+  std::cout << "Enter Cpp!" << std::endl;
 
   int model_type = 7, algorithm_type = 6;
   Eigen::VectorXd lambda_seq = Eigen::VectorXd::Zero(1);
@@ -374,6 +371,7 @@ List abessPCA_API(Eigen::MatrixXd x,
       algorithm_list_uni_sparse[i] = temp;
     }
   }
+  std::cout << "Preparation!" << std::endl;
 
   // call `abessCpp` for result
   List out_result;
@@ -394,9 +392,10 @@ List abessPCA_API(Eigen::MatrixXd x,
       {
         pca_support_size = sequence.segment(num - 1, 1);
       }
+      std::cout << "Begin abessWorkflow!" << std::endl;
       out_result_next = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
                                                                                            weight, 
-                                                                                           algorithm_type, model_type, max_iter, exchange_num,
+                                                                                           algorithm_type, 
                                                                                            path_type, is_warm_start,
                                                                                            ic_type, ic_coef, Kfold,
                                                                                            pca_support_size,
@@ -405,12 +404,12 @@ List abessPCA_API(Eigen::MatrixXd x,
                                                                                            lambda_min, lambda_max, nlambda,
                                                                                            screening_size, 
                                                                                            g_index,
-                                                                                           primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                            early_stop, 
                                                                                            thread,
                                                                                            sparse_matrix,
                                                                                            cv_fold_id,
                                                                                            algorithm_list_uni_dense);
+      std::cout << "Begin abessWorkflow!" << std::endl;
       Eigen::VectorXd beta_next;
 #ifdef R_BUILD
       beta_next = out_result_next["beta"];
@@ -483,7 +482,7 @@ List abessPCA_API(Eigen::MatrixXd x,
       }
       out_result_next = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
                                                                                                        weight, 
-                                                                                                       algorithm_type, model_type, max_iter, exchange_num,
+                                                                                                       algorithm_type, 
                                                                                                        path_type, is_warm_start,
                                                                                                        ic_type, ic_coef, Kfold,
                                                                                                        pca_support_size,
@@ -492,7 +491,6 @@ List abessPCA_API(Eigen::MatrixXd x,
                                                                                                        lambda_min, lambda_max, nlambda,
                                                                                                        screening_size, 
                                                                                                        g_index,
-                                                                                                       primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                                        early_stop, 
                                                                                                        thread,
                                                                                                        sparse_matrix,
@@ -609,7 +607,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p,
 
       out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
                                                                                        weight, 
-                                                                                       algorithm_type, model_type, max_iter, exchange_num,
+                                                                                       algorithm_type, 
                                                                                        path_type, is_warm_start,
                                                                                        ic_type, ic_coef, Kfold,
                                                                                        sequence,
@@ -618,7 +616,6 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p,
                                                                                        lambda_min, lambda_max, nlambda,
                                                                                        screening_size, 
                                                                                        g_index,
-                                                                                       primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                        early_stop, 
                                                                                        thread,
                                                                                        sparse_matrix,
@@ -648,7 +645,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p,
 
     out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
                                                                                                   weight, 
-                                                                                                  algorithm_type, model_type, max_iter, exchange_num,
+                                                                                                  algorithm_type, 
                                                                                                   path_type, is_warm_start,
                                                                                                   ic_type, ic_coef, Kfold,
                                                                                                   sequence,
@@ -657,7 +654,6 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p,
                                                                                                   lambda_min, lambda_max, nlambda,
                                                                                                   screening_size, 
                                                                                                   g_index,
-                                                                                                  primary_model_fit_max_iter, primary_model_fit_epsilon,
                                                                                                   early_stop, 
                                                                                                   thread,
                                                                                                   sparse_matrix,
