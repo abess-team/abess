@@ -304,7 +304,7 @@ public:
     while (eps > tol && count < max_it)
     {
       lambda = X - Z_old;
-        for (int i = 0; i < A.size(); i++)
+      for (int i = 0; i < A.size(); i++)
       {
         int r = A(i) % m;
         int c = int(A(i) / m);

@@ -55,13 +55,15 @@ void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int y_c
                           path_type, is_warm_start,
                           is_tune, ic_type, ic_coef, Kfold,
                           sequence_Vec,
-                          s_min, s_max, 
+                          s_min, s_max,
+                          screening_size, 
                           gindex_Vec,
                           always_select_Vec, 
                           early_stop, 
                           thread,
                           sparse_matrix,
                           splicing_type,
+                          sub_search,
                           cv_fold_id_Vec,
                           pca_num);
   }
