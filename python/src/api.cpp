@@ -331,8 +331,6 @@ List abessPCA_API(Eigen::MatrixXd x,
   Eigen::setNbThreads(thread);
   omp_set_num_threads(thread);
 #endif
-  std::cout << "Enter Cpp!" << std::endl;
-
   int model_type = 7, algorithm_type = 6;
   Eigen::VectorXd lambda_seq = Eigen::VectorXd::Zero(1);
   int lambda_min = 0, lambda_max = 0, nlambda = 100;
@@ -371,8 +369,6 @@ List abessPCA_API(Eigen::MatrixXd x,
       algorithm_list_uni_sparse[i] = temp;
     }
   }
-  std::cout << "Preparation!" << std::endl;
-
   // call `abessCpp` for result
   List out_result;
   List out_result_next;
@@ -392,7 +388,6 @@ List abessPCA_API(Eigen::MatrixXd x,
       {
         pca_support_size = sequence.segment(num - 1, 1);
       }
-      std::cout << "Begin abessWorkflow!" << std::endl;
       out_result_next = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
                                                                                            weight, 
                                                                                            algorithm_type, 
@@ -409,7 +404,6 @@ List abessPCA_API(Eigen::MatrixXd x,
                                                                                            sparse_matrix,
                                                                                            cv_fold_id,
                                                                                            algorithm_list_uni_dense);
-      std::cout << "Begin abessWorkflow!" << std::endl;
       Eigen::VectorXd beta_next;
 #ifdef R_BUILD
       beta_next = out_result_next["beta"];
@@ -428,7 +422,6 @@ List abessPCA_API(Eigen::MatrixXd x,
         Eigen::Map<Eigen::MatrixXd> temp2(temp.data(), p, num - 1);
         beta_new << temp2, beta_next;
         out_result["beta"] = beta_new;
-        // std::cout << "combine beta done!" << std::endl;
 #else
         out_result.combine_beta(beta_next);
 #endif
