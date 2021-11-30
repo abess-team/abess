@@ -24,7 +24,7 @@ sparse_batch_check <- function(abess_fit1, abess_fit2) {
 }
 
 test_that("Sparse matrix (gaussian) works", {
-  n <- 100
+  n <- 30
   p <- 20
   support.size <- 3
   dataset <- generate.data(n, p, support.size)
@@ -37,7 +37,7 @@ test_that("Sparse matrix (gaussian) works", {
 })
 
 test_that("Sparse matrix (logistic) works", {
-  n <- 100
+  n <- 200
   p <- 20
   support.size <- 3
   dataset <- generate.data(n, p, support.size, family = "binomial")
@@ -107,7 +107,7 @@ test_that("Sparse matrix (mgaussian) works", {
 
 
 test_that("Sparse matrix (multinomial) works", {
-  n <- 100
+  n <- 200
   p <- 20
   support.size <- 3
   dataset <-

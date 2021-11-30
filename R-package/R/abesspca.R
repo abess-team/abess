@@ -103,7 +103,7 @@ abesspca <- function(x,
                      cor = FALSE,
                      support.size = NULL,
                      K = 1, 
-                     tune.type = c("cv", "aic", "bic", "gic", "ebic"), 
+                     tune.type = c("aic", "bic", "gic", "ebic", "cv"), 
                      seq.tune = NULL, 
                      nfolds = 5,
                      foldid = NULL, 
@@ -329,13 +329,19 @@ abesspca <- function(x,
     stopifnot(important.search >= 0)
     important_search <- as.integer(important.search)
   }
+  
+  ## 
+  tune_type <- match.arg(tune.type)
+  if (tune_type != "cv") {
+    nfolds <- 1
+  }
 
   ## Cpp interface:
   result <- abessPCA_API(
     x = matrix(0, ncol = nvars, nrow = 1),
     n = nobs,
     p = nvars,
-    normalize_type = as.integer(1),
+    normalize_type = as.integer(0),
     weight = c(1.0),
     sigma = x,
     # algorithm_type = 6,
@@ -346,16 +352,11 @@ abesspca <- function(x,
     is_tune = seq_tune, 
     ic_type = 1,
     ic_coef = ic.scale,
-    Kfold = ifelse(tune.type == "cv", 2, 0),
+    Kfold = nfolds,
     sequence = as.vector(s_list),
-    lambda_seq = lambda,
     s_min = 0,
     s_max = 10,
-    lambda_max = 0,
-    lambda_min = 0,
-    nlambda = 10,
     screening_size = -1,
-    powell_path = 1,
     g_index = g_index,
     always_select = always_include,
     early_stop = FALSE,

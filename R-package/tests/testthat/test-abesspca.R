@@ -71,7 +71,7 @@ test_that("abesspca (FPC) works", {
 })
 
 test_that("abesspca (KPC) works", {
-  data(USArrests)
+  data(USArrests) 
 
   ## Input 1:
   nvars <- ncol(USArrests)
@@ -91,8 +91,8 @@ test_that("abesspca (KPC) works", {
   spca_fit1 <- abesspca(USArrests,
                         sparse.type = "kpc",
                         support.size = rep(4, 4), K = 4)
-  expect_true(all(spca_fit1[["pev"]] <= (1 + 1e-8)))
-  expect_equal(expected = 1, object = sum(spca_fit1[["pev"]]), tolerance = 1e-8)
+  expect_true(all(spca_fit1[["pev"]] <= 1))
+  expect_equal(expected = 1, object = sum(spca_fit1[["pev"]]), tolerance = 1e-7)
 
   ## Input 3 (default input):
   spca_fit1 <- abesspca(USArrests, sparse.type = "kpc")
