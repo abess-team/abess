@@ -820,6 +820,7 @@ public:
   void inital_setting(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
   {
     this->cox_g = Eigen::VectorXd::Zero(0);
+    this->cox_hessian = Eigen::MatrixXd::Zero(0, 0);
   }
 
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
