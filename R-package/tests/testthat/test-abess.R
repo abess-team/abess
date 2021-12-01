@@ -46,6 +46,9 @@ test_batch <- function(abess_fit, dataset, family) {
     threshold <- 1e-3
   }
   
+  if (family()[["family"]] == "Gamma") {
+    threshold <- 1e-3
+  }
   expect_equal(oracle_beta, est_beta, tolerance = threshold)
   expect_equal(oracle_coef0, est_coef0, tolerance = threshold)
   

@@ -143,7 +143,7 @@ test_that("screening (binomial) works", {
 })
 
 test_that("screening (cox) works", {
-  n <- 128
+  n <- 100
   p <- 128
   support_size <- 3
   
