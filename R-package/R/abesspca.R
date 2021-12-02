@@ -10,7 +10,7 @@
 #' If \code{type = "gram"}, \code{x} is considered as a sample covariance or correlation matrix.
 #' @param c.max an integer splicing size. The default of \code{c.max} is the maximum of 2 and \code{max(support.size) / 2}.
 #' @param sparse.type If \code{sparse.type = "fpc"}, then best subset selection performs on the first principal component;
-#' If \code{sparse.type = "kpc"}, then best subset selection performs on the first \eqn{K} principal components.
+#' If \code{sparse.type = "kpc"}, then best subset selection performs on the first \code{kpc.num} principal components.
 #' (The parameter will be discard in future version.)
 #' @param cor A logical value. If \code{cor = TRUE}, perform PCA on the correlation matrix;
 #' otherwise, the covariance matrix.
@@ -100,15 +100,15 @@
 #'   support.size = c(1, 2)
 #' )
 #' coef(pca_fit)
+#' 
 #' }
 abesspca <- function(x,
                      type = c("predictor", "gram"),
                      sparse.type = c("fpc", "kpc"),
                      cor = FALSE,
                      support.size = NULL,
-                     K = 1, 
+                     kpc.num = ifelse(sparse.type == "fpc", 1, 2), 
                      tune.type = c("aic", "bic", "gic", "ebic", "cv"), 
-                     seq.tune = NULL, 
                      nfolds = 5,
                      foldid = NULL, 
                      ic.scale = 1.0,
@@ -160,17 +160,10 @@ abesspca <- function(x,
   }
 
   ## check sparse.type
-  sparse_type <- match.arg(sparse.type)
-  stopifnot(K >= 1)
-  check_integer_warning(K, "K should be an integer. It is coerced to as.integer(K).")
-  sparse_type <- ifelse(K == 1, "fpc", "kpc")
-  if (is.null(seq.tune)) {
-    if (K == 1) {
-      seq_tune <- TRUE
-    } else {
-      seq_tune <- FALSE
-    }
-  }
+  sparse.type <- match.arg(sparse.type)
+  stopifnot(kpc.num >= 1)
+  check_integer_warning(kpc.num, "kpc.num should be an integer. It is coerced to as.integer(kpc.num).")
+  sparse.type <- ifelse(kpc.num == 1, "fpc", "kpc")
   
   ## compute gram matrix
   sparse_matrix <- FALSE
@@ -191,7 +184,8 @@ abesspca <- function(x,
       singular_value <- (svd(scale(x, center = TRUE, scale = FALSE))[["d"]])^2 # improve runtimes
       eigen_value <- singular_value / nobs
     } else {
-      eigen_value <- rep(1, nvars)
+      singular_value <- (svd(scale(x, center = TRUE, scale = TRUE))[["d"]])^2 # improve runtimes
+      eigen_value <- singular_value / (nobs - 1)
     }
 
     if (sparse_X) {
@@ -215,9 +209,10 @@ abesspca <- function(x,
     # x <- round(x, digits = 13)
   }
 
-  # if (sparse_type == "fpc") {
+  # if (sparse.type == "fpc") {
   #   eigen_value <- eigen_value[1]
   # }
+  pc_variance <- eigen_value
   total_variance <- sum(eigen_value)
 
   ## total variance:
@@ -252,7 +247,7 @@ abesspca <- function(x,
     s_max <- nvars
   }
   if (is.null(support.size)) {
-    if (sparse_type == "fpc") {
+    if (kpc.num == 1) {
       if (is.null(support.num)) {
         if (group_select) {
           s_num <- min(ngroup, 100)
@@ -274,12 +269,10 @@ abesspca <- function(x,
     } else {
       if (group_select) {
         s_num <- min(ngroup, 100)
-        k_num <- round(ngroup * 0.2)
       } else {
         s_num <- min(nvars, 100)
-        k_num <- round(nvars * 0.2)
       }
-      s_list <- rep(s_num, k_num)
+      s_list <- as.list(rep(s_num, kpc.num))
     }
   } else {
     stopifnot(any(is.numeric(support.size) & support.size >= 0))
@@ -288,19 +281,41 @@ abesspca <- function(x,
     } else {
       stopifnot(max(support.size) <= nvars)
     }
-    if (sparse_type == "fpc") {
+    if (kpc.num == 1) {
       support.size <- sort(support.size)
       support.size <- unique(support.size)
-      k_num <- 1
     } else {
-      k_num <- length(support.size)
+      if (class(support.size) == "list") {
+        stopifnot(length(support.size) == kpc.num)
+        support.size <- lapply(support.size, function(x) {
+          support.size <- unique(support.size)
+          support.size
+        })
+      } else if (is.vector(support.size)) {
+        support.size <- sort(support.size)
+        support.size <- unique(support.size)
+        support.size <- rep(list(support.size), kpc.num)
+      } else {
+        stop("support.size must be vector or list.")
+      }
     }
     s_list <- support.size
   }
+  s_list_bool_nrow <- ifelse(group_select, ngroup, nvars)
+  if (class(s_list) == "list") {
+    s_list_bool <- matrix(0, nrow = s_list_bool_nrow, ncol = kpc.num)
+    for (i in 1:kpc.num) {
+      s_list_bool[s_list[[i]], ] <- 1
+    }
+  } else {
+    s_list_bool <- matrix(0, nrow = s_list_bool_nrow, ncol = 1)
+    s_list_bool[s_list, ] <- 1    
+  }
 
   ## check C-max:
+  s_list_max <- max(unlist(s_list))
   if (is.null(c.max)) {
-    c_max <- max(c(2, round(max(s_list) / 2)))
+    c_max <- max(c(2, round(s_list_max / 2)))
   } else {
     stopifnot(is.numeric(c.max) & c.max >= 1)
     check_integer_warning(
@@ -321,7 +336,7 @@ abesspca <- function(x,
       stop("always.include should be an vector containing variable indexes which is positive.")
     }
     always.include <- as.integer(always.include) - 1
-    if (length(always.include) > max(s_list)) {
+    if (length(always.include) > s_list_max) {
       stop("always.include containing too many variables.
              The length of it should not exceed the maximum in support.size.")
     }
@@ -372,11 +387,10 @@ abesspca <- function(x,
     exchange_num = c_max,
     path_type = 1,
     is_warm_start = warm.start,
-    is_tune = seq_tune, 
     ic_type = 1,
     ic_coef = ic.scale,
     Kfold = nfolds,
-    sequence = as.vector(s_list),
+    sequence = s_list_bool,
     s_min = 0,
     s_max = 10,
     screening_size = -1,
@@ -388,7 +402,7 @@ abesspca <- function(x,
     splicing_type = splicing_type, 
     sub_search = important_search, 
     cv_fold_id = cv_fold_id, 
-    pca_num = K
+    pca_num = kpc.num
   )
 
   # result[["beta"]] <- NULL
@@ -399,42 +413,91 @@ abesspca <- function(x,
   # result[["ic_all"]] <- NULL
   # result[["test_loss_all"]] <- NULL
 
-  result[["nvars"]] <- nvars
-  result[["support.size"]] <- s_list
-  result[["sparse.type"]] <- sparse_type
-  if (sparse_type == "fpc") {
-    result[["coef"]] <- result[["beta_all"]]
+  if (sparse.type == "fpc") {
+    names(result)[which(names(result) == 'beta_all')] <- "coef"
+    # result[["coef"]] <- result[["beta_all"]]
     result[["ev"]] <- -result[["train_loss_all"]][, 1]
     # names(result)[which(names(result) == "train_loss_all")] <- "ev"
     # result[["ev"]] <- - result[["ev"]][, 1]
     result[["coef"]] <- do.call("cbind", result[["coef"]])
+    result[["coef"]] <- Matrix::Matrix(result[["coef"]],
+      sparse = TRUE,
+      dimnames = list(vn, as.character(s_list))
+    )
+    result[["beta"]] <- NULL
+    result[["coef0"]] <- NULL
+    result[["train_loss"]] <- NULL
+    result[["ic"]] <- NULL
+    result[["lambda"]] <- NULL
+    result[["coef0_all"]] <- NULL
+    result[["train_loss_all"]] <- NULL
+    if (tune_type == "cv") {
+      names(result)[which(names(result) == 'ic_all')] <- "tune.value"
+      result[["test_loss_all"]] <- NULL
+    } else {
+      names(result)[which(names(result) == 'test_loss_all')] <- "tune.value"
+      result[["ic_all"]] <- NULL
+    }
+    result[["effective_number_all"]] <- NULL
   } else {
-    result[["coef"]] <- result[["beta"]]
+    coef_list <- lapply(result, function(x) {
+      x[["beta_all"]]
+    })
+    for (i in 1:kpc.num) {
+      coef_list[[i]] <- Matrix::Matrix(do.call("cbind", coef_list[[i]]),
+        sparse = TRUE,
+        dimnames = list(vn, as.character(s_list[[i]]))
+      )
+    }
+    ev_list <- list(-result[[1]][["train_loss_all"]][, 1])
+    for (i in 2:kpc.num) {
+      ev_vec <- c()
+      tmp <- coef_list[[1]]
+      tmp <- tmp[, ncol(tmp), drop = FALSE]
+      j <- 2
+      while(j < i) {
+        tmp2 <- coef_list[[j]]
+        tmp <- cbind(tmp, tmp2[, ncol(tmp2), drop = FALSE])
+        j <- j + 1
+      }
+      tmp2 <- coef_list[[j]]
+      for (k in 1:ncol(tmp2)) {
+        ev_vec <- c(ev_vec, sum(adjusted_variance_explained(gram_x, cbind(tmp, tmp2[, k]))))
+      }
+      ev_list[[i]] <- ev_vec
+    }
+    if (tune_type == "cv") {
+      tune_value <- lapply(result, function(x) {
+        x[["test_loss_all"]]
+      })      
+    } else {
+      tune_value <- lapply(result, function(x) {
+        x[["ic_all"]]
+      })
+    }
+    result <- NULL
+    result[["coef"]] <- coef_list
+    result[["ev"]] <- ev_list
+    result[["tune.value"]] <- tune_value
   }
-
-  # names(result)[which(names(result) == 'beta_all')] <- "coef"
-  result[["coef"]] <- Matrix::Matrix(result[["coef"]],
-    sparse = TRUE,
-    dimnames = list(vn, as.character(s_list))
-  )
-
-  if (sparse_type == "kpc") {
-    # k_num <- ncol(result[["coef"]])
-    # ev_vec <- numeric(k_num)
-    # for (i in 1:k_num) {
-    #   ev_vec[i] <- variance_explained(
-    #     x_copy,
-    #     result[["coef"]][, 1:i, drop = FALSE]
-    #   )
-    # }
-    ev_vec <- adjusted_variance_explained(gram_x, result[["coef"]])
-    result[["ev"]] <- ev_vec
-    result[["cum.ev"]] <- cumsum(ev_vec)
-  }
-
-  result[["pev"]] <- result[["ev"]] / total_variance
-  result[["cum.pev"]] <- cumsum(result[["pev"]])
+  result[["kpc.num"]] <- kpc.num
+  result[["cum.var.pc"]] <- cumsum(pc_variance)
   result[["var.all"]] <- total_variance
+  if (sparse.type == "fpc") {
+    result[["pev"]] <- result[["ev"]] / total_variance
+    result[["pev.pc"]] <- result[["ev"]] / pc_variance[1]
+  } else {
+    result[["pev"]] <- lapply(result[["ev"]], function(x) {
+      x / total_variance
+    })
+    result[["pev.pc"]] <- lapply(1:kpc.num, function(i) {
+      result[["ev"]][[i]] / pc_variance[i]
+    })
+  }
+  result[["nvars"]] <- nvars
+  result[["sparse.type"]] <- sparse.type
+  result[["support.size"]] <- s_list
+  result[["tune.type"]] <- tune_type
 
   result[["call"]] <- match.call()
   out <- result

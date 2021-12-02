@@ -299,11 +299,10 @@ List abessPCA_API(Eigen::MatrixXd x,
                   int exchange_num,
                   int path_type,
                   bool is_warm_start,
-                  bool is_tune,
                   int ic_type,
                   double ic_coef,
                   int Kfold,
-                  Eigen::VectorXi sequence,
+                  Eigen::MatrixXi sequence,
                   int s_min,
                   int s_max,
                   int screening_size, 
@@ -369,7 +368,11 @@ List abessPCA_API(Eigen::MatrixXd x,
     }
   }
   // call `abessCpp` for result
+#ifdef R_BUILD
+  List out_result(pca_num);
+#else
   List out_result;
+#endif
   List out_result_next;
   int num = 0; 
 
@@ -378,14 +381,15 @@ List abessPCA_API(Eigen::MatrixXd x,
 
     while (num++ < pca_num)
     {
-      Eigen::VectorXi pca_support_size;
-      if (is_tune)
+      int pca_support_size_num = sequence.col(num - 1).sum();
+      Eigen::VectorXi pca_support_size(pca_support_size_num);
+      // map sequence matrix to support.size
+      int non_zero_num = 0;
+      for (int i = 0; i < sequence.rows(); i++)
       {
-        pca_support_size = sequence;
-      }
-      else
-      {
-        pca_support_size = sequence.segment(num - 1, 1);
+        if (sequence(i, num - 1) == 1) {
+          pca_support_size(non_zero_num++) = i + 1;
+        }
       }
       out_result_next = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(x, y_vec, n, p, normalize_type,
                                                                                            weight, 
@@ -411,16 +415,28 @@ List abessPCA_API(Eigen::MatrixXd x,
 #endif
       if (num == 1)
       {
+#ifdef R_BUILD
+        if (pca_num > 1)
+        {
+          out_result(0) = out_result_next;
+        }
+        else
+        {
+          out_result = out_result_next;
+        }
+#else
         out_result = out_result_next;
+#endif
       }
       else
       {
 #ifdef R_BUILD
-        Eigen::MatrixXd beta_new(p, num);
-        Eigen::VectorXd temp = out_result["beta"];
-        Eigen::Map<Eigen::MatrixXd> temp2(temp.data(), p, num - 1);
-        beta_new << temp2, beta_next;
-        out_result["beta"] = beta_new;
+        // Eigen::MatrixXd beta_new(p, num);
+        // Eigen::VectorXd temp = out_result["beta"];
+        // Eigen::Map<Eigen::MatrixXd> temp2(temp.data(), p, num - 1);
+        // beta_new << temp2, beta_next;
+        // out_result["beta"] = beta_new;
+        out_result(num - 1) = out_result_next;
 #else
         out_result.combine_beta(beta_next);
 #endif
@@ -470,14 +486,15 @@ List abessPCA_API(Eigen::MatrixXd x,
 
     while (num++ < pca_num)
     {
-      Eigen::VectorXi pca_support_size;
-      if (is_tune)
+      int pca_support_size_num = sequence.col(num - 1).sum();
+      Eigen::VectorXi pca_support_size(pca_support_size_num);
+      // map sequence matrix to support.size
+      int non_zero_num = 0;
+      for (int i = 0; i < sequence.rows(); i++)
       {
-        pca_support_size = sequence;
-      }
-      else
-      {
-        pca_support_size = sequence.segment(num - 1, 1);
+        if (sequence(i, num - 1) == 1) {
+          pca_support_size(non_zero_num++) = i + 1;
+        }
       }
       out_result_next = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(sparse_x, y_vec, n, p, normalize_type,
                                                                                                        weight, 
@@ -503,16 +520,28 @@ List abessPCA_API(Eigen::MatrixXd x,
 #endif
       if (num == 1)
       {
+#ifdef R_BUILD
+        if (pca_num > 1)
+        {
+          out_result(0) = out_result_next;
+        }
+        else
+        {
+          out_result = out_result_next;
+        }
+#else
         out_result = out_result_next;
+#endif
       }
       else
       {
 #ifdef R_BUILD
-        Eigen::MatrixXd beta_new(p, num);
-        Eigen::VectorXd temp = out_result["beta"];
-        Eigen::Map<Eigen::MatrixXd> temp2(temp.data(), p, num - 1);
-        beta_new << temp2, beta_next;
-        out_result["beta"] = beta_new;
+        // Eigen::MatrixXd beta_new(p, num);
+        // Eigen::VectorXd temp = out_result["beta"];
+        // Eigen::Map<Eigen::MatrixXd> temp2(temp.data(), p, num - 1);
+        // beta_new << temp2, beta_next;
+        // out_result["beta"] = beta_new;
+        out_result(num - 1) = out_result_next;
 #else
         out_result.combine_beta(beta_next);
 #endif
