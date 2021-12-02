@@ -278,8 +278,10 @@ public:
   }
 
   // to do
-  double fit_and_evaluate_in_metric(std::vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Data<T1, T2, T3, T4> &data, FIT_ARG<T2, T3> &fit_arg)
+  Eigen::VectorXd fit_and_evaluate_in_metric(std::vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Data<T1, T2, T3, T4> &data, FIT_ARG<T2, T3> &fit_arg)
   {
+    Eigen::VectorXd loss_list(this->Kfold);
+
     if (!is_cv)
     {
       algorithm_list[0]->update_sparsity_level(fit_arg.support_size);
@@ -298,7 +300,7 @@ public:
         fit_arg.bd_init = algorithm_list[0]->get_bd();
       }
 
-      return this->ic(data.n, data.M, data.g_num, algorithm_list[0]);
+      loss_list(0) = this->ic(data.n, data.M, data.g_num, algorithm_list[0]);
     }
     else
     {
@@ -306,8 +308,6 @@ public:
       Eigen::VectorXi g_size = data.g_size;
       int p = data.p;
       int N = data.g_num;
-
-      Eigen::VectorXd loss_list(this->Kfold);
 
 #pragma omp parallel for
       ///////////////////////parallel/////////////////////////
@@ -357,9 +357,9 @@ public:
 
         loss_list(k) = this->loss_function(this->test_X_list[k], this->test_y_list[k], this->test_weight_list[k], g_index, g_size, test_n, p, N, algorithm_list[k]);
       }
-
-      return loss_list.mean();
     }
+
+    return loss_list;
   };
 };
 
