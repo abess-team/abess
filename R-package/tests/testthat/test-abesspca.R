@@ -62,6 +62,9 @@ test_that("abesspca (FPC) works", {
   spca_fit2[["call"]] <- NULL
   expect_true(all.equal(spca_fit1, spca_fit2))
   
+  tmp <- sweep(USArrests, 2, STATS = colMeans(USArrests), FUN = "-")
+  tmp <- sweep(tmp, 2, STATS = sqrt(colSums(tmp^2)), FUN = "/")
+  
   ## check identity:
   spca_fit1 <- abesspca(USArrests)
   spca_fit2 <- abesspca(USArrests, support.size = 1:4)
@@ -82,32 +85,32 @@ test_that("abesspca (FPC-CV) works", {
 })
 
 test_that("abesspca (KPC) works", {
-  data(USArrests) 
+  data(USArrests)
 
   ## Input 1:
   nvars <- ncol(USArrests)
   spca_fit <- abesspca(USArrests,
-                       support.size = rep(1, nvars),
-                       K = nvars)
+                       support.size = c(1),
+                       kpc.num = nvars)
 
   ## Reasonablity of abesspca
   skip_on_os("linux")
-  ev <- spca_fit[["ev"]]
+  ev <- unlist(spca_fit[["ev"]])
   ev_len <- length(ev)
-  expect_true(all(ev[1:(ev_len - 1)] > ev[2:ev_len]))
-
-  expect_true(all(spca_fit[["pev"]] <= 1))
+  expect_true(all(ev[1:(ev_len - 1)] <= ev[2:ev_len]))
+  expect_true(all(unlist(spca_fit[["pev"]]) <= 1))
 
   ## Input 2:
   spca_fit1 <- abesspca(USArrests,
                         sparse.type = "kpc",
-                        support.size = rep(4, 4), K = 4)
-  expect_true(all(spca_fit1[["pev"]] <= 1))
-  expect_equal(expected = 1, object = sum(spca_fit1[["pev"]]), tolerance = 1e-7)
+                        support.size = 4, kpc.num = nvars)
+  expect_true(all(unlist(spca_fit1[["pev"]]) <= 1))
+  expect_equal(expected = 1, object = max(unlist(spca_fit1[["pev"]])), 
+               tolerance = 1e-7)
 
   ## Input 3 (default input):
   spca_fit1 <- abesspca(USArrests, sparse.type = "kpc")
-  expect_true(all(spca_fit1[["pev"]] <= 1))
+  expect_true(all(unlist(spca_fit1[["pev"]]) <= 1))
 })
 
 test_that("abesspca (group) works", {
