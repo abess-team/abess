@@ -109,7 +109,7 @@ plot_loss <- function(loss, df,
   graphics::par(oldpar)
 }
 
-plot_solution_one <- function(beta, df, mar, label) {
+plot_solution_one <- function(beta, df, mar, label, start = 0) {
   beta <- as.matrix(beta)
   p <- nrow(beta)
   graphics::plot.new() # empty plot
@@ -120,12 +120,12 @@ plot_solution_one <- function(beta, df, mar, label) {
 
   graphics::plot(df, beta[1, , drop = TRUE],
     type = "l", col = 1,
-    xlim = c(0, max(df)), xlab = "Support size",
+    xlim = c(start, max(df)), xlab = "Support size",
     ylim = range(beta), ylab = "Coefficients"
   )
   for (i in 2:p) {
     graphics::lines(df, beta[i, , drop = TRUE],
-      col = i, xlim = c(0, p + 1)
+      col = i, xlim = c(start, p + 1)
     )
   }
 
