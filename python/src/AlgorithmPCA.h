@@ -40,13 +40,11 @@ public:
 
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
   {
-
-    int p = x.cols();
-    if (p == 0)
+    if (beta.size() == 0)
       return true;
-    if (p == 1)
+    if (beta.size() == 1)
     {
-      beta << 1;
+      beta(0) = 1;
       return true;
     }
 

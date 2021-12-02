@@ -10,6 +10,7 @@ This page contains links to all the Python related documents on Python package.
     logi_and_multiclass
     CoxRegression
     PCA
+    RPCA
     advanced_features
     ComputationalImprove
     work_with_sklearn
