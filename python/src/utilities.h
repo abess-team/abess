@@ -73,7 +73,7 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
 template <class T4>
 T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type)
 {
-    if (ind.size() == X.cols() || model_type == 10)
+    if (ind.size() == X.cols() || model_type == 10 || model_type == 7)
     {
         return X;
     }
