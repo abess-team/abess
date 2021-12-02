@@ -87,7 +87,7 @@ generalized linear model and Cox proportional hazard model." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -116,7 +116,7 @@ generalized linear model and Cox proportional hazard model." />
       <a href="../articles/v03-classification.html">Classification: Logistic Regression and Multinomial Extension</a>
     </li>
     <li>
-      <a href="../articles/v04-poissonregression.html">Poisson Regression</a>
+      <a href="../articles/v04-PoissonGammaReg.html">Positive response: Poisson and Gamma regression</a>
     </li>
     <li>
       <a href="../articles/v05-coxreg.html">Best Subset Selection for Censored Response</a>
@@ -186,7 +186,8 @@ generalized linear model and Cox proportional hazard model.</p>
   <span class='va'>p</span>,
   support.size <span class='op'>=</span> <span class='cn'>NULL</span>,
   rho <span class='op'>=</span> <span class='fl'>0</span>,
-  family <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"gaussian"</span>, <span class='st'>"binomial"</span>, <span class='st'>"poisson"</span>, <span class='st'>"cox"</span>, <span class='st'>"mgaussian"</span>, <span class='st'>"multinomial"</span><span class='op'>)</span>,
+  family <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"gaussian"</span>, <span class='st'>"binomial"</span>, <span class='st'>"poisson"</span>, <span class='st'>"cox"</span>, <span class='st'>"mgaussian"</span>, <span class='st'>"multinomial"</span>,
+    <span class='st'>"gamma"</span><span class='op'>)</span>,
   beta <span class='op'>=</span> <span class='cn'>NULL</span>,
   cortype <span class='op'>=</span> <span class='fl'>1</span>,
   snr <span class='op'>=</span> <span class='fl'>10</span>,

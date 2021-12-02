@@ -86,7 +86,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -115,7 +115,7 @@
       <a href="../articles/v03-classification.html">Classification: Logistic Regression and Multinomial Extension</a>
     </li>
     <li>
-      <a href="../articles/v04-poissonregression.html">Poisson Regression</a>
+      <a href="../articles/v04-PoissonGammaReg.html">Positive response: Poisson and Gamma regression</a>
     </li>
     <li>
       <a href="../articles/v05-coxreg.html">Best Subset Selection for Censored Response</a>
@@ -185,8 +185,12 @@
   sparse.type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"fpc"</span>, <span class='st'>"kpc"</span><span class='op'>)</span>,
   cor <span class='op'>=</span> <span class='cn'>FALSE</span>,
   support.size <span class='op'>=</span> <span class='cn'>NULL</span>,
+  kpc.num <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='va'>sparse.type</span> <span class='op'>==</span> <span class='st'>"fpc"</span>, <span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>,
+  tune.type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"aic"</span>, <span class='st'>"bic"</span>, <span class='st'>"gic"</span>, <span class='st'>"ebic"</span>, <span class='st'>"cv"</span><span class='op'>)</span>,
+  nfolds <span class='op'>=</span> <span class='fl'>5</span>,
+  foldid <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ic.scale <span class='op'>=</span> <span class='fl'>1</span>,
   c.max <span class='op'>=</span> <span class='cn'>NULL</span>,
-  lambda <span class='op'>=</span> <span class='fl'>0</span>,
   always.include <span class='op'>=</span> <span class='cn'>NULL</span>,
   group.index <span class='op'>=</span> <span class='cn'>NULL</span>,
   splicing.type <span class='op'>=</span> <span class='fl'>1</span>,
@@ -214,7 +218,8 @@ If <code>type = "gram"</code>, <code>x</code> is considered as a sample covarian
     <tr>
       <th>sparse.type</th>
       <td><p>If <code>sparse.type = "fpc"</code>, then best subset selection performs on the first principal component;
-If <code>sparse.type = "kpc"</code>, then best subset selection performs on the first \(K\) principal components.</p></td>
+If <code>sparse.type = "kpc"</code>, then best subset selection performs on the first <code>kpc.num</code> principal components.
+(The parameter will be discard in future version.)</p></td>
     </tr>
     <tr>
       <th>cor</th>
@@ -236,12 +241,28 @@ it is set as <code>min(ncol(x), 100)</code> if <code>group.index = NULL</code>;
 otherwise, <code>min(length(unique(group.index)), 100)</code>.</p></td>
     </tr>
     <tr>
-      <th>c.max</th>
-      <td><p>an integer splicing size. The default of <code>c.max</code> is the maximum of 2 and <code>max(support.size) / 2</code>.</p></td>
+      <th>tune.type</th>
+      <td><p>The type of criterion for choosing the support size.
+Available options are <code>"gic"</code>, <code>"ebic"</code>, <code>"bic"</code>, <code>"aic"</code> and <code>"cv"</code>.
+Default is <code>"gic"</code>.</p></td>
     </tr>
     <tr>
-      <th>lambda</th>
-      <td><p>A single lambda value for regularized best subset selection. Default is 0.</p></td>
+      <th>nfolds</th>
+      <td><p>The number of folds in cross-validation. Default is <code>nfolds = 5</code>.</p></td>
+    </tr>
+    <tr>
+      <th>foldid</th>
+      <td><p>an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in. 
+The default <code>foldid = NULL</code> would generate a random foldid.</p></td>
+    </tr>
+    <tr>
+      <th>ic.scale</th>
+      <td><p>A non-negative value used for multiplying the penalty term 
+in information criterion. Default: <code>ic.scale = 1</code>.</p></td>
+    </tr>
+    <tr>
+      <th>c.max</th>
+      <td><p>an integer splicing size. The default of <code>c.max</code> is the maximum of 2 and <code>max(support.size) / 2</code>.</p></td>
     </tr>
     <tr>
       <th>always.include</th>
@@ -340,11 +361,11 @@ can be efficiently solved.</p>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Call:</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> abesspca(x = USArrests)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   support.size       ev       pev</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1            1 6806.262 0.9564520</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2            2 6844.578 0.9618364</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3            3 6858.954 0.9638565</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4            4 6870.893 0.9655342</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   PC support.size       ev       pev</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  1            1 6806.262 0.9564520</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  1            2 6844.578 0.9618364</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  1            3 6858.954 0.9638565</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  1            4 6870.893 0.9655342</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## covariance matrix input:</span></span>
 <span class='r-in'><span class='va'>cov_mat</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/cor.html'>cov</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span> <span class='op'>*</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>1</span><span class='op'>)</span> <span class='op'>/</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span></span>
@@ -353,11 +374,11 @@ can be efficiently solved.</p>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Call:</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> abesspca(x = cov_mat, type = "gram")</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   support.size       ev       pev</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1            1 6806.262 0.9564520</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2            2 6844.578 0.9618364</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3            3 6858.954 0.9638565</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4            4 6870.893 0.9655342</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   PC support.size       ev       pev</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  1            1 6806.262 0.9564520</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  1            2 6844.578 0.9618364</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  1            3 6858.954 0.9638565</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  1            4 6870.893 0.9655342</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## robust covariance matrix input:</span></span>
 <span class='r-in'><span class='va'>rob_cov</span> <span class='op'>&lt;-</span> <span class='fu'>MASS</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/MASS/man/cov.rob.html'>cov.rob</a></span><span class='op'>(</span><span class='va'>USArrests</span><span class='op'>)</span><span class='op'>[[</span><span class='st'>"cov"</span><span class='op'>]</span><span class='op'>]</span></span>
@@ -367,11 +388,23 @@ can be efficiently solved.</p>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Call:</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> abesspca(x = rob_cov, type = "gram")</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   support.size       ev       pev</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1            1 5995.374 0.9572975</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2            2 6038.313 0.9641537</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3            3 6070.018 0.9692161</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4            4 6080.344 0.9708648</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   PC support.size       ev       pev</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  1            1 6457.524 0.9617844</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  1            2 6490.830 0.9667449</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  1            3 6522.586 0.9714747</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  1            4 6533.102 0.9730409</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## select support size via cross-validation ##</span></span>
+<span class='r-in'><span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span>, tune.type <span class='op'>=</span> <span class='st'>"cv"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>pca_fit</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Call:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> abesspca(x = USArrests, tune.type = "cv")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   PC support.size       ev       pev</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  1            1 6945.166 0.9759715</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  1            2 6984.264 0.9814657</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  1            3 6998.933 0.9835271</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  1            4 7011.115 0.9852390</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'>## K-component principal component analysis</span></span>
 <span class='r-in'><span class='va'>pca_fit</span> <span class='op'>&lt;-</span> <span class='fu'>abesspca</span><span class='op'>(</span><span class='va'>USArrests</span>,</span>
@@ -379,12 +412,23 @@ can be efficiently solved.</p>
 <span class='r-in'>  support.size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span></span>
 <span class='r-in'><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>pca_fit</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[1]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4 x 2 sparse Matrix of class "dgCMatrix"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          1           2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Murder   .  .         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Assault  1 -0.99717739</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> UrbanPop .  .         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Rape     . -0.07508168</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[2]]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 4 x 2 sparse Matrix of class "dgCMatrix"</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>          1          2</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Murder   .  .        </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Assault  1  .        </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> UrbanPop . -0.9320592</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Rape     . -0.3623060</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Assault  .  .        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> UrbanPop 1 -0.9821166</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Rape     . -0.1882738</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
 <span class='r-in'><span class='co'># }</span></span>
 </pre>
   </div>

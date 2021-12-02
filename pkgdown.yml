@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   v01-abess-guide: v01-abess-guide.html
   v03-classification: v03-classification.html
-  v04-poissonregression: v04-poissonregression.html
+  v04-PoissonGammaReg: v04-PoissonGammaReg.html
   v05-coxreg: v05-coxreg.html
   v06-MultiTaskLearning: v06-MultiTaskLearning.html
   v07-advancedFeatures: v07-advancedFeatures.html
@@ -12,7 +12,7 @@ articles:
   v09-fasterSetting: v09-fasterSetting.html
   v10-algorithm: v10-algorithm.html
   v11-power-of-abess: v11-power-of-abess.html
-last_built: 2021-11-15T06:09Z
+last_built: 2021-12-02T16:54Z
 urls:
   reference: https://abess-team.github.io/abess//reference
   article: https://abess-team.github.io/abess//articles

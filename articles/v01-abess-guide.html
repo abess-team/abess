@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@
       <a href="../articles/v03-classification.html">Classification: Logistic Regression and Multinomial Extension</a>
     </li>
     <li>
-      <a href="../articles/v04-poissonregression.html">Poisson Regression</a>
+      <a href="../articles/v04-PoissonGammaReg.html">Positive response: Poisson and Gamma regression</a>
     </li>
     <li>
       <a href="../articles/v05-coxreg.html">Best Subset Selection for Censored Response</a>
@@ -296,75 +296,75 @@
 ## Assists       .        .           .           .            .        
 ## Errors        .        .           .           .            .        
 ## NewLeagueN    .        .           .           .            .        
+##                                                                          
+## (intercept) 25.2819915 140.7461378   85.2423652  117.1520434  197.6616396
+## AtBat       -2.0349977  -1.7074618   -1.8483141   -2.0339209   -2.0803280
+## Hits         8.1842739   7.5589177    7.5099111    6.8549136    6.8263359
+## HmRun        .           .            .            .            .        
+## Runs         .           .            .            .            .        
+## RBI          .           .            .            .            .        
+## Walks        3.9059431   .            3.5679937    6.4406642    5.9761215
+## Years        .         -23.1434527    .            .          -15.9414459
+## CAtBat       .           .            .            .            .        
+## CHits        .           .            .            .            .        
+## CHmRun       .           .            .            .            .        
+## CRuns        .           0.4992573    0.1950761    0.7045391    0.8143029
+## CRBI         0.6417565   0.5199978    0.4568198    0.5273238    0.6000624
+## CWalks       .           .            .           -0.8066062   -0.7503761
+## LeagueN      .           .            .            .            .        
+## DivisionW    .           .         -120.1298286 -123.7798366 -123.4936780
+## PutOuts      0.2645828   0.2971180    0.2753986    0.2753892    0.2702288
+## Assists      .           .            .            .            .        
+## Errors       .           .            .            .            .        
+## NewLeagueN   .           .            .            .            .        
 ##                                                                             
-## (intercept)   -7.6563819   91.5117981   67.9431538  114.5067227  197.6616396
-## AtBat          .           -1.8685892   -1.8535176   -2.1250564   -2.0803280
-## Hits           2.0467293    7.6043976    7.6348879    7.6482495    6.8263359
-## HmRun          .            .            .            .            .        
-## Runs           .            .            .            .            .        
-## RBI            .            .            .            .            .        
-## Walks          2.5574106    3.6976468    3.6644212    5.2391412    5.9761215
-## Years          .            .            .            .          -15.9414459
-## CAtBat         .            .            .            .            .        
-## CHits          .            .            .            .            .        
-## CHmRun         .            .            .            .            .        
-## CRuns          .            .            .            .            0.8143029
-## CRBI           0.6492007    0.6430169    0.6445474    0.8959228    0.6000624
-## CWalks         .            .            .           -0.3487728   -0.7503761
-## LeagueN        .            .           35.0926551    .            .        
-## DivisionW   -137.3676333 -122.9515338 -122.5437635 -126.8503150 -123.4936780
-## PutOuts        0.2518721    0.2643076    0.2584749    0.2655057    0.2702288
-## Assists        .            .            .            0.1790809    .        
-## Errors         .            .            .            .            .        
-## NewLeagueN     .            .            .            .            .        
-##                                                                             
-## (intercept)  206.5672285  218.5527334  198.4967427  142.9090129  144.6793182
-## AtBat         -2.2556858   -2.2102483   -2.1783358   -2.0120568   -2.0883279
-## Hits           7.0378766    6.9279436    6.9273744    7.3751935    7.6436454
+## (intercept)  206.5672285  159.3284463  135.5194919  142.9090129  144.6793182
+## AtBat         -2.2556858   -2.0803658   -2.0563475   -2.0120568   -2.0883279
+## Hits           7.0378766    7.6025575    7.5064072    7.3751935    7.6436454
 ## HmRun          .            .            .            .            2.3406524
-## Runs           .            .            .           -1.7130320   -2.3580478
+## Runs           .           -2.1086040   -1.7965622   -1.7130320   -2.3580478
 ## RBI            .            .            .            .            .        
-## Walks          6.2793246    6.2243570    6.1667822    5.9906173    6.1794713
-## Years        -16.7414858  -17.2542087  -17.0664017    .            .        
-## CAtBat         .            .            .           -0.1527096   -0.1488074
+## Walks          6.2793246    6.2748850    6.0619776    5.9906173    6.1794713
+## Years        -16.7414858    .            .            .            .        
+## CAtBat         .           -0.1468464   -0.1524448   -0.1527096   -0.1488074
 ## CHits          .            .            .            .            .        
 ## CHmRun         .            .            .            .            .        
-## CRuns          0.8132079    0.8111144    0.8082476    1.5535444    1.5931621
-## CRBI           0.6508515    0.6594949    0.6571221    0.7850103    0.7170767
-## CWalks        -0.7882990   -0.7934064   -0.7898841   -0.8404419   -0.8565844
-## LeagueN        .            .           29.1474123   41.9165343   44.2352269
-## DivisionW   -123.2261893 -123.1231837 -122.8009102 -112.3809790 -112.8079905
-## PutOuts        0.2824819    0.2883338    0.2830813    0.2896964    0.2876182
-## Assists        0.1872292    0.2795390    0.2732454    0.3312276    0.3677311
-## Errors         .           -3.0198567   -3.3107203   -2.8685826   -3.1271251
+## CRuns          0.8132079    1.5349917    1.5589219    1.5535444    1.5931621
+## CRBI           0.6508515    0.7665071    0.7775813    0.7850103    0.7170767
+## CWalks        -0.7882990   -0.8442911   -0.8350722   -0.8404419   -0.8565844
+## LeagueN        .            .           39.0865444   41.9165343   44.2352269
+## DivisionW   -123.2261893 -114.0032832 -112.6442519 -112.3809790 -112.8079905
+## PutOuts        0.2824819    0.2904255    0.2842332    0.2896964    0.2876182
+## Assists        0.1872292    0.2518043    0.2434442    0.3312276    0.3677311
+## Errors         .            .            .           -2.8685826   -3.1271251
 ## NewLeagueN     .            .            .            .            .        
 ##                                                                             
-## (intercept)  163.3275824  163.0064063  162.9932027  163.1632541  163.1035878
-## AtBat         -2.1085651   -2.0890552   -2.0302709   -2.0186239   -1.9798729
-## Hits           7.6501026    7.8848050    7.7483580    7.7381465    7.5007675
-## HmRun          2.3654025    3.8223369    4.6470956    4.6127592    4.3308829
-## Runs          -2.3535049   -2.5377954   -2.5882384   -2.6272166   -2.3762100
-## RBI            .           -0.8815425   -1.1165187   -1.1190038   -1.0449620
-## Walks          6.1730276    6.2941910    6.2778803    6.3108843    6.2312863
-## Years         -4.2321550   -4.0947594   -3.7490950   -3.8738277   -3.4890543
-## CAtBat        -0.1341737   -0.1350897   -0.1526121   -0.1514014   -0.1713405
-## CHits          .            .            .            .            0.1339910
-## CHmRun         .            .           -0.3876922   -0.3938397   -0.1728611
-## CRuns          1.5426322    1.5321626    1.5730263    1.5708067    1.4543049
-## CRBI           0.7144063    0.7420886    0.8965235    0.8961782    0.8077088
-## CWalks        -0.8446970   -0.8559654   -0.8423839   -0.8467366   -0.8115709
-## LeagueN       42.2835360   42.2286763   41.6482699   61.3012822   62.5994230
-## DivisionW   -113.9853363 -116.0422926 -116.4111439 -116.5862127 -116.8492456
-## PutOuts        0.2859836    0.2858651    0.2827595    0.2829156    0.2818925
-## Assists        0.3643305    0.3641325    0.3661464    0.3640952    0.3710692
-## Errors        -3.2379385   -3.1409199   -3.1840695   -3.2558249   -3.3607605
-## NewLeagueN     .            .            .          -22.9788245  -24.7623251</code></pre>
+## (intercept)  163.3275824  148.5836248  148.4333315  148.2187229  163.1035878
+## AtBat         -2.1085651   -1.9709735   -1.9509056   -1.9508802   -1.9798729
+## Hits           7.6501026    7.4357720    7.3914057    7.4394969    7.5007675
+## HmRun          2.3654025    4.1120447    4.0827974    4.3449102    4.3308829
+## Runs          -2.3535049   -2.2236760   -2.2396702   -2.3312443   -2.3762100
+## RBI            .           -0.9880849   -0.9940157   -1.0669853   -1.0449620
+## Walks          6.1730276    6.1712241    6.1970575    6.2195518    6.2312863
+## Years         -4.2321550    .            .            .           -3.4890543
+## CAtBat        -0.1341737   -0.1892782   -0.1913281   -0.1887222   -0.1713405
+## CHits          .            0.1915402    0.2067327    0.1635828    0.1339910
+## CHmRun         .            .            .           -0.1516681   -0.1728611
+## CRuns          1.5426322    1.4377384    1.4249652    1.4715814    1.4543049
+## CRBI           0.7144063    0.7444649    0.7414741    0.8020666    0.8077088
+## CWalks        -0.8446970   -0.8035045   -0.8037607   -0.8124337   -0.8115709
+## LeagueN       42.2835360   42.9252666   64.1928201   63.7503250   62.5994230
+## DivisionW   -113.9853363 -115.8457351 -116.0617552 -116.0404251 -116.8492456
+## PutOuts        0.2859836    0.2831001    0.2830325    0.2827381    0.2818925
+## Assists        0.3643305    0.3785769    0.3773191    0.3755259    0.3710692
+## Errors        -3.2379385   -3.2309336   -3.3199889   -3.2940025   -3.3607605
+## NewLeagueN     .            .          -24.8892236  -24.3988530  -24.7623251</code></pre>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get the deviance of the estimated model on all candidate support size</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/deviance.html">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>##  [1] 202734.27 137565.32 116526.84 111214.06 106353.05 104483.91  99600.40
-##  [8]  99303.92  98158.60  94654.62  94081.77  93894.74  93695.85  92354.17
-## [15]  92200.23  92154.67  92106.59  92065.27  92032.81  92017.87</code></pre>
+<pre><code>##  [1] 202734.27 137565.32 116526.84 111214.06 106353.05 103309.59 104199.43
+##  [8]  99179.50  95662.49  94654.62  94081.77  92868.83  92521.80  92354.17
+## [15]  92200.23  92154.67  92088.89  92051.13  92047.79  92017.87</code></pre>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># print the fitted model</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
@@ -378,20 +378,20 @@
 ## 3             2 116526.84 3078.241
 ## 4             3 111214.06 3071.026
 ## 5             4 106353.05 3064.330
-## 6             5 104483.91 3064.725
-## 7             6  99600.40 3057.194
-## 8             7  99303.92 3061.468
-## 9             8  98158.60 3063.475
+## 6             5 103309.59 3061.752
+## 7             6 104199.43 3069.066
+## 8             7  99179.50 3061.138
+## 9             8  95662.49 3056.700
 ## 10            9  94654.62 3058.972
 ## 11           10  94081.77 3062.434
-## 12           11  93894.74 3066.968
-## 13           12  93695.85 3071.469
+## 12           11  92868.83 3064.079
+## 13           12  92521.80 3068.152
 ## 14           13  92354.17 3072.733
 ## 15           14  92200.23 3077.352
 ## 16           15  92154.67 3082.280
-## 17           16  92106.59 3087.201
-## 18           17  92065.27 3092.141
-## 19           18  92032.81 3097.106
+## 17           16  92088.89 3087.150
+## 18           17  92051.13 3092.101
+## 19           18  92047.79 3097.149
 ## 20           19  92017.87 3102.121</code></pre>
 <p>Prediction is allowed for all the estimated model. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
@@ -418,27 +418,27 @@
 <p>The tuning value reaches the lowest point at 6. And We might choose the estimated model with support size equals 6 as our final model. In fact, the tuning values of different model sizes are provided in <code>tune.value</code> of the <code>abess</code> object. You can get the best model size through the following call.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">[[</span><span class="st">"support.size"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
-<pre><code>## [1] 6</code></pre>
+<pre><code>## [1] 8</code></pre>
 <p>To extract any model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best.model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of 7
 ##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:6] 0 1 5 11 14 15
+##   .. ..@ i       : int [1:6] 0 1 6 10 11 15
 ##   .. ..@ p       : int [1:2] 0 6
 ##   .. ..@ Dim     : int [1:2] 19 1
 ##   .. ..@ Dimnames:List of 2
 ##   .. .. ..$ : chr [1:19] "AtBat" "Hits" "HmRun" "Runs" ...
 ##   .. .. ..$ : chr "6"
-##   .. ..@ x       : num [1:6] -1.869 7.604 3.698 0.643 -122.952 ...
+##   .. ..@ x       : num [1:6] -1.707 7.559 -23.143 0.499 0.52 ...
 ##   .. ..@ factors : list()
-##  $ intercept   : num 91.5
+##  $ intercept   : num 141
 ##  $ support.size: num 6
-##  $ support.vars: chr [1:6] "AtBat" "Hits" "Walks" "CRBI" ...
-##  $ support.beta: num [1:6] -1.869 7.604 3.698 0.643 -122.952 ...
-##  $ dev         : num 99600
-##  $ tune.value  : num 3057</code></pre>
+##  $ support.vars: chr [1:6] "AtBat" "Hits" "Years" "CRuns" ...
+##  $ support.beta: num [1:6] -1.707 7.559 -23.143 0.499 0.52 ...
+##  $ dev         : num 104199
+##  $ tune.value  : num 3069</code></pre>
 <p>The return is a list containing the basic information of the estimated model.</p>
 </div>
 </div>
@@ -469,17 +469,17 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of 14
 ##  $ beta          :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:528] 442 442 1196 374 442 1196 374 442 1003 1196 ...
+##   .. ..@ i       : int [1:528] 442 442 3248 442 3248 4900 442 1005 3248 4899 ...
 ##   .. ..@ p       : int [1:34] 0 0 1 3 6 10 15 21 28 36 ...
 ##   .. ..@ Dim     : int [1:2] 5253 33
 ##   .. ..@ Dimnames:List of 2
 ##   .. .. ..$ : chr [1:5253] "pop" "perHoush" "pctBlack" "pctWhite" ...
 ##   .. .. ..$ : chr [1:33] "0" "1" "2" "3" ...
-##   .. ..@ x       : num [1:528] -0.251 -0.196 0.496 0.812 -0.173 ...
+##   .. ..@ x       : num [1:528] -0.251 -0.143 6.335 -0.153 4.802 ...
 ##   .. ..@ factors : list()
-##  $ intercept     : num [1:33] 599 2115 1668 1518 1189 ...
-##  $ dev           : num [1:33] 381863 172847 160611 151560 144066 ...
-##  $ tune.value    : num [1:33] 6426 6043 6019 6002 5989 ...
+##  $ intercept     : num [1:33] 599 2115 1257 1337 1000 ...
+##  $ dev           : num [1:33] 381863 172847 156992 151887 146356 ...
+##  $ tune.value    : num [1:33] 6426 6043 6007 6003 5997 ...
 ##  $ nobs          : int 500
 ##  $ nvars         : int 5253
 ##  $ family        : chr "gaussian"
@@ -487,7 +487,7 @@ The pre-processed dataset can be freely downloaded by running:</p>
 ##  $ tune.type     : chr "GIC"
 ##  $ support.size  : int [1:33] 0 1 2 3 4 5 6 7 8 9 ...
 ##  $ edf           : num [1:33] 0 1 2 3 4 5 6 7 8 9 ...
-##  $ best.size     : int 8
+##  $ best.size     : int 9
 ##  $ screening.vars: chr [1:1000] "pctBlack" "pctWhite" "medIncome" "pctWdiv" ...
 ##  $ call          : language abess.formula(formula = y ~ ., data = crime, screening.num = 1000)
 ##  - attr(*, "class")= chr "abess"</code></pre>
@@ -502,27 +502,32 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best_model</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of 7
 ##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:8] 303 374 1003 1196 1530 1746 2378 3266
-##   .. ..@ p       : int [1:2] 0 8
+##   .. ..@ i       : int [1:9] 303 368 1005 1178 1745 1759 2378 3701 3950
+##   .. ..@ p       : int [1:2] 0 9
 ##   .. ..@ Dim     : int [1:2] 5253 1
 ##   .. ..@ Dimnames:List of 2
 ##   .. .. ..$ : chr [1:5253] "pop" "perHoush" "pctBlack" "pctWhite" ...
-##   .. .. ..$ : chr "8"
-##   .. ..@ x       : num [1:8] 0.192 1.071 1.867 0.301 -0.152 ...
+##   .. .. ..$ : chr "9"
+##   .. ..@ x       : num [1:9] 0.227547 0.517409 1.323939 0.201385 0.000313 ...
 ##   .. ..@ factors : list()
-##  $ intercept   : num -55.8
-##  $ support.size: int 8
-##  $ support.vars: chr [1:8] "pctBlack:pctWhite" "pctBlack:pctVacantBoarded" "pct65up:pctMaleDivorc" "pctUrban:pctKidsBornNevrMarr" ...
-##  $ support.beta: num [1:8] 0.192 1.071 1.867 0.301 -0.152 ...
-##  $ dev         : num 122608
-##  $ tune.value  : num 5959</code></pre>
+##  $ intercept   : num 424
+##  $ support.size: int 9
+##  $ support.vars: chr [1:9] "pctBlack:pctWhite" "pctBlack:pctPopDenseHous" "pct65up:pctFemDivorc" "pctUrban:pctUnemploy" ...
+##  $ support.beta: num [1:9] 0.227547 0.517409 1.323939 0.201385 0.000313 ...
+##  $ dev         : num 120282
+##  $ tune.value  : num 5962</code></pre>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_vars</span> <span class="op">&lt;-</span> <span class="va">best_model</span><span class="op">[[</span><span class="st">"support.vars"</span><span class="op">]</span><span class="op">]</span>
 <span class="va">best_vars</span></code></pre></div>
-<pre><code>## [1] "pctBlack:pctWhite"             "pctBlack:pctVacantBoarded"    
-## [3] "pct65up:pctMaleDivorc"         "pctUrban:pctKidsBornNevrMarr" 
-## [5] "pctWdiv:pctEmployMfg"          "pctPubAsst:ownHousUperQ"      
-## [7] "otherPerCap:pctHousWOphone"    "pctMaleDivorc:pctPopDenseHous"</code></pre>
+<pre><code>## [1] "pctBlack:pctWhite"                   
+## [2] "pctBlack:pctPopDenseHous"            
+## [3] "pct65up:pctFemDivorc"                
+## [4] "pctUrban:pctUnemploy"                
+## [5] "pctPubAsst:ownHousMed"               
+## [6] "pctPubAsst:pctBornStateResid"        
+## [7] "otherPerCap:pctHousWOphone"          
+## [8] "pctKids:medOwnCostPctWO"             
+## [9] "pctKidsBornNevrMarr:pctVacantBoarded"</code></pre>
 <!-- From the linear model based on the selected features, we see that the two predictors,  -->
 <!-- 'pctMaleDivorc:pctKidsBornNevrMarr'  -->
 <!-- (i.e., the linear interaction between the percentage of divorced males and the percentage of kids born to never married)  -->

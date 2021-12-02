@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@
       <a href="../articles/v03-classification.html">Classification: Logistic Regression and Multinomial Extension</a>
     </li>
     <li>
-      <a href="../articles/v04-poissonregression.html">Poisson Regression</a>
+      <a href="../articles/v04-PoissonGammaReg.html">Positive response: Poisson and Gamma regression</a>
     </li>
     <li>
       <a href="../articles/v05-coxreg.html">Best Subset Selection for Censored Response</a>
@@ -233,10 +233,10 @@
 <span class="op">}</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">err.l0</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 111.8251</code></pre>
+<pre><code>## [1] 130.4913</code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">err.l0l2</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 151.4285</code></pre>
+<pre><code>## [1] 152.1944</code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"ABESS"</span> <span class="op">=</span> <span class="va">err.l0</span>, <span class="st">"RABESS"</span> <span class="op">=</span> <span class="va">err.l0l2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="v07-advancedFeatures_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>

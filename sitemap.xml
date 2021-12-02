@@ -10,9 +10,6 @@
     <loc>https://abess-team.github.io/abess//reference/abess.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/abessbmn.html</loc>
-  </url>
-  <url>
     <loc>https://abess-team.github.io/abess//reference/abesspca.html</loc>
   </url>
   <url>
@@ -28,16 +25,13 @@
     <loc>https://abess-team.github.io/abess//reference/extract.abess.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/generate.bmn.data.html</loc>
-  </url>
-  <url>
     <loc>https://abess-team.github.io/abess//reference/generate.data.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/nodewise_L0.html</loc>
+    <loc>https://abess-team.github.io/abess//reference/plot.abess.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/plot.abess.html</loc>
+    <loc>https://abess-team.github.io/abess//reference/plot.abesspca.html</loc>
   </url>
   <url>
     <loc>https://abess-team.github.io/abess//reference/predict.abess.html</loc>
@@ -58,7 +52,7 @@
     <loc>https://abess-team.github.io/abess//articles/v03-classification.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//articles/v04-poissonregression.html</loc>
+    <loc>https://abess-team.github.io/abess//articles/v04-PoissonGammaReg.html</loc>
   </url>
   <url>
     <loc>https://abess-team.github.io/abess//articles/v05-coxreg.html</loc>

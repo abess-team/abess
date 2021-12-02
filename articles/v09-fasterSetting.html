@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@
       <a href="../articles/v03-classification.html">Classification: Logistic Regression and Multinomial Extension</a>
     </li>
     <li>
-      <a href="../articles/v04-poissonregression.html">Poisson Regression</a>
+      <a href="../articles/v04-PoissonGammaReg.html">Positive response: Poisson and Gamma regression</a>
     </li>
     <li>
       <a href="../articles/v05-coxreg.html">Best Subset Selection for Censored Response</a>
@@ -177,13 +177,13 @@
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html">Matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>## 6 x 10 sparse Matrix of class "dgCMatrix"
-##                                         
-## [1,] . . . . . . .         . . .        
-## [2,] . . . . . . .         . . .        
-## [3,] . . . . . . .         . . .        
-## [4,] . . . . . . .         . . .        
-## [5,] . . . . . . 0.3508827 . . .        
-## [6,] . . . . . . .         . . 0.5654906</code></pre>
+##                                                 
+## [1,] . . . . .         .  .         . .        .
+## [2,] . . . . .         .  .         . .        .
+## [3,] . . . . .         . -0.9679611 . 1.084992 .
+## [4,] . . . . .         .  .         . .        .
+## [5,] . . . . 0.3832209 .  .         . .        .
+## [6,] . . . . .         .  .         . .        .</code></pre>
 <p>Then, we apply ABESS algorithm on Matrix <code>x</code> and record the runtime in <code>t1</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
@@ -192,19 +192,19 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6]
-## [1,]    0    0    0    0    0    0
-## [2,]    0    0    0    0    0    0
-## [3,]    0    0    0    0    0    0
-## [4,]    0    0    0    0    0    0
-## [5,]    0    0    0    0    0    0
-## [6,]    0    0    0    0    0    0</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4]      [,5] [,6]
+## [1,]    0    0    0    0 0.0000000    0
+## [2,]    0    0    0    0 0.0000000    0
+## [3,]    0    0    0    0 0.0000000    0
+## [4,]    0    0    0    0 0.0000000    0
+## [5,]    0    0    0    0 0.3832209    0
+## [6,]    0    0    0    0 0.0000000    0</code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></code></pre></div>
 <pre><code>##    user.self sys.self elapsed
-## t1     0.273    0.009   0.286
-## t2     0.341    0.033   0.379</code></pre>
+## t1     1.336    0.027   1.369
+## t2     1.630    0.153   1.787</code></pre>
 <p>From the comparison, we see that the time required by sparse matrix is visibly smaller, and thus, we suggest to assign a sparse matrix to <code>abess</code> when the input matrix have a lot of zero entries.</p>
 </div>
 <div id="golden-section-searching" class="section level2">
@@ -242,8 +242,8 @@
 <code class="sourceCode R"><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></code></pre></div>
 <pre><code>##    user.self sys.self elapsed
-## t1     0.023    0.001   0.025
-## t2     0.063    0.007   0.070</code></pre>
+## t1     0.040    0.001   0.042
+## t2     0.274    0.035   0.310</code></pre>
 </div>
 <div id="early-stop" class="section level2">
 <h2 class="hasAnchor">
@@ -265,64 +265,64 @@
 ## 7             6  1.432624  230.2331
 ## 8             7  1.418358  233.6423
 ## 9             8  1.404924  237.2973
-## 10            9  1.395324  242.2822
+## 10            9  1.395503  242.3464
 ## 11           10  1.386509  247.5264
-## 12           11  1.378596  253.0781
+## 12           11  1.378860  253.1738
 ## 13           12  1.369313  258.1130
-## 14           13  1.362059  263.8703
+## 14           13  1.363112  264.2568
 ## 15           14  1.354559  269.5226
-## 16           15  1.348359  275.6420
-## 17           16  1.342174  281.7566
-## 18           17  1.336488  288.0470
-## 19           18  1.330722  294.2982
-## 20           19  1.325733  300.8334
-## 21           20  1.320703  307.3462
-## 22           21  1.315782  313.8926
-## 23           22  1.311049  320.5042
+## 16           15  1.349460  276.0503
+## 17           16  1.342953  282.0464
+## 18           17  1.338077  288.6412
+## 19           18  1.335379  296.0453
+## 20           19  1.328946  302.0437
+## 21           20  1.322636  308.0772
+## 22           21  1.317662  314.6067
+## 23           22  1.315003  322.0100
 ## 24           23  1.307019  327.3782
-## 25           24  1.303188  334.3235
-## 26           25  1.298970  341.1156
-## 27           26  1.295279  348.1061
-## 28           27  1.291479  355.0502
-## 29           28  1.287624  361.9688
-## 30           29  1.283740  368.8716
-## 31           30  1.279547  375.6490
-## 32           31  1.276190  382.7488
-## 33           32  1.272619  389.7607
-## 34           33  1.269034  396.7636
-## 35           34  1.265479  403.7740
-## 36           35  1.262028  410.8217
-## 37           36  1.258846  417.9728
-## 38           37  1.255600  425.0951
-## 39           38  1.252844  432.4098
-## 40           39  1.248524  439.0956
-## 41           40  1.244661  445.9597
-## 42           41  1.242019  453.3101
-## 43           42  1.239581  460.7411
-## 44           43  1.237079  468.1441
-## 45           44  1.234503  475.5149
-## 46           45  1.231909  482.8765
-## 47           46  1.229419  490.2778
-## 48           47  1.227483  497.9030
-## 49           48  1.225591  505.5449
-## 50           49  1.223753  513.2080
-## 51           50  1.222080  520.9370
-## 52           51  1.220283  528.6144
-## 53           52  1.218817  536.4266
-## 54           53  1.217259  544.2002
-## 55           54  1.215522  551.8995
-## 56           55  1.214110  559.7317
-## 57           56  1.212501  567.4818
-## 58           57  1.210815  575.1989
-## 59           58  1.209337  583.0015
-## 60           59  1.207851  590.7999</code></pre>
+## 25           24  1.305670  335.2750
+## 26           25  1.300286  341.6222
+## 27           26  1.296708  348.6575
+## 28           27  1.295496  356.6031
+## 29           28  1.292647  363.9154
+## 30           29  1.285055  369.3835
+## 31           30  1.280376  375.9729
+## 32           31  1.276758  382.9712
+## 33           32  1.273704  390.1868
+## 34           33  1.272467  398.1142
+## 35           34  1.268332  404.9001
+## 36           35  1.265358  412.1395
+## 37           36  1.261647  419.0841
+## 38           37  1.259729  426.7366
+## 39           38  1.264535  437.0538
+## 40           39  1.258498  443.0740
+## 41           40  1.255934  450.4676
+## 42           41  1.250641  456.7690
+## 43           42  1.249271  464.6346
+## 44           43  1.245465  471.5218
+## 45           44  1.244823  479.6775
+## 46           45  1.244839  488.0970
+## 47           46  1.241505  495.1693
+## 48           47  1.238645  502.4292
+## 49           48  1.235082  509.4021
+## 50           49  1.230958  516.1432
+## 51           50  1.226956  522.9279
+## 52           51  1.226910  531.3226
+## 53           52  1.223281  538.2545
+## 54           53  1.223886  546.9150
+## 55           54  1.220571  553.9721
+## 56           55  1.219292  561.8611
+## 57           56  1.219155  570.2183
+## 58           57  1.215722  577.2212
+## 59           58  1.213850  584.8642
+## 60           59  1.213127  592.9793</code></pre>
 <p>We can see that ABESS algorithm stop when support size is 4. This is because the GIC value (can be considered as an assessment in validation set) do not increase when support size reach to 3, and thus, the program early terminate. This result is match to our simulation setting. Compare with the ABESS without early-stopping:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></code></pre></div>
 <pre><code>##    user.self sys.self elapsed
-## t1     0.063    0.007   0.070
-## t2     0.063    0.007   0.069</code></pre>
+## t1     0.284    0.040   0.325
+## t2     0.276    0.035   0.311</code></pre>
 <p>we can conclude that early-stopping brings fast computation and might maintain statistical guarantee.</p>
 </div>
   </div>

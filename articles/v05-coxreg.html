@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@
       <a href="../articles/v03-classification.html">Classification: Logistic Regression and Multinomial Extension</a>
     </li>
     <li>
-      <a href="../articles/v04-poissonregression.html">Poisson Regression</a>
+      <a href="../articles/v04-PoissonGammaReg.html">Positive response: Poisson and Gamma regression</a>
     </li>
     <li>
       <a href="../articles/v05-coxreg.html">Best Subset Selection for Censored Response</a>
@@ -235,25 +235,25 @@ h_{i'}(t) = h_0(t)\exp(\eta_{i'}) = h_0(t)\exp(x_{i'}\beta).
 ##                                                                      
 ## (intercept) . .          .          .          .           .         
 ## age         . .          .          .          .           .         
-## sex         . .         -0.3158899 -0.3056507 -0.31215218 -0.37217880
-## ph.ecog1    . .          .          .          .           0.43339436
-## ph.ecog2    . 0.6198472  0.6356454  0.6485150  0.90762608  1.39697310
-## ph.ecog3    . .          .          1.5289436  1.85001630  2.38783028
-## ph.karno    . .          .          .          0.01230716  0.02223652
+## sex         . .         -0.3158899 -0.3056507 -0.31215218 -0.37217876
+## ph.ecog1    . .          .          .          .           0.43339575
+## ph.ecog2    . 0.6198472  0.6356454  0.6485150  0.90762625  1.39697093
+## ph.ecog3    . .          .          1.5289437  1.85001653  2.38782920
+## ph.karno    . .          .          .          0.01230717  0.02223657
 ## pat.karno   . .          .          .          .           .         
 ## meal.cal    . .          .          .          .           .         
 ## wt.loss     . .          .          .          .           .         
 ##                                                                 
 ## (intercept)  .            .            .            .           
-## age          .            .            0.009612417  0.0087629301
-## sex         -0.398257611 -0.400263398 -0.405046539 -0.4176205102
-## ph.ecog1     0.492850038  0.498563852  0.544978560  0.5487891976
-## ph.ecog2     1.548225079  1.421509544  1.426897301  1.4056078686
-## ph.ecog3     2.546825864  2.496377201  2.499743506  2.5323174307
-## ph.karno     0.022739460  0.024257824  0.026461316  0.0266012605
-## pat.karno    .           -0.008454919 -0.008258875 -0.0076750436
-## meal.cal     .            .            .           -0.0001728139
-## wt.loss     -0.008638164 -0.010134095 -0.009558614 -0.0097602080</code></pre>
+## age          .            .            0.009612417  0.0087536983
+## sex         -0.398257563 -0.400262675 -0.405046530 -0.4174205356
+## ph.ecog1     0.492849621  0.498559491  0.544978509  0.5475988976
+## ph.ecog2     1.548224796  1.421501293  1.426897209  1.4034669903
+## ph.ecog3     2.546825381  2.496367745  2.499743400  2.5298580074
+## ph.karno     0.022739443  0.024257659  0.026461314  0.0265562390
+## pat.karno    .           -0.008454945 -0.008258876 -0.0076812860
+## meal.cal     .            .            .           -0.0001728371
+## wt.loss     -0.008638158 -0.010134066 -0.009558613 -0.0097530999</code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get the deviance of the estimated model on all candidate support size</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/deviance.html">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
