@@ -188,7 +188,8 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
         {
             fit_l = false;
             fit_arg.support_size = left;
-            loss_l = metric->fit_and_evaluate_in_metric(algorithm_list, data, fit_arg);
+            Eigen::VectorXd loss_list = metric->fit_and_evaluate_in_metric(algorithm_list, data, fit_arg);
+            loss_l = loss_list.mean();
 
             // record: left
             sequence(++ind) = left;
@@ -199,9 +200,9 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
                 bd_matrix[k](ind, 0) = algorithm_list[k]->bd;
                 effective_number_matrix[k](ind, 0) = algorithm_list[k]->get_effective_number();
                 if (metric->is_cv)
-                    test_loss_matrix[k](ind, 0) = loss_l;
+                    test_loss_matrix[k](ind, 0) = loss_list(k);
                 else
-                    ic_matrix[k](ind, 0) = loss_l;
+                    ic_matrix[k](ind, 0) = loss_list(k);
             }
         }
 
@@ -209,7 +210,8 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
         {
             fit_r = false;
             fit_arg.support_size = right;
-            loss_r = metric->fit_and_evaluate_in_metric(algorithm_list, data, fit_arg);
+            Eigen::VectorXd loss_list = metric->fit_and_evaluate_in_metric(algorithm_list, data, fit_arg);
+            loss_r = loss_list.mean();
 
             // record: pos 2
             sequence(++ind) = right;
@@ -220,9 +222,9 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
                 bd_matrix[k](ind, 0) = algorithm_list[k]->bd;
                 effective_number_matrix[k](ind, 0) = algorithm_list[k]->get_effective_number();
                 if (metric->is_cv)
-                    test_loss_matrix[k](ind, 0) = loss_r;
+                    test_loss_matrix[k](ind, 0) = loss_list(k);
                 else
-                    ic_matrix[k](ind, 0) = loss_r;
+                    ic_matrix[k](ind, 0) = loss_list(k);
             }
         }
 
@@ -257,7 +259,8 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
         fit_arg.beta_init = beta_init;
         fit_arg.coef0_init = coef0_init;
         fit_arg.bd_init = bd_init;
-        double loss = metric->fit_and_evaluate_in_metric(algorithm_list, data, fit_arg);
+        Eigen::VectorXd loss_list = metric->fit_and_evaluate_in_metric(algorithm_list, data, fit_arg);
+        double loss = loss_list.mean();
 
         if (loss < best_loss)
         {
@@ -271,9 +274,9 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
                 bd_matrix[k](ind, 0) = algorithm_list[k]->bd;
                 effective_number_matrix[k](ind, 0) = algorithm_list[k]->get_effective_number();
                 if (metric->is_cv)
-                    test_loss_matrix[k](ind, 0) = loss_l;
+                    test_loss_matrix[k](ind, 0) = loss_list(k);
                 else
-                    ic_matrix[k](ind, 0) = loss_l;
+                    ic_matrix[k](ind, 0) = loss_list(k);
             }
         }
     }
@@ -290,6 +293,9 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
     }
     sequence = sequence.head(ind).eval();
     lambda_seq = lambda_seq.head(1).eval();
+    // cout<<"gs ind = "<<ind<<endl;///
+    // cout<<"gs sequence = "<<sequence.transpose()<<endl;///
+    // cout<<"gs lambda = "<<lambda_seq.transpose()<<endl;///
 }
 
 // double det(double a[], double b[]);
