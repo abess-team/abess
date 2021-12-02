@@ -404,6 +404,48 @@ abess_model_matrix <- function(object, data = environment(object),
   data
 }
 
+map_tunetype2numeric <- function(tune.type) {
+  ic_type <- switch(tune.type,
+                    "aic" = 1,
+                    "bic" = 2,
+                    "gic" = 3,
+                    "ebic" = 4,
+                    "cv" = 1
+  )
+  ic_type
+}
+
+check_foldid <- function(foldid, nobs) {
+  stopifnot(is.vector(foldid))
+  stopifnot(is.numeric(foldid))
+  stopifnot(length(foldid) == nobs)
+  check_integer_warning(
+    foldid,
+    "nfolds should be an integer value. It is coerced to be as.integer(foldid). "
+  )
+  foldid <- as.integer(foldid)
+  cv_fold_id <- foldid
+  cv_fold_id
+}
+
+check_nfold <- function(nfolds) {
+  stopifnot(is.numeric(nfolds) & nfolds >= 2)
+  check_integer_warning(
+    nfolds,
+    "nfolds should be an integer value. It is coerced to be as.integer(nfolds). "
+  )
+  nfolds <- as.integer(nfolds)
+  nfolds
+}
+
+map_dgCMatrix2entry <- function(x) {
+  x <- summary(x)
+  x[, 1:2] <- x[, 1:2] - 1
+  x <- as.matrix(x)
+  x <- x[, c(3, 1, 2)]
+  x
+}
+
 MULTIVARIATE_RESPONSE <- c("mgaussian", "multinomial")
 
 .onUnload <- function(libpath) {

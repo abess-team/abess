@@ -70,6 +70,17 @@ test_that("abesspca (FPC) works", {
   expect_true(all.equal(spca_fit1, spca_fit2))
 })
 
+test_that("abesspca (FPC-CV) works", {
+  skip("Skip test for abesspca (FPC-CV)")
+  set.seed(1)
+  u <- matrix(c(rnorm(150), rep(0,50)),ncol=1)
+  v <- matrix(c(rnorm(25), rep(0,50)), ncol=1)
+  x <- u%*%t(v)+matrix(rnorm(200*75),ncol=75)
+  write.csv(x, file = "pca_x.csv", row.names = FALSE)
+  spca_fit <- abesspca(x, tune.type = "cv", nfolds = 2)
+  as.vector(spca_fit[["test_loss_all"]])
+})
+
 test_that("abesspca (KPC) works", {
   data(USArrests) 
 

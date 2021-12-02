@@ -90,6 +90,10 @@
 #' pca_fit <- abesspca(rob_cov, type = "gram")
 #' pca_fit
 #'
+#' ## select support size via cross-validation ##
+#' pca_fit <- abesspca(USArrests, tune.type = "cv")
+#' pca_fit
+#'
 #' ## K-component principal component analysis
 #' pca_fit <- abesspca(USArrests,
 #'   sparse.type = "kpc",
@@ -169,6 +173,7 @@ abesspca <- function(x,
   }
   
   ## compute gram matrix
+  sparse_matrix <- FALSE
   cov_type <- match.arg(type)
   if (cov_type == "gram") {
     stopifnot(dim(x)[1] == dim(x)[2])
@@ -176,7 +181,8 @@ abesspca <- function(x,
     ## eigen values:
     eigen_value <- eigen(x, only.values = TRUE)[["values"]]
     eigen_value <- (eigen_value + abs(eigen_value)) / 2
-    # singular_value <- sqrt(eigen_value)
+    gram_x <- x
+    x <- matrix(0, ncol = nvars, nrow = 1)
   } else {
     stopifnot(length(cor) == 1)
     stopifnot(is.logical(cor))
@@ -190,19 +196,21 @@ abesspca <- function(x,
 
     if (sparse_X) {
       if (cor) {
-        x <- sparse.cov(x, cor = TRUE)
+        gram_x <- sparse.cov(x, cor = TRUE)
       } else {
-        x <- sparse.cov(x)
+        gram_x <- sparse.cov(x)
       }
+      x <- map_dgCMatrix2entry(x)
+      sparse_matrix <- TRUE
     } else {
       if (cor) {
-        x <- stats::cor(x)
+        gram_x <- stats::cor(x)
       } else {
-        x <- stats::cov(x)
+        gram_x <- stats::cov(x)
       }
     }
     if (!cor) {
-      x <- ((nobs - 1) / nobs) * x
+      gram_x <- ((nobs - 1) / nobs) * gram_x
     }
     # x <- round(x, digits = 13)
   }
@@ -332,18 +340,33 @@ abesspca <- function(x,
   
   ## 
   tune_type <- match.arg(tune.type)
+  if (cov_type == "gram" && tune_type == "cv") {
+    warnings("Cross validation is not allow when input a gram matrix. 
+             Coerce into tune.type = 'gic'.")
+    tune_type <- "gic"
+  }
+  ic_type <- map_tunetype2numeric(tune_type)
   if (tune_type != "cv") {
     nfolds <- 1
+    cv_fold_id <- integer(0)
+  } else {
+    if (is.null(foldid)) {
+      cv_fold_id <- integer(0)
+      nfolds <- check_nfold(nfolds)
+    } else {
+      cv_fold_id <- check_foldid(foldid, nobs)
+      nfolds <- length(unique(nfolds))
+    }
   }
 
   ## Cpp interface:
   result <- abessPCA_API(
-    x = matrix(0, ncol = nvars, nrow = 1),
+    x = x,
     n = nobs,
     p = nvars,
     normalize_type = as.integer(0),
     weight = c(1.0),
-    sigma = x,
+    sigma = gram_x,
     # algorithm_type = 6,
     max_iter = max_splicing_iter,
     exchange_num = c_max,
@@ -361,10 +384,10 @@ abesspca <- function(x,
     always_select = always_include,
     early_stop = FALSE,
     thread = 1,
-    sparse_matrix = FALSE, ### to change
+    sparse_matrix = sparse_matrix, 
     splicing_type = splicing_type, 
     sub_search = important_search, 
-    cv_fold_id = integer(0), 
+    cv_fold_id = cv_fold_id, 
     pca_num = K
   )
 
@@ -404,7 +427,7 @@ abesspca <- function(x,
     #     result[["coef"]][, 1:i, drop = FALSE]
     #   )
     # }
-    ev_vec <- adjusted_variance_explained(x, result[["coef"]])
+    ev_vec <- adjusted_variance_explained(gram_x, result[["coef"]])
     result[["ev"]] <- ev_vec
     result[["cum.ev"]] <- cumsum(ev_vec)
   }

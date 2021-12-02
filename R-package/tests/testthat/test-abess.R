@@ -435,7 +435,7 @@ test_that("abess (golden section) works", {
   
   ## default search range
   abess_fit <-
-    abess(dataset[["x"]], dataset[["y"]], tune.path = "gsection")
+    abess(dataset[["x"]], dataset[["y"]], tune.path = "gsection", nfolds = 5)
   test_batch(abess_fit, dataset, gaussian)
   
   ## self-defined search range

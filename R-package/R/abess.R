@@ -413,10 +413,7 @@ abess.default <- function(x,
   sparse_X <- ifelse(class(x)[1] %in% c("matrix", "data.frame"), FALSE, TRUE)
   if (sparse_X) {
     if (class(x) == "dgCMatrix") {
-      x <- summary(x)
-      x[, 1:2] <- x[, 1:2] - 1
-      x <- as.matrix(x)
-      x <- x[, c(3, 1, 2)]
+      x <- map_dgCMatrix2entry(x)
     }
   } else {
     if (is.data.frame(x)) {
@@ -678,38 +675,22 @@ abess.default <- function(x,
 
   # tune support size method:
   tune.type <- match.arg(tune.type)
-  ic_type <- switch(tune.type,
-    "aic" = 1,
-    "bic" = 2,
-    "gic" = 3,
-    "ebic" = 4,
-    "cv" = 1
-  )
+  ic_type <- map_tunetype2numeric(tune.type)
   is_cv <- ifelse(tune.type == "cv", TRUE, FALSE)
   if (is_cv) {
-    stopifnot(is.numeric(nfolds) & nfolds >= 2)
-    check_integer_warning(
-      nfolds,
-      "nfolds should be an integer value. It is coerced to be as.integer(nfolds). "
-    )
-    nfolds <- as.integer(nfolds)
-    
     if (is.null(foldid)) {
       cv_fold_id <- integer(0)
+      nfolds <- check_nfold(nfolds)
     } else {
-      stopifnot(is.vector(foldid))
-      stopifnot(is.numeric(foldid))
-      stopifnot(length(foldid) == nobs)
-      check_integer_warning(
-        foldid,
-        "nfolds should be an integer value. It is coerced to be as.integer(foldid). "
-      )
-      foldid <- as.integer(foldid)
-      cv_fold_id <- foldid
+      cv_fold_id <- check_foldid(foldid, nobs)
+      nfolds <- length(unique(nfolds))
     }
   } else {
     cv_fold_id <- integer(0)
+    # nfolds <- 1
   }
+  
+  ## information criterion
   stopifnot(is.numeric(ic.scale))
   stopifnot(ic.scale >= 0)
   ic_scale <- as.integer(ic.scale)

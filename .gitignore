@@ -115,3 +115,4 @@ docs/simulation/Python/*.npy
 TODO.md
 
 R-package/R/omit
+R-package/pca_x.csv
