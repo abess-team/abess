@@ -10,8 +10,12 @@ abesspca(
   sparse.type = c("fpc", "kpc"),
   cor = FALSE,
   support.size = NULL,
+  kpc.num = ifelse(sparse.type == "fpc", 1, 2),
+  tune.type = c("aic", "bic", "gic", "ebic", "cv"),
+  nfolds = 5,
+  foldid = NULL,
+  ic.scale = 1,
   c.max = NULL,
-  lambda = 0,
   always.include = NULL,
   group.index = NULL,
   splicing.type = 1,
@@ -31,7 +35,8 @@ If \code{x} is a predictor matrix, it can be in sparse matrix format
 If \code{type = "gram"}, \code{x} is considered as a sample covariance or correlation matrix.}
 
 \item{sparse.type}{If \code{sparse.type = "fpc"}, then best subset selection performs on the first principal component;
-If \code{sparse.type = "kpc"}, then best subset selection performs on the first \eqn{K} principal components.}
+If \code{sparse.type = "kpc"}, then best subset selection performs on the first \code{kpc.num} principal components.
+(The parameter will be discard in future version.)}
 
 \item{cor}{A logical value. If \code{cor = TRUE}, perform PCA on the correlation matrix;
 otherwise, the covariance matrix.
@@ -48,9 +53,19 @@ then for 20\% principal components,
 it is set as \code{min(ncol(x), 100)} if \code{group.index = NULL};
 otherwise, \code{min(length(unique(group.index)), 100)}.}
 
-\item{c.max}{an integer splicing size. The default of \code{c.max} is the maximum of 2 and \code{max(support.size) / 2}.}
+\item{tune.type}{The type of criterion for choosing the support size.
+Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
+Default is \code{"gic"}.}
 
-\item{lambda}{A single lambda value for regularized best subset selection. Default is 0.}
+\item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.}
+
+\item{foldid}{an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in. 
+The default \code{foldid = NULL} would generate a random foldid.}
+
+\item{ic.scale}{A non-negative value used for multiplying the penalty term 
+in information criterion. Default: \code{ic.scale = 1}.}
+
+\item{c.max}{an integer splicing size. The default of \code{c.max} is the maximum of 2 and \code{max(support.size) / 2}.}
 
 \item{always.include}{An integer vector containing the indexes of variables that should always be included in the model.}
 
@@ -127,12 +142,17 @@ rob_cov <- (rob_cov + t(rob_cov)) / 2
 pca_fit <- abesspca(rob_cov, type = "gram")
 pca_fit
 
+## select support size via cross-validation ##
+pca_fit <- abesspca(USArrests, tune.type = "cv")
+pca_fit
+
 ## K-component principal component analysis
 pca_fit <- abesspca(USArrests,
   sparse.type = "kpc",
   support.size = c(1, 2)
 )
 coef(pca_fit)
+
 }
 }
 \references{
