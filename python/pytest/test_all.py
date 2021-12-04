@@ -92,14 +92,14 @@ class TestClass:
         # group + cov
         group = np.arange(4)
         group = group.repeat(5)
-        model = abessLm(support_size=range(4), covariance_update=True)
+        model = abessLm(support_size=3, covariance_update=True)
         model.fit(data.x, data.y, group=group)
-        assert_reg(model.coef_)
+        coef = np.unique(group[np.nonzero(model.coef_)[0]])
+        assert (coef.size == 3)
 
         # always_select + cv
         model = abessLm(support_size=range(2, s_max), cv=5, always_select=[0, 1])
         model.fit(data.x, data.y)
-        assert_reg(model.coef_)
         assert ((model.coef_[0] * model.coef_[1]) != 0)
 
     def test_binomial(self):
@@ -160,14 +160,14 @@ class TestClass:
         # group 
         group = np.arange(4)
         group = group.repeat(5)
-        model = abessLogistic(support_size=range(4))
+        model = abessLogistic(support_size=3)
         model.fit(data.x, data.y, group=group)
-        assert_reg(model.coef_)
+        coef = np.unique(group[np.nonzero(model.coef_)[0]])
+        assert (coef.size == 3)
 
         # always_select + cv
         model = abessLogistic(support_size=range(2, s_max), cv=5, always_select=[0, 1])
         model.fit(data.x, data.y)
-        assert_reg(model.coef_)
         assert ((model.coef_[0] * model.coef_[1]) != 0)
 
     def test_cox(self):
