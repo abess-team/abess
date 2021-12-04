@@ -75,19 +75,16 @@ class TestClass:
         model = abessLm(support_size=range(10), covariance_update=True, screening_size=10, cv=5)
         model.fit(data.x, data.y)
         assert_fit(model.coef_, data.coef_)
-        assert_reg(model.coef_)
 
         # important search + cov + cv
         model = abessLm(support_size=range(s_max), important_search=10, covariance_update=True, cv=5)
         model.fit(data.x, data.y)
         assert_fit(model.coef_, data.coef_)
-        assert_reg(model.coef_)
 
         # gs + cv + cov
         model = abessLm(path_type='pgs', s_min=0, s_max=s_max, cv=5, covariance_update=True)
         model.fit(data.x, data.y)
         assert_fit(model.coef_, data.coef_)
-        assert_reg(model.coef_)
 
         # group + cov
         group = np.arange(4)
@@ -143,19 +140,16 @@ class TestClass:
         model = abessLogistic(support_size=range(10), screening_size=10, cv=5)
         model.fit(data.x, data.y)
         assert_fit(model.coef_, data.coef_)
-        assert_reg(model.coef_)
 
         # important search + cv
         model = abessLogistic(support_size=range(s_max), important_search=10, cv=5)
         model.fit(data.x, data.y)
         assert_fit(model.coef_, data.coef_)
-        assert_reg(model.coef_)
 
         # gs + cv (TODO: gs fail to recover coef_)
         model = abessLogistic(path_type='pgs', s_min=0, s_max=s_max, cv=5)
         model.fit(data.x, data.y)
         # assert_fit(model.coef_, data.coef_)
-        # assert_reg(model.coef_)
 
         # group 
         group = np.arange(4)
