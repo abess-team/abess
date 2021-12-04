@@ -57,7 +57,7 @@ class abessPCA(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, 
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1, 
                  always_select=[], 
                  thread=1,
                  sparse_matrix=False,
@@ -66,7 +66,7 @@ class abessPCA(bess_base):
         super(abessPCA, self).__init__(
             algorithm_type="abess", model_type="PCA", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, s_min=s_min, s_max=s_max, 
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, 
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
             always_select=always_select, 
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -237,6 +237,17 @@ class abessPCA(bess_base):
             else:
                 support_sizes = self.support_size
         support_sizes = np.array(support_sizes).astype('int32')
+    
+        # screening
+        if self.screening_size != -1:
+            if self.screening_size == 0:
+                self.screening_size = min(p, int(n / (np.log(np.log(n)) * np.log(p)))) 
+            elif self.screening_size > p:
+                raise ValueError(
+                    "screening size should be smaller than X.shape[1].")
+            elif self.screening_size < max(support_sizes):
+                raise ValueError(
+                    "screening size should be more than max(support_size).")
 
         # unused
         new_s_min = 0
@@ -244,7 +255,6 @@ class abessPCA(bess_base):
         new_lambda_min = 0
         new_lambda_max = 0
         alphas = [0]
-        new_screening_size = -1
         cv_fold_id = np.array([], dtype = "int32")
 
         # Exchange_num
@@ -311,7 +321,7 @@ class abessPCA(bess_base):
                               cv_fold_id,
                               new_s_min, new_s_max, 
                               new_lambda_min, new_lambda_max, self.n_lambda,
-                              new_screening_size, 
+                              self.screening_size, 
                               self.always_select, 
                               self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
                               self.early_stop, self.approximate_Newton,
@@ -538,7 +548,7 @@ class abessRPCA(bess_base):
                               cv_fold_id,
                               new_s_min, new_s_max, 
                               new_lambda_min, new_lambda_max, self.n_lambda,
-                              new_screening_size, 
+                              self.screening_size, 
                               self.always_select, 
                               self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
                               self.early_stop, self.approximate_Newton,
