@@ -72,10 +72,10 @@ class bess_base(BaseEstimator):
     """
 
     def __init__(self, algorithm_type, model_type, normalize_type, path_type, max_iter=20, exchange_num=5, is_warm_start=True,
-                 support_size=None, alpha=None, s_min=None, s_max=None, 
+                 support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0,
-                 cv=1, screening_size=-1, 
-                 always_select=[], 
+                 cv=1, screening_size=-1,
+                 always_select=[],
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
                  thread=1,
@@ -83,7 +83,7 @@ class bess_base(BaseEstimator):
                  sparse_matrix=False,
                  splicing_type=0,
                  important_search=0,
-                 # early_stop=False, lambda_min=None, lambda_max=None, n_lambda=100, 
+                 # early_stop=False, lambda_min=None, lambda_max=None, n_lambda=100,
                  ):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
@@ -126,7 +126,8 @@ class bess_base(BaseEstimator):
 
         # Check3 : y validation
         if y is not None:
-            X, y = check_X_y(X, y, accept_sparse=True, multi_output=True, y_numeric=True)
+            X, y = check_X_y(X, y, accept_sparse=True,
+                             multi_output=True, y_numeric=True)
             return X, y
 
         return X
@@ -167,7 +168,7 @@ class bess_base(BaseEstimator):
 
             # Check that X and y have correct shape
             X, y = check_X_y(X, y, accept_sparse=True,
-                             multi_output=True, y_numeric=True)
+                             multi_output=True, y_numeric=True, dtype='numeric')
 
             # Sort for Cox
             if self.model_type == "Cox":
@@ -233,16 +234,16 @@ class bess_base(BaseEstimator):
         else:
             raise ValueError(
                 "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
-        
+
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
-        
+
         # cv_fold_id
         if cv_fold_id is None:
-            cv_fold_id = np.array([], dtype = "int32")
+            cv_fold_id = np.array([], dtype="int32")
         else:
-            cv_fold_id = np.array(cv_fold_id, dtype = "int32")
+            cv_fold_id = np.array(cv_fold_id, dtype="int32")
             if cv_fold_id.ndim > 1:
                 raise ValueError("group should be an 1D array of integers.")
             elif cv_fold_id.size != n:
@@ -322,10 +323,10 @@ class bess_base(BaseEstimator):
                 if self.s_min is None else self.s_min
             new_s_max = min(p, int(n / (np.log(np.log(n)) * np.log(p)))) \
                 if self.s_max is None else self.s_max
-            new_lambda_min = 0 # \
-                # if self.lambda_min is None else self.lambda_min
-            new_lambda_max = 0 # \
-                # if self.lambda_max is None else self.lambda_max
+            new_lambda_min = 0  # \
+            # if self.lambda_min is None else self.lambda_min
+            new_lambda_max = 0  # \
+            # if self.lambda_max is None else self.lambda_max
 
             if (new_s_max < new_s_min):
                 raise ValueError("s_max should be larger than s_min")
@@ -347,7 +348,8 @@ class bess_base(BaseEstimator):
         # screening
         if self.screening_size != -1:
             if self.screening_size == 0:
-                self.screening_size = min(p, int(n / (np.log(np.log(n)) * np.log(p)))) 
+                self.screening_size = min(
+                    p, int(n / (np.log(np.log(n)) * np.log(p))))
             elif self.screening_size > p:
                 raise ValueError(
                     "screening size should be smaller than X.shape[1].")
@@ -371,7 +373,7 @@ class bess_base(BaseEstimator):
         # Splicing type
         if (self.splicing_type != 0 and self.splicing_type != 1):
             raise ValueError("splicing type should be 0 or 1.")
-        
+
         # Important_search
         if (not isinstance(self.important_search, int) or self.important_search < 0):
             raise ValueError(
@@ -398,7 +400,7 @@ class bess_base(BaseEstimator):
 
                 ind = np.lexsort((tmp[:, 2], tmp[:, 1]))
                 X = tmp[ind, :]
-        
+
         # normalize
         normalize = 0
         if (is_normal):
@@ -415,10 +417,10 @@ class bess_base(BaseEstimator):
                               support_sizes,
                               alphas,
                               cv_fold_id,
-                              new_s_min, new_s_max, 
+                              new_s_min, new_s_max,
                               new_lambda_min, new_lambda_max, self.n_lambda,
-                              self.screening_size, 
-                              self.always_select, 
+                              self.screening_size,
+                              self.always_select,
                               self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
                               self.early_stop, self.approximate_Newton,
                               self.thread,

@@ -41,21 +41,21 @@ using namespace std;
 //  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double> > for Multivariable Sparse
 template <class T1, class T2, class T3, class T4>
 List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
-              Eigen::VectorXd weight, 
-              int algorithm_type, 
-              int path_type, bool is_warm_start,
-              int ic_type, double ic_coef, int Kfold,
-              Eigen::VectorXi sequence,
-              Eigen::VectorXd lambda_seq,
-              int s_min, int s_max, 
-              double lambda_min, double lambda_max, int nlambda,
-              int screening_size, 
-              Eigen::VectorXi g_index,
-              bool early_stop, 
-              int thread,
-              bool sparse_matrix,
-              Eigen::VectorXi &cv_fold_id,
-              vector<Algorithm<T1, T2, T3, T4> *> algorithm_list)
+                   Eigen::VectorXd weight,
+                   int algorithm_type,
+                   int path_type, bool is_warm_start,
+                   int ic_type, double ic_coef, int Kfold,
+                   Eigen::VectorXi sequence,
+                   Eigen::VectorXd lambda_seq,
+                   int s_min, int s_max,
+                   double lambda_min, double lambda_max, int nlambda,
+                   int screening_size,
+                   Eigen::VectorXi g_index,
+                   bool early_stop,
+                   int thread,
+                   bool sparse_matrix,
+                   Eigen::VectorXi &cv_fold_id,
+                   vector<Algorithm<T1, T2, T3, T4> *> algorithm_list)
 {
 #ifndef R_BUILD
   std::srand(123);
@@ -66,10 +66,14 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
 
   // data packing
   Data<T1, T2, T3, T4> data(x, y, normalize_type, weight, g_index, sparse_matrix, beta_size);
+  if (algorithm_list[0]->model_type == 1 || algorithm_list[0]->model_type == 5)
+  {
+    add_weight(data.x, data.y, data.weight);
+  }
 
   // screening
-  Eigen::VectorXi screening_A; 
-  if (screening_size >= 0) 
+  Eigen::VectorXi screening_A;
+  if (screening_size >= 0)
   {
     screening_A = screening<T1, T2, T3, T4>(data, algorithm_list, screening_size, beta_size, lambda_seq[0]);
   }
@@ -79,7 +83,8 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
   // 2:warm start save
   // 3:group_XTX
   Metric<T1, T2, T3, T4> *metric = new Metric<T1, T2, T3, T4>(ic_type, ic_coef, Kfold);
-  if (Kfold > 1){
+  if (Kfold > 1)
+  {
     metric->set_cv_train_test_mask(data, data.n, cv_fold_id);
     metric->set_cv_init_fit_arg(beta_size, data.M);
     // metric->set_cv_initial_model_param(Kfold, data.p);
@@ -126,7 +131,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
   Eigen::MatrixXd train_loss_matrix(s_size, lambda_size);
   Eigen::MatrixXd effective_number_matrix(s_size, lambda_size);
 
-  if (Kfold == 1) 
+  if (Kfold == 1)
   {
     beta_matrix = result_list[0].beta_matrix;
     coef0_matrix = result_list[0].coef0_matrix;
@@ -134,9 +139,9 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
     train_loss_matrix = result_list[0].train_loss_matrix;
     effective_number_matrix = result_list[0].effective_number_matrix;
     ic_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
-  } 
-  else 
-  { 
+  }
+  else
+  {
     Eigen::MatrixXd test_loss_tmp;
     for (int i = 0; i < Kfold; i++)
     {

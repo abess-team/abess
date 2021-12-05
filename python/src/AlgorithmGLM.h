@@ -720,8 +720,8 @@ public:
     }
     xbeta_exp = xbeta_exp.array().exp();
 
-    Eigen::VectorXd d = X.transpose() * (y - xbeta_exp) - 2 * this->lambda_level * beta;
-    Eigen::VectorXd h = xbeta_exp;
+    Eigen::VectorXd d = X.transpose() * ((y - xbeta_exp).cwiseProduct(weights)) - 2 * this->lambda_level * beta;
+    Eigen::VectorXd h = weights.array() * xbeta_exp.array();
 
     int A_size = A.size();
     int I_size = I.size();
@@ -782,7 +782,7 @@ public:
       xbeta_exp = xbeta_exp.array().exp();
 
       // Eigen::VectorXd d = X.transpose() * res - 2 * this->lambda_level * beta;
-      Eigen::VectorXd h = xbeta_exp;
+      Eigen::VectorXd h = xbeta_exp.array() * weights.array();
 
       T4 XA_new = XA;
       for (int j = 0; j < XA.cols(); j++)
@@ -1457,7 +1457,9 @@ public:
     {
       Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, M);
       double t = 2 * (Pi.array() * (one - Pi).array()).maxCoeff();
-      Eigen::MatrixXd res = X.transpose() * (y - Pi) / t;
+      Eigen::MatrixXd res = y - Pi;
+      array_product(res, weights, 1);
+      Eigen::MatrixXd XTres = X.transpose() * res / t;
       // ConjugateGradient<MatrixXd, Lower | Upper> cg;
       // cg.compute(X.adjoint() * X);
       Eigen::MatrixXd XTX = X.transpose() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
@@ -1468,7 +1470,7 @@ public:
       for (j = 0; j < this->primary_model_fit_max_iter; j++)
       {
         // beta1 = beta0 + cg.solve(res);
-        beta1 = beta0 + invXTX * res;
+        beta1 = beta0 + invXTX * XTres;
 
         // double app_loss0, app_loss1, app_loss2;
         // app_loss0 = ((y - Pi) / t).squaredNorm();
@@ -1499,7 +1501,9 @@ public:
 
         // beta0 = beta1;
         t = 2 * (Pi.array() * (one - Pi).array()).maxCoeff();
-        res = X.transpose() * (y - Pi) / t;
+        res = y - Pi;
+        array_product(res, weights, 1);
+        XTres = X.transpose() * res / t;
       }
     }
     else
@@ -1514,7 +1518,7 @@ public:
           {
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 
-            Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
+            Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array() * weights.array();
 
             for (int i = 0; i < PiPj.size(); i++)
             {
@@ -1529,7 +1533,7 @@ public:
           {
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 
-            Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array();
+            Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array() * weights.array();
 
             for (int i = 0; i < PiPj.size(); i++)
             {
@@ -1717,7 +1721,7 @@ public:
       T4 XG_new(h.rows(), h.cols());
       for (int m = 0; m < M - 1; m++)
       {
-        XG_new.col(m) = h.col(m).cwiseProduct(XG);
+        XG_new.col(m) = h.col(m).cwiseProduct(XG).cwiseProduct(weights);
       }
       Eigen::MatrixXd XGbar = -XG_new.transpose() * XG_new;
 
@@ -1770,9 +1774,6 @@ public:
       beta0.block(1, 0, p, M) = beta;
       Eigen::MatrixXd Pi;
       pi(X, y, beta0, Pi);
-      // Eigen::MatrixXd log_Pi = Pi.array().log();
-      // array_product(log_Pi, weights, 1);
-      // double loglik1 = DBL_MAX, loglik0 = (log_Pi.array() * y.array()).sum();
 
       Eigen::MatrixXd W(M * n, M * n);
       Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
@@ -1784,7 +1785,7 @@ public:
           {
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 
-            Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
+            Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array() * weights.array();
 
             for (int i = 0; i < PiPj.size(); i++)
             {
@@ -1799,7 +1800,7 @@ public:
           {
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 
-            Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array();
+            Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array() * weights.array();
 
             for (int i = 0; i < PiPj.size(); i++)
             {
