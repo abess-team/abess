@@ -41,13 +41,12 @@ class bess_base(BaseEstimator):
     thread: int, optional
         Max number of multithreads. If thread = 0, the program will use the maximum number supported by the device.
         Default: thread = 1. 
-    is_screening: bool, optional
-        Screen the variables first and use the chosen variables in abess process.
-        Default: is_screen = False.
-    screen_size: int, optional
-        This parameter is only useful when is_screen = True. 
-        The number of variables remaining after screening. It should be a non-negative number smaller than p.
-        Default: screen_size = None.
+    screening_size: int, optional
+        The number of variables remaining after screening. 
+        It should be a non-negative number smaller than p, but larger than any value in support\_size.
+        If screening_size=-1, screening will not be used. 
+        If screening_size=0, screening_size will be set as min(p, int(n / (np.log(np.log(n)) * np.log(p)))).
+        Default: screening_size = -1.
     always_select: array_like, optional
         An array contains the indexes of variables we want to consider in the model.
         Default: always_select = [].
@@ -75,7 +74,7 @@ class bess_base(BaseEstimator):
     def __init__(self, algorithm_type, model_type, normalize_type, path_type, max_iter=20, exchange_num=5, is_warm_start=True,
                  support_size=None, alpha=None, s_min=None, s_max=None, 
                  ic_type="ebic", ic_coef=1.0,
-                 cv=1, is_screening=False, screening_size=None, 
+                 cv=1, screening_size=-1, 
                  always_select=[], 
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
@@ -103,7 +102,6 @@ class bess_base(BaseEstimator):
         self.ic_type = ic_type
         self.ic_coef = ic_coef
         self.cv = cv
-        self.is_screening = is_screening
         self.screening_size = screening_size
         self.always_select = always_select
         self.primary_model_fit_max_iter = primary_model_fit_max_iter
@@ -346,19 +344,16 @@ class bess_base(BaseEstimator):
         # elif (self.exchange_num > min(support_sizes)):
         #     print("[Warning]  exchange_num may be larger than sparsity, and it would be set up to sparsity.")
 
-        # Is_screening
-        if self.is_screening:
-            new_screening_size = min(p, int(n / (np.log(np.log(n)) * np.log(p)))) \
-                if self.screening_size is None else self.screening_size
-
-            if self.screening_size > p:
+        # screening
+        if self.screening_size != -1:
+            if self.screening_size == 0:
+                self.screening_size = min(p, int(n / (np.log(np.log(n)) * np.log(p)))) 
+            elif self.screening_size > p:
                 raise ValueError(
                     "screening size should be smaller than X.shape[1].")
             elif self.screening_size < max(support_sizes):
                 raise ValueError(
                     "screening size should be more than max(support_size).")
-        else:
-            new_screening_size = -1
 
         # Primary fit parameters
         if (not isinstance(self.primary_model_fit_max_iter, int) or self.primary_model_fit_max_iter <= 0):
@@ -422,7 +417,7 @@ class bess_base(BaseEstimator):
                               cv_fold_id,
                               new_s_min, new_s_max, 
                               new_lambda_min, new_lambda_max, self.n_lambda,
-                              new_screening_size, 
+                              self.screening_size, 
                               self.always_select, 
                               self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
                               self.early_stop, self.approximate_Newton,

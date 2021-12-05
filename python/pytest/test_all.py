@@ -18,124 +18,151 @@ if sys.version_info[0] == 3 and sys.version_info[1] >= 6:
     from sklearn.linear_model import PoissonRegressor
     from lifelines import CoxPHFitter
 
+def assert_nan(coef):
+    assert not np.isnan(np.sum(coef))
+
+def assert_value(coef1, coef2):
+    coef1 = coef1.reshape(-1)
+    coef2 = coef2.reshape(-1)
+    assert coef1.shape == coef2.shape
+    assert coef1 == approx(coef2, rel=1e-2, abs=1e-2)
+
+def assert_fit(coef1, coef2):
+    assert_nan(coef1)
+    assert_nan(coef2)
+    pos1 = np.nonzero(coef1)[0]
+    pos2 = np.nonzero(coef2)[0]
+    assert pos1.shape == pos2.shape
+    assert (pos1 == pos2).all()
+    # assert_value(coef1[pos1], coef2[pos2])
 
 class TestClass:
     def test_gaussian(self):
+        np.random.seed(2)
         n = 100
         p = 20
         k = 3
         family = "gaussian"
-        rho = 0.5
-        sigma = 1
-        M = 1
-        np.random.seed(2)
-        data = make_multivariate_glm_data(
-            family=family, n=n, p=p, k=k, rho=rho, M=M)
-        data2 = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        data3 = make_multivariate_glm_data(
-            family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
+        rho = 0.1
         s_max = 20
 
-        model = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                        s_min=1, s_max=p, cv=1,
-                        exchange_num=2, 
-                        ic_coef=1., thread=5, covariance_update=True)
+        data = make_glm_data(family=family, n=n, p=p, k=k, rho=rho)
+
+        def assert_reg(coef):
+            nonzero = np.nonzero(coef)[0]
+            new_x = data.x[:, nonzero]
+            reg = LinearRegression()
+            reg.fit(new_x, data.y.reshape(-1))
+            assert_value(coef[nonzero], reg.coef_)
+
+        # null
+        model = abessLm()
         model.fit(data.x, data.y)
-        model.predict(data.x)
+        assert_fit(model.coef_, data.coef_)
+        assert_reg(model.coef_)
 
-        model2 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                         s_min=1, s_max=p, cv=5,
-                         exchange_num=2, 
-                         ic_coef=1., thread=1, covariance_update=True, always_select=[0])
-        model2.fit(data.x, data.y)
+        # predict
+        y = model.predict(data.x)
+        assert_nan(y)
+        
+        # sparse 
+        model1 = abessLm(support_size=range(s_max), sparse_matrix=True)
+        model1.fit(coo_matrix(data.x), data.y)
+        assert_value(model1.coef_, model.coef_)
+        assert_value(model1.intercept_, model.intercept_)
 
-        model3 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                         s_min=1, s_max=p, cv=5,
-                         exchange_num=2, 
-                         ic_coef=1., thread=5, covariance_update=False, sparse_matrix=True)
-        model3.fit(data.x, data.y)
+        # cov + screening + cv
+        model = abessLm(support_size=range(10), covariance_update=True, screening_size=10, cv=5)
+        model.fit(data.x, data.y)
+        assert_fit(model.coef_, data.coef_)
 
-        model4 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
-                         s_min=1, s_max=p, cv=1,
-                         exchange_num=2, 
-                         ic_coef=1., thread=5, covariance_update=True, splicing_type=1)
-        model4.fit(data.x, data.y)
+        # important search + cov + cv
+        model = abessLm(support_size=range(s_max), important_search=10, covariance_update=True, cv=5)
+        model.fit(data.x, data.y)
+        assert_fit(model.coef_, data.coef_)
 
-        model5 = abessLm(support_size=range(s_max), important_search=0)
-        model5.fit(data.x, data.y)
+        # gs + cv + cov
+        model = abessLm(path_type='pgs', s_min=0, s_max=s_max, cv=5, covariance_update=True)
+        model.fit(data.x, data.y)
+        assert_fit(model.coef_, data.coef_)
 
-        model6 = abessLm(support_size=range(2, s_max), important_search=5, always_select=[0, 1], covariance_update=True)
-        model6.fit(data.x, data.y)
+        # group + cov
+        group = np.arange(4)
+        group = group.repeat(5)
+        model = abessLm(support_size=3, covariance_update=True)
+        model.fit(data.x, data.y, group=group)
+        coef = np.unique(group[np.nonzero(model.coef_)[0]])
+        assert (coef.size == 3)
 
-        nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model5.coef_)[0]
-        print(nonzero_true)
-        print(nonzero_fit)
-        new_x = data.x[:, nonzero_fit]
-        reg = LinearRegression()
-        reg.fit(new_x, data.y.reshape(-1))
-        assert model5.coef_[nonzero_fit] == approx(
-            reg.coef_, rel=1e-5, abs=1e-5)
-        assert (nonzero_true == nonzero_fit).all()
-        assert (model6.coef_[0] != 0)
+        # always_select + cv
+        model = abessLm(support_size=range(2, s_max), cv=5, always_select=[0, 1])
+        model.fit(data.x, data.y)
+        assert ((model.coef_[0] * model.coef_[1]) != 0)
 
     def test_binomial(self):
+        np.random.seed(5)
         n = 100
         p = 20
         k = 3
         family = "binomial"
         rho = 0.5
         sigma = 1
-        np.random.seed(5)
-        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        support_size = range(0, 20)
-        print("logistic abess")
+        s_max = 20
 
-        model = abessLogistic(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=30,
-                              s_min=1, s_max=p, cv=5,
-                              exchange_num=2, 
-                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5)
-        group = np.linspace(1, p, p)
-        model.fit(data.x, data.y, group=group)
+        data = make_glm_data(family=family, n=n, p=p, k=k, rho=rho, sigma=sigma)
 
-        model2 = abessLogistic(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
-                               s_min=1, s_max=p, cv=5,
-                               exchange_num=2, 
-                               primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5, sparse_matrix=True)
-        group = np.linspace(1, p, p)
-        model2.fit(data.x, data.y, group=group)
-        model2.predict(data.x)
-
-        model3 = abessLogistic(path_type="seq", support_size=support_size, ic_type='aic', is_screening=False, screening_size=30,  alpha=[0.001],
-                              s_min=1, s_max=p, cv=1,
-                              exchange_num=2, 
-                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
-        group = np.linspace(1, p, p)
-        model3.fit(data.x, data.y, group=group)
-
-        model4 = abessLogistic(path_type="seq", support_size=support_size, ic_type='aic', is_screening=True, screening_size=20,  alpha=[0.001],
-                              s_min=1, s_max=p, cv=1,
-                              exchange_num=2, 
-                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
-        group = np.linspace(1, p, p)
-        model4.fit(data.x, data.y, group=group)
-
-        model.predict_proba(data.x)
-
-        nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model2.coef_)[0]
-        print(nonzero_true)
-        print(nonzero_fit)
-        assert (nonzero_true == nonzero_fit).all()
-
-        if sys.version_info[1] >= 6:
-            new_x = data.x[:, nonzero_fit]
+        def assert_reg(coef):
+            if sys.version_info[1] < 6:
+                return;
+            nonzero = np.nonzero(coef)[0]
+            new_x = data.x[:, nonzero]
             reg = LogisticRegression(penalty="none")
             reg.fit(new_x, data.y)
-            print(model2.coef_[nonzero_fit])
-            print(reg.coef_)
-            assert model2.coef_[nonzero_fit] == approx(
-                reg.coef_[0], rel=1e-2, abs=1e-2)
+            assert_value(coef[nonzero], reg.coef_)
+
+        # null
+        model = abessLogistic()
+        model.fit(data.x, data.y)
+        assert_fit(model.coef_, data.coef_)
+        assert_reg(model.coef_)
+
+        # predict
+        y = model.predict(data.x)
+        assert_nan(y)
+        
+        # sparse 
+        model1 = abessLogistic(support_size=range(s_max), sparse_matrix=True)
+        model1.fit(coo_matrix(data.x), data.y)
+        assert_value(model1.coef_, model.coef_)
+        assert_value(model1.intercept_, model.intercept_)
+
+        # screening + cv
+        model = abessLogistic(support_size=range(10), screening_size=10, cv=5)
+        model.fit(data.x, data.y)
+        assert_fit(model.coef_, data.coef_)
+
+        # important search + cv
+        model = abessLogistic(support_size=range(s_max), important_search=10, cv=5)
+        model.fit(data.x, data.y)
+        assert_fit(model.coef_, data.coef_)
+
+        # gs + cv (TODO: gs fail to recover coef_)
+        model = abessLogistic(path_type='pgs', s_min=0, s_max=s_max, cv=5)
+        model.fit(data.x, data.y)
+        # assert_fit(model.coef_, data.coef_)
+
+        # group 
+        group = np.arange(4)
+        group = group.repeat(5)
+        model = abessLogistic(support_size=3)
+        model.fit(data.x, data.y, group=group)
+        coef = np.unique(group[np.nonzero(model.coef_)[0]])
+        assert (coef.size == 3)
+
+        # always_select + cv
+        model = abessLogistic(support_size=range(2, s_max), cv=5, always_select=[0, 1])
+        model.fit(data.x, data.y)
+        assert ((model.coef_[0] * model.coef_[1]) != 0)
 
     def test_cox(self):
         n = 100
@@ -150,7 +177,7 @@ class TestClass:
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
 
-        model = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=20, alpha=[0.001],
+        model = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20, alpha=[0.001],
                          s_min=1, s_max=p, cv=5,
                          exchange_num=2, 
                          primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
@@ -158,7 +185,7 @@ class TestClass:
         model.fit(data.x, data.y, group=group)
         model.predict(data.x)
 
-        model = abessCox(path_type="seq", support_size=support_size, ic_type='bic', is_screening=True, screening_size=20, alpha=[0.001],
+        model = abessCox(path_type="seq", support_size=support_size, ic_type='bic', screening_size=20, alpha=[0.001],
                          s_min=1, s_max=p, cv=1,
                          exchange_num=2, 
                          primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
@@ -166,7 +193,7 @@ class TestClass:
         model.fit(data.x, data.y, group=group)
         model.predict(data.x)
 
-        model2 = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model2 = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                           s_min=1, s_max=p, cv=5,
                           exchange_num=2, 
                           primary_model_fit_max_iter=60, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5, sparse_matrix=True)
@@ -176,7 +203,7 @@ class TestClass:
         model3 = abessCox(support_size=support_size, important_search=10)
         model3.fit(data.x, data.y, group=group)
 
-        model4 = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model4 = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                           s_min=1, s_max=p, cv=5,
                           exchange_num=2, primary_model_fit_epsilon=1,  ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
@@ -218,21 +245,21 @@ class TestClass:
         #     family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
-        model = abessPoisson(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
+        model = abessPoisson(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20, alpha=[0.001],
                              s_min=1, s_max=p, cv=5,
                              exchange_num=2, 
                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, ic_coef=1., thread=5, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model.fit(data.x, data.y, group=group)
 
-        model1 = abessPoisson(path_type="seq", support_size=support_size, ic_type='gic', is_screening=True, screening_size=20, alpha=[0.001],
+        model1 = abessPoisson(path_type="seq", support_size=support_size, ic_type='gic', screening_size=20, alpha=[0.001],
                               s_min=1, s_max=p, cv=1,
                               exchange_num=2, 
                               primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model1.fit(data.x, data.y, group=group)
 
-        model2 = abessPoisson(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model2 = abessPoisson(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                               s_min=1, s_max=p, cv=5,
                               exchange_num=2, 
                               primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6, ic_coef=1., thread=5)
@@ -271,7 +298,7 @@ class TestClass:
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, int(n/np.log(np.log(n)) / np.log(p)))
 
-        model = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                                    s_min=1, s_max=p, cv=5,
                                    exchange_num=2, 
                                    ic_coef=1., thread=5, covariance_update=False)
@@ -279,14 +306,14 @@ class TestClass:
         model.fit(data.x, data.y, group=group)
         model.predict(data.x)
 
-        model2 = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
+        model2 = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20, alpha=[0.001],
                                     s_min=1, s_max=p, cv=5,
                                     exchange_num=2, 
                                     ic_coef=1., thread=5, covariance_update=True, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-        model3 = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
+        model3 = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20, alpha=[0.001],
                                     s_min=1, s_max=p, cv=1,
                                     exchange_num=2, 
                                     ic_coef=1., thread=5, covariance_update=True)
@@ -319,7 +346,7 @@ class TestClass:
         np.random.seed(5)
         data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M + 1)
-        model = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                                  s_min=1, s_max=p, cv=5,
                                  exchange_num=2, 
                                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
@@ -327,7 +354,7 @@ class TestClass:
         model.fit(data.x, data.y, group=group)
         model.predict(data.x)
 
-        model = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=20,
+        model = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                                  s_min=1, s_max=p, cv=5,
                                  exchange_num=2, 
                                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
@@ -338,7 +365,7 @@ class TestClass:
         data = make_multivariate_glm_data(
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
 
-        model = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                                  s_min=1, s_max=p, cv=5,
                                  exchange_num=2, 
                                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
@@ -346,21 +373,21 @@ class TestClass:
         model.fit(data.x, data.y, group=group)
         model.predict(data.x)
 
-        model2 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
+        model2 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20, alpha=[0.001],
                                   s_min=1, s_max=p, cv=1,
                                   exchange_num=2, 
                                   primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-        model3 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model3 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                                   s_min=1, s_max=p, cv=5,
                                   exchange_num=2, 
                                   primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
 
-        model4 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20, alpha=[0.001],
+        model4 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20, alpha=[0.001],
                                   s_min=1, s_max=p, cv=1,
                                   exchange_num=2, 
                                   primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5)
@@ -381,34 +408,33 @@ class TestClass:
         assert (nonzero_true == nonzero_fit).all()
 
     def test_gaussian_sklearn(self):
+        np.random.seed(7)
         n = 100
         p = 20
         k = 3
         family = "gaussian"
         rho = 0.5
-        sigma = 1
-        M = 1
-        np.random.seed(7)
-        # data = make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
-        data = make_glm_data(n, p, family=family, k=k, rho=rho)
-        # data3 = make_multivariate_glm_data(
-        #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
+        
+        data = make_glm_data(n, p, family=family, k=k, rho=rho)
+
         support_size = np.linspace(0, s_max, s_max+1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3, 0.4]
 
-        model = abessLm()
-        cv = KFold(n_splits=5, shuffle=True, random_state=0)
-        gcv = GridSearchCV(
-            model,
-            param_grid={"support_size": support_size,
-                        "important_search": [10],
-                        "alpha": alpha},
-            cv=cv,
-            n_jobs=5).fit(data.x, data.y)
-
-        assert gcv.best_params_["support_size"] == k
-        assert gcv.best_params_["alpha"] == 0.
+        try:
+            model = abessLm()
+            cv = KFold(n_splits=5, shuffle=True, random_state=0)
+            gcv = GridSearchCV(
+                model,
+                param_grid={"support_size": support_size,
+                            "important_search": [10],
+                            "alpha": alpha},
+                cv=cv,
+                n_jobs=5).fit(data.x, data.y)
+            assert gcv.best_params_["support_size"] == k
+            assert gcv.best_params_["alpha"] == 0.
+        except:
+            assert False
 
     def test_binomial_sklearn(self):
         n = 100
@@ -485,7 +511,7 @@ class TestClass:
         support_size = np.linspace(1, s_max, s_max+1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3]
 
-        model = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=20,
+        model = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                          s_min=1, s_max=p, cv=5,
                          exchange_num=2, 
                          primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
@@ -701,89 +727,6 @@ class TestClass:
         else:
             assert False
 
-    def test_gaussian_gs(self):
-        n = 100
-        p = 20
-        k = 3
-        family = "gaussian"
-        rho = 0.5
-        sigma = 1
-        M = 1
-        np.random.seed(2)
-        data = make_multivariate_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
-        data2 = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        data3 = make_multivariate_glm_data(
-            family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
-        s_max = 20
-
-        model = abessLm(path_type="pgs", support_size=[0], ic_type='ebic', is_screening=True, screening_size=20,
-                        s_min=1, s_max=s_max, cv=5,
-                        exchange_num=2, 
-                        ic_coef=1., thread=5, covariance_update=True)
-        model.fit(data.x, data.y)
-        model.predict(data.x)
-
-        model2 = abessLm(path_type="pgs", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                         s_min=1, s_max=p, cv=5,
-                         exchange_num=2, 
-                         ic_coef=1., thread=1, covariance_update=True)
-        model2.fit(data.x, data.y)
-
-        model3 = abessLm(path_type="pgs", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                         s_min=1, s_max=p, cv=5,
-                         exchange_num=2, 
-                         ic_coef=1., thread=0, covariance_update=False, sparse_matrix=True)
-        model3.fit(data.x, data.y)
-
-        model4 = abessLm(path_type="pgs", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                         s_min=1, s_max=p, cv=1,
-                         exchange_num=2, 
-                         ic_coef=1., thread=0, covariance_update=True)
-        model4.fit(data.x, data.y)
-
-
-    def test_binomial_gs(self):
-        n = 100
-        p = 20
-        k = 3
-        family = "binomial"
-        rho = 0.5
-        sigma = 1
-        np.random.seed(5)
-        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        support_size = range(0, 20)
-        print("logistic abess")
-
-        model = abessLogistic(path_type="pgs", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=30,
-                              s_min=1, s_max=20, cv=5,
-                              exchange_num=2, 
-                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5)
-        group = np.linspace(1, p, p)
-        model.fit(data.x, data.y, group=group)
-
-        model2 = abessLogistic(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
-                               s_min=1, s_max=p, cv=5,
-                               exchange_num=2, 
-                               primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5, sparse_matrix=True)
-        group = np.linspace(1, p, p)
-        model2.fit(data.x, data.y, group=group)
-        model2.predict(data.x)
-
-        nonzero_true = np.nonzero(data.coef_)[0]
-        nonzero_fit = np.nonzero(model2.coef_)[0]
-        print(nonzero_true)
-        print(nonzero_fit)
-        assert (nonzero_true == nonzero_fit).all()
-
-        if sys.version_info[1] >= 6:
-            new_x = data.x[:, nonzero_fit]
-            reg = LogisticRegression(penalty="none")
-            reg.fit(new_x, data.y)
-            print(model2.coef_[nonzero_fit])
-            print(reg.coef_)
-            assert model2.coef_[nonzero_fit] == approx(
-                reg.coef_[0], rel=1e-2, abs=1e-2)
-
     def test_cox_gs(self):
         n = 100
         p = 20
@@ -797,7 +740,7 @@ class TestClass:
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
 
-        model = abessCox(path_type="pgs", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model = abessCox(path_type="pgs", support_size=support_size, ic_type='ebic', screening_size=20,
                          s_min=1, s_max=20, cv=5,
                          exchange_num=2, 
                          primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
@@ -805,7 +748,7 @@ class TestClass:
         model.fit(data.x, data.y, group=group)
         model.predict(data.x)
 
-        model2 = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model2 = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                           s_min=1, s_max=p, cv=5,
                           exchange_num=2, 
                           primary_model_fit_max_iter=60, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5, sparse_matrix=True)
@@ -851,14 +794,14 @@ class TestClass:
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
-        model = abessPoisson(path_type="pgs", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model = abessPoisson(path_type="pgs", support_size=support_size, ic_type='ebic', screening_size=20,
                              s_min=1, s_max=p, cv=5,
                              exchange_num=2, 
                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, ic_coef=1., thread=5, sparse_matrix=True)
         group = np.linspace(1, p, p)
         model.fit(data.x, data.y, group=group)
 
-        model2 = abessPoisson(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model2 = abessPoisson(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                               s_min=1, s_max=p, cv=5,
                               exchange_num=2, 
                               primary_model_fit_max_iter=80, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5)
@@ -897,14 +840,14 @@ class TestClass:
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, int(n/np.log(np.log(n)) / np.log(p)))
 
-        model = abessMultigaussian(path_type="pgs", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model = abessMultigaussian(path_type="pgs", support_size=support_size, ic_type='ebic', screening_size=20,
                                    s_min=1, s_max=p, cv=5,
                                    exchange_num=2, 
                                    ic_coef=1., thread=5, covariance_update=False)
         group = np.linspace(1, p, p)
         model.fit(data.x, data.y, group=group)
 
-        model2 = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model2 = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                                     s_min=1, s_max=p, cv=5,
                                     exchange_num=2, 
                                     ic_coef=1., thread=5, covariance_update=True, sparse_matrix=True)
@@ -936,21 +879,21 @@ class TestClass:
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
-        model = abessMultinomial(path_type="pgs", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model = abessMultinomial(path_type="pgs", support_size=support_size, ic_type='ebic', screening_size=20,
                                  s_min=1, s_max=p, cv=5,
                                  exchange_num=2, 
                                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model.fit(data.x, data.y, group=group)
 
-        model2 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model2 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                                   s_min=1, s_max=p, cv=1,
                                   exchange_num=2, 
                                   primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-        model3 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model3 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                                   s_min=1, s_max=p, cv=5,
                                   exchange_num=2, 
                                   primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
@@ -974,70 +917,6 @@ class TestClass:
         # assert model.coef_[nonzero_fit] == approx(reg.coef_, rel=1e-5, abs=1e-5)
         assert (nonzero_true == nonzero_fit).all()
 
-    def test_gaussian_sparse_matrix(self):
-        n = 100
-        p = 20
-        k = 3
-        family = "gaussian"
-        rho = 0.5
-        sigma = 1
-        M = 1
-        np.random.seed(2)
-        data = make_multivariate_glm_data(
-            family=family, n=n, p=p, k=k, rho=rho, M=M)
-        data2 = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        data3 = make_multivariate_glm_data(
-            family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
-        s_max = 20
-
-        model = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                        s_min=1, s_max=p, cv=5,
-                        exchange_num=2, 
-                        ic_coef=1., thread=5, covariance_update=True)
-        model.fit(data.x + 1, data.y + 1)
-        model.predict(data.x)
-
-        model2 = abessLm(path_type="seq", support_size=range(0, s_max), ic_type='ebic', is_screening=True, screening_size=20,
-                         s_min=1, s_max=p, cv=5,
-                         exchange_num=2, 
-                         ic_coef=1., thread=5, covariance_update=True, sparse_matrix=True)
-        model2.fit(data.x + 1, data.y + 1)
-
-        assert model.coef_ == approx(model2.coef_, rel=1e-5, abs=1e-5)
-        assert model.intercept_ == approx(
-            model2.intercept_, rel=1e-5, abs=1e-5)
-
-    def test_binomial_sparse_matrix(self):
-        n = 100
-        p = 20
-        k = 3
-        family = "binomial"
-        rho = 0.5
-        sigma = 1
-        np.random.seed(1)
-        data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
-        support_size = range(0, 20)
-        print("logistic abess")
-
-        model = abessLogistic(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=30,
-                              s_min=1, s_max=p, cv=5,
-                              exchange_num=2, 
-                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5)
-        group = np.linspace(1, p, p)
-        model.fit(data.x, data.y, group=group)
-
-        model2 = abessLogistic(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=False, screening_size=30,
-                               s_min=1, s_max=p, cv=5,
-                               exchange_num=2, 
-                               primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6,  ic_coef=1., thread=5, sparse_matrix=True)
-        group = np.linspace(1, p, p)
-        model2.fit(data.x, data.y, group=group)
-        model2.predict(data.x)
-
-        assert model.coef_ == approx(model2.coef_, rel=1e-5, abs=1e-5)
-        assert model.intercept_ == approx(
-            model2.intercept_, rel=1e-5, abs=1e-5)
-
     def test_cox_sparse_matrix(self):
         n = 100
         p = 20
@@ -1051,7 +930,7 @@ class TestClass:
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
 
-        model = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                          s_min=1, s_max=p, cv=5,
                          exchange_num=2, 
                          primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
@@ -1059,7 +938,7 @@ class TestClass:
         model.fit(data.x + 1, data.y, group=group)
         model.predict(data.x)
 
-        model2 = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model2 = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                           s_min=1, s_max=p, cv=5,
                           exchange_num=2, 
                           primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
@@ -1085,14 +964,14 @@ class TestClass:
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
-        model = abessPoisson(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model = abessPoisson(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                              s_min=1, s_max=p, cv=5,
                              exchange_num=2, 
                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model.fit(data.x + 1, data.y, group=group)
 
-        model2 = abessPoisson(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model2 = abessPoisson(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                               s_min=1, s_max=p, cv=5,
                               exchange_num=2, 
                               primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, ic_coef=1., thread=5, sparse_matrix=True)
@@ -1119,14 +998,14 @@ class TestClass:
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, int(n/np.log(np.log(n)) / np.log(p)))
 
-        model = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                                    s_min=1, s_max=p, cv=5,
                                    exchange_num=2, 
                                    ic_coef=1., thread=5, covariance_update=True)
         group = np.linspace(1, p, p)
         model.fit(data.x, data.y, group=group)
 
-        model2 = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model2 = abessMultigaussian(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                                     s_min=1, s_max=p, cv=5,
                                     exchange_num=2, 
                                     ic_coef=1., thread=5, covariance_update=True, sparse_matrix=True)
@@ -1150,14 +1029,14 @@ class TestClass:
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
-        model = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                                  s_min=1, s_max=p, cv=5,
                                  exchange_num=2, 
                                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
         group = np.linspace(1, p, p)
         model.fit(data.x, data.y, group=group)
 
-        model2 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', is_screening=True, screening_size=20,
+        model2 = abessMultinomial(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                                   s_min=1, s_max=p, cv=5,
                                   exchange_num=2, 
                                   primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5, sparse_matrix=True)
@@ -1168,20 +1047,6 @@ class TestClass:
             model2.coef_[np.nonzero(model2.coef_)[0]], rel=1e-1, abs=1e-1)
         assert model.intercept_ == approx(
             model2.intercept_, rel=1e-1, abs=1e-1)
-
-    def test_wrong_arg(self):
-        n = 100
-        p = 20
-        k = 3
-        family = "gaussian"
-        rho = 0.5
-        sigma = 1
-        M = 1
-        np.random.seed(2)
-        model5 = abessLm(path_type="other", support_size=range(0, 5), ic_type='dic', is_screening=True, screening_size=20,
-                         s_min=1, s_max=p, cv=5,
-                         exchange_num=2, 
-                         ic_coef=1., thread=5, covariance_update=True)
 
     def test_gendata(self):
         n = 100
@@ -1224,8 +1089,7 @@ class TestClass:
         else:
             assert False
 
-    def test_check(self):
-
+    def test_wrong_arg(self):
         # X and y
         model = abessLm()
         try:
@@ -1263,9 +1127,9 @@ class TestClass:
         else:
             assert False
 
-        x = coo_matrix(([1, 2, 3], ([0, 1, 2], [0, 1, 2])))
+        coox = coo_matrix(([1, 2, 3], ([0, 1, 2], [0, 1, 2])))
         y = [1, 2, 3]
-        model.fit(x, y)
+        model.fit(coox, y)
 
         # Sigma
         model = abessPCA()
@@ -1391,8 +1255,7 @@ class TestClass:
             assert False
 
         try:
-            model = abessLm(is_screening=True)
-            model = abessLm(is_screening=True, screening_size=3)
+            model = abessLm(screening_size=3)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -1400,8 +1263,8 @@ class TestClass:
             assert False
 
         try:
-            model = abessLm(is_screening=True, support_size=[
-                            2], screening_size=1)
+            model = abessLm(support_size=[2], 
+                            screening_size=1)
             model.fit([[1, 2, 3]], [1])
         except ValueError as e:
             print(e)
@@ -1521,7 +1384,6 @@ class TestClass:
         else:
             assert False
 
-
     def test_other(self):
         n = 100
         p = 20
@@ -1538,13 +1400,13 @@ class TestClass:
             family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
 
-        model = abessLm(path_type="seq", support_size=range(0, 10), ic_type='aic', is_screening=False, screening_size=20,
+        model = abessLm(path_type="seq", support_size=range(0, 10), ic_type='aic', screening_size=20,
                         s_min=1, s_max=p, cv=1,
                         exchange_num=2,  is_warm_start=False,
                         ic_coef=1., thread=5, covariance_update=False)
         model.fit(data.x, data.y)
 
-        model = abessLm(path_type="pgs", support_size=range(0, 10), ic_type='aic', is_screening=False, screening_size=20,
+        model = abessLm(path_type="pgs", support_size=range(0, 10), ic_type='aic', screening_size=20,
                         s_min=1, s_max=p, cv=1,
                         exchange_num=2,  is_warm_start=False,
                         ic_coef=1., thread=5, covariance_update=False)
