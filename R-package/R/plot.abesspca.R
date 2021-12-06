@@ -3,7 +3,7 @@
 #' @description Produces a coefficient/deviance/tuning-value plot
 #' for a fitted "abess" object.
 #'
-#' @inheritParams print.abesspca
+#' @inheritParams print.abess
 #' @param type The type of terms to be plot in the y-axis.
 #' One of the following: \code{"coef"} (i.e., coefficients),
 #' \code{"l2norm"} (i.e., L2-norm of coefficients),
@@ -51,7 +51,7 @@ plot.abesspca <- function(x,
     y_value <- x[["coef"]]
   }
   df_list <- x[["support.size"]]
-  sparese_type <- abess_fit[["sparse.type"]]
+  sparese_type <- x[["sparse.type"]]
   
   default_mar <- c(5, 4, 3, 2) + 0.1
   

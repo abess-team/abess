@@ -8,6 +8,7 @@
 #' (inherit from class \code{"dgCMatrix"} in package \code{Matrix}).
 #' @param type If \code{type = "predictor"}, \code{x} is considered as the predictor matrix.
 #' If \code{type = "gram"}, \code{x} is considered as a sample covariance or correlation matrix.
+#' @param kpc.num A integer decide the number of components. 
 #' @param c.max an integer splicing size. The default of \code{c.max} is the maximum of 2 and \code{max(support.size) / 2}.
 #' @param sparse.type If \code{sparse.type = "fpc"}, then best subset selection performs on the first principal component;
 #' If \code{sparse.type = "kpc"}, then best subset selection performs on the first \code{kpc.num} principal components.
@@ -122,10 +123,15 @@ abesspca <- function(x,
                      splicing.type = 1,
                      max.splicing.iter = 20,
                      warm.start = TRUE, 
+                     num.threads = 0, 
                      ...) {
   support.num <- NULL
   important.search <- NULL
 
+  ## check number of thread:
+  stopifnot(is.numeric(num.threads) & num.threads >= 0)
+  num_threads <- as.integer(num.threads)
+  
   ## check warm start:
   stopifnot(is.logical(warm.start))
 
@@ -401,7 +407,7 @@ abesspca <- function(x,
     g_index = g_index,
     always_select = always_include,
     early_stop = FALSE,
-    thread = 1,
+    thread = num.threads,
     sparse_matrix = sparse_matrix, 
     splicing_type = splicing_type, 
     sub_search = important_search, 
@@ -504,10 +510,8 @@ abesspca <- function(x,
   result[["tune.type"]] <- tune_type
 
   result[["call"]] <- match.call()
-  out <- result
-
-  class(out) <- "abesspca"
-  out
+  class(result) <- "abesspca"
+  result
 }
 
 adjusted_variance_explained <- function(covmat, loading) {
