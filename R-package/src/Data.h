@@ -15,6 +15,7 @@
 
 #include <vector>
 #include "normalize.h"
+#include "utilities.h"
 using namespace std;
 using namespace Eigen;
 
@@ -51,11 +52,10 @@ public:
         this->x_mean = Eigen::VectorXd::Zero(this->p);
         this->x_norm = Eigen::VectorXd::Zero(this->p);
 
-        // to do !!!!!!!!!!!!!!!!!!!!!!!!!
         if (normalize_type > 0 && !sparse_matrix)
         {
             this->normalize();
-        }        
+        }
 
         this->g_index = g_index;
         this->g_num = g_index.size();
@@ -64,17 +64,6 @@ public:
             temp(i) = g_index(i + 1);
         temp(g_num - 1) = beta_size;
         this->g_size = temp - g_index;
-    };
-
-    // to do
-    void add_weight()
-    {
-        for (int i = 0; i < this->n; i++)
-        {
-            this->x.row(i) = this->x.row(i) * sqrt(this->weight(i));
-        }
-        array_product(this->y, this->weight, 1);
-        // this->y(i) = this->y(i) * sqrt(this->weight(i));
     };
 
     void normalize()

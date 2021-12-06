@@ -25,36 +25,36 @@ using namespace Eigen;
 template <class T2, class T3>
 struct Result
 {
-    Eigen::Matrix<T2, Eigen::Dynamic, Eigen::Dynamic> beta_matrix;            /*!<  */
-    Eigen::Matrix<T3, Eigen::Dynamic, Eigen::Dynamic> coef0_matrix;           /*!<  */
-    Eigen::MatrixXd ic_matrix;                                                /*!<  */
-    Eigen::MatrixXd test_loss_matrix;                                         /*!<  */
-    Eigen::MatrixXd train_loss_matrix;                                        /*!<  */
-    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> bd_matrix; /*!<  */
-    Eigen::MatrixXd effective_number_matrix;                                  /*!<  */
+  Eigen::Matrix<T2, Eigen::Dynamic, Eigen::Dynamic> beta_matrix;            /*!<  */
+  Eigen::Matrix<T3, Eigen::Dynamic, Eigen::Dynamic> coef0_matrix;           /*!<  */
+  Eigen::MatrixXd ic_matrix;                                                /*!<  */
+  Eigen::MatrixXd test_loss_matrix;                                         /*!<  */
+  Eigen::MatrixXd train_loss_matrix;                                        /*!<  */
+  Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> bd_matrix; /*!<  */
+  Eigen::MatrixXd effective_number_matrix;                                  /*!<  */
 };
 
 template <class T2, class T3>
 struct FIT_ARG
 {
-    int support_size;
-    double lambda;
-    T2 beta_init;
-    T3 coef0_init;
-    Eigen::VectorXd bd_init;
-    Eigen::VectorXi A_init;
+  int support_size;
+  double lambda;
+  T2 beta_init;
+  T3 coef0_init;
+  Eigen::VectorXd bd_init;
+  Eigen::VectorXi A_init;
 
-    FIT_ARG(int _support_size, double _lambda, T2 _beta_init, T3 _coef0_init, VectorXd _bd_init, VectorXi _A_init)
-    {
-        support_size = _support_size;
-        lambda = _lambda;
-        beta_init = _beta_init;
-        coef0_init = _coef0_init;
-        bd_init = _bd_init;
-        A_init = _A_init;
-    };
+  FIT_ARG(int _support_size, double _lambda, T2 _beta_init, T3 _coef0_init, VectorXd _bd_init, VectorXi _A_init)
+  {
+    support_size = _support_size;
+    lambda = _lambda;
+    beta_init = _beta_init;
+    coef0_init = _coef0_init;
+    bd_init = _bd_init;
+    A_init = _A_init;
+  };
 
-    FIT_ARG(){};
+  FIT_ARG(){};
 };
 
 #ifndef R_BUILD
@@ -73,19 +73,19 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
 template <class T4>
 T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type)
 {
-    if (ind.size() == X.cols() || model_type == 10 || model_type == 7)
+  if (ind.size() == X.cols() || model_type == 10 || model_type == 7)
+  {
+    return X;
+  }
+  else
+  {
+    T4 X_new(n, ind.size());
+    for (int k = 0; k < ind.size(); k++)
     {
-        return X;
+      X_new.col(k) = X.col(ind(k));
     }
-    else
-    {
-        T4 X_new(n, ind.size());
-        for (int k = 0; k < ind.size(); k++)
-        {
-            X_new.col(k) = X.col(ind(k));
-        }
-        return X_new;
-    }
+    return X_new;
+  }
 };
 
 // template <class T4>
@@ -108,25 +108,25 @@ T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type)
 template <class T4>
 Eigen::Matrix<T4, -1, -1> compute_group_XTX(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N)
 {
-    Eigen::Matrix<T4, -1, -1> XTX(N, 1);
-    for (int i = 0; i < N; i++)
-    {
-        T4 X_ind = X.block(0, index(i), n, gsize(i));
-        XTX(i, 0) = X_ind.transpose() * X_ind;
-    }
-    return XTX;
+  Eigen::Matrix<T4, -1, -1> XTX(N, 1);
+  for (int i = 0; i < N; i++)
+  {
+    T4 X_ind = X.block(0, index(i), n, gsize(i));
+    XTX(i, 0) = X_ind.transpose() * X_ind;
+  }
+  return XTX;
 }
 
 template <class T4>
 Eigen::Matrix<Eigen::MatrixXd, -1, -1> Phi(T4 &X, Eigen::VectorXi index, Eigen::VectorXi gsize, int n, int p, int N, double lambda, Eigen::Matrix<T4, -1, -1> group_XTX)
 {
-    Eigen::Matrix<Eigen::MatrixXd, -1, -1> phi(N, 1);
-    for (int i = 0; i < N; i++)
-    {
-        Eigen::MatrixXd lambda_XtX = 2 * lambda * Eigen::MatrixXd::Identity(gsize(i), gsize(i)) + group_XTX(i, 0) / double(n);
-        lambda_XtX.sqrt().evalTo(phi(i, 0));
-    }
-    return phi;
+  Eigen::Matrix<Eigen::MatrixXd, -1, -1> phi(N, 1);
+  for (int i = 0; i < N; i++)
+  {
+    Eigen::MatrixXd lambda_XtX = 2 * lambda * Eigen::MatrixXd::Identity(gsize(i), gsize(i)) + group_XTX(i, 0) / double(n);
+    lambda_XtX.sqrt().evalTo(phi(i, 0));
+  }
+  return phi;
 }
 
 Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &Phi, int N);
@@ -158,8 +158,9 @@ void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nu
 void coef_set_zero(int p, int M, Eigen::VectorXd &beta, double &coef0);
 void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0);
 
-// Eigen::VectorXd array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis = 0);
+Eigen::VectorXd array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis = 0);
 Eigen::MatrixXd array_product(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis = 0);
+// Eigen::SparseMatrix<double> array_product(Eigen::SparseMatrix<double> &A, Eigen::VectorXd &B, int axis = 0);
 
 void array_quotient(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis = 0);
 void array_quotient(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis = 0);
@@ -185,57 +186,58 @@ void set_nonzeros(Eigen::SparseMatrix<double> &X, Eigen::SparseMatrix<double> &x
 // bool check_ill_condition(Eigen::MatrixXd &M);
 
 template <class T2, class T3>
-void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, Dynamic> &beta_matrix, Eigen::Matrix<T3, Dynamic, Dynamic> &coef0_matrix, 
+void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, Dynamic> &beta_matrix, Eigen::Matrix<T3, Dynamic, Dynamic> &coef0_matrix,
                         bool sparse_matrix, int normalize_type, int n, Eigen::VectorXd x_mean, T3 y_mean, Eigen::VectorXd x_norm)
 {
-    if (normalize_type == 0 || sparse_matrix){
-        // no need to restore
-        return;
-    }
-    if (normalize_type == 1)
-    {
-      array_quotient(beta, x_norm, 1);
-      beta = beta * sqrt(double(n));
-      coef0 = y_mean - matrix_dot(beta, x_mean);
-      for (int j = 0; j < beta_matrix.cols(); j++)
-      {
-        for (int i = 0; i < beta_matrix.rows(); i++)
-        {
-          array_quotient(beta_matrix(i, j), x_norm, 1);
-          beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(n));
-          coef0_matrix(i, j) = y_mean - matrix_dot(beta_matrix(i, j), x_mean);
-        }
-      }
-    }
-    else if (normalize_type == 2)
-    {
-      array_quotient(beta, x_norm, 1);
-      beta = beta * sqrt(double(n));
-      coef0 = coef0 - matrix_dot(beta, x_mean);
-      for (int j = 0; j < beta_matrix.cols(); j++)
-      {
-        for (int i = 0; i < beta_matrix.rows(); i++)
-        {
-          array_quotient(beta_matrix(i, j), x_norm, 1);
-          beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(n));
-          coef0_matrix(i, j) = coef0_matrix(i, j) - matrix_dot(beta_matrix(i, j), x_mean);
-        }
-      }
-    }
-    else
-    {
-      array_quotient(beta, x_norm, 1);
-      beta = beta * sqrt(double(n));
-      for (int j = 0; j < beta_matrix.cols(); j++)
-      {
-        for (int i = 0; i < beta_matrix.rows(); i++)
-        {
-          array_quotient(beta_matrix(i, j), x_norm, 1);
-          beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(n));
-        }
-      }
-    }
+  if (normalize_type == 0 || sparse_matrix)
+  {
+    // no need to restore
     return;
+  }
+  if (normalize_type == 1)
+  {
+    array_quotient(beta, x_norm, 1);
+    beta = beta * sqrt(double(n));
+    coef0 = y_mean - matrix_dot(beta, x_mean);
+    for (int j = 0; j < beta_matrix.cols(); j++)
+    {
+      for (int i = 0; i < beta_matrix.rows(); i++)
+      {
+        array_quotient(beta_matrix(i, j), x_norm, 1);
+        beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(n));
+        coef0_matrix(i, j) = y_mean - matrix_dot(beta_matrix(i, j), x_mean);
+      }
+    }
+  }
+  else if (normalize_type == 2)
+  {
+    array_quotient(beta, x_norm, 1);
+    beta = beta * sqrt(double(n));
+    coef0 = coef0 - matrix_dot(beta, x_mean);
+    for (int j = 0; j < beta_matrix.cols(); j++)
+    {
+      for (int i = 0; i < beta_matrix.rows(); i++)
+      {
+        array_quotient(beta_matrix(i, j), x_norm, 1);
+        beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(n));
+        coef0_matrix(i, j) = coef0_matrix(i, j) - matrix_dot(beta_matrix(i, j), x_mean);
+      }
+    }
+  }
+  else
+  {
+    array_quotient(beta, x_norm, 1);
+    beta = beta * sqrt(double(n));
+    for (int j = 0; j < beta_matrix.cols(); j++)
+    {
+      for (int i = 0; i < beta_matrix.rows(); i++)
+      {
+        array_quotient(beta_matrix(i, j), x_norm, 1);
+        beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(n));
+      }
+    }
+  }
+  return;
 }
 
 template <class T4>
@@ -318,5 +320,11 @@ void pi(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &coef, Eigen::MatrixXd &pr)
   // return pi;
 };
 
+void add_weight(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd weights);
 
+void add_weight(Eigen::MatrixXd &x, Eigen::MatrixXd &y, Eigen::VectorXd weights);
+
+void add_weight(Eigen::SparseMatrix<double> &x, Eigen::VectorXd &y, Eigen::VectorXd weights);
+
+void add_weight(Eigen::SparseMatrix<double> &x, Eigen::MatrixXd &y, Eigen::VectorXd weights);
 #endif // SRC_UTILITIES_H
