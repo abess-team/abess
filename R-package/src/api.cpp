@@ -589,14 +589,15 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p,
                     int s_min, int s_max, 
                     double lambda_min, double lambda_max, int nlambda,
                     int screening_size, 
+                    int primary_model_fit_max_iter, 
+                    double primary_model_fit_epsilon,
                     Eigen::VectorXi g_index,
                     Eigen::VectorXi always_select,
                     bool early_stop, 
                     int thread,
                     bool sparse_matrix,
                     int splicing_type,
-                    int sub_search,
-                    Eigen::VectorXi cv_fold_id)
+                    int sub_search)
 {
 #ifdef _OPENMP
   // Eigen::initParallel();
@@ -613,8 +614,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p,
   int model_type = 10, algorithm_type = 6;
   int Kfold = 1;
   int normalize_type = 0;
-  int primary_model_fit_max_iter = 1;
-  double primary_model_fit_epsilon = 1e-3;
+  Eigen::VectorXi cv_fold_id = Eigen::VectorXi::Zero(0);
   Eigen::VectorXd weight = Eigen::VectorXd::Ones(n);
   Eigen::VectorXd y_vec = Eigen::VectorXd::Zero(n);
 

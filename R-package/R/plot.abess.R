@@ -95,7 +95,7 @@ plot_loss <- function(loss, df,
   ylab_display <- ifelse(ic.type == "cv",
          "cross validation",
          ic.type)
-  if (ic.type != "cv") {
+  if (ic.type %in% c("aic", "bic", "ebic", "gic")) {
     ylab_display <- toupper(ylab_display)
   }
   graphics::plot(df, loss,
