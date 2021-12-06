@@ -7,7 +7,7 @@
 \method{plot}{abesspca}(x, type = c("pev", "coef", "tune"), label = FALSE, ...)
 }
 \arguments{
-\item{x}{A "\code{abesspca}" object.}
+\item{x}{A "\code{abess}" object.}
 
 \item{type}{The type of terms to be plot in the y-axis.
 One of the following: \code{"coef"} (i.e., coefficients),

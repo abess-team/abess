@@ -21,6 +21,7 @@ abesspca(
   splicing.type = 1,
   max.splicing.iter = 20,
   warm.start = TRUE,
+  num.threads = 0,
   ...
 )
 }
@@ -52,6 +53,8 @@ When \code{sparse.type = "kpc"} but \code{support.size} is not supplied,
 then for 20\% principal components,
 it is set as \code{min(ncol(x), 100)} if \code{group.index = NULL};
 otherwise, \code{min(length(unique(group.index)), 100)}.}
+
+\item{kpc.num}{A integer decide the number of components.}
 
 \item{tune.type}{The type of criterion for choosing the support size.
 Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
@@ -88,6 +91,11 @@ In most of the case, only a few times of splicing iteration can guarantee the co
 Default is \code{max.splicing.iter = 20}.}
 
 \item{warm.start}{Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.}
+
+\item{num.threads}{An integer decide the number of threads to be
+concurrently used for cross-validation (i.e., \code{tune.type = "cv"}).
+If \code{num.threads = 0}, then all of available cores will be used.
+Default: \code{num.threads = 0}.}
 
 \item{...}{further arguments to be passed to or from methods.}
 }
