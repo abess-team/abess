@@ -32,7 +32,7 @@
 #' abess_fit <- abesspca(USArrests, support.size = 1:4, sparse.type = "kpc")
 #' plot(abess_fit)
 #' plot(abess_fit, type = "coef")
-#' 
+#' plot(abess_fit, type = "tune")
 plot.abesspca <- function(x,
                           type = c("pev", "coef", "tune"),
                           label = FALSE,
@@ -51,30 +51,40 @@ plot.abesspca <- function(x,
     y_value <- x[["coef"]]
   }
   df_list <- x[["support.size"]]
+  sparese_type <- abess_fit[["sparse.type"]]
   
   default_mar <- c(5, 4, 3, 2) + 0.1
   
   if (type == "pev") {
     plot_pca_pev(y_value,
                  df_list,
-                 mar = default_mar)
+                 default_mar, 
+                 sparese_type)
   }
   if (type == "tune") {
-    
+    plot_tune_pca(y_value,
+                  df_list,
+                  x[["tune.type"]], 
+                  default_mar)
   }
-  if (type %in% c("coef", "l2norm")) {
+  if (type %in% c("coef")) {
     plot_solution_pca(y_value, df_list,
                       mar = default_mar, label)
   }
 }
 
-plot_pca_pev <- function(pev, df_list, mar) {
-  df_max <- sapply(df_list, max)
-  df_max <- c(0, df_max)
-  df_max <- cumsum(df_max)
-  plot_df <- lapply(1:length(df_list), function(i) {
-    df_list[[i]] + df_max[i]
-  })
+plot_pca_pev <- function(pev, df_list, mar, type) {
+  if (type == "kpc") {
+    df_max <- sapply(df_list, max)
+    df_max <- c(0, df_max)
+    df_max <- cumsum(df_max)
+    plot_df <- lapply(1:length(df_list), function(i) {
+      df_list[[i]] + df_max[i]
+    })
+    plot_df_max <- sapply(plot_df, max)
+  } else {
+    plot_df <- df_list
+  }
   pev <- unlist(pev)
   plot_df <- unlist(plot_df)
   
@@ -85,10 +95,16 @@ plot_pca_pev <- function(pev, df_list, mar) {
   graphics::plot(plot_df, pev,
                  type = "o", pch = 16,
                  col = "#3182bd",
+                 xlab = "Cumulative support size", 
                  ylab = "Percent of explained variance",
-                 xlim = c(1, max(plot_df)), xlab = "Cumulative support size", 
+                 xlim = c(1, max(plot_df)), 
                  ylim = c(0, 1)
   )
+  if (type == "kpc") {
+    for (v_df in plot_df_max) {
+      graphics::abline(v = v_df, col = "#d95f0e")
+    }
+  }
   graphics::grid()
   graphics::axis(2)
   # axis(4, pos=par("usr")[1], line=0.5)  # this would plot them 'inside'
@@ -97,14 +113,35 @@ plot_pca_pev <- function(pev, df_list, mar) {
   graphics::par(oldpar)
 }
 
+plot_tune_pca <- function(tune_value, df, ic.type, mar = c(3, 4, 0, 4)) {
+  if (is.list(tune_value)) {
+    dim_y <- ncol(tune_value[[1]])
+    kpc_num <- length(df)
+    for (i in 1:kpc_num) {
+      title_name <- sprintf("Sequential K principal component analysis (K = %s)", i)
+      plot_loss(tune_value[[i]], df[[i]], mar, ic.type, 
+                main = title_name)
+    }
+  } else {
+    title_name <- sprintf("The first principal component analysis", i)
+    plot_loss(tune_value, df, mar, ic.type, 
+              main = title_name)
+  }
+}
+
 plot_solution_pca <- function(beta, df, mar = c(3, 4, 0, 4), label = FALSE) {
   if (is.list(beta)) {
     dim_y <- ncol(beta[[1]])
     kpc_num <- length(df)
     for (i in 1:kpc_num) {
-      plot_solution_one(beta[[i]], df[[i]], mar, label, start = 1)
+      title_name <- sprintf("Sequential K principal component analysis (K = %s)", i)
+      plot_solution_one(beta[[i]], df[[i]], mar, label, 
+                        start = min(df[[i]]), 
+                        main = title_name)
     }
   } else {
-    plot_solution_one(beta, df, mar, label, start = 1)
+    title_name <- sprintf("The first principal component analysis", i)
+    plot_solution_one(beta, df, mar, label, start = min(df[[i]]), 
+                      main = title_name)
   }
 }
