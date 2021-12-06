@@ -19,7 +19,7 @@ class bess_base(BaseEstimator):
     is_warm_start : bool, optional
         When tuning the optimal parameter combination, whether to use the last solution as a warm start to accelerate the iterative convergence of the splicing algorithm.
         Default:is_warm_start = True.
-    path_type : {"seq", "pgs"}
+    path_type : {"seq", "gs"}
         The method to be used to select the optimal support size.
         For path_type = "seq", we solve the best subset selection problem for each size in support_size.
         For path_type = "gs", we solve the best subset selection problem with support size ranged in (s_min, s_max), where the specific support size to be considered is determined by golden section.
@@ -214,13 +214,13 @@ class bess_base(BaseEstimator):
             raise ValueError("model_type should not be " +
                              str(self.model_type))
 
-        # Path_type: seq, pgs
+        # Path_type: seq, gs
         if self.path_type == "seq":
             path_type_int = 1
-        elif self.path_type == "pgs":
+        elif self.path_type == "gs":
             path_type_int = 2
         else:
-            raise ValueError("path_type should be \'seq\' or \'pgs\'")
+            raise ValueError("path_type should be \'seq\' or \'gs\'")
 
         # Ic_type: aic, bic, gic, ebic
         if self.ic_type == "aic":
@@ -318,7 +318,7 @@ class bess_base(BaseEstimator):
             new_lambda_min = 0
             new_lambda_max = 0
 
-        elif path_type_int == 2:    # pgs
+        elif path_type_int == 2:    # gs
             new_s_min = 0 \
                 if self.s_min is None else self.s_min
             new_s_max = min(p, int(n / (np.log(np.log(n)) * np.log(p)))) \

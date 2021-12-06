@@ -82,7 +82,7 @@ class TestClass:
         assert_fit(model.coef_, data.coef_)
 
         # gs + cv + cov
-        model = abessLm(path_type='pgs', s_min=0, s_max=s_max, cv=5, covariance_update=True)
+        model = abessLm(path_type='gs', s_min=0, s_max=s_max, cv=5, covariance_update=True)
         model.fit(data.x, data.y)
         assert_fit(model.coef_, data.coef_)
 
@@ -100,8 +100,8 @@ class TestClass:
         assert ((model.coef_[0] * model.coef_[1]) != 0)
 
     def test_binomial(self):
-        np.random.seed(5)
-        n = 100
+        np.random.seed(2)
+        n = 300
         p = 20
         k = 3
         family = "binomial"
@@ -147,9 +147,9 @@ class TestClass:
         assert_fit(model.coef_, data.coef_)
 
         # gs + cv (TODO: gs fail to recover coef_)
-        model = abessLogistic(path_type='pgs', s_min=0, s_max=s_max, cv=5)
+        model = abessLogistic(path_type='gs', s_min=0, s_max=s_max, cv=5)
         model.fit(data.x, data.y)
-        # assert_fit(model.coef_, data.coef_)
+        assert_fit(model.coef_, data.coef_)
 
         # group 
         group = np.arange(4)
@@ -740,7 +740,7 @@ class TestClass:
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
         support_size = range(0, 20)
 
-        model = abessCox(path_type="pgs", support_size=support_size, ic_type='ebic', screening_size=20,
+        model = abessCox(path_type="gs", support_size=support_size, ic_type='ebic', screening_size=20,
                          s_min=1, s_max=20, cv=5,
                          exchange_num=2, 
                          primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
@@ -755,7 +755,7 @@ class TestClass:
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-        model3 = abessCox(path_type="pgs", s_min=1, s_max=20, important_search=10)
+        model3 = abessCox(path_type="gs", s_min=1, s_max=20, important_search=10)
         model3.fit(data.x, data.y, group=group)
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -794,7 +794,7 @@ class TestClass:
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
-        model = abessPoisson(path_type="pgs", support_size=support_size, ic_type='ebic', screening_size=20,
+        model = abessPoisson(path_type="gs", support_size=support_size, ic_type='ebic', screening_size=20,
                              s_min=1, s_max=p, cv=5,
                              exchange_num=2, 
                              primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-6, ic_coef=1., thread=5, sparse_matrix=True)
@@ -809,7 +809,7 @@ class TestClass:
         model2.fit(data.x, data.y, group=group)
         model2.predict(data.x)
 
-        model3 = abessPoisson(path_type="pgs", s_min=1, s_max=20, important_search=10)
+        model3 = abessPoisson(path_type="gs", s_min=1, s_max=20, important_search=10)
         model3.fit(data.x, data.y, group=group)
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -840,7 +840,7 @@ class TestClass:
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, int(n/np.log(np.log(n)) / np.log(p)))
 
-        model = abessMultigaussian(path_type="pgs", support_size=support_size, ic_type='ebic', screening_size=20,
+        model = abessMultigaussian(path_type="gs", support_size=support_size, ic_type='ebic', screening_size=20,
                                    s_min=1, s_max=p, cv=5,
                                    exchange_num=2, 
                                    ic_coef=1., thread=5, covariance_update=False)
@@ -854,7 +854,7 @@ class TestClass:
         group = np.linspace(1, p, p)
         model2.fit(data.x, data.y, group=group)
 
-        model3 = abessMultigaussian(path_type="pgs", s_min=1, s_max=20, important_search=10)
+        model3 = abessMultigaussian(path_type="gs", s_min=1, s_max=20, important_search=10)
         model3.fit(data.x, data.y, group=group)
 
         nonzero_true = np.nonzero(data.coef_)[0]
@@ -879,7 +879,7 @@ class TestClass:
             family=family, n=n, p=p,  k=k, rho=rho, M=M)
         support_size = range(0, 20)
 
-        model = abessMultinomial(path_type="pgs", support_size=support_size, ic_type='ebic', screening_size=20,
+        model = abessMultinomial(path_type="gs", support_size=support_size, ic_type='ebic', screening_size=20,
                                  s_min=1, s_max=p, cv=5,
                                  exchange_num=2, 
                                  primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
@@ -900,7 +900,7 @@ class TestClass:
         group = np.linspace(1, p, p)
         model3.fit(data.x, data.y, group=group)
 
-        model4 = abessMultinomial(path_type="pgs", s_min=1, s_max=p, ic_type='gic', important_search=10)
+        model4 = abessMultinomial(path_type="gs", s_min=1, s_max=p, ic_type='gic', important_search=10)
         group = np.linspace(1, p, p)
         model4.fit(data.x, data.y, group=group)
 
@@ -1228,10 +1228,10 @@ class TestClass:
             assert False
 
         try:
-            model = abessLm(path_type='pgs')
+            model = abessLm(path_type='gs')
             model.fit([[1]], [1])
 
-            model = abessLm(path_type='pgs', s_min=1, s_max=0)
+            model = abessLm(path_type='gs', s_min=1, s_max=0)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -1406,7 +1406,7 @@ class TestClass:
                         ic_coef=1., thread=5, covariance_update=False)
         model.fit(data.x, data.y)
 
-        model = abessLm(path_type="pgs", support_size=range(0, 10), ic_type='aic', screening_size=20,
+        model = abessLm(path_type="gs", support_size=range(0, 10), ic_type='aic', screening_size=20,
                         s_min=1, s_max=p, cv=1,
                         exchange_num=2,  is_warm_start=False,
                         ic_coef=1., thread=5, covariance_update=False)

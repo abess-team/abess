@@ -61,9 +61,9 @@ class abessLogistic(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="pgs", 
+    >>> # path_type="gs", 
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessLogistic(path_type="pgs")
+    >>> model = abessLogistic(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -186,9 +186,9 @@ class abessLm(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="pgs", 
+    >>> # path_type="gs", 
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessLm(path_type="pgs")
+    >>> model = abessLm(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -284,9 +284,9 @@ class abessCox(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="pgs", 
+    >>> # path_type="gs", 
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessCox(path_type="pgs")
+    >>> model = abessCox(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -387,9 +387,9 @@ class abessPoisson(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="pgs", 
+    >>> # path_type="gs", 
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessPoisson(path_type="pgs")
+    >>> model = abessPoisson(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -490,9 +490,9 @@ class abessMultigaussian(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="pgs", 
+    >>> # path_type="gs", 
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessMultigaussian(path_type="pgs")
+    >>> model = abessMultigaussian(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -589,9 +589,9 @@ class abessMultinomial(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="pgs", 
+    >>> # path_type="gs", 
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessMultinomial(path_type="pgs")
+    >>> model = abessMultinomial(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -702,8 +702,8 @@ class abessMultinomial(bess_base):
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 
-#     >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasLm(path_type="pgs")
+#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+#     >>> model = PdasLm(path_type="gs")
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 #     '''
@@ -743,8 +743,8 @@ class abessMultinomial(bess_base):
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 
-#     >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasLogistic(path_type="pgs")
+#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+#     >>> model = PdasLogistic(path_type="gs")
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 #     """
@@ -784,8 +784,8 @@ class abessMultinomial(bess_base):
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 
-#     >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasPoisson(path_type="pgs")
+#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+#     >>> model = PdasPoisson(path_type="gs")
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 #     """
@@ -823,8 +823,8 @@ class abessMultinomial(bess_base):
 #     >>> model.fit(data.x, data.y, is_normal=True)
 #     >>> model.predict(data.x)
 
-#     >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasCox(path_type="pgs")
+#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+#     >>> model = PdasCox(path_type="gs")
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 #     """
@@ -864,8 +864,8 @@ class abessMultinomial(bess_base):
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 
-#     >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasLm(path_type="pgs")
+#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+#     >>> model = PdasLm(path_type="gs")
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 #     """
@@ -906,8 +906,8 @@ class abessMultinomial(bess_base):
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 
-#     >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasLm(path_type="pgs")
+#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+#     >>> model = PdasLm(path_type="gs")
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 #         """
@@ -947,8 +947,8 @@ class abessMultinomial(bess_base):
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 
-#     >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasPoisson(path_type="pgs")
+#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+#     >>> model = PdasPoisson(path_type="gs")
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 #     """
@@ -986,8 +986,8 @@ class abessMultinomial(bess_base):
 #     >>> model.fit(data.x, data.y, is_normal=True)
 #     >>> model.predict(data.x)
 
-#     >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasCox(path_type="pgs")
+#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+#     >>> model = PdasCox(path_type="gs")
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 #     """
@@ -1027,8 +1027,8 @@ class abessMultinomial(bess_base):
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 
-#     >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = GroupPdasLm(path_type="pgs")
+#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+#     >>> model = GroupPdasLm(path_type="gs")
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 #         """
@@ -1069,8 +1069,8 @@ class abessMultinomial(bess_base):
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 
-#     >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = GroupPdasLogistic(path_type="pgs")
+#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+#     >>> model = GroupPdasLogistic(path_type="gs")
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 #     """
@@ -1111,8 +1111,8 @@ class abessMultinomial(bess_base):
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 
-#     >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = GroupPdasPoisson(path_type="pgs")
+#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+#     >>> model = GroupPdasPoisson(path_type="gs")
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 #     """
@@ -1149,8 +1149,8 @@ class abessMultinomial(bess_base):
 #     >>> model.fit(data.x, data.y, is_normal=True)
 #     >>> model.predict(data.x)
 
-#     >>> # path_type="pgs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = GroupPdasCox(path_type="pgs")
+#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+#     >>> model = GroupPdasCox(path_type="gs")
 #     >>> model.fit(X=x, y=y)
 #     >>> model.predict(x)
 #     """
