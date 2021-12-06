@@ -55,7 +55,8 @@ otherwise, \code{min(length(unique(group.index)), 100)}.}
 
 \item{tune.type}{The type of criterion for choosing the support size.
 Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
-Default is \code{"gic"}.}
+Default is \code{"gic"}. 
+\code{tune.type = "cv"} is available only when \code{type = "predictor"}.}
 
 \item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.}
 
@@ -112,7 +113,7 @@ Adaptive best subset selection for principal component analysis
 \details{
 Adaptive best subset selection for principal component analysis aim
 to solve the non-convex optimization problem:
-\deqn{\arg\max_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
+\deqn{-\arg\min_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
 where \eqn{s} is support size. 
 Here, \eqn{\Sigma} is covariance matrix, i.e., 
 \deqn{\Sigma = \frac{1}{n} X^{\top} X.}
@@ -163,6 +164,7 @@ Sparse principal component analysis. Hui Zou, Hastie Trevor, and Tibshirani Robe
 \seealso{
 \code{\link{print.abesspca}},
 \code{\link{coef.abesspca}},
+\code{\link{plot.abesspca}}.
 }
 \author{
 Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang

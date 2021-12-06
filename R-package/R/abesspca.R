@@ -72,7 +72,7 @@
 #'
 #' @seealso \code{\link{print.abesspca}},
 #' \code{\link{coef.abesspca}},
-# \code{\link{plot.abesspca}}.
+#' \code{\link{plot.abesspca}}.
 #'
 #' @examples
 #' \donttest{

@@ -38,9 +38,10 @@ each dimension of multivariate response.
 abess_fit <- abesspca(USArrests, support.size = 1:4, sparse.type = "kpc")
 plot(abess_fit)
 plot(abess_fit, type = "coef")
-
+plot(abess_fit, type = "tune")
 }
 \seealso{
 \code{\link{print.abesspca}},
 \code{\link{coef.abesspca}},
+\code{\link{plot.abesspca}}.
 }
