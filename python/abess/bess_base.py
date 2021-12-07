@@ -222,6 +222,8 @@ class bess_base(BaseEstimator):
             model_type_int = 5
         elif self.model_type == "Multinomial":
             model_type_int = 6
+        elif self.model_type == 'Gamma':
+            model_type_int = 8
         else:
             raise ValueError("model_type should not be " +
                              str(self.model_type))
@@ -250,6 +252,8 @@ class bess_base(BaseEstimator):
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
+        elif (self.cv > n):
+            raise ValueError("cv should be smaller than n.")
 
         # cv_fold_id
         if cv_fold_id is None:

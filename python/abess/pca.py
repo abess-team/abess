@@ -199,6 +199,8 @@ class abessPCA(bess_base):
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
+        elif (self.cv > n):
+            raise ValueError("cv should be smaller than n.")
 
         # Group
         if group is None:
@@ -386,9 +388,9 @@ class abessRPCA(bess_base):
         ----------
         X : array-like of shape (n_samples, p_features)
             Training data
-        weight : array-like of shape (n_samples,)
-            Individual weights for each sample. Only used for is_weight=True.
-            Default is 1 for each observation.
+        r : int
+            Rank of the (recovered) information matrix L. 
+            Default: r = 10.
         group : int, optional
             The group index for each variable.
             Default: group = \code{numpy.ones(p)}.
@@ -477,7 +479,6 @@ class abessRPCA(bess_base):
         new_s_max = 0
         new_lambda_min = 0
         new_lambda_max = 0
-        cv_fold_id = np.array([], dtype = "int32")
 
         # Exchange_num
         if (not isinstance(self.exchange_num, int) or self.exchange_num <= 0):
@@ -530,7 +531,6 @@ class abessRPCA(bess_base):
                             g_index,
                             support_sizes,
                             alphas,
-                            cv_fold_id,
                             new_s_min, new_s_max, 
                             new_lambda_min, new_lambda_max, self.n_lambda,
                             self.screening_size, 

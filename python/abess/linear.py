@@ -724,8 +724,8 @@ class abessGamma(bess_base):
                  splicing_type=0,
                  important_search=128
                  ):
-        super(abessPoisson, self).__init__(
-            algorithm_type="abess", model_type="Poisson", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+        super(abessGamma, self).__init__(
+            algorithm_type="abess", model_type="Gamma", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size, 
             always_select=always_select, 
@@ -766,6 +766,7 @@ class abessGamma(bess_base):
             Test response. 
         """
         if (weights == None):
+            X = np.array(X)
             weights = np.ones(X.shape[0])
         X, y, weights = self.new_data_check(X, y, weights)
 
