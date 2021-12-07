@@ -5,9 +5,9 @@
 #'
 #' @inheritParams print.abess
 #' @param type The type of terms to be plot in the y-axis.
-#' One of the following: \code{"coef"} (i.e., coefficients),
-#' \code{"l2norm"} (i.e., L2-norm of coefficients),
-#' \code{"dev"} (i.e., deviance),
+#' One of the following:
+#' \code{"pev"} (i.e., percent of explained variance),
+#' \code{"coef"} (i.e., coefficients),
 #' and \code{"tune"} (i.e., tuning value).
 #' Default is \code{"coef"}.
 #' @param label A logical value.
@@ -37,6 +37,9 @@ plot.abesspca <- function(x,
                           type = c("pev", "coef", "tune"),
                           label = FALSE,
                           ...) {
+
+  total.variance <- ifelse(x[["sparse.type"]] == "kpc", TRUE, FALSE) # very slight different (not informative)
+
   user_default_par <- graphics::par(no.readonly = TRUE)
   on.exit(graphics::par(user_default_par))
 
@@ -56,12 +59,29 @@ plot.abesspca <- function(x,
   default_mar <- c(5, 4, 3, 2) + 0.1
 
   if (type == "pev") {
-    plot_pca_pev(
-      y_value,
-      df_list,
-      default_mar,
-      sparese_type
-    )
+    if (!total.variance && sparese_type == "kpc") {
+      for (j in 1:x[["kpc.num"]]) {
+        plot_pca_pev(
+          x[["pev.pc"]][[j]],
+          df_list[[j]],
+          default_mar,
+          sparese_type,
+          total.variance,
+          j,
+          ...
+        )
+      }
+    } else {
+      plot_pca_pev(
+        y_value,
+        df_list,
+        default_mar,
+        sparese_type,
+        total.variance,
+        1,
+        ...
+      )
+    }
   }
   if (type == "tune") {
     plot_tune_pca(
@@ -78,8 +98,8 @@ plot.abesspca <- function(x,
   }
 }
 
-plot_pca_pev <- function(pev, df_list, mar, type) {
-  if (type == "kpc") {
+plot_pca_pev <- function(pev, df_list, mar, type, total.variance, i, ...) {
+  if (type == "kpc" && total.variance) {
     df_max <- sapply(df_list, max)
     df_max <- c(0, df_max)
     df_max <- cumsum(df_max)
@@ -87,8 +107,12 @@ plot_pca_pev <- function(pev, df_list, mar, type) {
       df_list[[i]] + df_max[i]
     })
     plot_df_max <- sapply(plot_df, max)
+    plot_title <- "Sequential PCA"
+    x_lab <- "Cumulative support size"
   } else {
     plot_df <- df_list
+    plot_title <- sprintf("PC %s", i)
+    x_lab <- "Support size"
   }
   pev <- unlist(pev)
   plot_df <- unlist(plot_df)
@@ -100,12 +124,13 @@ plot_pca_pev <- function(pev, df_list, mar, type) {
   graphics::plot(plot_df, pev,
     type = "o", pch = 16,
     col = "#3182bd",
-    xlab = "Cumulative support size",
+    xlab = x_lab,
     ylab = "Percent of explained variance",
     xlim = c(1, max(plot_df)),
-    ylim = c(0, 1)
+    main = plot_title,
+    ...
   )
-  if (type == "kpc") {
+  if (type == "kpc" && total.variance) {
     for (v_df in plot_df_max) {
       graphics::abline(v = v_df, col = "#d95f0e")
     }
@@ -118,39 +143,41 @@ plot_pca_pev <- function(pev, df_list, mar, type) {
   graphics::par(oldpar)
 }
 
-plot_tune_pca <- function(tune_value, df, ic.type, mar = c(3, 4, 0, 4)) {
+plot_tune_pca <- function(tune_value, df, ic.type, mar = c(3, 4, 0, 4), ...) {
   if (is.list(tune_value)) {
     dim_y <- ncol(tune_value[[1]])
     kpc_num <- length(df)
     for (i in 1:kpc_num) {
-      title_name <- sprintf("Sequential K principal component analysis (K = %s)", i)
+      title_name <- sprintf("PC %s", i)
       plot_loss(tune_value[[i]], df[[i]], mar, ic.type,
-        main = title_name
+        main = title_name,
+        ...
       )
     }
   } else {
-    title_name <- sprintf("The first principal component analysis", i)
+    title_name <- "PC 1"
     plot_loss(tune_value, df, mar, ic.type,
-      main = title_name
+      main = title_name,
+      ...
     )
   }
 }
 
-plot_solution_pca <- function(beta, df, mar = c(3, 4, 0, 4), label = FALSE) {
+plot_solution_pca <- function(beta, df, mar = c(3, 4, 0, 4), label = FALSE, ...) {
   if (is.list(beta)) {
     dim_y <- ncol(beta[[1]])
     kpc_num <- length(df)
     for (i in 1:kpc_num) {
-      title_name <- sprintf("Sequential K principal component analysis (K = %s)", i)
+      title_name <- sprintf("PC %s", i)
       plot_solution_one(beta[[i]], df[[i]], mar, label,
         start = min(df[[i]]),
         main = title_name
       )
     }
   } else {
-    title_name <- sprintf("The first principal component analysis", i)
+    title_name <- "PC 1"
     plot_solution_one(beta, df, mar, label,
-      start = min(df[[i]]),
+      start = min(df),
       main = title_name
     )
   }
