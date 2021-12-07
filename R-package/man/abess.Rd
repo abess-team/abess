@@ -244,7 +244,7 @@ Again, we suggest to use the default values unchanged because the same reason fo
   \item{\eqn{l_2} regularization best subset selection: } {helpful when signal-to-ratio is relatively small. Use the parameter \code{lambda} to control the magnitude of the regularization term.}
   \item{nuisance selection: } {helpful when the prior knowledge of important predictors is available. Use the parameter \code{always.include} to retain the important predictors.}
 }
-The combination of the four methods is definitely support.
+The arbitrary combination of the four methods are definitely support.
 }
 \examples{
 \donttest{
