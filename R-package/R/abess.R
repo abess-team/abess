@@ -24,9 +24,6 @@ abess <- function(x, ...) UseMethod("abess")
 #' For \code{family = "multinomial"}, \code{y} should be a factor of at least three levels.
 #' Note that, for either \code{"binomial"} or \code{"multinomial"},
 #' if y is presented as a numerical vector, it will be coerced into a factor.
-# @param type One of the two types of problems.
-# \code{type = "bss"} for the best subset selection,
-# and \code{type = "bsrr"} for the best subset ridge regression.
 #' @param family One of the following models:
 #' \code{"gaussian"} (continuous response),
 #' \code{"binomial"} (binary response),
@@ -40,15 +37,6 @@ abess <- function(x, ...) UseMethod("abess")
 #' \code{tune.path = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
 #' For \code{tune.path = "gsection"}, we solve the best subset selection problem with support size ranged in \code{gs.range},
 #' where the specific support size to be considered is determined by golden section.
-# @param method The method to be used to select the optimal support size and \eqn{L_2} shrinkage. For
-# \code{tune.path = "sequence"}, we solve the best subset selection and the best subset ridge regression
-# problem for each \code{s} in \code{1,2,...,s.max} and \eqn{\lambda} in \code{lambda.list}.
-# For \code{tune.path = "gsection"}, which is only valid for \code{type = "bss"},
-# we solve the best subset selection problem with the range support size \code{gs.range},
-# where the specific support size to be considered is determined by golden section. we
-# solve the best subset selection problem with a range of non-continuous model
-# sizes. For \code{tune.path = "pgsection"} and \code{"psequence"}, the Powell method is used to
-# solve the best subset ridge regression problem. Any unambiguous substring can be given.
 #' @param tune.type The type of criterion for choosing the support size.
 #' Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
 #' Default is \code{"gic"}.
@@ -59,17 +47,6 @@ abess <- function(x, ...) UseMethod("abess")
 #' the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
 #' Not available now.
 #' @param lambda A single lambda value for regularized best subset selection. Default is 0.
-# 0.
-# @param s.min The minimum value of support sizes. Only used for \code{tune.path =
-# "gsection"}, \code{"psequence"} and \code{"pgsection"}. Default is 1.
-# @param s.max The maximum value of support sizes. Only used for \code{tune.path =
-# "gsection"}, \code{"psequence"} and \code{"pgsection"}. Default is \code{min(p, round(n/log(n)))}.
-# @param lambda.min The minimum value of lambda. Only used for \code{tune.path =
-# "powell"}. Default is \code{0.001}.
-# @param lambda.max The maximum value of lambda. Only used for \code{tune.path =
-# "powell"}. Default is \code{100}.
-# @param nlambda The number of \eqn{\lambda}s for the Powell path with sequence line search method.
-# Only valid for \code{tune.path = "psequence"}.
 #' @param always.include An integer vector containing the indexes of variables that should always be included in the model.
 #' @param group.index A vector of integers indicating the which group each variable is in.
 #' For variables in the same group, they should be located in adjacent columns of \code{x}
@@ -109,9 +86,6 @@ abess <- function(x, ...) UseMethod("abess")
 #' use a covariance-based implementation; otherwise, a naive implementation.
 #' The naive method is more computational efficient than covariance-based method when \eqn{p >> n} and \code{important.search} is much large than its default value.
 #' Default: \code{cov.update = FALSE}.
-# @param n The number of rows of the design matrix. A must if \code{x} in triplet form.
-# @param p The number of columns of the design matrix. A must if \code{x} in triplet form.
-# @param sparse.matrix A logical value indicating whether the input is a sparse matrix.
 #' @param newton A character specify the Newton's method for fitting generalized linear models,
 #' it should be either \code{newton = "exact"} or \code{newton = "approx"}.
 #' If \code{newton = "exact"}, then the exact hessian is used,
