@@ -4,13 +4,14 @@
 #' low-rank matrix and sparse matrix via the best subset selection approach
 #'
 #' @inheritParams abess.default
+# ’
 #' @param x A matrix object. It can be either a predictor matrix
 #' where each row is an observation and each column is a predictor or
 #' a sample covariance/correlation matrix.
 #' @param rank The rank of the low-rank matrix
 #'
 #' @return A S3 \code{abessrpca} class object, which is a \code{list} with the following components:
-#' \item{S}{A list with \code{length(support.size)} elements, 
+#' \item{S}{A list with \code{length(support.size)} elements,
 #' each of which is a sparse matrix estimation;}
 #' \item{L}{The low rank matrix estimation.}
 #' \item{nobs}{The number of sample used for training.}
@@ -18,16 +19,16 @@
 #' \item{rank}{The rank of matrix \code{L}.}
 #' \item{loss}{The loss of objective function.}
 #' \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
-#' \item{support.size}{The actual support.size values used. 
+#' \item{support.size}{The actual support.size values used.
 #' Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.}
 #' \item{tune.type}{The criterion type for tuning parameters.}
 #' \item{call}{The original call to \code{abessrpca}.}
-#' 
+#'
 #' @export
 #'
 #' @references Emmanuel J. Candès, Xiaodong Li, Yi Ma, and John Wright. 2011. Robust principal component analysis? Journal of the ACM. 58, 3, Article 11 (May 2011), 37 pages. DOI:https://doi.org/10.1145/1970392.1970395
 #' @references Mazumder, Rahul, Trevor Hastie, and Robert Tibshirani. "Spectral regularization algorithms for learning large incomplete matrices." The Journal of Machine Learning Research 11 (2010): 2287-2322.
-#' 
+#'
 #' @examples
 #' library(abess)
 #' n <- 100
@@ -39,7 +40,6 @@
 #' print(res)
 #' plot(res, type = "tune")
 #' plot(res, type = "loss")
-#' 
 abessrpca <- function(x,
                       rank,
                       support.size = NULL,
@@ -59,8 +59,7 @@ abessrpca <- function(x,
                       newton.thresh = 1e-3,
                       num.threads = 0,
                       seed = 1,
-                      ...)
-{
+                      ...) {
   ## strategy for tunning
   tune.path <- match.arg(tune.path)
   if (tune.path == "gsection") {
@@ -68,16 +67,16 @@ abessrpca <- function(x,
   } else if (tune.path == "sequence") {
     path_type <- 1
   }
-  
+
   ## check rank:
   stopifnot(!missing(rank))
   stopifnot(!anyNA(rank))
   stopifnot(all(rank >= 0))
-  
+
   ## check number of thread:
   stopifnot(is.numeric(num.threads) & num.threads >= 0)
   num_threads <- as.integer(num.threads)
-  
+
   ## check parameters for sub-optimization:
   # 1:
   if (!is.null(max.newton.iter)) {
@@ -89,30 +88,30 @@ abessrpca <- function(x,
   # 2:
   stopifnot(is.numeric(newton.thresh) & newton.thresh > 0)
   newton_thresh <- as.double(newton.thresh)
-  
+
   ## check lambda:
   lambda <- 0
   stopifnot(!anyNA(lambda))
   stopifnot(all(lambda >= 0))
-  
+
   ## check warm start:
   stopifnot(is.logical(warm.start))
-  
+
   ## check splicing type
   stopifnot(length(splicing.type) == 1)
   stopifnot(splicing.type %in% c(1, 2))
   splicing_type <- as.integer(splicing.type)
-  
+
   ## check max splicing iteration
   stopifnot(is.numeric(max.splicing.iter) & max.splicing.iter >= 1)
   max_splicing_iter <- as.integer(max.splicing.iter)
-  
+
   stopifnot(class(x)[1] %in% c("matrix", "data.frame", "dgCMatrix"))
   nvars <- ncol(x)
   nobs <- nrow(x)
   sparse_X <- ifelse(class(x)[1] %in% c("matrix", "data.frame"), FALSE, TRUE)
   if (sparse_X) {
-    
+
   } else {
     if (is.data.frame(x)) {
       x <- as.matrix(x)
@@ -131,9 +130,9 @@ abessrpca <- function(x,
   if (is.null(vn)) {
     vn <- paste0("x", 1:nvars)
   }
-  
+
   screening_num <- nobs * nvars
-  
+
   ## group variable:
   group_select <- FALSE
   if (is.null(group.index)) {
@@ -153,7 +152,7 @@ abessrpca <- function(x,
     ngroup <- length(g_index)
     max_group_size <- max(g_df)
   }
-  
+
   # sparse level list (sequence):
   max_rank <- max(c(nvars, nobs))
   if (is.null(support.size)) {
@@ -174,7 +173,7 @@ abessrpca <- function(x,
     support.size <- unique(support.size)
     s_list <- support.size
   }
-  
+
   ## check C-max:
   s_list_max <- max(unlist(s_list))
   if (is.null(c.max)) {
@@ -187,18 +186,18 @@ abessrpca <- function(x,
     )
     c_max <- as.integer(c.max)
   }
-  
+
   # tune support size method:
   tune.type <- match.arg(tune.type)
   ic_type <- map_tunetype2numeric(tune.type)
   is_cv <- FALSE
   cv_fold_id <- integer(0)
-  
+
   ## information criterion
   stopifnot(is.numeric(ic.scale))
   stopifnot(ic.scale >= 0)
   ic_scale <- as.integer(ic.scale)
-  
+
   # check important searching:
   if (is.null(important.search)) {
     important_search <- min(c(nvars, 128))
@@ -209,7 +208,7 @@ abessrpca <- function(x,
     check_integer_warning(important.search)
     important_search <- as.integer(important.search)
   }
-  
+
   # sparse range (golden-section):
   if (is.null(gs.range)) {
     s_min <- 1
@@ -238,7 +237,7 @@ abessrpca <- function(x,
     s_min <- min(gs.range)
     s_max <- max(gs.range)
   }
-  
+
   # check always included variables:
   if (is.null(always.include)) {
     always_include <- numeric(0)
@@ -280,34 +279,36 @@ abessrpca <- function(x,
     }
     always_include <- always.include
   }
-  
-  result_cpp <- abessRPCA_API(x = x,
-                              n = nobs,
-                              p = nvars,
-                              max_iter = max_splicing_iter,
-                              exchange_num = c_max,
-                              path_type = path_type,
-                              is_warm_start = warm.start,
-                              ic_type = 1,
-                              ic_coef = ic.scale,
-                              sequence = s_list,
-                              lambda_seq = rank, 
-                              lambda_min = 0, 
-                              lambda_max = 0,
-                              nlambda = 0, 
-                              s_min = s_min,
-                              s_max = s_max,
-                              screening_size = -1,
-                              primary_model_fit_max_iter = max_newton_iter, 
-                              primary_model_fit_epsilon = newton_thresh,
-                              g_index = g_index,
-                              always_select = always_include,
-                              early_stop = FALSE,
-                              thread = num.threads,
-                              sparse_matrix = sparse_X, 
-                              splicing_type = splicing_type, 
-                              sub_search = important_search)
-  
+
+  result_cpp <- abessRPCA_API(
+    x = x,
+    n = nobs,
+    p = nvars,
+    max_iter = max_splicing_iter,
+    exchange_num = c_max,
+    path_type = path_type,
+    is_warm_start = warm.start,
+    ic_type = 1,
+    ic_coef = ic.scale,
+    sequence = s_list,
+    lambda_seq = rank,
+    lambda_min = 0,
+    lambda_max = 0,
+    nlambda = 0,
+    s_min = s_min,
+    s_max = s_max,
+    screening_size = -1,
+    primary_model_fit_max_iter = max_newton_iter,
+    primary_model_fit_epsilon = newton_thresh,
+    g_index = g_index,
+    always_select = always_include,
+    early_stop = FALSE,
+    thread = num.threads,
+    sparse_matrix = sparse_X,
+    splicing_type = splicing_type,
+    sub_search = important_search
+  )
+
   result_R <- list()
   S <- lapply(result_cpp[["beta_all"]], function(x) {
     non_zero_index <- which(x != 0)
@@ -315,9 +316,11 @@ abessrpca <- function(x,
     non_zero_index <- non_zero_index - 1
     col_index <- floor(non_zero_index / nobs)
     row_index <- non_zero_index %% nobs
-    S_mat <- Matrix::sparseMatrix(dims = c(nobs, nvars), 
-                      i = row_index, j = col_index, 
-                      x = value, index1 = FALSE)
+    S_mat <- Matrix::sparseMatrix(
+      dims = c(nobs, nvars),
+      i = row_index, j = col_index,
+      x = value, index1 = FALSE
+    )
     S_mat
   })
   L <- lapply(S, function(y) {

@@ -51,7 +51,7 @@ Not available now.}
 Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
 Default is \code{"gic"}.}
 
-\item{ic.scale}{A non-negative value used for multiplying the penalty term 
+\item{ic.scale}{A non-negative value used for multiplying the penalty term
 in information criterion. Default: \code{ic.scale = 1}.}
 
 \item{lambda}{A single lambda value for regularized best subset selection. Default is 0.}
@@ -79,9 +79,9 @@ Default is \code{max.splicing.iter = 20}.}
 
 \item{warm.start}{Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.}
 
-\item{important.search}{An integer number indicating the number of 
-important variables to be splicing. 
-When \code{important.search} \eqn{\ll} \code{p} variables, 
+\item{important.search}{An integer number indicating the number of
+important variables to be splicing.
+When \code{important.search} \eqn{\ll} \code{p} variables,
 it would greatly reduce runtimes. Default: \code{important.search = 128}.}
 
 \item{max.newton.iter}{a integer giving the maximal number of Newton's iteration iterations.
@@ -102,7 +102,7 @@ Default is \code{seed = 1}.}
 }
 \value{
 A S3 \code{abessrpca} class object, which is a \code{list} with the following components:
-\item{S}{A list with \code{length(support.size)} elements, 
+\item{S}{A list with \code{length(support.size)} elements,
 each of which is a sparse matrix estimation;}
 \item{L}{The low rank matrix estimation.}
 \item{nobs}{The number of sample used for training.}
@@ -110,7 +110,7 @@ each of which is a sparse matrix estimation;}
 \item{rank}{The rank of matrix \code{L}.}
 \item{loss}{The loss of objective function.}
 \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
-\item{support.size}{The actual support.size values used. 
+\item{support.size}{The actual support.size values used.
 Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.}
 \item{tune.type}{The criterion type for tuning parameters.}
 \item{call}{The original call to \code{abessrpca}.}
@@ -130,7 +130,6 @@ res <- abessrpca(dataset[["x"]], rank = true_L_rank, support.size = (20:40) * 10
 print(res)
 plot(res, type = "tune")
 plot(res, type = "loss")
-
 }
 \references{
 Emmanuel J. Candès, Xiaodong Li, Yi Ma, and John Wright. 2011. Robust principal component analysis? Journal of the ACM. 58, 3, Article 11 (May 2011), 37 pages. DOI:https://doi.org/10.1145/1970392.1970395

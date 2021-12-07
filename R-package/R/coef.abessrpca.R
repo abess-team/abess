@@ -27,7 +27,7 @@ coef.abessrpca <- function(object,
     supp_size_index <-
       match_support_size(object, object[["support.size"]])
   }
-  
+
   stopifnot(is.logical(sparse))
   coef <- object[["S"]]
   if (!is.null(supp_size_index)) {
@@ -36,6 +36,6 @@ coef.abessrpca <- function(object,
   if (!sparse) {
     coef <- lapply(coef, as.matrix)
   }
-  
+
   coef
 }

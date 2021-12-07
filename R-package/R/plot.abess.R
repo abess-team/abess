@@ -93,8 +93,9 @@ plot_loss <- function(loss, df,
   oldpar <- graphics::par(mar = mar, lend = "square") # square line ends
   graphics::par(new = TRUE) # add to the plot
   ylab_display <- ifelse(ic.type == "cv",
-         "cross validation",
-         ic.type)
+    "cross validation",
+    ic.type
+  )
   if (ic.type %in% c("aic", "bic", "ebic", "gic")) {
     ylab_display <- toupper(ylab_display)
   }
@@ -102,7 +103,7 @@ plot_loss <- function(loss, df,
     type = "o", pch = 16,
     col = "#3182bd",
     ylab = ylab_display,
-    xlim = c(min(df), max(df)), xlab = "Support size", 
+    xlim = c(min(df), max(df)), xlab = "Support size",
     ...
   )
   graphics::grid()
@@ -125,7 +126,7 @@ plot_solution_one <- function(beta, df, mar, label, start = 0, ...) {
   graphics::plot(df, beta[1, , drop = TRUE],
     type = "l", col = 1,
     xlim = c(start, max(df)), xlab = "Support size",
-    ylim = range(beta), ylab = "Coefficients", 
+    ylim = range(beta), ylab = "Coefficients",
     ...
   )
   for (i in 2:p) {

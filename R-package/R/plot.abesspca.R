@@ -39,9 +39,9 @@ plot.abesspca <- function(x,
                           ...) {
   user_default_par <- graphics::par(no.readonly = TRUE)
   on.exit(graphics::par(user_default_par))
-  
+
   stopifnot(is.logical(label))
-  
+
   type <- match.arg(type)
   if (type == "tune") {
     y_value <- x[["tune.value"]]
@@ -52,24 +52,29 @@ plot.abesspca <- function(x,
   }
   df_list <- x[["support.size"]]
   sparese_type <- x[["sparse.type"]]
-  
+
   default_mar <- c(5, 4, 3, 2) + 0.1
-  
+
   if (type == "pev") {
-    plot_pca_pev(y_value,
-                 df_list,
-                 default_mar, 
-                 sparese_type)
+    plot_pca_pev(
+      y_value,
+      df_list,
+      default_mar,
+      sparese_type
+    )
   }
   if (type == "tune") {
-    plot_tune_pca(y_value,
-                  df_list,
-                  x[["tune.type"]], 
-                  default_mar)
+    plot_tune_pca(
+      y_value,
+      df_list,
+      x[["tune.type"]],
+      default_mar
+    )
   }
   if (type %in% c("coef")) {
     plot_solution_pca(y_value, df_list,
-                      mar = default_mar, label)
+      mar = default_mar, label
+    )
   }
 }
 
@@ -87,18 +92,18 @@ plot_pca_pev <- function(pev, df_list, mar, type) {
   }
   pev <- unlist(pev)
   plot_df <- unlist(plot_df)
-  
+
   graphics::plot.new() # empty plot
   graphics::plot.window(range(plot_df), range(pev), xaxs = "i")
   oldpar <- graphics::par(mar = mar, lend = "square") # square line ends
   graphics::par(new = TRUE) # add to the plot
   graphics::plot(plot_df, pev,
-                 type = "o", pch = 16,
-                 col = "#3182bd",
-                 xlab = "Cumulative support size", 
-                 ylab = "Percent of explained variance",
-                 xlim = c(1, max(plot_df)), 
-                 ylim = c(0, 1)
+    type = "o", pch = 16,
+    col = "#3182bd",
+    xlab = "Cumulative support size",
+    ylab = "Percent of explained variance",
+    xlim = c(1, max(plot_df)),
+    ylim = c(0, 1)
   )
   if (type == "kpc") {
     for (v_df in plot_df_max) {
@@ -109,7 +114,7 @@ plot_pca_pev <- function(pev, df_list, mar, type) {
   graphics::axis(2)
   # axis(4, pos=par("usr")[1], line=0.5)  # this would plot them 'inside'
   # box()                                 # outer box
-  
+
   graphics::par(oldpar)
 }
 
@@ -119,13 +124,15 @@ plot_tune_pca <- function(tune_value, df, ic.type, mar = c(3, 4, 0, 4)) {
     kpc_num <- length(df)
     for (i in 1:kpc_num) {
       title_name <- sprintf("Sequential K principal component analysis (K = %s)", i)
-      plot_loss(tune_value[[i]], df[[i]], mar, ic.type, 
-                main = title_name)
+      plot_loss(tune_value[[i]], df[[i]], mar, ic.type,
+        main = title_name
+      )
     }
   } else {
     title_name <- sprintf("The first principal component analysis", i)
-    plot_loss(tune_value, df, mar, ic.type, 
-              main = title_name)
+    plot_loss(tune_value, df, mar, ic.type,
+      main = title_name
+    )
   }
 }
 
@@ -135,13 +142,16 @@ plot_solution_pca <- function(beta, df, mar = c(3, 4, 0, 4), label = FALSE) {
     kpc_num <- length(df)
     for (i in 1:kpc_num) {
       title_name <- sprintf("Sequential K principal component analysis (K = %s)", i)
-      plot_solution_one(beta[[i]], df[[i]], mar, label, 
-                        start = min(df[[i]]), 
-                        main = title_name)
+      plot_solution_one(beta[[i]], df[[i]], mar, label,
+        start = min(df[[i]]),
+        main = title_name
+      )
     }
   } else {
     title_name <- sprintf("The first principal component analysis", i)
-    plot_solution_one(beta, df, mar, label, start = min(df[[i]]), 
-                      main = title_name)
+    plot_solution_one(beta, df, mar, label,
+      start = min(df[[i]]),
+      main = title_name
+    )
   }
 }

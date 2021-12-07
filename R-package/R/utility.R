@@ -118,9 +118,11 @@ generate.data <- function(n,
                           p,
                           support.size = NULL,
                           rho = 0,
-                          family = c("gaussian", "binomial", "poisson", 
-                                     "cox", "mgaussian", "multinomial", 
-                                     "gamma"),
+                          family = c(
+                            "gaussian", "binomial", "poisson",
+                            "cox", "mgaussian", "multinomial",
+                            "gamma"
+                          ),
                           beta = NULL,
                           cortype = 1,
                           snr = 10,
@@ -325,7 +327,7 @@ generate.data <- function(n,
     eta <- eta + abs(min(eta)) + 10
     # set the shape para of gamma uniformly in [0.1,100.1]
     shape_para <- 100 * runif(n) + 0.1
-    y <- stats::rgamma(n,shape=shape_para,rate=shape_para*eta)
+    y <- stats::rgamma(n, shape = shape_para, rate = shape_para * eta)
   }
   set.seed(NULL)
 
@@ -406,11 +408,11 @@ abess_model_matrix <- function(object, data = environment(object),
 
 map_tunetype2numeric <- function(tune.type) {
   ic_type <- switch(tune.type,
-                    "aic" = 1,
-                    "bic" = 2,
-                    "gic" = 3,
-                    "ebic" = 4,
-                    "cv" = 1
+    "aic" = 1,
+    "bic" = 2,
+    "gic" = 3,
+    "ebic" = 4,
+    "cv" = 1
   )
   ic_type
 }

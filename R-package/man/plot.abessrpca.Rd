@@ -7,8 +7,10 @@
 \method{plot}{abessrpca}(x, type = c("S", "loss", "tune"), support.size = NULL, label = TRUE, ...)
 }
 \arguments{
-\item{type}{The plot type. 
-One of the following: 
+\item{x}{A "\code{abessrpca}" object.}
+
+\item{type}{The plot type.
+One of the following:
 \code{"S"} (i.e., a heatmap for the sparse matrix estimation),
 \code{"loss"} (i.e., a support.size versus loss plot),
 and \code{"tune"} (i.e., , a support.size versus tuning value plot).
@@ -29,6 +31,6 @@ label the curves with variable sequence numbers.}
 No return value, called for side effects.
 }
 \description{
-Produces a coefficient/deviance/tuning-value plot
-for a fitted "abessrpca" object.
+Produces a sparse-matrix/loss/tuning-value plot
+for a fitted "\code{abessrpca}" object.
 }

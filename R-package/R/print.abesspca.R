@@ -34,10 +34,10 @@ print.abesspca <- function(x,
     pc_list[[i]] <- rep(i, length(x[["support.size"]][[i]]))
   }
   out <- data.frame(
-    "PC" = unlist(pc_list), 
+    "PC" = unlist(pc_list),
     "support.size" = unlist(x[["support.size"]]),
     "ev" = unlist(x[["ev"]]),
-    "pev" = unlist(x[["pev"]]), 
+    "pev" = unlist(x[["pev"]]),
     row.names = NULL
   )
   print(out)

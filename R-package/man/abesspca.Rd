@@ -58,15 +58,15 @@ otherwise, \code{min(length(unique(group.index)), 100)}.}
 
 \item{tune.type}{The type of criterion for choosing the support size.
 Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
-Default is \code{"gic"}. 
+Default is \code{"gic"}.
 \code{tune.type = "cv"} is available only when \code{type = "predictor"}.}
 
 \item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.}
 
-\item{foldid}{an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in. 
+\item{foldid}{an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in.
 The default \code{foldid = NULL} would generate a random foldid.}
 
-\item{ic.scale}{A non-negative value used for multiplying the penalty term 
+\item{ic.scale}{A non-negative value used for multiplying the penalty term
 in information criterion. Default: \code{ic.scale = 1}.}
 
 \item{c.max}{an integer splicing size. The default of \code{c.max} is the maximum of 2 and \code{max(support.size) / 2}.}
@@ -122,8 +122,8 @@ Adaptive best subset selection for principal component analysis
 Adaptive best subset selection for principal component analysis aim
 to solve the non-convex optimization problem:
 \deqn{-\arg\min_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
-where \eqn{s} is support size. 
-Here, \eqn{\Sigma} is covariance matrix, i.e., 
+where \eqn{s} is support size.
+Here, \eqn{\Sigma} is covariance matrix, i.e.,
 \deqn{\Sigma = \frac{1}{n} X^{\top} X.}
 A generic splicing technique is implemented to
 solve this problem.
@@ -143,7 +143,7 @@ pca_fit
 ## covariance matrix input:
 cov_mat <- stats::cov(USArrests) * (nrow(USArrests) - 1) / nrow(USArrests)
 pca_fit <- abesspca(cov_mat, type = "gram")
-pca_fit  
+pca_fit
 
 ## robust covariance matrix input:
 rob_cov <- MASS::cov.rob(USArrests)[["cov"]]
@@ -161,7 +161,6 @@ pca_fit <- abesspca(USArrests,
   support.size = c(1, 2)
 )
 coef(pca_fit)
-
 }
 }
 \references{

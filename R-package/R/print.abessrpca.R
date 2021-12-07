@@ -22,8 +22,8 @@
 #' @export
 #'
 print.abessrpca <- function(x,
-                           digits = max(5, getOption("digits") - 5),
-                           ...) {
+                            digits = max(5, getOption("digits") - 5),
+                            ...) {
   cat("Call:\n", paste(deparse(x[["call"]]), sep = "\n", collapse = "\n"),
     "\n\n",
     sep = ""
@@ -31,8 +31,8 @@ print.abessrpca <- function(x,
   support_size <- unlist(x[["support.size"]])
   out <- data.frame(
     "support.size" = unlist(x[["support.size"]]),
-    "loss" = unlist(x[["loss"]]), 
-    "tune" = unlist(x[["tune.value"]]), 
+    "loss" = unlist(x[["loss"]]),
+    "tune" = unlist(x[["tune.value"]]),
     row.names = NULL
   )
   colnames(out)[3] <- x[["tune.type"]]
