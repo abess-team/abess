@@ -6,7 +6,7 @@
 \alias{_PACKAGE}
 \title{abess: Adaptive Best Subset Selection in Polynomial Time}
 \description{
-Extremely efficient toolkit for solving the best subset selection problem in linear regression, logistic regression, Poisson regression, Cox proportional hazard model, multiple-response regression, multinomial logistic regression, and (sequential) principal component analysis. It implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times.
+Extremely efficient toolkit for solving the best subset selection problem in linear regression, logistic regression, Poisson regression, Cox proportional hazard model, Gamma regression, multiple-response regression, multinomial logistic regression, (sequential) principal component analysis, and robust principal component analysis. It implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times. This package also supports the best subset of group selection <arXiv:2104.12576> and sure independence screening <doi:10.1111/j.1467-9868.2008.00674.x>.
 }
 \seealso{
 Useful links:

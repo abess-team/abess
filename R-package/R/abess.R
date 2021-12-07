@@ -32,9 +32,9 @@ abess <- function(x, ...) UseMethod("abess")
 #' \code{"binomial"} (binary response),
 #' \code{"poisson"} (non-negative count),
 #' \code{"cox"} (left-censored response),
-#' \code{"mgaussian"} (multivariate continuous response), 
-#' \code{"multinomial"} (multi-class response), 
-#' \code{"gamma"} (positive continuous response). 
+#' \code{"mgaussian"} (multivariate continuous response),
+#' \code{"multinomial"} (multi-class response),
+#' \code{"gamma"} (positive continuous response).
 #' Depending on the response. Any unambiguous substring can be given.
 #' @param tune.path The method to be used to select the optimal support size. For
 #' \code{tune.path = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
@@ -84,9 +84,9 @@ abess <- function(x, ...) UseMethod("abess")
 #' (Default: \code{splicing.type = 2}.)
 #' @param screening.num An integer number. Preserve \code{screening.num} number of predictors with the largest
 #' marginal maximum likelihood estimator before running algorithm.
-#' @param important.search An integer number indicating the number of 
-#' important variables to be splicing. 
-#' When \code{important.search} \eqn{\ll} \code{p} variables, 
+#' @param important.search An integer number indicating the number of
+#' important variables to be splicing.
+#' When \code{important.search} \eqn{\ll} \code{p} variables,
 #' it would greatly reduce runtimes. Default: \code{important.search = 128}.
 #' @param normalize Options for normalization. \code{normalize = 0} for no normalization.
 #' \code{normalize = 1} for subtracting the mean of columns of \code{x}.
@@ -103,7 +103,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' Default is \code{max.splicing.iter = 20}.
 #' @param warm.start Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.
 #' @param nfolds The number of folds in cross-validation. Default is \code{nfolds = 5}.
-#' @param foldid an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in. 
+#' @param foldid an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in.
 #' The default \code{foldid = NULL} would generate a random foldid.
 #' @param cov.update A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE},
 #' use a covariance-based implementation; otherwise, a naive implementation.
@@ -124,7 +124,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param early.stop A boolean value decide whether early stopping.
 #' If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one.
 #' Default: \code{early.stop = FALSE}.
-#' @param ic.scale A non-negative value used for multiplying the penalty term 
+#' @param ic.scale A non-negative value used for multiplying the penalty term
 #' in information criterion. Default: \code{ic.scale = 1}.
 #' @param num.threads An integer decide the number of threads to be
 #' concurrently used for cross-validation (i.e., \code{tune.type = "cv"}).
@@ -320,8 +320,10 @@ abess <- function(x, ...) UseMethod("abess")
 #' }
 abess.default <- function(x,
                           y,
-                          family = c("gaussian", "binomial", "poisson", "cox", 
-                                     "mgaussian", "multinomial", "gamma"),
+                          family = c(
+                            "gaussian", "binomial", "poisson", "cox",
+                            "mgaussian", "multinomial", "gamma"
+                          ),
                           tune.path = c("sequence", "gsection"),
                           tune.type = c("gic", "ebic", "bic", "aic", "cv"),
                           weight = NULL,
@@ -335,16 +337,16 @@ abess.default <- function(x,
                           splicing.type = 2,
                           max.splicing.iter = 20,
                           screening.num = NULL,
-                          important.search = NULL, 
+                          important.search = NULL,
                           warm.start = TRUE,
                           nfolds = 5,
-                          foldid = NULL, 
+                          foldid = NULL,
                           cov.update = FALSE,
                           newton = c("exact", "approx"),
                           newton.thresh = 1e-6,
                           max.newton.iter = NULL,
                           early.stop = FALSE,
-                          ic.scale = 1.0, 
+                          ic.scale = 1.0,
                           num.threads = 0,
                           seed = 1,
                           ...) {
@@ -665,9 +667,9 @@ abess.default <- function(x,
     max_newton_iter <- as.integer(max.newton.iter)
   } else {
     max_newton_iter <- ifelse(newton_type == 0, 10, 60)
-    if(family == "gamma" && newton_type == 1){
+    if (family == "gamma" && newton_type == 1) {
       max_newton_iter <- 200
-    }    
+    }
   }
   # 3:
   stopifnot(is.numeric(newton.thresh) & newton.thresh > 0)
@@ -689,7 +691,7 @@ abess.default <- function(x,
     cv_fold_id <- integer(0)
     # nfolds <- 1
   }
-  
+
   ## information criterion
   stopifnot(is.numeric(ic.scale))
   stopifnot(ic.scale >= 0)
@@ -758,7 +760,7 @@ abess.default <- function(x,
     screening <- TRUE
     screening_num <- screening.num
   }
-  
+
   # check important searching:
   if (is.null(important.search)) {
     important_search <- min(c(nvars, 128))
@@ -846,8 +848,8 @@ abess.default <- function(x,
     thread = num_threads,
     covariance_update = covariance_update,
     sparse_matrix = sparse_X,
-    splicing_type = splicing_type, 
-    sub_search = important_search, 
+    splicing_type = splicing_type,
+    sub_search = important_search,
     cv_fold_id = cv_fold_id
   )
   t2 <- proc.time()

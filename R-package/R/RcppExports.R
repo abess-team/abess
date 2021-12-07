@@ -9,7 +9,7 @@ abessPCA_API <- function(x, n, p, normalize_type, weight, sigma, max_iter, excha
     .Call(`_abess_abessPCA_API`, x, n, p, normalize_type, weight, sigma, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, Kfold, sequence, s_min, s_max, screening_size, g_index, always_select, early_stop, thread, sparse_matrix, splicing_type, sub_search, cv_fold_id, pca_num)
 }
 
-abessRPCA_API <- function(x, n, p, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, sequence, lambda_seq, s_min, s_max, lambda_min, lambda_max, nlambda, screening_size, g_index, always_select, early_stop, thread, sparse_matrix, splicing_type, sub_search, cv_fold_id) {
-    .Call(`_abess_abessRPCA_API`, x, n, p, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, sequence, lambda_seq, s_min, s_max, lambda_min, lambda_max, nlambda, screening_size, g_index, always_select, early_stop, thread, sparse_matrix, splicing_type, sub_search, cv_fold_id)
+abessRPCA_API <- function(x, n, p, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, sequence, lambda_seq, s_min, s_max, lambda_min, lambda_max, nlambda, screening_size, primary_model_fit_max_iter, primary_model_fit_epsilon, g_index, always_select, early_stop, thread, sparse_matrix, splicing_type, sub_search) {
+    .Call(`_abess_abessRPCA_API`, x, n, p, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, sequence, lambda_seq, s_min, s_max, lambda_min, lambda_max, nlambda, screening_size, primary_model_fit_max_iter, primary_model_fit_epsilon, g_index, always_select, early_stop, thread, sparse_matrix, splicing_type, sub_search)
 }
 

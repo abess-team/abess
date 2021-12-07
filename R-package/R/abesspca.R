@@ -8,10 +8,15 @@
 #' (inherit from class \code{"dgCMatrix"} in package \code{Matrix}).
 #' @param type If \code{type = "predictor"}, \code{x} is considered as the predictor matrix.
 #' If \code{type = "gram"}, \code{x} is considered as a sample covariance or correlation matrix.
+#' @param kpc.num A integer decide the number of components.
 #' @param c.max an integer splicing size. The default of \code{c.max} is the maximum of 2 and \code{max(support.size) / 2}.
 #' @param sparse.type If \code{sparse.type = "fpc"}, then best subset selection performs on the first principal component;
 #' If \code{sparse.type = "kpc"}, then best subset selection performs on the first \code{kpc.num} principal components.
 #' (The parameter will be discard in future version.)
+#' @param tune.type The type of criterion for choosing the support size.
+#' Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
+#' Default is \code{"gic"}.
+#' \code{tune.type = "cv"} is available only when \code{type = "predictor"}.
 #' @param cor A logical value. If \code{cor = TRUE}, perform PCA on the correlation matrix;
 #' otherwise, the covariance matrix.
 #' This option is available only if \code{type = "predictor"}.
@@ -33,9 +38,9 @@
 #'
 #' @details Adaptive best subset selection for principal component analysis aim
 #' to solve the non-convex optimization problem:
-#' \deqn{\arg\max_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
-#' where \eqn{s} is support size. 
-#' Here, \eqn{\Sigma} is covariance matrix, i.e., 
+#' \deqn{-\arg\min_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
+#' where \eqn{s} is support size.
+#' Here, \eqn{\Sigma} is covariance matrix, i.e.,
 #' \deqn{\Sigma = \frac{1}{n} X^{\top} X.}
 #' A generic splicing technique is implemented to
 #' solve this problem.
@@ -68,7 +73,7 @@
 #'
 #' @seealso \code{\link{print.abesspca}},
 #' \code{\link{coef.abesspca}},
-# \code{\link{plot.abesspca}}.
+#' \code{\link{plot.abesspca}}.
 #'
 #' @examples
 #' \donttest{
@@ -82,7 +87,7 @@
 #' ## covariance matrix input:
 #' cov_mat <- stats::cov(USArrests) * (nrow(USArrests) - 1) / nrow(USArrests)
 #' pca_fit <- abesspca(cov_mat, type = "gram")
-#' pca_fit  
+#' pca_fit
 #'
 #' ## robust covariance matrix input:
 #' rob_cov <- MASS::cov.rob(USArrests)[["cov"]]
@@ -100,27 +105,31 @@
 #'   support.size = c(1, 2)
 #' )
 #' coef(pca_fit)
-#' 
 #' }
 abesspca <- function(x,
                      type = c("predictor", "gram"),
                      sparse.type = c("fpc", "kpc"),
                      cor = FALSE,
                      support.size = NULL,
-                     kpc.num = ifelse(sparse.type == "fpc", 1, 2), 
-                     tune.type = c("aic", "bic", "gic", "ebic", "cv"), 
+                     kpc.num = ifelse(sparse.type == "fpc", 1, 2),
+                     tune.type = c("aic", "bic", "gic", "ebic", "cv"),
                      nfolds = 5,
-                     foldid = NULL, 
+                     foldid = NULL,
                      ic.scale = 1.0,
                      c.max = NULL,
                      always.include = NULL,
                      group.index = NULL,
                      splicing.type = 1,
                      max.splicing.iter = 20,
-                     warm.start = TRUE, 
+                     warm.start = TRUE,
+                     num.threads = 0,
                      ...) {
   support.num <- NULL
   important.search <- NULL
+
+  ## check number of thread:
+  stopifnot(is.numeric(num.threads) & num.threads >= 0)
+  num_threads <- as.integer(num.threads)
 
   ## check warm start:
   stopifnot(is.logical(warm.start))
@@ -164,7 +173,7 @@ abesspca <- function(x,
   stopifnot(kpc.num >= 1)
   check_integer_warning(kpc.num, "kpc.num should be an integer. It is coerced to as.integer(kpc.num).")
   sparse.type <- ifelse(kpc.num == 1, "fpc", "kpc")
-  
+
   ## compute gram matrix
   sparse_matrix <- FALSE
   cov_type <- match.arg(type)
@@ -309,7 +318,7 @@ abesspca <- function(x,
     }
   } else {
     s_list_bool <- matrix(0, nrow = s_list_bool_nrow, ncol = 1)
-    s_list_bool[s_list, ] <- 1    
+    s_list_bool[s_list, ] <- 1
   }
 
   ## check C-max:
@@ -343,8 +352,8 @@ abesspca <- function(x,
 
     always_include <- always.include
   }
-  
-  ## important searching: 
+
+  ## important searching:
   if (is.null(important.search)) {
     important_search <- as.integer(0)
   } else {
@@ -352,11 +361,11 @@ abesspca <- function(x,
     stopifnot(important.search >= 0)
     important_search <- as.integer(important.search)
   }
-  
-  ## 
+
+  ##
   tune_type <- match.arg(tune.type)
   if (cov_type == "gram" && tune_type == "cv") {
-    warnings("Cross validation is not allow when input a gram matrix. 
+    warnings("Cross validation is not allow when input a gram matrix.
              Coerce into tune.type = 'gic'.")
     tune_type <- "gic"
   }
@@ -397,11 +406,11 @@ abesspca <- function(x,
     g_index = g_index,
     always_select = always_include,
     early_stop = FALSE,
-    thread = 1,
-    sparse_matrix = sparse_matrix, 
-    splicing_type = splicing_type, 
-    sub_search = important_search, 
-    cv_fold_id = cv_fold_id, 
+    thread = num.threads,
+    sparse_matrix = sparse_matrix,
+    splicing_type = splicing_type,
+    sub_search = important_search,
+    cv_fold_id = cv_fold_id,
     pca_num = kpc.num
   )
 
@@ -414,7 +423,7 @@ abesspca <- function(x,
   # result[["test_loss_all"]] <- NULL
 
   if (sparse.type == "fpc") {
-    names(result)[which(names(result) == 'beta_all')] <- "coef"
+    names(result)[which(names(result) == "beta_all")] <- "coef"
     # result[["coef"]] <- result[["beta_all"]]
     result[["ev"]] <- -result[["train_loss_all"]][, 1]
     # names(result)[which(names(result) == "train_loss_all")] <- "ev"
@@ -432,10 +441,10 @@ abesspca <- function(x,
     result[["coef0_all"]] <- NULL
     result[["train_loss_all"]] <- NULL
     if (tune_type == "cv") {
-      names(result)[which(names(result) == 'ic_all')] <- "tune.value"
+      names(result)[which(names(result) == "ic_all")] <- "tune.value"
       result[["test_loss_all"]] <- NULL
     } else {
-      names(result)[which(names(result) == 'test_loss_all')] <- "tune.value"
+      names(result)[which(names(result) == "test_loss_all")] <- "tune.value"
       result[["ic_all"]] <- NULL
     }
     result[["effective_number_all"]] <- NULL
@@ -455,7 +464,7 @@ abesspca <- function(x,
       tmp <- coef_list[[1]]
       tmp <- tmp[, ncol(tmp), drop = FALSE]
       j <- 2
-      while(j < i) {
+      while (j < i) {
         tmp2 <- coef_list[[j]]
         tmp <- cbind(tmp, tmp2[, ncol(tmp2), drop = FALSE])
         j <- j + 1
@@ -469,7 +478,7 @@ abesspca <- function(x,
     if (tune_type == "cv") {
       tune_value <- lapply(result, function(x) {
         x[["test_loss_all"]]
-      })      
+      })
     } else {
       tune_value <- lapply(result, function(x) {
         x[["ic_all"]]
@@ -500,18 +509,16 @@ abesspca <- function(x,
   result[["tune.type"]] <- tune_type
 
   result[["call"]] <- match.call()
-  out <- result
-
-  class(out) <- "abesspca"
-  out
+  class(result) <- "abesspca"
+  result
 }
 
 adjusted_variance_explained <- function(covmat, loading) {
   loading <- as.matrix(loading)
   normloading <- sqrt(apply(loading^2, 2, sum))
-  pc <- covmat %*% t(t(loading)/normloading)
+  pc <- covmat %*% t(t(loading) / normloading)
   # since it is covariance matrix, it is no need to square the diagonal values.
-  ev <- abs(diag(qr.R(qr(pc))))   
+  ev <- abs(diag(qr.R(qr(pc))))
   # ev <- (diag(qr.R(qr(pc))))^2
   ev
 }

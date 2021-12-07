@@ -1,10 +1,10 @@
-#' Print method for a fitted "\code{abesspca}" object
+#' Print method for a fitted "\code{abessrpca}" object
 #'
 #' Prints the fitted model and returns it invisibly.
 #'
-#' @rdname print.abesspca
+#' @rdname print.abessrpca
 #'
-#' @param x A "\code{abesspca}" object.
+#' @param x A "\code{abessrpca}" object.
 #' @param digits Minimum number of significant digits to be used.
 #' @param ... additional print arguments
 #'
@@ -15,30 +15,26 @@
 #'
 #' @return No return value, called for side effects
 #'
-#' @inherit abesspca seealso
+#' @inherit abessrpca seealso
 #'
-#' @method print abesspca
+#' @method print abessrpca
 #'
 #' @export
 #'
-print.abesspca <- function(x,
-                           digits = max(5, getOption("digits") - 5),
-                           ...) {
+print.abessrpca <- function(x,
+                            digits = max(5, getOption("digits") - 5),
+                            ...) {
   cat("Call:\n", paste(deparse(x[["call"]]), sep = "\n", collapse = "\n"),
     "\n\n",
     sep = ""
   )
   support_size <- unlist(x[["support.size"]])
-  pc_list <- list()
-  for (i in 1:x[["kpc.num"]]) {
-    pc_list[[i]] <- rep(i, length(x[["support.size"]][[i]]))
-  }
   out <- data.frame(
-    "PC" = unlist(pc_list),
     "support.size" = unlist(x[["support.size"]]),
-    "ev" = unlist(x[["ev"]]),
-    "pev" = unlist(x[["pev"]]),
+    "loss" = unlist(x[["loss"]]),
+    "tune" = unlist(x[["tune.value"]]),
     row.names = NULL
   )
+  colnames(out)[3] <- x[["tune.type"]]
   print(out)
 }

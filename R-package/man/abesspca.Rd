@@ -21,6 +21,7 @@ abesspca(
   splicing.type = 1,
   max.splicing.iter = 20,
   warm.start = TRUE,
+  num.threads = 0,
   ...
 )
 }
@@ -53,16 +54,19 @@ then for 20\% principal components,
 it is set as \code{min(ncol(x), 100)} if \code{group.index = NULL};
 otherwise, \code{min(length(unique(group.index)), 100)}.}
 
+\item{kpc.num}{A integer decide the number of components.}
+
 \item{tune.type}{The type of criterion for choosing the support size.
 Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
-Default is \code{"gic"}.}
+Default is \code{"gic"}.
+\code{tune.type = "cv"} is available only when \code{type = "predictor"}.}
 
 \item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.}
 
-\item{foldid}{an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in. 
+\item{foldid}{an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in.
 The default \code{foldid = NULL} would generate a random foldid.}
 
-\item{ic.scale}{A non-negative value used for multiplying the penalty term 
+\item{ic.scale}{A non-negative value used for multiplying the penalty term
 in information criterion. Default: \code{ic.scale = 1}.}
 
 \item{c.max}{an integer splicing size. The default of \code{c.max} is the maximum of 2 and \code{max(support.size) / 2}.}
@@ -88,6 +92,11 @@ Default is \code{max.splicing.iter = 20}.}
 
 \item{warm.start}{Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.}
 
+\item{num.threads}{An integer decide the number of threads to be
+concurrently used for cross-validation (i.e., \code{tune.type = "cv"}).
+If \code{num.threads = 0}, then all of available cores will be used.
+Default: \code{num.threads = 0}.}
+
 \item{...}{further arguments to be passed to or from methods.}
 }
 \value{
@@ -112,9 +121,9 @@ Adaptive best subset selection for principal component analysis
 \details{
 Adaptive best subset selection for principal component analysis aim
 to solve the non-convex optimization problem:
-\deqn{\arg\max_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
-where \eqn{s} is support size. 
-Here, \eqn{\Sigma} is covariance matrix, i.e., 
+\deqn{-\arg\min_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
+where \eqn{s} is support size.
+Here, \eqn{\Sigma} is covariance matrix, i.e.,
 \deqn{\Sigma = \frac{1}{n} X^{\top} X.}
 A generic splicing technique is implemented to
 solve this problem.
@@ -134,7 +143,7 @@ pca_fit
 ## covariance matrix input:
 cov_mat <- stats::cov(USArrests) * (nrow(USArrests) - 1) / nrow(USArrests)
 pca_fit <- abesspca(cov_mat, type = "gram")
-pca_fit  
+pca_fit
 
 ## robust covariance matrix input:
 rob_cov <- MASS::cov.rob(USArrests)[["cov"]]
@@ -152,7 +161,6 @@ pca_fit <- abesspca(USArrests,
   support.size = c(1, 2)
 )
 coef(pca_fit)
-
 }
 }
 \references{
@@ -163,6 +171,7 @@ Sparse principal component analysis. Hui Zou, Hastie Trevor, and Tibshirani Robe
 \seealso{
 \code{\link{print.abesspca}},
 \code{\link{coef.abesspca}},
+\code{\link{plot.abesspca}}.
 }
 \author{
 Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang

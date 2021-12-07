@@ -62,9 +62,9 @@ if y is presented as a numerical vector, it will be coerced into a factor.}
 \code{"binomial"} (binary response),
 \code{"poisson"} (non-negative count),
 \code{"cox"} (left-censored response),
-\code{"mgaussian"} (multivariate continuous response), 
-\code{"multinomial"} (multi-class response), 
-\code{"gamma"} (positive continuous response). 
+\code{"mgaussian"} (multivariate continuous response),
+\code{"multinomial"} (multi-class response),
+\code{"gamma"} (positive continuous response).
 Depending on the response. Any unambiguous substring can be given.}
 
 \item{tune.path}{The method to be used to select the optimal support size. For
@@ -121,16 +121,16 @@ Default is \code{max.splicing.iter = 20}.}
 \item{screening.num}{An integer number. Preserve \code{screening.num} number of predictors with the largest
 marginal maximum likelihood estimator before running algorithm.}
 
-\item{important.search}{An integer number indicating the number of 
-important variables to be splicing. 
-When \code{important.search} \eqn{\ll} \code{p} variables, 
+\item{important.search}{An integer number indicating the number of
+important variables to be splicing.
+When \code{important.search} \eqn{\ll} \code{p} variables,
 it would greatly reduce runtimes. Default: \code{important.search = 128}.}
 
 \item{warm.start}{Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.}
 
 \item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.}
 
-\item{foldid}{an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in. 
+\item{foldid}{an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in.
 The default \code{foldid = NULL} would generate a random foldid.}
 
 \item{cov.update}{A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE},
@@ -154,7 +154,7 @@ Default is \code{max.newton.iter = 10} if \code{newton = "exact"}, and \code{max
 If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one.
 Default: \code{early.stop = FALSE}.}
 
-\item{ic.scale}{A non-negative value used for multiplying the penalty term 
+\item{ic.scale}{A non-negative value used for multiplying the penalty term
 in information criterion. Default: \code{ic.scale = 1}.}
 
 \item{num.threads}{An integer decide the number of threads to be

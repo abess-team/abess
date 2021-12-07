@@ -7,7 +7,7 @@
 \method{plot}{abesspca}(x, type = c("pev", "coef", "tune"), label = FALSE, ...)
 }
 \arguments{
-\item{x}{A "\code{abesspca}" object.}
+\item{x}{A "\code{abess}" object.}
 
 \item{type}{The type of terms to be plot in the y-axis.
 One of the following: \code{"coef"} (i.e., coefficients),
@@ -38,9 +38,10 @@ each dimension of multivariate response.
 abess_fit <- abesspca(USArrests, support.size = 1:4, sparse.type = "kpc")
 plot(abess_fit)
 plot(abess_fit, type = "coef")
-
+plot(abess_fit, type = "tune")
 }
 \seealso{
 \code{\link{print.abesspca}},
 \code{\link{coef.abesspca}},
+\code{\link{plot.abesspca}}.
 }

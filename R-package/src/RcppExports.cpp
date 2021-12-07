@@ -93,8 +93,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // abessRPCA_API
-List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, double lambda_min, double lambda_max, int nlambda, int screening_size, Eigen::VectorXi g_index, Eigen::VectorXi always_select, bool early_stop, int thread, bool sparse_matrix, int splicing_type, int sub_search, Eigen::VectorXi cv_fold_id);
-RcppExport SEXP _abess_abessRPCA_API(SEXP xSEXP, SEXP nSEXP, SEXP pSEXP, SEXP max_iterSEXP, SEXP exchange_numSEXP, SEXP path_typeSEXP, SEXP is_warm_startSEXP, SEXP ic_typeSEXP, SEXP ic_coefSEXP, SEXP sequenceSEXP, SEXP lambda_seqSEXP, SEXP s_minSEXP, SEXP s_maxSEXP, SEXP lambda_minSEXP, SEXP lambda_maxSEXP, SEXP nlambdaSEXP, SEXP screening_sizeSEXP, SEXP g_indexSEXP, SEXP always_selectSEXP, SEXP early_stopSEXP, SEXP threadSEXP, SEXP sparse_matrixSEXP, SEXP splicing_typeSEXP, SEXP sub_searchSEXP, SEXP cv_fold_idSEXP) {
+List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, double lambda_min, double lambda_max, int nlambda, int screening_size, int primary_model_fit_max_iter, double primary_model_fit_epsilon, Eigen::VectorXi g_index, Eigen::VectorXi always_select, bool early_stop, int thread, bool sparse_matrix, int splicing_type, int sub_search);
+RcppExport SEXP _abess_abessRPCA_API(SEXP xSEXP, SEXP nSEXP, SEXP pSEXP, SEXP max_iterSEXP, SEXP exchange_numSEXP, SEXP path_typeSEXP, SEXP is_warm_startSEXP, SEXP ic_typeSEXP, SEXP ic_coefSEXP, SEXP sequenceSEXP, SEXP lambda_seqSEXP, SEXP s_minSEXP, SEXP s_maxSEXP, SEXP lambda_minSEXP, SEXP lambda_maxSEXP, SEXP nlambdaSEXP, SEXP screening_sizeSEXP, SEXP primary_model_fit_max_iterSEXP, SEXP primary_model_fit_epsilonSEXP, SEXP g_indexSEXP, SEXP always_selectSEXP, SEXP early_stopSEXP, SEXP threadSEXP, SEXP sparse_matrixSEXP, SEXP splicing_typeSEXP, SEXP sub_searchSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -115,6 +115,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type lambda_max(lambda_maxSEXP);
     Rcpp::traits::input_parameter< int >::type nlambda(nlambdaSEXP);
     Rcpp::traits::input_parameter< int >::type screening_size(screening_sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type primary_model_fit_max_iter(primary_model_fit_max_iterSEXP);
+    Rcpp::traits::input_parameter< double >::type primary_model_fit_epsilon(primary_model_fit_epsilonSEXP);
     Rcpp::traits::input_parameter< Eigen::VectorXi >::type g_index(g_indexSEXP);
     Rcpp::traits::input_parameter< Eigen::VectorXi >::type always_select(always_selectSEXP);
     Rcpp::traits::input_parameter< bool >::type early_stop(early_stopSEXP);
@@ -122,8 +124,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type sparse_matrix(sparse_matrixSEXP);
     Rcpp::traits::input_parameter< int >::type splicing_type(splicing_typeSEXP);
     Rcpp::traits::input_parameter< int >::type sub_search(sub_searchSEXP);
-    Rcpp::traits::input_parameter< Eigen::VectorXi >::type cv_fold_id(cv_fold_idSEXP);
-    rcpp_result_gen = Rcpp::wrap(abessRPCA_API(x, n, p, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, sequence, lambda_seq, s_min, s_max, lambda_min, lambda_max, nlambda, screening_size, g_index, always_select, early_stop, thread, sparse_matrix, splicing_type, sub_search, cv_fold_id));
+    rcpp_result_gen = Rcpp::wrap(abessRPCA_API(x, n, p, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, sequence, lambda_seq, s_min, s_max, lambda_min, lambda_max, nlambda, screening_size, primary_model_fit_max_iter, primary_model_fit_epsilon, g_index, always_select, early_stop, thread, sparse_matrix, splicing_type, sub_search));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -131,7 +132,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_abess_abessGLM_API", (DL_FUNC) &_abess_abessGLM_API, 35},
     {"_abess_abessPCA_API", (DL_FUNC) &_abess_abessPCA_API, 26},
-    {"_abess_abessRPCA_API", (DL_FUNC) &_abess_abessRPCA_API, 25},
+    {"_abess_abessRPCA_API", (DL_FUNC) &_abess_abessRPCA_API, 26},
     {NULL, NULL, 0}
 };
 
