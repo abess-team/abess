@@ -155,6 +155,14 @@ class TestCheck:
         else:
             assert False
         
+        try:
+            model1 = abessLm(cv='c')
+            model1.fit([[1]], [1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
         # incompatible shape
         try:
             model.fit([1, 1, 1], [1])
@@ -165,6 +173,14 @@ class TestCheck:
 
         try:
             model.fit([[1, 1, 1]], [1, 2])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model.fit([[1, 1, 1]], [1])
+            model.predict([[1, 1]])
         except ValueError as e:
             print(e)
         else:
@@ -199,11 +215,71 @@ class TestCheck:
         else:
             assert False
 
-    def test_fit_pca(self):
+    def test_pca(self):
         """
-        Special input in `abess.pca.fit`.
+        For `abess.pca.abessPca`.
         """
         model = abessPCA()
+        # datatype error
+        try:
+            model.fit([['c']])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model.fit(Sigma=[['c']])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model.fit(Sigma=[[np.nan]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model1 = abessPCA(cv='c')
+            model1.fit([[1]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        # incompatible shape
+        try:
+            model.fit([1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model.fit(Sigma=[1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model.fit([[1]], group = [1, 2])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        # lack of necessary parameter
+        try:
+            model.fit()
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
         # number
         try:
             model.fit([[1]], [1], number=-1)
@@ -212,28 +288,7 @@ class TestCheck:
         else:
             assert False
 
-        # Sigma
-        try:
-            model.fit(Sigma=[['c']])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-
-        try:
-            model.fit(Sigma=[1])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-
-        try:
-            model.fit(Sigma=[[np.nan]])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-
+        # invalid sigma
         try:
             model.fit(Sigma=[[1, 0], [1, 0]])
         except ValueError as e:
@@ -248,4 +303,42 @@ class TestCheck:
         else:
             assert False
 
+    def test_rpca(self):
+        model = abessRPCA()
+        # datatype error
+        try:
+            model.fit([['c']])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
         
+        try:
+            model.fit([[1]], r='c')
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+                
+        # incompatible shape
+        try:
+            model.fit([1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+                
+        try:
+            model.fit([[1]], group = [1, 2])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        # lack of necessary parameter
+        try:
+            model.fit()
+        except ValueError as e:
+            print(e)
+        else:
+            assert False

@@ -85,6 +85,8 @@ class TestAlgorithm:
         assert_reg(model1.coef_)
 
         # predict
+        prob = model1.predict_proba(data.x)
+        assert_nan(prob)
         y = model1.predict(data.x)
         assert_nan(y)
 
@@ -270,6 +272,7 @@ class TestAlgorithm:
         # ratio & transform 
         model1.ratio(X)
         model1.transform(X)
+        model1.fit_transform(X)
 
         # sigma input
         model2 = abessPCA(support_size=support_size)
@@ -288,6 +291,11 @@ class TestAlgorithm:
 
         model3.ratio(X)
 
+        # ic
+        for ic in ['aic', 'bic', 'ebic', 'gic']:
+            model4 = abessPCA(support_size=support_size, ic_type=ic)
+            model4.fit(X, is_normal=False)
+
     def test_gamma(self):
 
         x = np.array([[1, 2], [2, 3], [3, 4], [4, 3]])
@@ -303,7 +311,33 @@ class TestAlgorithm:
 
         # score
         score = model1.score(x, y)
+        score = model1.score(x, y, [1,1,1,1])
         assert not np.isnan(score)
+
+    def test_RPCA(self):
+        np.random.seed(2)
+        n = 100
+        p = 20
+        s = 30
+        r = 5
+
+        L = np.random.rand(n, r) @ np.random.rand(r, p)
+        nonzero = np.random.choice(n*p, s, replace=False)
+        S = np.zeros(n*p)
+        S[nonzero] = np.random.rand(s) * 10
+        S = S.reshape(p, n).T
+        X = L + S
+
+        # null
+        model1 = abessRPCA(support_size=s)
+        model1.fit(X, r=r)
+        # assert_fit(model1.coef_, S)
+
+        # ic
+        for ic in ['aic', 'bic', 'ebic', 'gic']:
+            model4 = abessRPCA(support_size=s, ic_type=ic)
+            model4.fit(X, r=r)
+
 
     def test_gaussian_sklearn(self):
         np.random.seed(7)

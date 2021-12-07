@@ -6,7 +6,7 @@ from scipy.sparse import coo_matrix
 
 class TestWorkflow:
     """
-    Test for abess workflow under `abessLm`.
+    Test for abess workflow in cpp. (Take abessLm as an example.)
     """
     def test_sparse(self):
         np.random.seed(0)
@@ -20,7 +20,12 @@ class TestWorkflow:
         model2 = abessLm(sparse_matrix=True)
         model2.fit(coo_matrix(data.x), data.y)
         assert_fit(model1.coef_, model2.coef_)
-        assert model1.intercept_ == model1.intercept_
+        assert_value(model1.intercept_, model2.intercept_)
+
+        model3 = abessLm(sparse_matrix=True)
+        model3.fit(data.x, data.y)
+        assert_fit(model1.coef_, model3.coef_)
+        assert_value(model1.intercept_, model2.intercept_)
 
     def test_path(self):
         np.random.seed(0)
@@ -58,7 +63,7 @@ class TestWorkflow:
         # assert t2 < t1 
 
     def test_other(self):
-        np.random.seed(0)
+        np.random.seed(2)
         n = 100
         p = 20
         k = 5
@@ -102,3 +107,9 @@ class TestWorkflow:
         nonzero = np.nonzero(model.coef_)[0]
         assert len(nonzero) == 2*5
         assert len(set(group[nonzero])) == 2
+
+        # ic 
+        for ic in ['aic', 'bic', 'ebic', 'gic']:
+            model = abessLm(ic_type = ic)
+            model.fit(data.x, data.y)
+
