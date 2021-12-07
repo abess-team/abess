@@ -250,6 +250,8 @@ class bess_base(BaseEstimator):
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
+        elif (self.cv > n):
+            raise ValueError("cv should be smaller than n.")
 
         # cv_fold_id
         if cv_fold_id is None:
