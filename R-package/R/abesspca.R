@@ -8,11 +8,11 @@
 #' (inherit from class \code{"dgCMatrix"} in package \code{Matrix}).
 #' @param type If \code{type = "predictor"}, \code{x} is considered as the predictor matrix.
 #' If \code{type = "gram"}, \code{x} is considered as a sample covariance or correlation matrix.
-#' @param kpc.num A integer decide the number of components.
+#' @param kpc.num A integer decide the number of principal components to be sequentially considered.
 #' @param c.max an integer splicing size. The default of \code{c.max} is the maximum of 2 and \code{max(support.size) / 2}.
 #' @param sparse.type If \code{sparse.type = "fpc"}, then best subset selection performs on the first principal component;
-#' If \code{sparse.type = "kpc"}, then best subset selection performs on the first \code{kpc.num} principal components.
-#' (The parameter will be discard in future version.)
+#' If \code{sparse.type = "kpc"}, then best subset selection would be sequentially performed on the first \code{kpc.num} number of principal components.
+#' If \code{kpc.num} is supplied, the default is \code{sparse.type = "kpc"}; otherwise, is \code{sparse.type = "fpc"}.
 #' @param tune.type The type of criterion for choosing the support size.
 #' Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
 #' Default is \code{"gic"}.
@@ -21,15 +21,11 @@
 #' otherwise, the covariance matrix.
 #' This option is available only if \code{type = "predictor"}.
 #' Default: \code{cor = FALSE}.
-#' @param support.size An integer vector. It represents the alternative support sizes when \code{sparse.type = "fpc"},
-#' while each support size controls the sparsity of a principal component when \code{sparse.type = "kpc"}.
-#' When \code{sparse.type = "fpc"} but \code{support.size} is not supplied,
-#' it is set as \code{support.size = 1:min(ncol(x), 100)} if \code{group.index = NULL};
-#' otherwise, \code{support.size = 1:min(length(unique(group.index)), 100)}.
-#' When \code{sparse.type = "kpc"} but \code{support.size} is not supplied,
-#' then for 20\% principal components,
-#' it is set as \code{min(ncol(x), 100)} if \code{group.index = NULL};
-#' otherwise, \code{min(length(unique(group.index)), 100)}.
+#' @param support.size It is a flexible input. If it is an integer vector.
+#' It represents the support sizes to be considered for each principal component.
+#' If it is a \code{list} object containing \code{kpc.num} number of interger vectors,
+#' the i-th principal component consider the support size specified in the i-th element in the \code{list}.
+#' The default is \code{support.size = NULL}, and some rules in details section are used to specify \code{support.size}.
 #' @param splicing.type Optional type for splicing.
 #' If \code{splicing.type = 1}, the number of variables to be spliced is
 #' \code{c.max}, ..., \code{1}; if \code{splicing.type = 2},
@@ -48,6 +44,13 @@
 #' problem at different support size (specified by \code{support.size})
 #' can be efficiently solved.
 #'
+#' When \code{sparse.type = "fpc"} but \code{support.size} is not supplied,
+#' it is set as \code{support.size = 1:min(ncol(x), 100)} if \code{group.index = NULL};
+#' otherwise, \code{support.size = 1:min(length(unique(group.index)), 100)}.
+#' When \code{sparse.type = "kpc"} but \code{support.size} is not supplied,
+#' then for 20\% principal components,
+#' it is set as \code{min(ncol(x), 100)} if \code{group.index = NULL};
+#' otherwise, \code{min(length(unique(group.index)), 100)}.
 #'
 #' @return A S3 \code{abesspca} class object, which is a \code{list} with the following components:
 #' \item{coef}{A \eqn{p}-by-\code{length(support.size)} loading matrix of sparse principal components (PC),
@@ -56,13 +59,17 @@
 #' \item{sparse.type}{The same as input.}
 #' \item{support.size}{The actual support.size values used. Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.}
 #' \item{ev}{A vector with size \code{length(support.size)}. It records the explained variance at each support size.}
-#' \item{cum.ev}{Cumulative sums of explained variance.}
-#' \item{pev}{A vector with the same length as \code{ev}. It records the percentage of explained variance at each support size.}
-#' \item{cum.pev}{Cumulative sums of the percentage of explained variance.}
+#' \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
+#' \item{kpc.num}{The number of principal component being considered.}
+#' \item{var.pc}{The variance of principal components obtained by performing standard PCA.}
+#' \item{cum.var.pc}{Cumulative sums of \code{var.pc}.}
 #' \item{var.all}{If \code{sparse.type = "fpc"},
-#' it is the total variance of the explained by first principal component;
-#' otherwise, the total standard deviations of all principal components.}
+#' it is the total standard deviations of all principal components.}
+#' \item{cum.ev}{Cumulative sums of explained variance.}
+#' \item{pev}{A vector with the same length as \code{ev}. It records the percent of explained variance (compared to \code{var.all}) at each support size.}
+#' \item{pev.pc}{It records the percent of explained variance (compared to \code{var.pc}) at each support size.}
 #' \item{call}{The original call to \code{abess}.}
+#' It is worthy to note that, if \code{sparse.type == "kpc"}, the \code{ev}, \code{tune.value}, \code{pev} and \code{pev.pc} in list are \code{list} objects.
 #'
 #' @author Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang
 #'
@@ -83,6 +90,7 @@
 #' head(USArrests)
 #' pca_fit <- abesspca(USArrests)
 #' pca_fit
+#' plot(pca_fit)
 #'
 #' ## covariance matrix input:
 #' cov_mat <- stats::cov(USArrests) * (nrow(USArrests) - 1) / nrow(USArrests)
@@ -95,16 +103,22 @@
 #' pca_fit <- abesspca(rob_cov, type = "gram")
 #' pca_fit
 #'
-#' ## select support size via cross-validation ##
-#' pca_fit <- abesspca(USArrests, tune.type = "cv")
-#' pca_fit
-#'
 #' ## K-component principal component analysis
 #' pca_fit <- abesspca(USArrests,
 #'   sparse.type = "kpc",
-#'   support.size = c(1, 2)
+#'   support.size = 1:4
 #' )
 #' coef(pca_fit)
+#' plot(pca_fit)
+#' plot(pca_fit, "coef")
+#'
+#' ## select support size via cross-validation ##
+#' n <- 500
+#' p <- 50
+#' support_size <- 3
+#' dataset <- generate.spc.matrix(n, p, support_size, snr = 20)
+#' spca_fit <- abesspca(dataset[["x"]], tune.type = "cv", nfolds = 5)
+#' plot(spca_fit, type = "tune")
 #' }
 abesspca <- function(x,
                      type = c("predictor", "gram"),
@@ -112,7 +126,7 @@ abesspca <- function(x,
                      cor = FALSE,
                      support.size = NULL,
                      kpc.num = ifelse(sparse.type == "fpc", 1, 2),
-                     tune.type = c("aic", "bic", "gic", "ebic", "cv"),
+                     tune.type = c("gic", "aic", "bic", "ebic", "cv"),
                      nfolds = 5,
                      foldid = NULL,
                      ic.scale = 1.0,
@@ -447,6 +461,7 @@ abesspca <- function(x,
       names(result)[which(names(result) == "test_loss_all")] <- "tune.value"
       result[["ic_all"]] <- NULL
     }
+    result[["tune.value"]] <- as.vector(result[["tune.value"]])
     result[["effective_number_all"]] <- NULL
   } else {
     coef_list <- lapply(result, function(x) {
@@ -490,6 +505,7 @@ abesspca <- function(x,
     result[["tune.value"]] <- tune_value
   }
   result[["kpc.num"]] <- kpc.num
+  result[["var.pc"]] <- pc_variance
   result[["cum.var.pc"]] <- cumsum(pc_variance)
   result[["var.all"]] <- total_variance
   if (sparse.type == "fpc") {
@@ -500,7 +516,7 @@ abesspca <- function(x,
       x / total_variance
     })
     result[["pev.pc"]] <- lapply(1:kpc.num, function(i) {
-      result[["ev"]][[i]] / pc_variance[i]
+      result[["ev"]][[i]] / result[["cum.var.pc"]][i]
     })
   }
   result[["nvars"]] <- nvars

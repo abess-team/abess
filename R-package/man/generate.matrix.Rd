@@ -31,7 +31,7 @@ If it is supplied, \code{support.size} would be omitted.}
 \item{snr}{A numerical value controlling the signal-to-noise ratio (SNR).
 A larger SNR implies the identification of sparse matrix is much easier.}
 
-\item{sigma}{The variance of the gaussian noise. Default \code{sigma = NULL} implies it is determined by \code{snr}.}
+\item{sigma}{A numerical value supplied the variance of the gaussian noise. Default \code{sigma = NULL} implies it is determined by \code{snr}.}
 
 \item{seed}{random seed. Default: \code{seed = 1}.}
 }
@@ -63,6 +63,9 @@ with standard deviation \eqn{\sigma}.
 The SNR is defined as
 as the variance of vectorized matrix \eqn{L + S} divided
 by \eqn{\sigma^2}.
+
+The matrix \eqn{x} is the superposition of \eqn{L}, \eqn{S}, \eqn{N}:
+\deqn{x = L + S + N.}
 }
 \examples{
 # Generate simulated data

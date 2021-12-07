@@ -4,7 +4,13 @@
 \alias{predict.abess}
 \title{Make predictions from a fitted "\code{abess}" object.}
 \usage{
-\method{predict}{abess}(object, newx, type = c("link", "response"), support.size = NULL, ...)
+predict.abess(
+  object,
+  newx,
+  type = c("link", "response"),
+  support.size = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{An "\code{abess}" project.}

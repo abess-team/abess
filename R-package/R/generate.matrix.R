@@ -12,8 +12,10 @@
 #' If it is supplied, \code{support.size} would be omitted.
 #' @param snr A numerical value controlling the signal-to-noise ratio (SNR).
 #' A larger SNR implies the identification of sparse matrix is much easier.
-#' @param sigma The variance of the gaussian noise. Default \code{sigma = NULL} implies it is determined by \code{snr}.
+#' @param sigma A numerical value supplied the variance of the gaussian noise. Default \code{sigma = NULL} implies it is determined by \code{snr}.
 #' @param seed random seed. Default: \code{seed = 1}.
+#'
+#'
 #' @return A \code{list} object comprising:
 #' \item{x}{An \eqn{n}-by-\eqn{p} matrix.}
 #' \item{L}{The latent low rank matrix.}
@@ -37,6 +39,9 @@
 #' The SNR is defined as
 #' as the variance of vectorized matrix \eqn{L + S} divided
 #' by \eqn{\sigma^2}.
+#'
+#' The matrix \eqn{x} is the superposition of \eqn{L}, \eqn{S}, \eqn{N}:
+#' \deqn{x = L + S + N.}
 #'
 #' @author Jin Zhu
 #'
@@ -66,6 +71,16 @@ generate.matrix <- function(n,
                             sigma = NULL,
                             seed = 1) {
   set.seed(seed)
+
+  stopifnot(length(n) == 1)
+  stopifnot(is.numeric(n))
+  check_integer_warning(n, "TODO")
+  n <- as.integer(n)
+
+  stopifnot(length(p) == 1)
+  stopifnot(is.numeric(p))
+  check_integer_warning(p, "TODO")
+  p <- as.integer(p)
 
   if (is.null(rank)) {
     L_rank <- round(0.05 * n)

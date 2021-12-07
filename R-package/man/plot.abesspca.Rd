@@ -10,9 +10,9 @@
 \item{x}{A "\code{abess}" object.}
 
 \item{type}{The type of terms to be plot in the y-axis.
-One of the following: \code{"coef"} (i.e., coefficients),
-\code{"l2norm"} (i.e., L2-norm of coefficients),
-\code{"dev"} (i.e., deviance),
+One of the following: 
+\code{"pev"} (i.e., percent of explained variance),
+\code{"coef"} (i.e., coefficients),
 and \code{"tune"} (i.e., tuning value).
 Default is \code{"coef"}.}
 
