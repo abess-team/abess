@@ -1,7 +1,7 @@
 from .bess_base import bess_base
 
 from sklearn.utils.validation import check_array
-from abess.cabess import pywrap_abess
+from abess.cabess import *
 from scipy.sparse import coo_matrix
 import numpy as np
 import types
@@ -146,8 +146,6 @@ class abessPCA(bess_base):
 
             n = X.shape[0]
             p = X.shape[1]
-            M = 1
-            y = np.zeros((n, 1))
             X = X - X.mean(axis=0)
             Sigma = np.cov(X.T)
             self.n_features_in_ = p
@@ -167,8 +165,6 @@ class abessPCA(bess_base):
                 n = 1
             p = Sigma.shape[0]
             X = np.zeros((1, p))
-            y = np.zeros((1, 1))
-            M = 1
             self.n_features_in_ = p
             is_normal = False
         else:
@@ -225,15 +221,18 @@ class abessPCA(bess_base):
 
         # path parameter (note that: path_type_int = 1)
         if self.support_size is None:
-            support_sizes = np.ones(number, dtype=int) * (int(p / 3) + 1)
+            support_sizes = np.ones(((int(p / 3) + 1), number))
         else:
             if isinstance(self.support_size, (numbers.Real, numbers.Integral)):
-                support_sizes = np.empty(1, dtype=int)
-                support_sizes[0] = self.support_size
-            elif (np.any(np.array(self.support_size) > p) or
-                    np.any(np.array(self.support_size) < 0)):
+                support_sizes = np.zeros((self.support_size, 1))
+                support_sizes[self.support_size - 1, 0] = 1
+            elif (len(self.support_size.shape) != 2 or
+                    self.support_size.shape[1] != number):
                 raise ValueError(
-                    "All support_size should be between 0 and X.shape[1]")
+                    "`support_size` should be 2-dimension and its number of columns should be equal to `number`")
+            elif (self.support_size.shape[0] > p):
+                raise ValueError(
+                    "`support_size` should not larger than p")
             else:
                 support_sizes = self.support_size
         support_sizes = np.array(support_sizes).astype('int32')
@@ -252,9 +251,6 @@ class abessPCA(bess_base):
         # unused
         new_s_min = 0
         new_s_max = 0
-        new_lambda_min = 0
-        new_lambda_max = 0
-        alphas = [0]
         cv_fold_id = np.array([], dtype = "int32")
 
         # Exchange_num
@@ -274,8 +270,6 @@ class abessPCA(bess_base):
         if (not isinstance(number, int) or number <= 0 or number > p):
             raise ValueError(
                 "number should be an positive integer and not bigger than X.shape[1].")
-        if (self.cv == 1 and number != support_sizes.size):
-            raise ValueError("number should have a same length of support_size")
         
         # Important_search
         if (not isinstance(self.important_search, int) or self.important_search < 0):
@@ -311,29 +305,26 @@ class abessPCA(bess_base):
 
         # wrap with cpp
         weight = np.ones(n)
-        result = pywrap_abess(X, y, n, p, normalize, weight, Sigma,
-                              algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
-                              path_type_int, self.is_warm_start,
-                              ic_type_int, self.ic_coef, self.cv,
-                              g_index,
-                              support_sizes,
-                              alphas,
-                              cv_fold_id,
-                              new_s_min, new_s_max, 
-                              new_lambda_min, new_lambda_max, self.n_lambda,
-                              self.screening_size, 
-                              self.always_select, 
-                              self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
-                              self.early_stop, self.approximate_Newton,
-                              self.thread,
-                              self.covariance_update,
-                              self.sparse_matrix,
-                              self.splicing_type,
-                              self.important_search,
-                              number,
-                              p * number,
-                              1, 1, 1, 1, 1, 1, p
-                              )
+        result = pywrap_PCA(X, weight, 
+                            n, p, normalize, Sigma,
+                            self.max_iter, self.exchange_num,
+                            path_type_int, self.is_warm_start,
+                            ic_type_int, self.ic_coef, self.cv,
+                            g_index,
+                            support_sizes,
+                            cv_fold_id,
+                            new_s_min, new_s_max, 
+                            self.screening_size, 
+                            self.always_select, 
+                            self.early_stop,
+                            self.thread,
+                            self.sparse_matrix,
+                            self.splicing_type,
+                            self.important_search,
+                            number,
+                            p * number, 1,
+                            1, 1
+                            )
 
         self.coef_ = result[0].reshape(p, number)
         return self
@@ -411,8 +402,6 @@ class abessRPCA(bess_base):
 
             n = X.shape[0]
             p = X.shape[1]
-            M = 1
-            y = np.zeros((n, 1))
             self.n_features_in_ = p
         else:
             raise ValueError("X should be given in RPCA.")
@@ -488,10 +477,7 @@ class abessRPCA(bess_base):
         new_s_max = 0
         new_lambda_min = 0
         new_lambda_max = 0
-        new_screening_size = -1
         cv_fold_id = np.array([], dtype = "int32")
-        Sigma = np.array([[-1]])
-        number = 1
 
         # Exchange_num
         if (not isinstance(self.exchange_num, int) or self.exchange_num <= 0):
@@ -537,30 +523,27 @@ class abessRPCA(bess_base):
         normalize = 0
 
         # wrap with cpp
-        weight = np.ones(n)
-        result = pywrap_abess(X, y, n, p, normalize, weight, Sigma,
-                              algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
-                              path_type_int, self.is_warm_start,
-                              ic_type_int, self.ic_coef, self.cv,
-                              g_index,
-                              support_sizes,
-                              alphas,
-                              cv_fold_id,
-                              new_s_min, new_s_max, 
-                              new_lambda_min, new_lambda_max, self.n_lambda,
-                              self.screening_size, 
-                              self.always_select, 
-                              self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
-                              self.early_stop, self.approximate_Newton,
-                              self.thread,
-                              self.covariance_update,
-                              self.sparse_matrix,
-                              self.splicing_type,
-                              self.important_search,
-                              number,
-                              n * p,
-                              1, 1, 1, 1, 1, 1, p
-                              )
+        result = pywrap_RPCA(X, n, p, normalize, 
+                            self.max_iter, self.exchange_num,
+                            path_type_int, self.is_warm_start,
+                            ic_type_int, self.ic_coef, 
+                            g_index,
+                            support_sizes,
+                            alphas,
+                            cv_fold_id,
+                            new_s_min, new_s_max, 
+                            new_lambda_min, new_lambda_max, self.n_lambda,
+                            self.screening_size, 
+                            self.always_select, 
+                            self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
+                            self.early_stop, 
+                            self.thread,
+                            self.sparse_matrix,
+                            self.splicing_type,
+                            self.important_search,
+                            n * p, 1,
+                            1, 1
+                            )
 
         self.coef_ = result[0].reshape(p, n).T
         self.train_loss_ = result[2]
