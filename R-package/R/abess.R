@@ -135,50 +135,12 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param ... further arguments to be passed to or from methods.
 #'
 #' @return A S3 \code{abess} class object, which is a \code{list} with the following components:
-# \item{best.model}{The best model chosen by algorithm. It is a \code{list} object comprising the following sub-components:
-#  1. \code{beta}: a fitted \eqn{p}-dimensional coefficients vector; 2. \code{coef0}: a numeric fitted intercept;
-#  3. \code{support.index}: an index vector of best model's support set; 4. \code{support.size}: the support size of the best model;
-#  5. \code{dev}: the deviance of the model; 6. \code{tune.value}: the tune value of the model.
-# }
 #' \item{beta}{A \eqn{p}-by-\code{length(support.size)} matrix of coefficients for univariate family, stored in column format;
 #' while a list of \code{length(support.size)} coefficients matrix (with size \eqn{p}-by-\code{ncol(y)}) for multivariate family.}
 #' \item{intercept}{An intercept vector of length \code{length(support.size)} for univariate family;
 #' while a list of \code{length(support.size)} intercept vector (with size \code{ncol(y)}) for multivariate family.}
 #' \item{dev}{the deviance of length \code{length(support.size)}.}
 #' \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
-# \item{best.model}{The best fitted model for \code{type = "bss"}.}
-# \item{lambda}{The lambda chosen for the best fitting model}
-# \item{beta.all}{For \code{bess} objects obtained by \code{gsection}, \code{pgsection}
-# and \code{psequence}, \code{beta.all} is a matrix with each column be the coefficients
-# of the model in each iterative step in the tuning path.
-# For \code{bess} objects obtained by \code{sequence} method,
-# A list of the best fitting coefficients of size
-# \code{s=0,1,...,p} and \eqn{\lambda} in \code{lambda.list} with the
-# smallest loss function. For \code{"bess"} objects of \code{"bsrr"} type, the fitting coefficients of the
-# \eqn{i^{th} \lambda} and the \eqn{j^{th}} \code{s} are at the \eqn{i^{th}}
-# list component's \eqn{j^{th}} column.}
-# \item{coef0.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequence},
-# \code{coef0.all} contains the intercept for the model in each iterative step in the tuning path.
-# For \code{bess} objects obtained from \code{sequence} path,
-# \code{coef0.all} contains the best fitting
-# intercepts of size \eqn{s=0,1,\dots,p} and \eqn{\lambda} in
-# \code{lambda.list} with the smallest loss function.}
-# \item{loss.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequence},
-# \code{loss.all} contains the training loss of the model in each iterative step in the tuning path.
-# For \code{bess} objects obtained from \code{sequence} path, this is a
-# list of the training loss of the best fitting intercepts of support size
-# \eqn{s=0,1,\dots,p} and \eqn{\lambda} in \code{lambda.list}. For \code{"bess"} object obtained by \code{"bsrr"},
-# the training loss of the \eqn{i^{th} \lambda} and the \eqn{j^{th}} \code{s}
-# is at the \eqn{i^{th}} list component's \eqn{j^{th}} entry.}
-# \item{ic.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequence},
-# \code{ic.all} contains the values of the chosen information criterion of the model in each iterative step in the tuning path.
-# For \code{bess} objects obtained from \code{sequence} path, this is a
-# matrix of the values of the chosen information criterion of support size \eqn{s=0,1,\dots,p}
-# and \eqn{\lambda} in \code{lambda.list} with the smallest loss function. For \code{"bess"} object obtained by \code{"bsrr"},
-# the training loss of the \eqn{i^{th} \lambda} and the \eqn{j^{th}}
-# \code{s} is at the \eqn{i^{th}} row \eqn{j^{th}} column. Only available when
-# model selection is based on a certain information criterion.}
-# \item{lambda.all}{The lambda chosen for each step in \code{pgsection} and \code{psequence}.}
 #' \item{nobs}{The number of sample used for training.}
 #' \item{nvars}{The number of variables used for training.}
 #' \item{family}{Type of the model.}
@@ -188,9 +150,6 @@ abess <- function(x, ...) UseMethod("abess")
 #' if the later have non-integer values or duplicated values.}
 #' \item{edf}{The effective degree of freedom.
 #' It is the same as \code{support.size} when \code{lambda = 0}.}
-# \item{support.df}{The degree of freedom in each support set,
-# in other words, the number of predictors in each group.
-# Particularly, it would be a all one vector with length \code{nvars} when \code{group.index = NULL}.}
 #' \item{best.size}{The best support size selected by the tuning value.}
 #' \item{tune.type}{The criterion type for tuning parameters.}
 #' \item{tune.path}{The strategy for tuning parameters.}
@@ -198,7 +157,6 @@ abess <- function(x, ...) UseMethod("abess")
 #' selected by feature screening.
 #' It would be an empty character vector if \code{screening.num = 0}.}
 #' \item{call}{The original call to \code{abess}.}
-# \item{type}{Either \code{"bss"} or \code{"bsrr"}.}
 #'
 #' @details
 #' Best-subset selection aims to find a small subset of predictors,
