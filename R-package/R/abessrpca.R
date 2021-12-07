@@ -5,11 +5,21 @@
 #'
 #' @inheritParams abess.default
 # ’
-#' @param x A matrix object. It can be either a predictor matrix
-#' where each row is an observation and each column is a predictor or
-#' a sample covariance/correlation matrix.
-#' @param rank The rank of the low-rank matrix
-#'
+#' @param x A matrix object. 
+#' @param rank The rank of the low-rank matrix. 
+#' @param support.size An integer vector representing the alternative support sizes. 
+#' Only used for tune.path = "sequence". Strongly suggest its minimum value larger than \code{min(dim(x))}.  
+#' @param tune.type The type of criterion for choosing the support size. Available options are "gic", "ebic", "bic" and "aic". 
+#' Default is "gic".
+#' 
+#' @note 
+#' Some parameters not described in the Details Section is explained in the document for \code{\link{abess}} 
+#' because the meanning of these parameters are very similar. 
+#' 
+#' At present, \eqn{l_2} regularization and group selection are not support, 
+#' and thus, set \code{lambda} and \code{group.index} have no influence on the output. 
+#' This feature will coming soon. 
+#' 
 #' @return A S3 \code{abessrpca} class object, which is a \code{list} with the following components:
 #' \item{S}{A list with \code{length(support.size)} elements,
 #' each of which is a sparse matrix estimation;}
@@ -23,7 +33,22 @@
 #' Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.}
 #' \item{tune.type}{The criterion type for tuning parameters.}
 #' \item{call}{The original call to \code{abessrpca}.}
-#'
+#' 
+#' @details Adaptive best subset selection for robust principal component analysis aim to find two latent matrices \eqn{L} and \eqn{S} such that the original matrix \eqn{X} can be appropriately approximated:
+#' \deqn{x = L + S + N,} 
+#' where \eqn{L} is a low-rank matrix, \eqn{S} is a sparse matrix, \eqn{N} is a dense noise matrix. 
+#' Generic splicing technique can be employed to solve this problem by iteratively improve the quality of the estimation of \eqn{S}. 
+#' 
+#' For a given support set \eqn{\Omega}, the optimization problem: 
+#' \deqn{\min_S \| x - L - S\|_F^2 \;\;{\rm s.t.}\;\; S_{ij} = 0 {\rm for } (i, j) \in \Omega^c,}
+#' still a non-convex optimization problem. We use the hard-impute algorithm proposed in one of the reference to solve this problem. 
+#' The hard-impute algorithm is an iterative algorithm, people can set \code{max.newton.iter} and \code{newton.thresh} to 
+#' control the solution precision of the optimization problem. 
+#' (Here, the name of the two parameters are somwhow abused to make the parameters cross functions have an unified name.) 
+#' According to our experiments, 
+#' we assign properly parameters to the two parameter as the default such that the precision and runtime are well balanced, 
+#' we suggest users keep the default values unchanged. 
+#' 
 #' @export
 #'
 #' @references Emmanuel J. Candès, Xiaodong Li, Yi Ma, and John Wright. 2011. Robust principal component analysis? Journal of the ACM. 58, 3, Article 11 (May 2011), 37 pages. DOI:https://doi.org/10.1145/1970392.1970395
