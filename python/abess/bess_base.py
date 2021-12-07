@@ -114,7 +114,7 @@ class bess_base(BaseEstimator):
         self.splicing_type = splicing_type
         self.important_search = important_search
 
-    def new_data_check(self, X, y=None):
+    def new_data_check(self, X, y=None, weights=None):
         # Check1 : whether fit had been called
         check_is_fitted(self)
 
@@ -124,11 +124,23 @@ class bess_base(BaseEstimator):
             raise ValueError("X.shape[1] should be " +
                              str(self.n_features_in_))
 
-        # Check3 : y validation
-        if y is not None:
+        # Check3 : X, y validation
+        if (y is not None) and (weights is None):
             X, y = check_X_y(X, y, accept_sparse=True,
                              multi_output=True, y_numeric=True)
             return X, y
+        
+        # Check4: X, y, weights validation
+        if weights is not None:
+            X, y = check_X_y(X, y, accept_sparse=True,
+                             multi_output=True, y_numeric=True)
+            weights = np.array(weights, dtype=np.float)
+
+            if (len(weights.shape) != 1):
+                raise ValueError("weights should be 1-dimension.")
+            elif (weights.shape[0] != X.shape[0]):
+                raise ValueError("weights should have a length of X.shape[0].")
+            return X, y, weights
 
         return X
 

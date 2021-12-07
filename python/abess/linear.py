@@ -750,9 +750,11 @@ class abessGamma(bess_base):
         """
         X = self.new_data_check(X)
 
-        # TODO
+        intercept_ = np.ones(X.shape[0]) * self.intercept_
+        xbeta_exp = np.exp(X.dot(self.coef_) + intercept_)
+        return xbeta_exp
 
-    def score(self, X, y):
+    def score(self, X, y, weights=None):
         """
         Give new data, and it returns the prediction error.
 
@@ -763,9 +765,19 @@ class abessGamma(bess_base):
         y : array-like of shape (n_samples, n_features), optional
             Test response. 
         """
-        X, y = self.new_data_check(X, y)
+        if (weights == None):
+            weights = np.ones(X.shape[0])
+        X, y, weights = self.new_data_check(X, y, weights)
 
-        # TODO
+        def deviance(y, y_pred):
+            dev = 2 * (np.log(y_pred / y) + y / y_pred - 1)
+            return np.sum(weights * dev)
+
+        y_pred = self.predict(X)
+        y_mean = np.average(y, weights=weights)
+        dev = deviance(y, y_pred)
+        dev_null = deviance(y, y_mean)
+        return 1 - dev / dev_null
 
 
 # @fix_docs
