@@ -10,7 +10,7 @@
 \item{x}{A "\code{abess}" object.}
 
 \item{type}{The type of terms to be plot in the y-axis.
-One of the following: 
+One of the following:
 \code{"pev"} (i.e., percent of explained variance),
 \code{"coef"} (i.e., coefficients),
 and \code{"tune"} (i.e., tuning value).
