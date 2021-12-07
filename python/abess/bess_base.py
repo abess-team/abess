@@ -222,6 +222,8 @@ class bess_base(BaseEstimator):
             model_type_int = 5
         elif self.model_type == "Multinomial":
             model_type_int = 6
+        elif self.model_type == 'Gamma':
+            model_type_int = 8
         else:
             raise ValueError("model_type should not be " +
                              str(self.model_type))

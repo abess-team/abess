@@ -288,6 +288,23 @@ class TestAlgorithm:
 
         model3.ratio(X)
 
+    def test_gamma(self):
+
+        x = np.array([[1, 2], [2, 3], [3, 4], [4, 3]])
+        y = np.array([19, 26, 33, 30])
+
+        # null
+        model1 = abessGamma()
+        model1.fit(x, y)
+        assert_nan(model1.coef_)
+
+        # predict
+        model1.predict(x)
+
+        # score
+        score = model1.score(x, y)
+        assert not np.isnan(score)
+
     def test_gaussian_sklearn(self):
         np.random.seed(7)
         n = 100
