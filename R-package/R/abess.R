@@ -107,7 +107,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' The default \code{foldid = NULL} would generate a random foldid.
 #' @param cov.update A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE},
 #' use a covariance-based implementation; otherwise, a naive implementation.
-#' The naive method is more efficient than covariance-based method when \eqn{p >> n} and \code{important.search} is much large than its default value.
+#' The naive method is more computational efficient than covariance-based method when \eqn{p >> n} and \code{important.search} is much large than its default value.
 #' Default: \code{cov.update = FALSE}.
 # @param n The number of rows of the design matrix. A must if \code{x} in triplet form.
 # @param p The number of columns of the design matrix. A must if \code{x} in triplet form.
@@ -165,19 +165,41 @@ abess <- function(x, ...) UseMethod("abess")
 #' \deqn{\min_\beta -2 \log L(\beta) \;\;{\rm s.t.}\;\; \|\beta\|_0 \leq s,}
 #' where \eqn{L(\beta)} is arbitrary convex functions. In
 #' the GLM case, \eqn{\log L(\beta)} is the log-likelihood function; in the Cox
-#' model, \eqn{\log L(\beta)} is the log partial-likelihood function.
-#'
-#' The best subset selection problem is solved by the "abess" algorithm in this package, see Zhu (2020) for details.
+#' model, \eqn{\log L(\beta)} is the log partial-likelihood function. 
+#' The best subset selection problem is solved by the splicing algorithm in this package, see Zhu (2020) for details.
 #' Under mild conditions, the algorithm exactly solve this problem in polynomial time.
-#' This algorithm exploits the idea of sequencing and splicing to reach a stable solution in finite steps
-#' when \eqn{s} is fixed.
+#' This algorithm exploits the idea of sequencing and splicing to reach a stable solution in finite steps when \eqn{s} is fixed.
+#' The parameters \code{c.max}, \code{splicing.type} and \code{max.splicing.iter} allow user control the splicing technique flexibly. 
+#' On the basis of our numerical experiment results, we assign properly parameters to the these parameters as the default 
+#' such that the precision and runtime are well balanced, we suggest users keep the default values unchanged. 
+#' 
 #' To find the optimal support size \eqn{s},
-#' we provide various criterion like GIC, AIC, BIC and cross-validation error to determine it.
-#'
+#' we provide various criterion like GIC, AIC, BIC and cross-validation error to determine it. 
+#' More specifically, the sequence of models implied by \code{support.size} are fit by the splicing algorithm. 
+#' And the solved model with least information criterion or cross-validation error is the optimal model. 
+#' The sequential searching for the optimal model is somehow time-wasting. 
+#' A faster strategy is golden section (GS), which only need to specify \code{gs.range}. 
+#' More details about GS is refered to Zhang et al (2021). 
+#' 
+#' It is worthy to note that the parameters \code{newton}, \code{max.newton.iter} and \code{newton.thresh} allows 
+#' user control the parameter estimation in non-guassian models. 
+#' The parameter estimation procedure use Newton method or approximated Newton method (only consider the diagonal elements in the Hessian matrix). 
+#' Again, we suggest to use the default values unchanged because the same reason for the parameter \code{c.max}. 
+#' 
+#' \code{abess} support some well-known statistical methods to analsis data, including 
+#' \itemize{
+#'   \item{sure independent screening: } {helpful for ultra-high dimensional predictors (i.e., \eqn{p \gg n}). Use the parameter \code{screening.num} to retain the marginally most important predictors. See Fan et al (2008) for more details. }
+#'   \item{best subset of group selection: } {helpful when predictors have group structure. Use the parameter \code{group.index} to specify the group structure of predictors. See Zhang et al (2021) for more details. }
+#'   \item{\eqn{l_2} regularization best subset selection: } {helpful when signal-to-ratio is relatively small. Use the parameter \code{lambda} to control the magnitude of the regularization term.}
+#'   \item{nuisance selection: } {helpful when the prior knowledge of important predictors is available. Use the parameter \code{always.include} to retain the important predictors.}
+#' }
+#' The combination of the four methods is definitely support. 
+#' 
 #' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
 #' @references Certifiably Polynomial Algorithm for Best Group Subset Selection. Zhang, Yanhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). arXiv preprint arXiv:2104.12576.
 #' @references Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x
 #' @references Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun & Heping Zhang (2020). Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079
+#' 
 #'
 #' @seealso \code{\link{print.abess}},
 #' \code{\link{predict.abess}},
