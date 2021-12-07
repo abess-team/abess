@@ -593,6 +593,8 @@ class TestClass:
         s = 10
         group_size = 5
         group_num = 4
+        support_size = np.zeros((p, 1))
+        support_size[s-1, 0] = 1
 
         np.random.seed(2)
         x1 = np.random.randn(n, 1)
@@ -603,33 +605,36 @@ class TestClass:
         g_index = g_index.repeat(group_size)
 
         # Check1: give X
-        model = abessPCA(support_size=range(s, s + 1))
+        model = abessPCA(support_size=support_size)
         model.fit(X, is_normal=False)
         coef1 = np.nonzero(model.coef_)[0]
 
         assert len(coef1) == s
 
-        model = abessPCA(support_size=s)    # give integer
+        model = abessPCA(support_size=support_size)    # give integer
         model.fit(X, is_normal=False)
         coef1 = np.nonzero(model.coef_)[0]
 
         assert len(coef1) == s
 
         # Check2: give Sigma
-        model.fit(Sigma=X.T.dot(X), n = 10)
+        model.fit(Sigma=X.T.dot(X) / n, n = n)
         coef2 = np.nonzero(model.coef_)[0]
 
         assert len(coef2) == s
 
         # Check3: group
-        model = abessPCA(support_size=range(3, 4))
+        support_size_g = np.zeros((group_num, 1))
+        support_size_g[2, 0] = 1
+        model = abessPCA(support_size=support_size_g)
         model.fit(X, group=g_index, is_normal=False)
 
         coef3 = np.unique(g_index[np.nonzero(model.coef_)[0]])
         assert (coef3.size == 3)
 
         # Check4: multi
-        model = abessPCA(support_size=[s,s,s])
+        support_size_m = np.hstack((support_size,support_size,support_size))
+        model = abessPCA(support_size=support_size_m)
         model.fit(X, is_normal=False, number=3)
         assert (model.coef_.shape[1] == 3)
 
@@ -640,18 +645,18 @@ class TestClass:
         model.ratio(X)
 
         # Check5: sparse
-        model = abessPCA(support_size=[s], sparse_matrix=True)
+        model = abessPCA(support_size=support_size, sparse_matrix=True)
         cooX = coo_matrix(X)
         model.fit(cooX, is_normal=False)
         coef5 = np.nonzero(model.coef_)[0]
         assert (coef5 == coef1).all()
 
-        temp = coo_matrix(([1, 2, 3], ([0, 1, 2], [0, 1, 2])))
-        model = abessPCA(sparse_matrix=True)
-        model.fit(temp)
+        # temp = coo_matrix(([1, 2, 3], ([0, 1, 2], [0, 1, 2])))
+        # model = abessPCA(sparse_matrix=True)
+        # model.fit(temp)
 
         # Check6: ratio & transform
-        model = abessPCA(sparse_matrix=False)
+        model = abessPCA()
         model.fit(X, is_normal=False)
         model.ratio(X)
         model.transform(X)
@@ -696,7 +701,8 @@ class TestClass:
             assert False
 
         try:
-            model = abessPCA(support_size=[p+1])
+            support_size_e=np.vstack((0, support_size))
+            model = abessPCA(support_size=support_size_e)
             model.fit(X)
         except ValueError as e:
             print(e)

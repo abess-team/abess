@@ -673,6 +673,100 @@ class abessMultinomial(bess_base):
         pr = self.predict_proba(X)
         return np.sum(y * np.log(pr))
 
+@ fix_docs
+class abessGamma(bess_base):
+    """
+    Adaptive Best-Subset Selection(ABESS) algorithm for Gamma regression.
+
+    Parameters
+    ----------
+    splicing_type: {0, 1}, optional
+        The type of splicing in `fit()` (in Algorithm.h). 
+        "0" for decreasing by half, "1" for decresing by one.
+        Default: splicing_type = 0.
+    important_search : int, optional
+        The size of inactive set during updating active set when splicing.
+        It should be a non-positive integer and if important_search=128, it would be set as 
+        the size of whole inactive set. 
+        Default: 0. 
+
+    Examples
+    --------
+    >>> ### Sparsity known
+    >>>
+    >>> from abess.linear import abessGamma
+    >>> import numpy as np
+    >>> model = abessGamma(support_size = [10])
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
+
+    >>> ### Sparsity unknown
+    >>>
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
+    >>> model = abessGamma(path_type = "seq")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
+    >>>
+    >>> # path_type="gs", 
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
+    >>> model = abessGamma(path_type="gs")
+    >>> model.fit(data.x, data.y)
+    >>> model.predict(data.x)
+    """
+
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1, 
+                 always_select=[], 
+                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
+                 thread=1,
+                 sparse_matrix=False,
+                 splicing_type=0,
+                 important_search=128
+                 ):
+        super(abessPoisson, self).__init__(
+            algorithm_type="abess", model_type="Poisson", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size, 
+            always_select=always_select, 
+            primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
+            thread=thread,
+            sparse_matrix=sparse_matrix,
+            splicing_type=splicing_type,
+            important_search=important_search
+        )
+
+    def predict(self, X):
+        """
+        For Poisson model, 
+        the predict function returns a numpy array of the prediction of the mean of response,
+        on given data.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, p_features)
+            Test data.
+
+        """
+        X = self.new_data_check(X)
+
+        # TODO
+
+    def score(self, X, y):
+        """
+        Give new data, and it returns the prediction error.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Test data.
+        y : array-like of shape (n_samples, n_features), optional
+            Test response. 
+        """
+        X, y = self.new_data_check(X, y)
+
+        # TODO
+
 
 # @fix_docs
 # class PdasLm(bess_base):
