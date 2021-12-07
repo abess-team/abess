@@ -34,19 +34,19 @@ Eigen::MatrixXd Pointer2MatrixXd(double *x, int x_row, int x_col)
     return x_matrix;
 }
 
-// Eigen::MatrixXi Pointer2MatrixXi(int *x, int x_row, int x_col)
-// {
-//     Eigen::MatrixXi x_matrix(x_row, x_col);
-//     int i, j;
-//     for (i = 0; i < x_row; i++)
-//     {
-//         for (j = 0; j < x_col; j++)
-//         {
-//             x_matrix(i, j) = x[i * x_col + j];
-//         }
-//     }
-//     return x_matrix;
-// }
+Eigen::MatrixXi Pointer2MatrixXi(int *x, int x_row, int x_col)
+{
+    Eigen::MatrixXi x_matrix(x_row, x_col);
+    int i, j;
+    for (i = 0; i < x_row; i++)
+    {
+        for (j = 0; j < x_col; j++)
+        {
+            x_matrix(i, j) = x[i * x_col + j];
+        }
+    }
+    return x_matrix;
+}
 
 Eigen::VectorXd Pointer2VectorXd(double *x, int x_len)
 {

@@ -78,7 +78,7 @@ setup(name='abess',
       install_requires=[
           "numpy",
           "scipy",
-          "sklearn"
+          "scikit-learn>=0.24"
       ],
       license="GPL-3",
       url="https://abess.readthedocs.io",

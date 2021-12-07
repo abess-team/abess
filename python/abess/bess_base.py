@@ -4,7 +4,7 @@ import numpy as np
 from scipy.sparse import coo_matrix
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.base import BaseEstimator
-from abess.cabess import pywrap_abess
+from abess.cabess import *
 
 
 class bess_base(BaseEstimator):
@@ -19,7 +19,7 @@ class bess_base(BaseEstimator):
     is_warm_start : bool, optional
         When tuning the optimal parameter combination, whether to use the last solution as a warm start to accelerate the iterative convergence of the splicing algorithm.
         Default:is_warm_start = True.
-    path_type : {"seq", "pgs"}
+    path_type : {"seq", "gs"}
         The method to be used to select the optimal support size.
         For path_type = "seq", we solve the best subset selection problem for each size in support_size.
         For path_type = "gs", we solve the best subset selection problem with support size ranged in (s_min, s_max), where the specific support size to be considered is determined by golden section.
@@ -114,7 +114,7 @@ class bess_base(BaseEstimator):
         self.splicing_type = splicing_type
         self.important_search = important_search
 
-    def new_data_check(self, X, y=None):
+    def new_data_check(self, X, y=None, weights=None):
         # Check1 : whether fit had been called
         check_is_fitted(self)
 
@@ -124,11 +124,23 @@ class bess_base(BaseEstimator):
             raise ValueError("X.shape[1] should be " +
                              str(self.n_features_in_))
 
-        # Check3 : y validation
-        if y is not None:
+        # Check3 : X, y validation
+        if (y is not None) and (weights is None):
             X, y = check_X_y(X, y, accept_sparse=True,
                              multi_output=True, y_numeric=True)
             return X, y
+        
+        # Check4: X, y, weights validation
+        if weights is not None:
+            X, y = check_X_y(X, y, accept_sparse=True,
+                             multi_output=True, y_numeric=True)
+            weights = np.array(weights, dtype=np.float)
+
+            if (len(weights.shape) != 1):
+                raise ValueError("weights should be 1-dimension.")
+            elif (weights.shape[0] != X.shape[0]):
+                raise ValueError("weights should have a length of X.shape[0].")
+            return X, y, weights
 
         return X
 
@@ -214,13 +226,13 @@ class bess_base(BaseEstimator):
             raise ValueError("model_type should not be " +
                              str(self.model_type))
 
-        # Path_type: seq, pgs
+        # Path_type: seq, gs
         if self.path_type == "seq":
             path_type_int = 1
-        elif self.path_type == "pgs":
+        elif self.path_type == "gs":
             path_type_int = 2
         else:
-            raise ValueError("path_type should be \'seq\' or \'pgs\'")
+            raise ValueError("path_type should be \'seq\' or \'gs\'")
 
         # Ic_type: aic, bic, gic, ebic
         if self.ic_type == "aic":
@@ -318,7 +330,7 @@ class bess_base(BaseEstimator):
             new_lambda_min = 0
             new_lambda_max = 0
 
-        elif path_type_int == 2:    # pgs
+        elif path_type_int == 2:    # gs
             new_s_min = 0 \
                 if self.s_min is None else self.s_min
             new_s_max = min(p, int(n / (np.log(np.log(n)) * np.log(p)))) \
@@ -408,30 +420,29 @@ class bess_base(BaseEstimator):
 
         # wrap with cpp
         # print("wrap enter.")#///
-        number = 1
-        result = pywrap_abess(X, y, n, p, normalize, weight, Sigma,
-                              algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
-                              path_type_int, self.is_warm_start,
-                              ic_type_int, self.ic_coef, self.cv,
-                              g_index,
-                              support_sizes,
-                              alphas,
-                              cv_fold_id,
-                              new_s_min, new_s_max,
-                              new_lambda_min, new_lambda_max, self.n_lambda,
-                              self.screening_size,
-                              self.always_select,
-                              self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
-                              self.early_stop, self.approximate_Newton,
-                              self.thread,
-                              self.covariance_update,
-                              self.sparse_matrix,
-                              self.splicing_type,
-                              self.important_search,
-                              number,
-                              p * M,
-                              1 * M, 1, 1, 1, 1, 1, p
-                              )
+        result = pywrap_GLM(X, y, weight, 
+                            n, p, normalize, 
+                            algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
+                            path_type_int, self.is_warm_start,
+                            ic_type_int, self.ic_coef, self.cv,
+                            g_index,
+                            support_sizes,
+                            alphas,
+                            cv_fold_id,
+                            new_s_min, new_s_max,
+                            new_lambda_min, new_lambda_max, self.n_lambda,
+                            self.screening_size,
+                            self.always_select,
+                            self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
+                            self.early_stop, self.approximate_Newton,
+                            self.thread,
+                            self.covariance_update,
+                            self.sparse_matrix,
+                            self.splicing_type,
+                            self.important_search,
+                            p * M, 1 * M, 
+                            1, 1
+                            )
 
         # print("linear fit end")
         # print(len(result))
