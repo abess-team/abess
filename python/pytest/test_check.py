@@ -307,7 +307,7 @@ class TestCheck:
         model = abessRPCA()
         # datatype error
         try:
-            model.fit([['c']])
+            model.fit([['c']], r=1)
         except ValueError as e:
             print(e)
         else:
@@ -322,22 +322,14 @@ class TestCheck:
                 
         # incompatible shape
         try:
-            model.fit([1])
+            model.fit([1], r=1)
         except ValueError as e:
             print(e)
         else:
             assert False
                 
         try:
-            model.fit([[1]], group = [1, 2])
-        except ValueError as e:
-            print(e)
-        else:
-            assert False
-
-        # lack of necessary parameter
-        try:
-            model.fit()
+            model.fit([[1]], r=1, group = [1, 2])
         except ValueError as e:
             print(e)
         else:
