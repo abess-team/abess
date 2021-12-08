@@ -1,5 +1,6 @@
-## Response
-We have endeavor to fixed warnings appeared in CRAN teams' auto-check service. 
+## Comment
+
+A new release. 
 
 ## Test environments
 * local R installation, R 4.1.0
