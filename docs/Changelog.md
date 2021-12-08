@@ -117,7 +117,7 @@ We’re happy to announce the first major stable version of `abess`. This versio
     * poisson regression
     * cox proportional hazard regression
     * multi-gaussian regression
-    * multi-nomial regression. 
+    * multi-nominal regression. 
   * Cross validation and information criterion to select the optimal support size
   * Performance improvement:
     * Support OPENMP for the parallelism when performing cross validation

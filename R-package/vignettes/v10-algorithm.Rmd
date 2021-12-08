@@ -359,7 +359,7 @@ $$
 $$
 where $\gamma$ is a pre-determined positive constant, controlling the diverging rate of group numbers $J$.
 
-A natural idea to determine the optimal support size is regarding $\mathrm{T}$ as a tunning parameter, and running GSplicing algorithm over a sequence about $\mathrm{T}$. Next, combined with aforementioned information criterion, we can obtain an optimal support size.
+A natural idea to determine the optimal support size is regarding $\mathrm{T}$ as a tuning parameter, and running GSplicing algorithm over a sequence about $\mathrm{T}$. Next, combined with aforementioned information criterion, we can obtain an optimal support size.
 Let $T_{\max }$ be the maximum support size. We suggest $T_{\max }=o\left(\frac{n}{p_{\max}\log J}\right)$ where $p_{\max} = \max_{j\in \mathcal{S}} p_j$. 
 
 
