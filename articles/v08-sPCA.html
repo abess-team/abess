@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -40,18 +42,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -100,7 +96,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/abess-team/abess/">
+  <a href="https://github.com/abess-team/abess/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -125,10 +121,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Principal component analysis</h1>
-                        <h4 class="author">Junhao Huang, Jin Zhu</h4>
+                        <h4 data-toc-skip class="author">Junhao Huang, Jin Zhu</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v08-sPCA.Rmd"><code>../vignettes/v08-sPCA.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v08-sPCA.Rmd" class="external-link"><code>../vignettes/v08-sPCA.Rmd</code></a></small>
       <div class="hidden name"><code>v08-sPCA.Rmd</code></div>
 
     </div>
@@ -136,9 +132,9 @@
     
     
 <p>This vignettes introduces what is adaptive best subset selection principal component analysis (abessPCA) and use a real data example to show how to use it.</p>
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p>Principal component analysis (PCA) is an important method in the field of data science, which can reduce the dimension of data and simplify our model. It actually solve an optimization problem like:</p>
 <p><span class="math display">\[
     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1.
@@ -158,205 +154,207 @@
 </ul>
 <p>In the next section, we will show how to form abessPCA in our frame.</p>
 </div>
-<div id="abesspca-real-data-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#abesspca-real-data-example" class="anchor"></a>abessPCA: real data example</h2>
-<div id="communities-and-crime-dataset" class="section level3">
-<h3 class="hasAnchor">
-<a href="#communities-and-crime-dataset" class="anchor"></a>Communities-and-crime dataset</h3>
-<p>Here we will use real data analysis to show how to form abessPCA. The data we use is from <a href="https://archive.ics.uci.edu/ml/datasets/Communities+and+Crime">UCI: Communities and Crime Data Set</a>.</p>
+<div class="section level2">
+<h2 id="abesspca-real-data-example">abessPCA: real data example<a class="anchor" aria-label="anchor" href="#abesspca-real-data-example"></a>
+</h2>
+<div class="section level3">
+<h3 id="communities-and-crime-dataset">Communities-and-crime dataset<a class="anchor" aria-label="anchor" href="#communities-and-crime-dataset"></a>
+</h3>
+<p>Here we will use real data analysis to show how to form abessPCA. The data we use is from <a href="https://archive.ics.uci.edu/ml/datasets/Communities+and+Crime" class="external-link">UCI: Communities and Crime Data Set</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">'./communities.data'</span>, header <span class="op">=</span> <span class="cn">FALSE</span>, na.strings <span class="op">=</span> <span class="st">'?'</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 1994  128</code></pre>
+<code class="sourceCode R"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">'./communities.data'</span>, header <span class="op">=</span> <span class="cn">FALSE</span>, na.strings <span class="op">=</span> <span class="st">'?'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 1994  128</span></code></pre>
 <p>The dataset contain 128 variables but a part of them have missing values or categorical variables. We simply drop these variables, and retain 99 predictive variables as our data example.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">X</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span>, <span class="fl">6</span><span class="op">:</span><span class="fl">127</span><span class="op">]</span>
-<span class="va">na_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">2</span>, <span class="va">anyNA</span><span class="op">)</span>
+<span class="va">na_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">X</span>, <span class="fl">2</span>, <span class="va">anyNA</span><span class="op">)</span>
 <span class="va">X</span> <span class="op">&lt;-</span> <span class="va">X</span><span class="op">[</span>, <span class="op">!</span><span class="va">na_col</span><span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 1994   99</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 1994   99</span></code></pre>
 </div>
-<div id="adaptive-best-subset-selection-for-pca" class="section level3">
-<h3 class="hasAnchor">
-<a href="#adaptive-best-subset-selection-for-pca" class="anchor"></a>Adaptive best subset selection for PCA</h3>
+<div class="section level3">
+<h3 id="adaptive-best-subset-selection-for-pca">Adaptive best subset selection for PCA<a class="anchor" aria-label="anchor" href="#adaptive-best-subset-selection-for-pca"></a>
+</h3>
 <p>Next, we turn to fit abessPCA. For fitting the model, we can give either predictor matrix <span class="math inline">\(X\)</span>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
 <span class="va">best_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">)</span></code></pre></div>
-<pre><code>## List of 13
-##  $ coef        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:4950] 70 10 70 11 76 83 11 76 81 83 ...
-##   .. ..@ p       : int [1:100] 0 1 3 6 10 15 21 28 36 45 ...
-##   .. ..@ Dim     : int [1:2] 99 99
-##   .. ..@ Dimnames:List of 2
-##   .. .. ..$ : chr [1:99] "V6" "V7" "V8" "V9" ...
-##   .. .. ..$ : chr [1:99] "1" "2" "3" "4" ...
-##   .. ..@ x       : num [1:4950] 1 -0.641 -0.767 -0.899 0.31 ...
-##   .. ..@ factors : list()
-##  $ tune.value  : num [1:99, 1] 0 0 0 0 0 0 0 0 0 0 ...
-##  $ ev          : num [1:99] 0.0226 0.0369 0.228 0.2487 0.2736 ...
-##  $ kpc.num     : num 1
-##  $ cum.var.pc  : num [1:99] 1.07 1.82 2.15 2.43 2.62 ...
-##  $ var.all     : num 3.97
-##  $ pev         : num [1:99] 0.00571 0.00931 0.05748 0.0627 0.06898 ...
-##  $ pev.pc      : num [1:99] 0.0212 0.0347 0.214 0.2335 0.2568 ...
-##  $ nvars       : int 99
-##  $ sparse.type : chr "fpc"
-##  $ support.size: num [1:99] 1 2 3 4 5 6 7 8 9 10 ...
-##  $ tune.type   : chr "aic"
-##  $ call        : language abesspca(x = X)
-##  - attr(*, "class")= chr "abesspca"</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## List of 14</span>
+<span class="co">##  $ coef        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="co">##   .. ..@ i       : int [1:4950] 70 10 70 11 76 83 11 76 81 83 ...</span>
+<span class="co">##   .. ..@ p       : int [1:100] 0 1 3 6 10 15 21 28 36 45 ...</span>
+<span class="co">##   .. ..@ Dim     : int [1:2] 99 99</span>
+<span class="co">##   .. ..@ Dimnames:List of 2</span>
+<span class="co">##   .. .. ..$ : chr [1:99] "V6" "V7" "V8" "V9" ...</span>
+<span class="co">##   .. .. ..$ : chr [1:99] "1" "2" "3" "4" ...</span>
+<span class="co">##   .. ..@ x       : num [1:4950] 1 -0.641 -0.767 -0.899 0.31 ...</span>
+<span class="co">##   .. ..@ factors : list()</span>
+<span class="co">##  $ tune.value  : num [1:99] 0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="co">##  $ ev          : num [1:99] 0.0226 0.0369 0.228 0.2487 0.2736 ...</span>
+<span class="co">##  $ kpc.num     : num 1</span>
+<span class="co">##  $ var.pc      : num [1:99] 1.065 0.752 0.33 0.284 0.184 ...</span>
+<span class="co">##  $ cum.var.pc  : num [1:99] 1.07 1.82 2.15 2.43 2.62 ...</span>
+<span class="co">##  $ var.all     : num 3.97</span>
+<span class="co">##  $ pev         : num [1:99] 0.00571 0.00931 0.05748 0.0627 0.06898 ...</span>
+<span class="co">##  $ pev.pc      : num [1:99] 0.0212 0.0347 0.214 0.2335 0.2568 ...</span>
+<span class="co">##  $ nvars       : int 99</span>
+<span class="co">##  $ sparse.type : chr "fpc"</span>
+<span class="co">##  $ support.size: num [1:99] 1 2 3 4 5 6 7 8 9 10 ...</span>
+<span class="co">##  $ tune.type   : chr "gic"</span>
+<span class="co">##  $ call        : language abesspca(x = X)</span>
+<span class="co">##  - attr(*, "class")= chr "abesspca"</span></code></pre>
 <p>or Gram-type matrix (like covariance matrix, correlation matrix and robust covariance matrix):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">best_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cov</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"gram"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">)</span></code></pre></div>
-<pre><code>## List of 13
-##  $ coef        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:4950] 70 10 70 11 76 83 11 76 81 83 ...
-##   .. ..@ p       : int [1:100] 0 1 3 6 10 15 21 28 36 45 ...
-##   .. ..@ Dim     : int [1:2] 99 99
-##   .. ..@ Dimnames:List of 2
-##   .. .. ..$ : chr [1:99] "V6" "V7" "V8" "V9" ...
-##   .. .. ..$ : chr [1:99] "1" "2" "3" "4" ...
-##   .. ..@ x       : num [1:4950] 1 -0.641 -0.767 -0.899 0.31 ...
-##   .. ..@ factors : list()
-##  $ tune.value  : num [1:99, 1] 0 0 0 0 0 0 0 0 0 0 ...
-##  $ ev          : num [1:99] 0.0226 0.037 0.2281 0.2488 0.2739 ...
-##  $ kpc.num     : num 1
-##  $ cum.var.pc  : num [1:99] 1.07 1.82 2.15 2.43 2.62 ...
-##  $ var.all     : num 3.97
-##  $ pev         : num [1:99] 0.00571 0.00931 0.05748 0.0627 0.06901 ...
-##  $ pev.pc      : num [1:99] 0.0212 0.0347 0.214 0.2335 0.257 ...
-##  $ nvars       : int 99
-##  $ sparse.type : chr "fpc"
-##  $ support.size: num [1:99] 1 2 3 4 5 6 7 8 9 10 ...
-##  $ tune.type   : chr "aic"
-##  $ call        : language abesspca(x = cov(X), type = "gram")
-##  - attr(*, "class")= chr "abesspca"</code></pre>
+<code class="sourceCode R"><span class="va">best_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"gram"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## List of 14</span>
+<span class="co">##  $ coef        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="co">##   .. ..@ i       : int [1:4950] 70 10 70 11 76 83 11 76 81 83 ...</span>
+<span class="co">##   .. ..@ p       : int [1:100] 0 1 3 6 10 15 21 28 36 45 ...</span>
+<span class="co">##   .. ..@ Dim     : int [1:2] 99 99</span>
+<span class="co">##   .. ..@ Dimnames:List of 2</span>
+<span class="co">##   .. .. ..$ : chr [1:99] "V6" "V7" "V8" "V9" ...</span>
+<span class="co">##   .. .. ..$ : chr [1:99] "1" "2" "3" "4" ...</span>
+<span class="co">##   .. ..@ x       : num [1:4950] 1 -0.641 -0.767 -0.899 0.31 ...</span>
+<span class="co">##   .. ..@ factors : list()</span>
+<span class="co">##  $ tune.value  : num [1:99] 0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="co">##  $ ev          : num [1:99] 0.0226 0.037 0.2281 0.2488 0.2739 ...</span>
+<span class="co">##  $ kpc.num     : num 1</span>
+<span class="co">##  $ var.pc      : num [1:99] 1.066 0.752 0.33 0.284 0.185 ...</span>
+<span class="co">##  $ cum.var.pc  : num [1:99] 1.07 1.82 2.15 2.43 2.62 ...</span>
+<span class="co">##  $ var.all     : num 3.97</span>
+<span class="co">##  $ pev         : num [1:99] 0.00571 0.00931 0.05748 0.0627 0.06901 ...</span>
+<span class="co">##  $ pev.pc      : num [1:99] 0.0212 0.0347 0.214 0.2335 0.257 ...</span>
+<span class="co">##  $ nvars       : int 99</span>
+<span class="co">##  $ sparse.type : chr "fpc"</span>
+<span class="co">##  $ support.size: num [1:99] 1 2 3 4 5 6 7 8 9 10 ...</span>
+<span class="co">##  $ tune.type   : chr "gic"</span>
+<span class="co">##  $ call        : language abesspca(x = cov(X), type = "gram")</span>
+<span class="co">##  - attr(*, "class")= chr "abesspca"</span></code></pre>
 </div>
-<div id="interpreting-result" class="section level3">
-<h3 class="hasAnchor">
-<a href="#interpreting-result" class="anchor"></a>Interpreting result</h3>
+<div class="section level3">
+<h3 id="interpreting-result">Interpreting result<a class="anchor" aria-label="anchor" href="#interpreting-result"></a>
+</h3>
 <p>After fitting abessPCA, we study the percentage of explained variance as <span class="math inline">\(s\)</span> increases:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">[[</span><span class="st">"support.size"</span><span class="op">]</span><span class="op">]</span>, <span class="va">best_pca</span><span class="op">[[</span><span class="st">"pev"</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">[[</span><span class="st">"support.size"</span><span class="op">]</span><span class="op">]</span>, <span class="va">best_pca</span><span class="op">[[</span><span class="st">"pev"</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></code></pre></div>
 <p><img src="v08-sPCA_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>It is clear that the higher sparsity is, the more variance it can explain. Interestingly, we can seek for a smaller sparsity which can explain most of the variance. For instance, when 40 variables are selected, the percentage of explained variance from abessPCA exceeds 80%.<br>
 This result shows that using less than half of all 99 variables can be close to perfect. We can use <code>coef</code> function to investigate which variables are selected when the explained variance are large. For example, if we choose sparsity 40, the used variables are:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">best_pca</span>, support.size <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></code></pre></div>
-<pre><code>## 99 x 1 sparse Matrix of class "dgCMatrix"
-##              40
-## V6    .        
-## V7    .        
-## V8   -0.1365515
-## V9    0.1227176
-## V10   .        
-## V11   .        
-## V12   .        
-## V13   .        
-## V14   .        
-## V15   .        
-## V16   .        
-## V17   0.1745626
-## V18   0.1999679
-## V19   0.1117617
-## V20   .        
-## V21   0.1559536
-## V22   .        
-## V23  -0.1808407
-## V24   .        
-## V25   0.1912228
-## V26   0.1715435
-## V27   0.1505258
-## V28   0.1140740
-## V29   .        
-## V30   .        
-## V32   0.1174763
-## V33   .        
-## V34  -0.1981478
-## V35  -0.1561935
-## V36  -0.1673926
-## V37   0.1551137
-## V38  -0.1588460
-## V39   0.1167834
-## V40   .        
-## V41   .        
-## V42  -0.1451945
-## V43   0.1448450
-## V44  -0.1137527
-## V45   .        
-## V46  -0.1069923
-## V47  -0.1164267
-## V48   .        
-## V49   0.1697180
-## V50   0.1756634
-## V51   0.1881001
-## V52   0.1389346
-## V53   .        
-## V54   .        
-## V55   .        
-## V56  -0.1542476
-## V57   .        
-## V58   .        
-## V59   .        
-## V60   .        
-## V61   .        
-## V62   .        
-## V63   .        
-## V64   .        
-## V65   .        
-## V66   .        
-## V67   .        
-## V68   .        
-## V69   .        
-## V70   .        
-## V71   .        
-## V72   .        
-## V73   0.1208047
-## V74   .        
-## V75   .        
-## V76   0.1056635
-## V77   .        
-## V78   .        
-## V79   .        
-## V80  -0.1118632
-## V81   .        
-## V82   .        
-## V83  -0.2118385
-## V84  -0.1127914
-## V85   0.1789415
-## V86   0.1819897
-## V87   0.1818463
-## V88   0.1831991
-## V89   0.1793673
-## V90   0.2122642
-## V91   0.1823010
-## V92   .        
-## V93   .        
-## V94   .        
-## V95   .        
-## V96   .        
-## V97   .        
-## V98   .        
-## V99   .        
-## V100  .        
-## V101  .        
-## V119  .        
-## V120  .        
-## V121  .        
-## V126  .</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">best_pca</span>, support.size <span class="op">=</span> <span class="fl">40</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## 99 x 1 sparse Matrix of class "dgCMatrix"</span>
+<span class="co">##              40</span>
+<span class="co">## V6    .        </span>
+<span class="co">## V7    .        </span>
+<span class="co">## V8   -0.1365515</span>
+<span class="co">## V9    0.1227176</span>
+<span class="co">## V10   .        </span>
+<span class="co">## V11   .        </span>
+<span class="co">## V12   .        </span>
+<span class="co">## V13   .        </span>
+<span class="co">## V14   .        </span>
+<span class="co">## V15   .        </span>
+<span class="co">## V16   .        </span>
+<span class="co">## V17   0.1745626</span>
+<span class="co">## V18   0.1999679</span>
+<span class="co">## V19   0.1117617</span>
+<span class="co">## V20   .        </span>
+<span class="co">## V21   0.1559536</span>
+<span class="co">## V22   .        </span>
+<span class="co">## V23  -0.1808407</span>
+<span class="co">## V24   .        </span>
+<span class="co">## V25   0.1912228</span>
+<span class="co">## V26   0.1715435</span>
+<span class="co">## V27   0.1505258</span>
+<span class="co">## V28   0.1140740</span>
+<span class="co">## V29   .        </span>
+<span class="co">## V30   .        </span>
+<span class="co">## V32   0.1174763</span>
+<span class="co">## V33   .        </span>
+<span class="co">## V34  -0.1981478</span>
+<span class="co">## V35  -0.1561935</span>
+<span class="co">## V36  -0.1673926</span>
+<span class="co">## V37   0.1551137</span>
+<span class="co">## V38  -0.1588460</span>
+<span class="co">## V39   0.1167834</span>
+<span class="co">## V40   .        </span>
+<span class="co">## V41   .        </span>
+<span class="co">## V42  -0.1451945</span>
+<span class="co">## V43   0.1448450</span>
+<span class="co">## V44  -0.1137527</span>
+<span class="co">## V45   .        </span>
+<span class="co">## V46  -0.1069923</span>
+<span class="co">## V47  -0.1164267</span>
+<span class="co">## V48   .        </span>
+<span class="co">## V49   0.1697180</span>
+<span class="co">## V50   0.1756634</span>
+<span class="co">## V51   0.1881001</span>
+<span class="co">## V52   0.1389346</span>
+<span class="co">## V53   .        </span>
+<span class="co">## V54   .        </span>
+<span class="co">## V55   .        </span>
+<span class="co">## V56  -0.1542476</span>
+<span class="co">## V57   .        </span>
+<span class="co">## V58   .        </span>
+<span class="co">## V59   .        </span>
+<span class="co">## V60   .        </span>
+<span class="co">## V61   .        </span>
+<span class="co">## V62   .        </span>
+<span class="co">## V63   .        </span>
+<span class="co">## V64   .        </span>
+<span class="co">## V65   .        </span>
+<span class="co">## V66   .        </span>
+<span class="co">## V67   .        </span>
+<span class="co">## V68   .        </span>
+<span class="co">## V69   .        </span>
+<span class="co">## V70   .        </span>
+<span class="co">## V71   .        </span>
+<span class="co">## V72   .        </span>
+<span class="co">## V73   0.1208047</span>
+<span class="co">## V74   .        </span>
+<span class="co">## V75   .        </span>
+<span class="co">## V76   0.1056635</span>
+<span class="co">## V77   .        </span>
+<span class="co">## V78   .        </span>
+<span class="co">## V79   .        </span>
+<span class="co">## V80  -0.1118632</span>
+<span class="co">## V81   .        </span>
+<span class="co">## V82   .        </span>
+<span class="co">## V83  -0.2118385</span>
+<span class="co">## V84  -0.1127914</span>
+<span class="co">## V85   0.1789415</span>
+<span class="co">## V86   0.1819897</span>
+<span class="co">## V87   0.1818463</span>
+<span class="co">## V88   0.1831991</span>
+<span class="co">## V89   0.1793673</span>
+<span class="co">## V90   0.2122642</span>
+<span class="co">## V91   0.1823010</span>
+<span class="co">## V92   .        </span>
+<span class="co">## V93   .        </span>
+<span class="co">## V94   .        </span>
+<span class="co">## V95   .        </span>
+<span class="co">## V96   .        </span>
+<span class="co">## V97   .        </span>
+<span class="co">## V98   .        </span>
+<span class="co">## V99   .        </span>
+<span class="co">## V100  .        </span>
+<span class="co">## V101  .        </span>
+<span class="co">## V119  .        </span>
+<span class="co">## V120  .        </span>
+<span class="co">## V121  .        </span>
+<span class="co">## V126  .</span></code></pre>
 <p>where each row of loading matrix corresponds to a variable.</p>
 </div>
 </div>
-<div id="extension" class="section level2">
-<h2 class="hasAnchor">
-<a href="#extension" class="anchor"></a>Extension</h2>
-<div id="group-variable" class="section level3">
-<h3 class="hasAnchor">
-<a href="#group-variable" class="anchor"></a>Group variable</h3>
+<div class="section level2">
+<h2 id="extension">Extension<a class="anchor" aria-label="anchor" href="#extension"></a>
+</h2>
+<div class="section level3">
+<h3 id="group-variable">Group variable<a class="anchor" aria-label="anchor" href="#group-variable"></a>
+</h3>
 <p>In some cases, some variables may need to consider together, that is, they should be “used” or “unused” for PC at the same time, which we call “group information”. The optimization problem becomes:</p>
 <p><span class="math display">\[
     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ \sum_{g=1}^G I(||v_g||\neq 0)\leq s.
@@ -376,38 +374,39 @@ This result shows that using less than half of all 99 variables can be close to 
 </ul>
 <p>Denote different groups as different number:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">g_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">16</span>, each <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">17</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">g_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">16</span>, each <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">17</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>And fit a group SPCA model with additional argument <code>group.index = g_info</code>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="va">X</span>, group.index <span class="op">=</span> <span class="va">g_info</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">)</span></code></pre></div>
-<pre><code>## List of 13
-##  $ coef        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:912] 42 43 44 45 46 47 18 19 20 21 ...
-##   .. ..@ p       : int [1:18] 0 6 18 36 60 90 126 168 216 270 ...
-##   .. ..@ Dim     : int [1:2] 99 17
-##   .. ..@ Dimnames:List of 2
-##   .. .. ..$ : chr [1:99] "V6" "V7" "V8" "V9" ...
-##   .. .. ..$ : chr [1:17] "1" "2" "3" "4" ...
-##   .. ..@ x       : num [1:912] -0.503 -0.512 -0.5279 -0.4516 0.0472 ...
-##   .. ..@ factors : list()
-##  $ tune.value  : num [1:17, 1] 0 0 0 0 0 0 0 0 0 0 ...
-##  $ ev          : num [1:17] 0.158 0.388 0.471 0.561 0.645 ...
-##  $ kpc.num     : num 1
-##  $ cum.var.pc  : num [1:99] 1.07 1.82 2.15 2.43 2.62 ...
-##  $ var.all     : num 3.97
-##  $ pev         : num [1:17] 0.0399 0.0979 0.1188 0.1415 0.1625 ...
-##  $ pev.pc      : num [1:17] 0.148 0.364 0.442 0.527 0.605 ...
-##  $ nvars       : int 99
-##  $ sparse.type : chr "fpc"
-##  $ support.size: num [1:17] 1 2 3 4 5 6 7 8 9 10 ...
-##  $ tune.type   : chr "aic"
-##  $ call        : language abesspca(x = X, group.index = g_info)
-##  - attr(*, "class")= chr "abesspca"</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## List of 14</span>
+<span class="co">##  $ coef        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="co">##   .. ..@ i       : int [1:912] 42 43 44 45 46 47 18 19 20 21 ...</span>
+<span class="co">##   .. ..@ p       : int [1:18] 0 6 18 36 60 90 126 168 216 270 ...</span>
+<span class="co">##   .. ..@ Dim     : int [1:2] 99 17</span>
+<span class="co">##   .. ..@ Dimnames:List of 2</span>
+<span class="co">##   .. .. ..$ : chr [1:99] "V6" "V7" "V8" "V9" ...</span>
+<span class="co">##   .. .. ..$ : chr [1:17] "1" "2" "3" "4" ...</span>
+<span class="co">##   .. ..@ x       : num [1:912] -0.503 -0.512 -0.5279 -0.4516 0.0472 ...</span>
+<span class="co">##   .. ..@ factors : list()</span>
+<span class="co">##  $ tune.value  : num [1:17] 0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="co">##  $ ev          : num [1:17] 0.158 0.388 0.471 0.561 0.645 ...</span>
+<span class="co">##  $ kpc.num     : num 1</span>
+<span class="co">##  $ var.pc      : num [1:99] 1.065 0.752 0.33 0.284 0.184 ...</span>
+<span class="co">##  $ cum.var.pc  : num [1:99] 1.07 1.82 2.15 2.43 2.62 ...</span>
+<span class="co">##  $ var.all     : num 3.97</span>
+<span class="co">##  $ pev         : num [1:17] 0.0399 0.0979 0.1188 0.1415 0.1625 ...</span>
+<span class="co">##  $ pev.pc      : num [1:17] 0.148 0.364 0.442 0.527 0.605 ...</span>
+<span class="co">##  $ nvars       : int 99</span>
+<span class="co">##  $ sparse.type : chr "fpc"</span>
+<span class="co">##  $ support.size: num [1:17] 1 2 3 4 5 6 7 8 9 10 ...</span>
+<span class="co">##  $ tune.type   : chr "gic"</span>
+<span class="co">##  $ call        : language abesspca(x = X, group.index = g_info)</span>
+<span class="co">##  - attr(*, "class")= chr "abesspca"</span></code></pre>
 </div>
-<div id="multiple-principal-components" class="section level3">
-<h3 class="hasAnchor">
-<a href="#multiple-principal-components" class="anchor"></a>Multiple principal components</h3>
+<div class="section level3">
+<h3 id="multiple-principal-components">Multiple principal components<a class="anchor" aria-label="anchor" href="#multiple-principal-components"></a>
+</h3>
 <p>In some cases, we may seek for more than one principal components under sparsity. Actually, we can iteratively solve the largest principal component and then mapping the covariance matrix to its orthogonal space:</p>
 <p><span class="math display">\[
 \Sigma' = (1-vv^{\top})\Sigma(1-vv^{\top})
@@ -420,51 +419,52 @@ This result shows that using less than half of all 99 variables can be close to 
 \]</span> where <span class="math inline">\(\Sigma^{\prime} = (1-v_1 v_1^\top)\Sigma(1-v_1 v_1^\top)\)</span>. The <span class="math inline">\((v_1, v_2)\)</span> forms a sparse loading matrix.</p>
 <p>The code for solving the two problem is:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">best_kpca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="va">X</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">40</span><span class="op">)</span>, sparse.type <span class="op">=</span> <span class="st">"kpc"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best_kpca</span><span class="op">)</span></code></pre></div>
-<pre><code>## List of 13
-##  $ coef        :List of 2
-##   ..$ :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. .. ..@ i       : int [1:90] 2 3 11 12 13 15 17 19 20 21 ...
-##   .. .. ..@ p       : int [1:3] 0 40 90
-##   .. .. ..@ Dim     : int [1:2] 99 2
-##   .. .. ..@ Dimnames:List of 2
-##   .. .. .. ..$ : chr [1:99] "V6" "V7" "V8" "V9" ...
-##   .. .. .. ..$ : chr [1:2] "40" "50"
-##   .. .. ..@ x       : num [1:90] -0.136 0.123 0.175 0.2 0.111 ...
-##   .. .. ..@ factors : list()
-##   ..$ :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. .. ..@ i       : int [1:90] 1 3 4 5 11 17 38 41 49 51 ...
-##   .. .. ..@ p       : int [1:3] 0 40 90
-##   .. .. ..@ Dim     : int [1:2] 99 2
-##   .. .. ..@ Dimnames:List of 2
-##   .. .. .. ..$ : chr [1:99] "V6" "V7" "V8" "V9" ...
-##   .. .. .. ..$ : chr [1:2] "40" "50"
-##   .. .. ..@ x       : num [1:90] 0.071 -0.171 0.159 0.211 0.171 ...
-##   .. .. ..@ factors : list()
-##  $ ev          :List of 2
-##   ..$ : num [1:2] 0.955 1.015
-##   ..$ : num [1:2] 1.75 1.77
-##  $ tune.value  :List of 2
-##   ..$ : num [1:2, 1] 78.1 98
-##   ..$ : num [1:2, 1] 78.6 98.6
-##  $ kpc.num     : num 2
-##  $ cum.var.pc  : num [1:99] 1.07 1.82 2.15 2.43 2.62 ...
-##  $ var.all     : num 3.97
-##  $ pev         :List of 2
-##   ..$ : num [1:2] 0.241 0.256
-##   ..$ : num [1:2] 0.441 0.446
-##  $ pev.pc      :List of 2
-##   ..$ : num [1:2] 0.897 0.953
-##   ..$ : num [1:2] 2.33 2.35
-##  $ nvars       : int 99
-##  $ sparse.type : chr "kpc"
-##  $ support.size:List of 2
-##   ..$ : num [1:2] 40 50
-##   ..$ : num [1:2] 40 50
-##  $ tune.type   : chr "aic"
-##  $ call        : language abesspca(x = X, sparse.type = "kpc", support.size = c(50, 40))
-##  - attr(*, "class")= chr "abesspca"</code></pre>
+<code class="sourceCode R"><span class="va">best_kpca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="va">X</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">40</span><span class="op">)</span>, sparse.type <span class="op">=</span> <span class="st">"kpc"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best_kpca</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## List of 14</span>
+<span class="co">##  $ coef        :List of 2</span>
+<span class="co">##   ..$ :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="co">##   .. .. ..@ i       : int [1:90] 2 3 11 12 13 15 17 19 20 21 ...</span>
+<span class="co">##   .. .. ..@ p       : int [1:3] 0 40 90</span>
+<span class="co">##   .. .. ..@ Dim     : int [1:2] 99 2</span>
+<span class="co">##   .. .. ..@ Dimnames:List of 2</span>
+<span class="co">##   .. .. .. ..$ : chr [1:99] "V6" "V7" "V8" "V9" ...</span>
+<span class="co">##   .. .. .. ..$ : chr [1:2] "40" "50"</span>
+<span class="co">##   .. .. ..@ x       : num [1:90] -0.136 0.123 0.175 0.2 0.111 ...</span>
+<span class="co">##   .. .. ..@ factors : list()</span>
+<span class="co">##   ..$ :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="co">##   .. .. ..@ i       : int [1:90] 1 3 4 5 11 17 38 41 49 51 ...</span>
+<span class="co">##   .. .. ..@ p       : int [1:3] 0 40 90</span>
+<span class="co">##   .. .. ..@ Dim     : int [1:2] 99 2</span>
+<span class="co">##   .. .. ..@ Dimnames:List of 2</span>
+<span class="co">##   .. .. .. ..$ : chr [1:99] "V6" "V7" "V8" "V9" ...</span>
+<span class="co">##   .. .. .. ..$ : chr [1:2] "40" "50"</span>
+<span class="co">##   .. .. ..@ x       : num [1:90] 0.071 -0.171 0.159 0.211 0.171 ...</span>
+<span class="co">##   .. .. ..@ factors : list()</span>
+<span class="co">##  $ ev          :List of 2</span>
+<span class="co">##   ..$ : num [1:2] 0.955 1.015</span>
+<span class="co">##   ..$ : num [1:2] 1.75 1.77</span>
+<span class="co">##  $ tune.value  :List of 2</span>
+<span class="co">##   ..$ : num [1:2, 1] 78.1 98</span>
+<span class="co">##   ..$ : num [1:2, 1] 78.6 98.6</span>
+<span class="co">##  $ kpc.num     : num 2</span>
+<span class="co">##  $ var.pc      : num [1:99] 1.065 0.752 0.33 0.284 0.184 ...</span>
+<span class="co">##  $ cum.var.pc  : num [1:99] 1.07 1.82 2.15 2.43 2.62 ...</span>
+<span class="co">##  $ var.all     : num 3.97</span>
+<span class="co">##  $ pev         :List of 2</span>
+<span class="co">##   ..$ : num [1:2] 0.241 0.256</span>
+<span class="co">##   ..$ : num [1:2] 0.441 0.446</span>
+<span class="co">##  $ pev.pc      :List of 2</span>
+<span class="co">##   ..$ : num [1:2] 0.897 0.953</span>
+<span class="co">##   ..$ : num [1:2] 0.962 0.972</span>
+<span class="co">##  $ nvars       : int 99</span>
+<span class="co">##  $ sparse.type : chr "kpc"</span>
+<span class="co">##  $ support.size:List of 2</span>
+<span class="co">##   ..$ : num [1:2] 40 50</span>
+<span class="co">##   ..$ : num [1:2] 40 50</span>
+<span class="co">##  $ tune.type   : chr "gic"</span>
+<span class="co">##  $ call        : language abesspca(x = X, sparse.type = "kpc", support.size = c(50, 40))</span>
+<span class="co">##  - attr(*, "class")= chr "abesspca"</span></code></pre>
 <p>The result <code>best_kpca[["pev"]]</code> shows that two principal components raised from two loading matrix could explain 40% variance of all variables (i.e., <span class="math inline">\(\text{trace}(\Sigma)\)</span>).</p>
 </div>
 </div>
@@ -481,11 +481,13 @@ This result shows that using less than half of all 99 variables can be close to 
 
 
       <footer><div class="copyright">
-  <p>Developed by Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p></p>
+<p>Developed by Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Zezhi Wang, Borui Tang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>

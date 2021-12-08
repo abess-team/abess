@@ -2,21 +2,21 @@
   "index_name": "abess",
   "start_urls": [
     {
-      "url": "https://abess-team.github.io/abess//index.html",
+      "url": "https://abess-team.github.io/abess/index.html",
       "selectors_key": "homepage",
       "tags": [
         "homepage"
       ]
     },
     {
-      "url": "https://abess-team.github.io/abess//reference",
+      "url": "https://abess-team.github.io/abess/reference",
       "selectors_key": "reference",
       "tags": [
         "reference"
       ]
     },
     {
-      "url": "https://abess-team.github.io/abess//articles",
+      "url": "https://abess-team.github.io/abess/articles",
       "selectors_key": "articles",
       "tags": [
         "articles"
@@ -30,7 +30,7 @@
     "/articles/index.html"
   ],
   "sitemap_urls": [
-    "https://abess-team.github.io/abess//sitemap.xml"
+    "https://abess-team.github.io/abess/sitemap.xml"
   ],
   "selectors": {
     "homepage": {

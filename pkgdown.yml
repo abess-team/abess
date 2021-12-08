@@ -1,5 +1,5 @@
 pandoc: 2.7.3
-pkgdown: 1.6.1
+pkgdown: 2.0.1
 pkgdown_sha: ~
 articles:
   v01-abess-guide: v01-abess-guide.html
@@ -12,8 +12,8 @@ articles:
   v09-fasterSetting: v09-fasterSetting.html
   v10-algorithm: v10-algorithm.html
   v11-power-of-abess: v11-power-of-abess.html
-last_built: 2021-12-02T16:54Z
+last_built: 2021-12-08T13:44Z
 urls:
-  reference: https://abess-team.github.io/abess//reference
-  article: https://abess-team.github.io/abess//articles
+  reference: https://abess-team.github.io/abess/reference
+  article: https://abess-team.github.io/abess/articles
 

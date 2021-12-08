@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -40,18 +42,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -100,7 +96,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/abess-team/abess/">
+  <a href="https://github.com/abess-team/abess/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -125,409 +121,409 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Quick start for <code>abess</code>: Linear regression</h1>
-                        <h4 class="author">Jin Zhu</h4>
+                        <h4 data-toc-skip class="author">Jin Zhu</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v01-abess-guide.Rmd"><code>../vignettes/v01-abess-guide.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v01-abess-guide.Rmd" class="external-link"><code>../vignettes/v01-abess-guide.Rmd</code></a></small>
       <div class="hidden name"><code>v01-abess-guide.Rmd</code></div>
 
     </div>
 
     
     
-<div id="briey-introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#briey-introduction" class="anchor"></a>Briey introduction</h2>
-<p>The R package <code>abess</code> implement a polynomial algorithm in the <a href="https://www.pnas.org/content/117/52/33117"></a> for best-subset selection problem: <span class="math display">\[\min_{\beta \in \mathbb{R}^p} \frac{1}{2n} \| y - X\beta\|_2^2, \text{ subject to } \|\beta\|_0 \leq s,\]</span> where <span class="math inline">\(\| \cdot \|_2\)</span> is the <span class="math inline">\(\ell_2\)</span> norm, <span class="math inline">\(\|\beta\|_0=\sum_{i=1}^pI( \beta_i\neq 0)\)</span> is the <span class="math inline">\(\ell_0\)</span> norm of <span class="math inline">\(\beta\)</span>, and the sparsity level <span class="math inline">\(s\)</span> is usually an unknown non-negative integer. Next, we present an example to show how to use the <strong>abess</strong> package to solve a simple problem.</p>
+<div class="section level2">
+<h2 id="briey-introduction">Briey introduction<a class="anchor" aria-label="anchor" href="#briey-introduction"></a>
+</h2>
+<p>The R package <code>abess</code> implement a polynomial algorithm in the <a href="https://www.pnas.org/content/117/52/33117" class="external-link"></a> for best-subset selection problem: <span class="math display">\[\min_{\beta \in \mathbb{R}^p} \frac{1}{2n} \| y - X\beta\|_2^2, \text{ subject to } \|\beta\|_0 \leq s,\]</span> where <span class="math inline">\(\| \cdot \|_2\)</span> is the <span class="math inline">\(\ell_2\)</span> norm, <span class="math inline">\(\|\beta\|_0=\sum_{i=1}^pI( \beta_i\neq 0)\)</span> is the <span class="math inline">\(\ell_0\)</span> norm of <span class="math inline">\(\beta\)</span>, and the sparsity level <span class="math inline">\(s\)</span> is usually an unknown non-negative integer. Next, we present an example to show how to use the <strong>abess</strong> package to solve a simple problem.</p>
 </div>
-<div id="quick-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#quick-example" class="anchor"></a>Quick example</h2>
-<div id="fixed-support-size-best-subset-selection" class="section level3">
-<h3 class="hasAnchor">
-<a href="#fixed-support-size-best-subset-selection" class="anchor"></a>Fixed support size best subset selection</h3>
+<div class="section level2">
+<h2 id="quick-example">Quick example<a class="anchor" aria-label="anchor" href="#quick-example"></a>
+</h2>
+<div class="section level3">
+<h3 id="fixed-support-size-best-subset-selection">Fixed support size best subset selection<a class="anchor" aria-label="anchor" href="#fixed-support-size-best-subset-selection"></a>
+</h3>
 <p>We generate a design matrix <span class="math inline">\(X\)</span> containing 300 observation and each observation has 1000 predictors. The response variable <span class="math inline">\(y\)</span> is linearly related to the first, second, and fifth predictors in <span class="math inline">\(X\)</span>: <span class="math display">\[y = 3X_1 + 1.5X_2 + 2X_5 + \epsilon,\]</span> where <span class="math inline">\(\epsilon\)</span> is a standard normal random variable.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
 <span class="va">synthetic_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">300</span>, p <span class="op">=</span> <span class="fl">1000</span>, 
-                                beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">995</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1]  300 1000</code></pre>
+                                beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1.5</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">995</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1]  300 1000</span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##           [,1]
-## [1,] -4.063922
-## [2,]  3.855246
-## [3,] -3.041391
-## [4,] -1.081257
-## [5,]  4.986772
-## [6,]  4.470901</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##           [,1]</span>
+<span class="co">## [1,] -4.063922</span>
+<span class="co">## [2,]  3.855246</span>
+<span class="co">## [3,] -3.041391</span>
+<span class="co">## [4,] -1.081257</span>
+<span class="co">## [5,]  4.986772</span>
+<span class="co">## [6,]  4.470901</span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind.data.frame</a></span><span class="op">(</span><span class="st">"y"</span> <span class="op">=</span> <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, 
+<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind.data.frame</a></span><span class="op">(</span><span class="st">"y"</span> <span class="op">=</span> <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, 
                         <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<p>Then, we use the main function <code>abess</code> in the package to fit this dataset. By setting the arguments <code>support.size = s</code>, <code>abess</code> function conducts <strong>Algorithm 1</strong> in the <a href="https://www.pnas.org/content/117/52/33117"></a> for best-subset selection with a sparsity level <code>s</code>. In our example, we set the options: <code>support.size = 3</code>, and we run <strong>Algorithm 1</strong> with the following command:</p>
+<p>Then, we use the main function <code>abess</code> in the package to fit this dataset. By setting the arguments <code>support.size = s</code>, <code>abess</code> function conducts <strong>Algorithm 1</strong> in the <a href="https://www.pnas.org/content/117/52/33117" class="external-link"></a> for best-subset selection with a sparsity level <code>s</code>. In our example, we set the options: <code>support.size = 3</code>, and we run <strong>Algorithm 1</strong> with the following command:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <p>The output of <code>abess</code> comprises the selected best model:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##                       3
-## (intercept) -0.01802179
-## x1           2.96418205
-## x2           1.45090693
-## x3           0.00000000
-## x4           0.00000000
-## x5           1.90592036</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##                       3</span>
+<span class="co">## (intercept) -0.01802179</span>
+<span class="co">## x1           2.96418205</span>
+<span class="co">## x2           1.45090693</span>
+<span class="co">## x3           0.00000000</span>
+<span class="co">## x4           0.00000000</span>
+<span class="co">## x5           1.90592036</span></code></pre>
 <p>The best model’s support set is identical to the ground truth, and the coefficient estimation is the same as the oracle estimator given by <code>lm</code> function:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-## Call:
-## lm(formula = y ~ ., data = dat[, c(1, c(1, 2, 5) + 1)])
-## 
-## Coefficients:
-## (Intercept)           x1           x2           x5  
-##    -0.01802      2.96418      1.45091      1.90592</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## </span>
+<span class="co">## Call:</span>
+<span class="co">## lm(formula = y ~ ., data = dat[, c(1, c(1, 2, 5) + 1)])</span>
+<span class="co">## </span>
+<span class="co">## Coefficients:</span>
+<span class="co">## (Intercept)           x1           x2           x5  </span>
+<span class="co">##    -0.01802      2.96418      1.45091      1.90592</span></code></pre>
 <!-- Users could `print`, `summary` or `predict` this bestmodel object just like working with classical regression modeling. This would be helpful for data scientists who are familiar with `lm` functions in R. -->
 </div>
-<div id="adaptive-best-subset-selection" class="section level3">
-<h3 class="hasAnchor">
-<a href="#adaptive-best-subset-selection" class="anchor"></a>Adaptive best subset selection</h3>
-<p>Imaging we are unknown about the true sparsity level in real world data, and thus, we need to determine the most proper one. The <strong>Algorithm 3</strong> in the <a href="https://www.pnas.org/content/117/52/33117"></a> is designed for this scenario. <code>abess</code> is capable of performing this algorithm:</p>
+<div class="section level3">
+<h3 id="adaptive-best-subset-selection">Adaptive best subset selection<a class="anchor" aria-label="anchor" href="#adaptive-best-subset-selection"></a>
+</h3>
+<p>Imaging we are unknown about the true sparsity level in real world data, and thus, we need to determine the most proper one. The <strong>Algorithm 3</strong> in the <a href="https://www.pnas.org/content/117/52/33117" class="external-link"></a> is designed for this scenario. <code>abess</code> is capable of performing this algorithm:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></code></pre></div>
 <p>The output of <code>abess</code> also comprises the selected best model:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_size</span> <span class="op">&lt;-</span> <span class="va">abess_fit</span><span class="op">[[</span><span class="st">"best.size"</span><span class="op">]</span><span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">best_size</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 3</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">best_size</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 3</span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="va">best_size</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##                       3
-## (intercept) -0.01802179
-## x1           2.96418205
-## x2           1.45090693
-## x3           0.00000000
-## x4           0.00000000
-## x5           1.90592036</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="va">best_size</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##                       3</span>
+<span class="co">## (intercept) -0.01802179</span>
+<span class="co">## x1           2.96418205</span>
+<span class="co">## x2           1.45090693</span>
+<span class="co">## x3           0.00000000</span>
+<span class="co">## x4           0.00000000</span>
+<span class="co">## x5           1.90592036</span></code></pre>
 <p>The output model accurately detect the true model size, which implies the <strong>Algorithm 3</strong> efficiently find both the optimal sparsity level and true effective predictors.</p>
 </div>
 </div>
-<div id="real-data-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#real-data-example" class="anchor"></a>Real data example</h2>
-<div id="hitters-dataset" class="section level3">
-<h3 class="hasAnchor">
-<a href="#hitters-dataset" class="anchor"></a>Hitters Dataset</h3>
+<div class="section level2">
+<h2 id="real-data-example">Real data example<a class="anchor" aria-label="anchor" href="#real-data-example"></a>
+</h2>
+<div class="section level3">
+<h3 id="hitters-dataset">Hitters Dataset<a class="anchor" aria-label="anchor" href="#hitters-dataset"></a>
+</h3>
 <p>In this tutorial, we are going to demonstrate how to use the <code>abess</code> package to carry out best subset selection on the <code>Hitters</code> dataset. We hope to use several predictors related to the performance of the baseball athletes last year to predict their salary. First, let’s have a look at this dataset. There are 19 variables except <code>Salary</code> and 322 observations.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"Hitters.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></code></pre></div>
-<pre><code>##   AtBat Hits HmRun Runs RBI Walks Years CAtBat CHits CHmRun CRuns CRBI CWalks
-## 1   293   66     1   30  29    14     1    293    66      1    30   29     14
-## 2   315   81     7   24  38    39    14   3449   835     69   321  414    375
-## 3   479  130    18   66  72    76     3   1624   457     63   224  266    263
-## 4   496  141    20   65  78    37    11   5628  1575    225   828  838    354
-## 5   321   87    10   39  42    30     2    396   101     12    48   46     33
-## 6   594  169     4   74  51    35    11   4408  1133     19   501  336    194
-##   League Division PutOuts Assists Errors Salary NewLeague
-## 1      A        E     446      33     20     NA         A
-## 2      N        W     632      43     10  475.0         N
-## 3      A        W     880      82     14  480.0         A
-## 4      N        E     200      11      3  500.0         N
-## 5      N        E     805      40      4   91.5         N
-## 6      A        W     282     421     25  750.0         A</code></pre>
+<code class="sourceCode R"><span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"Hitters.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##   AtBat Hits HmRun Runs RBI Walks Years CAtBat CHits CHmRun CRuns CRBI CWalks</span>
+<span class="co">## 1   293   66     1   30  29    14     1    293    66      1    30   29     14</span>
+<span class="co">## 2   315   81     7   24  38    39    14   3449   835     69   321  414    375</span>
+<span class="co">## 3   479  130    18   66  72    76     3   1624   457     63   224  266    263</span>
+<span class="co">## 4   496  141    20   65  78    37    11   5628  1575    225   828  838    354</span>
+<span class="co">## 5   321   87    10   39  42    30     2    396   101     12    48   46     33</span>
+<span class="co">## 6   594  169     4   74  51    35    11   4408  1133     19   501  336    194</span>
+<span class="co">##   League Division PutOuts Assists Errors Salary NewLeague</span>
+<span class="co">## 1      A        E     446      33     20     NA         A</span>
+<span class="co">## 2      N        W     632      43     10  475.0         N</span>
+<span class="co">## 3      A        W     880      82     14  480.0         A</span>
+<span class="co">## 4      N        E     200      11      3  500.0         N</span>
+<span class="co">## 5      N        E     805      40      4   91.5         N</span>
+<span class="co">## 6      A        W     282     421     25  750.0         A</span></code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 322  20</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 322  20</span></code></pre>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 59</code></pre>
-<p>Note that this dataset contains some missing data. So we use the <code><a href="https://rdrr.io/r/stats/na.fail.html">na.omit()</a></code> function to delete rows that have incomplete information. After that, we have 263 observations remains.</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 59</span></code></pre>
+<p>Note that this dataset contains some missing data. So we use the <code><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit()</a></code> function to delete rows that have incomplete information. After that, we have 263 observations remains.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 263  20</code></pre>
+<code class="sourceCode R"><span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 263  20</span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0</code></pre>
-<p>Then we change the factors into dummy variables with the <code><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix()</a></code> function. Note that the <code>abess</code> function will automatically include the intercept.</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 0</span></code></pre>
+<p>Then we change the factors into dummy variables with the <code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix()</a></code> function. Note that the <code>abess</code> function will automatically include the intercept.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">.</span>, <span class="va">Hitters</span><span class="op">)</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>
-<span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">.</span>, <span class="va">Hitters</span><span class="op">)</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>
+<span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="running-abess" class="section level3">
-<h3 class="hasAnchor">
-<a href="#running-abess" class="anchor"></a>Running ABESS</h3>
-<p>The <code><a href="../reference/abess.default.html">abess()</a></code> function in the <code>abess</code> package allows you to perform best subset selection in a highly efficient way. You can call the <code><a href="../reference/abess.default.html">abess()</a></code> function using formula just like what you do with <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code>. Or you can specify the design matrix <code>x</code> and the response <code>y</code>. The <code>system.time</code> function records the run time.</p>
+<div class="section level3">
+<h3 id="running-abess">Running ABESS<a class="anchor" aria-label="anchor" href="#running-abess"></a>
+</h3>
+<p>The <code><a href="../reference/abess.html">abess()</a></code> function in the <code>abess</code> package allows you to perform best subset selection in a highly efficient way. You can call the <code><a href="../reference/abess.html">abess()</a></code> function using formula just like what you do with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>. Or you can specify the design matrix <code>x</code> and the response <code>y</code>. The <code>system.time</code> function records the run time.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
-<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">Salary</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">Hitters</span><span class="op">)</span>
-<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span> <span class="op">==</span> <span class="st">"Salary"</span><span class="op">)</span><span class="op">]</span>, <span class="va">Hitters</span><span class="op">$</span><span class="va">Salary</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "abess"</code></pre>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
+<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">Salary</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">Hitters</span><span class="op">)</span>
+<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span> <span class="op">==</span> <span class="st">"Salary"</span><span class="op">)</span><span class="op">]</span>, <span class="va">Hitters</span><span class="op">$</span><span class="va">Salary</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "abess"</span></code></pre>
 </div>
-<div id="interpret-the-result" class="section level3">
-<h3 class="hasAnchor">
-<a href="#interpret-the-result" class="anchor"></a>Interpret the Result</h3>
-<p>After get the estimator, we can further do more exploring work. The output of <code><a href="../reference/abess.default.html">abess()</a></code> function contains the best model for all the candidate support size in the <code>support.size</code>. You can use some generic function to quickly draw some information of those estimators.</p>
+<div class="section level3">
+<h3 id="interpret-the-result">Interpret the Result<a class="anchor" aria-label="anchor" href="#interpret-the-result"></a>
+</h3>
+<p>After get the estimator, we can further do more exploring work. The output of <code><a href="../reference/abess.html">abess()</a></code> function contains the best model for all the candidate support size in the <code>support.size</code>. You can use some generic function to quickly draw some information of those estimators.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># draw the estimated coefficients on all candidate support size</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## 20 x 20 sparse Matrix of class "dgCMatrix"
-##                                                                      
-## (intercept) 535.9259 274.5803864 -47.9559022 -71.4592204   13.9231044
-## AtBat         .        .           .           .            .        
-## Hits          .        .           3.3008446   2.8038162    2.6757978
-## HmRun         .        .           .           .            .        
-## Runs          .        .           .           .            .        
-## RBI           .        .           .           .            .        
-## Walks         .        .           .           .            .        
-## Years         .        .           .           .            .        
-## CAtBat        .        .           .           .            .        
-## CHits         .        .           .           .            .        
-## CHmRun        .        .           .           .            .        
-## CRuns         .        .           .           .            .        
-## CRBI          .        0.7909536   0.6898994   0.6825275    0.6817790
-## CWalks        .        .           .           .            .        
-## LeagueN       .        .           .           .            .        
-## DivisionW     .        .           .           .         -139.9538855
-## PutOuts       .        .           .           0.2735814    0.2735002
-## Assists       .        .           .           .            .        
-## Errors        .        .           .           .            .        
-## NewLeagueN    .        .           .           .            .        
-##                                                                          
-## (intercept) 25.2819915 140.7461378   85.2423652  117.1520434  197.6616396
-## AtBat       -2.0349977  -1.7074618   -1.8483141   -2.0339209   -2.0803280
-## Hits         8.1842739   7.5589177    7.5099111    6.8549136    6.8263359
-## HmRun        .           .            .            .            .        
-## Runs         .           .            .            .            .        
-## RBI          .           .            .            .            .        
-## Walks        3.9059431   .            3.5679937    6.4406642    5.9761215
-## Years        .         -23.1434527    .            .          -15.9414459
-## CAtBat       .           .            .            .            .        
-## CHits        .           .            .            .            .        
-## CHmRun       .           .            .            .            .        
-## CRuns        .           0.4992573    0.1950761    0.7045391    0.8143029
-## CRBI         0.6417565   0.5199978    0.4568198    0.5273238    0.6000624
-## CWalks       .           .            .           -0.8066062   -0.7503761
-## LeagueN      .           .            .            .            .        
-## DivisionW    .           .         -120.1298286 -123.7798366 -123.4936780
-## PutOuts      0.2645828   0.2971180    0.2753986    0.2753892    0.2702288
-## Assists      .           .            .            .            .        
-## Errors       .           .            .            .            .        
-## NewLeagueN   .           .            .            .            .        
-##                                                                             
-## (intercept)  206.5672285  159.3284463  135.5194919  142.9090129  144.6793182
-## AtBat         -2.2556858   -2.0803658   -2.0563475   -2.0120568   -2.0883279
-## Hits           7.0378766    7.6025575    7.5064072    7.3751935    7.6436454
-## HmRun          .            .            .            .            2.3406524
-## Runs           .           -2.1086040   -1.7965622   -1.7130320   -2.3580478
-## RBI            .            .            .            .            .        
-## Walks          6.2793246    6.2748850    6.0619776    5.9906173    6.1794713
-## Years        -16.7414858    .            .            .            .        
-## CAtBat         .           -0.1468464   -0.1524448   -0.1527096   -0.1488074
-## CHits          .            .            .            .            .        
-## CHmRun         .            .            .            .            .        
-## CRuns          0.8132079    1.5349917    1.5589219    1.5535444    1.5931621
-## CRBI           0.6508515    0.7665071    0.7775813    0.7850103    0.7170767
-## CWalks        -0.7882990   -0.8442911   -0.8350722   -0.8404419   -0.8565844
-## LeagueN        .            .           39.0865444   41.9165343   44.2352269
-## DivisionW   -123.2261893 -114.0032832 -112.6442519 -112.3809790 -112.8079905
-## PutOuts        0.2824819    0.2904255    0.2842332    0.2896964    0.2876182
-## Assists        0.1872292    0.2518043    0.2434442    0.3312276    0.3677311
-## Errors         .            .            .           -2.8685826   -3.1271251
-## NewLeagueN     .            .            .            .            .        
-##                                                                             
-## (intercept)  163.3275824  148.5836248  148.4333315  148.2187229  163.1035878
-## AtBat         -2.1085651   -1.9709735   -1.9509056   -1.9508802   -1.9798729
-## Hits           7.6501026    7.4357720    7.3914057    7.4394969    7.5007675
-## HmRun          2.3654025    4.1120447    4.0827974    4.3449102    4.3308829
-## Runs          -2.3535049   -2.2236760   -2.2396702   -2.3312443   -2.3762100
-## RBI            .           -0.9880849   -0.9940157   -1.0669853   -1.0449620
-## Walks          6.1730276    6.1712241    6.1970575    6.2195518    6.2312863
-## Years         -4.2321550    .            .            .           -3.4890543
-## CAtBat        -0.1341737   -0.1892782   -0.1913281   -0.1887222   -0.1713405
-## CHits          .            0.1915402    0.2067327    0.1635828    0.1339910
-## CHmRun         .            .            .           -0.1516681   -0.1728611
-## CRuns          1.5426322    1.4377384    1.4249652    1.4715814    1.4543049
-## CRBI           0.7144063    0.7444649    0.7414741    0.8020666    0.8077088
-## CWalks        -0.8446970   -0.8035045   -0.8037607   -0.8124337   -0.8115709
-## LeagueN       42.2835360   42.9252666   64.1928201   63.7503250   62.5994230
-## DivisionW   -113.9853363 -115.8457351 -116.0617552 -116.0404251 -116.8492456
-## PutOuts        0.2859836    0.2831001    0.2830325    0.2827381    0.2818925
-## Assists        0.3643305    0.3785769    0.3773191    0.3755259    0.3710692
-## Errors        -3.2379385   -3.2309336   -3.3199889   -3.2940025   -3.3607605
-## NewLeagueN     .            .          -24.8892236  -24.3988530  -24.7623251</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## 20 x 20 sparse Matrix of class "dgCMatrix"</span>
+<span class="co">##                                                                      </span>
+<span class="co">## (intercept) 535.9259 274.5803864 -47.9559022 -71.4592204   13.9231044</span>
+<span class="co">## AtBat         .        .           .           .            .        </span>
+<span class="co">## Hits          .        .           3.3008446   2.8038162    2.6757978</span>
+<span class="co">## HmRun         .        .           .           .            .        </span>
+<span class="co">## Runs          .        .           .           .            .        </span>
+<span class="co">## RBI           .        .           .           .            .        </span>
+<span class="co">## Walks         .        .           .           .            .        </span>
+<span class="co">## Years         .        .           .           .            .        </span>
+<span class="co">## CAtBat        .        .           .           .            .        </span>
+<span class="co">## CHits         .        .           .           .            .        </span>
+<span class="co">## CHmRun        .        .           .           .            .        </span>
+<span class="co">## CRuns         .        .           .           .            .        </span>
+<span class="co">## CRBI          .        0.7909536   0.6898994   0.6825275    0.6817790</span>
+<span class="co">## CWalks        .        .           .           .            .        </span>
+<span class="co">## LeagueN       .        .           .           .            .        </span>
+<span class="co">## DivisionW     .        .           .           .         -139.9538855</span>
+<span class="co">## PutOuts       .        .           .           0.2735814    0.2735002</span>
+<span class="co">## Assists       .        .           .           .            .        </span>
+<span class="co">## Errors        .        .           .           .            .        </span>
+<span class="co">## NewLeagueN    .        .           .           .            .        </span>
+<span class="co">##                                                                          </span>
+<span class="co">## (intercept) 25.2819915 140.7461378   85.2423652  117.1520434  197.6616396</span>
+<span class="co">## AtBat       -2.0349977  -1.7074618   -1.8483141   -2.0339209   -2.0803280</span>
+<span class="co">## Hits         8.1842739   7.5589177    7.5099111    6.8549136    6.8263359</span>
+<span class="co">## HmRun        .           .            .            .            .        </span>
+<span class="co">## Runs         .           .            .            .            .        </span>
+<span class="co">## RBI          .           .            .            .            .        </span>
+<span class="co">## Walks        3.9059431   .            3.5679937    6.4406642    5.9761215</span>
+<span class="co">## Years        .         -23.1434527    .            .          -15.9414459</span>
+<span class="co">## CAtBat       .           .            .            .            .        </span>
+<span class="co">## CHits        .           .            .            .            .        </span>
+<span class="co">## CHmRun       .           .            .            .            .        </span>
+<span class="co">## CRuns        .           0.4992573    0.1950761    0.7045391    0.8143029</span>
+<span class="co">## CRBI         0.6417565   0.5199978    0.4568198    0.5273238    0.6000624</span>
+<span class="co">## CWalks       .           .            .           -0.8066062   -0.7503761</span>
+<span class="co">## LeagueN      .           .            .            .            .        </span>
+<span class="co">## DivisionW    .           .         -120.1298286 -123.7798366 -123.4936780</span>
+<span class="co">## PutOuts      0.2645828   0.2971180    0.2753986    0.2753892    0.2702288</span>
+<span class="co">## Assists      .           .            .            .            .        </span>
+<span class="co">## Errors       .           .            .            .            .        </span>
+<span class="co">## NewLeagueN   .           .            .            .            .        </span>
+<span class="co">##                                                                             </span>
+<span class="co">## (intercept)  206.5672285  159.3284463  135.5194919  142.9090129  144.6793182</span>
+<span class="co">## AtBat         -2.2556858   -2.0803658   -2.0563475   -2.0120568   -2.0883279</span>
+<span class="co">## Hits           7.0378766    7.6025575    7.5064072    7.3751935    7.6436454</span>
+<span class="co">## HmRun          .            .            .            .            2.3406524</span>
+<span class="co">## Runs           .           -2.1086040   -1.7965622   -1.7130320   -2.3580478</span>
+<span class="co">## RBI            .            .            .            .            .        </span>
+<span class="co">## Walks          6.2793246    6.2748850    6.0619776    5.9906173    6.1794713</span>
+<span class="co">## Years        -16.7414858    .            .            .            .        </span>
+<span class="co">## CAtBat         .           -0.1468464   -0.1524448   -0.1527096   -0.1488074</span>
+<span class="co">## CHits          .            .            .            .            .        </span>
+<span class="co">## CHmRun         .            .            .            .            .        </span>
+<span class="co">## CRuns          0.8132079    1.5349917    1.5589219    1.5535444    1.5931621</span>
+<span class="co">## CRBI           0.6508515    0.7665071    0.7775813    0.7850103    0.7170767</span>
+<span class="co">## CWalks        -0.7882990   -0.8442911   -0.8350722   -0.8404419   -0.8565844</span>
+<span class="co">## LeagueN        .            .           39.0865444   41.9165343   44.2352269</span>
+<span class="co">## DivisionW   -123.2261893 -114.0032832 -112.6442519 -112.3809790 -112.8079905</span>
+<span class="co">## PutOuts        0.2824819    0.2904255    0.2842332    0.2896964    0.2876182</span>
+<span class="co">## Assists        0.1872292    0.2518043    0.2434442    0.3312276    0.3677311</span>
+<span class="co">## Errors         .            .            .           -2.8685826   -3.1271251</span>
+<span class="co">## NewLeagueN     .            .            .            .            .        </span>
+<span class="co">##                                                                             </span>
+<span class="co">## (intercept)  163.3275824  148.5836248  148.4333315  148.2187229  163.1035878</span>
+<span class="co">## AtBat         -2.1085651   -1.9709735   -1.9509056   -1.9508802   -1.9798729</span>
+<span class="co">## Hits           7.6501026    7.4357720    7.3914057    7.4394969    7.5007675</span>
+<span class="co">## HmRun          2.3654025    4.1120447    4.0827974    4.3449102    4.3308829</span>
+<span class="co">## Runs          -2.3535049   -2.2236760   -2.2396702   -2.3312443   -2.3762100</span>
+<span class="co">## RBI            .           -0.9880849   -0.9940157   -1.0669853   -1.0449620</span>
+<span class="co">## Walks          6.1730276    6.1712241    6.1970575    6.2195518    6.2312863</span>
+<span class="co">## Years         -4.2321550    .            .            .           -3.4890543</span>
+<span class="co">## CAtBat        -0.1341737   -0.1892782   -0.1913281   -0.1887222   -0.1713405</span>
+<span class="co">## CHits          .            0.1915402    0.2067327    0.1635828    0.1339910</span>
+<span class="co">## CHmRun         .            .            .           -0.1516681   -0.1728611</span>
+<span class="co">## CRuns          1.5426322    1.4377384    1.4249652    1.4715814    1.4543049</span>
+<span class="co">## CRBI           0.7144063    0.7444649    0.7414741    0.8020666    0.8077088</span>
+<span class="co">## CWalks        -0.8446970   -0.8035045   -0.8037607   -0.8124337   -0.8115709</span>
+<span class="co">## LeagueN       42.2835360   42.9252666   64.1928201   63.7503250   62.5994230</span>
+<span class="co">## DivisionW   -113.9853363 -115.8457351 -116.0617552 -116.0404251 -116.8492456</span>
+<span class="co">## PutOuts        0.2859836    0.2831001    0.2830325    0.2827381    0.2818925</span>
+<span class="co">## Assists        0.3643305    0.3785769    0.3773191    0.3755259    0.3710692</span>
+<span class="co">## Errors        -3.2379385   -3.2309336   -3.3199889   -3.2940025   -3.3607605</span>
+<span class="co">## NewLeagueN     .            .          -24.8892236  -24.3988530  -24.7623251</span></code></pre>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get the deviance of the estimated model on all candidate support size</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/deviance.html">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>##  [1] 202734.27 137565.32 116526.84 111214.06 106353.05 103309.59 104199.43
-##  [8]  99179.50  95662.49  94654.62  94081.77  92868.83  92521.80  92354.17
-## [15]  92200.23  92154.67  92088.89  92051.13  92047.79  92017.87</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##  [1] 202734.27 137565.32 116526.84 111214.06 106353.05 103309.59 104199.43</span>
+<span class="co">##  [8]  99179.50  95662.49  94654.62  94081.77  92868.83  92521.80  92354.17</span>
+<span class="co">## [15]  92200.23  92154.67  92088.89  92051.13  92047.79  92017.87</span></code></pre>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># print the fitted model</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## Call:
-## abess.default(x = Hitters[, -which(colnames(Hitters) == "Salary")], 
-##     y = Hitters$Salary)
-## 
-##    support.size       dev      GIC
-## 1             0 202734.27 3213.768
-## 2             1 137565.32 3116.836
-## 3             2 116526.84 3078.241
-## 4             3 111214.06 3071.026
-## 5             4 106353.05 3064.330
-## 6             5 103309.59 3061.752
-## 7             6 104199.43 3069.066
-## 8             7  99179.50 3061.138
-## 9             8  95662.49 3056.700
-## 10            9  94654.62 3058.972
-## 11           10  94081.77 3062.434
-## 12           11  92868.83 3064.079
-## 13           12  92521.80 3068.152
-## 14           13  92354.17 3072.733
-## 15           14  92200.23 3077.352
-## 16           15  92154.67 3082.280
-## 17           16  92088.89 3087.150
-## 18           17  92051.13 3092.101
-## 19           18  92047.79 3097.149
-## 20           19  92017.87 3102.121</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Call:</span>
+<span class="co">## abess.default(x = Hitters[, -which(colnames(Hitters) == "Salary")], </span>
+<span class="co">##     y = Hitters$Salary)</span>
+<span class="co">## </span>
+<span class="co">##    support.size       dev      GIC</span>
+<span class="co">## 1             0 202734.27 3213.768</span>
+<span class="co">## 2             1 137565.32 3116.836</span>
+<span class="co">## 3             2 116526.84 3078.241</span>
+<span class="co">## 4             3 111214.06 3071.026</span>
+<span class="co">## 5             4 106353.05 3064.330</span>
+<span class="co">## 6             5 103309.59 3061.752</span>
+<span class="co">## 7             6 104199.43 3069.066</span>
+<span class="co">## 8             7  99179.50 3061.138</span>
+<span class="co">## 9             8  95662.49 3056.700</span>
+<span class="co">## 10            9  94654.62 3058.972</span>
+<span class="co">## 11           10  94081.77 3062.434</span>
+<span class="co">## 12           11  92868.83 3064.079</span>
+<span class="co">## 13           12  92521.80 3068.152</span>
+<span class="co">## 14           13  92354.17 3072.733</span>
+<span class="co">## 15           14  92200.23 3077.352</span>
+<span class="co">## 16           15  92154.67 3082.280</span>
+<span class="co">## 17           16  92088.89 3087.150</span>
+<span class="co">## 18           17  92051.13 3092.101</span>
+<span class="co">## 19           18  92047.79 3097.149</span>
+<span class="co">## 20           19  92017.87 3102.121</span></code></pre>
 <p>Prediction is allowed for all the estimated model. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">hitters_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, 
-                        newx <span class="op">=</span> <span class="va">Hitters</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span> <span class="op">==</span> <span class="st">"Salary"</span><span class="op">)</span><span class="op">]</span>, 
-                        support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">hitters_pred</span><span class="op">)</span></code></pre></div>
-<pre><code>##           3         4
-## 2 611.11976  545.8175
-## 3 715.34087  643.8563
-## 4 950.55323 1017.2414
-## 5 424.10211  498.2470
-## 6 708.86493  632.3839
-## 7  59.21692  139.8497</code></pre>
+<code class="sourceCode R"><span class="va">hitters_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, 
+                        newx <span class="op">=</span> <span class="va">Hitters</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span> <span class="op">==</span> <span class="st">"Salary"</span><span class="op">)</span><span class="op">]</span>, 
+                        support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hitters_pred</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##           3         4</span>
+<span class="co">## 2 611.11976  545.8175</span>
+<span class="co">## 3 715.34087  643.8563</span>
+<span class="co">## 4 950.55323 1017.2414</span>
+<span class="co">## 5 424.10211  498.2470</span>
+<span class="co">## 6 708.86493  632.3839</span>
+<span class="co">## 7  59.21692  139.8497</span></code></pre>
 <p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including <code>coef</code> for the coefficient value, <code>l2norm</code> for the L2-norm of the coefficients, <code>dev</code> for the deviance and <code>tune</code> for the tuning value. Default if <code>coef</code>.</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="v01-abess-guide_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
 <p>The graph shows that, beginning from the most dense model, the 15th variable (Division, A factor with levels E and W indicating player’s division at the end of 1986) is included in the active set until the support size reaches 3.</p>
 <p>We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size.</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></code></pre></div>
 <p><img src="v01-abess-guide_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 <p>The tuning value reaches the lowest point at 6. And We might choose the estimated model with support size equals 6 as our final model. In fact, the tuning values of different model sizes are provided in <code>tune.value</code> of the <code>abess</code> object. You can get the best model size through the following call.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">[[</span><span class="st">"support.size"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
-<pre><code>## [1] 8</code></pre>
-<p>To extract any model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.</p>
+<code class="sourceCode R"><span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">[[</span><span class="st">"support.size"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
+<pre><code><span class="co">## [1] 8</span></code></pre>
+<p>To extract any model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.abess.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">best.model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
-<pre><code>## List of 7
-##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:6] 0 1 6 10 11 15
-##   .. ..@ p       : int [1:2] 0 6
-##   .. ..@ Dim     : int [1:2] 19 1
-##   .. ..@ Dimnames:List of 2
-##   .. .. ..$ : chr [1:19] "AtBat" "Hits" "HmRun" "Runs" ...
-##   .. .. ..$ : chr "6"
-##   .. ..@ x       : num [1:6] -1.707 7.559 -23.143 0.499 0.52 ...
-##   .. ..@ factors : list()
-##  $ intercept   : num 141
-##  $ support.size: num 6
-##  $ support.vars: chr [1:6] "AtBat" "Hits" "Years" "CRuns" ...
-##  $ support.beta: num [1:6] -1.707 7.559 -23.143 0.499 0.52 ...
-##  $ dev         : num 104199
-##  $ tune.value  : num 3069</code></pre>
+<code class="sourceCode R"><span class="va">best.model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## List of 7</span>
+<span class="co">##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="co">##   .. ..@ i       : int [1:6] 0 1 6 10 11 15</span>
+<span class="co">##   .. ..@ p       : int [1:2] 0 6</span>
+<span class="co">##   .. ..@ Dim     : int [1:2] 19 1</span>
+<span class="co">##   .. ..@ Dimnames:List of 2</span>
+<span class="co">##   .. .. ..$ : chr [1:19] "AtBat" "Hits" "HmRun" "Runs" ...</span>
+<span class="co">##   .. .. ..$ : chr "6"</span>
+<span class="co">##   .. ..@ x       : num [1:6] -1.707 7.559 -23.143 0.499 0.52 ...</span>
+<span class="co">##   .. ..@ factors : list()</span>
+<span class="co">##  $ intercept   : num 141</span>
+<span class="co">##  $ support.size: num 6</span>
+<span class="co">##  $ support.vars: chr [1:6] "AtBat" "Hits" "Years" "CRuns" ...</span>
+<span class="co">##  $ support.beta: num [1:6] -1.707 7.559 -23.143 0.499 0.52 ...</span>
+<span class="co">##  $ dev         : num 104199</span>
+<span class="co">##  $ tune.value  : num 3069</span></code></pre>
 <p>The return is a list containing the basic information of the estimated model.</p>
 </div>
 </div>
-<div id="advanced-features" class="section level2">
-<h2 class="hasAnchor">
-<a href="#advanced-features" class="anchor"></a>Advanced features</h2>
-<div id="feature-screening-for-ultra-high-dimensional-dataset" class="section level3">
-<h3 class="hasAnchor">
-<a href="#feature-screening-for-ultra-high-dimensional-dataset" class="anchor"></a>Feature screening for ultra-high dimensional dataset</h3>
-<p>The <a href="https://archive.ics.uci.edu/ml/datasets/communities+and+crime"></a> consists of 18 variables about crime from the 1995 FBI UCR (e.g., per capita arson crimes and per capita violent crimes), communities information in the U.S. (e.g., the percent of the population considered urban), socio-economic data from the 90s census (e.g., the median family income), and law enforcement data from the 1990 law enforcement management and admin stats survey (e.g., per capita number of police officers). It would be appropriate if any of the crime state in community can be modeled by the basic community information, socio-economic and law enforcement state in community. Here, without the loss of generality, per capita violent crimes is chosen as the response variable, and 102 numerical variables as well as their pairwise interactions is considered as predictors. <!-- Note that, the numerical variables with at least 50\% percentages missing observations are excluded,  --> <!-- and 200 observations without missing records are randomly picked out from the pool.  --> The pre-processed dataset for statistical modeling has 200 observations and 5253 predictors, and the code for pre-processing are openly shared in <a href="https://github.com/abess-team/abess/blob/master/R-package/data-raw/DATASET_VIGNETTES.R"></a>.<br>
+<div class="section level2">
+<h2 id="advanced-features">Advanced features<a class="anchor" aria-label="anchor" href="#advanced-features"></a>
+</h2>
+<div class="section level3">
+<h3 id="feature-screening-for-ultra-high-dimensional-dataset">Feature screening for ultra-high dimensional dataset<a class="anchor" aria-label="anchor" href="#feature-screening-for-ultra-high-dimensional-dataset"></a>
+</h3>
+<p>The <a href="https://archive.ics.uci.edu/ml/datasets/communities+and+crime" class="external-link"></a> consists of 18 variables about crime from the 1995 FBI UCR (e.g., per capita arson crimes and per capita violent crimes), communities information in the U.S. (e.g., the percent of the population considered urban), socio-economic data from the 90s census (e.g., the median family income), and law enforcement data from the 1990 law enforcement management and admin stats survey (e.g., per capita number of police officers). It would be appropriate if any of the crime state in community can be modeled by the basic community information, socio-economic and law enforcement state in community. Here, without the loss of generality, per capita violent crimes is chosen as the response variable, and 102 numerical variables as well as their pairwise interactions is considered as predictors. <!-- Note that, the numerical variables with at least 50\% percentages missing observations are excluded,  --> <!-- and 200 observations without missing records are randomly picked out from the pool.  --> The pre-processed dataset for statistical modeling has 200 observations and 5253 predictors, and the code for pre-processing are openly shared in <a href="https://github.com/abess-team/abess/blob/master/R-package/data-raw/DATASET_VIGNETTES.R" class="external-link"></a>.<br>
 The pre-processed dataset can be freely downloaded by running:</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">working_directory</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html">getwd</a></span><span class="op">(</span><span class="op">)</span>
-<span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="st">"crime.rda"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="st">"crime.rda"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">working_directory</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>
+<span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"crime.rda"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"crime.rda"</span><span class="op">)</span>
 <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
   <span class="va">crime_data_url</span> <span class="op">&lt;-</span> <span class="st">"https://github.com/abess-team/abess/raw/master/R-package/data-raw/crime.rda"</span>
-  <span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="va">crime_data_url</span>, <span class="st">"crime.rda"</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">working_directory</span>, <span class="st">"crime.rda"</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">crime_data_url</span>, <span class="st">"crime.rda"</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">working_directory</span>, <span class="st">"crime.rda"</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p>As mentioned before, this dataset comprises 5000+ features, much larger than the number of observations:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">crime</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1]  500 5254</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">crime</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1]  500 5254</span></code></pre>
 <p>And thus, it would be better to first perform feature screening, which is also supported by the <code>abess</code> function. Suppose we are interested in retaining 1000 variables with the largest marginal utility, then we can conduct the command:</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">crime</span>, screening.num <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## List of 14
-##  $ beta          :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:528] 442 442 3248 442 3248 4900 442 1005 3248 4899 ...
-##   .. ..@ p       : int [1:34] 0 0 1 3 6 10 15 21 28 36 ...
-##   .. ..@ Dim     : int [1:2] 5253 33
-##   .. ..@ Dimnames:List of 2
-##   .. .. ..$ : chr [1:5253] "pop" "perHoush" "pctBlack" "pctWhite" ...
-##   .. .. ..$ : chr [1:33] "0" "1" "2" "3" ...
-##   .. ..@ x       : num [1:528] -0.251 -0.143 6.335 -0.153 4.802 ...
-##   .. ..@ factors : list()
-##  $ intercept     : num [1:33] 599 2115 1257 1337 1000 ...
-##  $ dev           : num [1:33] 381863 172847 156992 151887 146356 ...
-##  $ tune.value    : num [1:33] 6426 6043 6007 6003 5997 ...
-##  $ nobs          : int 500
-##  $ nvars         : int 5253
-##  $ family        : chr "gaussian"
-##  $ tune.path     : chr "sequence"
-##  $ tune.type     : chr "GIC"
-##  $ support.size  : int [1:33] 0 1 2 3 4 5 6 7 8 9 ...
-##  $ edf           : num [1:33] 0 1 2 3 4 5 6 7 8 9 ...
-##  $ best.size     : int 9
-##  $ screening.vars: chr [1:1000] "pctBlack" "pctWhite" "medIncome" "pctWdiv" ...
-##  $ call          : language abess.formula(formula = y ~ ., data = crime, screening.num = 1000)
-##  - attr(*, "class")= chr "abess"</code></pre>
+<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">crime</span>, screening.num <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## List of 14</span>
+<span class="co">##  $ beta          :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="co">##   .. ..@ i       : int [1:528] 442 442 3248 442 3248 4900 442 1005 3248 4899 ...</span>
+<span class="co">##   .. ..@ p       : int [1:34] 0 0 1 3 6 10 15 21 28 36 ...</span>
+<span class="co">##   .. ..@ Dim     : int [1:2] 5253 33</span>
+<span class="co">##   .. ..@ Dimnames:List of 2</span>
+<span class="co">##   .. .. ..$ : chr [1:5253] "pop" "perHoush" "pctBlack" "pctWhite" ...</span>
+<span class="co">##   .. .. ..$ : chr [1:33] "0" "1" "2" "3" ...</span>
+<span class="co">##   .. ..@ x       : num [1:528] -0.251 -0.143 6.335 -0.153 4.802 ...</span>
+<span class="co">##   .. ..@ factors : list()</span>
+<span class="co">##  $ intercept     : num [1:33] 599 2115 1257 1337 1000 ...</span>
+<span class="co">##  $ dev           : num [1:33] 381863 172847 156992 151887 146356 ...</span>
+<span class="co">##  $ tune.value    : num [1:33] 6426 6043 6007 6003 5997 ...</span>
+<span class="co">##  $ nobs          : int 500</span>
+<span class="co">##  $ nvars         : int 5253</span>
+<span class="co">##  $ family        : chr "gaussian"</span>
+<span class="co">##  $ tune.path     : chr "sequence"</span>
+<span class="co">##  $ tune.type     : chr "GIC"</span>
+<span class="co">##  $ support.size  : int [1:33] 0 1 2 3 4 5 6 7 8 9 ...</span>
+<span class="co">##  $ edf           : num [1:33] 0 1 2 3 4 5 6 7 8 9 ...</span>
+<span class="co">##  $ best.size     : int 9</span>
+<span class="co">##  $ screening.vars: chr [1:1000] "pctBlack" "pctWhite" "medIncome" "pctWdiv" ...</span>
+<span class="co">##  $ call          : language abess.formula(formula = y ~ ., data = crime, screening.num = 1000)</span>
+<span class="co">##  - attr(*, "class")= chr "abess"</span></code></pre>
 <p>The returned object of <code>abess</code> includes the features selected by screening. We exhibit six variables of them:</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">[[</span><span class="st">"screening.vars"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "pctBlack"     "pctWhite"     "medIncome"    "pctWdiv"      "pctPubAsst"  
-## [6] "medFamIncome"</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">[[</span><span class="st">"screening.vars"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "pctBlack"     "pctWhite"     "medIncome"    "pctWdiv"      "pctPubAsst"  </span>
+<span class="co">## [6] "medFamIncome"</span></code></pre>
 <p>Then, by the generic <code>extract</code> function, we can obtain the best model detected by <code>ABESS</code> algorithm, and get the variables in the best model:</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">best_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best_model</span><span class="op">)</span></code></pre></div>
-<pre><code>## List of 7
-##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:9] 303 368 1005 1178 1745 1759 2378 3701 3950
-##   .. ..@ p       : int [1:2] 0 9
-##   .. ..@ Dim     : int [1:2] 5253 1
-##   .. ..@ Dimnames:List of 2
-##   .. .. ..$ : chr [1:5253] "pop" "perHoush" "pctBlack" "pctWhite" ...
-##   .. .. ..$ : chr "9"
-##   .. ..@ x       : num [1:9] 0.227547 0.517409 1.323939 0.201385 0.000313 ...
-##   .. ..@ factors : list()
-##  $ intercept   : num 424
-##  $ support.size: int 9
-##  $ support.vars: chr [1:9] "pctBlack:pctWhite" "pctBlack:pctPopDenseHous" "pct65up:pctFemDivorc" "pctUrban:pctUnemploy" ...
-##  $ support.beta: num [1:9] 0.227547 0.517409 1.323939 0.201385 0.000313 ...
-##  $ dev         : num 120282
-##  $ tune.value  : num 5962</code></pre>
+<code class="sourceCode R"><span class="va">best_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best_model</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## List of 7</span>
+<span class="co">##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="co">##   .. ..@ i       : int [1:9] 303 368 1005 1178 1745 1759 2378 3701 3950</span>
+<span class="co">##   .. ..@ p       : int [1:2] 0 9</span>
+<span class="co">##   .. ..@ Dim     : int [1:2] 5253 1</span>
+<span class="co">##   .. ..@ Dimnames:List of 2</span>
+<span class="co">##   .. .. ..$ : chr [1:5253] "pop" "perHoush" "pctBlack" "pctWhite" ...</span>
+<span class="co">##   .. .. ..$ : chr "9"</span>
+<span class="co">##   .. ..@ x       : num [1:9] 0.227547 0.517409 1.323939 0.201385 0.000313 ...</span>
+<span class="co">##   .. ..@ factors : list()</span>
+<span class="co">##  $ intercept   : num 424</span>
+<span class="co">##  $ support.size: int 9</span>
+<span class="co">##  $ support.vars: chr [1:9] "pctBlack:pctWhite" "pctBlack:pctPopDenseHous" "pct65up:pctFemDivorc" "pctUrban:pctUnemploy" ...</span>
+<span class="co">##  $ support.beta: num [1:9] 0.227547 0.517409 1.323939 0.201385 0.000313 ...</span>
+<span class="co">##  $ dev         : num 120282</span>
+<span class="co">##  $ tune.value  : num 5962</span></code></pre>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_vars</span> <span class="op">&lt;-</span> <span class="va">best_model</span><span class="op">[[</span><span class="st">"support.vars"</span><span class="op">]</span><span class="op">]</span>
 <span class="va">best_vars</span></code></pre></div>
-<pre><code>## [1] "pctBlack:pctWhite"                   
-## [2] "pctBlack:pctPopDenseHous"            
-## [3] "pct65up:pctFemDivorc"                
-## [4] "pctUrban:pctUnemploy"                
-## [5] "pctPubAsst:ownHousMed"               
-## [6] "pctPubAsst:pctBornStateResid"        
-## [7] "otherPerCap:pctHousWOphone"          
-## [8] "pctKids:medOwnCostPctWO"             
-## [9] "pctKidsBornNevrMarr:pctVacantBoarded"</code></pre>
+<pre><code><span class="co">## [1] "pctBlack:pctWhite"                   </span>
+<span class="co">## [2] "pctBlack:pctPopDenseHous"            </span>
+<span class="co">## [3] "pct65up:pctFemDivorc"                </span>
+<span class="co">## [4] "pctUrban:pctUnemploy"                </span>
+<span class="co">## [5] "pctPubAsst:ownHousMed"               </span>
+<span class="co">## [6] "pctPubAsst:pctBornStateResid"        </span>
+<span class="co">## [7] "otherPerCap:pctHousWOphone"          </span>
+<span class="co">## [8] "pctKids:medOwnCostPctWO"             </span>
+<span class="co">## [9] "pctKidsBornNevrMarr:pctVacantBoarded"</span></code></pre>
 <!-- From the linear model based on the selected features, we see that the two predictors,  -->
 <!-- 'pctMaleDivorc:pctKidsBornNevrMarr'  -->
 <!-- (i.e., the linear interaction between the percentage of divorced males and the percentage of kids born to never married)  -->
@@ -538,9 +534,9 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <!-- selected predictors: -->
 <!-- ![](./crime.jpg) -->
 </div>
-<div id="more-features" class="section level3">
-<h3 class="hasAnchor">
-<a href="#more-features" class="anchor"></a>More features</h3>
+<div class="section level3">
+<h3 id="more-features">More features<a class="anchor" aria-label="anchor" href="#more-features"></a>
+</h3>
 <p>There are plenty features provided by <code>abess</code> packages such as logistic regression and group selection. Please the other articles in our website for more details.</p>
 </div>
 </div>
@@ -557,11 +553,13 @@ The pre-processed dataset can be freely downloaded by running:</p>
 
 
       <footer><div class="copyright">
-  <p>Developed by Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p></p>
+<p>Developed by Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Zezhi Wang, Borui Tang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>

@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -40,18 +42,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -100,7 +96,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/abess-team/abess/">
+  <a href="https://github.com/abess-team/abess/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -125,158 +121,158 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Positive response: Poisson and Gamma regression</h1>
-                        <h4 class="author">Liyuan Hu, Jin Zhu, Borui Tang</h4>
+                        <h4 data-toc-skip class="author">Liyuan Hu, Jin Zhu, Borui Tang</h4>
             
-            <h4 class="date">2021/11/3</h4>
+            <h4 data-toc-skip class="date">2021/11/3</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v04-PoissonGammaReg.Rmd"><code>../vignettes/v04-PoissonGammaReg.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v04-PoissonGammaReg.Rmd" class="external-link"><code>../vignettes/v04-PoissonGammaReg.Rmd</code></a></small>
       <div class="hidden name"><code>v04-PoissonGammaReg.Rmd</code></div>
 
     </div>
 
     
     
-<div id="poisson-regression" class="section level2">
-<h2 class="hasAnchor">
-<a href="#poisson-regression" class="anchor"></a>Poisson Regression</h2>
+<div class="section level2">
+<h2 id="poisson-regression">Poisson Regression<a class="anchor" aria-label="anchor" href="#poisson-regression"></a>
+</h2>
 <p>Poisson regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of costumers in line at a reception desk. The response variables are assumed to be generated from Poisson distributions.</p>
 <p>The general mathematical equation for Poisson regression is <span class="math display">\[
 \log(E(y_i|x_i)) = x_i^T \beta.
 \]</span> We generate some artificial data using this logic. Consider a dataset containing the information of complain calls about 100 companies over a period of 10 years. <code>count</code> gives the number of complains, and the dataset also have other variables like <code>age</code>, <code>sex</code>, <code>job</code>, <code>education</code>, <code>region</code>, <code>marriage</code>. The <code><a href="../reference/generate.data.html">generate.data()</a></code> function allow you to generate simulated data. By specifying <code>support.size = 3</code>, here we set only 3 of the 5 above mentioned variable have effect on the expectation of the response <code>count</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
 <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, p <span class="op">=</span> <span class="fl">6</span>, support.size <span class="op">=</span> <span class="fl">3</span>,family <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"sex"</span>, <span class="st">"job"</span>, 
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"sex"</span>, <span class="st">"job"</span>, 
                      <span class="st">"education"</span>, <span class="st">"region"</span>, <span class="st">"marriage"</span><span class="op">)</span>
 <span class="va">dat</span><span class="op">$</span><span class="va">beta</span></code></pre></div>
-<pre><code>## [1] 0.0000000 0.0000000 1.3161226 0.7623454 0.6557793 0.0000000</code></pre>
+<pre><code><span class="co">## [1] 0.0000000 0.0000000 1.3161226 0.7623454 0.6557793 0.0000000</span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></code></pre></div>
-<pre><code>##             age         sex        job  education     region    marriage
-## [1,] -0.6264538 -0.62036668  0.4094018  0.8936737  1.0744410  0.07730312
-## [2,]  0.1836433  0.04211587  1.6888733 -1.0472981  1.8956548 -0.29686864
-## [3,] -0.8356286 -0.91092165  1.5865884  1.9713374 -0.6029973 -1.18324224
-## [4,]  1.5952808  0.15802877 -0.3309078 -0.3836321 -0.3908678  0.01129269
-## [5,]  0.3295078 -0.65458464 -2.2852355  1.6541453 -0.4162220  0.99160104
-## [6,] -0.8204684  1.76728727  2.4976616  1.5122127 -0.3756574  1.59396745</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##             age         sex        job  education     region    marriage</span>
+<span class="co">## [1,] -0.6264538 -0.62036668  0.4094018  0.8936737  1.0744410  0.07730312</span>
+<span class="co">## [2,]  0.1836433  0.04211587  1.6888733 -1.0472981  1.8956548 -0.29686864</span>
+<span class="co">## [3,] -0.8356286 -0.91092165  1.5865884  1.9713374 -0.6029973 -1.18324224</span>
+<span class="co">## [4,]  1.5952808  0.15802877 -0.3309078 -0.3836321 -0.3908678  0.01129269</span>
+<span class="co">## [5,]  0.3295078 -0.65458464 -2.2852355  1.6541453 -0.4162220  0.99160104</span>
+<span class="co">## [6,] -0.8204684  1.76728727  2.4976616  1.5122127 -0.3756574  1.59396745</span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">complain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="st">'count'</span><span class="op">=</span><span class="va">dat</span><span class="op">$</span><span class="va">y</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">complain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">'count'</span><span class="op">=</span><span class="va">dat</span><span class="op">$</span><span class="va">y</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="best-subset-selection-for-poisson-regression" class="section level2">
-<h2 class="hasAnchor">
-<a href="#best-subset-selection-for-poisson-regression" class="anchor"></a>Best Subset Selection for Poisson Regression</h2>
-<p>The <code><a href="../reference/abess.default.html">abess()</a></code> function in the <code>abess</code> package allows you to perform best subset selection in a highly efficient way. You can call the <code><a href="../reference/abess.default.html">abess()</a></code> function using formula just like what you do with <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code>. Or you can specify the design matrix <code>x</code> and the response <code>y</code>. To carry out a poisson regression, we should set the <code>family = "poisson"</code>.</p>
+<div class="section level2">
+<h2 id="best-subset-selection-for-poisson-regression">Best Subset Selection for Poisson Regression<a class="anchor" aria-label="anchor" href="#best-subset-selection-for-poisson-regression"></a>
+</h2>
+<p>The <code><a href="../reference/abess.html">abess()</a></code> function in the <code>abess</code> package allows you to perform best subset selection in a highly efficient way. You can call the <code><a href="../reference/abess.html">abess()</a></code> function using formula just like what you do with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>. Or you can specify the design matrix <code>x</code> and the response <code>y</code>. To carry out a poisson regression, we should set the <code>family = "poisson"</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
-<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, y <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">y</span>, family <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span>
-<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">count</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">complain</span>, family <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "abess"</code></pre>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
+<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, y <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">y</span>, family <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span>
+<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">count</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">complain</span>, family <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "abess"</span></code></pre>
 <!-- By default, the `abess` function implements the ABESS algorithm with the support size changing from 0 to $\min\{p,n/log(n)p \}$ and the best support size is determined by the Generalized Informatoin Criterion (GIC). You can change the tunging criterion by specifying the argument `tune.type`. The available tuning criterion now are `gic`, `aic`, `bic`, `ebic` and `cv`. For a quicker solution, you can change the tuning strategy to a golden section path which trys to find the elbow point of the tuning criterion over the hyperparameter space. Here we give an example. -->
 <!-- ```{r} -->
 <!-- abess_fit.gs <- abess(Salary~., Hitters, family = "poisson", tune.type = "bic", tune.path = "gs") -->
 <!-- ``` -->
 </div>
-<div id="interpret-the-result" class="section level2">
-<h2 class="hasAnchor">
-<a href="#interpret-the-result" class="anchor"></a>Interpret the Result</h2>
-<p>Hold on, we aren’t finished yet. After get the estimator, we can further do more exploring work. The output of <code><a href="../reference/abess.default.html">abess()</a></code> function contains the best model for all the candidate support size in the <code>support.size</code>. You can use some generic function to quickly draw some information of those estimators.</p>
+<div class="section level2">
+<h2 id="interpret-the-result">Interpret the Result<a class="anchor" aria-label="anchor" href="#interpret-the-result"></a>
+</h2>
+<p>Hold on, we aren’t finished yet. After get the estimator, we can further do more exploring work. The output of <code><a href="../reference/abess.html">abess()</a></code> function contains the best model for all the candidate support size in the <code>support.size</code>. You can use some generic function to quickly draw some information of those estimators.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># draw the estimated coefficients on all candidate support size</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## 7 x 7 sparse Matrix of class "dgCMatrix"
-##                    0         1         2          3          4           5
-## (intercept) 1.581038 0.4281173 0.2558214 -0.1046763 -0.1048038 -0.10377213
-## age         .        .         .          .         -0.1220315 -0.12420272
-## sex         .        .         .          .          .          .         
-## job         .        1.5000590 1.3764397  1.3352379  1.3066533  1.30608518
-## education   .        .         .          0.7481296  0.7402970  0.74057564
-## region      .        .         0.5200980  0.6772817  0.7321942  0.72343088
-## marriage    .        .         .          .          .         -0.01863175
-##                        6
-## (intercept) -0.112594621
-## age         -0.150054463
-## sex         -0.052978982
-## job          1.310728269
-## education    0.749821752
-## region       0.733104826
-## marriage     0.004436532</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## 7 x 7 sparse Matrix of class "dgCMatrix"</span>
+<span class="co">##                    0         1         2          3          4           5</span>
+<span class="co">## (intercept) 1.581038 0.4281173 0.2558214 -0.1046763 -0.1048038 -0.10377213</span>
+<span class="co">## age         .        .         .          .         -0.1220315 -0.12420272</span>
+<span class="co">## sex         .        .         .          .          .          .         </span>
+<span class="co">## job         .        1.5000590 1.3764397  1.3352379  1.3066533  1.30608518</span>
+<span class="co">## education   .        .         .          0.7481296  0.7402970  0.74057564</span>
+<span class="co">## region      .        .         0.5200980  0.6772817  0.7321942  0.72343088</span>
+<span class="co">## marriage    .        .         .          .          .         -0.01863175</span>
+<span class="co">##                        6</span>
+<span class="co">## (intercept) -0.112594621</span>
+<span class="co">## age         -0.150054463</span>
+<span class="co">## sex         -0.052978982</span>
+<span class="co">## job          1.310728269</span>
+<span class="co">## education    0.749821752</span>
+<span class="co">## region       0.733104826</span>
+<span class="co">## marriage     0.004436532</span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get the deviance of the estimated model on all candidate support size</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/deviance.html">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1]  -282.3847  -792.8596  -936.6450 -1011.8841 -1013.1902 -1013.2601 -1013.6465</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1]  -282.3847  -792.8596  -936.6450 -1011.8841 -1013.1902 -1013.2601 -1013.6465</span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># print the fitted model</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## Call:
-## abess.formula(formula = count ~ ., data = complain, family = "poisson")
-## 
-##   support.size        dev        GIC
-## 1            0  -282.3847  -564.7694
-## 2            1  -792.8596 -1582.9829
-## 3            2  -936.6450 -1867.8174
-## 4            3 -1011.8841 -2015.5593
-## 5            4 -1013.1902 -2015.4350
-## 6            5 -1013.2601 -2012.8386
-## 7            6 -1013.6465 -2010.8750</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Call:</span>
+<span class="co">## abess.formula(formula = count ~ ., data = complain, family = "poisson")</span>
+<span class="co">## </span>
+<span class="co">##   support.size        dev        GIC</span>
+<span class="co">## 1            0  -282.3847  -564.7694</span>
+<span class="co">## 2            1  -792.8596 -1582.9829</span>
+<span class="co">## 3            2  -936.6450 -1867.8174</span>
+<span class="co">## 4            3 -1011.8841 -2015.5593</span>
+<span class="co">## 5            4 -1013.1902 -2015.4350</span>
+<span class="co">## 6            5 -1013.2601 -2012.8386</span>
+<span class="co">## 7            6 -1013.6465 -2010.8750</span></code></pre>
 <p>Prediction is allowed for all the estimated model. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##              3         4
-## [1,]  1.838255  1.954873
-## [2,]  2.650749  2.692234
-## [3,]  3.080214  3.088154
-## [4,] -1.098251 -1.302053
-## [5,] -2.200394 -2.211221
-## [6,]  4.107201  4.103329</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##              3         4</span>
+<span class="co">## [1,]  1.838255  1.954873</span>
+<span class="co">## [2,]  2.650749  2.692234</span>
+<span class="co">## [3,]  3.080214  3.088154</span>
+<span class="co">## [4,] -1.098251 -1.302053</span>
+<span class="co">## [5,] -2.200394 -2.211221</span>
+<span class="co">## [6,]  4.107201  4.103329</span></code></pre>
 <p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including <code>coef</code> for the coefficient value, <code>l2norm</code> for the L2-norm of the coefficients, <code>dev</code> for the deviance and <code>tune</code> for the tuning value. Default if <code>coef</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>The graph shows that, beginning from the most dense model, the 3th variable (job) is included in the active set until the support size reaches 0.</p>
 <p>We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></code></pre></div>
 <p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>The tuning value reaches the lowest point at 3. And We might choose the estimated model with support size equals 6 as our final model. In fact, the tuning values of different model sizes are provided in <code>tune.value</code> of the <code>abess</code> object. You can get the best model size through the following call.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">abess_fit</span><span class="op">$</span><span class="va">support.size</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">$</span><span class="va">tune.value</span><span class="op">)</span><span class="op">]</span></code></pre></div>
-<pre><code>## [1] 3</code></pre>
-<p>To extract any model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals to 3.</p>
+<code class="sourceCode R"><span class="va">abess_fit</span><span class="op">$</span><span class="va">support.size</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">$</span><span class="va">tune.value</span><span class="op">)</span><span class="op">]</span></code></pre></div>
+<pre><code><span class="co">## [1] 3</span></code></pre>
+<p>To extract any model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.abess.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals to 3.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">best.model</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
-<pre><code>## List of 7
-##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:3] 2 3 4
-##   .. ..@ p       : int [1:2] 0 3
-##   .. ..@ Dim     : int [1:2] 6 1
-##   .. ..@ Dimnames:List of 2
-##   .. .. ..$ : chr [1:6] "age" "sex" "job" "education" ...
-##   .. .. ..$ : chr "3"
-##   .. ..@ x       : num [1:3] 1.335 0.748 0.677
-##   .. ..@ factors : list()
-##  $ intercept   : num -0.105
-##  $ support.size: num 3
-##  $ support.vars: chr [1:3] "job" "education" "region"
-##  $ support.beta: num [1:3] 1.335 0.748 0.677
-##  $ dev         : num -1012
-##  $ tune.value  : num -2016</code></pre>
+<code class="sourceCode R"><span class="va">best.model</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## List of 7</span>
+<span class="co">##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="co">##   .. ..@ i       : int [1:3] 2 3 4</span>
+<span class="co">##   .. ..@ p       : int [1:2] 0 3</span>
+<span class="co">##   .. ..@ Dim     : int [1:2] 6 1</span>
+<span class="co">##   .. ..@ Dimnames:List of 2</span>
+<span class="co">##   .. .. ..$ : chr [1:6] "age" "sex" "job" "education" ...</span>
+<span class="co">##   .. .. ..$ : chr "3"</span>
+<span class="co">##   .. ..@ x       : num [1:3] 1.335 0.748 0.677</span>
+<span class="co">##   .. ..@ factors : list()</span>
+<span class="co">##  $ intercept   : num -0.105</span>
+<span class="co">##  $ support.size: num 3</span>
+<span class="co">##  $ support.vars: chr [1:3] "job" "education" "region"</span>
+<span class="co">##  $ support.beta: num [1:3] 1.335 0.748 0.677</span>
+<span class="co">##  $ dev         : num -1012</span>
+<span class="co">##  $ tune.value  : num -2016</span></code></pre>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best.model</span><span class="op">$</span><span class="va">beta</span></code></pre></div>
-<pre><code>## 6 x 1 sparse Matrix of class "dgCMatrix"
-##                   3
-## age       .        
-## sex       .        
-## job       1.3352379
-## education 0.7481296
-## region    0.6772817
-## marriage  .</code></pre>
+<pre><code><span class="co">## 6 x 1 sparse Matrix of class "dgCMatrix"</span>
+<span class="co">##                   3</span>
+<span class="co">## age       .        </span>
+<span class="co">## sex       .        </span>
+<span class="co">## job       1.3352379</span>
+<span class="co">## education 0.7481296</span>
+<span class="co">## region    0.6772817</span>
+<span class="co">## marriage  .</span></code></pre>
 <p>The return is a list containing the basic information of the estimated model. The best model has estimated coefficients every close to the true coefficients and it successfully recovers the correct support.</p>
 </div>
-<div id="gamma-regression" class="section level2">
-<h2 class="hasAnchor">
-<a href="#gamma-regression" class="anchor"></a>Gamma Regression</h2>
+<div class="section level2">
+<h2 id="gamma-regression">Gamma Regression<a class="anchor" aria-label="anchor" href="#gamma-regression"></a>
+</h2>
 <p>Gamma regression can be used when you have positive continuous response variables such as payments for insurance claims, or the lifetime of a redundant system. It is well known that the density of Gamma distribution can be represented as a function of a mean parameter (<span class="math inline">\(\mu\)</span>) and a shape parameter (<span class="math inline">\(\alpha\)</span>), specifically, <span class="math display">\[
 f(y \mid \mu, \alpha)=\frac{1}{y \Gamma(\alpha)}\left(\frac{\alpha y}{\mu}\right)^{\alpha} e^{-\alpha y / \mu} {I}_{(0, \infty)}(y),
 \]</span> where <span class="math inline">\(I(\cdot)\)</span> denotes the indicator function. In the Gamma regression model, response variables are assumed to follow Gamma distributions. Specifically, <span class="math display">\[
@@ -286,110 +282,110 @@ y_i \sim Gamma(\mu_i, \alpha),
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># generate data</span>
 <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, p <span class="op">=</span> <span class="fl">6</span>, support.size <span class="op">=</span> <span class="fl">3</span>, family <span class="op">=</span> <span class="st">"gamma"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"sex"</span>, <span class="st">"job"</span>, 
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"sex"</span>, <span class="st">"job"</span>, 
                      <span class="st">"education"</span>, <span class="st">"region"</span>, <span class="st">"marriage"</span><span class="op">)</span>
 <span class="va">dat</span><span class="op">$</span><span class="va">beta</span></code></pre></div>
-<pre><code>## [1]  0.00000  0.00000 80.37275 66.66677 64.02925  0.00000</code></pre>
+<pre><code><span class="co">## [1]  0.00000  0.00000 80.37275 66.66677 64.02925  0.00000</span></code></pre>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></code></pre></div>
-<pre><code>##             age         sex        job  education     region    marriage
-## [1,] -0.6264538 -0.62036668  0.4094018  0.8936737  1.0744410  0.07730312
-## [2,]  0.1836433  0.04211587  1.6888733 -1.0472981  1.8956548 -0.29686864
-## [3,] -0.8356286 -0.91092165  1.5865884  1.9713374 -0.6029973 -1.18324224
-## [4,]  1.5952808  0.15802877 -0.3309078 -0.3836321 -0.3908678  0.01129269
-## [5,]  0.3295078 -0.65458464 -2.2852355  1.6541453 -0.4162220  0.99160104
-## [6,] -0.8204684  1.76728727  2.4976616  1.5122127 -0.3756574  1.59396745</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##             age         sex        job  education     region    marriage</span>
+<span class="co">## [1,] -0.6264538 -0.62036668  0.4094018  0.8936737  1.0744410  0.07730312</span>
+<span class="co">## [2,]  0.1836433  0.04211587  1.6888733 -1.0472981  1.8956548 -0.29686864</span>
+<span class="co">## [3,] -0.8356286 -0.91092165  1.5865884  1.9713374 -0.6029973 -1.18324224</span>
+<span class="co">## [4,]  1.5952808  0.15802877 -0.3309078 -0.3836321 -0.3908678  0.01129269</span>
+<span class="co">## [5,]  0.3295078 -0.65458464 -2.2852355  1.6541453 -0.4162220  0.99160104</span>
+<span class="co">## [6,] -0.8204684  1.76728727  2.4976616  1.5122127 -0.3756574  1.59396745</span></code></pre>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">complain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="st">'count'</span><span class="op">=</span><span class="va">dat</span><span class="op">$</span><span class="va">y</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">complain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">'count'</span><span class="op">=</span><span class="va">dat</span><span class="op">$</span><span class="va">y</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
 
-<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">count</span><span class="op">~</span><span class="va">.</span>, <span class="va">complain</span>, family <span class="op">=</span> <span class="st">"gamma"</span>, tune.type <span class="op">=</span><span class="st">"cv"</span><span class="op">)</span>
+<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">count</span><span class="op">~</span><span class="va">.</span>, <span class="va">complain</span>, family <span class="op">=</span> <span class="st">"gamma"</span>, tune.type <span class="op">=</span><span class="st">"cv"</span><span class="op">)</span>
 
 <span class="co"># draw the estimated coefficients on all candidate support size</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## 7 x 7 sparse Matrix of class "dgCMatrix"
-##                    0        1         2         3         4         5
-## (intercept) 342.3786 433.5399 449.07955 453.59162 454.62486 456.86280
-## age           .        .        .         .         .       -12.73044
-## sex           .        .        .         .       -17.05833 -15.30942
-## job           .        .      104.53483  83.99608  85.32251  87.43632
-## education     .        .        .        72.05160  71.94211  71.31821
-## region        .      132.5486  73.37383  55.16201  58.87711  61.05067
-## marriage      .        .        .         .         .         .      
-##                       6
-## (intercept) 456.9214598
-## age         -12.6859059
-## sex         -15.1305799
-## job          87.4267021
-## education    71.2965875
-## region       61.0173033
-## marriage      0.8783947</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## 7 x 7 sparse Matrix of class "dgCMatrix"</span>
+<span class="co">##                    0        1         2         3         4         5</span>
+<span class="co">## (intercept) 342.3786 433.5399 449.07955 453.59162 454.62486 456.86280</span>
+<span class="co">## age           .        .        .         .         .       -12.73044</span>
+<span class="co">## sex           .        .        .         .       -17.05833 -15.30942</span>
+<span class="co">## job           .        .      104.53483  83.99608  85.32251  87.43632</span>
+<span class="co">## education     .        .        .        72.05160  71.94211  71.31821</span>
+<span class="co">## region        .      132.5486  73.37383  55.16201  58.87711  61.05067</span>
+<span class="co">## marriage      .        .        .         .         .         .      </span>
+<span class="co">##                       6</span>
+<span class="co">## (intercept) 456.9214598</span>
+<span class="co">## age         -12.6859059</span>
+<span class="co">## sex         -15.1305799</span>
+<span class="co">## job          87.4267021</span>
+<span class="co">## education    71.2965875</span>
+<span class="co">## region       61.0173033</span>
+<span class="co">## marriage      0.8783947</span></code></pre>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get the deviance of the estimated model on all candidate support size</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/deviance.html">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] -4.835917 -4.979948 -5.041090 -5.058884 -5.059648 -5.060127 -5.060129</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] -4.835917 -4.979948 -5.041090 -5.058884 -5.059648 -5.060127 -5.060129</span></code></pre>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># print the fitted model</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## Call:
-## abess.formula(formula = count ~ ., data = complain, family = "gamma", 
-##     tune.type = "cv")
-## 
-##   support.size       dev        cv
-## 1            0 -4.835917 -4.782249
-## 2            1 -4.979948 -4.879505
-## 3            2 -5.041090 -5.009830
-## 4            3 -5.058884 -4.568354
-## 5            4 -5.059648 -4.568300
-## 6            5 -5.060127 -4.569411
-## 7            6 -5.060129 -4.569221</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## Call:</span>
+<span class="co">## abess.formula(formula = count ~ ., data = complain, family = "gamma", </span>
+<span class="co">##     tune.type = "cv")</span>
+<span class="co">## </span>
+<span class="co">##   support.size       dev        cv</span>
+<span class="co">## 1            0 -4.835917 -4.782249</span>
+<span class="co">## 2            1 -4.979948 -4.879505</span>
+<span class="co">## 3            2 -5.041090 -5.009830</span>
+<span class="co">## 4            3 -5.058884 -4.568354</span>
+<span class="co">## 5            4 -5.059648 -4.568300</span>
+<span class="co">## 6            5 -5.060127 -4.569411</span>
+<span class="co">## 7            6 -5.060129 -4.569221</span></code></pre>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># predict results for given support sizes</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##             3        4
-## [1,] 611.6387 627.6912
-## [2,] 624.5590 634.2712
-## [3,] 695.6343 711.8548
-## [4,] 376.5943 373.0828
-## [5,] 357.8650 365.3057
-## [6,] 751.6207 724.2588</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##             3        4</span>
+<span class="co">## [1,] 611.6387 627.6912</span>
+<span class="co">## [2,] 624.5590 634.2712</span>
+<span class="co">## [3,] 695.6343 711.8548</span>
+<span class="co">## [4,] 376.5943 373.0828</span>
+<span class="co">## [5,] 357.8650 365.3057</span>
+<span class="co">## [6,] 751.6207 724.2588</span></code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># tuning plot</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></code></pre></div>
 <p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-9-2.png" width="700"></p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># extract fitted model</span>
-<span class="va">best.model</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
-<pre><code>## List of 7
-##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:3] 2 3 4
-##   .. ..@ p       : int [1:2] 0 3
-##   .. ..@ Dim     : int [1:2] 6 1
-##   .. ..@ Dimnames:List of 2
-##   .. .. ..$ : chr [1:6] "age" "sex" "job" "education" ...
-##   .. .. ..$ : chr "3"
-##   .. ..@ x       : num [1:3] 84 72.1 55.2
-##   .. ..@ factors : list()
-##  $ intercept   : num 454
-##  $ support.size: num 3
-##  $ support.vars: chr [1:3] "job" "education" "region"
-##  $ support.beta: num [1:3] 84 72.1 55.2
-##  $ dev         : num -5.06
-##  $ tune.value  : num -4.57</code></pre>
+<span class="va">best.model</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## List of 7</span>
+<span class="co">##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="co">##   .. ..@ i       : int [1:3] 2 3 4</span>
+<span class="co">##   .. ..@ p       : int [1:2] 0 3</span>
+<span class="co">##   .. ..@ Dim     : int [1:2] 6 1</span>
+<span class="co">##   .. ..@ Dimnames:List of 2</span>
+<span class="co">##   .. .. ..$ : chr [1:6] "age" "sex" "job" "education" ...</span>
+<span class="co">##   .. .. ..$ : chr "3"</span>
+<span class="co">##   .. ..@ x       : num [1:3] 84 72.1 55.2</span>
+<span class="co">##   .. ..@ factors : list()</span>
+<span class="co">##  $ intercept   : num 454</span>
+<span class="co">##  $ support.size: num 3</span>
+<span class="co">##  $ support.vars: chr [1:3] "job" "education" "region"</span>
+<span class="co">##  $ support.beta: num [1:3] 84 72.1 55.2</span>
+<span class="co">##  $ dev         : num -5.06</span>
+<span class="co">##  $ tune.value  : num -4.57</span></code></pre>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># estimated coefficients</span>
 <span class="va">best.model</span><span class="op">$</span><span class="va">beta</span></code></pre></div>
-<pre><code>## 6 x 1 sparse Matrix of class "dgCMatrix"
-##                  3
-## age        .      
-## sex        .      
-## job       83.99608
-## education 72.05160
-## region    55.16201
-## marriage   .</code></pre>
+<pre><code><span class="co">## 6 x 1 sparse Matrix of class "dgCMatrix"</span>
+<span class="co">##                  3</span>
+<span class="co">## age        .      </span>
+<span class="co">## sex        .      </span>
+<span class="co">## job       83.99608</span>
+<span class="co">## education 72.05160</span>
+<span class="co">## region    55.16201</span>
+<span class="co">## marriage   .</span></code></pre>
 </div>
   </div>
 
@@ -404,11 +400,13 @@ y_i \sim Gamma(\mu_i, \alpha),
 
 
       <footer><div class="copyright">
-  <p>Developed by Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p></p>
+<p>Developed by Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Zezhi Wang, Borui Tang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>

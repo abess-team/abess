@@ -1,78 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://abess-team.github.io/abess//index.html</loc>
+    <loc>https://abess-team.github.io/abess/404.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/abess-package.html</loc>
+    <loc>https://abess-team.github.io/abess/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/abess.html</loc>
+    <loc>https://abess-team.github.io/abess/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/abesspca.html</loc>
+    <loc>https://abess-team.github.io/abess/articles/v01-abess-guide.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/coef.abess.html</loc>
+    <loc>https://abess-team.github.io/abess/articles/v03-classification.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/coef.abesspca.html</loc>
+    <loc>https://abess-team.github.io/abess/articles/v04-PoissonGammaReg.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/deviance.abess.html</loc>
+    <loc>https://abess-team.github.io/abess/articles/v05-coxreg.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/extract.abess.html</loc>
+    <loc>https://abess-team.github.io/abess/articles/v06-MultiTaskLearning.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/generate.data.html</loc>
+    <loc>https://abess-team.github.io/abess/articles/v07-advancedFeatures.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/plot.abess.html</loc>
+    <loc>https://abess-team.github.io/abess/articles/v08-sPCA.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/plot.abesspca.html</loc>
+    <loc>https://abess-team.github.io/abess/articles/v09-fasterSetting.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/predict.abess.html</loc>
+    <loc>https://abess-team.github.io/abess/articles/v10-algorithm.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/print.abess.html</loc>
+    <loc>https://abess-team.github.io/abess/articles/v11-power-of-abess.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/print.abesspca.html</loc>
+    <loc>https://abess-team.github.io/abess/authors.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//reference/trim32.html</loc>
+    <loc>https://abess-team.github.io/abess/index.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//articles/v01-abess-guide.html</loc>
+    <loc>https://abess-team.github.io/abess/news/index.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//articles/v03-classification.html</loc>
+    <loc>https://abess-team.github.io/abess/reference/abess-package.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//articles/v04-PoissonGammaReg.html</loc>
+    <loc>https://abess-team.github.io/abess/reference/abess.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//articles/v05-coxreg.html</loc>
+    <loc>https://abess-team.github.io/abess/reference/abesspca.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//articles/v06-MultiTaskLearning.html</loc>
+    <loc>https://abess-team.github.io/abess/reference/abessrpca.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//articles/v07-advancedFeatures.html</loc>
+    <loc>https://abess-team.github.io/abess/reference/coef.abess.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//articles/v08-sPCA.html</loc>
+    <loc>https://abess-team.github.io/abess/reference/coef.abesspca.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//articles/v09-fasterSetting.html</loc>
+    <loc>https://abess-team.github.io/abess/reference/coef.abessrpca.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//articles/v10-algorithm.html</loc>
+    <loc>https://abess-team.github.io/abess/reference/deviance.abess.html</loc>
   </url>
   <url>
-    <loc>https://abess-team.github.io/abess//articles/v11-power-of-abess.html</loc>
+    <loc>https://abess-team.github.io/abess/reference/extract.abess.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess/reference/generate.data.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess/reference/generate.matrix.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess/reference/generate.spc.matrix.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess/reference/plot.abess.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess/reference/plot.abesspca.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess/reference/plot.abessrpca.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess/reference/predict.abess.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess/reference/print.abess.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess/reference/print.abesspca.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess/reference/print.abessrpca.html</loc>
+  </url>
+  <url>
+    <loc>https://abess-team.github.io/abess/reference/trim32.html</loc>
   </url>
 </urlset>

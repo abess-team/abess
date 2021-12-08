@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -40,18 +42,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -100,7 +96,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/abess-team/abess/">
+  <a href="https://github.com/abess-team/abess/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -125,118 +121,118 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Multi-Response Linear Regression</h1>
-                        <h4 class="author">Jin Zhu, Liyuan Hu</h4>
+                        <h4 data-toc-skip class="author">Jin Zhu, Liyuan Hu</h4>
             
-            <h4 class="date">2021/5/31</h4>
+            <h4 data-toc-skip class="date">2021/5/31</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v06-MultiTaskLearning.Rmd"><code>../vignettes/v06-MultiTaskLearning.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v06-MultiTaskLearning.Rmd" class="external-link"><code>../vignettes/v06-MultiTaskLearning.Rmd</code></a></small>
       <div class="hidden name"><code>v06-MultiTaskLearning.Rmd</code></div>
 
     </div>
 
     
     
-<div id="briey-introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#briey-introduction" class="anchor"></a>Briey Introduction</h2>
+<div class="section level2">
+<h2 id="briey-introduction">Briey Introduction<a class="anchor" aria-label="anchor" href="#briey-introduction"></a>
+</h2>
 <p>Multivariate multi-response linear regression (a.k.a., multi-task learning) aims at predicting multiple responses at the same time, and thus, it is a natural extension for classical linear regression where the response is univariate. Multivariate multi-response linear regression (MMLR) is very helpful for the analysis of correlated response such as chemical measurements for soil samples and microRNAs associated with Glioblastoma multiforme cancer. Let <span class="math inline">\(y\)</span> is <span class="math inline">\(m\)</span>-dimensional response variable, <span class="math inline">\(x\)</span> is <span class="math inline">\(p\)</span>-dimensional predictors, <span class="math inline">\(B \in R^{m \times p}\)</span> is coefficient matrix, the MMLR model for the multivariate response is given by <span class="math display">\[y = B x + \epsilon,\]</span> where <span class="math inline">\(\epsilon\)</span> is <span class="math inline">\(m\)</span>-dimensional random noise variable with zero mean.</p>
 <p>Due to the Occam’s razor principal or the high-dimensionality of predictors, it is meaningful to use a small amount of predictors to conduct multi-task learning. For example, understanding the relationship between gene expression and symptoms of a disease have significant importance in identifying potential makers. Many diseases usually involve multiple manifestations and those manifestations are usually related. In some cases, it makes sense to predict those manifestations using a small but the same set of predictors. The best subset selection problem under the MMLR model is formulated as <span class="math display">\[\frac{1}{2n} \| Y - XB \|_{2}^2, \text{ subject to: } \| B \|_{0, 2} \leq s,\]</span> where, <span class="math inline">\(Y \in R^{n \times m}\)</span> and <span class="math inline">\(X \in R^{n \times p}\)</span> record <span class="math inline">\(n\)</span> observations’ response and predictors, respectively. Here <span class="math inline">\(\| B \|_{0, 2} = \sum_{i = 1}^{p} I(B_{i\cdot} = {\bf 0})\)</span>, where <span class="math inline">\(B_{i\cdot}\)</span> is the <span class="math inline">\(i\)</span>-th row of coefficient matrix <span class="math inline">\(B\)</span> and <span class="math inline">\({\bf 0} \in R^{m}\)</span> is an all zero vector.</p>
 </div>
-<div id="quick-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#quick-example" class="anchor"></a>Quick example</h2>
+<div class="section level2">
+<h2 id="quick-example">Quick example<a class="anchor" aria-label="anchor" href="#quick-example"></a>
+</h2>
 <p>We use an artificial dataset to demonstrate how to solve best subset selection problem for MMLR with <strong>abess</strong> package. The <code><a href="../reference/generate.data.html">generate.data()</a></code> function provides a simple way to generate suitable for this task. The synthetic data have 100 observations with 3-dimensional responses and 20-dimensional predictors. Note that there are three predictors have an impact on the responses. <!-- The assumption behind is the response vector following a multivariate gaussian distribution whose mean vector is linear to `x`. --></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 <span class="va">support.size</span> <span class="op">&lt;-</span> <span class="fl">3</span>
 <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"mgaussian"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></code></pre></div>
-<pre><code>##                y1          y2         y3
-## [1,]  104.3057832  113.312533   74.75589
-## [2,]   58.6265922   -7.224093   40.39639
-## [3,] -294.1884567 -288.633432 -227.19660
-## [4,]   -0.5421699   85.740440  -12.95485
-## [5,]  160.4051274   92.082972  138.51176
-## [6,]  132.9713249  132.500001  119.50803</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##                y1          y2         y3</span>
+<span class="co">## [1,]  104.3057832  113.312533   74.75589</span>
+<span class="co">## [2,]   58.6265922   -7.224093   40.39639</span>
+<span class="co">## [3,] -294.1884567 -288.633432 -227.19660</span>
+<span class="co">## [4,]   -0.5421699   85.740440  -12.95485</span>
+<span class="co">## [5,]  160.4051274   92.082972  138.51176</span>
+<span class="co">## [6,]  132.9713249  132.500001  119.50803</span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dataset</span><span class="op">[[</span><span class="st">"beta"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
-<pre><code>##           [,1]     [,2]     [,3]
-##  [1,]  0.00000  0.00000  0.00000
-##  [2,]  0.00000  0.00000  0.00000
-##  [3,]  0.00000  0.00000  0.00000
-##  [4,]  0.00000  0.00000  0.00000
-##  [5,]  0.00000  0.00000  0.00000
-##  [6,] 84.67713 92.93448 75.47809
-##  [7,]  0.00000  0.00000  0.00000
-##  [8,]  0.00000  0.00000  0.00000
-##  [9,]  0.00000  0.00000  0.00000
-## [10,]  0.00000  0.00000  0.00000
-## [11,]  0.00000  0.00000  0.00000
-## [12,]  0.00000  0.00000  0.00000
-## [13,]  0.00000  0.00000  0.00000
-## [14,] 85.82187 34.34362 64.39117
-## [15,]  0.00000  0.00000  0.00000
-## [16,]  0.00000  0.00000  0.00000
-## [17,]  0.00000  0.00000  0.00000
-## [18,] 47.40922 59.10738 31.21572
-## [19,]  0.00000  0.00000  0.00000
-## [20,]  0.00000  0.00000  0.00000</code></pre>
-<p>To carry out sparse mutli-task learning, you can call the <code><a href="../reference/abess.default.html">abess()</a></code> function with <code>family</code> specified to <code>mguassian</code>. Here is an example.</p>
+<pre><code><span class="co">##           [,1]     [,2]     [,3]</span>
+<span class="co">##  [1,]  0.00000  0.00000  0.00000</span>
+<span class="co">##  [2,]  0.00000  0.00000  0.00000</span>
+<span class="co">##  [3,]  0.00000  0.00000  0.00000</span>
+<span class="co">##  [4,]  0.00000  0.00000  0.00000</span>
+<span class="co">##  [5,]  0.00000  0.00000  0.00000</span>
+<span class="co">##  [6,] 84.67713 92.93448 75.47809</span>
+<span class="co">##  [7,]  0.00000  0.00000  0.00000</span>
+<span class="co">##  [8,]  0.00000  0.00000  0.00000</span>
+<span class="co">##  [9,]  0.00000  0.00000  0.00000</span>
+<span class="co">## [10,]  0.00000  0.00000  0.00000</span>
+<span class="co">## [11,]  0.00000  0.00000  0.00000</span>
+<span class="co">## [12,]  0.00000  0.00000  0.00000</span>
+<span class="co">## [13,]  0.00000  0.00000  0.00000</span>
+<span class="co">## [14,] 85.82187 34.34362 64.39117</span>
+<span class="co">## [15,]  0.00000  0.00000  0.00000</span>
+<span class="co">## [16,]  0.00000  0.00000  0.00000</span>
+<span class="co">## [17,]  0.00000  0.00000  0.00000</span>
+<span class="co">## [18,] 47.40922 59.10738 31.21572</span>
+<span class="co">## [19,]  0.00000  0.00000  0.00000</span>
+<span class="co">## [20,]  0.00000  0.00000  0.00000</span></code></pre>
+<p>To carry out sparse multi-task learning, you can call the <code><a href="../reference/abess.html">abess()</a></code> function with <code>family</code> specified to <code>mguassian</code>. Here is an example.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,
+<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,
                    family <span class="op">=</span> <span class="st">"mgaussian"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## $beta
-## 20 x 3 sparse Matrix of class "dgCMatrix"
-##           y1       y2       y3
-## x1   .        .        .      
-## x2   .        .        .      
-## x3   .        .        .      
-## x4   .        .        .      
-## x5   .        .        .      
-## x6  84.62951 92.75669 75.32181
-## x7   .        .        .      
-## x8   .        .        .      
-## x9   .        .        .      
-## x10  .        .        .      
-## x11  .        .        .      
-## x12  .        .        .      
-## x13  .        .        .      
-## x14 85.34962 34.83632 64.82193
-## x15  .        .        .      
-## x16  .        .        .      
-## x17  .        .        .      
-## x18 47.37992 59.28869 31.23534
-## x19  .        .        .      
-## x20  .        .        .      
-## 
-## $intercept
-##          y1          y2          y3 
-## -0.75263061  0.12788731 -0.07370499 
-## 
-## $support.size
-## [1] 3
-## 
-## $support.vars
-## [1] "x6"  "x14" "x18"
-## 
-## $support.beta
-##           y1       y2       y3
-## x6  84.62951 92.75669 75.32181
-## x14 85.34962 34.83632 64.82193
-## x18 47.37992 59.28869 31.23534
-## 
-## $dev
-## [1] 112.0141
-## 
-## $tune.value
-## [1] 117.1686</code></pre>
+<span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## $beta</span>
+<span class="co">## 20 x 3 sparse Matrix of class "dgCMatrix"</span>
+<span class="co">##           y1       y2       y3</span>
+<span class="co">## x1   .        .        .      </span>
+<span class="co">## x2   .        .        .      </span>
+<span class="co">## x3   .        .        .      </span>
+<span class="co">## x4   .        .        .      </span>
+<span class="co">## x5   .        .        .      </span>
+<span class="co">## x6  84.62951 92.75669 75.32181</span>
+<span class="co">## x7   .        .        .      </span>
+<span class="co">## x8   .        .        .      </span>
+<span class="co">## x9   .        .        .      </span>
+<span class="co">## x10  .        .        .      </span>
+<span class="co">## x11  .        .        .      </span>
+<span class="co">## x12  .        .        .      </span>
+<span class="co">## x13  .        .        .      </span>
+<span class="co">## x14 85.34962 34.83632 64.82193</span>
+<span class="co">## x15  .        .        .      </span>
+<span class="co">## x16  .        .        .      </span>
+<span class="co">## x17  .        .        .      </span>
+<span class="co">## x18 47.37992 59.28869 31.23534</span>
+<span class="co">## x19  .        .        .      </span>
+<span class="co">## x20  .        .        .      </span>
+<span class="co">## </span>
+<span class="co">## $intercept</span>
+<span class="co">##          y1          y2          y3 </span>
+<span class="co">## -0.75263061  0.12788731 -0.07370499 </span>
+<span class="co">## </span>
+<span class="co">## $support.size</span>
+<span class="co">## [1] 3</span>
+<span class="co">## </span>
+<span class="co">## $support.vars</span>
+<span class="co">## [1] "x6"  "x14" "x18"</span>
+<span class="co">## </span>
+<span class="co">## $support.beta</span>
+<span class="co">##           y1       y2       y3</span>
+<span class="co">## x6  84.62951 92.75669 75.32181</span>
+<span class="co">## x14 85.34962 34.83632 64.82193</span>
+<span class="co">## x18 47.37992 59.28869 31.23534</span>
+<span class="co">## </span>
+<span class="co">## $dev</span>
+<span class="co">## [1] 112.0141</span>
+<span class="co">## </span>
+<span class="co">## $tune.value</span>
+<span class="co">## [1] 117.1686</span></code></pre>
 <p>The output of <code>extract(abess_fit)</code> shows that the support set is correctly identify and the parameter estimation approach to the truth.</p>
-<p>Since there are three responses, we will obtain three solution path plots when calling the <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function. The three plots corresponds to <span class="math inline">\(y_1, y_2, y_3\)</span>, respectively.</p>
+<p>Since there are three responses, we will obtain three solution path plots when calling the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> function. The three plots corresponds to <span class="math inline">\(y_1, y_2, y_3\)</span>, respectively.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
 <p><img src="v06-MultiTaskLearning_files/figure-html/unnamed-chunk-3-1.png" width="700"><img src="v06-MultiTaskLearning_files/figure-html/unnamed-chunk-3-2.png" width="700"><img src="v06-MultiTaskLearning_files/figure-html/unnamed-chunk-3-3.png" width="700"></p>
 </div>
   </div>
@@ -252,11 +248,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p></p>
+<p>Developed by Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Zezhi Wang, Borui Tang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>

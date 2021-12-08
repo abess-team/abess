@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -40,18 +42,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -100,7 +96,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/abess-team/abess/">
+  <a href="https://github.com/abess-team/abess/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -125,81 +121,81 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Classification: Logistic Regression and Multinomial Extension</h1>
-                        <h4 class="author">Jin Zhu, Liyuan Hu</h4>
+                        <h4 data-toc-skip class="author">Jin Zhu, Liyuan Hu</h4>
             
-            <h4 class="date">6/12/2021</h4>
+            <h4 data-toc-skip class="date">6/12/2021</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v03-classification.Rmd"><code>../vignettes/v03-classification.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v03-classification.Rmd" class="external-link"><code>../vignettes/v03-classification.Rmd</code></a></small>
       <div class="hidden name"><code>v03-classification.Rmd</code></div>
 
     </div>
 
     
     
-<div id="titanic-dataset-and-classification" class="section level2">
-<h2 class="hasAnchor">
-<a href="#titanic-dataset-and-classification" class="anchor"></a>Titanic Dataset and Classification</h2>
-<p>Consider the Titanic dataset obtained from the Kaggle competition: <a href="https://www.kaggle.com/c/titanic/data" class="uri">https://www.kaggle.com/c/titanic/data</a>. The dataset consists of data about 889 passengers, and the goal of the competition is to predict the survival (yes/no) based on features including the class of service, the sex, the age etc.</p>
+<div class="section level2">
+<h2 id="titanic-dataset-and-classification">Titanic Dataset and Classification<a class="anchor" aria-label="anchor" href="#titanic-dataset-and-classification"></a>
+</h2>
+<p>Consider the Titanic dataset obtained from the Kaggle competition: <a href="https://www.kaggle.com/c/titanic/data" class="external-link uri">https://www.kaggle.com/c/titanic/data</a>. The dataset consists of data about 889 passengers, and the goal of the competition is to predict the survival (yes/no) based on features including the class of service, the sex, the age etc.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">'train.csv'</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, na.strings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">""</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 891  12</code></pre>
+<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">'train.csv'</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, na.strings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">""</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 891  12</span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></code></pre></div>
-<pre><code>##   PassengerId Survived Pclass
-## 1           1        0      3
-## 2           2        1      1
-## 3           3        1      3
-## 4           4        1      1
-## 5           5        0      3
-## 6           6        0      3
-##                                                  Name    Sex Age SibSp Parch
-## 1                             Braund, Mr. Owen Harris   male  22     1     0
-## 2 Cumings, Mrs. John Bradley (Florence Briggs Thayer) female  38     1     0
-## 3                              Heikkinen, Miss. Laina female  26     0     0
-## 4        Futrelle, Mrs. Jacques Heath (Lily May Peel) female  35     1     0
-## 5                            Allen, Mr. William Henry   male  35     0     0
-## 6                                    Moran, Mr. James   male  NA     0     0
-##             Ticket    Fare Cabin Embarked
-## 1        A/5 21171  7.2500  &lt;NA&gt;        S
-## 2         PC 17599 71.2833   C85        C
-## 3 STON/O2. 3101282  7.9250  &lt;NA&gt;        S
-## 4           113803 53.1000  C123        S
-## 5           373450  8.0500  &lt;NA&gt;        S
-## 6           330877  8.4583  &lt;NA&gt;        Q</code></pre>
-<p>Logistic regression is one of powerful tool to tackle this problem. In statistics, the logistic regression is used to model the probability of a certain class or event existing such as alive/dead, pass/fail, win/lose, or healthy/sick. <!-- Therefore, logistic regression is capable of predicting binary results. --> Logistic regression function is an <span class="math inline">\(s\)</span>-shaped curve modeling the posterior probability <span class="math inline">\(p\)</span> via a linear combination of the features. The curve is dedined as <span class="math inline">\(p = \frac{1}{1+\exp(-\eta)}\)</span> where <span class="math inline">\(\eta = \beta_0+x\beta\)</span> and <span class="math inline">\(x\)</span> are predictors, and <span class="math inline">\(\beta_0, \beta\)</span> are coefficients to be learned from data. The logistic regression model has this form: <span class="math display">\[
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##   PassengerId Survived Pclass</span>
+<span class="co">## 1           1        0      3</span>
+<span class="co">## 2           2        1      1</span>
+<span class="co">## 3           3        1      3</span>
+<span class="co">## 4           4        1      1</span>
+<span class="co">## 5           5        0      3</span>
+<span class="co">## 6           6        0      3</span>
+<span class="co">##                                                  Name    Sex Age SibSp Parch</span>
+<span class="co">## 1                             Braund, Mr. Owen Harris   male  22     1     0</span>
+<span class="co">## 2 Cumings, Mrs. John Bradley (Florence Briggs Thayer) female  38     1     0</span>
+<span class="co">## 3                              Heikkinen, Miss. Laina female  26     0     0</span>
+<span class="co">## 4        Futrelle, Mrs. Jacques Heath (Lily May Peel) female  35     1     0</span>
+<span class="co">## 5                            Allen, Mr. William Henry   male  35     0     0</span>
+<span class="co">## 6                                    Moran, Mr. James   male  NA     0     0</span>
+<span class="co">##             Ticket    Fare Cabin Embarked</span>
+<span class="co">## 1        A/5 21171  7.2500  &lt;NA&gt;        S</span>
+<span class="co">## 2         PC 17599 71.2833   C85        C</span>
+<span class="co">## 3 STON/O2. 3101282  7.9250  &lt;NA&gt;        S</span>
+<span class="co">## 4           113803 53.1000  C123        S</span>
+<span class="co">## 5           373450  8.0500  &lt;NA&gt;        S</span>
+<span class="co">## 6           330877  8.4583  &lt;NA&gt;        Q</span></code></pre>
+<p>Logistic regression is one of powerful tool to tackle this problem. In statistics, the logistic regression is used to model the probability of a certain class or event existing such as alive/dead, pass/fail, win/lose, or healthy/sick. <!-- Therefore, logistic regression is capable of predicting binary results. --> Logistic regression function is an <span class="math inline">\(s\)</span>-shaped curve modeling the posterior probability <span class="math inline">\(p\)</span> via a linear combination of the features. The curve is defined as <span class="math inline">\(p = \frac{1}{1+\exp(-\eta)}\)</span> where <span class="math inline">\(\eta = \beta_0+x\beta\)</span> and <span class="math inline">\(x\)</span> are predictors, and <span class="math inline">\(\beta_0, \beta\)</span> are coefficients to be learned from data. The logistic regression model has this form: <span class="math display">\[
 \log(p/(1-p)) = \beta_0 + x\beta.
-\]</span> The quantity <span class="math inline">\(\log(p/(1-p))\)</span> is called the logarithm of the odd, also called log-odd or logit. The best subset selection for logistic regression aim to balance model accuracy and model complexity, where the former is achieves by maximizing the log-likelihood function and the latter is characterized by a constriant: <span class="math inline">\(\| \beta \|_0 \leq s\)</span> and <span class="math inline">\(s\)</span> can be determined in a data driven way.</p>
+\]</span> The quantity <span class="math inline">\(\log(p/(1-p))\)</span> is called the logarithm of the odd, also called log-odd or logit. The best subset selection for logistic regression aim to balance model accuracy and model complexity, where the former is achieves by maximizing the log-likelihood function and the latter is characterized by a constraint: <span class="math inline">\(\| \beta \|_0 \leq s\)</span> and <span class="math inline">\(s\)</span> can be determined in a data driven way.</p>
 </div>
-<div id="best-subset-selection-for-logistic-regression" class="section level2">
-<h2 class="hasAnchor">
-<a href="#best-subset-selection-for-logistic-regression" class="anchor"></a>Best Subset Selection for Logistic Regression</h2>
-<p>The <code><a href="../reference/abess.default.html">abess()</a></code> function in the <code>abess</code> package allows user to perform best subset selection in a highly efficient way. User can call the <code><a href="../reference/abess.default.html">abess()</a></code> function using formula just like what users do with <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code>. Or users can specify the design matrix <code>x</code> and the response <code>y</code>. As an example, the Titanic dataset is used to demonstrated the usage of <code>abess</code> package.</p>
-<div id="data-preprocessing" class="section level3">
-<h3 class="hasAnchor">
-<a href="#data-preprocessing" class="anchor"></a>Data preprocessing</h3>
-<p>A glance at the dataset finds there is any missing data. The <code><a href="https://rdrr.io/r/stats/na.fail.html">na.omit()</a></code> function allows us to delete the rows that contain any missing data. After that, we get a total of 714 samples left.</p>
+<div class="section level2">
+<h2 id="best-subset-selection-for-logistic-regression">Best Subset Selection for Logistic Regression<a class="anchor" aria-label="anchor" href="#best-subset-selection-for-logistic-regression"></a>
+</h2>
+<p>The <code><a href="../reference/abess.html">abess()</a></code> function in the <code>abess</code> package allows user to perform best subset selection in a highly efficient way. User can call the <code><a href="../reference/abess.html">abess()</a></code> function using formula just like what users do with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>. Or users can specify the design matrix <code>x</code> and the response <code>y</code>. As an example, the Titanic dataset is used to demonstrated the usage of <code>abess</code> package.</p>
+<div class="section level3">
+<h3 id="data-preprocessing">Data preprocessing<a class="anchor" aria-label="anchor" href="#data-preprocessing"></a>
+</h3>
+<p>A glance at the dataset finds there is any missing data. The <code><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit()</a></code> function allows us to delete the rows that contain any missing data. After that, we get a total of 714 samples left.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="va">dat</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="fl">10</span>, <span class="fl">12</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 712   8</code></pre>
-<p>Then we change the factors into dummy variables with the <code><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix()</a></code> function. Note that the <code>abess</code> function will automatically include the intercept, and thus, we exclude the first column of <code>dat</code> object.</p>
+<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">dat</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">7</span>, <span class="fl">8</span>, <span class="fl">10</span>, <span class="fl">12</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 712   8</span></code></pre>
+<p>Then we change the factors into dummy variables with the <code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix()</a></code> function. Note that the <code>abess</code> function will automatically include the intercept, and thus, we exclude the first column of <code>dat</code> object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">.</span>, <span class="va">dat</span><span class="op">)</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">.</span>, <span class="va">dat</span><span class="op">)</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>
+<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></code></pre></div>
 <p>We split the dataset into a training set and a test set. The model is going to be built on the training set and later We will test the model performance on the test set.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">train_index</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="op">(</span><span class="fl">712</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">train_index</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="fl">712</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span>
 <span class="va">train</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">[</span><span class="va">train_index</span>, <span class="op">]</span>
 <span class="va">test</span> <span class="op">&lt;-</span> <span class="va">dat</span><span class="op">[</span><span class="op">-</span><span class="va">train_index</span>, <span class="op">]</span></code></pre></div>
 </div>
-<div id="analyze-titanic-dataset-with-abess-package" class="section level3">
-<h3 class="hasAnchor">
-<a href="#analyze-titanic-dataset-with-abess-package" class="anchor"></a>Analyze Titanic dataset with <code>abess</code> package</h3>
+<div class="section level3">
+<h3 id="analyze-titanic-dataset-with-abess-package">Analyze Titanic dataset with <code>abess</code> package<a class="anchor" aria-label="anchor" href="#analyze-titanic-dataset-with-abess-package"></a>
+</h3>
 <p>We use <code>abess</code> package to perform best subset selection for the preprocessed Titanic dataset by setting <code>family = "binomial"</code>. The cross validation technique is employed to tune the support size by setting <code>tune.type = "cv"</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
-<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">train</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">Survived</span>, 
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
+<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">train</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">train</span><span class="op">$</span><span class="va">Survived</span>, 
                    family <span class="op">=</span> <span class="st">"binomial"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span><span class="op">)</span></code></pre></div>
 <!-- ```{r} -->
 <!-- library(abess) -->
@@ -212,168 +208,168 @@
 <!-- abess_fit.gs <- abess(Survived~., data = train, family = "binomial", tune = "bic", tune.path = "gs") -->
 <!-- ``` -->
 <!-- Hold on, we aren't finished yet.  -->
-<p>After get the estimator, we can further do more exploring work. The output of <code><a href="../reference/abess.default.html">abess()</a></code> function contains the best model for all the candidate support size in the <code>support.size</code>. users can use some generic function to quickly draw some information of those estimators. Typical examples include:<br>
+<p>After get the estimator, we can further do more exploring work. The output of <code><a href="../reference/abess.html">abess()</a></code> function contains the best model for all the candidate support size in the <code>support.size</code>. users can use some generic function to quickly draw some information of those estimators. Typical examples include:<br>
 i. print the fitted model:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">abess_fit</span></code></pre></div>
-<pre><code>## Call:
-## abess.default(x = train[, -1], y = train$Survived, family = "binomial", 
-##     tune.type = "cv")
-## 
-##   support.size      dev       cv
-## 1            0 321.9560 64.59866
-## 2            1 246.5820 49.99585
-## 3            2 229.6078 46.65819
-## 4            3 229.5308 46.99849
-## 5            4 228.9702 45.95916
-## 6            5 220.1834 45.34507
-## 7            6 220.0022 46.33689
-## 8            7 219.9602 46.31131
-## 9            8 219.9189 46.44110</code></pre>
+<pre><code><span class="co">## Call:</span>
+<span class="co">## abess.default(x = train[, -1], y = train$Survived, family = "binomial", </span>
+<span class="co">##     tune.type = "cv")</span>
+<span class="co">## </span>
+<span class="co">##   support.size      dev       cv</span>
+<span class="co">## 1            0 321.9560 64.59866</span>
+<span class="co">## 2            1 246.5820 49.99585</span>
+<span class="co">## 3            2 229.6078 46.65819</span>
+<span class="co">## 4            3 229.5308 46.99849</span>
+<span class="co">## 5            4 228.9702 45.95916</span>
+<span class="co">## 6            5 220.1834 45.34507</span>
+<span class="co">## 7            6 220.0022 46.33689</span>
+<span class="co">## 8            7 219.9602 46.31131</span>
+<span class="co">## 9            8 219.9189 46.44110</span></code></pre>
 <ol start="2" style="list-style-type: lower-roman">
-<li>draw the estimated coefficients on all candidate support size by <code><a href="https://rdrr.io/r/stats/coef.html">coef()</a></code> function:</li>
+<li>draw the estimated coefficients on all candidate support size by <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> function:</li>
 </ol>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## 9 x 9 sparse Matrix of class "dgCMatrix"
-##                      0         1          2            3            4
-## (intercept) -0.3530971  1.158781  2.9213405  3.051182847  3.261927133
-## Pclass       .          .        -0.7952709 -0.833342571 -0.814632215
-## Sexmale      .         -2.545075 -2.5818945 -2.593870590 -2.590161190
-## Age          .          .         .          .            .          
-## SibSp        .          .         .          .            .          
-## Parch        .          .         .          .            .          
-## Fare         .          .         .         -0.001187224 -0.001680436
-## EmbarkedQ    .          .         .          .            .          
-## EmbarkedS    .          .         .          .           -0.305263069
-##                       5            6            7            8
-## (intercept)  4.85381910  5.112858475  5.106984599  5.083420471
-## Pclass      -1.00849769 -1.076531449 -1.080872192 -1.088719756
-## Sexmale     -2.59656529 -2.610623038 -2.600190284 -2.598294614
-## Age         -0.03672237 -0.037469688 -0.037121588 -0.037070497
-## SibSp       -0.35770272 -0.339011574 -0.350547547 -0.352463118
-## Parch        .           .            0.048198898  0.051065967
-## Fare         .          -0.001997998 -0.002237776 -0.002189827
-## EmbarkedQ    .           .            .            0.209319089
-## EmbarkedS   -0.21507393 -0.245372362 -0.255782097 -0.218658720</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## 9 x 9 sparse Matrix of class "dgCMatrix"</span>
+<span class="co">##                      0         1          2            3            4</span>
+<span class="co">## (intercept) -0.3530971  1.158781  2.9213405  3.051182847  3.261927133</span>
+<span class="co">## Pclass       .          .        -0.7952709 -0.833342571 -0.814632215</span>
+<span class="co">## Sexmale      .         -2.545075 -2.5818945 -2.593870590 -2.590161190</span>
+<span class="co">## Age          .          .         .          .            .          </span>
+<span class="co">## SibSp        .          .         .          .            .          </span>
+<span class="co">## Parch        .          .         .          .            .          </span>
+<span class="co">## Fare         .          .         .         -0.001187224 -0.001680436</span>
+<span class="co">## EmbarkedQ    .          .         .          .            .          </span>
+<span class="co">## EmbarkedS    .          .         .          .           -0.305263069</span>
+<span class="co">##                       5            6            7            8</span>
+<span class="co">## (intercept)  4.85381910  5.112858475  5.106984599  5.083420471</span>
+<span class="co">## Pclass      -1.00849769 -1.076531449 -1.080872192 -1.088719756</span>
+<span class="co">## Sexmale     -2.59656529 -2.610623038 -2.600190284 -2.598294614</span>
+<span class="co">## Age         -0.03672237 -0.037469688 -0.037121588 -0.037070497</span>
+<span class="co">## SibSp       -0.35770272 -0.339011574 -0.350547547 -0.352463118</span>
+<span class="co">## Parch        .           .            0.048198898  0.051065967</span>
+<span class="co">## Fare         .          -0.001997998 -0.002237776 -0.002189827</span>
+<span class="co">## EmbarkedQ    .           .            .            0.209319089</span>
+<span class="co">## EmbarkedS   -0.21507393 -0.245372362 -0.255782097 -0.218658720</span></code></pre>
 <ol start="3" style="list-style-type: lower-roman">
-<li>get the deviance of the estimated model on all candidate support size via <code><a href="https://rdrr.io/r/stats/deviance.html">deviance()</a></code> function:</li>
+<li>get the deviance of the estimated model on all candidate support size via <code><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance()</a></code> function:</li>
 </ol>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/deviance.html">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 321.9560 246.5820 229.6078 229.5308 228.9702 220.1834 220.0022 219.9602
-## [9] 219.9189</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 321.9560 246.5820 229.6078 229.5308 228.9702 220.1834 220.0022 219.9602</span>
+<span class="co">## [9] 219.9189</span></code></pre>
 <ol start="4" style="list-style-type: lower-roman">
-<li>visualize the change of models with the change of support size via <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> function:</li>
+<li>visualize the change of models with the change of support size via <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> function:</li>
 </ol>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
 <p><img src="v03-classification_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 <p>The graph shows that, beginning from the most dense model, the second variable (<code>Sex</code>) is included in the active set until the support size reaches 0. We can also generate a graph about the tuning value.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></code></pre></div>
 <p><img src="v03-classification_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 <p>The tuning value reaches the lowest point at 4, which implies the best model consists of four variables.<br><!-- And We might choose the estimated model with support size equals 6 as our final model.  --></p>
-<p>Finally, to extract any model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.</p>
+<p>Finally, to extract any model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.abess.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">best.model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
-<pre><code>## List of 7
-##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:4] 0 1 5 7
-##   .. ..@ p       : int [1:2] 0 4
-##   .. ..@ Dim     : int [1:2] 8 1
-##   .. ..@ Dimnames:List of 2
-##   .. .. ..$ : chr [1:8] "Pclass" "Sexmale" "Age" "SibSp" ...
-##   .. .. ..$ : chr "4"
-##   .. ..@ x       : num [1:4] -0.81463 -2.59016 -0.00168 -0.30526
-##   .. ..@ factors : list()
-##  $ intercept   : num 3.26
-##  $ support.size: num 4
-##  $ support.vars: chr [1:4] "Pclass" "Sexmale" "Fare" "EmbarkedS"
-##  $ support.beta: num [1:4] -0.81463 -2.59016 -0.00168 -0.30526
-##  $ dev         : num 229
-##  $ tune.value  : num 46</code></pre>
+<code class="sourceCode R"><span class="va">best.model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## List of 7</span>
+<span class="co">##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="co">##   .. ..@ i       : int [1:4] 0 1 5 7</span>
+<span class="co">##   .. ..@ p       : int [1:2] 0 4</span>
+<span class="co">##   .. ..@ Dim     : int [1:2] 8 1</span>
+<span class="co">##   .. ..@ Dimnames:List of 2</span>
+<span class="co">##   .. .. ..$ : chr [1:8] "Pclass" "Sexmale" "Age" "SibSp" ...</span>
+<span class="co">##   .. .. ..$ : chr "4"</span>
+<span class="co">##   .. ..@ x       : num [1:4] -0.81463 -2.59016 -0.00168 -0.30526</span>
+<span class="co">##   .. ..@ factors : list()</span>
+<span class="co">##  $ intercept   : num 3.26</span>
+<span class="co">##  $ support.size: num 4</span>
+<span class="co">##  $ support.vars: chr [1:4] "Pclass" "Sexmale" "Fare" "EmbarkedS"</span>
+<span class="co">##  $ support.beta: num [1:4] -0.81463 -2.59016 -0.00168 -0.30526</span>
+<span class="co">##  $ dev         : num 229</span>
+<span class="co">##  $ tune.value  : num 46</span></code></pre>
 <p>The return is a list containing the basic information of the estimated model.</p>
 </div>
-<div id="make-a-prediction" class="section level3">
-<h3 class="hasAnchor">
-<a href="#make-a-prediction" class="anchor"></a>Make a Prediction</h3>
+<div class="section level3">
+<h3 id="make-a-prediction">Make a Prediction<a class="anchor" aria-label="anchor" href="#make-a-prediction"></a>
+</h3>
 <p>Prediction is allowed for all the estimated model. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model users are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value. The <code><a href="../reference/predict.abess.html">predict.abess()</a></code> can provide both <code>link</code>, stands for the linear predictors, and the <code>response</code>, stands for the fitted probability. Here We will predict the probability of survival on the <code>test.csv</code> data.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fitted.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">test</span>, type <span class="op">=</span> <span class="st">'response'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">fitted.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">test</span>, type <span class="op">=</span> <span class="st">'response'</span><span class="op">)</span></code></pre></div>
 <p>If we chose 0.5 as the cut point, i.e, we predict the person survived the sinking of the Titanic if the fitted probability is greater than 0.5, the accuracy will be 0.80.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fitted.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">fitted.results</span> <span class="op">&gt;</span> <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>
-<span class="va">misClasificError</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">fitted.results</span> <span class="op">!=</span> <span class="va">test</span><span class="op">$</span><span class="va">Survived</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">'Accuracy'</span>,<span class="fl">1</span><span class="op">-</span><span class="va">misClasificError</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "Accuracy 0.810126582278481"</code></pre>
+<code class="sourceCode R"><span class="va">fitted.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">fitted.results</span> <span class="op">&gt;</span> <span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>
+<span class="va">misClasificError</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">fitted.results</span> <span class="op">!=</span> <span class="va">test</span><span class="op">$</span><span class="va">Survived</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">'Accuracy'</span>,<span class="fl">1</span><span class="op">-</span><span class="va">misClasificError</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "Accuracy 0.810126582278481"</span></code></pre>
 <p>We can also generate an ROC curve and calculate the AUC value. On this dataset, the AUC is 0.87, which is quite close to 1.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ipa-tys.github.io/ROCR/">ROCR</a></span><span class="op">)</span>
-<span class="va">fitted.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">test</span>, type <span class="op">=</span> <span class="st">'response'</span><span class="op">)</span>
-<span class="va">pr</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://ipa-tys.github.io/ROCR/reference/prediction.html">prediction</a></span><span class="op">(</span><span class="va">fitted.results</span>, <span class="va">test</span><span class="op">$</span><span class="va">Survived</span><span class="op">)</span>
-<span class="va">prf</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://ipa-tys.github.io/ROCR/reference/performance.html">performance</a></span><span class="op">(</span><span class="va">pr</span>, measure <span class="op">=</span> <span class="st">"tpr"</span>, x.measure <span class="op">=</span> <span class="st">"fpr"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">prf</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ipa-tys.github.io/ROCR/" class="external-link">ROCR</a></span><span class="op">)</span>
+<span class="va">fitted.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">test</span>, type <span class="op">=</span> <span class="st">'response'</span><span class="op">)</span>
+<span class="va">pr</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://ipa-tys.github.io/ROCR/reference/prediction.html" class="external-link">prediction</a></span><span class="op">(</span><span class="va">fitted.results</span>, <span class="va">test</span><span class="op">$</span><span class="va">Survived</span><span class="op">)</span>
+<span class="va">prf</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://ipa-tys.github.io/ROCR/reference/performance.html" class="external-link">performance</a></span><span class="op">(</span><span class="va">pr</span>, measure <span class="op">=</span> <span class="st">"tpr"</span>, x.measure <span class="op">=</span> <span class="st">"fpr"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">prf</span><span class="op">)</span></code></pre></div>
 <p><img src="v03-classification_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">auc</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://ipa-tys.github.io/ROCR/reference/performance.html">performance</a></span><span class="op">(</span><span class="va">pr</span>, measure <span class="op">=</span> <span class="st">"auc"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">auc</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://ipa-tys.github.io/ROCR/reference/performance.html" class="external-link">performance</a></span><span class="op">(</span><span class="va">pr</span>, measure <span class="op">=</span> <span class="st">"auc"</span><span class="op">)</span>
 <span class="va">auc</span> <span class="op">&lt;-</span> <span class="va">auc</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="va">auc</span></code></pre></div>
-<pre><code>## [1] 0.8751124</code></pre>
+<pre><code><span class="co">## [1] 0.8751124</span></code></pre>
 </div>
 </div>
-<div id="extension-multi-class-classification" class="section level2">
-<h2 class="hasAnchor">
-<a href="#extension-multi-class-classification" class="anchor"></a>Extension: Multi-class Classification</h2>
-<div id="best-subset-selection-for-multinomial-logistic-regression" class="section level3">
-<h3 class="hasAnchor">
-<a href="#best-subset-selection-for-multinomial-logistic-regression" class="anchor"></a>Best subset selection for multinomial logistic regression</h3>
+<div class="section level2">
+<h2 id="extension-multi-class-classification">Extension: Multi-class Classification<a class="anchor" aria-label="anchor" href="#extension-multi-class-classification"></a>
+</h2>
+<div class="section level3">
+<h3 id="best-subset-selection-for-multinomial-logistic-regression">Best subset selection for multinomial logistic regression<a class="anchor" aria-label="anchor" href="#best-subset-selection-for-multinomial-logistic-regression"></a>
+</h3>
 <p>When the number of classes is more than 2, we call it multi-class classification task. Logistic regression can be extended to model several classes of events such as determining whether an image contains a cat, dog, lion, etc. Each object being detected in the image would be assigned a probability between 0 and 1, with a sum of one. The extended model is multinomial logistic regression.</p>
 <p>To arrive at the multinomial logistic model, one can imagine, for <span class="math inline">\(K\)</span> possible classes, running <span class="math inline">\(K-1\)</span> independent logistic regression models, in which one class is chosen as a ``pivot’’ and then the other <span class="math inline">\(K-1\)</span> classes are separately regressed against the pivot outcome. This would proceed as follows, if class K (the last outcome) is chosen as the pivot: <span class="math display">\[\ln(\mathbb{P}(y = 1) / \mathbb{P}(y = K)) = x^\top \beta^{(1)}, \]</span> <span class="math display">\[\cdots \cdots\]</span> <span class="math display">\[\ln(\mathbb{P}(y = K - 1) / \mathbb{P}(y = K)) = x^\top \beta^{(K - 1)}.\]</span> Then, the probability to choose the <span class="math inline">\(j\)</span>-th class can be easily derived to be: <span class="math display">\[\mathbb{P}(y = j) = \frac{\exp{(x^\top \beta^{(j)})}}{1 + \sum_{k=1}^{K-1} \exp{(x^\top \beta^{(k)})}}, \]</span> and subsequently, we would predict the <span class="math inline">\(j^{*}\)</span>-th class if the <span class="math inline">\(j^* = \arg\max_{j} \mathbb{P}(y = j)\)</span>. Notice that, for <span class="math inline">\(K\)</span> possible classes case, there are <span class="math inline">\(p \times (K - 1)\)</span> unknown parameters: <span class="math inline">\(\beta^{(1)}, \ldots, \beta^{(K-1)}\)</span> to be estimated. Because the number of parameters increase as <span class="math inline">\(K\)</span>, it is even more urge to constrain the model complexity. And the best subset selection for multinomial logistic regression aims to maximize the log-likelihood function and control the model complexity by restricting <span class="math inline">\(B = (\beta^{(1)}, \ldots, \beta^{(K-1)})\)</span> with <span class="math inline">\(\| B \|_{0, 2} \leq s\)</span> where <span class="math inline">\(\| B \|_{0, 2} = \sum_{i = 1}^{p} I(B_{i\cdot} = {\bf 0})\)</span>, <span class="math inline">\(B_{i\cdot}\)</span> is the <span class="math inline">\(i\)</span>-th row of coefficient matrix <span class="math inline">\(B\)</span> and <span class="math inline">\({\bf 0} \in R^{K - 1}\)</span> is an all zero vector. In other words, each row of <span class="math inline">\(B\)</span> would be either all zero or all non-zero.</p>
 </div>
-<div id="multinomial-logistic-regression-with-abess-package" class="section level3">
-<h3 class="hasAnchor">
-<a href="#multinomial-logistic-regression-with-abess-package" class="anchor"></a>Multinomial logistic regression with <code>abess</code> Package</h3>
+<div class="section level3">
+<h3 id="multinomial-logistic-regression-with-abess-package">Multinomial logistic regression with <code>abess</code> Package<a class="anchor" aria-label="anchor" href="#multinomial-logistic-regression-with-abess-package"></a>
+</h3>
 <p>We shall conduct Multinomial logistic regression on an artificial dataset for demonstration. The <code><a href="../reference/generate.data.html">generate.data()</a></code> function provides a simple way to generate suitable for this task. The assumption behind is the response vector following a multinomial distribution. The artifical dataset contain 100 observations and 20 predictors but only five predictors have influence on the three possible classes.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 <span class="va">support.size</span> <span class="op">&lt;-</span> <span class="fl">5</span>
 <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"multinomial"</span>, class.num <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 1 2 1 1 0 0</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">$</span><span class="va">y</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 1 2 1 1 0 0</span></code></pre>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dataset</span><span class="op">$</span><span class="va">beta</span></code></pre></div>
-<pre><code>##            [,1]      [,2]      [,3]
-##  [1,]  0.000000  0.000000  0.000000
-##  [2,]  0.000000  0.000000  0.000000
-##  [3,]  0.000000  0.000000  0.000000
-##  [4,]  0.000000  0.000000  0.000000
-##  [5,]  0.000000  0.000000  0.000000
-##  [6,] 16.244248  6.605285  4.958967
-##  [7,]  0.000000  0.000000  0.000000
-##  [8,]  0.000000  0.000000  0.000000
-##  [9,]  0.000000  0.000000  0.000000
-## [10,]  0.000000  0.000000  0.000000
-## [11,]  3.462001  6.774016 20.454220
-## [12,]  0.000000  0.000000  0.000000
-## [13,] 18.987979 13.133145 17.211335
-## [14,]  8.034160  1.117907  2.904334
-## [15,]  0.000000  0.000000  0.000000
-## [16,]  0.000000  0.000000  0.000000
-## [17,]  0.000000  0.000000  0.000000
-## [18,] 23.307996 17.576156 11.922882
-## [19,]  0.000000  0.000000  0.000000
-## [20,]  0.000000  0.000000  0.000000</code></pre>
-<p>To carry out best subset selection for multinomial logistic regression, users can call the <code><a href="../reference/abess.default.html">abess()</a></code> function with <code>family</code> specified to <code>multinomial</code>. Here is an example.</p>
+<pre><code><span class="co">##            [,1]      [,2]      [,3]</span>
+<span class="co">##  [1,]  0.000000  0.000000  0.000000</span>
+<span class="co">##  [2,]  0.000000  0.000000  0.000000</span>
+<span class="co">##  [3,]  0.000000  0.000000  0.000000</span>
+<span class="co">##  [4,]  0.000000  0.000000  0.000000</span>
+<span class="co">##  [5,]  0.000000  0.000000  0.000000</span>
+<span class="co">##  [6,] 16.244248  6.605285  4.958967</span>
+<span class="co">##  [7,]  0.000000  0.000000  0.000000</span>
+<span class="co">##  [8,]  0.000000  0.000000  0.000000</span>
+<span class="co">##  [9,]  0.000000  0.000000  0.000000</span>
+<span class="co">## [10,]  0.000000  0.000000  0.000000</span>
+<span class="co">## [11,]  3.462001  6.774016 20.454220</span>
+<span class="co">## [12,]  0.000000  0.000000  0.000000</span>
+<span class="co">## [13,] 18.987979 13.133145 17.211335</span>
+<span class="co">## [14,]  8.034160  1.117907  2.904334</span>
+<span class="co">## [15,]  0.000000  0.000000  0.000000</span>
+<span class="co">## [16,]  0.000000  0.000000  0.000000</span>
+<span class="co">## [17,]  0.000000  0.000000  0.000000</span>
+<span class="co">## [18,] 23.307996 17.576156 11.922882</span>
+<span class="co">## [19,]  0.000000  0.000000  0.000000</span>
+<span class="co">## [20,]  0.000000  0.000000  0.000000</span></code></pre>
+<p>To carry out best subset selection for multinomial logistic regression, users can call the <code><a href="../reference/abess.html">abess()</a></code> function with <code>family</code> specified to <code>multinomial</code>. Here is an example.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, 
+<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, 
                    family <span class="op">=</span> <span class="st">"multinomial"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">[[</span><span class="st">"support.vars"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
-<pre><code>## [1] "x6"  "x11" "x13" "x14" "x18"</code></pre>
-<p>Notice that the <code><a href="../reference/abess.default.html">abess()</a></code> correctly identifies the support set of the ground truth coefficient matrix.</p>
+<span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">[[</span><span class="st">"support.vars"</span><span class="op">]</span><span class="op">]</span></code></pre></div>
+<pre><code><span class="co">## [1] "x6"  "x11" "x13" "x14" "x18"</span></code></pre>
+<p>Notice that the <code><a href="../reference/abess.html">abess()</a></code> correctly identifies the support set of the ground truth coefficient matrix.</p>
 </div>
 </div>
   </div>
@@ -389,11 +385,13 @@ i. print the fitted model:</p>
 
 
       <footer><div class="copyright">
-  <p>Developed by Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p></p>
+<p>Developed by Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Zezhi Wang, Borui Tang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>

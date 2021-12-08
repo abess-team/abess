@@ -28,6 +28,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -40,18 +42,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -100,7 +96,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/abess-team/abess/">
+  <a href="https://github.com/abess-team/abess/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -125,120 +121,120 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Advanced Features</h1>
-                        <h4 class="author">Jin Zhu</h4>
+                        <h4 data-toc-skip class="author">Jin Zhu</h4>
             
-            <h4 class="date">6/13/2021</h4>
+            <h4 data-toc-skip class="date">6/13/2021</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v07-advancedFeatures.Rmd"><code>../vignettes/v07-advancedFeatures.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v07-advancedFeatures.Rmd" class="external-link"><code>../vignettes/v07-advancedFeatures.Rmd</code></a></small>
       <div class="hidden name"><code>v07-advancedFeatures.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p>When analyzing the real world datasets, we may have the following targets:<br>
 1. certain variables must be selected when some prior information is given;<br>
 2. selecting the weak signal variables when the prediction performance is main interest;<br>
 3. identifying predictors when group structure are provided;<br>
 4. pre-excluding a part of predictors when datasets have ultra high-dimensional predictors.</p>
-<p>In the following content, we will illustrate the statistic methods to reach these targets in a one-by-one manner, and give quick examples to show how to perform the statistic methods with the <code>abess</code> package. Actually, in the <code>abess</code> package, there targets can be properly handled by simply change the default arguments in the <code><a href="../reference/abess.default.html">abess()</a></code> function.</p>
+<p>In the following content, we will illustrate the statistic methods to reach these targets in a one-by-one manner, and give quick examples to show how to perform the statistic methods with the <code>abess</code> package. Actually, in the <code>abess</code> package, there targets can be properly handled by simply change the default arguments in the <code><a href="../reference/abess.html">abess()</a></code> function.</p>
 </div>
-<div id="nuisance-regression" class="section level2">
-<h2 class="hasAnchor">
-<a href="#nuisance-regression" class="anchor"></a>Nuisance Regression</h2>
+<div class="section level2">
+<h2 id="nuisance-regression">Nuisance Regression<a class="anchor" aria-label="anchor" href="#nuisance-regression"></a>
+</h2>
 <p>Nuisance regression refers to best subset selection with some prior information that some variables are required to stay in the active set. For example, if we are interested in a certain gene and want to find out what other genes are associated with the response when this particular gene shows effect.</p>
-<div id="carrying-out-the-nuisance-regression-with-abess" class="section level3">
-<h3 class="hasAnchor">
-<a href="#carrying-out-the-nuisance-regression-with-abess" class="anchor"></a>Carrying Out the Nuisance Regression with abess</h3>
-<p>In the <code><a href="../reference/abess.default.html">abess()</a></code> function, the argument <code>always.include</code> is designed to realize this goal. user can pass a vector containing the indexes of the target variables to <code>always.include</code>. Here is an example.</p>
+<div class="section level3">
+<h3 id="carrying-out-the-nuisance-regression-with-abess">Carrying Out the Nuisance Regression with abess<a class="anchor" aria-label="anchor" href="#carrying-out-the-nuisance-regression-with-abess"></a>
+</h3>
+<p>In the <code><a href="../reference/abess.html">abess()</a></code> function, the argument <code>always.include</code> is designed to realize this goal. user can pass a vector containing the indexes of the target variables to <code>always.include</code>. Here is an example.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 <span class="va">support.size</span> <span class="op">&lt;-</span> <span class="fl">3</span>
 <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span>
 <span class="va">dataset</span><span class="op">$</span><span class="va">beta</span></code></pre></div>
-<pre><code>##  [1]  0.00000  0.00000  0.00000  0.00000  0.00000 84.67713  0.00000  0.00000
-##  [9]  0.00000  0.00000  0.00000  0.00000  0.00000 85.82187  0.00000  0.00000
-## [17]  0.00000 47.40922  0.00000  0.00000</code></pre>
+<pre><code><span class="co">##  [1]  0.00000  0.00000  0.00000  0.00000  0.00000 84.67713  0.00000  0.00000</span>
+<span class="co">##  [9]  0.00000  0.00000  0.00000  0.00000  0.00000 85.82187  0.00000  0.00000</span>
+<span class="co">## [17]  0.00000 47.40922  0.00000  0.00000</span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, always.include <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="va">abess_fit</span><span class="op">$</span><span class="va">support.size</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">$</span><span class="va">tune.value</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>## 21 x 1 sparse Matrix of class "dgCMatrix"
-##                      4
-## (intercept)  -4.767241
-## x1            .       
-## x2            .       
-## x3            .       
-## x4            .       
-## x5            .       
-## x6           82.424118
-## x7            .       
-## x8            .       
-## x9            .       
-## x10           .       
-## x11           .       
-## x12           .       
-## x13           .       
-## x14          89.031689
-## x15           .       
-## x16         -12.622583
-## x17           .       
-## x18          43.343247
-## x19           .       
-## x20           .</code></pre>
+<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, always.include <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="va">abess_fit</span><span class="op">$</span><span class="va">support.size</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">$</span><span class="va">tune.value</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## 21 x 1 sparse Matrix of class "dgCMatrix"</span>
+<span class="co">##                      4</span>
+<span class="co">## (intercept)  -4.767241</span>
+<span class="co">## x1            .       </span>
+<span class="co">## x2            .       </span>
+<span class="co">## x3            .       </span>
+<span class="co">## x4            .       </span>
+<span class="co">## x5            .       </span>
+<span class="co">## x6           82.424118</span>
+<span class="co">## x7            .       </span>
+<span class="co">## x8            .       </span>
+<span class="co">## x9            .       </span>
+<span class="co">## x10           .       </span>
+<span class="co">## x11           .       </span>
+<span class="co">## x12           .       </span>
+<span class="co">## x13           .       </span>
+<span class="co">## x14          89.031689</span>
+<span class="co">## x15           .       </span>
+<span class="co">## x16         -12.622583</span>
+<span class="co">## x17           .       </span>
+<span class="co">## x18          43.343247</span>
+<span class="co">## x19           .       </span>
+<span class="co">## x20           .</span></code></pre>
 </div>
 </div>
-<div id="regularized-adaptive-best-subset-selection" class="section level2">
-<h2 class="hasAnchor">
-<a href="#regularized-adaptive-best-subset-selection" class="anchor"></a>Regularized Adaptive Best Subset Selection</h2>
-<p>In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vallina type of <span class="math inline">\(L_0\)</span> constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the <code>abess</code> package provides option of best subset selection with <span class="math inline">\(L_2\)</span> norm regularization called the regularized bess. The model has this following form:</p>
+<div class="section level2">
+<h2 id="regularized-adaptive-best-subset-selection">Regularized Adaptive Best Subset Selection<a class="anchor" aria-label="anchor" href="#regularized-adaptive-best-subset-selection"></a>
+</h2>
+<p>In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vallina type of <span class="math inline">\(L_0\)</span> constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the <code>abess</code> package provides option of best subset selection with <span class="math inline">\(L_2\)</span> norm regularization called the regularized best subset selection (BESS). The model has this following form:</p>
 <p><span class="math display">\[\begin{align}
 \min_\beta L(\beta) + \lambda \|\beta\|_2^2
 \end{align}\]</span></p>
-<div id="carrying-out-the-regularized-bess" class="section level3">
-<h3 class="hasAnchor">
-<a href="#carrying-out-the-regularized-bess" class="anchor"></a>Carrying out the Regularized Bess</h3>
-<p>To implement the regularized bess, user need to specify a value to the <code>lambda</code> in the <code><a href="../reference/abess.default.html">abess()</a></code> function. This <code>lambda</code> value corresponds to the penalization parameter in the model above. Here we give an example.</p>
+<div class="section level3">
+<h3 id="carrying-out-the-regularized-bess">Carrying out the Regularized Bess<a class="anchor" aria-label="anchor" href="#carrying-out-the-regularized-bess"></a>
+</h3>
+<p>To implement the regularized BESS, user need to specify a value to the <code>lambda</code> in the <code><a href="../reference/abess.html">abess()</a></code> function. This <code>lambda</code> value corresponds to the penalization parameter in the model above. Here we give an example.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">30</span>
 <span class="va">snr</span> <span class="op">&lt;-</span> <span class="fl">0.05</span>
-<span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, snr <span class="op">=</span> <span class="va">snr</span>, seed <span class="op">=</span> <span class="fl">1</span>, beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span> ,<span class="fl">5</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, rho <span class="op">=</span> <span class="fl">0.8</span>, cortype <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, snr <span class="op">=</span> <span class="va">snr</span>, seed <span class="op">=</span> <span class="fl">1</span>, beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span> ,<span class="fl">5</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, rho <span class="op">=</span> <span class="fl">0.8</span>, cortype <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="va">data.test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, snr <span class="op">=</span> <span class="va">snr</span>, beta <span class="op">=</span> <span class="va">dataset</span><span class="op">$</span><span class="va">beta</span>, seed <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
 
-<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></code></pre></div>
+<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></code></pre></div>
 <p>Let’s test the regularized best subset selection against the no-regularized one over 100 replicas in terms of prediction performance.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span> <span class="fl">100</span>
-<span class="va">err.l0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">M</span><span class="op">)</span>
-<span class="va">err.l0l2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">M</span><span class="op">)</span>
+<span class="va">err.l0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">M</span><span class="op">)</span>
+<span class="va">err.l0l2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">M</span><span class="op">)</span>
 <span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="va">M</span><span class="op">)</span><span class="op">{</span>
-  <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, snr <span class="op">=</span> <span class="va">snr</span>, seed <span class="op">=</span> <span class="va">i</span>, beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span> ,<span class="fl">5</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, rho <span class="op">=</span> <span class="fl">0.8</span>, cortype <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+  <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, snr <span class="op">=</span> <span class="va">snr</span>, seed <span class="op">=</span> <span class="va">i</span>, beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span> ,<span class="fl">5</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, rho <span class="op">=</span> <span class="fl">0.8</span>, cortype <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
   <span class="va">data.test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, snr <span class="op">=</span> <span class="va">snr</span>, beta <span class="op">=</span> <span class="va">dataset</span><span class="op">$</span><span class="va">beta</span>, seed <span class="op">=</span> <span class="va">i</span><span class="op">+</span><span class="fl">100</span><span class="op">)</span>
   
-  <span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="va">abess_fit</span><span class="op">$</span><span class="va">support.size</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">$</span><span class="va">tune.value</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-  <span class="va">pe.l0l2</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/norm.html">norm</a></span><span class="op">(</span><span class="va">data.test</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">data.test</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>,<span class="st">'2'</span><span class="op">)</span>
+  <span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="va">abess_fit</span><span class="op">$</span><span class="va">support.size</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">$</span><span class="va">tune.value</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+  <span class="va">pe.l0l2</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/norm.html" class="external-link">norm</a></span><span class="op">(</span><span class="va">data.test</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">data.test</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>,<span class="st">'2'</span><span class="op">)</span>
   <span class="va">err.l0</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">pe.l0l2</span>
   
-  <span class="va">abess_l0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">abess_l0</span>, support.size <span class="op">=</span> <span class="va">abess_l0</span><span class="op">$</span><span class="va">support.size</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html">which.min</a></span><span class="op">(</span><span class="va">abess_l0</span><span class="op">$</span><span class="va">tune.value</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-  <span class="va">pe.l0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/norm.html">norm</a></span><span class="op">(</span><span class="va">data.test</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">abess_l0</span>, newx <span class="op">=</span> <span class="va">data.test</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>, <span class="st">'2'</span><span class="op">)</span>
+  <span class="va">abess_l0</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_l0</span>, support.size <span class="op">=</span> <span class="va">abess_l0</span><span class="op">$</span><span class="va">support.size</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">abess_l0</span><span class="op">$</span><span class="va">tune.value</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+  <span class="va">pe.l0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/norm.html" class="external-link">norm</a></span><span class="op">(</span><span class="va">data.test</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_l0</span>, newx <span class="op">=</span> <span class="va">data.test</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>, <span class="st">'2'</span><span class="op">)</span>
   <span class="va">err.l0l2</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">pe.l0</span>
 <span class="op">}</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">err.l0</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 130.4913</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">err.l0</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 130.4913</span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">err.l0l2</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 152.1944</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">err.l0l2</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 152.1944</span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"ABESS"</span> <span class="op">=</span> <span class="va">err.l0</span>, <span class="st">"RABESS"</span> <span class="op">=</span> <span class="va">err.l0l2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html" class="external-link">boxplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"ABESS"</span> <span class="op">=</span> <span class="va">err.l0</span>, <span class="st">"RABESS"</span> <span class="op">=</span> <span class="va">err.l0l2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="v07-advancedFeatures_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>We see that the regularized best subset select indeed reduces the prediction error. <!-- ```{r} --></p>
 <!-- snr = 0.05 -->
@@ -277,66 +273,66 @@
 <!-- ``` -->
 </div>
 </div>
-<div id="best-group-subset-selection" class="section level2">
-<h2 class="hasAnchor">
-<a href="#best-group-subset-selection" class="anchor"></a>Best group subset selection</h2>
+<div class="section level2">
+<h2 id="best-group-subset-selection">Best group subset selection<a class="anchor" aria-label="anchor" href="#best-group-subset-selection"></a>
+</h2>
 <p>Best group subset selection (BGSS) aims to choose a small part of non-overlapping groups to achieve the best interpretability on the response variable. BGSS is practically useful for the analysis of ubiquitously existing variables with certain group structures. For instance, a categorical variable with several levels is often represented by a group of dummy variables. Besides, in a nonparametric additive model, a continuous component can be represented by a set of basis functions (e.g., a linear combination of spline basis functions). Finally, specific prior knowledge can impose group structures on variables. A typical example is that the genes belonging to the same biological pathway can be considered as a group in the genomic data analysis.</p>
 <p>The BGSS can be achieved by solving: <span class="math display">\[\begin{equation}\label{eq:constraint}
 \min\limits_{\beta \in \mathbb{R}^p} \frac{1}{2n}\|y-X\beta\|_2^2,\quad s.t.\ \|\beta\|_{0,r}\leqslant s,
-\end{equation}\]</span> where <span class="math inline">\(\|\beta\|_{0,r} = \sum_{j=1}^J I(\|\beta_{G_j}\|_{2}\neq 0)\)</span> in which <span class="math inline">\(\|.\|_r\)</span> is the <span class="math inline">\(L_2\)</span> norm and model size <span class="math inline">\(s\)</span> is a positive integer to be determined from data. Regardless of the NP-hard of this problem, Zhang et al develop a certifiably polynomial algorithm to solve it. This algorithm is integrated in the <code>abess</code> package, and user can handily select best group subset by assigning a proper value to the <code>group.index</code> arguments in <code><a href="../reference/abess.default.html">abess()</a></code> function.</p>
-<div id="quick-example" class="section level3">
-<h3 class="hasAnchor">
-<a href="#quick-example" class="anchor"></a>Quick example</h3>
+\end{equation}\]</span> where <span class="math inline">\(\|\beta\|_{0,r} = \sum_{j=1}^J I(\|\beta_{G_j}\|_{2}\neq 0)\)</span> in which <span class="math inline">\(\|.\|_r\)</span> is the <span class="math inline">\(L_2\)</span> norm and model size <span class="math inline">\(s\)</span> is a positive integer to be determined from data. Regardless of the NP-hard of this problem, Zhang et al develop a certifiably polynomial algorithm to solve it. This algorithm is integrated in the <code>abess</code> package, and user can handily select best group subset by assigning a proper value to the <code>group.index</code> arguments in <code><a href="../reference/abess.html">abess()</a></code> function.</p>
+<div class="section level3">
+<h3 id="quick-example">Quick example<a class="anchor" aria-label="anchor" href="#quick-example"></a>
+</h3>
 <p>We use a synthetic dataset to demonstrate its usage. The dataset consists of 100 observations. Each observation has 20 predictors but only the first three predictors among them have a impact on the response.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 <span class="va">support.size</span> <span class="op">&lt;-</span> <span class="fl">3</span>
-<span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">17</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">17</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Support we have some prior information that the second and third variables belong to the same group, then we can set the <code>group_index</code> as:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">group_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">19</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Then, pass this <code>group_index</code> to the <code><a href="../reference/abess.default.html">abess()</a></code> function:</p>
+<code class="sourceCode R"><span class="va">group_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">19</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>Then, pass this <code>group_index</code> to the <code><a href="../reference/abess.html">abess()</a></code> function:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, 
+<code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, 
                    group.index <span class="op">=</span> <span class="va">group_index</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## List of 7
-##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-##   .. ..@ i       : int [1:3] 0 1 2
-##   .. ..@ p       : int [1:2] 0 3
-##   .. ..@ Dim     : int [1:2] 20 1
-##   .. ..@ Dimnames:List of 2
-##   .. .. ..$ : chr [1:20] "x1" "x2" "x3" "x4" ...
-##   .. .. ..$ : chr "2"
-##   .. ..@ x       : num [1:3] 10.2 4.92 4.88
-##   .. ..@ factors : list()
-##  $ intercept   : num 0.0859
-##  $ support.size: int 2
-##  $ support.vars: chr [1:3] "x1" "x2" "x3"
-##  $ support.beta: num [1:3] 10.2 4.92 4.88
-##  $ dev         : num 16.6
-##  $ tune.value  : num 294</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## List of 7</span>
+<span class="co">##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
+<span class="co">##   .. ..@ i       : int [1:3] 0 1 2</span>
+<span class="co">##   .. ..@ p       : int [1:2] 0 3</span>
+<span class="co">##   .. ..@ Dim     : int [1:2] 20 1</span>
+<span class="co">##   .. ..@ Dimnames:List of 2</span>
+<span class="co">##   .. .. ..$ : chr [1:20] "x1" "x2" "x3" "x4" ...</span>
+<span class="co">##   .. .. ..$ : chr "2"</span>
+<span class="co">##   .. ..@ x       : num [1:3] 10.2 4.92 4.88</span>
+<span class="co">##   .. ..@ factors : list()</span>
+<span class="co">##  $ intercept   : num 0.0859</span>
+<span class="co">##  $ support.size: int 2</span>
+<span class="co">##  $ support.vars: chr [1:3] "x1" "x2" "x3"</span>
+<span class="co">##  $ support.beta: num [1:3] 10.2 4.92 4.88</span>
+<span class="co">##  $ dev         : num 16.6</span>
+<span class="co">##  $ tune.value  : num 294</span></code></pre>
 <p>The fitted result suggest that only two groups are selected (since <code>support.size</code> is 2) and the selected variables are matched with the ground truth setting.</p>
 </div>
 </div>
-<div id="feature-screening" class="section level2">
-<h2 class="hasAnchor">
-<a href="#feature-screening" class="anchor"></a>Feature screening</h2>
+<div class="section level2">
+<h2 id="feature-screening">Feature screening<a class="anchor" aria-label="anchor" href="#feature-screening"></a>
+</h2>
 <p>In the case of ultra high-dimensional data, it is more effective to do feature screening first before carrying out feature selection. The <code>abess</code> package allowed users to perform the sure independent screening to pre-exclude some features according to the marginal likelihood.</p>
-<div id="integrate-sis-in-abess-package" class="section level3">
-<h3 class="hasAnchor">
-<a href="#integrate-sis-in-abess-package" class="anchor"></a>Integrate SIS in <code>abess</code> package</h3>
+<div class="section level3">
+<h3 id="integrate-sis-in-abess-package">Integrate SIS in <code>abess</code> package<a class="anchor" aria-label="anchor" href="#integrate-sis-in-abess-package"></a>
+</h3>
 <p>Ultra-high dimensional predictors increase computational cost but reduce estimation accuracy for any statistical procedure. To reduce dimensionality from high to a relatively acceptable level, a fairly general asymptotic framework, named feature screening (sure independence screening) is proposed to tackle even exponentially growing dimension. The feature screening can theoretically maintain all effective predictors with a high probability, which is called ``the sure screening property’’.</p>
-<p>In the <code><a href="../reference/abess.default.html">abess()</a></code> function, to carrying out the Integrate SIS, user need to passed an integer smaller than the number of the predictors to the <code>screening.num</code>. Then the <code><a href="../reference/abess.default.html">abess()</a></code> function will first calculate the marginal likelihood of each predictor and reserve those predictors with the <code>screening.num</code> largest marginal likelihood. Then, the ABESS algorithm is conducted only on this screened subset. Here is an example.</p>
+<p>In the <code><a href="../reference/abess.html">abess()</a></code> function, to carrying out the Integrate SIS, user need to passed an integer smaller than the number of the predictors to the <code>screening.num</code>. Then the <code><a href="../reference/abess.html">abess()</a></code> function will first calculate the marginal likelihood of each predictor and reserve those predictors with the <code>screening.num</code> largest marginal likelihood. Then, the ABESS algorithm is conducted only on this screened subset. Here is an example.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess">abess</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
 <span class="va">support.size</span> <span class="op">&lt;-</span> <span class="fl">3</span>
 <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span>
-<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.default.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, 
+<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, 
                    screening.num <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
@@ -353,11 +349,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
+  <p></p>
+<p>Developed by Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Zezhi Wang, Borui Tang, Shiyun Lin, Junxian Zhu, Canhong Wen, Heping Zhang, Xueqin Wang.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
