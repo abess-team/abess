@@ -6,7 +6,7 @@
 #' @inheritParams abess.default
 # ’
 #' @param x A matrix object. 
-#' @param rank The rank of the low-rank matrix. 
+#' @param rank A positive integer value specify the rank of the low-rank matrix. 
 #' @param support.size An integer vector representing the alternative support sizes. 
 #' Only used for tune.path = "sequence". Strongly suggest its minimum value larger than \code{min(dim(x))}.  
 #' @param tune.type The type of criterion for choosing the support size. Available options are "gic", "ebic", "bic" and "aic". 
@@ -67,6 +67,7 @@
 #' print(res)
 #' plot(res, type = "tune")
 #' plot(res, type = "loss")
+#' plot(res, type = "S")
 #' }
 abessrpca <- function(x,
                       rank,
@@ -359,8 +360,8 @@ abessrpca <- function(x,
   result_R[["nobs"]] <- nobs
   result_R[["nvars"]] <- nvars
   result_R[["rank"]] <- rank
-  result_R[["loss"]] <- result_cpp[["train_loss_all"]]
-  result_R[["tune.value"]] <- result_cpp[["ic_all"]]
+  result_R[["loss"]] <- as.vector(result_cpp[["train_loss_all"]])
+  result_R[["tune.value"]] <- as.vector(result_cpp[["ic_all"]])
   result_R[["support.size"]] <- s_list
   result_R[["tune.type"]] <- tune.type
 

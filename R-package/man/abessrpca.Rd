@@ -30,7 +30,7 @@ abessrpca(
 \arguments{
 \item{x}{A matrix object.}
 
-\item{rank}{The rank of the low-rank matrix.}
+\item{rank}{A positive integer value specify the rank of the low-rank matrix.}
 
 \item{support.size}{An integer vector representing the alternative support sizes. 
 Only used for tune.path = "sequence". Strongly suggest its minimum value larger than \code{min(dim(x))}.}
@@ -152,6 +152,7 @@ res <- abessrpca(dataset[["x"]], rank = true_L_rank, support.size = (20:40) * 10
 print(res)
 plot(res, type = "tune")
 plot(res, type = "loss")
+plot(res, type = "S")
 }
 }
 \references{
