@@ -28,21 +28,34 @@ reference:
 - title: Generalized linear model
   contents:
   - abess
-  - print.abess
   - coef.abess
-  - extract.abess
-  - predict.abess
-  - plot.abess
   - deviance.abess
+  - extract.abess
+  - plot.abess
+  - predict.abess
+  - print.abess
 
 - title: Principal component analysis
   contents:
   - abesspca
-  - print.abesspca
   - coef.abesspca
+  - plot.abesspca
+  - print.abesspca
   
-- title: Datasets
+- title: Robust principal component analysis
+  contents:
+  - abessrpca
+  - coef.abessrpca
+  - plot.abessrpca
+  - print.abessrpca
+  
+- title: Synthetic datasets
   contents:
   - generate.data
+  - generate.matrix
+  - generate.spc.matrix
+
+- title: Real-world dataset
+  contents:
   - trim32
   
