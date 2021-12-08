@@ -24,7 +24,7 @@ generate.spc.matrix(
 \item{snr}{A numerical value controlling the signal-to-noise ratio (SNR).
 A larger SNR implies the identification of sparse matrix is much easier.}
 
-\item{sigma}{A numerical vector specify the standard deviation of each columns. 
+\item{sigma}{A numerical vector specify the standard deviation of each columns.
 Default \code{sigma = NULL} implies it is determined by \code{snr}.}
 
 \item{seed}{random seed. Default: \code{seed = 1}.}
@@ -36,7 +36,7 @@ A \code{list} object comprising:
 \item{coef}{A vector recording the number of non-zero entries.}
 }
 \description{
-Generate simulated matrix that its principal component are 
+Generate simulated matrix that its principal component are
 sparse linear combination of its columns.
 }
 \details{

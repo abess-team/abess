@@ -44,9 +44,9 @@ otherwise, the covariance matrix.
 This option is available only if \code{type = "predictor"}.
 Default: \code{cor = FALSE}.}
 
-\item{support.size}{It is a flexible input. If it is an integer vector. 
+\item{support.size}{It is a flexible input. If it is an integer vector.
 It represents the support sizes to be considered for each principal component.
-If it is a \code{list} object containing \code{kpc.num} number of interger vectors, 
+If it is a \code{list} object containing \code{kpc.num} number of interger vectors,
 the i-th principal component consider the support size specified in the i-th element in the \code{list}.
 The default is \code{support.size = NULL}, and some rules in details section are used to specify \code{support.size}.}
 
@@ -138,6 +138,10 @@ When \code{sparse.type = "kpc"} but \code{support.size} is not supplied,
 then for 20\% principal components,
 it is set as \code{min(ncol(x), 100)} if \code{group.index = NULL};
 otherwise, \code{min(length(unique(group.index)), 100)}.
+}
+\note{
+Some parameters not described in the Details Section is explained in the document for \code{\link{abess}} 
+because the meanning of these parameters are very similar.
 }
 \examples{
 \donttest{

@@ -28,14 +28,12 @@ abessrpca(
 )
 }
 \arguments{
-\item{x}{A matrix object. It can be either a predictor matrix
-where each row is an observation and each column is a predictor or
-a sample covariance/correlation matrix.}
+\item{x}{A matrix object.}
 
-\item{rank}{The rank of the low-rank matrix}
+\item{rank}{The rank of the low-rank matrix.}
 
-\item{support.size}{An integer vector representing the alternative support sizes.
-Only used for \code{tune.path = "sequence"}. Default is \code{0:min(n, round(n/(log(log(n))log(p))))}.}
+\item{support.size}{An integer vector representing the alternative support sizes. 
+Only used for tune.path = "sequence". Strongly suggest its minimum value larger than \code{min(dim(x))}.}
 
 \item{tune.path}{The method to be used to select the optimal support size. For
 \code{tune.path = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
@@ -47,9 +45,8 @@ The first element is the minimum model size considered by golden-section,
 the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
 Not available now.}
 
-\item{tune.type}{The type of criterion for choosing the support size.
-Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
-Default is \code{"gic"}.}
+\item{tune.type}{The type of criterion for choosing the support size. Available options are "gic", "ebic", "bic" and "aic". 
+Default is "gic".}
 
 \item{ic.scale}{A non-negative value used for multiplying the penalty term
 in information criterion. Default: \code{ic.scale = 1}.}
@@ -118,6 +115,30 @@ Note that it is not necessary the same as the input if the later have non-intege
 \description{
 Decompose a matrix into the summation of
 low-rank matrix and sparse matrix via the best subset selection approach
+}
+\details{
+Adaptive best subset selection for robust principal component analysis aim to find two latent matrices \eqn{L} and \eqn{S} such that the original matrix \eqn{X} can be appropriately approximated:
+\deqn{x = L + S + N,} 
+where \eqn{L} is a low-rank matrix, \eqn{S} is a sparse matrix, \eqn{N} is a dense noise matrix. 
+Generic splicing technique can be employed to solve this problem by iteratively improve the quality of the estimation of \eqn{S}. 
+
+For a given support set \eqn{\Omega}, the optimization problem: 
+\deqn{\min_S \| x - L - S\|_F^2 \;\;{\rm s.t.}\;\; S_{ij} = 0 {\rm for } (i, j) \in \Omega^c,}
+still a non-convex optimization problem. We use the hard-impute algorithm proposed in one of the reference to solve this problem. 
+The hard-impute algorithm is an iterative algorithm, people can set \code{max.newton.iter} and \code{newton.thresh} to 
+control the solution precision of the optimization problem. 
+(Here, the name of the two parameters are somwhow abused to make the parameters cross functions have an unified name.) 
+According to our experiments, 
+we assign properly parameters to the two parameter as the default such that the precision and runtime are well balanced, 
+we suggest users keep the default values unchanged.
+}
+\note{
+Some parameters not described in the Details Section is explained in the document for \code{\link{abess}} 
+because the meanning of these parameters are very similar. 
+
+At present, \eqn{l_2} regularization and group selection are not support, 
+and thus, set \code{lambda} and \code{group.index} have no influence on the output. 
+This feature will coming soon.
 }
 \examples{
 library(abess)
