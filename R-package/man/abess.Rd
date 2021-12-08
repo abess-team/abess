@@ -268,6 +268,7 @@ predict(abess_fit,
 str(extract(abess_fit, 3))
 deviance(abess_fit)
 plot(abess_fit)
+plot(abess_fit, type = "tune")
 
 ################ logistic model ################
 dataset <- generate.data(n, p, support.size, family = "binomial")
