@@ -1,4 +1,4 @@
-#' @title Generate matrix
+#' @title Generate matrix with sparse principal component
 #'
 #' @description Generate simulated matrix that its principal component are
 #' sparse linear combination of its columns.

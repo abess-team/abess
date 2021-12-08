@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate.matrix.R
 \name{generate.matrix}
 \alias{generate.matrix}
-\title{generate.matrix}
+\title{Generate matrix composed of a sparse matrix and low-rank matrix}
 \usage{
 generate.matrix(
   n,

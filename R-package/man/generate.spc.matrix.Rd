@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate.spc.matrix.R
 \name{generate.spc.matrix}
 \alias{generate.spc.matrix}
-\title{Generate matrix}
+\title{Generate matrix with sparse principal component}
 \usage{
 generate.spc.matrix(
   n,

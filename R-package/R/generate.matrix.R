@@ -1,4 +1,4 @@
-#' @title generate.matrix
+#' @title Generate matrix composed of a sparse matrix and low-rank matrix
 #'
 #' @description Generate simulated matrix that is the superposition of
 #' a low-rank component and a sparse component.

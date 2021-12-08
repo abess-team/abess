@@ -4,7 +4,7 @@
 \alias{abess.default}
 \alias{abess}
 \alias{abess.formula}
-\title{Adaptive Best-Subset Selection via Splicing}
+\title{Adaptive best subset selection (for generalized linear model)}
 \usage{
 \method{abess}{default}(
   x,
@@ -207,7 +207,7 @@ It would be an empty character vector if \code{screening.num = 0}.}
 \description{
 Adaptive best-subset selection for regression,
 (multi-class) classification, counting-response, censored-response,
-multi-response modeling in polynomial times.
+positive response, multi-response modeling in polynomial times.
 }
 \details{
 Best-subset selection aims to find a small subset of predictors,

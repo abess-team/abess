@@ -1,11 +1,11 @@
 #' @export
 abess <- function(x, ...) UseMethod("abess")
 
-#' @title Adaptive Best-Subset Selection via Splicing
+#' @title Adaptive best subset selection (for generalized linear model)
 #'
 #' @description Adaptive best-subset selection for regression,
 #' (multi-class) classification, counting-response, censored-response,
-#' multi-response modeling in polynomial times.
+#' positive response, multi-response modeling in polynomial times.
 #'
 #' @aliases abess
 #'
