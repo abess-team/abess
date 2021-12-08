@@ -405,7 +405,7 @@ class abessRPCA(bess_base):
             p = X.shape[1]
             self.n_features_in_ = p
         else:
-            raise ValueError("X should be given in RPCA.")
+            raise ValueError("X should be an array.")
 
         # Algorithm_type
         if self.algorithm_type == "abess":

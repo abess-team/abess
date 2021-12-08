@@ -276,7 +276,7 @@ class TestAlgorithm:
         model1.fit_transform(X)
         
         # sparse
-        model2 = abessPCA(support_size=s)
+        model2 = abessPCA(support_size=s, sparse_matrix=True)
         model2.fit(coo_matrix(X))
         assert_value(model1.coef_, model2.coef_)
 
@@ -286,6 +286,7 @@ class TestAlgorithm:
 
         # sigma input
         model3 = abessPCA(support_size=support_size)
+        model3.fit(Sigma=X.T.dot(X))
         model3.fit(Sigma=X.T.dot(X) / n, n = n)
         assert_fit(model1.coef_, model3.coef_)
 
