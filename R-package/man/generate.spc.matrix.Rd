@@ -40,7 +40,7 @@ Generate simulated matrix that its principal component are
 sparse linear combination of its columns.
 }
 \details{
-The methods for generating the matrix is detailly described in the APPENDIX A. Data generation section in reference.
+The methods for generating the matrix is detailedly described in the APPENDIX A. Data generation section in Schipper et al (2021).
 }
 \references{
 Model selection techniques for sparse weight-based principal component analysis. de Schipper, Niek C and Van Deun, Katrijn. Journal of Chemometrics. 2021.

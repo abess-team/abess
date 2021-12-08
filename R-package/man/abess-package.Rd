@@ -4,7 +4,7 @@
 \name{abess-package}
 \alias{abess-package}
 \alias{_PACKAGE}
-\title{abess: Adaptive Best Subset Selection in Polynomial Time}
+\title{abess: Fast Best Subset Selection}
 \description{
 Extremely efficient toolkit for solving the best subset selection problem from Zhu et al (2021) <arXiv:2110.09697>. This package is its R interface. The package implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times for linear model. It also supports best subset selection for logistic regression, Poisson regression, Cox proportional hazard model, Gamma regression, multiple-response regression, multinomial logistic regression, (sequential) principal component analysis, and robust principal component analysis. The other valuable features such as the best subset of group selection <arXiv:2104.12576> and sure independence screening <doi:10.1111/j.1467-9868.2008.00674.x> are also provided.
 }
@@ -23,9 +23,9 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Liyuan Hu \email{huly5@mail2.sysu.edu.cn}
-  \item Junhao Huang \email{huangjh256@mail2.sysu.edu.cn}
   \item Kangkang Jiang \email{jiangkk3@mail2.sysu.edu.cn}
+  \item Junhao Huang \email{huangjh256@mail2.sysu.edu.cn}
+  \item Liyuan Hu \email{huly5@mail2.sysu.edu.cn}
   \item Yanhang Zhang \email{zhangyh98@ruc.edu.cn}
   \item Shiyun Lin \email{shiyunlin@stu.pku.edu.cn}
   \item Junxian Zhu \email{adaizjx@163.com}

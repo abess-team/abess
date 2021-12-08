@@ -223,6 +223,7 @@ This algorithm exploits the idea of sequencing and splicing to reach a stable so
 The parameters \code{c.max}, \code{splicing.type} and \code{max.splicing.iter} allow user control the splicing technique flexibly. 
 On the basis of our numerical experiment results, we assign properly parameters to the these parameters as the default 
 such that the precision and runtime are well balanced, we suggest users keep the default values unchanged. 
+Please see <https://abess-team.github.io/abess/articles/v10-algorithm.html> for more details about the splicing algorithm. 
 
 To find the optimal support size \eqn{s},
 we provide various criterion like GIC, AIC, BIC and cross-validation error to determine it. 
@@ -230,21 +231,22 @@ More specifically, the sequence of models implied by \code{support.size} are fit
 And the solved model with least information criterion or cross-validation error is the optimal model. 
 The sequential searching for the optimal model is somehow time-wasting. 
 A faster strategy is golden section (GS), which only need to specify \code{gs.range}. 
-More details about GS is refered to Zhang et al (2021). 
+More details about GS is referred to Zhang et al (2021). 
 
 It is worthy to note that the parameters \code{newton}, \code{max.newton.iter} and \code{newton.thresh} allows 
 user control the parameter estimation in non-guassian models. 
 The parameter estimation procedure use Newton method or approximated Newton method (only consider the diagonal elements in the Hessian matrix). 
 Again, we suggest to use the default values unchanged because the same reason for the parameter \code{c.max}. 
 
-\code{abess} support some well-known statistical methods to analsis data, including 
+\code{abess} support some well-known advanced statistical methods to analyze data, including 
 \itemize{
   \item{sure independent screening: } {helpful for ultra-high dimensional predictors (i.e., \eqn{p \gg n}). Use the parameter \code{screening.num} to retain the marginally most important predictors. See Fan et al (2008) for more details. }
   \item{best subset of group selection: } {helpful when predictors have group structure. Use the parameter \code{group.index} to specify the group structure of predictors. See Zhang et al (2021) for more details. }
   \item{\eqn{l_2} regularization best subset selection: } {helpful when signal-to-ratio is relatively small. Use the parameter \code{lambda} to control the magnitude of the regularization term.}
   \item{nuisance selection: } {helpful when the prior knowledge of important predictors is available. Use the parameter \code{always.include} to retain the important predictors.}
 }
-The arbitrary combination of the four methods are definitely support.
+The arbitrary combination of the four methods are definitely support. 
+Please see <https://abess-team.github.io/abess/articles/v07-advancedFeatures.html> for more details about the advanced features support by \code{abess}.
 }
 \examples{
 \donttest{
