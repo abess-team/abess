@@ -141,7 +141,7 @@ otherwise, \code{min(length(unique(group.index)), 100)}.
 }
 \note{
 Some parameters not described in the Details Section is explained in the document for \code{\link{abess}} 
-because the meanning of these parameters are very similar.
+because the meaning of these parameters are very similar.
 }
 \examples{
 \donttest{
@@ -183,9 +183,9 @@ plot(spca_fit, type = "tune")
 }
 }
 \references{
-A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
+A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; \doi{10.1073/pnas.2014241117}
 
-Sparse principal component analysis. Hui Zou, Hastie Trevor, and Tibshirani Robert. Journal of computational and graphical statistics 15.2 (2006): 265-286.
+Sparse principal component analysis. Hui Zou, Hastie Trevor, and Tibshirani Robert. Journal of computational and graphical statistics 15.2 (2006): 265-286. \doi{10.1198/106186006X113430}
 }
 \seealso{
 \code{\link{print.abesspca}},

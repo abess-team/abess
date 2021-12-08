@@ -15,7 +15,7 @@
 #'
 #' @details The methods for generating the matrix is detailedly described in the APPENDIX A. Data generation section in Schipper et al (2021).
 #'
-#' @references Model selection techniques for sparse weight-based principal component analysis. de Schipper, Niek C and Van Deun, Katrijn. Journal of Chemometrics. 2021.
+#' @references Model selection techniques for sparse weight-based principal component analysis. de Schipper, Niek C and Van Deun, Katrijn. Journal of Chemometrics. 2021. \doi{10.1002/cem.3289}.
 #'
 #' @export
 #'

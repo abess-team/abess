@@ -153,7 +153,7 @@ plot(res, type = "tune")
 plot(res, type = "loss")
 }
 \references{
-Emmanuel J. Candès, Xiaodong Li, Yi Ma, and John Wright. 2011. Robust principal component analysis? Journal of the ACM. 58, 3, Article 11 (May 2011), 37 pages. DOI:https://doi.org/10.1145/1970392.1970395
+Emmanuel J. Candès, Xiaodong Li, Yi Ma, and John Wright. 2011. Robust principal component analysis? Journal of the ACM. 58, 3, Article 11 (May 2011), 37 pages. \doi{10.1145/1970392.1970395}
 
-Mazumder, Rahul, Trevor Hastie, and Robert Tibshirani. "Spectral regularization algorithms for learning large incomplete matrices." The Journal of Machine Learning Research 11 (2010): 2287-2322.
+Mazumder, Rahul, Trevor Hastie, and Robert Tibshirani. Spectral regularization algorithms for learning large incomplete matrices. The Journal of Machine Learning Research 11 (2010): 2287-2322.
 }

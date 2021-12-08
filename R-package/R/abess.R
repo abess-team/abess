@@ -146,7 +146,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' The parameters \code{c.max}, \code{splicing.type} and \code{max.splicing.iter} allow user control the splicing technique flexibly. 
 #' On the basis of our numerical experiment results, we assign properly parameters to the these parameters as the default 
 #' such that the precision and runtime are well balanced, we suggest users keep the default values unchanged. 
-#' Please see <https://abess-team.github.io/abess/articles/v10-algorithm.html> for more details about the splicing algorithm. 
+#' Please see \url{https://abess-team.github.io/abess/articles/v10-algorithm.html} for more details about the splicing algorithm. 
 #' 
 #' To find the optimal support size \eqn{s},
 #' we provide various criterion like GIC, AIC, BIC and cross-validation error to determine it. 
@@ -169,12 +169,12 @@ abess <- function(x, ...) UseMethod("abess")
 #'   \item{nuisance selection: } {helpful when the prior knowledge of important predictors is available. Use the parameter \code{always.include} to retain the important predictors.}
 #' }
 #' The arbitrary combination of the four methods are definitely support. 
-#' Please see <https://abess-team.github.io/abess/articles/v07-advancedFeatures.html> for more details about the advanced features support by \code{abess}. 
+#' Please see \link[https://abess-team.github.io/abess/articles/v07-advancedFeatures.html]{online vignettes} for more details about the advanced features support by \code{abess}. 
 #' 
-#' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
+#' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; \doi{10.1073/pnas.2014241117}
 #' @references Certifiably Polynomial Algorithm for Best Group Subset Selection. Zhang, Yanhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). arXiv preprint arXiv:2104.12576.
-#' @references Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x
-#' @references Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun & Heping Zhang (2020). Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079
+#' @references Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. \doi{10.1111/j.1467-9868.2008.00674.x}
+#' @references Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun & Heping Zhang (2020). Journal of the American Statistical Association, \doi{10.1080/01621459.2020.1737079}
 #' 
 #'
 #' @seealso \code{\link{print.abess}},
@@ -484,7 +484,7 @@ abess.default <- function(x,
     stop("Rows of x must be the same as rows of y!")
   }
 
-  ## strategy for tunning
+  ## strategy for tuning
   tune.path <- match.arg(tune.path)
   if (tune.path == "gsection") {
     path_type <- 2
