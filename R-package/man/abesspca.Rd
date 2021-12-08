@@ -46,7 +46,7 @@ Default: \code{cor = FALSE}.}
 
 \item{support.size}{It is a flexible input. If it is an integer vector.
 It represents the support sizes to be considered for each principal component.
-If it is a \code{list} object containing \code{kpc.num} number of interger vectors,
+If it is a \code{list} object containing \code{kpc.num} number of integer vectors,
 the i-th principal component consider the support size specified in the i-th element in the \code{list}.
 The default is \code{support.size = NULL}, and some rules in details section are used to specify \code{support.size}.}
 

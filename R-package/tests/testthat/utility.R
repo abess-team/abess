@@ -22,7 +22,7 @@
 #' \code{cortype = 2} denotes the exponential structure,
 #' where the covariance matrix has \eqn{(i,j)} entry equals \eqn{rho^{|i-j|}}.
 #' code{cortype = 3} denotes the constant structure,
-#' where the non-diagnoal entries of covariance
+#' where the non-diagonal entries of covariance
 #' matrix are \eqn{rho} and diagonal entries are 1.
 #' @param snr A numerical value controlling the signal-to-noise ratio (SNR). The SNR is defined as
 #' as the variance of \eqn{x\beta} divided
@@ -345,7 +345,7 @@ generate.data <- function(n,
 #' \code{cortype = 2} denotes the exponential structure,
 #' where the covariance matrix has \eqn{(i,j)} entry equals \eqn{rho^{|i-j|}}.
 #' code{cortype = 3} denotes the constant structure,
-#' where the non-diagnoal entries of covariance
+#' where the non-diagonal entries of covariance
 #' matrix are \eqn{rho} and diagonal entries are 1.
 #' @param weibull.shape The shape parameter of the Weibull distribution.
 #' It works only when \code{family = "cox"}.

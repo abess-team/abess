@@ -127,14 +127,14 @@ For a given support set \eqn{\Omega}, the optimization problem:
 still a non-convex optimization problem. We use the hard-impute algorithm proposed in one of the reference to solve this problem. 
 The hard-impute algorithm is an iterative algorithm, people can set \code{max.newton.iter} and \code{newton.thresh} to 
 control the solution precision of the optimization problem. 
-(Here, the name of the two parameters are somwhow abused to make the parameters cross functions have an unified name.) 
+(Here, the name of the two parameters are somehow abused to make the parameters cross functions have an unified name.) 
 According to our experiments, 
 we assign properly parameters to the two parameter as the default such that the precision and runtime are well balanced, 
 we suggest users keep the default values unchanged.
 }
 \note{
 Some parameters not described in the Details Section is explained in the document for \code{\link{abess}} 
-because the meanning of these parameters are very similar. 
+because the meaning of these parameters are very similar. 
 
 At present, \eqn{l_2} regularization and group selection are not support, 
 and thus, set \code{lambda} and \code{group.index} have no influence on the output. 
