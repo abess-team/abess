@@ -42,3 +42,4 @@
 ^logo\.png$
 ^logo\.svg
 ^example$
+^pre-release\.R$
