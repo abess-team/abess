@@ -141,6 +141,7 @@ and thus, set \code{lambda} and \code{group.index} have no influence on the outp
 This feature will coming soon.
 }
 \examples{
+\donttest{
 library(abess)
 n <- 100
 p <- 100
@@ -152,7 +153,10 @@ print(res)
 plot(res, type = "tune")
 plot(res, type = "loss")
 }
+}
 \references{
+A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; \doi{10.1073/pnas.2014241117}
+
 Emmanuel J. Candès, Xiaodong Li, Yi Ma, and John Wright. 2011. Robust principal component analysis? Journal of the ACM. 58, 3, Article 11 (May 2011), 37 pages. \doi{10.1145/1970392.1970395}
 
 Mazumder, Rahul, Trevor Hastie, and Robert Tibshirani. Spectral regularization algorithms for learning large incomplete matrices. The Journal of Machine Learning Research 11 (2010): 2287-2322.

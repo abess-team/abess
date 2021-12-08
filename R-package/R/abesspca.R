@@ -32,7 +32,7 @@
 #' the number of variables to be spliced is \code{c.max}, \code{c.max/2}, ..., \code{1}.
 #' Default: \code{splicing.type = 1}.
 #'
-#' @details Adaptive best subset selection for principal component analysis aim
+#' @details Adaptive best subset selection for principal component analysis (abessPCA) aim
 #' to solve the non-convex optimization problem:
 #' \deqn{-\arg\min_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
 #' where \eqn{s} is support size.
@@ -43,6 +43,11 @@
 #' By exploiting the warm-start initialization, the non-convex optimization
 #' problem at different support size (specified by \code{support.size})
 #' can be efficiently solved.
+#' 
+#' The abessPCA can be conduct sequentially for each component. 
+#' Please see the multiple principal components Section on the [webite](https://abess-team.github.io/abess/articles/v08-sPCA.html) 
+#' for more details about this function. 
+#' For \code{abesspca} function, the arguments \code{kpc.num} control the number of components to be consider. 
 #'
 #' When \code{sparse.type = "fpc"} but \code{support.size} is not supplied,
 #' it is set as \code{support.size = 1:min(ncol(x), 100)} if \code{group.index = NULL};
@@ -80,6 +85,8 @@
 #' @references Sparse principal component analysis. Hui Zou, Hastie Trevor, and Tibshirani Robert. Journal of computational and graphical statistics 15.2 (2006): 265-286. \doi{10.1198/106186006X113430}
 #'
 #' @export
+#' 
+#' @md
 #'
 #' @seealso \code{\link{print.abesspca}},
 #' \code{\link{coef.abesspca}},

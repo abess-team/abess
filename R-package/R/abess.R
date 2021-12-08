@@ -132,6 +132,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' It would be an empty character vector if \code{screening.num = 0}.}
 #' \item{call}{The original call to \code{abess}.}
 #'
+#' @md
+#' 
 #' @details
 #' Best-subset selection aims to find a small subset of predictors,
 #' so that the resulting model is expected to have the most desirable prediction accuracy.
@@ -146,7 +148,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' The parameters \code{c.max}, \code{splicing.type} and \code{max.splicing.iter} allow user control the splicing technique flexibly. 
 #' On the basis of our numerical experiment results, we assign properly parameters to the these parameters as the default 
 #' such that the precision and runtime are well balanced, we suggest users keep the default values unchanged. 
-#' Please see \url{https://abess-team.github.io/abess/articles/v10-algorithm.html} for more details about the splicing algorithm. 
+#' Please see [this online page](https://abess-team.github.io/abess/articles/v10-algorithm.html) for more details about the splicing algorithm. 
 #' 
 #' To find the optimal support size \eqn{s},
 #' we provide various criterion like GIC, AIC, BIC and cross-validation error to determine it. 
@@ -169,7 +171,7 @@ abess <- function(x, ...) UseMethod("abess")
 #'   \item{nuisance selection: } {helpful when the prior knowledge of important predictors is available. Use the parameter \code{always.include} to retain the important predictors.}
 #' }
 #' The arbitrary combination of the four methods are definitely support. 
-#' Please see \link[https://abess-team.github.io/abess/articles/v07-advancedFeatures.html]{online vignettes} for more details about the advanced features support by \code{abess}. 
+#' Please see [online vignettes](https://abess-team.github.io/abess/articles/v07-advancedFeatures.html) for more details about the advanced features support by \code{abess}. 
 #' 
 #' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; \doi{10.1073/pnas.2014241117}
 #' @references Certifiably Polynomial Algorithm for Best Group Subset Selection. Zhang, Yanhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). arXiv preprint arXiv:2104.12576.

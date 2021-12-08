@@ -119,7 +119,7 @@ It is worthy to note that, if \code{sparse.type == "kpc"}, the \code{ev}, \code{
 Adaptive best subset selection for principal component analysis
 }
 \details{
-Adaptive best subset selection for principal component analysis aim
+Adaptive best subset selection for principal component analysis (abessPCA) aim
 to solve the non-convex optimization problem:
 \deqn{-\arg\min_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
 where \eqn{s} is support size.
@@ -131,16 +131,21 @@ By exploiting the warm-start initialization, the non-convex optimization
 problem at different support size (specified by \code{support.size})
 can be efficiently solved.
 
+The abessPCA can be conduct sequentially for each component.
+Please see the multiple principal components Section on the \href{https://abess-team.github.io/abess/articles/v08-sPCA.html}{webite}
+for more details about this function.
+For \code{abesspca} function, the arguments \code{kpc.num} control the number of components to be consider.
+
 When \code{sparse.type = "fpc"} but \code{support.size} is not supplied,
 it is set as \code{support.size = 1:min(ncol(x), 100)} if \code{group.index = NULL};
 otherwise, \code{support.size = 1:min(length(unique(group.index)), 100)}.
 When \code{sparse.type = "kpc"} but \code{support.size} is not supplied,
-then for 20\% principal components,
+then for 20\\% principal components,
 it is set as \code{min(ncol(x), 100)} if \code{group.index = NULL};
 otherwise, \code{min(length(unique(group.index)), 100)}.
 }
 \note{
-Some parameters not described in the Details Section is explained in the document for \code{\link{abess}} 
+Some parameters not described in the Details Section is explained in the document for \code{\link{abess}}
 because the meaning of these parameters are very similar.
 }
 \examples{
