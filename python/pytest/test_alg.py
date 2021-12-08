@@ -5,6 +5,7 @@ import pandas as pd
 import sys
 from sklearn.model_selection import KFold
 from sklearn.model_selection import GridSearchCV
+from scipy.sparse import coo_matrix
 
 class TestAlgorithm:
     """
@@ -266,30 +267,56 @@ class TestAlgorithm:
 
         # null
         model1 = abessPCA(support_size=support_size)
-        model1.fit(X, is_normal=False)
+        model1.fit(X)
         assert np.count_nonzero(model1.coef_) == s
-        
+
         # ratio & transform 
         model1.ratio(X)
         model1.transform(X)
         model1.fit_transform(X)
+        
+        # sparse
+        model2 = abessPCA(support_size=s, sparse_matrix=True)
+        model2.fit(coo_matrix(X))
+        assert_value(model1.coef_, model2.coef_)
+
+        model2 = abessPCA(support_size=s, sparse_matrix=True)
+        model2.fit(X)
+        assert_value(model1.coef_, model2.coef_)
 
         # sigma input
-        model2 = abessPCA(support_size=support_size)
-        model2.fit(Sigma=X.T.dot(X) / n, n = n)
-        assert_fit(model1.coef_, model2.coef_)
+        model3 = abessPCA(support_size=support_size)
+        model3.fit(Sigma=X.T.dot(X))
+        model3.fit(Sigma=X.T.dot(X) / n, n = n)
+        assert_fit(model1.coef_, model3.coef_)
 
         # KPCA
         support_size_m = np.hstack((support_size,support_size,support_size))
-        model3 = abessPCA(support_size=support_size_m)
-        model3.fit(X, number=3)
-        assert (model3.coef_.shape[1] == 3)
+        model4 = abessPCA(support_size=support_size_m)
+        model4.fit(X, number=3)
+        assert (model4.coef_.shape[1] == 3)
 
         for i in range(3):
-            coef = np.nonzero(model3.coef_[:, i])[0]
+            coef = np.nonzero(model4.coef_[:, i])[0]
             assert (len(coef) == s)
 
-        model3.ratio(X)
+        model4.ratio(X)
+
+        # group
+        support_size_g = np.zeros((4, 1))
+        support_size_g[1, 0] = 1
+        group = np.repeat([0,1,2,3], [5,5,5,5])
+        model5 = abessPCA(support_size=support_size_g)
+        model5.fit(X, group=group)
+        coef = g_index[np.nonzero(model5.coef_)[0]]
+
+        assert len(coef) == 10
+        assert len(np.unique(coef)) == 2
+
+        # screening
+        model6 = abessPCA(support_size=support_size, screening_size=20)
+        model6.fit(X)
+        assert_nan(model6.coef_)
 
         # ic
         for ic in ['aic', 'bic', 'ebic', 'gic']:
@@ -332,6 +359,20 @@ class TestAlgorithm:
         model1 = abessRPCA(support_size=s)
         model1.fit(X, r=r)
         # assert_fit(model1.coef_, S)
+
+        # sparse
+        model2 = abessRPCA(support_size=s)
+        model2.fit(coo_matrix(X), r=r)
+        assert_value(model1.coef_, model2.coef_)
+
+        model2 = abessRPCA(support_size=s, sparse_matrix=True)
+        model2.fit(X, r=r)
+        assert_value(model1.coef_, model2.coef_)
+
+        # group
+        group = np.arange(n*p)
+        model3 = abessRPCA(support_size=s)
+        model3.fit(X, r=r, group=group)
 
         # ic
         for ic in ['aic', 'bic', 'ebic', 'gic']:
