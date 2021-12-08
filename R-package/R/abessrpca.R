@@ -1,4 +1,4 @@
-#' Adaptive best subset selection for principal component analysis
+#' Adaptive best subset selection for robust principal component analysis
 #'
 #' @description Decompose a matrix into the summation of
 #' low-rank matrix and sparse matrix via the best subset selection approach

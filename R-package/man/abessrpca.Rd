@@ -2,7 +2,7 @@
 % Please edit documentation in R/abessrpca.R
 \name{abessrpca}
 \alias{abessrpca}
-\title{Adaptive best subset selection for principal component analysis}
+\title{Adaptive best subset selection for robust principal component analysis}
 \usage{
 abessrpca(
   x,
