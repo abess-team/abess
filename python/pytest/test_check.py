@@ -217,7 +217,7 @@ class TestCheck:
 
     def test_pca(self):
         """
-        For `abess.pca.abessPca`.
+        For `abess.pca.abessPCA`.
         """
         model = abessPCA()
         # datatype error
@@ -271,10 +271,26 @@ class TestCheck:
             print(e)
         else:
             assert False
+        
+        try:
+            model1 = abessPCA(support_size=np.array([1,2]))
+            model1.fit([[1]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
         # lack of necessary parameter
         try:
             model.fit()
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model1 = abessPCA(cv=5)
+            model1.fit(Sigma=[[1]])
         except ValueError as e:
             print(e)
         else:
@@ -302,12 +318,29 @@ class TestCheck:
             print(e)
         else:
             assert False
+        
+        # invalid arg
+        try:
+            model1 = abessPCA(ic_type='other')
+            model1.fit([[1]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model1 = abessPCA(cv=5)
+            model1.fit([[1]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
 
     def test_rpca(self):
         model = abessRPCA()
         # datatype error
         try:
-            model.fit([['c']])
+            model.fit([['c']], r=1)
         except ValueError as e:
             print(e)
         else:
@@ -322,22 +355,30 @@ class TestCheck:
                 
         # incompatible shape
         try:
-            model.fit([1])
+            model.fit([1], r=1)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+        
+        try:
+            model.fit(1, r=1)
         except ValueError as e:
             print(e)
         else:
             assert False
                 
         try:
-            model.fit([[1]], group = [1, 2])
+            model.fit([[1]], r=1, group = [1, 2])
         except ValueError as e:
             print(e)
         else:
             assert False
-
-        # lack of necessary parameter
+        
+        # invalid arg
         try:
-            model.fit()
+            model1 = abessRPCA(ic_type='other')
+            model1.fit([[1]], r=1)
         except ValueError as e:
             print(e)
         else:
