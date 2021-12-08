@@ -6,6 +6,11 @@
 #'
 #' @inheritParams coef.abess
 #' @param object An "\code{abessrpca}" project.
+#' @param support.size An integer vector specifies
+#' the sparse matrix fitted at given \code{support.size} to be returned.
+#' If \code{support.size = NULL}, then the sparse matrix with 
+#' the least tuning value would be returned.
+#' Default: \code{support.size = NULL}.
 #'
 #' @return A list with \code{length(support.size)} number of dgCMatrix,
 #' each of which is the estimation the sparse component.
@@ -24,8 +29,9 @@ coef.abessrpca <- function(object,
   if (!is.null(support.size)) {
     supp_size_index <- match_support_size(object, support.size)
   } else {
-    supp_size_index <-
-      match_support_size(object, object[["support.size"]])
+    min_ic_index <- which.min(object[["tune.value"]])
+    supp_size_index <- match_support_size(object, 
+                                          object[["support.size"]][min_ic_index])
   }
 
   stopifnot(is.logical(sparse))

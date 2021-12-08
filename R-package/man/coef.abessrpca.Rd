@@ -10,8 +10,9 @@
 \item{object}{An "\code{abessrpca}" project.}
 
 \item{support.size}{An integer vector specifies
-the coefficient fitted at given \code{support.size}.
-If \code{support.size = NULL}, then all coefficients would be returned.
+the sparse matrix fitted at given \code{support.size} to be returned.
+If \code{support.size = NULL}, then the sparse matrix with 
+the least tuning value would be returned.
 Default: \code{support.size = NULL}.}
 
 \item{sparse}{A logical value, specifying whether the coefficients should be

@@ -17,15 +17,17 @@ and \code{"tune"} (i.e., , a support.size versus tuning value plot).
 Default is \code{"coef"}.}
 
 \item{support.size}{An integer vector specifies
-the coefficient fitted at given \code{support.size}.
-If \code{support.size = NULL}, then all coefficients would be returned.
+the sparse matrix fitted at given \code{support.size} to be returned.
+If \code{support.size = NULL}, then the sparse matrix with 
+the least tuning value would be returned.
 Default: \code{support.size = NULL}.}
 
 \item{label}{A logical value.
 If \code{label = TRUE} (the default),
 label the curves with variable sequence numbers.}
 
-\item{...}{Other graphical parameters to plot}
+\item{...}{Other graphical parameters to \code{plot} 
+or \code{stats::heatmap} function}
 }
 \value{
 No return value, called for side effects.

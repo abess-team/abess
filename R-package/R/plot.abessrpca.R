@@ -15,7 +15,8 @@
 #' @param label A logical value.
 #' If \code{label = TRUE} (the default),
 #' label the curves with variable sequence numbers.
-#' @param ... Other graphical parameters to plot
+#' @param ... Other graphical parameters to \code{plot} 
+#' or \code{stats::heatmap} function
 #'
 #' @return No return value, called for side effects.
 #'
@@ -35,7 +36,24 @@ plot.abessrpca <- function(x,
 
   type <- match.arg(type)
   if (type == "S") {
-    stats::heatmap(as.matrix(x[["S"]]), Rowv = NA, Colv = NA, scale = "none", col = grDevices::cm.colors(256), frame.plot = TRUE, margins = c(2.4, 2.4), ...)
+    supp_size_index <- NULL
+    if (!is.null(support.size)) {
+      supp_size_index <- match_support_size(x, support.size)
+    } else {
+      min_ic_index <- which.min(x[["tune.value"]])
+      supp_size_index <- match_support_size(x, x[["support.size"]][min_ic_index])
+    }
+    
+    color_num <- 20
+    # colSide <- grDevices::cm.colors(color_num)
+    stats::heatmap(as.matrix(x[["S"]][[supp_size_index[1]]]), 
+                   Rowv = NA, Colv = NA, scale = "none", 
+                   revC = TRUE, 
+                   # RowSideColors = colSide, 
+                   col = grDevices::cm.colors(color_num), 
+                   frame.plot = TRUE, margins = c(2.4, 2.4), 
+                   main = sprintf("Support size: %s", support.size), 
+                   ...)
   } else {
     if (type == "loss") {
       y_value <- x[["loss"]]

@@ -58,13 +58,14 @@
 #' @examples
 #' \donttest{
 #' library(abess)
-#' n <- 100
-#' p <- 100
-#' true_S_size <- 300
-#' true_L_rank <- 5
+#' n <- 30
+#' p <- 30
+#' true_S_size <- 60
+#' true_L_rank <- 2
 #' dataset <- generate.matrix(n, p, support.size = true_S_size, rank = true_L_rank)
-#' res <- abessrpca(dataset[["x"]], rank = true_L_rank, support.size = (20:40) * 10)
+#' res <- abessrpca(dataset[["x"]], rank = true_L_rank, support.size = 50:70)
 #' print(res)
+#' coef(res)
 #' plot(res, type = "tune")
 #' plot(res, type = "loss")
 #' plot(res, type = "S")
