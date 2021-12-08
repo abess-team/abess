@@ -47,6 +47,8 @@ plot.abessrpca <- function(x,
     if (ic_type == "tune") {
       ic_type <- x[["tune.type"]]
     }
-    plot_loss(y_value, x_value, ic.type = ic_type)
+    default_mar <- c(5, 4, 3, 2) + 0.1
+    y_value <- as.vector(y_value)
+    plot_loss(y_value, x_value, mar = default_mar, ic.type = ic_type)
   }
 }

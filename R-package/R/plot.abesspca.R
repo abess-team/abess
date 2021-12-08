@@ -126,7 +126,7 @@ plot_pca_pev <- function(pev, df_list, mar, type, total.variance, i, ...) {
     col = "#3182bd",
     xlab = x_lab,
     ylab = "Percent of explained variance",
-    xlim = c(1, max(plot_df)),
+    xlim = c(min(plot_df), max(plot_df)),
     main = plot_title,
     ...
   )
