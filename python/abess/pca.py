@@ -380,7 +380,7 @@ class abessRPCA(bess_base):
             splicing_type=splicing_type
         )
 
-    def fit(self, X=None, r = 10, group=None):
+    def fit(self, X, r, group=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -390,7 +390,6 @@ class abessRPCA(bess_base):
             Training data
         r : int
             Rank of the (recovered) information matrix L. 
-            Default: r = 10.
         group : int, optional
             The group index for each variable.
             Default: group = \code{numpy.ones(p)}.
