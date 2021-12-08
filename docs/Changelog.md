@@ -17,6 +17,7 @@
   * Support flexible support size for sequential principal component analysis (PCA), accompanied with several helpful generic function like plot. 
   * Support user-specified cross validation division for `abess` and `abesspca` function by additional argument `foldid`. 
   * Support RPCA now. A new R function `abessrpca` access it.
+  * Improve the R package document by: adding more details and giving more links related to core functions.  
 
 * Project development
   * Source code
