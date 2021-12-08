@@ -329,18 +329,14 @@ public:
         algorithm_list[k]->update_sparsity_level(fit_arg.support_size);
         algorithm_list[k]->update_lambda_level(fit_arg.lambda);
 
-        if (algorithm_list[k]->get_warm_start())
-        {
-
-          algorithm_list[k]->update_beta_init(this->cv_init_fit_arg[k].beta_init);
-          algorithm_list[k]->update_bd_init(this->cv_init_fit_arg[k].bd_init);
-          algorithm_list[k]->update_coef0_init(this->cv_init_fit_arg[k].coef0_init);
-          algorithm_list[k]->update_A_init(this->cv_init_fit_arg[k].A_init, N);
-          // beta_init = this->cv_initial_model_param.col(k).eval();
-          // algorithm->update_beta_init(beta_init);
-          // algorithm->update_coef0_init(this->cv_initial_coef0[k]);
-          // algorithm->update_A_init(this->cv_initial_A[k], N);
-        }
+        algorithm_list[k]->update_beta_init(this->cv_init_fit_arg[k].beta_init);
+        algorithm_list[k]->update_bd_init(this->cv_init_fit_arg[k].bd_init);
+        algorithm_list[k]->update_coef0_init(this->cv_init_fit_arg[k].coef0_init);
+        algorithm_list[k]->update_A_init(this->cv_init_fit_arg[k].A_init, N);
+        // beta_init = this->cv_initial_model_param.col(k).eval();
+        // algorithm->update_beta_init(beta_init);
+        // algorithm->update_coef0_init(this->cv_initial_coef0[k]);
+        // algorithm->update_A_init(this->cv_initial_A[k], N);
         // algorithm->update_train_mask(this->train_mask_list[k]);
         // ??????????????????????????????????????????????????????????????
         algorithm_list[k]->fit(this->train_X_list[k], this->train_y_list[k], this->train_weight_list[k], g_index, g_size, train_n, p, N);

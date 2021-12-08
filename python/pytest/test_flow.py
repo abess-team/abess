@@ -62,6 +62,19 @@ class TestWorkflow:
         assert_fit(model1.coef_, model2.coef_)
         # assert t2 < t1 
 
+        # warm_start
+        model1 = abessLm(path_type='seq', support_size=range(s_max), is_warm_start=False)
+        model1.fit(data.x, data.y)
+        model2 = abessLm(path_type='gs', s_min=s_min, s_max=s_max, is_warm_start=False)
+        model2.fit(data.x, data.y)
+        assert_value(model1.coef_, model2.coef_, 0, 0)
+
+        model1 = abessLm(path_type='seq', support_size=range(s_max), is_warm_start=False, cv=5)
+        model1.fit(data.x, data.y)
+        model2 = abessLm(path_type='gs', s_min=s_min, s_max=s_max, is_warm_start=False, cv=5)
+        model2.fit(data.x, data.y)
+        assert_value(model1.coef_, model2.coef_, 0, 0)
+
     def test_other(self):
         np.random.seed(2)
         n = 100
