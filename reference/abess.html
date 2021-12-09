@@ -474,6 +474,8 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span> [15]  1439.776  1437.522  1435.833  1434.539  1433.386  1432.351  1432.225</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="abess-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></span>
+<span class="r-plt img"><img src="abess-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">################ logistic model ################</span></span>
 <span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span>
@@ -554,7 +556,7 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-in">  family <span class="op">=</span> <span class="st">"mgaussian"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"l2norm"</span><span class="op">)</span></span>
-<span class="r-plt img"><img src="abess-2.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="abess-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">################ Multinomial model (multi-classification) ################</span></span>
 <span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"multinomial"</span><span class="op">)</span></span>

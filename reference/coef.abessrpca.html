@@ -107,8 +107,9 @@ coefficients from a fitted "<code>abessrpca</code>" object.</p>
 <dd><p>An "<code>abessrpca</code>" project.</p></dd>
 <dt>support.size</dt>
 <dd><p>An integer vector specifies
-the coefficient fitted at given <code>support.size</code>.
-If <code>support.size = NULL</code>, then all coefficients would be returned.
+the sparse matrix fitted at given <code>support.size</code> to be returned.
+If <code>support.size = NULL</code>, then the sparse matrix with 
+the least tuning value would be returned.
 Default: <code>support.size = NULL</code>.</p></dd>
 <dt>sparse</dt>
 <dd><p>A logical value, specifying whether the coefficients should be

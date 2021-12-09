@@ -114,15 +114,17 @@ and <code>"tune"</code> (i.e., , a support.size versus tuning value plot).
 Default is <code>"coef"</code>.</p></dd>
 <dt>support.size</dt>
 <dd><p>An integer vector specifies
-the coefficient fitted at given <code>support.size</code>.
-If <code>support.size = NULL</code>, then all coefficients would be returned.
+the sparse matrix fitted at given <code>support.size</code> to be returned.
+If <code>support.size = NULL</code>, then the sparse matrix with 
+the least tuning value would be returned.
 Default: <code>support.size = NULL</code>.</p></dd>
 <dt>label</dt>
 <dd><p>A logical value.
 If <code>label = TRUE</code> (the default),
 label the curves with variable sequence numbers.</p></dd>
 <dt>...</dt>
-<dd><p>Other graphical parameters to plot</p></dd>
+<dd><p>Other graphical parameters to <code>plot</code> 
+or <code><a href="https://rdrr.io/r/stats/heatmap.html" class="external-link">stats::heatmap</a></code> function</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
