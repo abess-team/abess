@@ -655,7 +655,11 @@ class abessMultinomial(bess_base):
         intercept_ = np.repeat(
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
         xbeta = X.dot(self.coef_) + intercept_
-        return np.argmax(xbeta)
+        max_item = np.argmax(xbeta, axis = 1)
+        y_pred = np.zeros_like(xbeta)
+        for i in range(X.shape[0]):
+            y_pred[i, max_item[i]] = 1
+        return y_pred
 
     def score(self, X, y):
         """
