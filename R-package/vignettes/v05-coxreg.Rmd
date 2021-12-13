@@ -43,9 +43,9 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 <!-- Linearity is assumed on the log scale of the hazard. The hazard ratio in Cox proportional hazard model -->
 <!--  is assumed constant. First, we load the data.  -->
 
-## Cox Proportional Hazrds Regression
+## Cox Proportional Hazards Regression
 
-Cox Proportional Hazrds (CoxPH) regression is to describe the survival according to several covariates. The difference between CoxPH regression and Kaplan-Meier curves or the logrank tests is that the latter only focus on modeling the survival according to one factor (categorical predictor is best) while the former is able to take into consideration any covariates simultaneously, regardless of whether they're quantitatrive or categorical. The model is as follow:
+Cox Proportional Hazards (CoxPH) regression is to describe the survival according to several covariates. The difference between CoxPH regression and Kaplan-Meier curves or the logrank tests is that the latter only focus on modeling the survival according to one factor (categorical predictor is best) while the former is able to take into consideration any covariates simultaneously, regardless of whether they're quantitative or categorical. The model is as follow:
 $$
 h(t) = h_0(t)\exp(\eta).
 $$

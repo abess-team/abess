@@ -10,13 +10,18 @@ abesspca(
   sparse.type = c("fpc", "kpc"),
   cor = FALSE,
   support.size = NULL,
+  kpc.num = ifelse(sparse.type == "fpc", 1, 2),
+  tune.type = c("gic", "aic", "bic", "ebic", "cv"),
+  nfolds = 5,
+  foldid = NULL,
+  ic.scale = 1,
   c.max = NULL,
-  lambda = 0,
   always.include = NULL,
   group.index = NULL,
   splicing.type = 1,
   max.splicing.iter = 20,
   warm.start = TRUE,
+  num.threads = 0,
   ...
 )
 }
@@ -31,26 +36,36 @@ If \code{x} is a predictor matrix, it can be in sparse matrix format
 If \code{type = "gram"}, \code{x} is considered as a sample covariance or correlation matrix.}
 
 \item{sparse.type}{If \code{sparse.type = "fpc"}, then best subset selection performs on the first principal component;
-If \code{sparse.type = "kpc"}, then best subset selection performs on the first \eqn{K} principal components.}
+If \code{sparse.type = "kpc"}, then best subset selection would be sequentially performed on the first \code{kpc.num} number of principal components.
+If \code{kpc.num} is supplied, the default is \code{sparse.type = "kpc"}; otherwise, is \code{sparse.type = "fpc"}.}
 
 \item{cor}{A logical value. If \code{cor = TRUE}, perform PCA on the correlation matrix;
 otherwise, the covariance matrix.
 This option is available only if \code{type = "predictor"}.
 Default: \code{cor = FALSE}.}
 
-\item{support.size}{An integer vector. It represents the alternative support sizes when \code{sparse.type = "fpc"},
-while each support size controls the sparsity of a principal component when \code{sparse.type = "kpc"}.
-When \code{sparse.type = "fpc"} but \code{support.size} is not supplied,
-it is set as \code{support.size = 1:min(ncol(x), 100)} if \code{group.index = NULL};
-otherwise, \code{support.size = 1:min(length(unique(group.index)), 100)}.
-When \code{sparse.type = "kpc"} but \code{support.size} is not supplied,
-then for 20\% principal components,
-it is set as \code{min(ncol(x), 100)} if \code{group.index = NULL};
-otherwise, \code{min(length(unique(group.index)), 100)}.}
+\item{support.size}{It is a flexible input. If it is an integer vector.
+It represents the support sizes to be considered for each principal component.
+If it is a \code{list} object containing \code{kpc.num} number of integer vectors,
+the i-th principal component consider the support size specified in the i-th element in the \code{list}.
+The default is \code{support.size = NULL}, and some rules in details section are used to specify \code{support.size}.}
+
+\item{kpc.num}{A integer decide the number of principal components to be sequentially considered.}
+
+\item{tune.type}{The type of criterion for choosing the support size.
+Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
+Default is \code{"gic"}.
+\code{tune.type = "cv"} is available only when \code{type = "predictor"}.}
+
+\item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.}
+
+\item{foldid}{an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in.
+The default \code{foldid = NULL} would generate a random foldid.}
+
+\item{ic.scale}{A non-negative value used for multiplying the penalty term
+in information criterion. Default: \code{ic.scale = 1}.}
 
 \item{c.max}{an integer splicing size. The default of \code{c.max} is the maximum of 2 and \code{max(support.size) / 2}.}
-
-\item{lambda}{A single lambda value for regularized best subset selection. Default is 0.}
 
 \item{always.include}{An integer vector containing the indexes of variables that should always be included in the model.}
 
@@ -73,6 +88,11 @@ Default is \code{max.splicing.iter = 20}.}
 
 \item{warm.start}{Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.}
 
+\item{num.threads}{An integer decide the number of threads to be
+concurrently used for cross-validation (i.e., \code{tune.type = "cv"}).
+If \code{num.threads = 0}, then all of available cores will be used.
+Default: \code{num.threads = 0}.}
+
 \item{...}{further arguments to be passed to or from methods.}
 }
 \value{
@@ -83,29 +103,50 @@ where each row is a variable and each column is a support size;}
 \item{sparse.type}{The same as input.}
 \item{support.size}{The actual support.size values used. Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.}
 \item{ev}{A vector with size \code{length(support.size)}. It records the explained variance at each support size.}
-\item{cum.ev}{Cumulative sums of explained variance.}
-\item{pev}{A vector with the same length as \code{ev}. It records the percentage of explained variance at each support size.}
-\item{cum.pev}{Cumulative sums of the percentage of explained variance.}
+\item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
+\item{kpc.num}{The number of principal component being considered.}
+\item{var.pc}{The variance of principal components obtained by performing standard PCA.}
+\item{cum.var.pc}{Cumulative sums of \code{var.pc}.}
 \item{var.all}{If \code{sparse.type = "fpc"},
-it is the total variance of the explained by first principal component;
-otherwise, the total standard deviations of all principal components.}
+it is the total standard deviations of all principal components.}
+\item{cum.ev}{Cumulative sums of explained variance.}
+\item{pev}{A vector with the same length as \code{ev}. It records the percent of explained variance (compared to \code{var.all}) at each support size.}
+\item{pev.pc}{It records the percent of explained variance (compared to \code{var.pc}) at each support size.}
 \item{call}{The original call to \code{abess}.}
+It is worthy to note that, if \code{sparse.type == "kpc"}, the \code{ev}, \code{tune.value}, \code{pev} and \code{pev.pc} in list are \code{list} objects.
 }
 \description{
 Adaptive best subset selection for principal component analysis
 }
 \details{
-Adaptive best subset selection for principal component analysis aim
+Adaptive best subset selection for principal component analysis (abessPCA) aim
 to solve the non-convex optimization problem:
-\deqn{\arg\max_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
-where \eqn{s} is support size. 
-Here, \eqn{\Sigma} is covariance matrix, i.e., 
+\deqn{-\arg\min_{v} v^\top \Sigma v, s.t.\quad v^\top v=1, \|v\|_0 \leq s, }
+where \eqn{s} is support size.
+Here, \eqn{\Sigma} is covariance matrix, i.e.,
 \deqn{\Sigma = \frac{1}{n} X^{\top} X.}
 A generic splicing technique is implemented to
 solve this problem.
 By exploiting the warm-start initialization, the non-convex optimization
 problem at different support size (specified by \code{support.size})
 can be efficiently solved.
+
+The abessPCA can be conduct sequentially for each component.
+Please see the multiple principal components Section on the \href{https://abess-team.github.io/abess/articles/v08-sPCA.html}{webite}
+for more details about this function.
+For \code{abesspca} function, the arguments \code{kpc.num} control the number of components to be consider.
+
+When \code{sparse.type = "fpc"} but \code{support.size} is not supplied,
+it is set as \code{support.size = 1:min(ncol(x), 100)} if \code{group.index = NULL};
+otherwise, \code{support.size = 1:min(length(unique(group.index)), 100)}.
+When \code{sparse.type = "kpc"} but \code{support.size} is not supplied,
+then for 20\\% principal components,
+it is set as \code{min(ncol(x), 100)} if \code{group.index = NULL};
+otherwise, \code{min(length(unique(group.index)), 100)}.
+}
+\note{
+Some parameters not described in the Details Section is explained in the document for \code{\link{abess}}
+because the meaning of these parameters are very similar.
 }
 \examples{
 \donttest{
@@ -115,11 +156,12 @@ library(abess)
 head(USArrests)
 pca_fit <- abesspca(USArrests)
 pca_fit
+plot(pca_fit)
 
 ## covariance matrix input:
 cov_mat <- stats::cov(USArrests) * (nrow(USArrests) - 1) / nrow(USArrests)
 pca_fit <- abesspca(cov_mat, type = "gram")
-pca_fit  
+pca_fit
 
 ## robust covariance matrix input:
 rob_cov <- MASS::cov.rob(USArrests)[["cov"]]
@@ -130,19 +172,30 @@ pca_fit
 ## K-component principal component analysis
 pca_fit <- abesspca(USArrests,
   sparse.type = "kpc",
-  support.size = c(1, 2)
+  support.size = 1:4
 )
 coef(pca_fit)
+plot(pca_fit)
+plot(pca_fit, "coef")
+
+## select support size via cross-validation ##
+n <- 500
+p <- 50
+support_size <- 3
+dataset <- generate.spc.matrix(n, p, support_size, snr = 20)
+spca_fit <- abesspca(dataset[["x"]], tune.type = "cv", nfolds = 5)
+plot(spca_fit, type = "tune")
 }
 }
 \references{
-A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
+A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; \doi{10.1073/pnas.2014241117}
 
-Sparse principal component analysis. Hui Zou, Hastie Trevor, and Tibshirani Robert. Journal of computational and graphical statistics 15.2 (2006): 265-286.
+Sparse principal component analysis. Hui Zou, Hastie Trevor, and Tibshirani Robert. Journal of computational and graphical statistics 15.2 (2006): 265-286. \doi{10.1198/106186006X113430}
 }
 \seealso{
 \code{\link{print.abesspca}},
 \code{\link{coef.abesspca}},
+\code{\link{plot.abesspca}}.
 }
 \author{
 Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang

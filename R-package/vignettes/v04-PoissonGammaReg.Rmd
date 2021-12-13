@@ -14,6 +14,9 @@ output:
   word_document: 
     toc: yes
     keep_md: yes
+vignette: |
+  %\VignetteIndexEntry{Positive response: Poisson and Gamma regression} 
+  %\VignetteEngine{knitr::rmarkdown} \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}

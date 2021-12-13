@@ -22,7 +22,7 @@
 #' \code{cortype = 2} denotes the exponential structure,
 #' where the covariance matrix has \eqn{(i,j)} entry equals \eqn{rho^{|i-j|}}.
 #' code{cortype = 3} denotes the constant structure,
-#' where the non-diagnoal entries of covariance
+#' where the non-diagonal entries of covariance
 #' matrix are \eqn{rho} and diagonal entries are 1.
 #' @param snr A numerical value controlling the signal-to-noise ratio (SNR). The SNR is defined as
 #' as the variance of \eqn{x\beta} divided
@@ -118,9 +118,11 @@ generate.data <- function(n,
                           p,
                           support.size = NULL,
                           rho = 0,
-                          family = c("gaussian", "binomial", "poisson", 
-                                     "cox", "mgaussian", "multinomial", 
-                                     "gamma"),
+                          family = c(
+                            "gaussian", "binomial", "poisson",
+                            "cox", "mgaussian", "multinomial",
+                            "gamma"
+                          ),
                           beta = NULL,
                           cortype = 1,
                           snr = 10,
@@ -325,7 +327,7 @@ generate.data <- function(n,
     eta <- eta + abs(min(eta)) + 10
     # set the shape para of gamma uniformly in [0.1,100.1]
     shape_para <- 100 * runif(n) + 0.1
-    y <- stats::rgamma(n,shape=shape_para,rate=shape_para*eta)
+    y <- stats::rgamma(n, shape = shape_para, rate = shape_para * eta)
   }
   set.seed(NULL)
 
@@ -402,6 +404,48 @@ abess_model_matrix <- function(object, data = environment(object),
     }
   }
   data
+}
+
+map_tunetype2numeric <- function(tune.type) {
+  ic_type <- switch(tune.type,
+    "aic" = 1,
+    "bic" = 2,
+    "gic" = 3,
+    "ebic" = 4,
+    "cv" = 1
+  )
+  ic_type
+}
+
+check_foldid <- function(foldid, nobs) {
+  stopifnot(is.vector(foldid))
+  stopifnot(is.numeric(foldid))
+  stopifnot(length(foldid) == nobs)
+  check_integer_warning(
+    foldid,
+    "nfolds should be an integer value. It is coerced to be as.integer(foldid). "
+  )
+  foldid <- as.integer(foldid)
+  cv_fold_id <- foldid
+  cv_fold_id
+}
+
+check_nfold <- function(nfolds) {
+  stopifnot(is.numeric(nfolds) & nfolds >= 2)
+  check_integer_warning(
+    nfolds,
+    "nfolds should be an integer value. It is coerced to be as.integer(nfolds). "
+  )
+  nfolds <- as.integer(nfolds)
+  nfolds
+}
+
+map_dgCMatrix2entry <- function(x) {
+  x <- summary(x)
+  x[, 1:2] <- x[, 1:2] - 1
+  x <- as.matrix(x)
+  x <- x[, c(3, 1, 2)]
+  x
 }
 
 MULTIVARIATE_RESPONSE <- c("mgaussian", "multinomial")

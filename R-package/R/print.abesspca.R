@@ -28,10 +28,17 @@ print.abesspca <- function(x,
     "\n\n",
     sep = ""
   )
+  support_size <- unlist(x[["support.size"]])
+  pc_list <- list()
+  for (i in 1:x[["kpc.num"]]) {
+    pc_list[[i]] <- rep(i, length(x[["support.size"]][[i]]))
+  }
   out <- data.frame(
-    "support.size" = x[["support.size"]],
-    "ev" = x[["ev"]],
-    "pev" = x[["pev"]], row.names = NULL
+    "PC" = unlist(pc_list),
+    "support.size" = unlist(x[["support.size"]]),
+    "ev" = unlist(x[["ev"]]),
+    "pev" = unlist(x[["pev"]]),
+    row.names = NULL
   )
   print(out)
 }

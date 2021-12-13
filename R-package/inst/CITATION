@@ -14,3 +14,14 @@ citEntry(
   
   )
 )
+
+citEntry(
+  entry    = "Article",
+  title    = "abess: A Fast Best Subset Selection Library in Python and R.",
+  author   = "Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang",
+  journal  = "arXiv:2110.09697",
+  year     = "2021",
+  textVersion = paste(
+  
+  )
+)

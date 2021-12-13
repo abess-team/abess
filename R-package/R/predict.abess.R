@@ -6,12 +6,14 @@
 #' \code{"poisson"} or \code{"cox"} models; for \code{"gaussian"} models it gives the
 #' fitted values. \code{type = "response"} gives the fitted probabilities for
 #' \code{"binomial"}, fitted mean for \code{"poisson"} and the fitted relative-risk for
-#' \code{"cox"}; for \code{"gaussian"}, \code{type = "response"} is equivalent to \code{type = "link"}
+#' \code{"cox"}; for \code{"gaussian"}, \code{type = "response"} is equivalent to \code{type = "link"}.
 #' @param ... Additional arguments affecting the predictions produced.
 #'
 #' @return The object returned depends on the types of family.
 #'
 #' @inherit abess.default seealso
+#'
+#' @method predict abess
 #'
 #' @export
 #'

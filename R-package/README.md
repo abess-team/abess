@@ -5,7 +5,7 @@
 <!-- badges: start -->
 [![Python Build](https://github.com/abess-team/abess/actions/workflows/python_test.yml/badge.svg)](https://github.com/abess-team/abess/actions/workflows/python_test.yml)
 [![R Build](https://github.com/abess-team/abess/actions/workflows/r_test.yml/badge.svg)](https://github.com/abess-team/abess/actions/workflows/r_test.yml)
-[![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://codecov.io/gh/abess-team/abess)
+[![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://app.codecov.io/gh/abess-team/abess)
 [![cran](https://img.shields.io/cran/v/abess?logo=R)](https://cran.r-project.org/package=abess)
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 <!-- badges: end -->
@@ -64,9 +64,26 @@ $ Rscript abess/docs/simulation/R/timings.R
 `abess` is a free software and its source code are publicly available in [Github](https://github.com/abess-team/abess). The core framework is programmed in C++.
 You can redistribute it and/or modify it under the terms of the [GPL-v3 License](https://www.gnu.org/licenses/gpl-3.0.html). We welcome contributions for `abess`, especially stretching `abess` to the other best subset selection problems. 
 
+## What's news?
+
+New features supported by the latest version (0.4.0) in R CRAN:
+
+* Support generalized linear model when the link function is Gamma distribution. 
+By setting `family = "gamma"` in `abess` function, users can analyze the dataset with a positive valued and skewed response. 
+
+* Support flexible support size for sequential principal component analysis (PCA), accompanied with several helpful generic function like `plot`. 
+
+* Support user-specified cross validation division for `abess` and `abesspca` function by additional argument `foldid`. 
+
+* Support robust principal component analysis now. A new R function `abessrpca` can access it.
+
+* Improve the R package document by: adding more details and giving more links related to core functions.  
+
 ## References
 
 - Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang (2020). A polynomial algorithm for best-subset selection problem. Proceedings of the National Academy of Sciences, 117(52):33117-33123.
+
+- Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). abess: A Fast Best Subset Selection Library in Python and R. arXiv preprint arXiv:2110.09697.
 
 - Pölsterl, S (2020). scikit-survival: A Library for Time-to-Event Analysis Built on Top of scikit-learn. J. Mach. Learn. Res., 21(212), 1-6.
 
