@@ -40,7 +40,7 @@ jobs:
           codecov -F Python
     
   Install-Test:
-    name: Installation test on ubuntu, macOS and windows
+    name: Installation test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
