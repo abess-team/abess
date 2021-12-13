@@ -35,7 +35,7 @@ public:
         // solve the subproblem under given active set
         // record the sparse answer in variable "beta"
 
-    double neg_loglik_loss(...){...};
+    double loss_function(...){...};
         // define and compute loss under given active set
         // return the current loss
 
@@ -205,7 +205,9 @@ In our package, we write an method called `fit` to realize the abess process. Of
 After programming the code, it is necessary to verify the contributed function can return a reasonable result. Here, we share our experience for it. 
 Notice that the core our algorithm are forward and backward sacrifices, as long as they are properly programming, the contributed function would work well. 
 
-First, we recommend you consider `primary_model_fit` for the computation of backward sacrifices. To check whether it works well, you can leverage the parameter `always.include` in R. 
+- Check `primary_model_fit` and `loss_function`
+
+Secondly, we recommend you consider `primary_model_fit` for the computation of backward sacrifices. To check whether it works well, you can leverage the parameter `always.include` in R. 
 Actually, when the number of elements pass to `always.include` is equal to `support.size` (`always_include` and `support_size` in Python), our algorithm is no need to do variable selection since all element must be selected, and thus, our implementation framework would just simply solving a convex problem by conducting `primary_model_fit` and the solution should match to (or close to) the function implemented in R/Python. 
 Take the PCA task as an example, we should expect that, the results returned by `abess`:
 ```R
@@ -219,10 +221,22 @@ princomp_fit <- loadings(princomp(USArrests[, 1:3]))[, 1]
 princomp_fit
 ``` 
 Actually, in our implementation, the results returned in two code blocks is match in magnitude. 
-If the results are match, we recommend you write a test case following the content below. 
+If the results are match, you can congratulate for your correct coding. We also recommend you write a automatic test case for this following the content below. 
 
-Second, we recommend you consider `sacrifice` mainly for the computation of forward sacrifices. Checking the function `sacrifice` needs more efforts. Monte Carlo studies should be conduct to check whether `sacrifice` is properly programmed such that the effective/relevant variables can be detected when sample size is large. 
-We strongly recommend to check the result by setting: (i) sample size at least 1000; (ii) dimension is less than 50; (iii) the true support size is less than 5; (iv) variables are independence; (v) the support size from 0 to the ground true. 
+At the same time, you can see whether the `loss_function` is right by comparing `spca_fit[["loss"]]` and the variance of the first principal component.  
+
+- Check `sacrifice`
+
+Thirdly, we recommend you consider `sacrifice`. Checking the function `sacrifice` needs more efforts. Monte Carlo studies should be conduct to check whether `sacrifice` is properly programmed such that the effective/relevant variables can be detected when sample size is large. 
+We strongly recommend to check the result by setting:
+- sample size at least 1000
+- dimension is less than 50 
+- the true support size is less than 5 
+- variables are independence 
+- the support size from 0 to the ground true 
+- the $l_2$ regularization is zero.
+
+In most of the cases, this setting is very helpful for checking code. Generally, the output of `abess` would match to the correct under this setting.
 Take linear regression in R as our example, the code for checking is demonstrated below:
 ```R
 n <- 1000
@@ -235,13 +249,17 @@ extract(abess_fit, support.size = support_size)[["support.vars"]]
 ## true support:
 which(dataset[["beta"]] != 0)
 ```
-The estimated support set should be the same as the true.
+In this example, the estimated support set is the same as the true.
+
+- Check `effective_number_of_parameter`
+
+Finally, 
 
 ## Miscellaneous
 
 ### Code style
-New R code should follow the tidyverse [style guide](https://style.tidyverse.org/). You can use the styler package to apply these styles. 
-New Python code...
+New R code should follow the tidyverse [style guide](https://style.tidyverse.org/). You can use the [`styler`](https://styler.r-lib.org) R package to apply this style by conducting R command: `style_file("path-to-newfile.R")` 
+New Python code should follow the PEP8 [style guide](https://www.python.org/dev/peps/pep-0008/)
 Please don’t restyle code that has nothing to do with your code.
 
 ### Test cases

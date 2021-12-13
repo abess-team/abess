@@ -1,0 +1,7 @@
+library(devtools)
+devtools::spell_check()
+devtools::check()
+devtools::check_rhub()
+devtools::check_win_devel()
+library(pkgdown)
+build_site()

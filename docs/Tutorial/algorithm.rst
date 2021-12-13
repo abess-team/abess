@@ -556,7 +556,7 @@ where :math:`\gamma` is a pre-determined positive constant, controlling
 the diverging rate of group numbers :math:`J`.
 
 | A natural idea to determine the optimal support size is regarding
-  :math:`\mathrm{T}` as a tunning parameter, and running GSplicing
+  :math:`\mathrm{T}` as a tuning parameter, and running GSplicing
   algorithm over a sequence about :math:`\mathrm{T}`. Next, combined
   with aforementioned information criterion, we can obtain an optimal
   support size.

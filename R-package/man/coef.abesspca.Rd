@@ -38,4 +38,5 @@ coefficients from a fitted "\code{abesspca}" object.
 \seealso{
 \code{\link{print.abesspca}},
 \code{\link{coef.abesspca}},
+\code{\link{plot.abesspca}}.
 }

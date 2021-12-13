@@ -15,6 +15,7 @@
 
 #include <vector>
 #include "normalize.h"
+#include "utilities.h"
 using namespace std;
 using namespace Eigen;
 
@@ -32,14 +33,13 @@ public:
     int p;
     int M;
     int normalize_type;
-    bool is_normal;
     int g_num;
     Eigen::VectorXi g_index;
     Eigen::VectorXi g_size;
 
     Data() = default;
 
-    Data(T4 &x, T1 &y, int normalize_type, Eigen::VectorXd &weight, bool is_normal, Eigen::VectorXi &g_index, bool sparse_matrix)
+    Data(T4 &x, T1 &y, int normalize_type, Eigen::VectorXd &weight, Eigen::VectorXi &g_index, bool sparse_matrix, int beta_size)
     {
         this->x = x;
         this->y = y;
@@ -49,34 +49,21 @@ public:
         this->M = y.cols();
 
         this->weight = weight;
-        this->is_normal = is_normal;
         this->x_mean = Eigen::VectorXd::Zero(this->p);
         this->x_norm = Eigen::VectorXd::Zero(this->p);
 
-        // to do !!!!!!!!!!!!!!!!!!!!!!!!!
-        if (is_normal && !sparse_matrix)
+        if (normalize_type > 0 && !sparse_matrix)
         {
             this->normalize();
         }
 
         this->g_index = g_index;
-        this->g_num = (g_index).size();
-        Eigen::VectorXi temp = Eigen::VectorXi::Zero(g_num);
+        this->g_num = g_index.size();
+        Eigen::VectorXi temp = Eigen::VectorXi::Zero(this->g_num);
         for (int i = 0; i < g_num - 1; i++)
             temp(i) = g_index(i + 1);
-        temp(g_num - 1) = this->p;
+        temp(g_num - 1) = beta_size;
         this->g_size = temp - g_index;
-    };
-
-    // to do
-    void add_weight()
-    {
-        for (int i = 0; i < this->n; i++)
-        {
-            this->x.row(i) = this->x.row(i) * sqrt(this->weight(i));
-        }
-        array_product(this->y, this->weight, 1);
-        // this->y(i) = this->y(i) * sqrt(this->weight(i));
     };
 
     void normalize()
@@ -95,29 +82,29 @@ public:
         }
     };
 
-    Eigen::VectorXi get_g_index()
-    {
-        return this->g_index;
-    };
+    // Eigen::VectorXi get_g_index()
+    // {
+    //     return this->g_index;
+    // };
 
-    int get_g_num()
-    {
-        return this->g_num;
-    };
+    // int get_g_num()
+    // {
+    //     return this->g_num;
+    // };
 
-    Eigen::VectorXi get_g_size()
-    {
-        return this->g_size;
-    };
+    // Eigen::VectorXi get_g_size()
+    // {
+    //     return this->g_size;
+    // };
 
-    int get_n()
-    {
-        return this->n;
-    };
+    // int get_n()
+    // {
+    //     return this->n;
+    // };
 
-    int get_p()
-    {
-        return this->p;
-    };
+    // int get_p()
+    // {
+    //     return this->p;
+    // };
 };
 #endif //SRC_DATA_H

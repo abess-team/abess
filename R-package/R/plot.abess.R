@@ -87,19 +87,24 @@ plot.abess <- function(x,
 
 plot_loss <- function(loss, df,
                       mar = c(0, 4, 2, 4),
-                      ic.type) {
+                      ic.type, ...) {
   graphics::plot.new() # empty plot
   graphics::plot.window(range(df), range(loss), xaxs = "i")
   oldpar <- graphics::par(mar = mar, lend = "square") # square line ends
   graphics::par(new = TRUE) # add to the plot
+  ylab_display <- ifelse(ic.type == "cv",
+    "cross validation",
+    ic.type
+  )
+  if (ic.type %in% c("aic", "bic", "ebic", "gic")) {
+    ylab_display <- toupper(ylab_display)
+  }
   graphics::plot(df, loss,
     type = "o", pch = 16,
     col = "#3182bd",
-    ylab = ifelse(ic.type == "cv",
-      "cross validation deviance",
-      ic.type
-    ),
-    xlim = c(0, max(df)), xlab = "Support size"
+    ylab = ylab_display,
+    xlim = c(min(df), max(df)), xlab = "Support size",
+    ...
   )
   graphics::grid()
   graphics::axis(2)
@@ -109,7 +114,7 @@ plot_loss <- function(loss, df,
   graphics::par(oldpar)
 }
 
-plot_solution_one <- function(beta, df, mar, label) {
+plot_solution_one <- function(beta, df, mar, label, start = 0, ...) {
   beta <- as.matrix(beta)
   p <- nrow(beta)
   graphics::plot.new() # empty plot
@@ -120,12 +125,13 @@ plot_solution_one <- function(beta, df, mar, label) {
 
   graphics::plot(df, beta[1, , drop = TRUE],
     type = "l", col = 1,
-    xlim = c(0, max(df)), xlab = "Support size",
-    ylim = range(beta), ylab = "Coefficients"
+    xlim = c(start, max(df)), xlab = "Support size",
+    ylim = range(beta), ylab = "Coefficients",
+    ...
   )
   for (i in 2:p) {
     graphics::lines(df, beta[i, , drop = TRUE],
-      col = i, xlim = c(0, p + 1)
+      col = i, xlim = c(start, p + 1)
     )
   }
 

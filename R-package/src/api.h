@@ -38,8 +38,8 @@
 *                                                                            *
 *****************************************************************************/
 
-#ifndef BESS_BESS_H
-#define BESS_BESS_H
+#ifndef SRC_API_H
+#define SRC_API_H
 
 #ifdef R_BUILD
 #include <Rcpp.h>
@@ -49,27 +49,9 @@ using namespace Rcpp;
 #else
 #include <Eigen/Eigen>
 #include "List.h"
-#include "Algorithm.h"
-#include "AlgorithmPCA.h"
-#include "AlgorithmGLM.h"
 #endif
 
 #include <iostream>
-
-/** Result struct
- * @brief Save the sequential fitting result along the parameter searching.
- */
-template <class T2, class T3>
-struct Result
-{
-    Eigen::Matrix<T2, Eigen::Dynamic, Eigen::Dynamic> beta_matrix;            /*!<  */
-    Eigen::Matrix<T3, Eigen::Dynamic, Eigen::Dynamic> coef0_matrix;           /*!<  */
-    Eigen::MatrixXd ic_matrix;                                                /*!<  */
-    Eigen::MatrixXd test_loss_matrix;                                         /*!<  */
-    Eigen::MatrixXd train_loss_matrix;                                        /*!<  */
-    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> bd_matrix; /*!<  */
-    Eigen::MatrixXd effective_number_matrix;                                  /*!<  */
-};
 
 /** 
  * @brief The main function of abess fremework
@@ -113,20 +95,18 @@ struct Result
  * @param sub_search                    The number of inactive sets that are split when splicing. It should be positive integer.
  * @return result list.
  */
-List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize_type,
-               Eigen::VectorXd weight, Eigen::MatrixXd sigma,
-               bool is_normal,
+List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize_type,
+               Eigen::VectorXd weight, 
                int algorithm_type, int model_type, int max_iter, int exchange_num,
                int path_type, bool is_warm_start,
-               int ic_type, double ic_coef, bool is_cv, int Kfold,
+               int ic_type, double ic_coef, int Kfold,
                Eigen::VectorXi sequence,
                Eigen::VectorXd lambda_seq,
-               int s_min, int s_max, int K_max, double epsilon,
+               int s_min, int s_max, 
                double lambda_min, double lambda_max, int nlambda,
-               int screening_size, int powell_path,
+               int screening_size, 
                Eigen::VectorXi g_index,
                Eigen::VectorXi always_select,
-               double tau,
                int primary_model_fit_max_iter, double primary_model_fit_epsilon,
                bool early_stop, bool approximate_Newton,
                int thread,
@@ -134,58 +114,52 @@ List abessCpp2(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize
                bool sparse_matrix,
                int splicing_type,
                int sub_search,
-               Eigen::VectorXi cv_fold_id,
-               int pca_num);
+               Eigen::VectorXi cv_fold_id);
 
-template <class T1, class T2, class T3, class T4>
-List abessCpp(T4 &x, T1 &y, int n, int p, int normalize_type,
-              Eigen::VectorXd weight, Eigen::MatrixXd sigma,
-              bool is_normal,
-              int algorithm_type, int model_type, int max_iter, int exchange_num,
-              int path_type, bool is_warm_start,
-              int ic_type, double ic_coef, bool is_cv, int Kfold,
-              Eigen::VectorXi sequence,
-              Eigen::VectorXd lambda_seq,
-              int s_min, int s_max, int K_max, double epsilon,
-              double lambda_min, double lambda_max, int nlambda,
-              int screening_size, int powell_path,
-              Eigen::VectorXi g_index,
-              Eigen::VectorXi always_select,
-              double tau,
-              int primary_model_fit_max_iter, double primary_model_fit_epsilon,
-              bool early_stop, bool approximate_Newton,
-              int thread,
-              bool covariance_update,
-              bool sparse_matrix,
-              Eigen::VectorXi &cv_fold_id,
-              Algorithm<T1, T2, T3, T4> *algorithm, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list);
-
-#ifndef R_BUILD
-void pywrap_abess(double *x, int x_row, int x_col, double *y, int y_row, int n, int p, int normalize_type, int y_col, double *weight, int weight_len, double *sigma, int sigma_row, int sigma_col,
-                  bool is_normal,
-                  int algorithm_type, int model_type, int max_iter, int exchange_num,
-                  int path_type, bool is_warm_start,
-                  int ic_type, double ic_coef, bool is_cv, int K,
-                  int *gindex, int gindex_len,
-                  int *sequence, int sequence_len,
-                  double *lambda_sequence, int lambda_sequence_len,
-                  int *cv_fold_id, int cv_fold_id_len,
-                  int s_min, int s_max, int K_max, double epsilon,
-                  double lambda_min, double lambda_max, int n_lambda,
-                  int screening_size, int powell_path,
-                  int *always_select, int always_select_len, double tau,
-                  int primary_model_fit_max_iter, double primary_model_fit_epsilon,
-                  bool early_stop, bool approximate_Newton,
+List abessPCA_API(Eigen::MatrixXd x,
+                  int n,
+                  int p,
+                  int normalize_type,
+                  Eigen::VectorXd weight,
+                  Eigen::MatrixXd sigma,
+                  int max_iter,
+                  int exchange_num,
+                  int path_type,
+                  bool is_warm_start,
+                  bool is_tune,
+                  int ic_type,
+                  double ic_coef,
+                  int Kfold,
+                  Eigen::VectorXi sequence,
+                  int s_min,
+                  int s_max,
+                  int screening_size, 
+                  Eigen::VectorXi g_index,
+                  Eigen::VectorXi always_select,
+                  bool early_stop,
                   int thread,
-                  bool covariance_update,
                   bool sparse_matrix,
                   int splicing_type,
-                  int sub_search,
-                  int pca_num,
-                  double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
-                  int train_loss_out_len, double *ic_out, int ic_out_len, double *nullloss_out, double *aic_out,
-                  int aic_out_len, double *bic_out, int bic_out_len, double *gic_out, int gic_out_len, int *A_out,
-                  int A_out_len, int *l_out);
-#endif
+                  int sub_search, 
+                  Eigen::VectorXi cv_fold_id,
+                  int pca_num);
 
-#endif //BESS_BESS_H
+List abessRPCA_API(Eigen::MatrixXd x, int n, int p, 
+                    int max_iter, int exchange_num,
+                    int path_type, bool is_warm_start,
+                    int ic_type, double ic_coef,
+                    Eigen::VectorXi sequence,
+                    Eigen::VectorXd lambda_seq, // rank of L
+                    int s_min, int s_max, 
+                    double lambda_min, double lambda_max, int nlambda,
+                    int screening_size, 
+                    Eigen::VectorXi g_index,
+                    Eigen::VectorXi always_select,
+                    bool early_stop, 
+                    int thread,
+                    bool sparse_matrix,
+                    int splicing_type,
+                    int sub_search,
+                    Eigen::VectorXi cv_fold_id);
+
+#endif //SRC_API_H

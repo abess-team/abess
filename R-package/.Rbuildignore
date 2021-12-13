@@ -31,6 +31,7 @@
 ^vignettes/omit/v02-linearreg\.Rmd$
 ^vignettes/v03-classification\.Rmd$
 ^vignettes/v04-poissonregression\.Rmd$
+^vignettes/v04-PoissonGammaReg\.Rmd$
 ^vignettes/v05-coxreg\.Rmd$
 ^vignettes/v06-MultiTaskLearning\.Rmd$
 ^vignettes/v07-advancedFeatures\.Rmd$
@@ -42,3 +43,4 @@
 ^logo\.png$
 ^logo\.svg
 ^example$
+^pre-release\.R$
