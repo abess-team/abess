@@ -40,7 +40,8 @@ elif sys.platform.startswith('darwin'):
                                        CURRENT_DIR + '/src/pywrap.i'],
                               language='c++',
                               extra_compile_args=[
-                                  "-DNDEBUG", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native"],
+                                  "-DNDEBUG", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native", 
+                                  "-fno-asynchronous-unwind-tables"],
                               include_dirs=[numpy.get_include(), eigen_path],
                               swig_opts=["-c++"]
                               )

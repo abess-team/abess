@@ -39,64 +39,33 @@ jobs:
           ls *
           codecov -F Python
     
-  InstallUb:
-    name: Installation test on Ubuntu
+  Install-Test:
+    name: Installation test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        python-version: [3.7]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: [3.9]
     steps:
       - uses: actions/checkout@master
       - name: Setup Python
         uses: actions/setup-python@master
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+      - name: Install dependencies for ubuntu
+        if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get install -y swig bash mingw-w64
-      - name: Install abess
+      - name: Install dependencies for macOS
+        if: matrix.os == 'macos-latest'
         run: |
-          cd ./python
-          python setup.py install
-        
-  InstallWins:  
-    name: Installation test on Windows
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest]
-        python-version: [3.7]
-    steps:
-      - uses: actions/checkout@master
-      - name: Setup Python
-        uses: actions/setup-python@master
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+          brew install swig mingw-w64 bash
+      - name: Install dependencies for windows
+        if: matrix.os == 'windows-latest'
         run: |
           choco install swig mingw git 
       - name: Install abess
         run: |
-          cd python
+          python --version
+          cd ./python
           python setup.py install
-        
-  InstallMac:
-    name: Installation test on Mac
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest]
-        python-version: [3.7]
-    steps:
-      - uses: actions/checkout@master
-      - name: Setup Python
-        uses: actions/setup-python@master
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          brew install swig mingw-w64 bash
-      - name: Install abess
-        run: |
-          python ./python/setup.py install
