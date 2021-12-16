@@ -24,7 +24,7 @@ ignore=cabess.py,setup.py,cygwinccompiler.py
 
 # Add files or directories matching the regex patterns to the ignore-list. The
 # regex matches against paths and can be in Posix or Windows format.
-ignore-paths=(docs/.*)$
+ignore-paths=
 
 # Files or directories matching the regex patterns are skipped. The regex
 # matches against base names, not paths.
@@ -90,7 +90,8 @@ disable=raw-checker-failed,
         invalid-name,
         arguments-renamed,
         missing-function-docstring,
-        missing-module-docstring
+        missing-module-docstring,
+        broad-except
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
