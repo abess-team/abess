@@ -21,14 +21,16 @@ figure_save = True
 met = np.zeros((len(search_path), M, 2))
 res = np.zeros((len(search_path), 5))
 for m in range(M):
-    train = make_glm_data(n = n, p = p, k = k, family = 'binomial')
-    test = make_glm_data(n = n, p = p, k = k, family = 'binomial', coef_ = train.coef_)
+    train = make_glm_data(n=n, p=p, k=k, family='binomial')
+    test = make_glm_data(n=n, p=p, k=k, family='binomial', coef_=train.coef_)
 
     print("==> Iter : ", m)
 
     for i in range(len(search_path)):
         ts = time()
-        model = abessLogistic(support_size = range(100), important_search = search_path[i])
+        model = abessLogistic(
+            support_size=range(100),
+            important_search=search_path[i])
         model.fit(train.x, train.y)
         te = time()
         met[i, m, 0] = roc_auc_score(test.y, model.predict(test.x))
@@ -36,8 +38,8 @@ for m in range(M):
 
 for i in range(len(search_path)):
     res[i, 0] = search_path[i]
-    m = met[i].mean(axis = 0)
-    se = met[i].std(axis = 0) / np.sqrt(M - 1)
+    m = met[i].mean(axis=0)
+    se = met[i].std(axis=0) / np.sqrt(M - 1)
     res[i, 1:5] = np.hstack((m, se))
 
 if (met_save):
@@ -50,10 +52,10 @@ if (figure_save):
     res = np.load("res.npy")
     # print(res)
 
-    plt.figure(figsize = (20, 6))
+    plt.figure(figsize=(20, 6))
 
     plt.subplot(121)
-    plt.errorbar(res[:, 0], res[:, 1], yerr = res[:, 3] * 2, capsize = 3)
+    plt.errorbar(res[:, 0], res[:, 1], yerr=res[:, 3] * 2, capsize=3)
     plt.xticks(res[:, 0], [str(i) for i in ind])
     plt.ylim(0.9, 1)
     plt.ylabel('AUC')
@@ -61,7 +63,7 @@ if (figure_save):
     # plt.savefig('./auc.png')
 
     plt.subplot(122)
-    plt.errorbar(res[:, 0], res[:, 2], yerr = res[:, 4] * 2, capsize = 3)
+    plt.errorbar(res[:, 0], res[:, 2], yerr=res[:, 4] * 2, capsize=3)
     plt.xticks(res[:, 0], [str(i) for i in ind])
     plt.title('Time(/s)')
     plt.xlabel('log2(important_search)')
