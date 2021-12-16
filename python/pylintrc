@@ -20,7 +20,10 @@ fail-on=
 fail-under=10.0
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=CVS
+ignore=include,
+    pytest,
+    setup.py,
+    cygwinccompiler.py
 
 # Add files or directories matching the regex patterns to the ignore-list. The
 # regex matches against paths and can be in Posix or Windows format.
@@ -36,7 +39,7 @@ ignore-patterns=
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use.
-jobs=1
+jobs=4
 
 # Control the amount of potential inferred values when inferring a single
 # object. This can help the performance when dealing with large functions or
@@ -148,12 +151,7 @@ attr-naming-style=snake_case
 #attr-rgx=
 
 # Bad variable names which should always be refused, separated by a comma.
-bad-names=foo,
-          bar,
-          baz,
-          toto,
-          tutu,
-          tata
+bad-names=
 
 # Bad variable names regexes, separated by a comma. If names match any regex,
 # they will always be refused
@@ -199,12 +197,7 @@ function-naming-style=snake_case
 #function-rgx=
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=i,
-           j,
-           k,
-           ex,
-           Run,
-           _
+good-names=
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
@@ -274,7 +267,7 @@ indent-string='    '
 max-line-length=100
 
 # Maximum number of lines in a module.
-max-module-lines=1000
+max-module-lines=99999
 
 # Allow the body of a class to be on the same line as the declaration if body
 # contains single statement.
@@ -339,7 +332,7 @@ spelling-dict=
 spelling-ignore-comment-directives=fmt: on,fmt: off,noqa:,noqa,nosec,isort:skip,mypy:
 
 # List of comma separated words that should not be checked.
-spelling-ignore-words=
+spelling-ignore-words=abess
 
 # A path to a file that contains the private dictionary; one word per line.
 spelling-private-dict-file=
@@ -489,7 +482,7 @@ exclude-too-few-public-methods=
 ignored-parents=
 
 # Maximum number of arguments for function / method.
-max-args=5
+max-args=100
 
 # Maximum number of attributes for a class (see R0902).
 max-attributes=7
