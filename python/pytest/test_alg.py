@@ -7,10 +7,12 @@ from sklearn.model_selection import KFold
 from sklearn.model_selection import GridSearchCV
 from scipy.sparse import coo_matrix
 
+
 class TestAlgorithm:
     """
     Test for each algorithm.
     """
+
     def test_gaussian(self):
         np.random.seed(2)
         n = 100
@@ -44,13 +46,17 @@ class TestAlgorithm:
         # score
         score = model1.score(data.x, data.y)
         assert not np.isnan(score)
-        
+
         # covariance update
         model2 = abessLm(covariance_update=True)
         model2.fit(data.x, data.y)
         assert_value(model1.coef_, model2.coef_)
 
-        model3 = abessLm(covariance_update=True, important_search=10, screening_size=20, cv=5)
+        model3 = abessLm(
+            covariance_update=True,
+            important_search=10,
+            screening_size=20,
+            cv=5)
         model3.fit(data.x, data.y)
         assert_fit(model3.coef_, data.coef_)
 
@@ -67,7 +73,13 @@ class TestAlgorithm:
         rho = 0.5
         sigma = 1
 
-        data = make_glm_data(family=family, n=n, p=p, k=k, rho=rho, sigma=sigma)
+        data = make_glm_data(
+            family=family,
+            n=n,
+            p=p,
+            k=k,
+            rho=rho,
+            sigma=sigma)
 
         def assert_reg(coef):
             if (sys.version_info[0] < 3 or sys.version_info[1] < 6):
@@ -125,7 +137,7 @@ class TestAlgorithm:
             cph = CoxPHFitter(penalizer=0, l1_ratio=0)
             cph.fit(survival, 'T', event_col='E')
             assert_value(coef[nonzero], cph.params_.values, rel=5e-1, abs=5e-1)
-        
+
         # null
         model1 = abessCox()
         model1.fit(data.x, data.y)
@@ -158,7 +170,7 @@ class TestAlgorithm:
 
         def assert_reg(coef):
             if (sys.version_info[0] < 3 or sys.version_info[1] < 6):
-                return 
+                return
             from sklearn.linear_model import PoissonRegressor
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
@@ -190,7 +202,7 @@ class TestAlgorithm:
         rho = 0.5
         M = 3
         data = make_multivariate_glm_data(
-            family=family, n=n, p=p,  k=k, rho=rho, M=M)
+            family=family, n=n, p=p, k=k, rho=rho, M=M)
 
         # null
         model1 = abessMultigaussian()
@@ -210,11 +222,16 @@ class TestAlgorithm:
         model2.fit(data.x, data.y)
         assert_value(model1.coef_, model2.coef_)
 
-        model3 = abessMultigaussian(covariance_update=True, important_search=10, screening_size=20, cv=5)
+        model3 = abessMultigaussian(
+            covariance_update=True,
+            important_search=10,
+            screening_size=20,
+            cv=5)
         model3.fit(data.x, data.y)
         assert_fit(model3.coef_, data.coef_)
 
-        model4 = abessMultigaussian(covariance_update=True, path_type='gs', cv=5)
+        model4 = abessMultigaussian(
+            covariance_update=True, path_type='gs', cv=5)
         model4.fit(data.x, data.y)
         assert_fit(model4.coef_, data.coef_)
 
@@ -228,8 +245,8 @@ class TestAlgorithm:
         M = 3
 
         data = make_multivariate_glm_data(
-            family=family, n=n, p=p,  k=k, rho=rho, M=M)
-        
+            family=family, n=n, p=p, k=k, rho=rho, M=M)
+
         # null
         model1 = abessMultinomial()
         model1.fit(data.x, data.y)
@@ -256,7 +273,7 @@ class TestAlgorithm:
         group_size = 5
         group_num = 4
         support_size = np.zeros((p, 1))
-        support_size[s-1, 0] = 1
+        support_size[s - 1, 0] = 1
 
         x1 = np.random.randn(n, 1)
         x1 /= np.linalg.norm(x1)
@@ -270,11 +287,11 @@ class TestAlgorithm:
         model1.fit(X)
         assert np.count_nonzero(model1.coef_) == s
 
-        # ratio & transform 
+        # ratio & transform
         model1.ratio(X)
         model1.transform(X)
         model1.fit_transform(X)
-        
+
         # sparse
         model2 = abessPCA(support_size=s, sparse_matrix=True)
         model2.fit(coo_matrix(X))
@@ -287,11 +304,11 @@ class TestAlgorithm:
         # sigma input
         model3 = abessPCA(support_size=support_size)
         model3.fit(Sigma=X.T.dot(X))
-        model3.fit(Sigma=X.T.dot(X) / n, n = n)
+        model3.fit(Sigma=X.T.dot(X) / n, n=n)
         assert_fit(model1.coef_, model3.coef_)
 
         # KPCA
-        support_size_m = np.hstack((support_size,support_size,support_size))
+        support_size_m = np.hstack((support_size, support_size, support_size))
         model4 = abessPCA(support_size=support_size_m)
         model4.fit(X, number=3)
         assert (model4.coef_.shape[1] == 3)
@@ -305,7 +322,7 @@ class TestAlgorithm:
         # group
         support_size_g = np.zeros((4, 1))
         support_size_g[1, 0] = 1
-        group = np.repeat([0,1,2,3], [5,5,5,5])
+        group = np.repeat([0, 1, 2, 3], [5, 5, 5, 5])
         model5 = abessPCA(support_size=support_size_g)
         model5.fit(X, group=group)
         coef = g_index[np.nonzero(model5.coef_)[0]]
@@ -338,7 +355,7 @@ class TestAlgorithm:
 
         # score
         score = model1.score(x, y)
-        score = model1.score(x, y, [1,1,1,1])
+        score = model1.score(x, y, [1, 1, 1, 1])
         assert not np.isnan(score)
 
     def test_RPCA(self):
@@ -349,8 +366,8 @@ class TestAlgorithm:
         r = 5
 
         L = np.random.rand(n, r) @ np.random.rand(r, p)
-        nonzero = np.random.choice(n*p, s, replace=False)
-        S = np.zeros(n*p)
+        nonzero = np.random.choice(n * p, s, replace=False)
+        S = np.zeros(n * p)
         S[nonzero] = np.random.rand(s) * 10
         S = S.reshape(p, n).T
         X = L + S
@@ -370,7 +387,7 @@ class TestAlgorithm:
         assert_value(model1.coef_, model2.coef_)
 
         # group
-        group = np.arange(n*p)
+        group = np.arange(n * p)
         model3 = abessRPCA(support_size=s)
         model3.fit(X, r=r, group=group)
 
@@ -378,7 +395,6 @@ class TestAlgorithm:
         for ic in ['aic', 'bic', 'ebic', 'gic']:
             model4 = abessRPCA(support_size=s, ic_type=ic)
             model4.fit(X, r=r)
-
 
     def test_gaussian_sklearn(self):
         np.random.seed(7)
@@ -388,10 +404,10 @@ class TestAlgorithm:
         family = "gaussian"
         rho = 0.5
         s_max = 20
-        
+
         data = make_glm_data(n, p, family=family, k=k, rho=rho)
 
-        support_size = np.linspace(0, s_max, s_max+1, dtype="int32")
+        support_size = np.linspace(0, s_max, s_max + 1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3, 0.4]
 
         try:
@@ -406,7 +422,7 @@ class TestAlgorithm:
                 n_jobs=5).fit(data.x, data.y)
             assert gcv.best_params_["support_size"] == k
             assert gcv.best_params_["alpha"] == 0.
-        except:
+        except BaseException:
             assert False
 
     def test_binomial_sklearn(self):
@@ -421,7 +437,7 @@ class TestAlgorithm:
         # data3 = make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
-        support_size = np.linspace(0, s_max, s_max+1, dtype="int32")
+        support_size = np.linspace(0, s_max, s_max + 1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3, 0.4]
 
         model = abessLogistic()
@@ -451,7 +467,7 @@ class TestAlgorithm:
         # data3 = make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
-        support_size = np.linspace(0, s_max, s_max+1, dtype="int32")
+        support_size = np.linspace(0, s_max, s_max + 1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3, 0.4]
 
         model = abessPoisson()
@@ -481,12 +497,12 @@ class TestAlgorithm:
         # data3 = make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 10
-        support_size = np.linspace(1, s_max, s_max+1, dtype="int32")
+        support_size = np.linspace(1, s_max, s_max + 1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3]
 
         model = abessCox(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
                          s_min=1, s_max=p, cv=5,
-                         exchange_num=2, 
+                         exchange_num=2,
                          primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
         cv = KFold(n_splits=5, shuffle=True, random_state=0)
         gcv = GridSearchCV(
@@ -559,4 +575,3 @@ class TestAlgorithm:
 
     #     assert gcv.best_params_["support_size"] == k
     #     assert gcv.best_params_["alpha"] == 0.
-

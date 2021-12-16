@@ -2,10 +2,12 @@ from abess import *
 from utilities import *
 import numpy as np
 
+
 class TestCheck:
     """
     Test for argument error, which should be recognized before the algorithm.
     """
+
     def test_init(self):
         # path
         try:
@@ -60,7 +62,7 @@ class TestCheck:
             assert False
 
         try:
-            model = abessLm(support_size=[2], 
+            model = abessLm(support_size=[2],
                             screening_size=1)
             model.fit([[1, 2, 3]], [1])
         except ValueError as e:
@@ -110,7 +112,7 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         # cv
         try:
             model = abessLm(cv=2)
@@ -119,11 +121,11 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         try:
             model = abessLm(cv=2)
             cv_fold_id = [1, 1]
-            model.fit([[1],[1]], [1, 1], cv_fold_id = cv_fold_id)
+            model.fit([[1], [1]], [1, 1], cv_fold_id=cv_fold_id)
         except ValueError as e:
             print(e)
         else:
@@ -132,7 +134,7 @@ class TestCheck:
         try:
             model = abessLm(cv=2)
             cv_fold_id = [1, 2, 1]
-            model.fit([[1],[1]], [1, 1], cv_fold_id = cv_fold_id)
+            model.fit([[1], [1]], [1, 1], cv_fold_id=cv_fold_id)
         except ValueError as e:
             print(e)
         else:
@@ -147,14 +149,14 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         try:
             model.fit([[1, 1, 1]], [1], weight=['c'])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
             model1 = abessLm(cv='c')
             model1.fit([[1]], [1])
@@ -162,7 +164,7 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         # incompatible shape
         try:
             model.fit([1, 1, 1], [1])
@@ -177,7 +179,7 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         try:
             model.fit([[1, 1, 1]], [1])
             model.predict([[1, 1]])
@@ -185,16 +187,16 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         try:
-            model.fit([[1,1,1]], [1], weight = [1, 2])
+            model.fit([[1, 1, 1]], [1], weight=[1, 2])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model.fit([[1,1,1]], [1], group = [1])
+            model.fit([[1, 1, 1]], [1], group=[1])
         except ValueError as e:
             print(e)
         else:
@@ -227,21 +229,21 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         try:
             model.fit(Sigma=[['c']])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
             model.fit(Sigma=[[np.nan]])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
             model1 = abessPCA(cv='c')
             model1.fit([[1]])
@@ -249,7 +251,7 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         # incompatible shape
         try:
             model.fit([1])
@@ -257,23 +259,23 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         try:
             model.fit(Sigma=[1])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model.fit([[1]], group = [1, 2])
+            model.fit([[1]], group=[1, 2])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         try:
-            model1 = abessPCA(support_size=np.array([1,2]))
+            model1 = abessPCA(support_size=np.array([1, 2]))
             model1.fit([[1]])
         except ValueError as e:
             print(e)
@@ -287,7 +289,7 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         try:
             model1 = abessPCA(cv=5)
             model1.fit(Sigma=[[1]])
@@ -318,7 +320,7 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         # invalid arg
         try:
             model1 = abessPCA(ic_type='other')
@@ -327,7 +329,7 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         try:
             model1 = abessPCA(cv=5)
             model1.fit([[1]])
@@ -345,14 +347,14 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         try:
             model.fit([[1]], r='c')
         except ValueError as e:
             print(e)
         else:
             assert False
-                
+
         # incompatible shape
         try:
             model.fit([1], r=1)
@@ -360,21 +362,21 @@ class TestCheck:
             print(e)
         else:
             assert False
-        
+
         try:
             model.fit(1, r=1)
         except ValueError as e:
             print(e)
         else:
             assert False
-                
+
         try:
-            model.fit([[1]], r=1, group = [1, 2])
+            model.fit([[1]], r=1, group=[1, 2])
         except ValueError as e:
             print(e)
         else:
             assert False
-        
+
         # invalid arg
         try:
             model1 = abessRPCA(ic_type='other')
