@@ -302,6 +302,10 @@ class abessPCA(bess_base):
         normalize = 0
         if is_normal:
             normalize = self.normalize_type
+        
+        # always_select
+        if self.always_select is None:
+            self.always_select = []
 
         # wrap with cpp
         weight = np.ones(n)
@@ -519,6 +523,10 @@ class abessRPCA(bess_base):
 
         # normalize
         normalize = 0
+
+        # always_select
+        if self.always_select is None:
+            self.always_select = []
 
         # wrap with cpp
         result = pywrap_RPCA(X, n, p, normalize,

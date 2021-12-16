@@ -1,6 +1,6 @@
 name: Python Build
 
-on: 
+on:
   push:
     paths:
     - 'python/*'
@@ -35,10 +35,10 @@ jobs:
       - name: Generate coverage report
         run: |
           pytest ./python/pytest --cov=abess --cov-report=xml
-          # gcovr ./python/src/ --xml 
+          # gcovr ./python/src/ --xml
           ls *
           codecov -F Python
-    
+
   Install-Test:
     name: Installation test
     runs-on: ${{ matrix.os }}
@@ -63,7 +63,7 @@ jobs:
       - name: Install dependencies for windows
         if: matrix.os == 'windows-latest'
         run: |
-          choco install swig mingw git 
+          choco install swig mingw git
       - name: Install abess
         run: |
           python --version
