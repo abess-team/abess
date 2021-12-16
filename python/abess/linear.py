@@ -1,5 +1,5 @@
 
-from abess.metrics import concordance_index_censored
+from .metrics import concordance_index_censored
 from .bess_base import bess_base
 
 import numpy as np
@@ -68,7 +68,7 @@ class abessLogistic(bess_base):
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=[],
+                 always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
                  thread=1,
@@ -194,7 +194,7 @@ class abessLm(bess_base):
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=[],
+                 always_select=None,
                  thread=1, covariance_update=False,
                  sparse_matrix=False,
                  splicing_type=0,
@@ -293,7 +293,7 @@ class abessCox(bess_base):
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=[],
+                 always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
                  thread=1,
@@ -396,7 +396,7 @@ class abessPoisson(bess_base):
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=[],
+                 always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  thread=1,
                  sparse_matrix=False,
@@ -499,7 +499,7 @@ class abessMultigaussian(bess_base):
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=[],
+                 always_select=None,
                  thread=1, covariance_update=False,
                  sparse_matrix=False,
                  splicing_type=0,
@@ -598,7 +598,7 @@ class abessMultinomial(bess_base):
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=[],
+                 always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
                  thread=1,
@@ -722,7 +722,7 @@ class abessGamma(bess_base):
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=[],
+                 always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  thread=1,
                  sparse_matrix=False,

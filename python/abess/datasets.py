@@ -1,6 +1,5 @@
 import numpy as np
 
-
 class data:
     """
     Data format.
@@ -272,7 +271,7 @@ def make_multivariate_glm_data(
         eta = np.matmul(X, Tbeta)
         y = eta + np.random.normal(0, 1, n * M).reshape(n, M)
         return data(X, y, Tbeta)
-    
+
     if family in ("multinomial", "binomial"):
         for i in range(M):
             Tbeta[:, i] = Tbeta[:, i] - Tbeta[:, M - 1]
@@ -287,7 +286,7 @@ def make_multivariate_glm_data(
             y[i, int(j[0])] = 1
             # y2[i] = j
         return data(X, y, Tbeta)
-    
+
     if family == "poisson":
         eta = np.matmul(X, Tbeta)
         eta[eta > 30] = 30
@@ -295,6 +294,6 @@ def make_multivariate_glm_data(
         lam = np.exp(eta)
         y = np.random.poisson(lam=lam)
         return data(X, y, Tbeta)
-        
+
     raise ValueError(
         "Family should be \'gaussian\', \'multigaussian\', or \'multinomial\'")

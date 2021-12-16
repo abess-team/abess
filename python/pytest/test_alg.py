@@ -1,4 +1,4 @@
-import sys, sklearn, scipy, abess, lifelines
+import sys
 import numpy as np
 from abess import *
 from utilities import *
@@ -455,8 +455,8 @@ class TestAlgorithm:
         k = 3
         family = "poisson"
         rho = 0.5
-        sigma = 1
-        M = 1
+        # sigma = 1
+        # M = 1
         np.random.seed(3)
         # data = make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
         data = make_glm_data(n, p, family=family, k=k, rho=rho)
@@ -485,8 +485,8 @@ class TestAlgorithm:
         k = 3
         family = "cox"
         rho = 0.5
-        sigma = 1
-        M = 1
+        # sigma = 1
+        # M = 1
         np.random.seed(3)
         # data = make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
         data = make_glm_data(n, p, family=family, k=k, rho=rho)

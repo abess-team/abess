@@ -3,7 +3,7 @@ import numpy as np
 from scipy.sparse import coo_matrix
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.base import BaseEstimator
-from abess.cabess import *
+from .cabess import *
 
 
 class bess_base(BaseEstimator):
@@ -74,7 +74,7 @@ class bess_base(BaseEstimator):
                  support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0,
                  cv=1, screening_size=-1,
-                 always_select=[],
+                 always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
                  thread=1,
@@ -94,6 +94,7 @@ class bess_base(BaseEstimator):
         self.is_warm_start = is_warm_start
         self.support_size = support_size
         self.alpha = alpha
+        self.n_features_in_ = 0
         self.s_min = s_min
         self.s_max = s_max
         self.lambda_min = None
@@ -103,7 +104,7 @@ class bess_base(BaseEstimator):
         self.ic_coef = ic_coef
         self.cv = cv
         self.screening_size = screening_size
-        self.always_select = always_select
+        self.always_select = always_select if always_select else []
         self.primary_model_fit_max_iter = primary_model_fit_max_iter
         self.primary_model_fit_epsilon = primary_model_fit_epsilon
         self.early_stop = False
@@ -113,6 +114,10 @@ class bess_base(BaseEstimator):
         self.sparse_matrix = sparse_matrix
         self.splicing_type = splicing_type
         self.important_search = important_search
+        # output
+        self.coef_ = None
+        self.intercept_ = None
+        self.train_loss_ = 0
 
     def new_data_check(self, X, y=None, weights=None):
         # Check1 : whether fit had been called

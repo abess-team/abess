@@ -10,7 +10,6 @@ def _check_estimate_1d(estimate, test_time):
     check_consistent_length(test_time, estimate)
     return estimate
 
-
 def _check_inputs(event_indicator, event_time, estimate):
     check_consistent_length(event_indicator, event_time, estimate)
     event_indicator = check_array(event_indicator, ensure_2d=False)
@@ -80,7 +79,7 @@ def _estimate_concordance_index(
 
         est = estimate[order[mask]]
 
-        assert event_i, f'got censored sample at index {order[ind]}, but expected uncensored' 
+        assert event_i, f'got censored sample at index {order[ind]}, but expected uncensored'
 
         ties = numpy.absolute(est - est_i) <= tied_tol
         n_ties = ties.sum()

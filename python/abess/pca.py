@@ -1,11 +1,9 @@
-from .bess_base import bess_base
-
-from sklearn.utils.validation import check_array
-from abess.cabess import *
-from scipy.sparse import coo_matrix
-import numpy as np
 import numbers
-
+import numpy as np
+from scipy.sparse import coo_matrix
+from sklearn.utils.validation import check_array
+from .cabess import *
+from .bess_base import bess_base
 
 def fix_docs(cls):
     # inherit the document from base class
@@ -57,7 +55,7 @@ class abessPCA(bess_base):
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=[],
+                 always_select=None,
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=1
@@ -170,17 +168,15 @@ class abessPCA(bess_base):
         else:
             raise ValueError("X or Sigma should be given in PCA.")
 
-        # Algorithm_type
-        if self.algorithm_type == "abess":
-            algorithm_type_int = 6
-        else:
-            raise ValueError("algorithm_type should not be " +
-                             str(self.algorithm_type))
+        # # Algorithm_type
+        # if self.algorithm_type == "abess":
+        #     algorithm_type_int = 6
+        # else:
+        #     raise ValueError("algorithm_type should not be " +
+        #                      str(self.algorithm_type))
 
         # for PCA,
-        #   model_type_int = 7,
-        #   path_type_int = 1 (seq)
-        model_type_int = 7
+        # model_type_int = 7
         path_type_int = 1
 
         # Ic_type
@@ -368,7 +364,7 @@ class abessRPCA(bess_base):
 
     def __init__(self, max_iter=20, exchange_num=5, is_warm_start=True, support_size=None,
                  ic_type="gic", ic_coef=1.0,
-                 always_select=[],
+                 always_select=None,
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=1
@@ -410,17 +406,15 @@ class abessRPCA(bess_base):
         else:
             raise ValueError("X should be an array.")
 
-        # Algorithm_type
-        if self.algorithm_type == "abess":
-            algorithm_type_int = 6
-        else:
-            raise ValueError("algorithm_type should not be " +
-                             str(self.algorithm_type))
+        # # Algorithm_type
+        # if self.algorithm_type == "abess":
+        #     algorithm_type_int = 6
+        # else:
+        #     raise ValueError("algorithm_type should not be " +
+        #                      str(self.algorithm_type))
 
         # for RPCA,
-        #   model_type_int = 10,
-        #   path_type_int = 1 (seq)
-        model_type_int = 10
+        # model_type_int = 10
         path_type_int = 1
 
         # Ic_type

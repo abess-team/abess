@@ -107,7 +107,7 @@ class TestWorkflow:
         n = 100
         p = 20
         k = 5
-        s_min = 0
+        # s_min = 0
         s_max = 10
         screen = 15
         imp = 5
