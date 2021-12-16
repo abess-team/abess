@@ -42,13 +42,13 @@ for i, imp in enumerate(search_path):
     se = met[i].std(axis=0) / np.sqrt(M - 1)
     res[i, 1:5] = np.hstack((m, se))
 
-if (met_save):
+if met_save:
     np.save('met.npy', met)
 
-if (res_save):
+if res_save:
     np.save('res.npy', res)
 
-if (figure_save):
+if figure_save:
     res = np.load("res.npy")
     # print(res)
 

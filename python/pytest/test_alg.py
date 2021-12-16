@@ -14,7 +14,7 @@ class TestAlgorithm:
     """
 
     @staticmethod
-    def test_gaussian(self):
+    def test_gaussian():
         np.random.seed(2)
         n = 100
         p = 20
@@ -65,7 +65,7 @@ class TestAlgorithm:
         assert_fit(model4.coef_, data.coef_)
 
     @staticmethod
-    def test_binomial(self):
+    def test_binomial():
         np.random.seed(2)
         n = 300
         p = 20
@@ -113,7 +113,7 @@ class TestAlgorithm:
         assert_fit(model1.coef_, model2.coef_)
 
     @staticmethod
-    def test_cox(self):
+    def test_cox():
         np.random.seed(2)
         n = 200
         p = 20
@@ -159,7 +159,7 @@ class TestAlgorithm:
         assert_reg(model2.coef_)
 
     @staticmethod
-    def test_poisson(self):
+    def test_poisson():
         np.random.seed(9)
         n = 100
         p = 20
@@ -194,7 +194,7 @@ class TestAlgorithm:
         assert not np.isnan(score)
 
     @staticmethod
-    def test_mulgaussian(self):
+    def test_mulgaussian():
         np.random.seed(1)
         n = 100
         p = 20
@@ -237,7 +237,7 @@ class TestAlgorithm:
         assert_fit(model4.coef_, data.coef_)
 
     @staticmethod
-    def test_mulnomial(self):
+    def test_mulnomial():
         np.random.seed(5)
         n = 100
         p = 20
@@ -268,7 +268,7 @@ class TestAlgorithm:
         assert_fit(model1.coef_, model2.coef_)
 
     @staticmethod
-    def test_PCA(self):
+    def test_PCA():
         np.random.seed(2)
         n = 1000
         p = 20
@@ -314,11 +314,11 @@ class TestAlgorithm:
         support_size_m = np.hstack((support_size, support_size, support_size))
         model4 = abessPCA(support_size=support_size_m)
         model4.fit(X, number=3)
-        assert (model4.coef_.shape[1] == 3)
+        assert model4.coef_.shape[1] == 3
 
         for i in range(3):
             coef = np.nonzero(model4.coef_[:, i])[0]
-            assert (len(coef) == s)
+            assert len(coef) == s
 
         model4.ratio(X)
 
@@ -344,7 +344,7 @@ class TestAlgorithm:
             model4.fit(X, is_normal=False)
 
     @staticmethod
-    def test_gamma(self):
+    def test_gamma():
 
         x = np.array([[1, 2], [2, 3], [3, 4], [4, 3]])
         y = np.array([19, 26, 33, 30])
@@ -363,7 +363,7 @@ class TestAlgorithm:
         assert not np.isnan(score)
 
     @staticmethod
-    def test_RPCA(self):
+    def test_RPCA():
         np.random.seed(2)
         n = 100
         p = 20
@@ -402,7 +402,7 @@ class TestAlgorithm:
             model4.fit(X, r=r)
 
     @staticmethod
-    def test_gaussian_sklearn(self):
+    def test_gaussian_sklearn():
         np.random.seed(7)
         n = 100
         p = 20
@@ -432,7 +432,7 @@ class TestAlgorithm:
             assert False
 
     @staticmethod
-    def test_binomial_sklearn(self):
+    def test_binomial_sklearn():
         n = 100
         p = 20
         k = 3
@@ -461,7 +461,7 @@ class TestAlgorithm:
         assert gcv.best_params_["alpha"] == 0.
 
     @staticmethod
-    def test_poisson_sklearn(self):
+    def test_poisson_sklearn():
         n = 100
         p = 20
         k = 3
@@ -492,7 +492,7 @@ class TestAlgorithm:
         assert gcv.best_params_["alpha"] == 0.
 
     @staticmethod
-    def test_cox_sklearn(self):
+    def test_cox_sklearn():
         n = 100
         p = 20
         k = 3
@@ -526,7 +526,7 @@ class TestAlgorithm:
         assert gcv.best_params_["alpha"] == 0.
 
     # @staticmethod
-    # def test_multigaussian_sklearn(self):
+    # def test_multigaussian_sklearn():
     #     n = 100
     #     p = 20
     #     k = 3
@@ -557,7 +557,7 @@ class TestAlgorithm:
     #     assert gcv.best_params_["alpha"] == 0.
 
     # @staticmethod
-    # def test_multinomial_sklearn(self):
+    # def test_multinomial_sklearn():
     #     n = 100
     #     p = 20
     #     k = 3

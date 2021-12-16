@@ -10,7 +10,7 @@ class TestOther:
     """
 
     @staticmethod
-    def test_datasets(self):
+    def test_datasets():
         np.random.seed(0)
         n = 100
         p = 20

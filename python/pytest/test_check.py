@@ -9,7 +9,7 @@ class TestCheck:
     """
 
     @staticmethod
-    def test_fit(self):
+    def test_fit():
         # path
         try:
             model = abessLm(path_type='other')
@@ -218,7 +218,7 @@ class TestCheck:
             assert False
 
     @staticmethod
-    def test_pca(self):
+    def test_pca():
         """
         For `abess.pca.abessPCA`.
         """
@@ -340,7 +340,7 @@ class TestCheck:
             assert False
 
     @staticmethod
-    def test_rpca(self):
+    def test_rpca():
         model = abessRPCA()
         # datatype error
         try:

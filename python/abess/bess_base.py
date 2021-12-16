@@ -290,7 +290,7 @@ class bess_base(BaseEstimator):
             group_set = list(set(group))
             j = 0
             for i in group_set:
-                while(group[j] != i):
+                while group[j] != i:
                     j += 1
                 g_index.append(j)
 

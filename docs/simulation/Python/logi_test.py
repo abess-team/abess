@@ -43,7 +43,7 @@ res = np.zeros((len(method), 12))
 print('===== Testing ' + model_name + " - " + str(rho) + ' =====')
 for m in range(M):
     ind = -1
-    if (m % 10 == 0):
+    if m % 10 == 0:
         print(" --> iter: " + str(m))
 
     # data gene
@@ -125,10 +125,10 @@ print("Method: \n", method)
 print("Metrics: \n", res[:, 0:6])
 print("Err: \n", res[:, 6:12])
 
-if (res_output):
+if res_output:
     np.save(model_name + str(rho) + "_res.npy", res)
     print("Result saved.")
 
-if (data_output):
+if data_output:
     np.save(model_name + str(rho) + "_data.npy", met)
     print("Data saved.")

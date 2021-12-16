@@ -1,8 +1,8 @@
-from abess import *
-from utilities import *
-import numpy as np
 from time import time
+import numpy as np
+from utilities import *
 from scipy.sparse import coo_matrix
+from abess import *
 
 
 class TestWorkflow:
@@ -11,7 +11,7 @@ class TestWorkflow:
     """
 
     @staticmethod
-    def test_sparse(self):
+    def test_sparse():
         np.random.seed(0)
         n = 100
         p = 20
@@ -31,7 +31,7 @@ class TestWorkflow:
         assert_value(model1.intercept_, model2.intercept_)
 
     @staticmethod
-    def test_path(self):
+    def test_path():
         np.random.seed(0)
         n = 100
         p = 20
@@ -105,7 +105,7 @@ class TestWorkflow:
         assert_value(model1.coef_, model2.coef_, 0, 0)
 
     @staticmethod
-    def test_other(self):
+    def test_other():
         np.random.seed(2)
         n = 100
         p = 20
