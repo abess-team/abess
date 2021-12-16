@@ -33,7 +33,7 @@ class abessPCA(bess_base):
     Parameters
     ----------
     splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h). 
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 1.
 
@@ -75,7 +75,7 @@ class abessPCA(bess_base):
 
     def transform(self, X):
         """
-        For PCA model, apply dimensionality reduction 
+        For PCA model, apply dimensionality reduction
         to given data.
 
         Parameters
@@ -109,7 +109,8 @@ class abessPCA(bess_base):
             full = np.sum(np.diag(s))
         return explain / full
 
-    def fit(self, X=None, is_normal=False, group=None, Sigma=None, number=1, n=None):
+    def fit(self, X=None, is_normal=False,
+            group=None, Sigma=None, number=1, n=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -125,13 +126,13 @@ class abessPCA(bess_base):
             Default is 1 for each observation.
         group : int, optional
             The group index for each variable.
-            Default: group = \code{numpy.ones(p)}.
+            Default: group = \\code{numpy.ones(p)}.
         Sigma : array-like of shape (n_features, n_features), optional
             Sample covariance matrix.
-            For PCA, it can be given as input, instead of X. But if X is given, Sigma will be set to \code{np.cov(X.T)}.
-            Default: Sigma = \code{np.cov(X.T)}.
-        number : int, optional 
-            Indicates the number of PCs returned. 
+            For PCA, it can be given as input, instead of X. But if X is given, Sigma will be set to \\code{np.cov(X.T)}.
+            Default: Sigma = \\code{np.cov(X.T)}.
+        number : int, optional
+            Indicates the number of PCs returned.
             Default: 1
         n : int, optional
             Sample size. If X is given, it would be X.shape[0]; if Sigma is given, it would be 1 by default.
@@ -275,13 +276,14 @@ class abessPCA(bess_base):
                 "number should be an positive integer and not bigger than X.shape[1].")
 
         # Important_search
-        if (not isinstance(self.important_search, int) or self.important_search < 0):
+        if (not isinstance(self.important_search, int)
+                or self.important_search < 0):
             raise ValueError(
                 "important_search should be a non-negative number.")
 
         # Sparse X
         if self.sparse_matrix:
-            if type(X) != type(coo_matrix((1, 1))):
+            if not isinstance(X, type(coo_matrix((1, 1)))):
                 # print("sparse matrix 1")
                 nonzero = 0
                 tmp = np.zeros([X.shape[0] * X.shape[1], 3])
@@ -332,7 +334,8 @@ class abessPCA(bess_base):
         self.coef_ = result[0].reshape(p, number)
         return self
 
-    def fit_transform(self, X=None, is_normal=True, group=None, Sigma=None, number=1):
+    def fit_transform(self, X=None, is_normal=True,
+                      group=None, Sigma=None, number=1):
         self.fit(X, is_normal, group, Sigma, number)
         return X.dot(self.coef_)
 
@@ -345,7 +348,7 @@ class abessRPCA(bess_base):
     Parameters
     ----------
     splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h). 
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 1.
 
@@ -390,10 +393,10 @@ class abessRPCA(bess_base):
         X : array-like of shape (n_samples, p_features)
             Training data
         r : int
-            Rank of the (recovered) information matrix L. 
+            Rank of the (recovered) information matrix L.
         group : int, optional
             The group index for each variable.
-            Default: group = \code{numpy.ones(p)}.
+            Default: group = \\code{numpy.ones(p)}.
         """
 
         # Input check
@@ -436,12 +439,12 @@ class abessRPCA(bess_base):
 
         # Group
         if group is None:
-            g_index = list(range(n*p))
+            g_index = list(range(n * p))
         else:
             group = np.array(group)
             if group.ndim > 1:
                 raise ValueError("group should be an 1D array of integers.")
-            elif group.size != n*p:
+            elif group.size != n * p:
                 raise ValueError(
                     "The length of group should be equal to (X.shape[0] * X.shape[1]).")
             g_index = []
@@ -455,12 +458,12 @@ class abessRPCA(bess_base):
 
         # path parameter (note that: path_type_int = 1)
         if self.support_size is None:
-            support_sizes = list(range(0, n*p))
+            support_sizes = list(range(0, n * p))
         else:
             if isinstance(self.support_size, (numbers.Real, numbers.Integral)):
                 support_sizes = np.empty(1, dtype=int)
                 support_sizes[0] = self.support_size
-            elif (np.any(np.array(self.support_size) > n*p) or
+            elif (np.any(np.array(self.support_size) > n * p) or
                     np.any(np.array(self.support_size) < 0)):
                 raise ValueError(
                     "All support_size should be between 0 and X.shape[1]")
@@ -494,13 +497,14 @@ class abessRPCA(bess_base):
             raise ValueError("splicing type should be 0 or 1.")
 
         # Important_search
-        if (not isinstance(self.important_search, int) or self.important_search < 0):
+        if (not isinstance(self.important_search, int)
+                or self.important_search < 0):
             raise ValueError(
                 "important_search should be a non-negative number.")
 
         # Sparse X
         if self.sparse_matrix:
-            if type(X) != type(coo_matrix((1, 1))):
+            if not isinstance(X, type(coo_matrix((1, 1)))):
                 # print("sparse matrix 1")
                 nonzero = 0
                 tmp = np.zeros([X.shape[0] * X.shape[1], 3])

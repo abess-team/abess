@@ -31,14 +31,14 @@ class abessLogistic(bess_base):
     Parameters
     ----------
     splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h). 
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=128, it would be set as 
-        the size of whole inactive set. 
-        Default: 0. 
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -61,7 +61,7 @@ class abessLogistic(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs", 
+    >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = abessLogistic(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -83,7 +83,7 @@ class abessLogistic(bess_base):
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -105,12 +105,12 @@ class abessLogistic(bess_base):
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = X.dot(self.coef_) + intercept_
-        return np.exp(xbeta)/(1 + np.exp(xbeta))
+        return np.exp(xbeta) / (1 + np.exp(xbeta))
 
     def predict(self, X):
         """
-        For Logistic model, 
-        the predict function returns a \code{dict} of \code{pr} and \code{y}, where \code{pr} is the probability of response variable is 1 and \code{y} is predicted to be 1 if \code{pr} > 0.5 else \code{y} is 0
+        For Logistic model,
+        the predict function returns a \\code{dict} of \\code{pr} and \\code{y}, where \\code{pr} is the probability of response variable is 1 and \\code{y} is predicted to be 1 if \\code{pr} > 0.5 else \\code{y} is 0
         on given data.
 
         Parameters
@@ -136,7 +136,7 @@ class abessLogistic(bess_base):
         X : array-like of shape (n_samples, n_features)
             Test data.
         y : array-like of shape (n_samples, n_features), optional
-            Test response (real class). 
+            Test response (real class).
         """
         X, y = self.new_data_check(X, y)
 
@@ -144,8 +144,9 @@ class abessLogistic(bess_base):
         xbeta = X.dot(self.coef_) + intercept_
         xbeta[xbeta > 30] = 30
         xbeta[xbeta < -30] = -30
-        pr = np.exp(xbeta)/(1 + np.exp(xbeta))
-        return (y * np.log(pr) + (np.ones(X.shape[0]) - y) * np.log(np.ones(X.shape[0]) - pr)).sum()
+        pr = np.exp(xbeta) / (1 + np.exp(xbeta))
+        return (y * np.log(pr) +
+                (np.ones(X.shape[0]) - y) * np.log(np.ones(X.shape[0]) - pr)).sum()
 
 
 @ fix_docs
@@ -156,14 +157,14 @@ class abessLm(bess_base):
     Parameters
     ----------
     splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h). 
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=128, it would be set as 
-        the size of whole inactive set. 
-        Default: 0. 
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -186,7 +187,7 @@ class abessLm(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs", 
+    >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = abessLm(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -200,7 +201,8 @@ class abessLm(bess_base):
                  sparse_matrix=False,
                  splicing_type=0,
                  important_search=128,
-                 # primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8, approximate_Newton=False
+                 # primary_model_fit_max_iter=10,
+                 # primary_model_fit_epsilon=1e-8, approximate_Newton=False
                  ):
         super(abessLm, self).__init__(
             algorithm_type="abess", model_type="Lm", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
@@ -215,7 +217,7 @@ class abessLm(bess_base):
 
     def predict(self, X):
         """
-        For linear regression problem, 
+        For linear regression problem,
         the predict function returns a numpy array of the prediction of the mean
         on given data.
 
@@ -239,11 +241,11 @@ class abessLm(bess_base):
         X : array-like of shape (n_samples, n_features)
             Test data.
         y : array-like of shape (n_samples, n_features), optional
-            Test response. 
+            Test response.
         """
         X, y = self.new_data_check(X, y)
         y_pred = self.predict(X)
-        return -((y - y_pred)*(y - y_pred)).sum()
+        return -((y - y_pred) * (y - y_pred)).sum()
 
 
 @ fix_docs
@@ -254,14 +256,14 @@ class abessCox(bess_base):
     Parameters
     ----------
     splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h). 
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=128, it would be set as 
-        the size of whole inactive set. 
-        Default: 0. 
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -284,7 +286,7 @@ class abessCox(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs", 
+    >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = abessCox(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -306,7 +308,7 @@ class abessCox(bess_base):
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -316,8 +318,8 @@ class abessCox(bess_base):
 
     def predict(self, X):
         """
-        For Cox model, 
-        the predict function returns the time-independent part of hazard function, i.e. :math:`\exp(X\\beta)`, 
+        For Cox model,
+        the predict function returns the time-independent part of hazard function, i.e. :math:`\\exp(X\\beta)`,
         on given data.
 
         Parameters
@@ -339,7 +341,7 @@ class abessCox(bess_base):
         X : array-like of shape (n_samples, n_features)
             Test data.
         y : array-like of shape (n_samples, n_features), optional
-            Test response. 
+            Test response.
         """
         X, y = self.new_data_check(X, y)
         risk_score = X.dot(self.coef_)
@@ -357,14 +359,14 @@ class abessPoisson(bess_base):
     Parameters
     ----------
     splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h). 
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=128, it would be set as 
-        the size of whole inactive set. 
-        Default: 0. 
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -387,7 +389,7 @@ class abessPoisson(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs", 
+    >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = abessPoisson(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -408,7 +410,7 @@ class abessPoisson(bess_base):
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
@@ -417,7 +419,7 @@ class abessPoisson(bess_base):
 
     def predict(self, X):
         """
-        For Poisson model, 
+        For Poisson model,
         the predict function returns a numpy array of the prediction of the mean of response,
         on given data.
 
@@ -442,7 +444,7 @@ class abessPoisson(bess_base):
         X : array-like of shape (n_samples, n_features)
             Test data.
         y : array-like of shape (n_samples, n_features), optional
-            Test response. 
+            Test response.
         """
         X, y = self.new_data_check(X, y)
 
@@ -460,14 +462,14 @@ class abessMultigaussian(bess_base):
     Parameters
     ----------
     splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h). 
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=128, it would be set as 
-        the size of whole inactive set. 
-        Default: 0. 
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -490,7 +492,7 @@ class abessMultigaussian(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs", 
+    >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = abessMultigaussian(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -518,7 +520,7 @@ class abessMultigaussian(bess_base):
 
     def predict(self, X):
         """
-        For Multigaussian model, 
+        For Multigaussian model,
         the predict function returns a numpy matrix of the prediction of the mean of responses,
         on given data.
 
@@ -543,12 +545,12 @@ class abessMultigaussian(bess_base):
         X : array-like of shape (n_samples, n_features)
             Test data.
         y : array-like of shape (n_samples, n_features), optional
-            Test response. 
+            Test response.
         """
         X, y = self.new_data_check(X, y)
 
         y_pred = self.predict(X)
-        return -((y - y_pred)*(y - y_pred)).sum()
+        return -((y - y_pred) * (y - y_pred)).sum()
 
 
 @ fix_docs
@@ -559,14 +561,14 @@ class abessMultinomial(bess_base):
     Parameters
     ----------
     splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h). 
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=128, it would be set as 
-        the size of whole inactive set. 
-        Default: 0. 
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -589,7 +591,7 @@ class abessMultinomial(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs", 
+    >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = abessMultinomial(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -611,7 +613,7 @@ class abessMultinomial(bess_base):
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -641,7 +643,7 @@ class abessMultinomial(bess_base):
 
     def predict(self, X):
         """
-        For Multinomial model, 
+        For Multinomial model,
         the predict function returns return the most possible class the given data may be.
 
         Parameters
@@ -670,7 +672,7 @@ class abessMultinomial(bess_base):
         X : array-like of shape (n_samples, n_features)
             Test data.
         y : array-like of shape (n_samples, n_features), optional
-            Test response (dummy variables of real class). 
+            Test response (dummy variables of real class).
         """
         X, y = self.new_data_check(X, y)
 
@@ -686,14 +688,14 @@ class abessGamma(bess_base):
     Parameters
     ----------
     splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h). 
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 0.
     important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=128, it would be set as 
-        the size of whole inactive set. 
-        Default: 0. 
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -713,7 +715,7 @@ class abessGamma(bess_base):
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs", 
+    >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = abessGamma(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -734,7 +736,7 @@ class abessGamma(bess_base):
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
@@ -743,7 +745,7 @@ class abessGamma(bess_base):
 
     def predict(self, X):
         """
-        For Poisson model, 
+        For Poisson model,
         the predict function returns a numpy array of the prediction of the mean of response,
         on given data.
 
@@ -768,9 +770,9 @@ class abessGamma(bess_base):
         X : array-like of shape (n_samples, n_features)
             Test data.
         y : array-like of shape (n_samples, n_features), optional
-            Test response. 
+            Test response.
         """
-        if (weights == None):
+        if (weights is None):
             X = np.array(X)
             weights = np.ones(X.shape[0])
         X, y, weights = self.new_data_check(X, y, weights)

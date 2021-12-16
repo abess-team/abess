@@ -40,25 +40,25 @@ class bess_base(BaseEstimator):
         Default: cv = 1.
     thread: int, optional
         Max number of multithreads. If thread = 0, the program will use the maximum number supported by the device.
-        Default: thread = 1. 
+        Default: thread = 1.
     screening_size: int, optional
-        The number of variables remaining after screening. 
-        It should be a non-negative number smaller than p, but larger than any value in support\_size.
-        If screening_size=-1, screening will not be used. 
+        The number of variables remaining after screening.
+        It should be a non-negative number smaller than p, but larger than any value in support\\_size.
+        If screening_size=-1, screening will not be used.
         If screening_size=0, screening_size will be set as min(p, int(n / (np.log(np.log(n)) * np.log(p)))).
         Default: screening_size = -1.
     always_select: array_like, optional
         An array contains the indexes of variables we want to consider in the model.
         Default: always_select = [].
     primary_model_fit_max_iter: int, optional
-        The maximal number of iteration in `primary_model_fit()` (in Algorithm.h). 
+        The maximal number of iteration in `primary_model_fit()` (in Algorithm.h).
         Default: primary_model_fit_max_iter = 10.
     primary_model_fit_epsilon: double, optional
-        The epsilon (threshold) of iteration in `primary_model_fit()` (in Algorithm.h). 
+        The epsilon (threshold) of iteration in `primary_model_fit()` (in Algorithm.h).
         Default: primary_model_fit_max_iter = 1e-08.
 
     Returns
-    ------- 
+    -------
     coef_: array of shape (n_features, ) or (n_targets, n_features)
         Estimated coefficients for the best subset selection problem.
     ic_: double
@@ -83,7 +83,8 @@ class bess_base(BaseEstimator):
                  sparse_matrix=False,
                  splicing_type=0,
                  important_search=0,
-                 # early_stop=False, lambda_min=None, lambda_max=None, n_lambda=100,
+                 # early_stop=False, lambda_min=None, lambda_max=None,
+                 # n_lambda=100,
                  ):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
@@ -144,7 +145,8 @@ class bess_base(BaseEstimator):
 
         return X
 
-    def fit(self, X=None, y=None, is_normal=True, weight=None, group=None, cv_fold_id=None):
+    def fit(self, X=None, y=None, is_normal=True,
+            weight=None, group=None, cv_fold_id=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -154,9 +156,9 @@ class bess_base(BaseEstimator):
             Training data
         y :  array-like of shape (n_samples,) or (n_samples, n_targets)
             Target values. Will be cast to X's dtype if necessary.
-            For linear regression problem, y should be a n time 1 numpy array with type \code{double}.
-            For classification problem, \code{y} should be a $n \time 1$ numpy array with values \code{0} or \code{1}.
-            For count data, \code{y} should be a $n \time 1$ numpy array of non-negative integer.
+            For linear regression problem, y should be a n time 1 numpy array with type \\code{double}.
+            For classification problem, \\code{y} should be a $n \time 1$ numpy array with values \\code{0} or \\code{1}.
+            For count data, \\code{y} should be a $n \time 1$ numpy array of non-negative integer.
         is_normal : bool, optional
             whether normalize the variables array before fitting the algorithm.
             Default: is_normal=True.
@@ -165,7 +167,7 @@ class bess_base(BaseEstimator):
             Default: weight = 1 for each observation.
         group : int, optional
             The group index for each variable.
-            Default: group = \code{numpy.ones(p)}.
+            Default: group = \\code{numpy.ones(p)}.
         cv_fold_id: array_like of shape (n_samples,) , optional
             An array indicates different folds in CV. Samples in the same fold should be given the same number.
             Default: cv_fold_id=None
@@ -309,7 +311,8 @@ class bess_base(BaseEstimator):
                     support_sizes = list(range(0, max(min(p, int(
                         n / (np.log(np.log(n)) * np.log(p)))), 1)))
             else:
-                if isinstance(self.support_size, (numbers.Real, numbers.Integral)):
+                if isinstance(self.support_size,
+                              (numbers.Real, numbers.Integral)):
                     support_sizes = np.empty(1, dtype=int)
                     support_sizes[0] = self.support_size
                 elif (np.any(np.array(self.support_size) > p) or
@@ -374,7 +377,8 @@ class bess_base(BaseEstimator):
                     "screening size should be more than max(support_size).")
 
         # Primary fit parameters
-        if (not isinstance(self.primary_model_fit_max_iter, int) or self.primary_model_fit_max_iter <= 0):
+        if (not isinstance(self.primary_model_fit_max_iter, int)
+                or self.primary_model_fit_max_iter <= 0):
             raise ValueError(
                 "primary_model_fit_max_iter should be an positive integer.")
         if (self.primary_model_fit_epsilon < 0):
@@ -391,13 +395,14 @@ class bess_base(BaseEstimator):
             raise ValueError("splicing type should be 0 or 1.")
 
         # Important_search
-        if (not isinstance(self.important_search, int) or self.important_search < 0):
+        if (not isinstance(self.important_search, int)
+                or self.important_search < 0):
             raise ValueError(
                 "important_search should be a non-negative number.")
 
         # Sparse X
         if self.sparse_matrix:
-            if type(X) != type(coo_matrix((1, 1))):
+            if not isinstance(X, type(coo_matrix((1, 1)))):
                 # print("sparse matrix 1")
                 nonzero = 0
                 tmp = np.zeros([X.shape[0] * X.shape[1], 3])

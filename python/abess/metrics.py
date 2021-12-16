@@ -60,7 +60,8 @@ def _get_comparable(event_indicator, event_time, order):
     return comparable, tied_time
 
 
-def _estimate_concordance_index(event_indicator, event_time, estimate, weights, tied_tol=1e-8):
+def _estimate_concordance_index(
+        event_indicator, event_time, estimate, weights, tied_tol=1e-8):
     order = numpy.argsort(event_time)
 
     comparable, tied_time = _get_comparable(event_indicator, event_time, order)
@@ -101,7 +102,8 @@ def _estimate_concordance_index(event_indicator, event_time, estimate, weights, 
     return cindex, concordant, discordant, tied_risk, tied_time
 
 
-def concordance_index_censored(event_indicator, event_time, estimate, tied_tol=1e-8):
+def concordance_index_censored(
+        event_indicator, event_time, estimate, tied_tol=1e-8):
     """Concordance index for right-censored data
 
     Reference from scikit-survival: `sksurv.metrics.concordance_index_censored`.
@@ -159,4 +161,5 @@ def concordance_index_censored(event_indicator, event_time, estimate, tied_tol=1
 
     w = numpy.ones_like(estimate)
 
-    return _estimate_concordance_index(event_indicator, event_time, estimate, w, tied_tol)
+    return _estimate_concordance_index(
+        event_indicator, event_time, estimate, w, tied_tol)
