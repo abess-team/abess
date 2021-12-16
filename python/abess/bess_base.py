@@ -104,7 +104,7 @@ class bess_base(BaseEstimator):
         self.ic_coef = ic_coef
         self.cv = cv
         self.screening_size = screening_size
-        self.always_select = always_select if always_select else []
+        self.always_select = always_select
         self.primary_model_fit_max_iter = primary_model_fit_max_iter
         self.primary_model_fit_epsilon = primary_model_fit_epsilon
         self.early_stop = False
@@ -233,7 +233,7 @@ class bess_base(BaseEstimator):
         else:
             raise ValueError("model_type should not be " +
                              str(self.model_type))
-
+        
         # Path_type: seq, gs
         if self.path_type == "seq":
             path_type_int = 1
@@ -430,6 +430,10 @@ class bess_base(BaseEstimator):
         normalize = 0
         if is_normal:
             normalize = self.normalize_type
+        
+        # always_select
+        if self.always_select is None:
+            self.always_select = []
 
         # wrap with cpp
         # print("wrap enter.")#///
