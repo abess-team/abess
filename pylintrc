@@ -419,7 +419,7 @@ signature-mutators=
 
 # List of additional names supposed to be defined in builtins. Remember that
 # you should avoid defining new builtins when possible.
-additional-builtins=
+additional-builtins=approx
 
 # Tells whether unused global variables should be treated as a violation.
 allow-global-unused-variables=yes
