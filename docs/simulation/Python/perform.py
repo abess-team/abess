@@ -1,4 +1,4 @@
-import os
+import os, matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.patches as mpatches
@@ -38,7 +38,7 @@ plt.subplot(321)
 for i in range(lm1.shape[0]):
     plt.boxplot(x=[lm1[i, lm1[i, :, 0] < 100, 0], lm7[i, lm7[i, :, 0] < 100, 0]], patch_artist=True,
                 labels=['', ''], positions=[i + 1, i + 5], widths=0.7,
-                boxprops=dict(facecolor=color[i])),
+                boxprops=dict(facecolor=color[i]))
 
 plt.xlabel('low corr                                         high corr')
 plt.title('Linear - Predict Error')
@@ -67,7 +67,7 @@ plt.subplot(322)
 for i in range(logi1.shape[0]):
     plt.boxplot(x=[logi1[i, :, 0], logi7[i, :, 0]], patch_artist=True,
                 labels=['', ''], positions=[i + 1, i + 4], widths=0.7,
-                boxprops=dict(facecolor=color[i])),
+                boxprops=dict(facecolor=color[i]))
 
 plt.xlabel('low corr                                         high corr')
 plt.title('Logistic - AUC')

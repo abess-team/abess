@@ -3,8 +3,6 @@ from abess.metrics import concordance_index_censored
 from .bess_base import bess_base
 
 import numpy as np
-import types
-
 
 def fix_docs(cls):
     # inherit the document from base class
@@ -78,7 +76,7 @@ class abessLogistic(bess_base):
                  splicing_type=0,
                  important_search=128,
                  ):
-        super(abessLogistic, self).__init__(
+        super().__init__(
             algorithm_type="abess", model_type="Logistic", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
@@ -204,7 +202,7 @@ class abessLm(bess_base):
                  # primary_model_fit_max_iter=10,
                  # primary_model_fit_epsilon=1e-8, approximate_Newton=False
                  ):
-        super(abessLm, self).__init__(
+        super().__init__(
             algorithm_type="abess", model_type="Lm", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
@@ -303,7 +301,7 @@ class abessCox(bess_base):
                  splicing_type=0,
                  important_search=128
                  ):
-        super(abessCox, self).__init__(
+        super().__init__(
             algorithm_type="abess", model_type="Cox", normalize_type=3, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
@@ -405,7 +403,7 @@ class abessPoisson(bess_base):
                  splicing_type=0,
                  important_search=128
                  ):
-        super(abessPoisson, self).__init__(
+        super().__init__(
             algorithm_type="abess", model_type="Poisson", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
@@ -507,7 +505,7 @@ class abessMultigaussian(bess_base):
                  splicing_type=0,
                  important_search=128
                  ):
-        super(abessMultigaussian, self).__init__(
+        super().__init__(
             algorithm_type="abess", model_type="Multigaussian", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
@@ -608,7 +606,7 @@ class abessMultinomial(bess_base):
                  splicing_type=0,
                  important_search=128
                  ):
-        super(abessMultinomial, self).__init__(
+        super().__init__(
             algorithm_type="abess", model_type="Multinomial", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
@@ -731,7 +729,7 @@ class abessGamma(bess_base):
                  splicing_type=0,
                  important_search=128
                  ):
-        super(abessGamma, self).__init__(
+        super().__init__(
             algorithm_type="abess", model_type="Gamma", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,

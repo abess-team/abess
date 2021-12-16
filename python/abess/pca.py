@@ -4,7 +4,6 @@ from sklearn.utils.validation import check_array
 from abess.cabess import *
 from scipy.sparse import coo_matrix
 import numpy as np
-import types
 import numbers
 
 
@@ -63,7 +62,7 @@ class abessPCA(bess_base):
                  sparse_matrix=False,
                  splicing_type=1
                  ):
-        super(abessPCA, self).__init__(
+        super().__init__(
             algorithm_type="abess", model_type="PCA", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
@@ -159,7 +158,7 @@ class abessPCA(bess_base):
 
             if (Sigma.shape[0] != Sigma.shape[1] or np.any(Sigma.T != Sigma)):
                 raise ValueError("Sigma should be symmetrical matrix.")
-            elif np.any(np.linalg.eigvals(Sigma) < 0):
+            if np.any(np.linalg.eigvals(Sigma) < 0):
                 raise ValueError("Sigma should be semi-positive definite.")
 
             if (n is None):
@@ -200,7 +199,7 @@ class abessPCA(bess_base):
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
-        elif (self.cv > n):
+        if (self.cv > n):
             raise ValueError("cv should be smaller than n.")
 
         # Group
@@ -210,7 +209,7 @@ class abessPCA(bess_base):
             group = np.array(group)
             if group.ndim > 1:
                 raise ValueError("group should be an 1D array of integers.")
-            elif group.size != p:
+            if group.size != p:
                 raise ValueError(
                     "The length of group should be equal to X.shape[1].")
             g_index = []
@@ -218,7 +217,7 @@ class abessPCA(bess_base):
             group_set = list(set(group))
             j = 0
             for i in group_set:
-                while(group[j] != i):
+                while group[j] != i:
                     j += 1
                 g_index.append(j)
 
@@ -267,7 +266,7 @@ class abessPCA(bess_base):
                 "thread should be positive number or 0 (maximum supported by your device).")
 
         # Splicing type
-        if (self.splicing_type != 0 and self.splicing_type != 1):
+        if self.splicing_type not in (0, 1):
             raise ValueError("splicing type should be 0 or 1.")
 
         # number
@@ -374,7 +373,7 @@ class abessRPCA(bess_base):
                  sparse_matrix=False,
                  splicing_type=1
                  ):
-        super(abessRPCA, self).__init__(
+        super().__init__(
             algorithm_type="abess", model_type="RPCA", normalize_type=1, path_type="seq", max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, s_min=None, s_max=None, cv=1,
             ic_type=ic_type, ic_coef=ic_coef,
@@ -444,7 +443,7 @@ class abessRPCA(bess_base):
             group = np.array(group)
             if group.ndim > 1:
                 raise ValueError("group should be an 1D array of integers.")
-            elif group.size != n * p:
+            if group.size != n * p:
                 raise ValueError(
                     "The length of group should be equal to (X.shape[0] * X.shape[1]).")
             g_index = []
@@ -493,7 +492,7 @@ class abessRPCA(bess_base):
                 "thread should be positive number or 0 (maximum supported by your device).")
 
         # Splicing type
-        if (self.splicing_type != 0 and self.splicing_type != 1):
+        if self.splicing_type not in (0,1):
             raise ValueError("splicing type should be 0 or 1.")
 
         # Important_search

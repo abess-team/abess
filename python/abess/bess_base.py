@@ -1,4 +1,3 @@
-import math
 import numbers
 import numpy as np
 from scipy.sparse import coo_matrix
@@ -193,7 +192,6 @@ class bess_base(BaseEstimator):
             # Init
             n = X.shape[0]
             p = X.shape[1]
-            Sigma = np.matrix(-1)
             self.n_features_in_ = p
 
             if y.ndim == 1:
@@ -254,7 +252,7 @@ class bess_base(BaseEstimator):
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
-        elif (self.cv > n):
+        if (self.cv > n):
             raise ValueError("cv should be smaller than n.")
 
         # cv_fold_id
@@ -264,10 +262,10 @@ class bess_base(BaseEstimator):
             cv_fold_id = np.array(cv_fold_id, dtype="int32")
             if cv_fold_id.ndim > 1:
                 raise ValueError("group should be an 1D array of integers.")
-            elif cv_fold_id.size != n:
+            if cv_fold_id.size != n:
                 raise ValueError(
                     "The length of group should be equal to X.shape[0].")
-            elif len(set(cv_fold_id)) != self.cv:
+            if len(set(cv_fold_id)) != self.cv:
                 raise ValueError(
                     "The number of different masks should be equal to `cv`.")
 
@@ -278,7 +276,7 @@ class bess_base(BaseEstimator):
             group = np.array(group)
             if group.ndim > 1:
                 raise ValueError("group should be an 1D array of integers.")
-            elif group.size != p:
+            if group.size != p:
                 raise ValueError(
                     "The length of group should be equal to X.shape[1].")
             g_index = []
@@ -295,11 +293,11 @@ class bess_base(BaseEstimator):
             weight = np.ones(n)
         else:
             weight = np.array(weight)
-            if (weight.dtype != "int" and weight.dtype != "float"):
+            if weight.dtype not in ("int", "float"):
                 raise ValueError("weight should be numeric.")
-            elif weight.ndim > 1:
+            if weight.ndim > 1:
                 raise ValueError("weight should be a 1-D array.")
-            elif weight.size != n:
+            if weight.size != n:
                 raise ValueError("X.shape[0] should be equal to weight.size")
 
         # Path parameters
@@ -391,7 +389,7 @@ class bess_base(BaseEstimator):
                 "thread should be positive number or 0 (maximum supported by your device).")
 
         # Splicing type
-        if (self.splicing_type != 0 and self.splicing_type != 1):
+        if self.splicing_type not in (0, 1):
             raise ValueError("splicing type should be 0 or 1.")
 
         # Important_search

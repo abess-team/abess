@@ -26,18 +26,18 @@ for m in range(M):
 
     print("==> Iter : ", m)
 
-    for i in range(len(search_path)):
+    for i, imp in enumerate(search_path):
         ts = time()
         model = abessLogistic(
             support_size=range(100),
-            important_search=search_path[i])
+            important_search=imp)
         model.fit(train.x, train.y)
         te = time()
         met[i, m, 0] = roc_auc_score(test.y, model.predict(test.x))
         met[i, m, 1] = te - ts
 
-for i in range(len(search_path)):
-    res[i, 0] = search_path[i]
+for i, imp in enumerate(search_path):
+    res[i, 0] = imp
     m = met[i].mean(axis=0)
     se = met[i].std(axis=0) / np.sqrt(M - 1)
     res[i, 1:5] = np.hstack((m, se))
@@ -56,7 +56,7 @@ if (figure_save):
 
     plt.subplot(121)
     plt.errorbar(res[:, 0], res[:, 1], yerr=res[:, 3] * 2, capsize=3)
-    plt.xticks(res[:, 0], [str(i) for i in ind])
+    plt.xticks(res[:, 0], [str(i) for i in res[:, 0]])
     plt.ylim(0.9, 1)
     plt.ylabel('AUC')
     plt.xlabel('log2(important_search)')
@@ -64,7 +64,7 @@ if (figure_save):
 
     plt.subplot(122)
     plt.errorbar(res[:, 0], res[:, 2], yerr=res[:, 4] * 2, capsize=3)
-    plt.xticks(res[:, 0], [str(i) for i in ind])
+    plt.xticks(res[:, 0], [str(i) for i in res[:, 0]])
     plt.title('Time(/s)')
     plt.xlabel('log2(important_search)')
     # plt.savefig('./time.png')

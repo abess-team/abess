@@ -2,6 +2,10 @@ import numpy as np
 
 
 class data:
+    """
+    Data format.
+    Include: x, y, coefficients.
+    """
     def __init__(self, x, y, coef_):
         self.x = x
         self.y = y
@@ -193,7 +197,7 @@ def beta_generator(k, M):
 
 
 def make_multivariate_glm_data(
-        n=100, p=100, k=10, family="gaussian", SNR=1, rho=0.5, coef_=None, M=1, sparse_ratio=None):
+        n=100, p=100, k=10, family="gaussian", rho=0.5, coef_=None, M=1, sparse_ratio=None):
     """
     Generate a dataset with multi-responses.
 
@@ -264,11 +268,12 @@ def make_multivariate_glm_data(
     else:
         Tbeta = coef_
 
-    if family == "multigaussian" or family == "gaussian":
+    if family in ("multigaussian", "gaussian"):
         eta = np.matmul(X, Tbeta)
         y = eta + np.random.normal(0, 1, n * M).reshape(n, M)
         return data(X, y, Tbeta)
-    elif family == "multinomial" or family == "binomial":
+    
+    if family in ("multinomial", "binomial"):
         for i in range(M):
             Tbeta[:, i] = Tbeta[:, i] - Tbeta[:, M - 1]
         eta = np.exp(np.matmul(X, Tbeta))
@@ -282,13 +287,14 @@ def make_multivariate_glm_data(
             y[i, int(j[0])] = 1
             # y2[i] = j
         return data(X, y, Tbeta)
-    elif family == "poisson":
+    
+    if family == "poisson":
         eta = np.matmul(X, Tbeta)
         eta[eta > 30] = 30
         eta[eta < -30] = -30
         lam = np.exp(eta)
         y = np.random.poisson(lam=lam)
         return data(X, y, Tbeta)
-    else:
-        raise ValueError(
-            "Family should be \'gaussian\', \'multigaussian\', or \'multinomial\'")
+        
+    raise ValueError(
+        "Family should be \'gaussian\', \'multigaussian\', or \'multinomial\'")

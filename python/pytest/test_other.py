@@ -17,7 +17,6 @@ class TestOther:
         M = 3
         rho = 0.
         sigma = 1.
-        SNR = 1
 
         for family in ['gaussian', 'binomial', 'poisson']:
             data1 = make_glm_data(
@@ -65,16 +64,16 @@ class TestOther:
 
         for family in ['multigaussian', 'multinomial']:
             data1 = make_multivariate_glm_data(
-                n=n, p=p, k=k, family=family, rho=rho, SNR=SNR, M=M, sparse_ratio=0.1)
+                n=n, p=p, k=k, family=family, rho=rho, M=M, sparse_ratio=0.1)
             data1 = make_multivariate_glm_data(
-                n=n, p=p, k=k, family=family, rho=rho, SNR=SNR, M=M)
+                n=n, p=p, k=k, family=family, rho=rho, M=M)
             assert_shape(data1.x, data1.y, n, p, M)
             data2 = make_multivariate_glm_data(
-                n=n, p=p, k=k, family=family, rho=rho, SNR=SNR, M=M, coef_=data1.coef_)
+                n=n, p=p, k=k, family=family, rho=rho, M=M, coef_=data1.coef_)
             assert (data1.coef_ == data2.coef_).all()
 
         data1 = make_multivariate_glm_data(
-            n=n, p=p, k=k, family='poisson', rho=rho, SNR=SNR, M=M)
+            n=n, p=p, k=k, family='poisson', rho=rho, M=M)
         assert_shape(data1.x, data1.y, n, p, 1)
 
         # error input

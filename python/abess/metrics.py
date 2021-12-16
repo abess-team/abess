@@ -6,8 +6,7 @@ def _check_estimate_1d(estimate, test_time):
     estimate = check_array(estimate, ensure_2d=False)
     if estimate.ndim != 1:
         raise ValueError(
-            'Expected 1D array, got {:d}D array instead:\narray={}.\n'.format(
-                estimate.ndim, estimate))
+            f'Expected 1D array, got {estimate.ndim}D array instead:\narray={estimate}.\n')
     check_consistent_length(test_time, estimate)
     return estimate
 
@@ -20,8 +19,7 @@ def _check_inputs(event_indicator, event_time, estimate):
 
     if not numpy.issubdtype(event_indicator.dtype, numpy.bool_):
         raise ValueError(
-            'only boolean arrays are supported as class labels for survival analysis, got {0}'.format(
-                event_indicator.dtype))
+            f'only boolean arrays are supported as class labels for survival analysis, got {event_indicator.dtype}')
 
     if len(event_time) < 2:
         raise ValueError("Need a minimum of two samples")
@@ -82,8 +80,7 @@ def _estimate_concordance_index(
 
         est = estimate[order[mask]]
 
-        assert event_i, 'got censored sample at index %d, but expected uncensored' % order[
-            ind]
+        assert event_i, f'got censored sample at index {order[ind]}, but expected uncensored' 
 
         ties = numpy.absolute(est - est_i) <= tied_tol
         n_ties = ties.sum()

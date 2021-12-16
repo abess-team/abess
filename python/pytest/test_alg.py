@@ -1,12 +1,12 @@
+import sys, sklearn, scipy, abess, lifelines
 import numpy as np
 from abess import *
 from utilities import *
 import pandas as pd
-import sys
-from sklearn.model_selection import KFold
-from sklearn.model_selection import GridSearchCV
 from scipy.sparse import coo_matrix
-
+from sklearn.model_selection import KFold, GridSearchCV
+from sklearn.linear_model import LinearRegression, LogisticRegression, PoissonRegressor
+from lifelines import CoxPHFitter
 
 class TestAlgorithm:
     """
@@ -26,7 +26,6 @@ class TestAlgorithm:
         def assert_reg(coef):
             if (sys.version_info[0] < 3 or sys.version_info[1] < 6):
                 return
-            from sklearn.linear_model import LinearRegression
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
             reg = LinearRegression()
@@ -84,7 +83,6 @@ class TestAlgorithm:
         def assert_reg(coef):
             if (sys.version_info[0] < 3 or sys.version_info[1] < 6):
                 return
-            from sklearn.linear_model import LogisticRegression
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
             reg = LogisticRegression(penalty="none")
@@ -126,7 +124,6 @@ class TestAlgorithm:
         def assert_reg(coef):
             if (sys.version_info[0] < 3 or sys.version_info[1] < 6):
                 return
-            from lifelines import CoxPHFitter
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
             survival = pd.DataFrame()
@@ -171,7 +168,6 @@ class TestAlgorithm:
         def assert_reg(coef):
             if (sys.version_info[0] < 3 or sys.version_info[1] < 6):
                 return
-            from sklearn.linear_model import PoissonRegressor
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
             reg = PoissonRegressor(
