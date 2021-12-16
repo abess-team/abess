@@ -20,7 +20,7 @@ fail-on=
 fail-under=10.0
 
 # Files to be skipped. They should be base names, not paths.
-ignore=cabess.py,setup.py,cygwinccompiler.py
+ignore=cabess.py,setup.py,cygwinccompiler.py,conf.py
 
 # Add files or directories matching the regex patterns to the ignore-list. The
 # regex matches against paths and can be in Posix or Windows format.
@@ -87,11 +87,16 @@ disable=raw-checker-failed,
         deprecated-pragma,
         use-symbolic-message-instead,
         undefined-variable,
+        redefined-outer-name,
         invalid-name,
         arguments-renamed,
+        arguments-differ, 
         missing-function-docstring,
         missing-module-docstring,
-        broad-except
+        broad-except,
+        too-many-instance-attributes,
+        too-many-branches,
+        too-many-statements
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -512,7 +517,7 @@ max-returns=6
 max-statements=50
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods=2
+min-public-methods=0
 
 
 [IMPORTS]
