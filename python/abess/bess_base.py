@@ -233,7 +233,7 @@ class bess_base(BaseEstimator):
         else:
             raise ValueError("model_type should not be " +
                              str(self.model_type))
-        
+
         # Path_type: seq, gs
         if self.path_type == "seq":
             path_type_int = 1
@@ -430,7 +430,7 @@ class bess_base(BaseEstimator):
         normalize = 0
         if is_normal:
             normalize = self.normalize_type
-        
+
         # always_select
         if self.always_select is None:
             self.always_select = []

@@ -302,7 +302,7 @@ class abessPCA(bess_base):
         normalize = 0
         if is_normal:
             normalize = self.normalize_type
-        
+
         # always_select
         if self.always_select is None:
             self.always_select = []
