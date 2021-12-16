@@ -69,8 +69,8 @@ class abessLogistic(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1, 
-                 always_select=[], 
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=[],
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
                  thread=1,
@@ -80,9 +80,9 @@ class abessLogistic(bess_base):
                  ):
         super(abessLogistic, self).__init__(
             algorithm_type="abess", model_type="Logistic", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size, 
-            always_select=always_select, 
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
@@ -194,8 +194,8 @@ class abessLm(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1, 
-                 always_select=[], 
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=[],
                  thread=1, covariance_update=False,
                  sparse_matrix=False,
                  splicing_type=0,
@@ -204,9 +204,9 @@ class abessLm(bess_base):
                  ):
         super(abessLm, self).__init__(
             algorithm_type="abess", model_type="Lm", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size, 
-            always_select=always_select, 
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
             thread=thread, covariance_update=covariance_update,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
@@ -292,8 +292,8 @@ class abessCox(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1, 
-                 always_select=[], 
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=[],
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
                  thread=1,
@@ -303,9 +303,9 @@ class abessCox(bess_base):
                  ):
         super(abessCox, self).__init__(
             algorithm_type="abess", model_type="Cox", normalize_type=3, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size, 
-            always_select=always_select, 
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
@@ -395,8 +395,8 @@ class abessPoisson(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1, 
-                 always_select=[], 
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=[],
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  thread=1,
                  sparse_matrix=False,
@@ -405,9 +405,9 @@ class abessPoisson(bess_base):
                  ):
         super(abessPoisson, self).__init__(
             algorithm_type="abess", model_type="Poisson", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size, 
-            always_select=always_select, 
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -498,8 +498,8 @@ class abessMultigaussian(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1, 
-                 always_select=[], 
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=[],
                  thread=1, covariance_update=False,
                  sparse_matrix=False,
                  splicing_type=0,
@@ -507,9 +507,9 @@ class abessMultigaussian(bess_base):
                  ):
         super(abessMultigaussian, self).__init__(
             algorithm_type="abess", model_type="Multigaussian", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size, 
-            always_select=always_select, 
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
             thread=thread, covariance_update=covariance_update,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
@@ -597,8 +597,8 @@ class abessMultinomial(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1, 
-                 always_select=[], 
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=[],
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
                  thread=1,
@@ -608,9 +608,9 @@ class abessMultinomial(bess_base):
                  ):
         super(abessMultinomial, self).__init__(
             algorithm_type="abess", model_type="Multinomial", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size, 
-            always_select=always_select, 
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
@@ -655,7 +655,7 @@ class abessMultinomial(bess_base):
         intercept_ = np.repeat(
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
         xbeta = X.dot(self.coef_) + intercept_
-        max_item = np.argmax(xbeta, axis = 1)
+        max_item = np.argmax(xbeta, axis=1)
         y_pred = np.zeros_like(xbeta)
         for i in range(X.shape[0]):
             y_pred[i, max_item[i]] = 1
@@ -676,6 +676,7 @@ class abessMultinomial(bess_base):
 
         pr = self.predict_proba(X)
         return np.sum(y * np.log(pr))
+
 
 @ fix_docs
 class abessGamma(bess_base):
@@ -720,8 +721,8 @@ class abessGamma(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1, 
-                 always_select=[], 
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=[],
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  thread=1,
                  sparse_matrix=False,
@@ -730,9 +731,9 @@ class abessGamma(bess_base):
                  ):
         super(abessGamma, self).__init__(
             algorithm_type="abess", model_type="Gamma", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, 
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size, 
-            always_select=always_select, 
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
             primary_model_fit_max_iter=primary_model_fit_max_iter,  primary_model_fit_epsilon=primary_model_fit_epsilon,
             thread=thread,
             sparse_matrix=sparse_matrix,

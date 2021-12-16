@@ -129,7 +129,7 @@ class bess_base(BaseEstimator):
             X, y = check_X_y(X, y, accept_sparse=True,
                              multi_output=True, y_numeric=True)
             return X, y
-        
+
         # Check4: X, y, weights validation
         if weights is not None:
             X, y = check_X_y(X, y, accept_sparse=True,
@@ -424,8 +424,8 @@ class bess_base(BaseEstimator):
 
         # wrap with cpp
         # print("wrap enter.")#///
-        result = pywrap_GLM(X, y, weight, 
-                            n, p, normalize, 
+        result = pywrap_GLM(X, y, weight,
+                            n, p, normalize,
                             algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
                             path_type_int, self.is_warm_start,
                             ic_type_int, self.ic_coef, self.cv,
@@ -444,7 +444,7 @@ class bess_base(BaseEstimator):
                             self.sparse_matrix,
                             self.splicing_type,
                             self.important_search,
-                            p * M, 1 * M, 
+                            p * M, 1 * M,
                             1, 1
                             )
 
