@@ -22,6 +22,7 @@ fail-under=10.0
 # Files or directories to be skipped. They should be base names, not paths.
 ignore=include,
     pytest,
+    cabess.py, 
     setup.py,
     cygwinccompiler.py
 
@@ -176,7 +177,7 @@ class-naming-style=PascalCase
 
 # Regular expression matching correct class names. Overrides class-naming-
 # style.
-#class-rgx=
+class-rgx=(abess)|(Test)[A-Z][A-Za-z]*[0-9]*$
 
 # Naming style matching correct constant names.
 const-naming-style=UPPER_CASE
@@ -197,7 +198,7 @@ function-naming-style=snake_case
 #function-rgx=
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=
+good-names=X, Y, x, y, i, j, k, m, n, p, s, temp, _
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
