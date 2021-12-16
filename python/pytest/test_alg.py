@@ -13,6 +13,7 @@ class TestAlgorithm:
     Test for each algorithm.
     """
 
+    @staticmethod
     def test_gaussian(self):
         np.random.seed(2)
         n = 100
@@ -63,6 +64,7 @@ class TestAlgorithm:
         model4.fit(data.x, data.y)
         assert_fit(model4.coef_, data.coef_)
 
+    @staticmethod
     def test_binomial(self):
         np.random.seed(2)
         n = 300
@@ -81,7 +83,7 @@ class TestAlgorithm:
             sigma=sigma)
 
         def assert_reg(coef):
-            if (sys.version_info[0] < 3 or sys.version_info[1] < 6):
+            if sys.version_info[0] + 0.1 * sys.version_info[1] < 3.6:
                 return
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
@@ -110,6 +112,7 @@ class TestAlgorithm:
         model2.fit(data.x, data.y)
         assert_fit(model1.coef_, model2.coef_)
 
+    @staticmethod
     def test_cox(self):
         np.random.seed(2)
         n = 200
@@ -122,7 +125,7 @@ class TestAlgorithm:
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
 
         def assert_reg(coef):
-            if (sys.version_info[0] < 3 or sys.version_info[1] < 6):
+            if sys.version_info[0] + 0.1 * sys.version_info[1] < 3.6:
                 return
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
@@ -155,6 +158,7 @@ class TestAlgorithm:
         # assert_fit(model1.coef_, model2.coef_)    # TODO
         assert_reg(model2.coef_)
 
+    @staticmethod
     def test_poisson(self):
         np.random.seed(9)
         n = 100
@@ -166,7 +170,7 @@ class TestAlgorithm:
         data = make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
 
         def assert_reg(coef):
-            if (sys.version_info[0] < 3 or sys.version_info[1] < 6):
+            if sys.version_info[0] + 0.1 * sys.version_info[1] < 3.6:
                 return
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
@@ -189,6 +193,7 @@ class TestAlgorithm:
         score = model1.score(data.x, data.y)
         assert not np.isnan(score)
 
+    @staticmethod
     def test_mulgaussian(self):
         np.random.seed(1)
         n = 100
@@ -231,6 +236,7 @@ class TestAlgorithm:
         model4.fit(data.x, data.y)
         assert_fit(model4.coef_, data.coef_)
 
+    @staticmethod
     def test_mulnomial(self):
         np.random.seed(5)
         n = 100
@@ -261,6 +267,7 @@ class TestAlgorithm:
         model2.fit(data.x, data.y)
         assert_fit(model1.coef_, model2.coef_)
 
+    @staticmethod
     def test_PCA(self):
         np.random.seed(2)
         n = 1000
@@ -336,6 +343,7 @@ class TestAlgorithm:
             model4 = abessPCA(support_size=support_size, ic_type=ic)
             model4.fit(X, is_normal=False)
 
+    @staticmethod
     def test_gamma(self):
 
         x = np.array([[1, 2], [2, 3], [3, 4], [4, 3]])
@@ -354,6 +362,7 @@ class TestAlgorithm:
         score = model1.score(x, y, [1, 1, 1, 1])
         assert not np.isnan(score)
 
+    @staticmethod
     def test_RPCA(self):
         np.random.seed(2)
         n = 100
@@ -392,6 +401,7 @@ class TestAlgorithm:
             model4 = abessRPCA(support_size=s, ic_type=ic)
             model4.fit(X, r=r)
 
+    @staticmethod
     def test_gaussian_sklearn(self):
         np.random.seed(7)
         n = 100
@@ -421,6 +431,7 @@ class TestAlgorithm:
         except BaseException:
             assert False
 
+    @staticmethod
     def test_binomial_sklearn(self):
         n = 100
         p = 20
@@ -449,6 +460,7 @@ class TestAlgorithm:
         assert gcv.best_params_["support_size"] == k
         assert gcv.best_params_["alpha"] == 0.
 
+    @staticmethod
     def test_poisson_sklearn(self):
         n = 100
         p = 20
@@ -479,6 +491,7 @@ class TestAlgorithm:
         assert gcv.best_params_["support_size"] == k
         assert gcv.best_params_["alpha"] == 0.
 
+    @staticmethod
     def test_cox_sklearn(self):
         n = 100
         p = 20
@@ -512,6 +525,7 @@ class TestAlgorithm:
         assert gcv.best_params_["support_size"] == k
         assert gcv.best_params_["alpha"] == 0.
 
+    # @staticmethod
     # def test_multigaussian_sklearn(self):
     #     n = 100
     #     p = 20
@@ -542,6 +556,7 @@ class TestAlgorithm:
     #     assert gcv.best_params_["support_size"] == k
     #     assert gcv.best_params_["alpha"] == 0.
 
+    # @staticmethod
     # def test_multinomial_sklearn(self):
     #     n = 100
     #     p = 20

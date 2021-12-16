@@ -26,5 +26,5 @@ def assert_fit(coef1, coef2):
 def assert_shape(x, y, n, p, M):
     assert x.shape == (n, p)
     assert y.shape[0] == n
-    if (M > 1):
+    if M > 1:
         assert y.shape[1] == M

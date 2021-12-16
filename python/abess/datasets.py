@@ -102,7 +102,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
 
         return data(x, y, Tbeta)
 
-    elif family == "binomial":
+    if family == "binomial":
         m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
         if coef_ is None:
             Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k)
@@ -117,7 +117,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
         y = np.random.binomial(1, p)
         return data(x, y, Tbeta)
 
-    elif family == "poisson":
+    if family == "poisson":
         x = x / 16
         m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
         if coef_ is None:
@@ -134,7 +134,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
         y = np.random.poisson(lam=lam)
         return data(x, y, Tbeta)
 
-    elif family == "cox":
+    if family == "cox":
         m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
         if coef_ is None:
             Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k)
@@ -158,9 +158,8 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
         y = np.hstack((time.reshape((-1, 1)), status.reshape((-1, 1))))
 
         return data(x, y, Tbeta)
-    else:
-        raise ValueError(
-            "Family should be \'gaussian\', \'binomial\', \'possion\', or \'cox\'")
+    raise ValueError(
+        "Family should be \'gaussian\', \'binomial\', \'possion\', or \'cox\'")
 
 
 def sparse_beta_generator(p, Nonzero, k, M):

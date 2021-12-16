@@ -1,16 +1,16 @@
 import sys
-import numpy as np
 from time import time
-from abess.linear import abessLm
-from abess.datasets import make_glm_data
+import numpy as np
 from sklearn.metrics import matthews_corrcoef
 from sklearn.linear_model import LassoCV
-# from spams import fistaFlat
 from sklearn.linear_model import OrthogonalMatchingPursuitCV
+# from spams import fistaFlat
 # from sklearn.model_selection import GridSearchCV
 # from glmnet import ElasticNet
 # import statsmodels.api as sm
 # from l0bnb import fit_path
+from abess.linear import abessLm
+from abess.datasets import make_glm_data
 
 
 def metrics(coef, pred, test):

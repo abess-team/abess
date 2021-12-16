@@ -10,6 +10,7 @@ class TestWorkflow:
     Test for abess workflow in cpp. (Take abessLm as an example.)
     """
 
+    @staticmethod
     def test_sparse(self):
         np.random.seed(0)
         n = 100
@@ -29,6 +30,7 @@ class TestWorkflow:
         assert_fit(model1.coef_, model3.coef_)
         assert_value(model1.intercept_, model2.intercept_)
 
+    @staticmethod
     def test_path(self):
         np.random.seed(0)
         n = 100
@@ -102,6 +104,7 @@ class TestWorkflow:
         model2.fit(data.x, data.y)
         assert_value(model1.coef_, model2.coef_, 0, 0)
 
+    @staticmethod
     def test_other(self):
         np.random.seed(2)
         n = 100

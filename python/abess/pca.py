@@ -8,7 +8,7 @@ from .bess_base import bess_base
 def fix_docs(cls):
     # inherit the document from base class
     index = cls.__doc__.find("Examples\n    --------\n")
-    if (index != -1):
+    if index != -1:
         cls.__doc__ = cls.__doc__[:index] + \
             cls.__bases__[0].__doc__ + cls.__doc__[index:]
 
@@ -149,7 +149,7 @@ class abessPCA(bess_base):
             self.n_features_in_ = p
 
         elif isinstance(Sigma, (list, np.ndarray, np.matrix)):
-            if (self.cv > 1):
+            if self.cv > 1:
                 raise ValueError("X should be given to use CV.")
 
             Sigma = check_array(Sigma)
@@ -159,7 +159,7 @@ class abessPCA(bess_base):
             if np.any(np.linalg.eigvals(Sigma) < 0):
                 raise ValueError("Sigma should be semi-positive definite.")
 
-            if (n is None):
+            if n is None:
                 n = 1
             p = Sigma.shape[0]
             X = np.zeros((1, p))
@@ -195,7 +195,7 @@ class abessPCA(bess_base):
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
-        if (self.cv > n):
+        if self.cv > n:
             raise ValueError("cv should be smaller than n.")
 
         # Group
@@ -228,7 +228,7 @@ class abessPCA(bess_base):
                     self.support_size.shape[1] != number):
                 raise ValueError(
                     "`support_size` should be 2-dimension and its number of columns should be equal to `number`")
-            elif (self.support_size.shape[0] > p):
+            elif self.support_size.shape[0] > p:
                 raise ValueError(
                     "`support_size` should not larger than p")
             else:
@@ -300,7 +300,7 @@ class abessPCA(bess_base):
 
         # normalize
         normalize = 0
-        if (is_normal):
+        if is_normal:
             normalize = self.normalize_type
 
         # wrap with cpp

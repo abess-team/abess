@@ -8,7 +8,8 @@ class TestCheck:
     Test for argument error, which should be recognized before the algorithm.
     """
 
-    def test_init(self):
+    @staticmethod
+    def test_fit(self):
         # path
         try:
             model = abessLm(path_type='other')
@@ -140,7 +141,6 @@ class TestCheck:
         else:
             assert False
 
-    def test_fit(self):
         model = abessLm()
         # datatype error
         try:
@@ -217,6 +217,7 @@ class TestCheck:
         else:
             assert False
 
+    @staticmethod
     def test_pca(self):
         """
         For `abess.pca.abessPCA`.
@@ -338,6 +339,7 @@ class TestCheck:
         else:
             assert False
 
+    @staticmethod
     def test_rpca(self):
         model = abessRPCA()
         # datatype error

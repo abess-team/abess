@@ -1,9 +1,9 @@
-from abess.linear import abessLogistic
-from abess.datasets import make_glm_data
-import numpy as np
 from time import time
+import numpy as np
 from sklearn.metrics import roc_auc_score
 import matplotlib.pyplot as plt
+from abess.linear import abessLogistic
+from abess.datasets import make_glm_data
 
 np.random.seed(0)
 

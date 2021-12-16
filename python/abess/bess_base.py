@@ -118,6 +118,7 @@ class bess_base(BaseEstimator):
         self.coef_ = None
         self.intercept_ = None
         self.train_loss_ = 0
+        self.ic_ = 0
 
     def new_data_check(self, X, y=None, weights=None):
         # Check1 : whether fit had been called
@@ -141,9 +142,9 @@ class bess_base(BaseEstimator):
                              multi_output=True, y_numeric=True)
             weights = np.array(weights, dtype=np.float)
 
-            if (len(weights.shape) != 1):
+            if len(weights.shape) != 1:
                 raise ValueError("weights should be 1-dimension.")
-            elif (weights.shape[0] != X.shape[0]):
+            if weights.shape[0] != X.shape[0]:
                 raise ValueError("weights should have a length of X.shape[0].")
             return X, y, weights
 
@@ -257,7 +258,7 @@ class bess_base(BaseEstimator):
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
-        if (self.cv > n):
+        if self.cv > n:
             raise ValueError("cv should be smaller than n.")
 
         # cv_fold_id
@@ -350,9 +351,9 @@ class bess_base(BaseEstimator):
             new_lambda_max = 0  # \
             # if self.lambda_max is None else self.lambda_max
 
-            if (new_s_max < new_s_min):
+            if new_s_max < new_s_min:
                 raise ValueError("s_max should be larger than s_min")
-            # if (new_lambda_max < new_lambda_min):
+            # if new_lambda_max < new_lambda_min:
             #     raise ValueError(
             #         "lambda_max should be larger than lambda_min.")
 
@@ -384,7 +385,7 @@ class bess_base(BaseEstimator):
                 or self.primary_model_fit_max_iter <= 0):
             raise ValueError(
                 "primary_model_fit_max_iter should be an positive integer.")
-        if (self.primary_model_fit_epsilon < 0):
+        if self.primary_model_fit_epsilon < 0:
             raise ValueError(
                 "primary_model_fit_epsilon should be non-negative.")
 
@@ -427,7 +428,7 @@ class bess_base(BaseEstimator):
 
         # normalize
         normalize = 0
-        if (is_normal):
+        if is_normal:
             normalize = self.normalize_type
 
         # wrap with cpp

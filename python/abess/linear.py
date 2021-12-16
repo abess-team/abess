@@ -1,13 +1,12 @@
-
+import numpy as np
 from .metrics import concordance_index_censored
 from .bess_base import bess_base
 
-import numpy as np
 
 def fix_docs(cls):
     # inherit the document from base class
     index = cls.__doc__.find("Examples\n    --------\n")
-    if(index != -1):
+    if index != -1:
         cls.__doc__ = cls.__doc__[:index] + \
             cls.__bases__[0].__doc__ + cls.__doc__[index:]
 
@@ -770,7 +769,7 @@ class abessGamma(bess_base):
         y : array-like of shape (n_samples, n_features), optional
             Test response.
         """
-        if (weights is None):
+        if weights is None:
             X = np.array(X)
             weights = np.ones(X.shape[0])
         X, y, weights = self.new_data_check(X, y, weights)

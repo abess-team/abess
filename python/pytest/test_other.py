@@ -9,6 +9,7 @@ class TestOther:
     Include: `abess.datasets`
     """
 
+    @staticmethod
     def test_datasets(self):
         np.random.seed(0)
         n = 100

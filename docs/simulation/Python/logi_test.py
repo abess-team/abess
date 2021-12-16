@@ -1,12 +1,12 @@
 import sys
-import numpy as np
 from time import time
-from abess.linear import abessLogistic
-from abess.datasets import make_glm_data
+import numpy as np
 from sklearn.metrics import matthews_corrcoef, roc_auc_score
 from sklearn.linear_model import LogisticRegressionCV
 # from glmnet import LogitNet
 # import statsmodels.api as sm
+from abess.linear import abessLogistic
+from abess.datasets import make_glm_data
 
 
 def metrics(coef, pred, test):
