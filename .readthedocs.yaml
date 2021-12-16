@@ -4,7 +4,7 @@ build:
   image: latest
 
 # Build PDF
-formats: 
+formats:
   - pdf
 
 python:

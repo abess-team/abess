@@ -41,14 +41,14 @@ reference:
   - coef.abesspca
   - plot.abesspca
   - print.abesspca
-  
+
 - title: Robust principal component analysis
   contents:
   - abessrpca
   - coef.abessrpca
   - plot.abessrpca
   - print.abessrpca
-  
+
 - title: Synthetic datasets
   contents:
   - generate.data
