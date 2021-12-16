@@ -15,10 +15,10 @@ import matplotlib.patches as mpatches
 #         os.system('python logi_test.py 0.7')
 #         break
 
-os.system('python linear_test.py 0.1')
-os.system('python linear_test.py 0.7')
-os.system('python logi_test.py 0.1')
-os.system('python logi_test.py 0.7')
+os.system('/bin/python linear_test.py 0.1')
+os.system('/bin/python linear_test.py 0.7')
+os.system('/bin/python logi_test.py 0.1')
+os.system('/bin/python logi_test.py 0.7')
 
 # simulation results
 lm1 = np.load('./Lm0.1_data.npy')
