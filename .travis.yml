@@ -1,21 +1,21 @@
 matrix:
   include:
     - language: R
-    
+
       apt_packages:
         - libxml2-dev
         - python3
         - python3-pip
-        
+
       r_packages:
         - xml2
         - covr
-      
+
       before_install:
         - cd R-package
-      
+
       cache: packages
-      
+
       after_success:
         - cd ..
         - ls *
@@ -24,7 +24,7 @@ matrix:
         - pip install --upgrade pip
         - pip3 install --user codecov
         - codecov -F rpackage -f rpackage.xml
-        
+
     - dist: xenial
       language: python
       python:
@@ -49,10 +49,9 @@ matrix:
         - python ./python/setup.py install
 
       # command to run tests
-      script:  
+      script:
         - ls *
         - travis_wait 120 pytest ./python --cov=abess --cov-report=xml
-        - gcovr ./python/src/ --xml 
+        - gcovr ./python/src/ --xml
         - ls *
         - codecov -F Python
-        

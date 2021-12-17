@@ -1,6 +1,6 @@
 name: R Build
 
-on: 
+on:
   push:
     paths:
     - 'R-package/*'
@@ -98,7 +98,7 @@ jobs:
           pip install --upgrade pip
           pip3 install --user codecov
           codecov -F rpackage -f rpackage.xml
-  
+
   codecovPy:
     name: Codecov workflow for Python-package
     runs-on: ubuntu-latest
@@ -124,6 +124,6 @@ jobs:
       - name: Generate coverage report
         run: |
           pytest ./python/pytest --cov=abess --cov-report=xml
-          # gcovr ./python/src/ --xml 
+          # gcovr ./python/src/ --xml
           ls *
           codecov -F Python
