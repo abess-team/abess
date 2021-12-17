@@ -1,17 +1,14 @@
-from .bess_base import bess_base
-
-from sklearn.utils.validation import check_array
-from abess.cabess import *
-from scipy.sparse import coo_matrix
-import numpy as np
-import types
 import numbers
-
+import numpy as np
+from scipy.sparse import coo_matrix
+from sklearn.utils.validation import check_array
+from .cabess import *
+from .bess_base import bess_base
 
 def fix_docs(cls):
     # inherit the document from base class
     index = cls.__doc__.find("Examples\n    --------\n")
-    if (index != -1):
+    if index != -1:
         cls.__doc__ = cls.__doc__[:index] + \
             cls.__bases__[0].__doc__ + cls.__doc__[index:]
 
@@ -33,7 +30,7 @@ class abessPCA(bess_base):
     Parameters
     ----------
     splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h). 
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 1.
 
@@ -57,17 +54,17 @@ class abessPCA(bess_base):
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1, 
-                 always_select=[], 
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=None,
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=1
                  ):
-        super(abessPCA, self).__init__(
+        super().__init__(
             algorithm_type="abess", model_type="PCA", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, s_min=s_min, s_max=s_max, 
+            is_warm_start=is_warm_start, support_size=support_size, s_min=s_min, s_max=s_max,
             ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
-            always_select=always_select, 
+            always_select=always_select,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type
@@ -75,7 +72,7 @@ class abessPCA(bess_base):
 
     def transform(self, X):
         """
-        For PCA model, apply dimensionality reduction 
+        For PCA model, apply dimensionality reduction
         to given data.
 
         Parameters
@@ -109,7 +106,8 @@ class abessPCA(bess_base):
             full = np.sum(np.diag(s))
         return explain / full
 
-    def fit(self, X=None, is_normal=False, group=None, Sigma=None, number=1, n=None):
+    def fit(self, X=None, is_normal=False,
+            group=None, Sigma=None, number=1, n=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -125,13 +123,13 @@ class abessPCA(bess_base):
             Default is 1 for each observation.
         group : int, optional
             The group index for each variable.
-            Default: group = \code{numpy.ones(p)}.
+            Default: group = \\code{numpy.ones(p)}.
         Sigma : array-like of shape (n_features, n_features), optional
             Sample covariance matrix.
-            For PCA, it can be given as input, instead of X. But if X is given, Sigma will be set to \code{np.cov(X.T)}.
-            Default: Sigma = \code{np.cov(X.T)}.
-        number : int, optional 
-            Indicates the number of PCs returned. 
+            For PCA, it can be given as input, instead of X. But if X is given, Sigma will be set to \\code{np.cov(X.T)}.
+            Default: Sigma = \\code{np.cov(X.T)}.
+        number : int, optional
+            Indicates the number of PCs returned.
             Default: 1
         n : int, optional
             Sample size. If X is given, it would be X.shape[0]; if Sigma is given, it would be 1 by default.
@@ -151,17 +149,17 @@ class abessPCA(bess_base):
             self.n_features_in_ = p
 
         elif isinstance(Sigma, (list, np.ndarray, np.matrix)):
-            if (self.cv > 1):
+            if self.cv > 1:
                 raise ValueError("X should be given to use CV.")
-                
+
             Sigma = check_array(Sigma)
 
             if (Sigma.shape[0] != Sigma.shape[1] or np.any(Sigma.T != Sigma)):
                 raise ValueError("Sigma should be symmetrical matrix.")
-            elif np.any(np.linalg.eigvals(Sigma) < 0):
+            if np.any(np.linalg.eigvals(Sigma) < 0):
                 raise ValueError("Sigma should be semi-positive definite.")
 
-            if (n is None): 
+            if n is None:
                 n = 1
             p = Sigma.shape[0]
             X = np.zeros((1, p))
@@ -170,17 +168,15 @@ class abessPCA(bess_base):
         else:
             raise ValueError("X or Sigma should be given in PCA.")
 
-        # Algorithm_type
-        if self.algorithm_type == "abess":
-            algorithm_type_int = 6
-        else:
-            raise ValueError("algorithm_type should not be " +
-                             str(self.algorithm_type))
+        # # Algorithm_type
+        # if self.algorithm_type == "abess":
+        #     algorithm_type_int = 6
+        # else:
+        #     raise ValueError("algorithm_type should not be " +
+        #                      str(self.algorithm_type))
 
         # for PCA,
-        #   model_type_int = 7,
-        #   path_type_int = 1 (seq)
-        model_type_int = 7
+        # model_type_int = 7
         path_type_int = 1
 
         # Ic_type
@@ -199,7 +195,7 @@ class abessPCA(bess_base):
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
-        elif (self.cv > n):
+        if self.cv > n:
             raise ValueError("cv should be smaller than n.")
 
         # Group
@@ -209,7 +205,7 @@ class abessPCA(bess_base):
             group = np.array(group)
             if group.ndim > 1:
                 raise ValueError("group should be an 1D array of integers.")
-            elif group.size != p:
+            if group.size != p:
                 raise ValueError(
                     "The length of group should be equal to X.shape[1].")
             g_index = []
@@ -217,7 +213,7 @@ class abessPCA(bess_base):
             group_set = list(set(group))
             j = 0
             for i in group_set:
-                while(group[j] != i):
+                while group[j] != i:
                     j += 1
                 g_index.append(j)
 
@@ -232,17 +228,18 @@ class abessPCA(bess_base):
                     self.support_size.shape[1] != number):
                 raise ValueError(
                     "`support_size` should be 2-dimension and its number of columns should be equal to `number`")
-            elif (self.support_size.shape[0] > p):
+            elif self.support_size.shape[0] > p:
                 raise ValueError(
                     "`support_size` should not larger than p")
             else:
                 support_sizes = self.support_size
         support_sizes = np.array(support_sizes).astype('int32')
-    
+
         # screening
         if self.screening_size != -1:
             if self.screening_size == 0:
-                self.screening_size = min(p, int(n / (np.log(np.log(n)) * np.log(p)))) 
+                self.screening_size = min(
+                    p, int(n / (np.log(np.log(n)) * np.log(p))))
             elif self.screening_size > p:
                 raise ValueError(
                     "screening size should be smaller than X.shape[1].")
@@ -253,7 +250,7 @@ class abessPCA(bess_base):
         # unused
         new_s_min = 0
         new_s_max = 0
-        cv_fold_id = np.array([], dtype = "int32")
+        cv_fold_id = np.array([], dtype="int32")
 
         # Exchange_num
         if (not isinstance(self.exchange_num, int) or self.exchange_num <= 0):
@@ -265,22 +262,23 @@ class abessPCA(bess_base):
                 "thread should be positive number or 0 (maximum supported by your device).")
 
         # Splicing type
-        if (self.splicing_type != 0 and self.splicing_type != 1):
+        if self.splicing_type not in (0, 1):
             raise ValueError("splicing type should be 0 or 1.")
 
         # number
         if (not isinstance(number, int) or number <= 0 or number > p):
             raise ValueError(
                 "number should be an positive integer and not bigger than X.shape[1].")
-        
+
         # Important_search
-        if (not isinstance(self.important_search, int) or self.important_search < 0):
+        if (not isinstance(self.important_search, int)
+                or self.important_search < 0):
             raise ValueError(
                 "important_search should be a non-negative number.")
 
         # Sparse X
         if self.sparse_matrix:
-            if type(X) != type(coo_matrix((1, 1))):
+            if not isinstance(X, type(coo_matrix((1, 1)))):
                 # print("sparse matrix 1")
                 nonzero = 0
                 tmp = np.zeros([X.shape[0] * X.shape[1], 3])
@@ -299,15 +297,19 @@ class abessPCA(bess_base):
 
                 ind = np.lexsort((tmp[:, 2], tmp[:, 1]))
                 X = tmp[ind, :]
-        
+
         # normalize
         normalize = 0
-        if (is_normal):
+        if is_normal:
             normalize = self.normalize_type
+
+        # always_select
+        if self.always_select is None:
+            self.always_select = []
 
         # wrap with cpp
         weight = np.ones(n)
-        result = pywrap_PCA(X, weight, 
+        result = pywrap_PCA(X, weight,
                             n, p, normalize, Sigma,
                             self.max_iter, self.exchange_num,
                             path_type_int, self.is_warm_start,
@@ -315,9 +317,9 @@ class abessPCA(bess_base):
                             g_index,
                             support_sizes,
                             cv_fold_id,
-                            new_s_min, new_s_max, 
-                            self.screening_size, 
-                            self.always_select, 
+                            new_s_min, new_s_max,
+                            self.screening_size,
+                            self.always_select,
                             self.early_stop,
                             self.thread,
                             self.sparse_matrix,
@@ -331,7 +333,8 @@ class abessPCA(bess_base):
         self.coef_ = result[0].reshape(p, number)
         return self
 
-    def fit_transform(self, X=None, is_normal=True, group=None, Sigma=None, number=1):
+    def fit_transform(self, X=None, is_normal=True,
+                      group=None, Sigma=None, number=1):
         self.fit(X, is_normal, group, Sigma, number)
         return X.dot(self.coef_)
 
@@ -344,7 +347,7 @@ class abessRPCA(bess_base):
     Parameters
     ----------
     splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h). 
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
         Default: splicing_type = 1.
 
@@ -363,18 +366,18 @@ class abessRPCA(bess_base):
     >>> print(model.coef_)
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, is_warm_start=True, support_size=None, 
-                 ic_type="gic", ic_coef=1.0, 
-                 always_select=[], 
+    def __init__(self, max_iter=20, exchange_num=5, is_warm_start=True, support_size=None,
+                 ic_type="gic", ic_coef=1.0,
+                 always_select=None,
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=1
                  ):
-        super(abessRPCA, self).__init__(
+        super().__init__(
             algorithm_type="abess", model_type="RPCA", normalize_type=1, path_type="seq", max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size, s_min=None, s_max=None, cv=1,
-            ic_type=ic_type, ic_coef=ic_coef, 
-            always_select=always_select, 
+            ic_type=ic_type, ic_coef=ic_coef,
+            always_select=always_select,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type
@@ -389,10 +392,10 @@ class abessRPCA(bess_base):
         X : array-like of shape (n_samples, p_features)
             Training data
         r : int
-            Rank of the (recovered) information matrix L. 
+            Rank of the (recovered) information matrix L.
         group : int, optional
             The group index for each variable.
-            Default: group = \code{numpy.ones(p)}.
+            Default: group = \\code{numpy.ones(p)}.
         """
 
         # Input check
@@ -407,17 +410,15 @@ class abessRPCA(bess_base):
         else:
             raise ValueError("X should be an array.")
 
-        # Algorithm_type
-        if self.algorithm_type == "abess":
-            algorithm_type_int = 6
-        else:
-            raise ValueError("algorithm_type should not be " +
-                             str(self.algorithm_type))
+        # # Algorithm_type
+        # if self.algorithm_type == "abess":
+        #     algorithm_type_int = 6
+        # else:
+        #     raise ValueError("algorithm_type should not be " +
+        #                      str(self.algorithm_type))
 
         # for RPCA,
-        #   model_type_int = 10,
-        #   path_type_int = 1 (seq)
-        model_type_int = 10
+        # model_type_int = 10
         path_type_int = 1
 
         # Ic_type
@@ -435,12 +436,12 @@ class abessRPCA(bess_base):
 
         # Group
         if group is None:
-            g_index = list(range(n*p))
+            g_index = list(range(n * p))
         else:
             group = np.array(group)
             if group.ndim > 1:
                 raise ValueError("group should be an 1D array of integers.")
-            elif group.size != n*p:
+            if group.size != n * p:
                 raise ValueError(
                     "The length of group should be equal to (X.shape[0] * X.shape[1]).")
             g_index = []
@@ -448,18 +449,18 @@ class abessRPCA(bess_base):
             group_set = list(set(group))
             j = 0
             for i in group_set:
-                while(group[j] != i):
+                while group[j] != i:
                     j += 1
                 g_index.append(j)
 
         # path parameter (note that: path_type_int = 1)
         if self.support_size is None:
-            support_sizes = list(range(0, n*p))
+            support_sizes = list(range(0, n * p))
         else:
             if isinstance(self.support_size, (numbers.Real, numbers.Integral)):
                 support_sizes = np.empty(1, dtype=int)
                 support_sizes[0] = self.support_size
-            elif (np.any(np.array(self.support_size) > n*p) or
+            elif (np.any(np.array(self.support_size) > n * p) or
                     np.any(np.array(self.support_size) < 0)):
                 raise ValueError(
                     "All support_size should be between 0 and X.shape[1]")
@@ -469,7 +470,7 @@ class abessRPCA(bess_base):
 
         # alphas
         if isinstance(r, (numbers.Integral)):
-            alphas = np.array([r], dtype = float)
+            alphas = np.array([r], dtype=float)
         else:
             raise ValueError("r should be integer")
 
@@ -489,17 +490,18 @@ class abessRPCA(bess_base):
                 "thread should be positive number or 0 (maximum supported by your device).")
 
         # Splicing type
-        if (self.splicing_type != 0 and self.splicing_type != 1):
+        if self.splicing_type not in (0,1):
             raise ValueError("splicing type should be 0 or 1.")
-        
+
         # Important_search
-        if (not isinstance(self.important_search, int) or self.important_search < 0):
+        if (not isinstance(self.important_search, int)
+                or self.important_search < 0):
             raise ValueError(
                 "important_search should be a non-negative number.")
 
         # Sparse X
         if self.sparse_matrix:
-            if type(X) != type(coo_matrix((1, 1))):
+            if not isinstance(X, type(coo_matrix((1, 1)))):
                 # print("sparse matrix 1")
                 nonzero = 0
                 tmp = np.zeros([X.shape[0] * X.shape[1], 3])
@@ -522,29 +524,32 @@ class abessRPCA(bess_base):
         # normalize
         normalize = 0
 
+        # always_select
+        if self.always_select is None:
+            self.always_select = []
+
         # wrap with cpp
-        result = pywrap_RPCA(X, n, p, normalize, 
-                            self.max_iter, self.exchange_num,
-                            path_type_int, self.is_warm_start,
-                            ic_type_int, self.ic_coef, 
-                            g_index,
-                            support_sizes,
-                            alphas,
-                            new_s_min, new_s_max, 
-                            new_lambda_min, new_lambda_max, self.n_lambda,
-                            self.screening_size, 
-                            self.always_select, 
-                            self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
-                            self.early_stop, 
-                            self.thread,
-                            self.sparse_matrix,
-                            self.splicing_type,
-                            self.important_search,
-                            n * p, 1,
-                            1, 1
-                            )
+        result = pywrap_RPCA(X, n, p, normalize,
+                             self.max_iter, self.exchange_num,
+                             path_type_int, self.is_warm_start,
+                             ic_type_int, self.ic_coef,
+                             g_index,
+                             support_sizes,
+                             alphas,
+                             new_s_min, new_s_max,
+                             new_lambda_min, new_lambda_max, self.n_lambda,
+                             self.screening_size,
+                             self.always_select,
+                             self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
+                             self.early_stop,
+                             self.thread,
+                             self.sparse_matrix,
+                             self.splicing_type,
+                             self.important_search,
+                             n * p, 1,
+                             1, 1
+                             )
 
         self.coef_ = result[0].reshape(p, n).T
         self.train_loss_ = result[2]
         return self
-
