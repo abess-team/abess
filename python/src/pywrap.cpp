@@ -1,5 +1,6 @@
 #include "api.h"
 #include "utilities.h"
+#include "pywrap.h"
 
 void pywrap_GLM(double *x, int x_row, int x_col, double *y, int y_row, int y_col, double *weight, int weight_len,
 				int n, int p, int normalize_type,
@@ -61,8 +62,7 @@ void pywrap_GLM(double *x, int x_row, int x_col, double *y, int y_row, int y_col
 								sub_search,
 								cv_fold_id_Vec);
 
-	if (y_col == 1)
-	 {
+	if (y_col == 1) {
 		Eigen::VectorXd beta;
 		double coef0 = 0;
 		double train_loss = 0;
@@ -76,9 +76,7 @@ void pywrap_GLM(double *x, int x_row, int x_col, double *y, int y_row, int y_col
 		*coef0_out = coef0;
 		*train_loss_out = train_loss;
 		*ic_out = ic;
-	}
-	else
-	 {
+	} else {
 		Eigen::MatrixXd beta;
 		Eigen::VectorXd coef0;
 		double train_loss = 0;
@@ -150,8 +148,7 @@ void pywrap_PCA(double *x, int x_row, int x_col, double *weight, int weight_len,
 								pca_num);
 
 	Eigen::MatrixXd beta;
-	if (pca_num == 1)
-	 {
+	if (pca_num == 1) {
 		beta.resize(p, 1);
 		mylist.get_value_by_name("beta", beta);
 		VectorXd2Pointer(beta, beta_out);

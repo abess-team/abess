@@ -332,11 +332,12 @@ public:
 
   void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind) {
     int N = U.size(), p = U_ind.size();
-    if (this->covariance_update)
+    if (this->covariance_update){
       for (int i = 0; i < p; i++) {
         this->XTy_U(i) = this->XTy(U_ind(i), 0);
         this->XTone_U(i) = this->XTone(U_ind(i), 0);
       }
+    }
 
     for (int i = 0; i < N; i++) {
       this->PhiG_U(i, 0) = this->PhiG(U(i), 0);
@@ -1102,12 +1103,13 @@ public:
 
   void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind) {
     int N = U.size(), p = U_ind.size(), M = this->XTy.cols();
-    if (this->covariance_update)
+    if (this->covariance_update) {
       for (int i = 0; i < p; i++)
         for (int j = 0; j < M; j++) {
           this->XTy_U(i, j) = this->XTy(U_ind(i), j);
           this->XTone_U(i, j) = this->XTone(U_ind(i), j);
         }
+    }
 
     for (int i = 0; i < N; i++) {
       this->PhiG_U(i, 0) = this->PhiG(U(i), 0);
@@ -1637,8 +1639,9 @@ public:
           // we can find h_diag(i) >= 0
           if (h_diag(i) < 1e-7) {
             h_diag(i) = 1e7;
-          } else
+          } else {
             h_diag(i) = 1.0 / h_diag(i);
+          }
         }
 
         g = X.transpose() * (EY - y).cwiseProduct(weights) - 2 * this->lambda_level * coef;  // negtive gradient direction
@@ -1663,9 +1666,7 @@ public:
         EY = expect_y(X, coef);
         W = EY.array().square() * weights.array();
       }
-    }
-    // IWLS method
-    else {
+    } else {  // IWLS method
       T4 X_new(X);
       Eigen::MatrixXd lambdamat = Eigen::MatrixXd::Identity(p + 1, p + 1);
       lambdamat(0, 0) = 0;

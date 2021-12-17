@@ -20,4 +20,4 @@ inline void omp_set_num_threads(int nthread) {}
 inline void omp_set_dynamic(int flag) {}
 #endif
 
-#endif // SRC_ABESSOPENMP_H
+#endif  // SRC_ABESSOPENMP_H

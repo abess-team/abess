@@ -193,7 +193,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
   best_ic = ic_matrix(min_loss_index_row, min_loss_index_col);
   best_test_loss = test_loss_sum(min_loss_index_row, min_loss_index_col);
 
-  //////////////Restore best_fit_result for normal//////////////
+  ////////////// Restore best_fit_result for normal //////////////
   restore_for_normal<T2, T3>(best_beta, best_coef0, beta_matrix, coef0_matrix, sparse_matrix,
                              data.normalize_type, data.n, data.x_mean, data.y_mean, data.x_norm);
 

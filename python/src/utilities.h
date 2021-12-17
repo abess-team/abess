@@ -1,6 +1,4 @@
-//
 // Created by jiangkangkang on 2020/3/9.
-//
 
 #ifndef SRC_UTILITIES_H
 #define SRC_UTILITIES_H

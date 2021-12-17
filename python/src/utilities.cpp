@@ -2,13 +2,15 @@
 // Created by jiangkangkang on 2020/3/9.
 //
 
-#ifndef R_BUILD
-#include <Eigen/Eigen>
-#include <unsupported/Eigen/MatrixFunctions>
+#ifdef R_BUILD
+
+#include <RcppEigen.h>
 
 #else
 
-#include <RcppEigen.h>
+#include <Eigen/Eigen>
+#include <unsupported/Eigen/MatrixFunctions>
+#include "utilities.h"
 
 #endif
 

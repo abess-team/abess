@@ -10,6 +10,7 @@ using namespace Rcpp;
 
 #include <Eigen/Eigen>
 #include "List.h"
+#include "api.h"
 
 #endif
 

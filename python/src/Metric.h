@@ -225,8 +225,9 @@ public:
       return loss + this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
     } else if (ic_type == 4) {
       return loss + this->ic_coef * (log(double(train_n)) + 2 * log(double(N))) * algorithm->get_effective_number();
-    } else
+    } else {
       return 0;
+    }
   }
 
   double loss_function(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm<T1, T2, T3, T4> *algorithm) {
@@ -276,7 +277,7 @@ public:
       int N = data.g_num;
 
 #pragma omp parallel for
-      ///////////////////////parallel/////////////////////////
+      /////////////////////// parallel /////////////////////////
       for (int k = 0; k < this->Kfold; k++) {
         // get test_x, test_y
         int test_n = this->test_mask_list[k].size();

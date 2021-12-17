@@ -9,7 +9,9 @@
 using namespace Rcpp;
 #else
 #include <Eigen/Eigen>
+#include "normalize.h"
 #endif
+
 #include <iostream>
 
 using namespace std;
