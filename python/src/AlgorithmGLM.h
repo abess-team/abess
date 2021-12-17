@@ -332,7 +332,7 @@ public:
 
   void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind) {
     int N = U.size(), p = U_ind.size();
-    if (this->covariance_update){
+    if (this->covariance_update) {
       for (int i = 0; i < p; i++) {
         this->XTy_U(i) = this->XTy(U_ind(i), 0);
         this->XTone_U(i) = this->XTone(U_ind(i), 0);
@@ -499,8 +499,9 @@ public:
           // we can find h_diag(i) >= 0
           if (h_diag(i) < 1e-7) {
             h_diag(i) = 1e7;
-          } else
+          } else {
             h_diag(i) = 1.0 / h_diag(i);
+          }
         }
 
         g = X.transpose() * (y - expeta).cwiseProduct(weights) - 2 * this->lambda_level * coef;  // negtive gradient direction

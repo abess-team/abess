@@ -91,7 +91,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
         abessMultinomial<Eigen::MatrixXd> *temp = new abessMultinomial<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
         temp->approximate_Newton = approximate_Newton;
         algorithm_list_mul_dense[i] = temp;
-      } else if(model_type == 8) {
+      } else if (model_type == 8) {
         abessGamma<Eigen::MatrixXd> *temp = new abessGamma<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
         temp->approximate_Newton = approximate_Newton;
         algorithm_list_uni_dense[i] = temp;
