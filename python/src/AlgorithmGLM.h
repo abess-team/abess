@@ -6,20 +6,17 @@
 using namespace std;
 
 template <class T4>
-class abessLogistic : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>
-{
+class abessLogistic : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>{
 public:
   bool approximate_Newton; /* use approximate Newton method or not. */
 
-  abessLogistic(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search){};
+  abessLogistic(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search) {}
 
-  ~abessLogistic(){};
+  ~abessLogistic() {}
 
-  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
-  {
+  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size){
 
-    if (x.cols() == 0)
-    {
+    if (x.cols() == 0){
       coef0 = -log(1 / y.mean() - 1);
       return true;
     }
@@ -46,8 +43,7 @@ public:
     Eigen::VectorXd log_1_Pi = (one - Pi).array().log();
     double loglik1 = DBL_MAX, loglik0 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) - this->lambda_level * beta.cwiseAbs2().sum();
     Eigen::VectorXd W = Pi.cwiseProduct(one - Pi);
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++){
       if (W(i) < 0.001)
         W(i) = 0.001;
     }
@@ -57,14 +53,11 @@ public:
     double step = 1;
     Eigen::VectorXd g(p + 1);
     Eigen::VectorXd beta1;
-    for (j = 0; j < this->primary_model_fit_max_iter; j++)
-    {
+    for (j = 0; j < this->primary_model_fit_max_iter; j++){
       // To do: Approximate Newton method
-      if (this->approximate_Newton)
-      {
+      if (this->approximate_Newton){
         Eigen::VectorXd h_diag(p + 1);
-        for (int i = 0; i < p + 1; i++)
-        {
+        for (int i = 0; i < p + 1; i++){
           h_diag(i) = 1.0 / X.col(i).cwiseProduct(W).cwiseProduct(weights).dot(X.col(i));
         }
         g = X.transpose() * ((y - Pi).cwiseProduct(weights));
@@ -74,8 +67,7 @@ public:
         log_1_Pi = (one - Pi).array().log();
         loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) - this->lambda_level * beta.cwiseAbs2().sum();
 
-        while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon)
-        {
+        while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon){
           step = step / 2;
           beta1 = beta0 + step * g.cwiseProduct(h_diag);
           Pi = pi(X, y, beta1);
@@ -89,28 +81,23 @@ public:
         if (condition1)
           break;
 
-        if (loglik1 > loglik0)
-        {
+        if (loglik1 > loglik0){
           beta0 = beta1;
           loglik0 = loglik1;
           W = Pi.cwiseProduct(one - Pi);
-          for (int i = 0; i < n; i++)
-          {
+          for (int i = 0; i < n; i++){
             if (W(i) < 0.001)
               W(i) = 0.001;
           }
         }
 
-        if (step < this->primary_model_fit_epsilon)
-        {
+        if (step < this->primary_model_fit_epsilon){
           break;
         }
       }
-      else
-      {
+      else{
 
-        for (int i = 0; i < p + 1; i++)
-        {
+        for (int i = 0; i < p + 1; i++){
           X_new.col(i) = X.col(i).cwiseProduct(W).cwiseProduct(weights);
         }
 
@@ -133,15 +120,13 @@ public:
         bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
         bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
         bool condition3 = abs(loglik1) < min(1e-3, this->tau);
-        if (condition1 || condition2 || condition3)
-        {
+        if (condition1 || condition2 || condition3){
           break;
         }
 
         loglik0 = loglik1;
         W = Pi.cwiseProduct(one - Pi);
-        for (int i = 0; i < n; i++)
-        {
+        for (int i = 0; i < n; i++){
           if (W(i) < 0.001)
             W(i) = 0.001;
         }
@@ -152,10 +137,9 @@ public:
     beta = beta0.tail(p).eval();
     coef0 = beta0(0);
     return true;
-  };
+  }
 
-  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
-  {
+  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda){
     int n = X.rows();
     int p = X.cols();
     Eigen::VectorXd coef = Eigen::VectorXd::Ones(p + 1);
@@ -171,8 +155,7 @@ public:
     return -loglik_logit + lambda * beta.cwiseAbs2().sum();
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
-  {
+  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num){
 
     int p = X.cols();
     int n = X.rows();
@@ -193,44 +176,37 @@ public:
     Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
 
-    for (int i = 0; i < N; i++)
-    {
+    for (int i = 0; i < N; i++){
       T4 XG = X.middleCols(g_index(i), g_size(i));
       T4 XG_new = XG;
-      for (int j = 0; j < g_size(i); j++)
-      {
+      for (int j = 0; j < g_size(i); j++){
         XG_new.col(j) = XG.col(j).cwiseProduct(h);
       }
       Eigen::MatrixXd XGbar;
       XGbar = XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
 
-      //to do
+      // to do
       Eigen::MatrixXd phiG;
       XGbar.sqrt().evalTo(phiG);
       Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
       betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
       dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
     }
-    for (int i = 0; i < A_size; i++)
-    {
+    for (int i = 0; i < A_size; i++){
       bd(A(i)) = betabar.segment(g_index(A(i)), g_size(A(i))).squaredNorm() / g_size(A(i));
     }
-    for (int i = 0; i < I_size; i++)
-    {
+    for (int i = 0; i < I_size; i++){
       bd(I(i)) = dbar.segment(g_index(I(i)), g_size(I(i))).squaredNorm() / g_size(I(i));
     }
 
     return;
   }
 
-  double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0)
-  {
-    if (this->lambda_level == 0.)
-    {
+  double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0){
+    if (this->lambda_level == 0.){
       return XA.cols();
     }
-    else
-    {
+    else{
       if (XA.cols() == 0)
         return 0.;
 
@@ -249,8 +225,7 @@ public:
       Eigen::VectorXd h = weights.array() * pr.array() * (one - pr).array();
 
       T4 XA_new = XA;
-      for (int j = 0; j < XA.cols(); j++)
-      {
+      for (int j = 0; j < XA.cols(); j++){
         XA_new.col(j) = XA.col(j).cwiseProduct(h);
       }
       Eigen::MatrixXd XGbar;
@@ -259,8 +234,7 @@ public:
       Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> adjoint_eigen_solver(XGbar);
 
       double enp = 0.;
-      for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++)
-      {
+      for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++){
         enp += adjoint_eigen_solver.eigenvalues()(i) / (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
       }
 
@@ -270,8 +244,7 @@ public:
 };
 
 template <class T4>
-class abessLm : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>
-{
+class abessLm : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>{
 public:
   bool clear = true;
   Eigen::VectorXd XTy;                            /*X.transpose() * y */
@@ -287,18 +260,15 @@ public:
   Eigen::VectorXd **covariance = NULL;    /* covairance matrix. */
   Eigen::VectorXi covariance_update_flag; /* each variable have updated in covairance matirx. */
 
-  abessLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search){};
+  abessLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search) {}
 
-  ~abessLm(){};
+  ~abessLm() {}
 
-  void inital_setting(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
-  {
+  void inital_setting(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N){
     int n = X.rows(), p = X.cols();
-    if (this->clear)
-    {
+    if (this->clear){
       this->group_XTX = compute_group_XTX<T4>(X, g_index, g_size, n, p, N);
-      if (this->covariance_update)
-      {
+      if (this->covariance_update){
         // cout<<"create pointer"<<endl;
         this->covariance = new Eigen::VectorXd *[p];
         this->covariance_update_flag = Eigen::VectorXi::Zero(p);
@@ -307,8 +277,7 @@ public:
       }
     }
 
-    if (this->clear || this->lambda_change)
-    {
+    if (this->clear || this->lambda_change){
       this->PhiG = Phi(X, g_index, g_size, n, p, N, this->lambda_level, this->group_XTX);
       this->invPhiG = invPhi(this->PhiG, N);
       this->PhiG_U.resize(N, 1);
@@ -316,24 +285,21 @@ public:
     }
 
     this->clear = false;
-  };
+  }
 
-  void clear_setting()
-  {
+  void clear_setting(){
     this->clear = true;
     // delete pointer
-    if (this->covariance_update)
-    {
+    if (this->covariance_update){
       // cout<<"delete pointer"<<endl;
       for (int i = 0; i < (this->covariance_update_flag).size(); i++)
         if (this->covariance_update_flag(i) == 1)
           delete this->covariance[i];
       delete[] this->covariance;
     }
-  };
+  }
 
-  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
-  {
+  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size){
     int n = x.rows();
     int p = x.cols();
 
@@ -360,53 +326,44 @@ public:
     // ConjugateGradient<MatrixXd, Lower | Upper> cg;
     // cg.compute(X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols()));
     // beta = cg.solveWithGuess(X.adjoint() * y, beta);
-  };
+  }
 
-  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
-  {
+  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda){
     int n = X.rows();
     Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
     return (y - X * beta - coef0 * one).array().square().sum() / n + lambda * beta.cwiseAbs2().sum();
   }
 
-  void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind)
-  {
+  void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind){
     int N = U.size(), p = U_ind.size();
     if (this->covariance_update)
-      for (int i = 0; i < p; i++)
-      {
+      for (int i = 0; i < p; i++){
         this->XTy_U(i) = this->XTy(U_ind(i), 0);
         this->XTone_U(i) = this->XTone(U_ind(i), 0);
       }
 
-    for (int i = 0; i < N; i++)
-    {
+    for (int i = 0; i < N; i++){
       this->PhiG_U(i, 0) = this->PhiG(U(i), 0);
       this->invPhiG_U(i, 0) = this->invPhiG(U(i), 0);
     }
     return;
   }
 
-  Eigen::MatrixXd covariance_update_f_U(Eigen::VectorXi &U_ind, Eigen::VectorXi &A_ind_U)
-  {
+  Eigen::MatrixXd covariance_update_f_U(Eigen::VectorXi &U_ind, Eigen::VectorXi &A_ind_U){
     int k = A_ind_U.size(), p = U_ind.size();
     Eigen::MatrixXd cov_A(p, k);
 
-    for (int i = 0; i < k; i++)
-    {
+    for (int i = 0; i < k; i++){
       int Ai = U_ind(A_ind_U(i));
-      if (this->covariance_update_flag(Ai) == 0)
-      {
+      if (this->covariance_update_flag(Ai) == 0){
         this->covariance[Ai] = new Eigen::VectorXd;
         *this->covariance[Ai] = (*this->x).transpose() * (*this->x).col(Ai);
         this->covariance_update_flag(Ai) = 1;
       }
-      if (p == this->XTy.rows())
-      {
+      if (p == this->XTy.rows()){
         cov_A.col(i) = *this->covariance[Ai];
       }
-      else
-      {
+      else{
         for (int j = 0; j < p; j++)
           cov_A(j, i) = (*this->covariance[Ai])(U_ind(j));
       }
@@ -415,23 +372,19 @@ public:
     return cov_A;
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
-  {
+  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num){
 
     int p = X.cols();
     int n = X.rows();
 
-    if (num == 0)
-    {
-      if (p == this->XTy.rows())
-      {
+    if (num == 0){
+      if (p == this->XTy.rows()){
         this->XTy_U = this->XTy;
         this->XTone_U = this->XTone;
         this->PhiG_U = this->PhiG;
         this->invPhiG_U = this->invPhiG;
       }
-      else
-      {
+      else{
         this->XTy_U.resize(p, 1);
         this->XTone_U.resize(p, 1);
         this->mapping_U(U, U_ind);
@@ -439,29 +392,23 @@ public:
     }
 
     Eigen::VectorXd d;
-    if (!this->covariance_update)
-    {
+    if (!this->covariance_update){
       Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
 
-      if (beta.size() != 0)
-      {
+      if (beta.size() != 0){
         d = X.adjoint() * (y - XA * beta_A - coef0 * one) / double(n) - 2 * this->lambda_level * beta;
       }
-      else
-      {
+      else{
         d = X.adjoint() * (y - coef0 * one) / double(n);
       }
     }
-    else
-    {
+    else{
       Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-      if (beta.size() != 0)
-      {
+      if (beta.size() != 0){
         Eigen::VectorXd XTXbeta = this->covariance_update_f_U(U_ind, A_ind) * beta_A;
         d = (this->XTy_U - XTXbeta - this->XTone_U * coef0) / double(n) - 2 * this->lambda_level * beta;
       }
-      else
-      {
+      else{
         Eigen::VectorXd XTonecoef0 = this->XTone_U * coef0;
         d = (this->XTy_U - XTonecoef0) / double(n);
       }
@@ -474,31 +421,25 @@ public:
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
     Eigen::MatrixXd phiG, invphiG;
 
-    for (int i = 0; i < N; i++)
-    {
+    for (int i = 0; i < N; i++){
       phiG = this->PhiG_U(i, 0);
       invphiG = this->invPhiG_U(i, 0);
       betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
       dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
     }
-    for (int i = 0; i < A_size; i++)
-    {
+    for (int i = 0; i < A_size; i++){
       bd(A[i]) = betabar.segment(g_index(A[i]), g_size(A[i])).squaredNorm() / g_size(A[i]);
     }
-    for (int i = 0; i < I_size; i++)
-    {
+    for (int i = 0; i < I_size; i++){
       bd(I[i]) = dbar.segment(g_index(I[i]), g_size(I[i])).squaredNorm() / g_size(I[i]);
     }
   }
 
-  double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0)
-  {
-    if (this->lambda_level == 0.)
-    {
+  double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0){
+    if (this->lambda_level == 0.){
       return XA.cols();
     }
-    else
-    {
+    else{
       if (XA.cols() == 0)
         return 0.;
 
@@ -508,8 +449,7 @@ public:
       Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> adjoint_eigen_solver(XGbar);
 
       double enp = 0.;
-      for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++)
-      {
+      for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++){
         enp += adjoint_eigen_solver.eigenvalues()(i) / (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
       }
 
@@ -519,19 +459,16 @@ public:
 };
 
 template <class T4>
-class abessPoisson : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>
-{
+class abessPoisson : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>{
 public:
   bool approximate_Newton; /* use approximate Newton method or not. */
 
-  abessPoisson(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search){};
+  abessPoisson(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search) {}
 
-  ~abessPoisson(){};
+  ~abessPoisson() {}
 
-  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
-  {
-    if (x.cols() == 0)
-    {
+  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size){
+    if (x.cols() == 0){
       coef0 = log(weights.dot(y) / weights.sum());
       return true;
     }
@@ -546,16 +483,14 @@ public:
     coef.tail(p) = beta;
 
     // Approximate Newton method
-    if (this->approximate_Newton)
-    {
+    if (this->approximate_Newton){
       double step = 1;
       Eigen::VectorXd g(p + 1);
       Eigen::VectorXd coef_new;
       Eigen::VectorXd h_diag(p + 1);
       Eigen::VectorXd desend_direction; // coef_new = coef + step * desend_direction
       Eigen::VectorXd eta = X * coef;
-      for (int i = 0; i <= n - 1; i++)
-      {
+      for (int i = 0; i <= n - 1; i++){
         if (eta(i) < -30.0)
           eta(i) = -30.0;
         if (eta(i) > 30.0)
@@ -564,21 +499,16 @@ public:
       Eigen::VectorXd expeta = eta.array().exp();
       double loglik_new = DBL_MAX, loglik = (y.cwiseProduct(eta) - expeta).dot(weights);
 
-      for (int j = 0; j < this->primary_model_fit_max_iter; j++)
-      {
-        for (int i = 0; i < p + 1; i++)
-        {
-          if (i == 0)
-          {
+      for (int j = 0; j < this->primary_model_fit_max_iter; j++){
+        for (int i = 0; i < p + 1; i++){
+          if (i == 0){
             h_diag(i) = X.col(i).cwiseProduct(expeta).cwiseProduct(weights).dot(X.col(i)); // it shouldn't use lambda in h_diag(0)
           }
-          else
-          {
+          else{
             h_diag(i) = X.col(i).cwiseProduct(expeta).cwiseProduct(weights).dot(X.col(i)) + 2 * this->lambda_level; // diag of Hessian
           }
           // we can find h_diag(i) >= 0
-          if (h_diag(i) < 1e-7)
-          {
+          if (h_diag(i) < 1e-7){
             h_diag(i) = 1e7;
           }
           else
@@ -589,8 +519,7 @@ public:
         desend_direction = g.cwiseProduct(h_diag);
         coef_new = coef + step * desend_direction; // ApproXimate Newton method
         eta = X * coef_new;
-        for (int i = 0; i <= n - 1; i++)
-        {
+        for (int i = 0; i <= n - 1; i++){
           if (eta(i) < -30.0)
             eta(i) = -30.0;
           if (eta(i) > 30.0)
@@ -599,13 +528,11 @@ public:
         expeta = eta.array().exp();
         loglik_new = (y.cwiseProduct(eta) - expeta).dot(weights);
 
-        while (loglik_new < loglik && step > this->primary_model_fit_epsilon)
-        {
+        while (loglik_new < loglik && step > this->primary_model_fit_epsilon){
           step = step / 2;
           coef_new = coef + step * desend_direction;
           eta = X * coef_new;
-          for (int i = 0; i <= n - 1; i++)
-          {
+          for (int i = 0; i <= n - 1; i++){
             if (eta(i) < -30.0)
               eta(i) = -30.0;
             if (eta(i) > 30.0)
@@ -617,8 +544,7 @@ public:
 
         bool condition1 = step < this->primary_model_fit_epsilon;
         bool condition2 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
-        if (condition1 || condition2)
-        {
+        if (condition1 || condition2){
           break;
         }
 
@@ -626,8 +552,7 @@ public:
         loglik = loglik_new;
       }
     }
-    else
-    {
+    else{
       Eigen::MatrixXd lambdamat = Eigen::MatrixXd::Identity(p + 1, p + 1);
       lambdamat(0, 0) = 0;
 
@@ -639,10 +564,8 @@ public:
       double loglik0 = (y.cwiseProduct(eta) - expeta).dot(weights);
       double loglik1;
 
-      for (int j = 0; j < this->primary_model_fit_max_iter; j++)
-      {
-        for (int i = 0; i < p + 1; i++)
-        {
+      for (int j = 0; j < this->primary_model_fit_max_iter; j++){
+        for (int i = 0; i < p + 1; i++){
           // temp.col(i) = X_trans.col(i) * expeta(i) * weights(i);
           X_new.col(i) = X.col(i).cwiseProduct(expeta).cwiseProduct(weights);
         }
@@ -651,8 +574,7 @@ public:
         // if (check_ill_condition(XTX)) return false;
         coef = (XTX).ldlt().solve(X_new.transpose() * z);
         eta = X * coef;
-        for (int i = 0; i <= n - 1; i++)
-        {
+        for (int i = 0; i <= n - 1; i++){
           if (eta(i) < -30.0)
             eta(i) = -30.0;
           if (eta(i) > 30.0)
@@ -664,8 +586,7 @@ public:
         // bool condition1 = false;
         bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
         bool condition3 = abs(loglik1) < min(1e-3, this->tau);
-        if (condition1 || condition2 || condition3)
-        {
+        if (condition1 || condition2 || condition3){
 
           break;
         }
@@ -676,10 +597,9 @@ public:
     beta = coef.tail(p).eval();
     coef0 = coef(0);
     return true;
-  };
+  }
 
-  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
-  {
+  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda){
     int n = X.rows();
     int p = X.cols();
     Eigen::VectorXd coef = Eigen::VectorXd::Ones(p + 1);
@@ -690,8 +610,7 @@ public:
     x.rightCols(p) = X;
     add_constant_column(x);
     Eigen::VectorXd eta = x * coef;
-    for (int i = 0; i <= n - 1; i++)
-    {
+    for (int i = 0; i <= n - 1; i++){
       if (eta(i) < -30.0)
         eta(i) = -30.0;
       if (eta(i) > 30.0)
@@ -703,16 +622,14 @@ public:
     return -loglik_poiss + this->lambda_level * beta.cwiseAbs2().sum();
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
-  {
+  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num){
 
     int p = X.cols();
     int n = X.rows();
 
     Eigen::VectorXd coef = Eigen::VectorXd::Ones(n) * coef0;
     Eigen::VectorXd xbeta_exp = XA * beta_A + coef;
-    for (int i = 0; i <= n - 1; i++)
-    {
+    for (int i = 0; i <= n - 1; i++){
       if (xbeta_exp(i) > 30.0)
         xbeta_exp(i) = 30.0;
       if (xbeta_exp(i) < -30.0)
@@ -729,12 +646,10 @@ public:
     Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
 
-    for (int i = 0; i < N; i++)
-    {
+    for (int i = 0; i < N; i++){
       T4 XG = X.middleCols(g_index(i), g_size(i));
       T4 XG_new = XG;
-      for (int j = 0; j < g_size(i); j++)
-      {
+      for (int j = 0; j < g_size(i); j++){
         XG_new.col(j) = XG.col(j).cwiseProduct(h);
       }
       Eigen::MatrixXd XGbar;
@@ -746,24 +661,19 @@ public:
       betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
       dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
     }
-    for (int i = 0; i < A_size; i++)
-    {
+    for (int i = 0; i < A_size; i++){
       bd(A[i]) = betabar.segment(g_index(A[i]), g_size(A[i])).squaredNorm() / g_size(A[i]);
     }
-    for (int i = 0; i < I_size; i++)
-    {
+    for (int i = 0; i < I_size; i++){
       bd(I[i]) = dbar.segment(g_index(I[i]), g_size(I[i])).squaredNorm() / g_size(I[i]);
     }
   }
 
-  double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0)
-  {
-    if (this->lambda_level == 0.)
-    {
+  double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0){
+    if (this->lambda_level == 0.){
       return XA.cols();
     }
-    else
-    {
+    else{
       if (XA.cols() == 0)
         return 0.;
 
@@ -772,8 +682,7 @@ public:
 
       Eigen::VectorXd coef = Eigen::VectorXd::Ones(n) * coef0;
       Eigen::VectorXd xbeta_exp = XA * beta_A + coef;
-      for (int i = 0; i <= n - 1; i++)
-      {
+      for (int i = 0; i <= n - 1; i++){
         if (xbeta_exp(i) > 30.0)
           xbeta_exp(i) = 30.0;
         if (xbeta_exp(i) < -30.0)
@@ -785,8 +694,7 @@ public:
       Eigen::VectorXd h = xbeta_exp.array() * weights.array();
 
       T4 XA_new = XA;
-      for (int j = 0; j < XA.cols(); j++)
-      {
+      for (int j = 0; j < XA.cols(); j++){
         XA_new.col(j) = XA.col(j).cwiseProduct(h);
       }
       Eigen::MatrixXd XGbar;
@@ -795,8 +703,7 @@ public:
       Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> adjoint_eigen_solver(XGbar);
 
       double enp = 0.;
-      for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++)
-      {
+      for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++){
         enp += adjoint_eigen_solver.eigenvalues()(i) / (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
       }
 
@@ -806,28 +713,24 @@ public:
 };
 
 template <class T4>
-class abessCox : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>
-{
+class abessCox : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>{
 public:
   Eigen::MatrixXd cox_hessian; /* hessian matrix for cox model. */
   Eigen::VectorXd cox_g;       /* score function for cox model. */
   bool approximate_Newton;     /* use approximate Newton method or not. */
 
-  abessCox(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search){};
+  abessCox(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search) {}
 
-  ~abessCox(){};
+  ~abessCox() {}
 
-  void inital_setting(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
-  {
+  void inital_setting(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N){
     this->cox_g = Eigen::VectorXd::Zero(0);
     this->cox_hessian = Eigen::MatrixXd::Zero(0, 0);
   }
 
-  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
-  {
+  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size){
 
-    if (x.cols() == 0)
-    {
+    if (x.cols() == 0){
       coef0 = 0.;
       return true;
     }
@@ -854,12 +757,10 @@ public:
 
     double step = 1.0;
     int l;
-    for (l = 1; l <= this->primary_model_fit_max_iter; l++)
-    {
+    for (l = 1; l <= this->primary_model_fit_max_iter; l++){
 
       eta = x * beta0;
-      for (int i = 0; i <= n - 1; i++)
-      {
+      for (int i = 0; i <= n - 1; i++){
         if (eta(i) < -30.0)
           eta(i) = -30.0;
         if (eta(i) > 30.0)
@@ -867,27 +768,22 @@ public:
       }
       eta = weight.array() * eta.array().exp();
       cum_eta(n - 1) = eta(n - 1);
-      for (int k = n - 2; k >= 0; k--)
-      {
+      for (int k = n - 2; k >= 0; k--){
         cum_eta(k) = cum_eta(k + 1) + eta(k);
       }
       cum_eta2(0) = (y(0) * weight(0)) / cum_eta(0);
-      for (int k = 1; k <= n - 1; k++)
-      {
+      for (int k = 1; k <= n - 1; k++){
         cum_eta2(k) = (y(k) * weight(k)) / cum_eta(k) + cum_eta2(k - 1);
       }
       cum_eta3(0) = (y(0) * weight(0)) / pow(cum_eta(0), 2);
-      for (int k = 1; k <= n - 1; k++)
-      {
+      for (int k = 1; k <= n - 1; k++){
         cum_eta3(k) = (y(k) * weight(k)) / pow(cum_eta(k), 2) + cum_eta3(k - 1);
       }
       h = -cum_eta3.replicate(1, n);
       h = h.cwiseProduct(eta.replicate(1, n));
       h = h.cwiseProduct(eta.replicate(1, n).transpose());
-      for (int i = 0; i < n; i++)
-      {
-        for (int j = i + 1; j < n; j++)
-        {
+      for (int i = 0; i < n; i++){
+        for (int j = i + 1; j < n; j++){
           h(j, i) = h(i, j);
         }
       }
@@ -898,13 +794,11 @@ public:
       g = weight.cwiseProduct(y) - cum_eta2.cwiseProduct(eta);
 
       Eigen::MatrixXd temp = x.transpose() * h * x;
-      if (this->approximate_Newton)
-      {
+      if (this->approximate_Newton){
         // d = g.cwiseQuotient((x.transpose() * h * x + 2 * this->lambda_level * lambdamat).diagonal());
         d = (x.transpose() * g - 2 * this->lambda_level * beta0).cwiseQuotient(temp.diagonal());
       }
-      else
-      {
+      else{
         // d = (x.transpose() * h * x + 2 * this->lambda_level * lambdamat).ldlt().solve(g);
         // if (check_ill_condition(temp)) return false;
         d = temp.ldlt().solve(x.transpose() * g - 2 * this->lambda_level * beta0);
@@ -962,16 +856,14 @@ public:
 
       loglik1 = -this->loss_function(x, y, weight, beta1, coef0, A, g_index, g_size, this->lambda_level);
 
-      while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon)
-      {
+      while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon){
         step = step / 2;
         beta1 = beta0 + step * d;
         loglik1 = -this->loss_function(x, y, weight, beta1, coef0, A, g_index, g_size, this->lambda_level);
       }
 
       bool condition1 = -(loglik1 + (this->primary_model_fit_max_iter - l - 1) * (loglik1 - loglik0)) + this->tau > loss0;
-      if (condition1)
-      {
+      if (condition1){
         loss0 = -loglik0;
         beta = beta0;
         this->cox_hessian = h;
@@ -980,16 +872,14 @@ public:
         return true;
       }
 
-      if (loglik1 > loglik0)
-      {
+      if (loglik1 > loglik0){
         beta0 = beta1;
         loglik0 = loglik1;
         this->cox_hessian = h;
         this->cox_g = g;
       }
 
-      if (step < this->primary_model_fit_epsilon)
-      {
+      if (step < this->primary_model_fit_epsilon){
         loss0 = -loglik0;
         beta = beta0;
         this->cox_hessian = h;
@@ -1001,28 +891,23 @@ public:
 
     beta = beta0;
     return true;
-  };
+  }
 
-  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
-  {
+  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda){
     int n = X.rows();
     Eigen::VectorXd eta = X * beta;
-    for (int i = 0; i < n; i++)
-    {
-      if (eta(i) > 30)
-      {
+    for (int i = 0; i < n; i++){
+      if (eta(i) > 30){
         eta(i) = 30;
       }
-      else if (eta(i) < -30)
-      {
+      else if (eta(i) < -30){
         eta(i) = -30;
       }
     }
     Eigen::VectorXd expeta = eta.array().exp();
     Eigen::VectorXd cum_expeta(n);
     cum_expeta(n - 1) = expeta(n - 1);
-    for (int i = n - 2; i >= 0; i--)
-    {
+    for (int i = n - 2; i >= 0; i--){
       cum_expeta(i) = cum_expeta(i + 1) + expeta(i);
     }
     Eigen::VectorXd ratio = (expeta.cwiseQuotient(cum_expeta)).array().log();
@@ -1031,8 +916,7 @@ public:
     return -loglik_cox + lambda * beta.cwiseAbs2().sum();
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
-  {
+  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num){
 
     int p = X.cols();
     int n = X.rows();
@@ -1040,19 +924,16 @@ public:
     Eigen::VectorXd d;
     Eigen::MatrixXd h;
     Eigen::VectorXd g;
-    if (this->cox_g.size() != 0)
-    {
+    if (this->cox_g.size() != 0){
       h = this->cox_hessian;
       g = this->cox_g;
     }
-    else
-    {
+    else{
       Eigen::VectorXd cum_eta(n);
       Eigen::VectorXd cum_eta2(n);
       Eigen::VectorXd cum_eta3(n);
       Eigen::VectorXd eta = XA * beta_A;
-      for (int i = 0; i <= n - 1; i++)
-      {
+      for (int i = 0; i <= n - 1; i++){
         if (eta(i) < -30.0)
           eta(i) = -30.0;
         if (eta(i) > 30.0)
@@ -1060,27 +941,22 @@ public:
       }
       eta = weights.array() * eta.array().exp();
       cum_eta(n - 1) = eta(n - 1);
-      for (int k = n - 2; k >= 0; k--)
-      {
+      for (int k = n - 2; k >= 0; k--){
         cum_eta(k) = cum_eta(k + 1) + eta(k);
       }
       cum_eta2(0) = (y(0) * weights(0)) / cum_eta(0);
-      for (int k = 1; k <= n - 1; k++)
-      {
+      for (int k = 1; k <= n - 1; k++){
         cum_eta2(k) = (y(k) * weights(k)) / cum_eta(k) + cum_eta2(k - 1);
       }
       cum_eta3(0) = (y(0) * weights(0)) / pow(cum_eta(0), 2);
-      for (int k = 1; k <= n - 1; k++)
-      {
+      for (int k = 1; k <= n - 1; k++){
         cum_eta3(k) = (y(k) * weights(k)) / pow(cum_eta(k), 2) + cum_eta3(k - 1);
       }
       h = -cum_eta3.replicate(1, n);
       h = h.cwiseProduct(eta.replicate(1, n));
       h = h.cwiseProduct(eta.replicate(1, n).transpose());
-      for (int i = 0; i < n; i++)
-      {
-        for (int j = i + 1; j < n; j++)
-        {
+      for (int i = 0; i < n; i++){
+        for (int j = i + 1; j < n; j++){
           h(j, i) = h(i, j);
         }
       }
@@ -1099,8 +975,7 @@ public:
     Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
 
-    for (int i = 0; i < N; i++)
-    {
+    for (int i = 0; i < N; i++){
       T4 XG = X.middleCols(g_index(i), g_size(i));
       Eigen::MatrixXd XGbar = XG.transpose() * h * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
 
@@ -1110,24 +985,19 @@ public:
       betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
       dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
     }
-    for (int i = 0; i < A_size; i++)
-    {
+    for (int i = 0; i < A_size; i++){
       bd(A[i]) = betabar.segment(g_index(A[i]), g_size(A[i])).squaredNorm() / g_size(A[i]);
     }
-    for (int i = 0; i < I_size; i++)
-    {
+    for (int i = 0; i < I_size; i++){
       bd(I[i]) = dbar.segment(g_index(I[i]), g_size(I[i])).squaredNorm() / g_size(I[i]);
     }
   }
 
-  double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0)
-  {
-    if (this->lambda_level == 0.)
-    {
+  double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0){
+    if (this->lambda_level == 0.){
       return XA.cols();
     }
-    else
-    {
+    else{
       if (XA.cols() == 0)
         return 0.;
 
@@ -1137,8 +1007,7 @@ public:
       Eigen::VectorXd d;
       Eigen::MatrixXd h;
       Eigen::VectorXd g;
-      if (this->cox_g.size() != 0)
-      {
+      if (this->cox_g.size() != 0){
         h = this->cox_hessian;
         // g = this->cox_g;
       }
@@ -1151,8 +1020,7 @@ public:
       Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> adjoint_eigen_solver(XGbar);
 
       double enp = 0.;
-      for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++)
-      {
+      for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++){
         enp += adjoint_eigen_solver.eigenvalues()(i) / (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
       }
 
@@ -1162,8 +1030,7 @@ public:
 };
 
 template <class T4>
-class abessMLm : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>
-{
+class abessMLm : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>{
 public:
   bool clear = true;
   Eigen::MatrixXd XTy;                            /*X.transpose() * y */
@@ -1179,18 +1046,15 @@ public:
   Eigen::VectorXd **covariance = NULL;    /* covairance matrix. */
   Eigen::VectorXi covariance_update_flag; /* each variable have updated in covairance matirx. */
 
-  abessMLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search){};
+  abessMLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search) {}
 
-  ~abessMLm(){};
+  ~abessMLm() {}
 
-  void inital_setting(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N)
-  {
+  void inital_setting(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N){
     int n = X.rows(), p = X.cols();
-    if (this->clear)
-    {
+    if (this->clear){
       this->group_XTX = compute_group_XTX<T4>(X, g_index, g_size, n, p, N);
-      if (this->covariance_update)
-      {
+      if (this->covariance_update){
         this->covariance = new Eigen::VectorXd *[p];
         this->covariance_update_flag = Eigen::VectorXi::Zero(p);
         this->XTy = X.transpose() * y;
@@ -1198,8 +1062,7 @@ public:
       }
     }
 
-    if (this->clear || this->lambda_change)
-    {
+    if (this->clear || this->lambda_change){
       this->PhiG = Phi(X, g_index, g_size, n, p, N, this->lambda_level, this->group_XTX);
       this->invPhiG = invPhi(this->PhiG, N);
       this->PhiG_U.resize(N, 1);
@@ -1207,23 +1070,20 @@ public:
     }
 
     this->clear = false;
-  };
+  }
 
-  void clear_setting()
-  {
+  void clear_setting(){
     this->clear = true;
     // delete pointer
-    if (this->covariance_update)
-    {
+    if (this->covariance_update){
       for (int i = 0; i < (this->covariance_update_flag).size(); i++)
         if (this->covariance_update_flag(i) == 1)
           delete this->covariance[i];
       delete[] this->covariance;
     }
-  };
+  }
 
-  bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
-  {
+  bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size){
     // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
 
     int n = x.rows();
@@ -1256,54 +1116,45 @@ public:
     // ConjugateGradient<T4, Lower | Upper> cg;
     // cg.compute(X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols()));
     // beta = cg.solveWithGuess(X.adjoint() * y, beta);
-  };
+  }
 
-  double loss_function(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
-  {
+  double loss_function(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda){
     int n = X.rows();
     Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, y.cols());
     return (y - X * beta - array_product(one, coef0)).array().square().sum() / n / 2.0 + lambda * beta.cwiseAbs2().sum();
   }
 
-  void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind)
-  {
+  void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind){
     int N = U.size(), p = U_ind.size(), M = this->XTy.cols();
     if (this->covariance_update)
       for (int i = 0; i < p; i++)
-        for (int j = 0; j < M; j++)
-        {
+        for (int j = 0; j < M; j++){
           this->XTy_U(i, j) = this->XTy(U_ind(i), j);
           this->XTone_U(i, j) = this->XTone(U_ind(i), j);
         }
 
-    for (int i = 0; i < N; i++)
-    {
+    for (int i = 0; i < N; i++){
       this->PhiG_U(i, 0) = this->PhiG(U(i), 0);
       this->invPhiG_U(i, 0) = this->invPhiG(U(i), 0);
     }
     return;
   }
 
-  Eigen::MatrixXd covariance_update_f_U(Eigen::VectorXi &U_ind, Eigen::VectorXi &A_ind_U)
-  {
+  Eigen::MatrixXd covariance_update_f_U(Eigen::VectorXi &U_ind, Eigen::VectorXi &A_ind_U){
     int k = A_ind_U.size(), p = U_ind.size();
     Eigen::MatrixXd cov_A(p, k);
 
-    for (int i = 0; i < k; i++)
-    {
+    for (int i = 0; i < k; i++){
       int Ai = U_ind(A_ind_U(i));
-      if (this->covariance_update_flag(Ai) == 0)
-      {
+      if (this->covariance_update_flag(Ai) == 0){
         this->covariance[Ai] = new Eigen::VectorXd;
         *this->covariance[Ai] = (*this->x).transpose() * (*this->x).col(Ai);
         this->covariance_update_flag(Ai) = 1;
       }
-      if (p == this->XTy.rows())
-      {
+      if (p == this->XTy.rows()){
         cov_A.col(i) = *this->covariance[Ai];
       }
-      else
-      {
+      else{
         for (int j = 0; j < p; j++)
           cov_A(j, i) = (*this->covariance[Ai])(U_ind(j));
       }
@@ -1312,24 +1163,20 @@ public:
     return cov_A;
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
-  {
+  void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num){
 
     int p = X.cols();
     int n = X.rows();
     int M = y.cols();
 
-    if (num == 0)
-    {
-      if (p == this->XTy.rows())
-      {
+    if (num == 0){
+      if (p == this->XTy.rows()){
         this->XTy_U = this->XTy;
         this->XTone_U = this->XTone;
         this->PhiG_U = this->PhiG;
         this->invPhiG_U = this->invPhiG;
       }
-      else
-      {
+      else{
         this->XTy_U.resize(p, M);
         this->XTone_U.resize(p, M);
         this->mapping_U(U, U_ind);
@@ -1337,29 +1184,23 @@ public:
     }
 
     Eigen::MatrixXd d;
-    if (!this->covariance_update)
-    {
+    if (!this->covariance_update){
       Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, y.cols());
-      if (beta.size() != 0)
-      {
+      if (beta.size() != 0){
         d = X.adjoint() * (y - XA * beta_A - array_product(one, coef0)) / double(n) - 2 * this->lambda_level * beta;
       }
-      else
-      {
+      else{
         d = X.adjoint() * (y - array_product(one, coef0)) / double(n);
       }
     }
-    else
-    {
-      if (beta.size() != 0)
-      {
+    else{
+      if (beta.size() != 0){
 
         Eigen::MatrixXd XTXbeta = this->covariance_update_f_U(U_ind, A_ind) * beta_A;
 
         d = (this->XTy_U - XTXbeta - array_product(this->XTone_U, coef0)) / double(n) - 2 * this->lambda_level * beta;
       }
-      else
-      {
+      else{
         Eigen::MatrixXd XTonecoef0 = array_product(this->XTone_U, coef0);
         d = (this->XTy_U - XTonecoef0) / double(n);
       }
@@ -1372,31 +1213,25 @@ public:
     Eigen::MatrixXd dbar = Eigen::MatrixXd::Zero(p, M);
     Eigen::MatrixXd phiG, invphiG;
 
-    for (int i = 0; i < N; i++)
-    {
+    for (int i = 0; i < N; i++){
       phiG = this->PhiG_U(i, 0);
       invphiG = this->invPhiG_U(i, 0);
       betabar.block(g_index(i), 0, g_size(i), M) = phiG * beta.block(g_index(i), 0, g_size(i), M);
       dbar.block(g_index(i), 0, g_size(i), M) = invphiG * d.block(g_index(i), 0, g_size(i), M);
     }
-    for (int i = 0; i < A_size; i++)
-    {
+    for (int i = 0; i < A_size; i++){
       bd(A[i]) = betabar.block(g_index(A[i]), 0, g_size(A[i]), M).squaredNorm() / g_size(A[i]);
     }
-    for (int i = 0; i < I_size; i++)
-    {
+    for (int i = 0; i < I_size; i++){
       bd(I[i]) = dbar.block(g_index(I[i]), 0, g_size(I[i]), M).squaredNorm() / g_size(I[i]);
     }
   }
 
-  double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0)
-  {
-    if (this->lambda_level == 0.)
-    {
+  double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0){
+    if (this->lambda_level == 0.){
       return XA.cols();
     }
-    else
-    {
+    else{
       if (XA.cols() == 0)
         return 0.;
 
@@ -1406,8 +1241,7 @@ public:
       Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> adjoint_eigen_solver(XGbar);
 
       double enp = 0.;
-      for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++)
-      {
+      for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++){
         enp += adjoint_eigen_solver.eigenvalues()(i) / (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
       }
 
@@ -1417,17 +1251,15 @@ public:
 };
 
 template <class T4>
-class abessMultinomial : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>
-{
+class abessMultinomial : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>{
 public:
   bool approximate_Newton; /* use approximate Newton method or not. */
 
-  abessMultinomial(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search){};
+  abessMultinomial(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start, exchange_num, always_select, splicing_type, sub_search) {}
 
-  ~abessMultinomial(){};
+  ~abessMultinomial() {}
 
-  bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size)
-  {
+  bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size){
 
     // if (X.cols() == 0)
     // {
@@ -1453,8 +1285,7 @@ public:
     double loglik1 = DBL_MAX, loglik0 = (log_Pi.array() * y.array()).sum() - this->lambda_level * beta.cwiseAbs2().sum();
 
     int j;
-    if (this->approximate_Newton)
-    {
+    if (this->approximate_Newton){
       Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, M);
       double t = 2 * (Pi.array() * (one - Pi).array()).maxCoeff();
       Eigen::MatrixXd res = y - Pi;
@@ -1467,8 +1298,7 @@ public:
       Eigen::MatrixXd invXTX = XTX.ldlt().solve(Eigen::MatrixXd::Identity(p + 1, p + 1));
 
       Eigen::MatrixXd beta1;
-      for (j = 0; j < this->primary_model_fit_max_iter; j++)
-      {
+      for (j = 0; j < this->primary_model_fit_max_iter; j++){
         // beta1 = beta0 + cg.solve(res);
         beta1 = beta0 + invXTX * XTres;
 
@@ -1488,14 +1318,12 @@ public:
         bool condition3 = abs(loglik1) < min(1e-3, this->tau);
         bool condition4 = loglik1 < loglik0;
         // bool condition4 = false;
-        if (condition1 || condition2 || condition3 || condition4)
-        {
+        if (condition1 || condition2 || condition3 || condition4){
           break;
         }
         loglik0 = loglik1;
 
-        for (int m1 = 0; m1 < M; m1++)
-        {
+        for (int m1 = 0; m1 < M; m1++){
           beta0.col(m1) = beta1.col(m1) - beta1.col(M - 1);
         }
 
@@ -1506,39 +1334,30 @@ public:
         XTres = X.transpose() * res / t;
       }
     }
-    else
-    {
+    else{
       Eigen::MatrixXd W(M * n, M * n);
       Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-      for (int m1 = 0; m1 < M; m1++)
-      {
-        for (int m2 = m1; m2 < M; m2++)
-        {
-          if (m1 == m2)
-          {
+      for (int m1 = 0; m1 < M; m1++){
+        for (int m2 = m1; m2 < M; m2++){
+          if (m1 == m2){
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 
             Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array() * weights.array();
 
-            for (int i = 0; i < PiPj.size(); i++)
-            {
-              if (PiPj(i) < 0.001)
-              {
+            for (int i = 0; i < PiPj.size(); i++){
+              if (PiPj(i) < 0.001){
                 PiPj(i) = 0.001;
               }
             }
             W.block(m1 * n, m2 * n, n, n).diagonal() = PiPj;
           }
-          else
-          {
+          else{
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 
             Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array() * weights.array();
 
-            for (int i = 0; i < PiPj.size(); i++)
-            {
-              if (PiPj(i) < 0.001)
-              {
+            for (int i = 0; i < PiPj.size(); i++){
+              if (PiPj(i) < 0.001){
                 PiPj(i) = 0.001;
               }
             }
@@ -1550,10 +1369,8 @@ public:
 
       Eigen::MatrixXd XTWX(M * (p + 1), M * (p + 1));
       Eigen::MatrixXd XTW(M * (p + 1), M * n);
-      for (int m1 = 0; m1 < M; m1++)
-      {
-        for (int m2 = m1; m2 < M; m2++)
-        {
+      for (int m1 = 0; m1 < M; m1++){
+        for (int m2 = m1; m2 < M; m2++){
           XTW.block(m1 * (p + 1), m2 * n, (p + 1), n) = X.transpose() * W.block(m1 * n, m2 * n, n, n);
           XTWX.block(m1 * (p + 1), m2 * (p + 1), (p + 1), (p + 1)) = XTW.block(m1 * (p + 1), m2 * n, (p + 1), n) * X + 2 * this->lambda_level * lambdamat;
           XTW.block(m2 * (p + 1), m1 * n, (p + 1), n) = XTW.block(m1 * (p + 1), m2 * n, (p + 1), n);
@@ -1563,14 +1380,12 @@ public:
 
       // Eigen::Matrix<Eigen::MatrixXd, -1, -1> res(M, 1);
       Eigen::VectorXd res(M * n);
-      for (int m1 = 0; m1 < M; m1++)
-      {
+      for (int m1 = 0; m1 < M; m1++){
         res.segment(m1 * n, n) = y.col(m1).eval() - Pi.col(m1).eval();
       }
 
       Eigen::VectorXd Xbeta(M * n);
-      for (int m1 = 0; m1 < M; m1++)
-      {
+      for (int m1 = 0; m1 < M; m1++){
         Xbeta.segment(m1 * n, n) = X * beta0.col(m1).eval();
       }
 
@@ -1578,16 +1393,13 @@ public:
 
       Eigen::MatrixXd beta1;
       Eigen::VectorXd beta0_tmp;
-      for (j = 0; j < this->primary_model_fit_max_iter; j++)
-      {
+      for (j = 0; j < this->primary_model_fit_max_iter; j++){
 
         beta0_tmp = XTWX.ldlt().solve(XTW * Z);
-        for (int m1 = 0; m1 < M; m1++)
-        {
+        for (int m1 = 0; m1 < M; m1++){
           beta0.col(m1) = beta0_tmp.segment(m1 * (p + 1), (p + 1)) - beta0_tmp.segment((M - 1) * (p + 1), (p + 1));
         }
-        for (int m1 = 0; m1 < M; m1++)
-        {
+        for (int m1 = 0; m1 < M; m1++){
           beta0.col(m1) = beta0_tmp.segment(m1 * (p + 1), (p + 1));
         }
 
@@ -1601,41 +1413,32 @@ public:
         bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
         bool condition3 = abs(loglik1) < min(1e-3, this->tau);
         bool condition4 = loglik1 < loglik0;
-        if (condition1 || condition2 || condition3 || condition4)
-        {
+        if (condition1 || condition2 || condition3 || condition4){
 
           break;
         }
         loglik0 = loglik1;
 
-        for (int m1 = 0; m1 < M; m1++)
-        {
-          for (int m2 = m1; m2 < M; m2++)
-          {
-            if (m1 == m2)
-            {
+        for (int m1 = 0; m1 < M; m1++){
+          for (int m2 = m1; m2 < M; m2++){
+            if (m1 == m2){
               // W(m1, m2) = Eigen::MatrixXd::Zero(n, n);
               // W(m1, m2).diagonal() = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
 
               W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
               Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
-              for (int i = 0; i < PiPj.size(); i++)
-              {
-                if (PiPj(i) < 0.001)
-                {
+              for (int i = 0; i < PiPj.size(); i++){
+                if (PiPj(i) < 0.001){
                   PiPj(i) = 0.001;
                 }
               }
               W.block(m1 * n, m2 * n, n, n).diagonal() = PiPj;
             }
-            else
-            {
+            else{
               W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
               Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array();
-              for (int i = 0; i < PiPj.size(); i++)
-              {
-                if (PiPj(i) < 0.001)
-                {
+              for (int i = 0; i < PiPj.size(); i++){
+                if (PiPj(i) < 0.001){
                   PiPj(i) = 0.001;
                 }
               }
@@ -1645,10 +1448,8 @@ public:
           }
         }
 
-        for (int m1 = 0; m1 < M; m1++)
-        {
-          for (int m2 = m1; m2 < M; m2++)
-          {
+        for (int m1 = 0; m1 < M; m1++){
+          for (int m2 = m1; m2 < M; m2++){
             XTW.block(m1 * (p + 1), m2 * n, (p + 1), n) = X.transpose() * W.block(m1 * n, m2 * n, n, n);
             XTWX.block(m1 * (p + 1), m2 * (p + 1), (p + 1), (p + 1)) = XTW.block(m1 * (p + 1), m2 * n, (p + 1), n) * X + 2 * this->lambda_level * lambdamat;
             XTW.block(m2 * (p + 1), m1 * n, (p + 1), n) = XTW.block(m1 * (p + 1), m2 * n, (p + 1), n);
@@ -1656,13 +1457,11 @@ public:
           }
         }
 
-        for (int m1 = 0; m1 < M; m1++)
-        {
+        for (int m1 = 0; m1 < M; m1++){
           res.segment(m1 * n, n) = y.col(m1).eval() - Pi.col(m1).eval();
         }
 
-        for (int m1 = 0; m1 < M; m1++)
-        {
+        for (int m1 = 0; m1 < M; m1++){
           Xbeta.segment(m1 * n, n) = X * beta0.col(m1).eval();
         }
 
@@ -1673,10 +1472,9 @@ public:
     beta = beta0.block(1, 0, p, M);
     coef0 = beta0.row(0).eval();
     return true;
-  };
+  }
 
-  double loss_function(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda)
-  {
+  double loss_function(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda){
     // weight
     Eigen::MatrixXd pr;
     pi(X, y, beta, coef0, pr);
@@ -1688,8 +1486,7 @@ public:
     return -((log_pr.array() * y.array()).sum()) + lambda * beta.cwiseAbs2().sum();
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
-  {
+  void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num){
 
     int p = X.cols();
     int n = X.rows();
@@ -1701,8 +1498,7 @@ public:
     pi(XA, y, beta_A, coef0, pr);
     Eigen::MatrixXd Pi = pr.leftCols(M - 1);
     Eigen::MatrixXd res = (y.leftCols(M - 1) - Pi);
-    for (int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++){
       res.row(i) = res.row(i) * weights(i);
     }
     d = X.transpose() * res - 2 * this->lambda_level * beta;
@@ -1715,12 +1511,10 @@ public:
     Eigen::MatrixXd dbar = Eigen::MatrixXd::Zero(p, M);
     Eigen::MatrixXd phiG, invphiG;
 
-    for (int i = 0; i < N; i++)
-    {
+    for (int i = 0; i < N; i++){
       T4 XG = X.middleCols(g_index(i), g_size(i));
       T4 XG_new(h.rows(), h.cols());
-      for (int m = 0; m < M - 1; m++)
-      {
+      for (int m = 0; m < M - 1; m++){
         XG_new.col(m) = h.col(m).cwiseProduct(XG).cwiseProduct(weights);
       }
       Eigen::MatrixXd XGbar = -XG_new.transpose() * XG_new;
@@ -1749,14 +1543,11 @@ public:
     // }
   }
 
-  double effective_number_of_parameter(T4 &x, T4 &XA, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0)
-  {
-    if (this->lambda_level == 0.)
-    {
+  double effective_number_of_parameter(T4 &x, T4 &XA, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0){
+    if (this->lambda_level == 0.){
       return XA.cols();
     }
-    else
-    {
+    else{
       if (XA.cols() == 0)
         return 0.;
 
@@ -1777,35 +1568,27 @@ public:
 
       Eigen::MatrixXd W(M * n, M * n);
       Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-      for (int m1 = 0; m1 < M; m1++)
-      {
-        for (int m2 = m1; m2 < M; m2++)
-        {
-          if (m1 == m2)
-          {
+      for (int m1 = 0; m1 < M; m1++){
+        for (int m2 = m1; m2 < M; m2++){
+          if (m1 == m2){
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 
             Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array() * weights.array();
 
-            for (int i = 0; i < PiPj.size(); i++)
-            {
-              if (PiPj(i) < 0.001)
-              {
+            for (int i = 0; i < PiPj.size(); i++){
+              if (PiPj(i) < 0.001){
                 PiPj(i) = 0.001;
               }
             }
             W.block(m1 * n, m2 * n, n, n).diagonal() = PiPj;
           }
-          else
-          {
+          else{
             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
 
             Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array() * weights.array();
 
-            for (int i = 0; i < PiPj.size(); i++)
-            {
-              if (PiPj(i) < 0.001)
-              {
+            for (int i = 0; i < PiPj.size(); i++){
+              if (PiPj(i) < 0.001){
                 PiPj(i) = 0.001;
               }
             }
@@ -1817,10 +1600,8 @@ public:
 
       Eigen::MatrixXd XTWX(M * (p + 1), M * (p + 1));
       Eigen::MatrixXd XTW(M * (p + 1), M * n);
-      for (int m1 = 0; m1 < M; m1++)
-      {
-        for (int m2 = m1; m2 < M; m2++)
-        {
+      for (int m1 = 0; m1 < M; m1++){
+        for (int m2 = m1; m2 < M; m2++){
           XTW.block(m1 * (p + 1), m2 * n, (p + 1), n) = X.transpose() * W.block(m1 * n, m2 * n, n, n);
           XTWX.block(m1 * (p + 1), m2 * (p + 1), (p + 1), (p + 1)) = XTW.block(m1 * (p + 1), m2 * n, (p + 1), n) * X + 2 * this->lambda_level * lambdamat;
           XTW.block(m2 * (p + 1), m1 * n, (p + 1), n) = XTW.block(m1 * (p + 1), m2 * n, (p + 1), n);
@@ -1842,8 +1623,7 @@ public:
       Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> adjoint_eigen_solver(XTWX);
 
       double enp = 0.;
-      for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++)
-      {
+      for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++){
         enp += adjoint_eigen_solver.eigenvalues()(i) / (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
       }
 
@@ -1853,18 +1633,15 @@ public:
 };
 
 template <class T4>
-class abessGamma : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>
-{
+class abessGamma : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>{
 public:
   bool approximate_Newton; /* use approximate Newton method or not. */
 
-  abessGamma(int algorithm_type, int model_type, int maX_iter = 30, int primary_model_fit_maX_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int eXchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, maX_iter, primary_model_fit_maX_iter, primary_model_fit_epsilon, warm_start, eXchange_num, always_select, splicing_type, sub_search){};
-  ~abessGamma(){};
+  abessGamma(int algorithm_type, int model_type, int maX_iter = 30, int primary_model_fit_maX_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int eXchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(algorithm_type, model_type, maX_iter, primary_model_fit_maX_iter, primary_model_fit_epsilon, warm_start, eXchange_num, always_select, splicing_type, sub_search) {}
+  ~abessGamma() {}
 
-  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size)
-  {
-    if (x.cols() == 0)
-    {
+  bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size){
+    if (x.cols() == 0){
       coef0 = weights.sum() / weights.dot(y);
       return true;
     }
@@ -1880,14 +1657,12 @@ public:
 
     // modify start point to make sure Xbeta > 0
     double min_xb = (X * coef).minCoeff();
-    if (min_xb < this->threshold)
-    {
+    if (min_xb < this->threshold){
       coef(0) += abs(min_xb) + 0.1;
     }
 
     // Approximate Newton method
-    if (this->approximate_Newton)
-    {
+    if (this->approximate_Newton){
       double step = 1;
       Eigen::VectorXd g(p + 1);
       Eigen::VectorXd coef_new;
@@ -1897,14 +1672,11 @@ public:
       Eigen::VectorXd W = EY.array().square() * weights.array();
       double loglik_new = DBL_MAX, loglik = -this->loss_function(X, y, weights, coef);
 
-      for (int j = 0; j < this->primary_model_fit_max_iter; j++)
-      {
-        for (int i = 0; i < p + 1; i++)
-        {
+      for (int j = 0; j < this->primary_model_fit_max_iter; j++){
+        for (int i = 0; i < p + 1; i++){
           h_diag(i) = X.col(i).cwiseProduct(W).dot(X.col(i)) + 2 * this->lambda_level; // diag of Hessian
           // we can find h_diag(i) >= 0
-          if (h_diag(i) < 1e-7)
-          {
+          if (h_diag(i) < 1e-7){
             h_diag(i) = 1e7;
           }
           else
@@ -1916,8 +1688,7 @@ public:
         coef_new = coef + step * desend_direction; // ApproXimate Newton method
         loglik_new = -this->loss_function(X, y, weights, coef_new);
 
-        while (loglik_new < loglik && step > this->primary_model_fit_epsilon)
-        {
+        while (loglik_new < loglik && step > this->primary_model_fit_epsilon){
           step = step / 2;
           coef_new = coef + step * desend_direction;
           loglik_new = -this->loss_function(X, y, weights, coef_new);
@@ -1925,8 +1696,7 @@ public:
 
         bool condition1 = step < this->primary_model_fit_epsilon;
         bool condition2 = -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
-        if (condition1 || condition2)
-        {
+        if (condition1 || condition2){
           break;
         }
 
@@ -1937,8 +1707,7 @@ public:
       }
     }
     // IWLS method
-    else
-    {
+    else{
       T4 X_new(X);
       Eigen::MatrixXd lambdamat = Eigen::MatrixXd::Identity(p + 1, p + 1);
       lambdamat(0, 0) = 0;
@@ -1948,11 +1717,9 @@ public:
       Eigen::VectorXd Z = X * coef - (y - EY).cwiseQuotient(EY_square);
       double loglik_new = DBL_MAX, loglik = -this->loss_function(X, y, weights, coef);
 
-      for (int j = 0; j < this->primary_model_fit_max_iter; j++)
-      {
+      for (int j = 0; j < this->primary_model_fit_max_iter; j++){
 
-        for (int i = 0; i < p + 1; i++)
-        {
+        for (int i = 0; i < p + 1; i++){
           X_new.col(i) = X.col(i).cwiseProduct(W);
         }
         Eigen::MatrixXd XTX = 2 * this->lambda_level * lambdamat + X_new.transpose() * X;
@@ -1963,14 +1730,12 @@ public:
         bool condition2 = abs(loglik - loglik_new) / (0.1 + abs(loglik_new)) < this->primary_model_fit_epsilon;
         // TODO maybe here should be abs(loglik - loglik_new)
         bool condition3 = abs(loglik_new) < min(1e-3, this->tau);
-        if (condition1 || condition2 || condition3)
-        {
+        if (condition1 || condition2 || condition3){
           break;
         }
 
         double min_xb = (X * coef).minCoeff();
-        if (min_xb < this->threshold)
-        {
+        if (min_xb < this->threshold){
           coef(0) += abs(min_xb) + 0.1;
         }
         EY = expect_y(X, coef);
@@ -1986,22 +1751,18 @@ public:
     return true;
   }
 
-  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size, double lambda)
-  {
+  double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size, double lambda){
     int n = X.rows();
     Eigen::VectorXd Xbeta = X * beta + Eigen::VectorXd::Ones(n) * coef0;
-    for (int i = 0; i < Xbeta.size(); i++)
-    {
-      if (Xbeta(i) < this->threshold)
-      {
+    for (int i = 0; i < Xbeta.size(); i++){
+      if (Xbeta(i) < this->threshold){
         Xbeta(i) = this->threshold;
       }
     }
     return (Xbeta.cwiseProduct(y) - Xbeta.array().log().matrix()).dot(weights) / X.rows() + lambda * beta.cwiseAbs2().sum();
   }
 
-  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num)
-  {
+  void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num){
     int p = X.cols();
     int n = X.rows();
     Eigen::VectorXd EY = expect_y(XA, beta_A, coef0);
@@ -2010,12 +1771,10 @@ public:
     Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
     // we only need N diagonal sub-matriX of hessian of Loss, X^T %*% diag(EY^2) %*% X is OK, but waste.
-    for (int i = 0; i < N; i++)
-    {
+    for (int i = 0; i < N; i++){
       T4 XG = X.middleCols(g_indeX(i), g_size(i));
       T4 XG_new = XG;
-      for (int j = 0; j < g_size(i); j++)
-      {
+      for (int j = 0; j < g_size(i); j++){
         XG_new.col(j) = XG.col(j).cwiseProduct(EY_square_weights);
       }
       // hessianG is the ith group diagonal sub-matriX of hessian matriX of Loss.
@@ -2028,17 +1787,14 @@ public:
     }
     int A_size = A.size();
     int I_size = I.size();
-    for (int i = 0; i < A_size; i++)
-    {
+    for (int i = 0; i < A_size; i++){
       bd(A[i]) = betabar.segment(g_indeX(A[i]), g_size(A[i])).squaredNorm() / g_size(A[i]);
     }
-    for (int i = 0; i < I_size; i++)
-    {
+    for (int i = 0; i < I_size; i++){
       bd(I[i]) = dbar.segment(g_indeX(I[i]), g_size(I[i])).squaredNorm() / g_size(I[i]);
     }
   }
-  double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0)
-  {
+  double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0){
     if (this->lambda_level == 0.)
       return XA.cols();
 
@@ -2047,16 +1803,14 @@ public:
     Eigen::VectorXd EY = expect_y(XA, beta_A, coef0);
     Eigen::VectorXd EY_square_weights = weights.array() * EY.array().square();
     T4 XA_new = XA;
-    for (int j = 0; j < XA.cols(); j++)
-    {
+    for (int j = 0; j < XA.cols(); j++){
       XA_new.col(j) = XA.col(j).cwiseProduct(EY_square_weights);
     }
     Eigen::MatrixXd XGbar = XA_new.transpose() * XA;
 
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> adjoint_eigen_solver(XGbar);
     double enp = 0.;
-    for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++)
-    {
+    for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++){
       enp += adjoint_eigen_solver.eigenvalues()(i) / (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
     }
     return enp;
@@ -2064,39 +1818,30 @@ public:
 
 private:
   double threshold = 1e-20; // use before log or inverse to avoid inf
-  double loss_function(T4 &design, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef)
-  {
+  double loss_function(T4 &design, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef){
     Eigen::VectorXd Xbeta = design * coef;
-    for (int i = 0; i < Xbeta.size(); i++)
-    {
-      if (Xbeta(i) < this->threshold)
-      {
+    for (int i = 0; i < Xbeta.size(); i++){
+      if (Xbeta(i) < this->threshold){
         Xbeta(i) = this->threshold;
       }
     }
     return (Xbeta.cwiseProduct(y) - Xbeta.array().log().matrix()).dot(weights) / design.rows();
   }
-  Eigen::VectorXd expect_y(T4 &design, Eigen::VectorXd &coef)
-  {
+  Eigen::VectorXd expect_y(T4 &design, Eigen::VectorXd &coef){
     Eigen::VectorXd eta = design * coef;
-    //assert(eta.minCoeff() >= 0); // only use expect_y in where this can be guaranteed.
-    for (int i = 0; i < eta.size(); i++)
-    {
-      if (eta(i) < this->threshold)
-      {
+    // assert(eta.minCoeff() >= 0); // only use expect_y in where this can be guaranteed.
+    for (int i = 0; i < eta.size(); i++){
+      if (eta(i) < this->threshold){
         eta(i) = this->threshold;
       }
     }
     return eta.cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
   }
-  Eigen::VectorXd expect_y(T4 &data_matrix, Eigen::VectorXd &beta, double &coef0)
-  {
+  Eigen::VectorXd expect_y(T4 &data_matrix, Eigen::VectorXd &beta, double &coef0){
     Eigen::VectorXd eta = data_matrix * beta + Eigen::VectorXd::Ones(data_matrix.rows()) * coef0;
-    //assert(eta.minCoeff() >= 0); // only use expect_y in where this can be guaranteed.
-    for (int i = 0; i < eta.size(); i++)
-    {
-      if (eta(i) < this->threshold)
-      {
+    // assert(eta.minCoeff() >= 0); // only use expect_y in where this can be guaranteed.
+    for (int i = 0; i < eta.size(); i++){
+      if (eta(i) < this->threshold){
         eta(i) = this->threshold;
       }
     }

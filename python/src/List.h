@@ -7,11 +7,10 @@
 using namespace std;
 using namespace Eigen;
 
-class List
-{
+class List{
 public:
-	List(){};
-	~List(){};
+	List() {}
+	~List() {}
 	// void add(string name, int value);
 	// void get_value_by_name(string name, int &value);
 	void add(string name, double value);

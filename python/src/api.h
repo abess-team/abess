@@ -9,7 +9,7 @@
 *  published by the Free Software Foundation.                                *
 *                                                                            *
 *  You should have received a copy of the GNU General Public License         *
-*  along with OST. If not, see <http://www.gnu.org/licenses/>.               *
+*  along with OST. If not, see <http:// www.gnu.org/licenses/>.               *
 *                                                                            *
 *  Unless required by applicable law or agreed to in writing, software       *
 *  distributed under the License is distributed on an "AS IS" BASIS,         *
@@ -57,10 +57,10 @@ using namespace Rcpp;
  * @brief The main function of abess fremework
  * @param X                             Training data.
  * @param y                             Target values. Will be cast to X's dtype if necessary.
- *                                      For linear regression problem, y should be a $n \time 1$ numpy array with type \code{double}.
- *                                      For classification problem, \code{y} should be a $n \time 1$ numpy array with values \code{0} or \code{1}.
- *                                      For count data, \code{y} should be a $n \time 1$ numpy array of non-negative integer.
- *                                      Note that, for multivariate problem, \code{y} can also be a matrix shaped $n \time M$, where $M > 1$.
+ *                                      For linear regression problem, y should be a $n \time 1$ numpy array with type \code {double}.
+ *                                      For classification problem, \code {y} should be a $n \time 1$ numpy array with values \code {0} or \code {1}.
+ *                                      For count data, \code {y} should be a $n \time 1$ numpy array of non-negative integer.
+ *                                      Note that, for multivariate problem, \code {y} can also be a matrix shaped $n \time M$, where $M > 1$.
  * @param n                             Sample size.
  * @param p                             Variable dimension.
  * @param weight                        Individual weights for each sample.

@@ -3,7 +3,7 @@
 
 #include <Rcpp.h>
 #include <RcppEigen.h>
-//[[Rcpp::depends(RcppEigen)]]
+// [[Rcpp::depends(RcppEigen)]]
 using namespace Rcpp;
 
 #else
