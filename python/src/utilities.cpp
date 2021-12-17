@@ -238,10 +238,10 @@ Eigen::VectorXi diff_union(Eigen::VectorXi A, Eigen::VectorXi &B, Eigen::VectorX
 }
 
 Eigen::VectorXi min_k(Eigen::VectorXd &vec, int k, bool sort_by_value) {
-    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); // [0 1 2 3 ... N-1]
+    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1);  // [0 1 2 3 ... N-1]
     auto rule = [vec](int i, int j) -> bool {
         return vec(i) < vec(j);
-    }; // sort rule
+    };  // sort rule
     std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
     if (sort_by_value) {
         std::sort(ind.data(), ind.data() + k, rule);
@@ -253,10 +253,10 @@ Eigen::VectorXi min_k(Eigen::VectorXd &vec, int k, bool sort_by_value) {
 }
 
 Eigen::VectorXi max_k(Eigen::VectorXd &vec, int k, bool sort_by_value) {
-    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); // [0 1 2 3 ... N-1]
+    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1);  // [0 1 2 3 ... N-1]
     auto rule = [vec](int i, int j) -> bool {
         return vec(i) > vec(j);
-    }; // sort rule
+    };  // sort rule
     std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
     if (sort_by_value) {
         std::sort(ind.data(), ind.data() + k, rule);
@@ -268,11 +268,11 @@ Eigen::VectorXi max_k(Eigen::VectorXd &vec, int k, bool sort_by_value) {
 
 // Eigen::VectorXi max_k_2(Eigen::VectorXd &vec, int k)
 // {
-//     Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); // [0 1 2 3 ... N-1]
+//     Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1);  // [0 1 2 3 ... N-1]
 //     auto rule = [vec](int i, int j) -> bool
 //     {
 //         return vec(i) > vec(j);
-//     }; // sort rule
+//     };  // sort rule
 //     std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
 //     std::sort(ind.data(), ind.data() + k);
 //     return ind.head(k).eval();
@@ -308,7 +308,7 @@ Eigen::VectorXi Ac(Eigen::VectorXi &A, int N) {
     }
 }
 
-// // Ac
+//  // Ac
 // Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U)
 // {
 //     int A_size = A.size();
@@ -377,7 +377,6 @@ void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int 
 
 void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::SparseMatrix<double> &A, int axis) {
     if (axis == 0) {
-
         Eigen::SparseMatrix<double, Eigen::RowMajor> nums_row(nums);
         Eigen::SparseMatrix<double, Eigen::RowMajor> A_row(ind.size(), nums.cols());
         A_row.reserve(nums.nonZeros());
@@ -512,14 +511,14 @@ Eigen::VectorXd matrix_dot(Eigen::MatrixXd &A, Eigen::VectorXd &B) {
 //         Eigen::SelfAdjointEigenSolver<Eigen::SparseMatrix<double>>
 //             adjoint_eigen_solver(A);
 //         // const auto &eigenvalues = adjoint_eigen_solver.eigenvalues();
-//         // CHECK_GT(eigenvalues.minCoeff(), -1e-5) // R.minCoeff() 意思是 min(R(:))最小值
+//         // CHECK_GT(eigenvalues.minCoeff(), -1e-5)  // R.minCoeff() 意思是 min(R(:))最小值
 //         //     << "MatrixSqrt failed with negative eigenvalues: "
 //         //     << eigenvalues.transpose();
 
 //         B = adjoint_eigen_solver.eigenvectors() * (adjoint_eigen_solver.eigenvalues().cwiseSqrt().asDiagonal()) * adjoint_eigen_solver.eigenvectors().transpose();
-//         //    .cwiseMax(Eigen::Matrix<FloatType, N, 1>::Zero()) // R.cwiseMax(P)
+//         //    .cwiseMax(Eigen::Matrix<FloatType, N, 1>::Zero())  // R.cwiseMax(P)
 //         //    .cwiseSqrt()  // R.cwiseSqrt()
-//         //    .asDiagonal() * // x.asDiagonal()
+//         //    .asDiagonal() *  // x.asDiagonal()
 //         //    adjoint_eigen_solver.eigenvectors().transpose();
 //     }
 // }

@@ -183,7 +183,6 @@ void List::add(string name, VectorXi &value) {
 void List::get_value_by_name(string name, double &value) {
     std::size_t i;
     for (i = 0; i < vector_double_name.size(); i++) {
-
         if (vector_double_name[i] == name) {
             value = vector_double[i];
             break;

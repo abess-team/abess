@@ -327,4 +327,4 @@ public:
   }
 };
 
-#endif // SRC_METRICS_H
+#endif  // SRC_METRICS_H

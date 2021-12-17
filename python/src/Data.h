@@ -99,4 +99,4 @@ public:
     //     return this->p;
     // }
 };
-#endif // SRC_DATA_H
+#endif  // SRC_DATA_H

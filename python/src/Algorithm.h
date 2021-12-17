@@ -9,7 +9,7 @@
 *  published by the Free Software Foundation.                                *
 *                                                                            *
 *  You should have received a copy of the GNU General Public License         *
-*  along with OST. If not, see <http:// www.gnu.org/licenses/>.               *
+*  along with OST. If not, see <http://www.gnu.org/licenses/>.               *
 *                                                                            *
 *  Unless required by applicable law or agreed to in writing, software       *
 *  distributed under the License is distributed on an "AS IS" BASIS,         *
@@ -228,7 +228,6 @@ public:
 
     // if (this->algorithm_type == 6)
     // {
-
     // T3 coef0_old = this->coef0;
     bool success = this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
     // if (!success) {
@@ -299,7 +298,6 @@ public:
     int C = C_max;
     int iter = 0;
     while (iter++ < this->max_iter) {
-
       // mapping
       if (this->U_size == N) {
         delete X_U;
@@ -364,11 +362,11 @@ public:
         if (exchange)
           train_loss = l0;
         else
-          break; // A_U is stable
+          break;  // A_U is stable
       }
 
       if (A_U.size() == 0 || A_U.maxCoeff() == T0 - 1)
-        break; // if A_U not change, stop
+        break;  // if A_U not change, stop
 
       // store beta, A, I
       slice_restore(beta_U, U_ind, beta);
@@ -399,7 +397,6 @@ public:
 
         break;
       } else {
-
         // keep A in U_new
         for (int i = 0; i < T0; i++)
           bd(A(i)) = DBL_MAX;
@@ -497,7 +494,6 @@ public:
 
   virtual Eigen::VectorXi inital_screening(T4 &X, T1 &y, T2 &beta, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
                                    Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N) {
-
     if (bd.size() == 0) {
       // variable initialization
       int n = X.rows();
@@ -533,4 +529,4 @@ public:
   virtual double effective_number_of_parameter(T4 &X, T4 &XA, T1 &y, Eigen::VectorXd &weights, T2 &beta, T2 &beta_A, T3 &coef0) { return this->sparsity_level; }
 };
 
-#endif // SRC_ALGORITHM_H
+#endif  // SRC_ALGORITHM_H

@@ -112,4 +112,4 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, 
     return screening_A_ind;
 }
 
-#endif // SRC_SCREENING_H
+#endif  // SRC_SCREENING_H

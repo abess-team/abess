@@ -496,7 +496,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p,
                     int path_type, bool is_warm_start,
                     int ic_type, double ic_coef,
                     Eigen::VectorXi sequence,
-                    Eigen::VectorXd lambda_seq, // rank of L
+                    Eigen::VectorXd lambda_seq,  // rank of L
                     int s_min, int s_max,
                     double lambda_min, double lambda_max, int nlambda,
                     int screening_size,

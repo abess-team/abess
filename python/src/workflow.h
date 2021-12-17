@@ -61,7 +61,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
 #endif
 
   int algorithm_list_size = algorithm_list.size();
-  int beta_size = algorithm_list[0]->get_beta_size(n, p); // number of candidate param
+  int beta_size = algorithm_list[0]->get_beta_size(n, p);  // number of candidate param
 
   // data packing
   Data<T1, T2, T3, T4> data(x, y, normalize_type, weight, g_index, sparse_matrix, beta_size);
@@ -230,7 +230,6 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
 
   // Restore best_fit_result for screening
   if (screening_size >= 0) {
-
     T2 beta_screening_A;
     T2 beta;
     T3 coef0;
@@ -254,4 +253,4 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
   return out_result;
 }
 
-#endif // SRC_WORKFLOW_H
+#endif  // SRC_WORKFLOW_H

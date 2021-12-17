@@ -66,4 +66,4 @@ void pywrap_RPCA(double *x, int x_row, int x_col,
 				double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len,
 				double *train_loss_out, int train_loss_out_len, double *ic_out, int ic_out_len);
 
-#endif // SRC_PYWRAP_H
+#endif  // SRC_PYWRAP_H

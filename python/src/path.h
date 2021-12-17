@@ -301,4 +301,4 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
 
 // List pgs_path(Data &data, Algorithm *algorithm, Metric *metric, int s_min, int s_max, double log_lambda_min, double log_lambda_max, int powell_path, int nlambda);
 
-#endif // SRC_PATH_H
+#endif  // SRC_PATH_H

@@ -15,7 +15,6 @@ public:
   ~abessLogistic() {}
 
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
-
     if (x.cols() == 0) {
       coef0 = -log(1 / y.mean() - 1);
       return true;
@@ -95,7 +94,6 @@ public:
           break;
         }
       } else {
-
         for (int i = 0; i < p + 1; i++) {
           X_new.col(i) = X.col(i).cwiseProduct(W).cwiseProduct(weights);
         }
@@ -155,7 +153,6 @@ public:
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num) {
-
     int p = X.cols();
     int n = X.rows();
 
@@ -370,7 +367,6 @@ public:
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num) {
-
     int p = X.cols();
     int n = X.rows();
 
@@ -480,7 +476,7 @@ public:
       Eigen::VectorXd g(p + 1);
       Eigen::VectorXd coef_new;
       Eigen::VectorXd h_diag(p + 1);
-      Eigen::VectorXd desend_direction; // coef_new = coef + step * desend_direction
+      Eigen::VectorXd desend_direction;  // coef_new = coef + step * desend_direction
       Eigen::VectorXd eta = X * coef;
       for (int i = 0; i <= n - 1; i++) {
         if (eta(i) < -30.0)
@@ -494,9 +490,9 @@ public:
       for (int j = 0; j < this->primary_model_fit_max_iter; j++) {
         for (int i = 0; i < p + 1; i++) {
           if (i == 0) {
-            h_diag(i) = X.col(i).cwiseProduct(expeta).cwiseProduct(weights).dot(X.col(i)); // it shouldn't use lambda in h_diag(0)
+            h_diag(i) = X.col(i).cwiseProduct(expeta).cwiseProduct(weights).dot(X.col(i));  // it shouldn't use lambda in h_diag(0)
           } else {
-            h_diag(i) = X.col(i).cwiseProduct(expeta).cwiseProduct(weights).dot(X.col(i)) + 2 * this->lambda_level; // diag of Hessian
+            h_diag(i) = X.col(i).cwiseProduct(expeta).cwiseProduct(weights).dot(X.col(i)) + 2 * this->lambda_level;  // diag of Hessian
           }
           // we can find h_diag(i) >= 0
           if (h_diag(i) < 1e-7) {
@@ -506,9 +502,9 @@ public:
             h_diag(i) = 1.0 / h_diag(i);
         }
 
-        g = X.transpose() * (y - expeta).cwiseProduct(weights) - 2 * this->lambda_level * coef; // negtive gradient direction
+        g = X.transpose() * (y - expeta).cwiseProduct(weights) - 2 * this->lambda_level * coef;  // negtive gradient direction
         desend_direction = g.cwiseProduct(h_diag);
-        coef_new = coef + step * desend_direction; // ApproXimate Newton method
+        coef_new = coef + step * desend_direction;  // ApproXimate Newton method
         eta = X * coef_new;
         for (int i = 0; i <= n - 1; i++) {
           if (eta(i) < -30.0)
@@ -577,7 +573,6 @@ public:
         bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
         bool condition3 = abs(loglik1) < min(1e-3, this->tau);
         if (condition1 || condition2 || condition3) {
-
           break;
         }
         loglik0 = loglik1;
@@ -613,7 +608,6 @@ public:
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num) {
-
     int p = X.cols();
     int n = X.rows();
 
@@ -718,7 +712,6 @@ public:
   }
 
   bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weight, Eigen::VectorXd &beta, double &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
-
     if (x.cols() == 0) {
       coef0 = 0.;
       return true;
@@ -747,7 +740,6 @@ public:
     double step = 1.0;
     int l;
     for (l = 1; l <= this->primary_model_fit_max_iter; l++) {
-
       eta = x * beta0;
       for (int i = 0; i <= n - 1; i++) {
         if (eta(i) < -30.0)
@@ -905,7 +897,6 @@ public:
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num) {
-
     int p = X.cols();
     int n = X.rows();
 
@@ -1094,7 +1085,7 @@ public:
     //   return;
     // }
     //
-    // // overload_ldlt(X, X, y, beta);
+    //  // overload_ldlt(X, X, y, beta);
     // Eigen::MatrixXd XTX = X.transpose() * X;
     // beta = (XTX + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols())).ldlt().solve(X.transpose() * y);
 
@@ -1149,7 +1140,6 @@ public:
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num) {
-
     int p = X.cols();
     int n = X.rows();
     int M = y.cols();
@@ -1177,7 +1167,6 @@ public:
       }
     } else {
       if (beta.size() != 0) {
-
         Eigen::MatrixXd XTXbeta = this->covariance_update_f_U(U_ind, A_ind) * beta_A;
 
         d = (this->XTy_U - XTXbeta - array_product(this->XTone_U, coef0)) / double(n) - 2 * this->lambda_level * beta;
@@ -1240,7 +1229,6 @@ public:
   ~abessMultinomial() {}
 
   bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
-
     // if (X.cols() == 0)
     // {
     //   coef0 = -log(y.colwise().sum().eval() - 1.0);
@@ -1372,7 +1360,6 @@ public:
       Eigen::MatrixXd beta1;
       Eigen::VectorXd beta0_tmp;
       for (j = 0; j < this->primary_model_fit_max_iter; j++) {
-
         beta0_tmp = XTWX.ldlt().solve(XTW * Z);
         for (int m1 = 0; m1 < M; m1++) {
           beta0.col(m1) = beta0_tmp.segment(m1 * (p + 1), (p + 1)) - beta0_tmp.segment((M - 1) * (p + 1), (p + 1));
@@ -1392,7 +1379,6 @@ public:
         bool condition3 = abs(loglik1) < min(1e-3, this->tau);
         bool condition4 = loglik1 < loglik0;
         if (condition1 || condition2 || condition3 || condition4) {
-
           break;
         }
         loglik0 = loglik1;
@@ -1464,7 +1450,6 @@ public:
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num) {
-
     int p = X.cols();
     int n = X.rows();
     int M = y.cols();
@@ -1642,14 +1627,14 @@ public:
       Eigen::VectorXd g(p + 1);
       Eigen::VectorXd coef_new;
       Eigen::VectorXd h_diag(p + 1);
-      Eigen::VectorXd desend_direction; // coef_new = coef + step * desend_direction
+      Eigen::VectorXd desend_direction;  // coef_new = coef + step * desend_direction
       Eigen::VectorXd EY = expect_y(X, coef);
       Eigen::VectorXd W = EY.array().square() * weights.array();
       double loglik_new = DBL_MAX, loglik = -this->loss_function(X, y, weights, coef);
 
       for (int j = 0; j < this->primary_model_fit_max_iter; j++) {
         for (int i = 0; i < p + 1; i++) {
-          h_diag(i) = X.col(i).cwiseProduct(W).dot(X.col(i)) + 2 * this->lambda_level; // diag of Hessian
+          h_diag(i) = X.col(i).cwiseProduct(W).dot(X.col(i)) + 2 * this->lambda_level;  // diag of Hessian
           // we can find h_diag(i) >= 0
           if (h_diag(i) < 1e-7) {
             h_diag(i) = 1e7;
@@ -1658,9 +1643,9 @@ public:
             h_diag(i) = 1.0 / h_diag(i);
         }
 
-        g = X.transpose() * (EY - y).cwiseProduct(weights) - 2 * this->lambda_level * coef; // negtive gradient direction
+        g = X.transpose() * (EY - y).cwiseProduct(weights) - 2 * this->lambda_level * coef;  // negtive gradient direction
         desend_direction = g.cwiseProduct(h_diag);
-        coef_new = coef + step * desend_direction; // ApproXimate Newton method
+        coef_new = coef + step * desend_direction;  // ApproXimate Newton method
         loglik_new = -this->loss_function(X, y, weights, coef_new);
 
         while (loglik_new < loglik && step > this->primary_model_fit_epsilon) {
@@ -1688,12 +1673,11 @@ public:
       lambdamat(0, 0) = 0;
       Eigen::VectorXd EY = expect_y(X, coef);
       Eigen::VectorXd EY_square = EY.array().square();
-      Eigen::VectorXd W = EY_square.cwiseProduct(weights); // the weight matriX of IW(eight)LS method
+      Eigen::VectorXd W = EY_square.cwiseProduct(weights);  // the weight matriX of IW(eight)LS method
       Eigen::VectorXd Z = X * coef - (y - EY).cwiseQuotient(EY_square);
       double loglik_new = DBL_MAX, loglik = -this->loss_function(X, y, weights, coef);
 
       for (int j = 0; j < this->primary_model_fit_max_iter; j++) {
-
         for (int i = 0; i < p + 1; i++) {
           X_new.col(i) = X.col(i).cwiseProduct(W);
         }
@@ -1742,7 +1726,7 @@ public:
     int n = X.rows();
     Eigen::VectorXd EY = expect_y(XA, beta_A, coef0);
     Eigen::VectorXd EY_square_weights = EY.array().square() * weights.array();
-    Eigen::VectorXd d = X.transpose() * (EY - y).cwiseProduct(weights) - 2 * this->lambda_level * beta; // negative gradient direction
+    Eigen::VectorXd d = X.transpose() * (EY - y).cwiseProduct(weights) - 2 * this->lambda_level * beta;  // negative gradient direction
     Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
     Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
     // we only need N diagonal sub-matriX of hessian of Loss, X^T %*% diag(EY^2) %*% X is OK, but waste.
@@ -1756,7 +1740,7 @@ public:
       Eigen::MatrixXd hessianG = XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
       Eigen::MatrixXd phiG;
       hessianG.sqrt().evalTo(phiG);
-      Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i))); // this is a way to inverse a matriX.
+      Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));  // this is a way to inverse a matriX.
       betabar.segment(g_indeX(i), g_size(i)) = phiG * beta.segment(g_indeX(i), g_size(i));
       dbar.segment(g_indeX(i), g_size(i)) = invphiG * d.segment(g_indeX(i), g_size(i));
     }
@@ -1792,7 +1776,7 @@ public:
   }
 
 private:
-  double threshold = 1e-20; // use before log or inverse to avoid inf
+  double threshold = 1e-20;  // use before log or inverse to avoid inf
   double loss_function(T4 &design, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef) {
     Eigen::VectorXd Xbeta = design * coef;
     for (int i = 0; i < Xbeta.size(); i++) {
@@ -1804,24 +1788,24 @@ private:
   }
   Eigen::VectorXd expect_y(T4 &design, Eigen::VectorXd &coef) {
     Eigen::VectorXd eta = design * coef;
-    // assert(eta.minCoeff() >= 0); // only use expect_y in where this can be guaranteed.
+    // assert(eta.minCoeff() >= 0);  // only use expect_y in where this can be guaranteed.
     for (int i = 0; i < eta.size(); i++) {
       if (eta(i) < this->threshold) {
         eta(i) = this->threshold;
       }
     }
-    return eta.cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
+    return eta.cwiseInverse();  // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
   }
   Eigen::VectorXd expect_y(T4 &data_matrix, Eigen::VectorXd &beta, double &coef0) {
     Eigen::VectorXd eta = data_matrix * beta + Eigen::VectorXd::Ones(data_matrix.rows()) * coef0;
-    // assert(eta.minCoeff() >= 0); // only use expect_y in where this can be guaranteed.
+    // assert(eta.minCoeff() >= 0);  // only use expect_y in where this can be guaranteed.
     for (int i = 0; i < eta.size(); i++) {
       if (eta(i) < this->threshold) {
         eta(i) = this->threshold;
       }
     }
-    return eta.cwiseInverse(); // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
+    return eta.cwiseInverse();  // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
   }
 };
 
-#endif // SRC_ALGORITHMGLM_H
+#endif  // SRC_ALGORITHMGLM_H

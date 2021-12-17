@@ -60,7 +60,6 @@ public:
   }
 
   double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda) {
-
     MatrixXd Y;
     if (this->is_cv) {
       MatrixXd sigma_test = compute_Sigma(X);
@@ -73,7 +72,6 @@ public:
   }
 
   void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num) {
-
     VectorXd D = -this->sigma * beta + beta.transpose() * this->sigma * beta * beta;
 
     for (int i = 0; i < A.size(); i++) {
@@ -289,4 +287,4 @@ public:
 
 };
 
-#endif // SRC_ALGORITHMPCA_H
+#endif  // SRC_ALGORITHMPCA_H

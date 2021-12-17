@@ -21,4 +21,4 @@ void Normalize(Eigen::SparseMatrix<double> &X, Eigen::MatrixXd &y, Eigen::Vector
 void Normalize3(Eigen::SparseMatrix<double> &X, Eigen::VectorXd &y, Eigen::VectorXd &meanx, Eigen::VectorXd &normx);
 void Normalize4(Eigen::SparseMatrix<double> &X, Eigen::VectorXd &y, Eigen::VectorXd &normx);
 
-#endif // SRC_NORMALIZE_H
+#endif  // SRC_NORMALIZE_H
