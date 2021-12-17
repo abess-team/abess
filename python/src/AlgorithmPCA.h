@@ -64,7 +64,7 @@ public:
     if (this->is_cv) {
       MatrixXd sigma_test = compute_Sigma(X);
       Y = SigmaA(sigma_test, A, g_index, g_size);
-    }else {
+    } else {
       Y = SigmaA(this->sigma, A, g_index, g_size);
     }
 

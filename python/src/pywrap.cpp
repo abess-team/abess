@@ -155,7 +155,7 @@ void pywrap_PCA(double *x, int x_row, int x_col, double *weight, int weight_len,
 		beta.resize(p, 1);
 		mylist.get_value_by_name("beta", beta);
 		VectorXd2Pointer(beta, beta_out);
-	}else {
+	} else {
 		beta.resize(p, pca_num);
 		mylist.get_value_by_name("beta", beta);
 		MatrixXd2Pointer(beta, beta_out);

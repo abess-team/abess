@@ -283,8 +283,7 @@ Eigen::VectorXi Ac(Eigen::VectorXi &A, int N) {
     int A_size = A.size();
     if (A_size == 0) {
         return Eigen::VectorXi::LinSpaced(N, 0, N - 1);
-    }
-    else if (A_size == N) {
+    } else if (A_size == N) {
         Eigen::VectorXi I(0);
         return I;
     } else {

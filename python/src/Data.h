@@ -66,8 +66,7 @@ public:
     void normalize() {
         if (this->normalize_type == 1) {
             Normalize(this->x, this->y, this->weight, this->x_mean, this->y_mean, this->x_norm);
-        }
-        else if (this->normalize_type == 2) {
+        } else if (this->normalize_type == 2) {
             Normalize3(this->x, this->weight, this->x_mean, this->x_norm);
         } else {
             Normalize4(this->x, this->weight, this->x_norm);

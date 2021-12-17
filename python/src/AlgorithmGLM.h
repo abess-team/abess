@@ -2,6 +2,7 @@
 #define SRC_ALGORITHMGLM_H
 
 #include "Algorithm.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -497,8 +498,7 @@ public:
           // we can find h_diag(i) >= 0
           if (h_diag(i) < 1e-7) {
             h_diag(i) = 1e7;
-          }
-          else
+          } else
             h_diag(i) = 1.0 / h_diag(i);
         }
 
@@ -879,8 +879,7 @@ public:
     for (int i = 0; i < n; i++) {
       if (eta(i) > 30) {
         eta(i) = 30;
-      }
-      else if (eta(i) < -30) {
+      } else if (eta(i) < -30) {
         eta(i) = -30;
       }
     }
@@ -1638,8 +1637,7 @@ public:
           // we can find h_diag(i) >= 0
           if (h_diag(i) < 1e-7) {
             h_diag(i) = 1e7;
-          }
-          else
+          } else
             h_diag(i) = 1.0 / h_diag(i);
         }
 

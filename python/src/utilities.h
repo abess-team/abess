@@ -191,8 +191,7 @@ void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, Dynamic>
         coef0_matrix(i, j) = y_mean - matrix_dot(beta_matrix(i, j), x_mean);
       }
     }
-  }
-  else if (normalize_type == 2) {
+  } else if (normalize_type == 2) {
     array_quotient(beta, x_norm, 1);
     beta = beta * sqrt(double(n));
     coef0 = coef0 - matrix_dot(beta, x_mean);
@@ -228,8 +227,7 @@ Eigen::VectorXd pi(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &coef) {
     for (int i = 0; i < n; i++) {
       if (eta(i) > 30) {
         eta(i) = 30;
-      }
-      else if (eta(i) < -30) {
+      } else if (eta(i) < -30) {
         eta(i) = -30;
       }
     }
@@ -243,8 +241,7 @@ Eigen::VectorXd pi(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &coef) {
     for (int i = 0; i < n; i++) {
       if (eta(i) > 30) {
         eta(i) = 30;
-      }
-      else if (eta(i) < -30) {
+      } else if (eta(i) < -30) {
         eta(i) = -30;
       }
     }

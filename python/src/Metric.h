@@ -131,7 +131,7 @@ public:
       }
       group_list[this->Kfold - 1] = index_list.segment(int((this->Kfold - 1) * group_size),
                                                       n - int(int(this->Kfold - 1) * group_size));
-    }else {
+    } else {
       // given cv_fold_id
       auto rule = [cv_fold_id](int i, int j) -> bool {
           return cv_fold_id(i) < cv_fold_id(j);
@@ -219,17 +219,13 @@ public:
 
     if (ic_type == 1) {
       return loss + 2.0 * algorithm->get_effective_number();
-    }
-    else if (ic_type == 2) {
+    } else if (ic_type == 2) {
       return loss + this->ic_coef * (double(train_n)) * algorithm->get_effective_number();
-    }
-    else if (ic_type == 3) {
+    } else if (ic_type == 3) {
       return loss + this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
-    }
-    else if (ic_type == 4) {
+    } else if (ic_type == 4) {
       return loss + this->ic_coef * (log(double(train_n)) + 2 * log(double(N))) * algorithm->get_effective_number();
-    }
-    else
+    } else
       return 0;
   }
 

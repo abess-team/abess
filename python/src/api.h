@@ -38,8 +38,8 @@
 *                                                                            *
 *****************************************************************************/
 
-#ifndef SRC_API_H_
-#define SRC_API_H_
+#ifndef SRC_API_H
+#define SRC_API_H
 
 #ifdef R_BUILD
 #include <Rcpp.h>
@@ -161,4 +161,4 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p,
                     int splicing_type,
                     int sub_search);
 
-#endif  // SRC_API_H_
+#endif  // SRC_API_H

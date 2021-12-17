@@ -232,7 +232,7 @@ public:
     bool success = this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
     // if (!success) {
     //   this->coef0 = coef0_old;
-    // }else {
+    // } else {
     slice_restore(beta_A, A_ind, this->beta);
     this->train_loss = this->loss_function(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size, this->lambda_level);
     // }
@@ -261,7 +261,7 @@ public:
       success = this->primary_model_fit(X_A, train_y, train_weight, beta_A, this->coef0, DBL_MAX, A, g_index, g_size);
       // if (!success) {
       //   this->coef0 = coef0_old;
-      // }else {
+      // } else {
       slice_restore(beta_A, A_ind, this->beta);
       this->train_loss = this->loss_function(X_A, train_y, train_weight, beta_A, this->coef0, A, g_index, g_size, this->lambda_level);
       // }
@@ -463,7 +463,7 @@ public:
       bool success = this->primary_model_fit(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, train_loss, A_exchange, g_index, g_size);
       // if (success) {
       L = this->loss_function(X_A_exchage, y, weights, beta_A_exchange, coef0_A_exchange, A_exchange, g_index, g_size, this->lambda_level);
-      // }else {
+      // } else {
       //   L = train_loss + 1;
       // }
 
