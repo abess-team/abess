@@ -38,13 +38,13 @@
 *                                                                            *
 *****************************************************************************/
 
-#ifndef SRC_API_H
-#define SRC_API_H
+#ifndef SRC_API_H_
+#define SRC_API_H_
 
 #ifdef R_BUILD
 #include <Rcpp.h>
 #include <RcppEigen.h>
-//[[Rcpp::depends(RcppEigen)]]
+// [[Rcpp::depends(RcppEigen)]]
 using namespace Rcpp;
 #else
 #include <Eigen/Eigen>
@@ -53,7 +53,7 @@ using namespace Rcpp;
 
 #include <iostream>
 
-/** 
+/**
  * @brief The main function of abess fremework
  * @param X                             Training data.
  * @param y                             Target values. Will be cast to X's dtype if necessary.
@@ -63,17 +63,17 @@ using namespace Rcpp;
  *                                      Note that, for multivariate problem, \code{y} can also be a matrix shaped $n \time M$, where $M > 1$.
  * @param n                             Sample size.
  * @param p                             Variable dimension.
- * @param weight                        Individual weights for each sample. 
- * @param sigma                         Sample covariance matrix. For PCA problem under Kfold=1, it should be given as input, instead of X. 
+ * @param weight                        Individual weights for each sample.
+ * @param sigma                         Sample covariance matrix. For PCA problem under Kfold=1, it should be given as input, instead of X.
  * @param normalize_type                Type of normalization on X before fitting the algorithm. If normalize_type=0, normalization will not be used.
- * @param algorithm_type                Algorithm type. 
+ * @param algorithm_type                Algorithm type.
  * @param model_type                    Model type.
  * @param max_iter                      Maximum number of iterations taken for the splicing algorithm to converge.
  *                                      Due to the limitation of loss reduction, the splicing algorithm must be able to converge.
  *                                      The number of iterations is only to simplify the implementation.
  * @param exchange_num                  Max exchange variable num for the splicing algorithm.
- * @param path_type                     The method to be used to select the optimal support size. 
- *                                      For path_type = 1, we solve the best subset selection problem for each size in support_size. 
+ * @param path_type                     The method to be used to select the optimal support size.
+ *                                      For path_type = 1, we solve the best subset selection problem for each size in support_size.
  *                                      For path_type = 2, we solve the best subset selection problem with support size ranged in (s_min, s_max), where the specific support size to be considered is determined by golden section.
  * @param is_warm_start                 When tuning the optimal parameter combination, whether to use the last solution as a warm start to accelerate the iterative convergence of the splicing algorithm.
  * @param ic_type                       The type of criterion for choosing the support size. Available options are "gic", "ebic", "bic", "aic".
@@ -81,29 +81,29 @@ using namespace Rcpp;
  * @param sequence                      An integer vector representing the alternative support sizes. Only used for path_type = 1.
  * @param s_min                         The lower bound of golden-section-search for sparsity searching. Only used for path_type = 2.
  * @param s_max                         The higher bound of golden-section-search for sparsity searching. Only used for path_type = 2.
- * @param thread                        Max number of multithreads. If thread = 0, the program will use the maximum number supported by the device.       
- * @param screening_size                Screen the variables first and use the chosen variables in abess process. 
+ * @param thread                        Max number of multithreads. If thread = 0, the program will use the maximum number supported by the device.
+ * @param screening_size                Screen the variables first and use the chosen variables in abess process.
  *                                      The number of variables remaining after screening. It should be an integer smaller than p.
  *                                      If screen_size = -1, screening will not be used.
  * @param g_index                       The group index for each variable.
  * @param always_select                 An array contains the indexes of variables we want to consider in the model.
- * @param primary_model_fit_max_iter    The maximal number of iteration in `primary_model_fit()` (in Algorithm.h). 
- * @param primary_model_fit_epsilon     The epsilon (threshold) of iteration in `primary_model_fit()` (in Algorithm.h). 
- * @param splicing_type                 The type of splicing in `fit()` (in Algorithm.h). 
+ * @param primary_model_fit_max_iter    The maximal number of iteration in `primary_model_fit()` (in Algorithm.h).
+ * @param primary_model_fit_epsilon     The epsilon (threshold) of iteration in `primary_model_fit()` (in Algorithm.h).
+ * @param splicing_type                 The type of splicing in `fit()` (in Algorithm.h).
  *                                      "0" for decreasing by half, "1" for decresing by one.
  * @param sub_search                    The number of inactive sets that are split when splicing. It should be a positive integer.
  * @return result list.
  */
 List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize_type,
-               Eigen::VectorXd weight, 
+               Eigen::VectorXd weight,
                int algorithm_type, int model_type, int max_iter, int exchange_num,
                int path_type, bool is_warm_start,
                int ic_type, double ic_coef, int Kfold,
                Eigen::VectorXi sequence,
                Eigen::VectorXd lambda_seq,
-               int s_min, int s_max, 
+               int s_min, int s_max,
                double lambda_min, double lambda_max, int nlambda,
-               int screening_size, 
+               int screening_size,
                Eigen::VectorXi g_index,
                Eigen::VectorXi always_select,
                int primary_model_fit_max_iter, double primary_model_fit_epsilon,
@@ -131,34 +131,34 @@ List abessPCA_API(Eigen::MatrixXd x,
                   Eigen::MatrixXi sequence,
                   int s_min,
                   int s_max,
-                  int screening_size, 
+                  int screening_size,
                   Eigen::VectorXi g_index,
                   Eigen::VectorXi always_select,
                   bool early_stop,
                   int thread,
                   bool sparse_matrix,
                   int splicing_type,
-                  int sub_search, 
+                  int sub_search,
                   Eigen::VectorXi cv_fold_id,
                   int pca_num);
 
-List abessRPCA_API(Eigen::MatrixXd x, int n, int p, 
+List abessRPCA_API(Eigen::MatrixXd x, int n, int p,
                     int max_iter, int exchange_num,
                     int path_type, bool is_warm_start,
                     int ic_type, double ic_coef,
                     Eigen::VectorXi sequence,
-                    Eigen::VectorXd lambda_seq, // rank of L
-                    int s_min, int s_max, 
+                    Eigen::VectorXd lambda_seq,  // rank of L
+                    int s_min, int s_max,
                     double lambda_min, double lambda_max, int nlambda,
-                    int screening_size, 
-                    int primary_model_fit_max_iter, 
+                    int screening_size,
+                    int primary_model_fit_max_iter,
                     double primary_model_fit_epsilon,
                     Eigen::VectorXi g_index,
                     Eigen::VectorXi always_select,
-                    bool early_stop, 
+                    bool early_stop,
                     int thread,
                     bool sparse_matrix,
                     int splicing_type,
                     int sub_search);
 
-#endif //SRC_API_H
+#endif  // SRC_API_H_
