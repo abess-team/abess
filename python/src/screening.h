@@ -22,7 +22,7 @@ using namespace std;
 using namespace Eigen;
 
 template <class T1, class T2, class T3, class T4>
-Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, T2, T3, T4>*> algorithm_list, int screening_size, int &beta_size, double lambda){
+Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, T2, T3, T4>*> algorithm_list, int screening_size, int &beta_size, double lambda) {
     int n = data.n;
     int M = data.M;
     int g_num = data.g_num;
@@ -39,7 +39,7 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, 
     Eigen::VectorXi A_init;
     Eigen::VectorXd bd_init;
 
-    for (int i = 0; i < g_num; i++){
+    for (int i = 0; i < g_num; i++) {
         int p_tmp = g_size(i);
         T4 x_tmp = data.x.middleCols(g_index(i), p_tmp);
         Eigen::VectorXi g_index_tmp = Eigen::VectorXi::LinSpaced(p_tmp, 0, p_tmp-1);
@@ -67,13 +67,13 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, 
     Eigen::VectorXi new_g_size(screening_size);
 
     int new_p = 0;
-    for (int i = 0; i < screening_size; i++){
+    for (int i = 0; i < screening_size; i++) {
         new_p += g_size(screening_A(i));
         new_g_size(i) = g_size(screening_A(i));
     }
 
     new_g_index(0) = 0;
-    for (int i = 0; i < screening_size - 1; i++){
+    for (int i = 0; i < screening_size - 1; i++) {
         new_g_index(i + 1) = new_g_index(i) + g_size(screening_A(i));
     }
 
@@ -94,10 +94,10 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, 
     data.g_size = new_g_size;
     beta_size = algorithm_list[0]->get_beta_size(n, new_p);
 
-    if (always_select.size() != 0){
+    if (always_select.size() != 0) {
         Eigen::VectorXi new_always_select(always_select.size());
         int j = 0;
-        for (int i = 0; i < always_select.size(); i++){
+        for (int i = 0; i < always_select.size(); i++) {
             while (always_select(i) != screening_A(j))
                 j++;
             new_always_select(i) = j;

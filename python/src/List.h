@@ -7,7 +7,7 @@
 using namespace std;
 using namespace Eigen;
 
-class List{
+class List {
 public:
 	List() {}
 	~List() {}

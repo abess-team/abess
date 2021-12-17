@@ -55,7 +55,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
                    int thread,
                    bool sparse_matrix,
                    Eigen::VectorXi &cv_fold_id,
-                   vector<Algorithm<T1, T2, T3, T4> *> algorithm_list){
+                   vector<Algorithm<T1, T2, T3, T4> *> algorithm_list) {
 #ifndef R_BUILD
   std::srand(123);
 #endif
@@ -65,13 +65,13 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
 
   // data packing
   Data<T1, T2, T3, T4> data(x, y, normalize_type, weight, g_index, sparse_matrix, beta_size);
-  if (algorithm_list[0]->model_type == 1 || algorithm_list[0]->model_type == 5){
+  if (algorithm_list[0]->model_type == 1 || algorithm_list[0]->model_type == 5) {
     add_weight(data.x, data.y, data.weight);
   }
 
   // screening
   Eigen::VectorXi screening_A;
-  if (screening_size >= 0){
+  if (screening_size >= 0) {
     screening_A = screening<T1, T2, T3, T4>(data, algorithm_list, screening_size, beta_size, lambda_seq[0]);
   }
 
@@ -80,7 +80,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
   // 2:warm start save
   // 3:group_XTX
   Metric<T1, T2, T3, T4> *metric = new Metric<T1, T2, T3, T4>(ic_type, ic_coef, Kfold);
-  if (Kfold > 1){
+  if (Kfold > 1) {
     metric->set_cv_train_test_mask(data, data.n, cv_fold_id);
     metric->set_cv_init_fit_arg(beta_size, data.M);
     // metric->set_cv_initial_model_param(Kfold, data.p);
@@ -92,13 +92,12 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
 
   // calculate loss for each parameter parameter combination
   vector<Result<T2, T3>> result_list(Kfold);
-  if (path_type == 1){
+  if (path_type == 1) {
 #pragma omp parallel for
-    for (int i = 0; i < Kfold; i++){
+    for (int i = 0; i < Kfold; i++) {
       sequential_path_cv<T1, T2, T3, T4>(data, algorithm_list[i], metric, sequence, lambda_seq, early_stop, i, result_list[i]);
     }
-  }
-  else{
+  } else {
     // if (algorithm_type == 5 || algorithm_type == 3)
     // {
     //     double log_lambda_min = log(max(lambda_min, 1e-5));
@@ -109,7 +108,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
     gs_path<T1, T2, T3, T4>(data, algorithm_list, metric, s_min, s_max, sequence, lambda_seq, result_list);
   }
 
-  for (int k = 0; k < Kfold; k++){
+  for (int k = 0; k < Kfold; k++) {
     algorithm_list[k]->clear_setting();
   }
 
@@ -123,17 +122,16 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
   Eigen::MatrixXd train_loss_matrix(s_size, lambda_size);
   Eigen::MatrixXd effective_number_matrix(s_size, lambda_size);
 
-  if (Kfold == 1){
+  if (Kfold == 1) {
     beta_matrix = result_list[0].beta_matrix;
     coef0_matrix = result_list[0].coef0_matrix;
     ic_matrix = result_list[0].ic_matrix;
     train_loss_matrix = result_list[0].train_loss_matrix;
     effective_number_matrix = result_list[0].effective_number_matrix;
     ic_matrix.minCoeff(&min_loss_index_row, &min_loss_index_col);
-  }
-  else{
+  } else {
     Eigen::MatrixXd test_loss_tmp;
-    for (int i = 0; i < Kfold; i++){
+    for (int i = 0; i < Kfold; i++) {
       test_loss_tmp = result_list[i].test_loss_matrix;
       test_loss_sum = test_loss_sum + test_loss_tmp / Kfold;
     }
@@ -143,7 +141,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
 
     // refit on full data
 #pragma omp parallel for
-    for (int i = 0; i < sequence.size() * lambda_seq.size(); i++){
+    for (int i = 0; i < sequence.size() * lambda_seq.size(); i++) {
       int s_index = i / lambda_seq.size();
       int lambda_index = i % lambda_seq.size();
       int algorithm_index = omp_get_thread_num();
@@ -155,7 +153,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
       Eigen::VectorXd bd_init = Eigen::VectorXd::Zero(data.g_num);
 
       // warmstart from CV's result
-      for (int j = 0; j < Kfold; j++){
+      for (int j = 0; j < Kfold; j++) {
         beta_init = beta_init + result_list[j].beta_matrix(s_index, lambda_index) / Kfold;
         coef0_init = coef0_init + result_list[j].coef0_matrix(s_index, lambda_index) / Kfold;
         bd_init = bd_init + result_list[j].bd_matrix(s_index, lambda_index) / Kfold;
@@ -176,7 +174,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
     }
 
     for (int i = 0; i < algorithm_list_size; i++)
-      if (used_algorithm_index(i) == 1){
+      if (used_algorithm_index(i) == 1) {
         algorithm_list[i]->clear_setting();
       }
   }
@@ -213,7 +211,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
                             Named("ic_all") = ic_matrix,
                             Named("effective_number_all") = effective_number_matrix,
                             Named("test_loss_all") = test_loss_sum);
-  if (path_type == 2){
+  if (path_type == 2) {
     out_result.push_back(sequence, "sequence");
   }
 #else
@@ -231,7 +229,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type,
 #endif
 
   // Restore best_fit_result for screening
-  if (screening_size >= 0){
+  if (screening_size >= 0) {
 
     T2 beta_screening_A;
     T2 beta;

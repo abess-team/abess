@@ -67,7 +67,7 @@ bool quick_sort_pair_max(std::pair<int, double> x, std::pair<int, double> y);
  */
 
 template <class T1, class T2, class T3, class T4>
-class Algorithm{
+class Algorithm {
 public:
   int model_fit_max;  /* Maximum number of iterations taken for the primary model fitting. */
   int model_type;     /* primary model type. */
@@ -114,7 +114,7 @@ public:
 
   virtual ~Algorithm() {}
 
-  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0){
+  Algorithm(int algorithm_type, int model_type, int max_iter = 100, int primary_model_fit_max_iter = 10, double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5, Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0) {
     this->max_iter = max_iter;
     this->model_type = model_type;
     // this->coef0_init = 0.0;
@@ -133,7 +133,7 @@ public:
 
   void update_beta_init(T2 &beta_init) { this->beta_init = beta_init; }
 
-  void update_A_init(Eigen::VectorXi &A_init, int g_num){
+  void update_A_init(Eigen::VectorXi &A_init, int g_num) {
     this->A_init = A_init;
     this->I_init = Ac(A_init, g_num);
   }
@@ -146,7 +146,7 @@ public:
 
   void update_sparsity_level(int sparsity_level) { this->sparsity_level = sparsity_level; }
 
-  void update_lambda_level(double lambda_level){
+  void update_lambda_level(double lambda_level) {
     this->lambda_change = this->lambda_level != lambda_level;
     this->lambda_level = lambda_level;
   }
@@ -155,11 +155,10 @@ public:
 
   void update_exchange_num(int exchange_num) { this->exchange_num = exchange_num; }
 
-  virtual void update_tau(int train_n, int N){
-    if (train_n == 1){
+  virtual void update_tau(int train_n, int N) {
+    if (train_n == 1) {
       this->tau = 0.0;
-    }
-    else{
+    } else {
       this->tau = 0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
     }
   }
@@ -186,7 +185,7 @@ public:
 
   virtual int get_beta_size(int n, int p) { return p; }
 
-  void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N){
+  void fit(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N) {
     int T0 = this->sparsity_level;
     this->x = &train_x;
     this->y = &train_y;
@@ -202,7 +201,7 @@ public:
     this->inital_setting(train_x, train_y, train_weight, g_index, g_size, N);
 
     // no need to splicing?
-    if (N == T0){
+    if (N == T0) {
       this->A_out = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
       // T2 beta_old = this->beta;
       // T3 coef0_old = this->coef0;
@@ -278,7 +277,7 @@ public:
   }
 
   void get_A(T4 &X, T1 &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, T2 &beta, T3 &coef0, Eigen::VectorXd &bd, int T0, Eigen::VectorXd &weights,
-             Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss){
+             Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss) {
     Eigen::VectorXi U(this->U_size);
     Eigen::VectorXi U_ind;
     Eigen::VectorXi g_index_U(this->U_size);
@@ -289,10 +288,9 @@ public:
     Eigen::VectorXi I_U(this->U_size - T0);
     Eigen::VectorXi always_select_U(this->always_select.size());
 
-    if (this->U_size == N){
+    if (this->U_size == N) {
       U = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
-    }
-    else{
+    } else {
       U = max_k(bd, this->U_size, true);
     }
 
@@ -300,10 +298,10 @@ public:
     int n = X.rows();
     int C = C_max;
     int iter = 0;
-    while (iter++ < this->max_iter){
+    while (iter++ < this->max_iter) {
 
       // mapping
-      if (this->U_size == N){
+      if (this->U_size == N) {
         delete X_U;
         X_U = &X;
         U_ind = Eigen::VectorXi::LinSpaced((this->beta).rows(), 0, (this->beta).rows() - 1);
@@ -313,14 +311,13 @@ public:
         A_U = A;
         I_U = I;
         always_select_U = this->always_select;
-      }
-      else{
+      } else {
         U_ind = find_ind(U, g_index, g_size, (this->beta).rows(), N);
         *X_U = X_seg(X, n, U_ind, this->model_type);
         slice(beta, U_ind, beta_U);
 
         int pos = 0;
-        for (int i = 0; i < U.size(); i++){
+        for (int i = 0; i < U.size(); i++) {
           g_size_U(i) = g_size(U(i));
           g_index_U(i) = pos;
           pos += g_size_U(i);
@@ -333,10 +330,10 @@ public:
         memset(temp, 0, N);
         for (int i = 0; i < s; i++)
           temp[this->always_select(i)] = 1;
-        for (int i = 0; i < this->U_size; i++){
+        for (int i = 0; i < this->U_size; i++) {
           if (s <= 0)
             break;
-          if (temp[U(i)] == 1){
+          if (temp[U(i)] == 1) {
             always_select_U(this->always_select.size() - s) = i;
             s--;
           }
@@ -345,7 +342,7 @@ public:
       }
 
       int num = -1;
-      while (true){
+      while (true) {
         num++;
 
         Eigen::VectorXi A_ind = find_ind(A_U, g_index_U, g_size_U, U_ind.size(), this->U_size);
@@ -356,7 +353,7 @@ public:
         Eigen::VectorXd bd_U = Eigen::VectorXd::Zero(this->U_size);
         this->sacrifice(*X_U, X_A, y, beta_U, beta_A, coef0, A_U, I_U, weights, g_index_U, g_size_U, this->U_size, A_ind, bd_U, U, U_ind, num);
 
-        for (int i = 0; i < always_select_U.size(); i++){
+        for (int i = 0; i < always_select_U.size(); i++) {
           bd_U(always_select_U(i)) = DBL_MAX;
         }
 
@@ -396,13 +393,12 @@ public:
       Eigen::VectorXi U_ind0 = Eigen::VectorXi::LinSpaced((this->beta).rows(), 0, (this->beta).rows() - 1);
       this->sacrifice(X, X_A0, y, beta, beta_A0, coef0, A, I, weights, g_index, g_size, N, A_ind0, bd, U0, U_ind0, 0);
 
-      if (this->U_size == N){
+      if (this->U_size == N) {
         for (int i = 0; i < this->always_select.size(); i++)
           bd(this->always_select(i)) = DBL_MAX;
 
         break;
-      }
-      else{
+      } else {
 
         // keep A in U_new
         for (int i = 0; i < T0; i++)
@@ -423,7 +419,7 @@ public:
   }
 
   bool splicing(T4 &X, T1 &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, T2 &beta, T3 &coef0, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
-                Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss){
+                Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int N, double tau, double &train_loss) {
     if (C_max <= 0)
       return false;
 
@@ -436,11 +432,11 @@ public:
 
     Eigen::VectorXd beta_A_group(A_size);
     Eigen::VectorXd d_I_group(I_size);
-    for (int i = 0; i < A_size; i++){
+    for (int i = 0; i < A_size; i++) {
       beta_A_group(i) = bd(A(i));
     }
 
-    for (int i = 0; i < I_size; i++){
+    for (int i = 0; i < I_size; i++) {
       d_I_group(i) = bd(I(i));
     }
 
@@ -460,7 +456,7 @@ public:
     T3 coef0_A_exchange;
 
     double L;
-    for (int k = C_max; k >= 1;){
+    for (int k = C_max; k >= 1;) {
       A_exchange = diff_union(A, s1, s2);
       A_ind_exchage = find_ind(A_exchange, g_index, g_size, (this->beta).rows(), N);
       X_A_exchage = X_seg(X, n, A_ind_exchage, this->model_type);
@@ -474,7 +470,7 @@ public:
       //   L = train_loss + 1;
       // }
 
-      if (train_loss - L > tau){
+      if (train_loss - L > tau) {
         train_loss = L;
         A = A_exchange;
         I = Ac(A_exchange, N);
@@ -483,8 +479,7 @@ public:
         C_max = k;
 
         return true;
-      }
-      else{
+      } else {
         if (this->splicing_type == 1)
           k = k - 1;
         else
@@ -501,9 +496,9 @@ public:
   virtual void clear_setting() {}
 
   virtual Eigen::VectorXi inital_screening(T4 &X, T1 &y, T2 &beta, T3 &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &bd, Eigen::VectorXd &weights,
-                                   Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N){
+                                   Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int &N) {
 
-    if (bd.size() == 0){
+    if (bd.size() == 0) {
       // variable initialization
       int n = X.rows();
       int beta_size = this->get_beta_size(X.rows(), X.cols());
@@ -518,7 +513,7 @@ public:
       Eigen::VectorXi U = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
       Eigen::VectorXi U_ind = Eigen::VectorXi::LinSpaced(beta_size, 0, beta_size - 1);
       this->sacrifice(X, X_A, y, beta, beta_A, coef0, A, I, weights, g_index, g_size, N, A_ind, bd, U, U_ind, 0);
-      for (int i = 0; i < this->always_select.size(); i++){
+      for (int i = 0; i < this->always_select.size(); i++) {
         bd(this->always_select(i)) = DBL_MAX;
       }
     }

@@ -14,7 +14,7 @@
 
 template <class T1, class T2, class T3, class T4>
 // To do: calculate loss && all to one && lm poisson cox
-class Metric{
+class Metric {
 public:
   bool is_cv;
   int Kfold;
@@ -43,12 +43,12 @@ public:
 
   Metric() = default;
 
-  Metric(int ic_type, double ic_coef = 1.0, int Kfold = 5){
+  Metric(int ic_type, double ic_coef = 1.0, int Kfold = 5) {
     this->is_cv = Kfold > 1;
     this->ic_type = ic_type;
     this->Kfold = Kfold;
     this->ic_coef = ic_coef;
-    if (is_cv){
+    if (is_cv) {
       cv_init_fit_arg.resize(Kfold);
       train_X_list.resize(Kfold);
       test_X_list.resize(Kfold);
@@ -59,8 +59,8 @@ public:
     }
   }
 
-  void set_cv_init_fit_arg(int beta_size, int M){
-    for (int i = 0; i < this->Kfold; i++){
+  void set_cv_init_fit_arg(int beta_size, int M) {
+    for (int i = 0; i < this->Kfold; i++) {
       T2 beta_init;
       T3 coef0_init;
       coef_set_zero(beta_size, M, beta_init, coef0_init);
@@ -107,11 +107,11 @@ public:
   //   this->cv_initial_coef0[k] = coef0;
   // }
 
-  void set_cv_train_test_mask(Data<T1, T2, T3, T4> &data, int n, Eigen::VectorXi &cv_fold_id){
+  void set_cv_train_test_mask(Data<T1, T2, T3, T4> &data, int n, Eigen::VectorXi &cv_fold_id) {
     Eigen::VectorXi index_list(n);
     std::vector<int> index_vec((unsigned int)n);
     std::vector<Eigen::VectorXi> group_list((unsigned int)this->Kfold);
-    for (int i = 0; i < n; i++){
+    for (int i = 0; i < n; i++) {
       index_vec[i] = i;
     }
 
@@ -120,25 +120,25 @@ public:
       std::mt19937 g(123);
       std::shuffle(index_vec.begin(), index_vec.end(), g);
 
-      for (int i = 0; i < n; i++){
+      for (int i = 0; i < n; i++) {
         index_list(i) = index_vec[i];
       }
 
       Eigen::VectorXd loss_list(this->Kfold);
       int group_size = int(n / this->Kfold);
-      for (int k = 0; k < (this->Kfold - 1); k++){
+      for (int k = 0; k < (this->Kfold - 1); k++) {
         group_list[k] = index_list.segment(int(k * group_size), group_size);
       }
       group_list[this->Kfold - 1] = index_list.segment(int((this->Kfold - 1) * group_size),
                                                       n - int(int(this->Kfold - 1) * group_size));
     }else {
       // given cv_fold_id
-      auto rule = [cv_fold_id](int i, int j) -> bool{
+      auto rule = [cv_fold_id](int i, int j) -> bool {
           return cv_fold_id(i) < cv_fold_id(j);
       };
       std::sort(index_vec.begin(), index_vec.end(), rule);
 
-      for (int i = 0; i < n; i++){
+      for (int i = 0; i < n; i++) {
         index_list(i) = index_vec[i];
       }
 
@@ -151,21 +151,21 @@ public:
         st = ed; ed++; k++;
       }
     }
-    for (int k = 0; k < this->Kfold; k++){
+    for (int k = 0; k < this->Kfold; k++) {
       std::sort(group_list[k].data(), group_list[k].data() + group_list[k].size());
     }
 
     // cv train-test partition:
     std::vector<Eigen::VectorXi> train_mask_list_tmp((unsigned int)this->Kfold);
     std::vector<Eigen::VectorXi> test_mask_list_tmp((unsigned int)this->Kfold);
-    for (int k = 0; k < this->Kfold; k++){
+    for (int k = 0; k < this->Kfold; k++) {
       int train_x_size = n - group_list[k].size();
       // get train_mask
       Eigen::VectorXi train_mask(train_x_size);
       int i = 0;
-      for (int j = 0; j < this->Kfold; j++){
-        if (j != k){
-          for (int s = 0; s < group_list[j].size(); s++){
+      for (int j = 0; j < this->Kfold; j++) {
+        if (j != k) {
+          for (int s = 0; s < group_list[j].size(); s++) {
             train_mask(i) = group_list[j](s);
             i++;
           }
@@ -209,32 +209,31 @@ public:
   //   this->group_XTX_list = group_XTX_list_tmp;
   // }
 
-  double ic(int train_n, int M, int N, Algorithm<T1, T2, T3, T4> *algorithm){
+  double ic(int train_n, int M, int N, Algorithm<T1, T2, T3, T4> *algorithm) {
     double loss;
-    if (algorithm->model_type == 1 || algorithm->model_type == 5){
+    if (algorithm->model_type == 1 || algorithm->model_type == 5) {
       loss = train_n * log(algorithm->get_train_loss() - algorithm->lambda_level  * algorithm->beta.cwiseAbs2().sum());
-    }
-    else{
+    } else {
       loss = 2 * (algorithm->get_train_loss() - algorithm->lambda_level * algorithm->beta.cwiseAbs2().sum());
     }
 
-    if (ic_type == 1){
+    if (ic_type == 1) {
       return loss + 2.0 * algorithm->get_effective_number();
     }
-    else if (ic_type == 2){
+    else if (ic_type == 2) {
       return loss + this->ic_coef * (double(train_n)) * algorithm->get_effective_number();
     }
-    else if (ic_type == 3){
+    else if (ic_type == 3) {
       return loss + this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
     }
-    else if (ic_type == 4){
+    else if (ic_type == 4) {
       return loss + this->ic_coef * (log(double(train_n)) + 2 * log(double(N))) * algorithm->get_effective_number();
     }
     else
       return 0;
   }
 
-  double loss_function(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm<T1, T2, T3, T4> *algorithm){
+  double loss_function(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm<T1, T2, T3, T4> *algorithm) {
     Eigen::VectorXi A = algorithm->get_A_out();
     T2 beta = algorithm->get_beta();
     T3 coef0 = algorithm->get_coef0();
@@ -254,10 +253,10 @@ public:
   }
 
   // to do
-  Eigen::VectorXd fit_and_evaluate_in_metric(std::vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Data<T1, T2, T3, T4> &data, FIT_ARG<T2, T3> &fit_arg){
+  Eigen::VectorXd fit_and_evaluate_in_metric(std::vector<Algorithm<T1, T2, T3, T4> *> algorithm_list, Data<T1, T2, T3, T4> &data, FIT_ARG<T2, T3> &fit_arg) {
     Eigen::VectorXd loss_list(this->Kfold);
 
-    if (!is_cv){
+    if (!is_cv) {
       algorithm_list[0]->update_sparsity_level(fit_arg.support_size);
       algorithm_list[0]->update_lambda_level(fit_arg.lambda);
       algorithm_list[0]->update_beta_init(fit_arg.beta_init);
@@ -267,15 +266,14 @@ public:
 
       algorithm_list[0]->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p, data.g_num);
 
-      if (algorithm_list[0]->get_warm_start()){
+      if (algorithm_list[0]->get_warm_start()) {
         fit_arg.beta_init = algorithm_list[0]->get_beta();
         fit_arg.coef0_init = algorithm_list[0]->get_coef0();
         fit_arg.bd_init = algorithm_list[0]->get_bd();
       }
 
       loss_list(0) = this->ic(data.n, data.M, data.g_num, algorithm_list[0]);
-    }
-    else{
+    } else {
       Eigen::VectorXi g_index = data.g_index;
       Eigen::VectorXi g_size = data.g_size;
       int p = data.p;
@@ -283,7 +281,7 @@ public:
 
 #pragma omp parallel for
       ///////////////////////parallel/////////////////////////
-      for (int k = 0; k < this->Kfold; k++){
+      for (int k = 0; k < this->Kfold; k++) {
         // get test_x, test_y
         int test_n = this->test_mask_list[k].size();
         int train_n = this->train_mask_list[k].size();
@@ -312,7 +310,7 @@ public:
         // ??????????????????????????????????????????????????????????????
         algorithm_list[k]->fit(this->train_X_list[k], this->train_y_list[k], this->train_weight_list[k], g_index, g_size, train_n, p, N);
 
-        if (algorithm_list[k]->get_warm_start()){
+        if (algorithm_list[k]->get_warm_start()) {
           this->cv_init_fit_arg[k].beta_init = algorithm_list[k]->get_beta();
           this->cv_init_fit_arg[k].coef0_init = algorithm_list[k]->get_coef0();
           this->cv_init_fit_arg[k].bd_init = algorithm_list[k]->get_bd();

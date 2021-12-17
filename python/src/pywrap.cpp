@@ -22,7 +22,7 @@ void pywrap_GLM(double *x, int x_row, int x_col, double *y, int y_row, int y_col
 				int splicing_type,
 				int sub_search,
 				double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len,
-				double *train_loss_out, int train_loss_out_len, double *ic_out, int ic_out_len){
+				double *train_loss_out, int train_loss_out_len, double *ic_out, int ic_out_len) {
 	Eigen::MatrixXd x_Mat;
 	Eigen::MatrixXd y_Mat;
 	Eigen::VectorXd weight_Vec;
@@ -114,7 +114,7 @@ void pywrap_PCA(double *x, int x_row, int x_col, double *weight, int weight_len,
 				int sub_search,
 				int pca_num,
 				double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len,
-				double *train_loss_out, int train_loss_out_len, double *ic_out, int ic_out_len){
+				double *train_loss_out, int train_loss_out_len, double *ic_out, int ic_out_len) {
 	Eigen::MatrixXd x_Mat;
 	Eigen::MatrixXd sigma_Mat;
 	Eigen::MatrixXi sequence_Mat;
@@ -224,7 +224,7 @@ void pywrap_RPCA(double *x, int x_row, int x_col,
 				int splicing_type,
 				int sub_search,
 				double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len,
-				double *train_loss_out, int train_loss_out_len, double *ic_out, int ic_out_len){
+				double *train_loss_out, int train_loss_out_len, double *ic_out, int ic_out_len) {
 	Eigen::MatrixXd x_Mat;
 	Eigen::VectorXi sequence_Vec;
 	Eigen::VectorXi gindex_Vec;
