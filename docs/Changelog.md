@@ -3,18 +3,30 @@
 ## Unreleased
 
 * Cpp
-  * New features: (currently supported only by Python)
+  * New features: 
     * Support user-specified cross validation division.
+    * Support robust principal component analysis (RPCA).
+    * Support flexible support size for sequentially best subset selection for principal component analysis (PCA). 
 
 * Python package
   * Support user-specified cross validation division by additional argument `cv_fold_id`. 
 
 * R package
-  * Support user-specified cross validation division for `abess` function by additional argument `foldid`. 
+  * Support generalized linear model when the link function is gamma distribution. 
+  By setting `family = "gamma"` in `abess` function, it can analyze the dataset with a positive valued and skewed response. 
+  * Support flexible support size for sequential principal component analysis (PCA), accompanied with several helpful generic function like plot. 
+  * Support user-specified cross validation division for `abess` and `abesspca` function by additional argument `foldid`. 
+  * Support RPCA now. A new R function `abessrpca` access it.
+  * Improve the R package document by: adding more details and giving more links related to core functions.  
 
 * Project development
+  * Source code
+    * Refactoring the Cpp source code to improve its readability and scalability. Please see [Code Developing](https://abess.readthedocs.io/en/latest/Contributing/CodeDeveloping.html) section for more details. 
   * Documentation
-    * Add instruction for user-specified cross validation division.
+    * Add a new instruction in Tutorial for explaining robust principal component analysis. 
+    * [TODO] Add instruction for Gamma regression .
+    * Add instruction for user-specified cross validation division into [Advanced Features](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html).
+    * Update development guideline according to cpp source code change.
 
 ## Version 0.3.0    
 
@@ -106,7 +118,7 @@ We’re happy to announce the first major stable version of `abess`. This versio
     * poisson regression
     * cox proportional hazard regression
     * multi-gaussian regression
-    * multi-nomial regression. 
+    * multi-nominal regression. 
   * Cross validation and information criterion to select the optimal support size
   * Performance improvement:
     * Support OPENMP for the parallelism when performing cross validation

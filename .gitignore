@@ -3,6 +3,7 @@ python/src/test.cpp
 python/src/test.exe
 R-package/.Rproj.user/
 *.o
+*.exe
 .Rhistory
 .Rproj.user
 abess.Rcheck/*
@@ -114,3 +115,5 @@ docs/simulation/Python/*.npy
 TODO.md
 
 R-package/R/omit
+R-package/pca_x.csv
+python/src/pywrap_wrap.cpp

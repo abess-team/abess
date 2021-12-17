@@ -1,7 +1,7 @@
 ---
-title: "Poisson Regression"
-author: "Liyuan Hu, Jin Zhu"
-date: "2021/5/30"
+title: "Positive response: Poisson and Gamma regression"
+author: "Liyuan Hu, Jin Zhu, Borui Tang"
+date: "2021/11/3"
 output:
   html_document: 
     toc: yes
@@ -14,28 +14,31 @@ output:
   word_document: 
     toc: yes
     keep_md: yes
+vignette: |
+  %\VignetteIndexEntry{Positive response: Poisson and Gamma regression} 
+  %\VignetteEngine{knitr::rmarkdown} \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 ```
 
-## The Poisson Regression
+## Poisson Regression
 
-Poisson Regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of costumers in line at a  reception desk. The expectation of the response variables is assumed to follow a Poisson distribution.
+Poisson regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of costumers in line at a  reception desk. The response variables are assumed to be generated from Poisson distributions.
 
 The general mathematical equation for Poisson regression is
 $$
-\log(E(y)) = \beta_0 + \beta_1 X_1+\beta_2 X_2+\dots, \beta_p X_p.
+\log(E(y_i|x_i)) = x_i^T \beta.
 $$
 We generate some artificial data using this logic.
-Consider a dataset containing the information of complain calls about 100 companies over a period of 10 years. `count` gives the number of complains, and the dataset also have other variables like `age`, `sex`, `job`, `education`, `region`, `marry`. The `generate.data()` function allow you to generate simulated data. By specifying `support.size = 3`, here we set only 3 of the 5 above mentioned variable have effect on the expectation of the response `count`. 
+Consider a dataset containing the information of complain calls about 100 companies over a period of 10 years. `count` gives the number of complains, and the dataset also have other variables like `age`, `sex`, `job`, `education`, `region`, `marriage`. The `generate.data()` function allow you to generate simulated data. By specifying `support.size = 3`, here we set only 3 of the 5 above mentioned variable have effect on the expectation of the response `count`. 
 
 ```{r}
 library(abess)
 dat <- generate.data(n = 100, p = 6, support.size = 3,family = "poisson")
 colnames(dat$x) <- c("age", "sex", "job", 
-                     "education", "region", "marry")
+                     "education", "region", "marriage")
 dat$beta
 head(dat$x)
 complain <- data.frame('count'=dat$y, dat$x)
@@ -43,12 +46,12 @@ complain <- data.frame('count'=dat$y, dat$x)
 
 ## Best Subset Selection for Poisson Regression
 
-The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. You can call the `abess()` function using formula just like what you do with `lm()`. Or you can specify the design matrix `x` and the response `y`. To carry out a poisson regression, we should set the `family` `poisson`.
+The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. You can call the `abess()` function using formula just like what you do with `lm()`. Or you can specify the design matrix `x` and the response `y`. To carry out a poisson regression, we should set the `family = "poisson"`.
 
 ```{r}
 library(abess)
 abess_fit <- abess(x = dat$x, y = dat$y, family = "poisson")
-abess_fit <- abess(count~., complain, family = "poisson")
+abess_fit <- abess(count ~ ., complain, family = "poisson")
 class(abess_fit)
 ```
 
@@ -98,7 +101,7 @@ In fact, the tuning values of different model sizes are provided in `tune.value`
 ```{r}
 abess_fit$support.size[which.min(abess_fit$tune.value)]
 ```
-To extract any model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.
+To extract any model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals to 3.
 ```{r}
 best.model = extract(abess_fit, support.size = 3)
 str(best.model)
@@ -106,5 +109,56 @@ best.model$beta
 ```
 
 The return is a list containing the basic information of the estimated model. The best model has estimated coefficients every close to the true coefficients and it successfully recovers the correct support.
+
+## Gamma Regression
+
+Gamma regression can be used when you have positive continuous response variables such as payments for insurance claims, or the lifetime of a redundant system. It is well known that the density of Gamma distribution can be represented as a function of a mean parameter ($\mu$) and a shape parameter ($\alpha$), specifically,
+$$
+f(y \mid \mu, \alpha)=\frac{1}{y \Gamma(\alpha)}\left(\frac{\alpha y}{\mu}\right)^{\alpha} e^{-\alpha y / \mu} {I}_{(0, \infty)}(y),
+$$
+where $I(\cdot)$ denotes the indicator function. In the Gamma regression model, response variables are assumed to follow Gamma distributions. Specifically, 
+$$
+y_i \sim Gamma(\mu_i, \alpha),
+$$
+where $1/\mu_i = x_i^T\beta$.
+
+We apply the above procedure for gamma regression simply by changing `family = "poisson"` to `family = "gamma"`.  This time we consider the response variables as (continuous) levels of satisfaction. Also, instead of GIC, we carry out cross validation to tune the support size by setting `tune.type = "cv"` in `abess`.
+```{r}
+# generate data
+dat <- generate.data(n = 100, p = 6, support.size = 3, family = "gamma")
+colnames(dat$x) <- c("age", "sex", "job", 
+                     "education", "region", "marriage")
+dat$beta
+head(dat$x)
+complain <- data.frame('count'=dat$y, dat$x)
+
+abess_fit <- abess(count~., complain, family = "gamma", tune.type ="cv")
+
+# draw the estimated coefficients on all candidate support size
+coef(abess_fit)
+# get the deviance of the estimated model on all candidate support size
+deviance(abess_fit)
+
+# print the fitted model
+print(abess_fit)
+
+# predict results for given support sizes
+head(predict(abess_fit, newx = dat$x, support.size = c(3, 4)))
+
+plot(abess_fit, label = TRUE)
+
+# tuning plot
+plot(abess_fit, type = "tune")
+
+# extract fitted model
+best.model = extract(abess_fit, support.size = 3)
+str(best.model)
+
+# estimated coefficients
+best.model$beta
+```
+
+
+
 
 

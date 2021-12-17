@@ -4,12 +4,13 @@
 \alias{abess.default}
 \alias{abess}
 \alias{abess.formula}
-\title{Adaptive Best-Subset Selection via Splicing}
+\title{Adaptive best subset selection (for generalized linear model)}
 \usage{
 \method{abess}{default}(
   x,
   y,
-  family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
+  family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial",
+    "gamma"),
   tune.path = c("sequence", "gsection"),
   tune.type = c("gic", "ebic", "bic", "aic", "cv"),
   weight = NULL,
@@ -26,6 +27,7 @@
   important.search = NULL,
   warm.start = TRUE,
   nfolds = 5,
+  foldid = NULL,
   cov.update = FALSE,
   newton = c("exact", "approx"),
   newton.thresh = 1e-06,
@@ -60,7 +62,9 @@ if y is presented as a numerical vector, it will be coerced into a factor.}
 \code{"binomial"} (binary response),
 \code{"poisson"} (non-negative count),
 \code{"cox"} (left-censored response),
-\code{"mgaussian"} (multivariate continuous response).
+\code{"mgaussian"} (multivariate continuous response),
+\code{"multinomial"} (multi-class response),
+\code{"gamma"} (positive continuous response).
 Depending on the response. Any unambiguous substring can be given.}
 
 \item{tune.path}{The method to be used to select the optimal support size. For
@@ -117,18 +121,21 @@ Default is \code{max.splicing.iter = 20}.}
 \item{screening.num}{An integer number. Preserve \code{screening.num} number of predictors with the largest
 marginal maximum likelihood estimator before running algorithm.}
 
-\item{important.search}{An integer number indicating the number of 
-important variables to be splicing. 
-When \code{important.search} \eqn{\ll} \code{p} variables, 
+\item{important.search}{An integer number indicating the number of
+important variables to be splicing.
+When \code{important.search} \eqn{\ll} \code{p} variables,
 it would greatly reduce runtimes. Default: \code{important.search = 128}.}
 
 \item{warm.start}{Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.}
 
 \item{nfolds}{The number of folds in cross-validation. Default is \code{nfolds = 5}.}
 
+\item{foldid}{an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in.
+The default \code{foldid = NULL} would generate a random foldid.}
+
 \item{cov.update}{A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE},
 use a covariance-based implementation; otherwise, a naive implementation.
-The naive method is more efficient than covariance-based method when \eqn{p >> n} and \code{important.search} is much large than its default value.
+The naive method is more computational efficient than covariance-based method when \eqn{p >> n} and \code{important.search} is much large than its default value.
 Default: \code{cov.update = FALSE}.}
 
 \item{newton}{A character specify the Newton's method for fitting generalized linear models,
@@ -147,7 +154,7 @@ Default is \code{max.newton.iter = 10} if \code{newton = "exact"}, and \code{max
 If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one.
 Default: \code{early.stop = FALSE}.}
 
-\item{ic.scale}{A non-negative value used for multiplying the penalty term 
+\item{ic.scale}{A non-negative value used for multiplying the penalty term
 in information criterion. Default: \code{ic.scale = 1}.}
 
 \item{num.threads}{An integer decide the number of threads to be
@@ -200,7 +207,7 @@ It would be an empty character vector if \code{screening.num = 0}.}
 \description{
 Adaptive best-subset selection for regression,
 (multi-class) classification, counting-response, censored-response,
-multi-response modeling in polynomial times.
+positive response, multi-response modeling in polynomial times.
 }
 \details{
 Best-subset selection aims to find a small subset of predictors,
@@ -210,13 +217,36 @@ Best-subset selection problem under the support size \eqn{s} is
 where \eqn{L(\beta)} is arbitrary convex functions. In
 the GLM case, \eqn{\log L(\beta)} is the log-likelihood function; in the Cox
 model, \eqn{\log L(\beta)} is the log partial-likelihood function.
-
-The best subset selection problem is solved by the "abess" algorithm in this package, see Zhu (2020) for details.
+The best subset selection problem is solved by the splicing algorithm in this package, see Zhu (2020) for details.
 Under mild conditions, the algorithm exactly solve this problem in polynomial time.
-This algorithm exploits the idea of sequencing and splicing to reach a stable solution in finite steps
-when \eqn{s} is fixed.
+This algorithm exploits the idea of sequencing and splicing to reach a stable solution in finite steps when \eqn{s} is fixed.
+The parameters \code{c.max}, \code{splicing.type} and \code{max.splicing.iter} allow user control the splicing technique flexibly.
+On the basis of our numerical experiment results, we assign properly parameters to the these parameters as the default
+such that the precision and runtime are well balanced, we suggest users keep the default values unchanged.
+Please see \href{https://abess-team.github.io/abess/articles/v10-algorithm.html}{this online page} for more details about the splicing algorithm.
+
 To find the optimal support size \eqn{s},
 we provide various criterion like GIC, AIC, BIC and cross-validation error to determine it.
+More specifically, the sequence of models implied by \code{support.size} are fit by the splicing algorithm.
+And the solved model with least information criterion or cross-validation error is the optimal model.
+The sequential searching for the optimal model is somehow time-wasting.
+A faster strategy is golden section (GS), which only need to specify \code{gs.range}.
+More details about GS is referred to Zhang et al (2021).
+
+It is worthy to note that the parameters \code{newton}, \code{max.newton.iter} and \code{newton.thresh} allows
+user control the parameter estimation in non-guassian models.
+The parameter estimation procedure use Newton method or approximated Newton method (only consider the diagonal elements in the Hessian matrix).
+Again, we suggest to use the default values unchanged because the same reason for the parameter \code{c.max}.
+
+\code{abess} support some well-known advanced statistical methods to analyze data, including
+\itemize{
+\item{sure independent screening: } {helpful for ultra-high dimensional predictors (i.e., \eqn{p \gg n}). Use the parameter \code{screening.num} to retain the marginally most important predictors. See Fan et al (2008) for more details. }
+\item{best subset of group selection: } {helpful when predictors have group structure. Use the parameter \code{group.index} to specify the group structure of predictors. See Zhang et al (2021) for more details. }
+\item{\eqn{l_2} regularization best subset selection: } {helpful when signal-to-ratio is relatively small. Use the parameter \code{lambda} to control the magnitude of the regularization term.}
+\item{nuisance selection: } {helpful when the prior knowledge of important predictors is available. Use the parameter \code{always.include} to retain the important predictors.}
+}
+The arbitrary combination of the four methods are definitely support.
+Please see \href{https://abess-team.github.io/abess/articles/v07-advancedFeatures.html}{online vignettes} for more details about the advanced features support by \code{abess}.
 }
 \examples{
 \donttest{
@@ -238,6 +268,7 @@ predict(abess_fit,
 str(extract(abess_fit, 3))
 deviance(abess_fit)
 plot(abess_fit)
+plot(abess_fit, type = "tune")
 
 ################ logistic model ################
 dataset <- generate.data(n, p, support.size, family = "binomial")
@@ -313,13 +344,15 @@ abess_fit
 }
 }
 \references{
-A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
-
-Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x
-
-Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun & Heping Zhang (2020). Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079
+A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; \doi{10.1073/pnas.2014241117}
 
 Certifiably Polynomial Algorithm for Best Group Subset Selection. Zhang, Yanhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). arXiv preprint arXiv:2104.12576.
+
+abess: A Fast Best Subset Selection Library in Python and R. Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). arXiv preprint arXiv:2110.09697.
+
+Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. \doi{10.1111/j.1467-9868.2008.00674.x}
+
+Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun & Heping Zhang (2020). Journal of the American Statistical Association, \doi{10.1080/01621459.2020.1737079}
 }
 \seealso{
 \code{\link{print.abess}},

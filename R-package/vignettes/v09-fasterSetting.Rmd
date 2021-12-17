@@ -124,7 +124,7 @@ rbind(t1, t2)[, 1:3]
 In machine learning, early stopping is a helpful strategy not only avoid overfitting but also reducing training time. 
 For the early-stopping implementation in abess, validation is used to detect when overfitting starts during performing adaptive best subset selection; 
 training is then stopped even though the best subset under certain larger support size haven't found. 
-We give an example to demonstrate the helpness of early stopping in decreasing runtimes. (Do not finish, the early stopping do not available in cpp)    
+We give an example to demonstrate the helpfulness of early stopping in decreasing runtimes. (Do not finish, the early stopping do not available in cpp)    
 
 ```{r}
 t1 <- system.time(abess_fit <- abess(y ~ ., data = dat, early.stop = TRUE))

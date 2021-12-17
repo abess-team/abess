@@ -42,7 +42,7 @@ coef.abesspca <- function(object,
       supp_size_index <- match_support_size(object, object[["support.size"]])
     }
   } else {
-    if (!is.null(kpc)) {
+    if (is.null(kpc)) {
       supp_size_index <- 1:length(object[["support.size"]])
     } else {
       supp_size_index <- kpc
@@ -51,12 +51,18 @@ coef.abesspca <- function(object,
 
   stopifnot(is.logical(sparse))
   coef <- object[["coef"]]
-  if (!is.null(supp_size_index)) {
-    coef <- coef[, supp_size_index, drop = FALSE]
-  }
-
-  if (!sparse) {
-    coef <- as.matrix(coef)
+  if (object[["sparse.type"]] == "fpc") {
+    if (!is.null(supp_size_index)) {
+      coef <- coef[, supp_size_index, drop = FALSE]
+    }
+    if (!sparse) {
+      coef <- as.matrix(coef)
+    }
+  } else {
+    coef <- coef[supp_size_index]
+    if (!sparse) {
+      coef <- lapply(coef, as.matrix)
+    }
   }
 
   coef

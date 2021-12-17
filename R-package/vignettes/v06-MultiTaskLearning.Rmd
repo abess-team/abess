@@ -57,7 +57,7 @@ head(dataset$y)
 dataset[["beta"]]
 ```
 
-To carry out sparse mutli-task learning, you can call the `abess()` function with `family` specified to `mguassian`. Here is an example.
+To carry out sparse multi-task learning, you can call the `abess()` function with `family` specified to `mguassian`. Here is an example.
 
 ```{r}
 abess_fit <- abess(dataset[["x"]], dataset[["y"]],

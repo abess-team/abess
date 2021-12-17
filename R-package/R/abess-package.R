@@ -12,6 +12,7 @@
 #' @importFrom stats runif
 #' @importFrom stats cov
 #' @importFrom stats cor
+#' @importFrom stats var
 #' @importFrom stats rnorm
 #' @importFrom stats rbinom
 #' @importFrom stats rpois
@@ -21,10 +22,16 @@
 #' @importFrom stats model.matrix
 #' @importFrom stats model.frame
 #' @importFrom stats model.response
+#' @importFrom stats heatmap
 #' @importFrom methods rbind2
+#' @importFrom methods as
 #' @import Matrix
 #' @importFrom Matrix Matrix
 #' @importFrom Matrix rowSums
+#' @importFrom Matrix colSums
+#' @importFrom Matrix sparseMatrix
+#' @importFrom Matrix as.matrix
+#' @importFrom grDevices cm.colors
 ## usethis namespace: end
 NULL
 

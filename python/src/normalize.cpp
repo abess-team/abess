@@ -9,10 +9,7 @@
 using namespace Rcpp;
 #else
 #include <Eigen/Eigen>
-#include "List.h"
 #endif
-#include <algorithm>
-#include <vector>
 #include <iostream>
 
 using namespace std;

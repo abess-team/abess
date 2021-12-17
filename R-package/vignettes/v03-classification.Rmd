@@ -33,7 +33,7 @@ head(dat)
 Logistic regression is one of powerful tool to tackle this problem. 
 In statistics, the logistic regression is used to model the probability of a certain class or event existing such as alive/dead, pass/fail, win/lose, or healthy/sick. 
 <!-- Therefore, logistic regression is capable of predicting binary results. -->
-Logistic regression function is an $s$-shaped curve modeling the posterior probability $p$ via a linear combination of the features. The curve is dedined as $p = \frac{1}{1+\exp(-\eta)}$ where $\eta = \beta_0+x\beta$ and $x$ are predictors, and $\beta_0, \beta$ are coefficients to be learned from data. 
+Logistic regression function is an $s$-shaped curve modeling the posterior probability $p$ via a linear combination of the features. The curve is defined as $p = \frac{1}{1+\exp(-\eta)}$ where $\eta = \beta_0+x\beta$ and $x$ are predictors, and $\beta_0, \beta$ are coefficients to be learned from data. 
 The logistic regression model has this form:
 $$
 \log(p/(1-p)) = \beta_0 + x\beta.
@@ -41,7 +41,7 @@ $$
 The quantity $\log(p/(1-p))$ is called the logarithm of the odd, also called log-odd or logit. 
 The best subset selection for logistic regression aim to balance model accuracy and model complexity, 
 where the former is achieves by maximizing the log-likelihood function and 
-the latter is characterized by a constriant: $\| \beta \|_0 \leq s$ and $s$ can be determined in a data driven way.
+the latter is characterized by a constraint: $\| \beta \|_0 \leq s$ and $s$ can be determined in a data driven way.
 
 ## Best Subset Selection for Logistic Regression
 

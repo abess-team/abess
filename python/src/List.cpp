@@ -31,6 +31,34 @@ using namespace Eigen;
 //     vector_int_name.push_back(name);
 // }
 
+void List::combine_beta(VectorXd &value)
+{
+    std::size_t i;
+    for (i = 0; i < vector_MatrixXd_name.size(); i++)
+    {
+        if (vector_MatrixXd_name[i] == "beta")
+        {
+            MatrixXd beta_new(vector_MatrixXd[i].rows(), vector_MatrixXd[i].cols() + 1);
+            beta_new << vector_MatrixXd[i], value;
+            vector_MatrixXd[i] = beta_new;
+            return;
+        }
+    }
+
+    for (i = 0; i < vector_VectorXd_name.size(); i++)
+    {
+        if (vector_VectorXd_name[i] == "beta")
+        {
+            MatrixXd beta_new(value.size(), 2);
+            beta_new << vector_VectorXd[i], value;
+            vector_VectorXd_name[i] = "beta0";
+            this->add("beta", beta_new);
+            return;
+        }
+    }
+    
+}
+
 void List::add(string name, double value)
 {
     //	cout<<"value in double add"<<endl;

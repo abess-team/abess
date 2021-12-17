@@ -18,8 +18,9 @@ if sys.platform.startswith('win32'):
     os.system('bash ' + CURRENT_DIR + '/pre.sh ' + python_path + ' ' + version)
 
     cabess_module = Extension(name='abess._cabess',
-                              sources=[CURRENT_DIR + '/src/abess.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
-                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/abess.i'],
+                              sources=[CURRENT_DIR + '/src/api.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
+                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/pywrap.cpp',
+                                       CURRENT_DIR + '/src/pywrap.i'],
                               language='c++',
                               extra_compile_args=["-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-mavx", "-mfma", "-march=native",
                                                   "-std=c++11", "-mtune=generic", "-D%s" % os_type, path1, path2],
@@ -34,11 +35,13 @@ elif sys.platform.startswith('darwin'):
     # print(eigen_path)
     # eigen_path = "/usr/local/include/eigen3/Eigen"
     cabess_module = Extension(name='abess._cabess',
-                              sources=[CURRENT_DIR + '/src/abess.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
-                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/abess.i'],
+                              sources=[CURRENT_DIR + '/src/api.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
+                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/pywrap.cpp',
+                                       CURRENT_DIR + '/src/pywrap.i'],
                               language='c++',
                               extra_compile_args=[
-                                  "-DNDEBUG", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native"],
+                                  "-DNDEBUG", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native", 
+                                  "-fno-asynchronous-unwind-tables"],
                               include_dirs=[numpy.get_include(), eigen_path],
                               swig_opts=["-c++"]
                               )
@@ -47,8 +50,9 @@ else:
     # print(eigen_path)
     # eigen_path = "/usr/local/include/eigen3/Eigen"
     cabess_module = Extension(name='abess._cabess',
-                              sources=[CURRENT_DIR + '/src/abess.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
-                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/abess.i'],
+                              sources=[CURRENT_DIR + '/src/api.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
+                                       CURRENT_DIR + '/src/normalize.cpp', CURRENT_DIR + '/src/pywrap.cpp',
+                                       CURRENT_DIR + '/src/pywrap.i'],
                               language='c++',
                               extra_compile_args=[
                                   "-DNDEBUG", "-fopenmp", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native"],
@@ -75,7 +79,7 @@ setup(name='abess',
       install_requires=[
           "numpy",
           "scipy",
-          "sklearn"
+          "scikit-learn>=0.24"
       ],
       license="GPL-3",
       url="https://abess.readthedocs.io",

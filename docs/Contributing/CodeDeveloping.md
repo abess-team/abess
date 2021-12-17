@@ -1,50 +1,147 @@
 # Code Developing
 
+In this tutorial, we will show you how to develop a new algorithm with abess procedure.
+
 Before developing the code, please make sure:
 - following the [Installation](../Installation.md), the code in github works on your device;
 - read the [Architecture](Before.md) of abess library.
 
 ## Core C++
 
-The main files related to the core are in `abess/python/src`. Among them, some important files:
+The main files related to the core are in `abess/python/src`, which are written in C++. 
+Among them, some important files:
 
-- `Algorithm.h` records the implement of each concrete algorithm; 
-- `abess.cpp` contain the calling procedure.
+- `api.cpp/api.h` contain the API's, which are the entrance for both R & Python.
+- `AlgorithmXXX.h` records the implement of each concrete algorithm; 
 
-If you want to add a new algorithm, both of them should be noticed.
+If you want to add a new algorithm, all of them should be noticed.
 
+Besides, we have implemented some GLM algorithms on `abess/python/src/AlgorithmGLM.h`[[code temp]](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h) and PCA algorithm on  `abess/python/src/AlgorithmPCA.h`[[code temp]](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmPCA.h). You can check them to help your own developing.
 
+### Write an API
 
-In `Algorithm.h`, we give a base class *Algorithm*, and the new method should inheritate it. The concrete algorithms are programmed in the subclass of Algorithm by rewriting the virtual function interfaces of class *Algorithm*. Besides, the implementation is modularized such that you can easily extend the package. 
+> API's are all defined in the `abess/python/src/api.cpp`[[code temp]](https://github.com/abess-team/abess/blob/master/python/src/api.cpp) and the related header file  `abess/python/src/api.h`[[code temp]](https://github.com/abess-team/abess/blob/master/python/src/api.h).
+> We have written some API functions (e.g. `abessGLM_API()`), so you can either add a new function for the new algorithm or simply add into existing one.
 
-We have implemented some GLM algorithms that you can check them on [`abess/python/src/AlgorithmGLM.h`](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h). 
+First of all, the algorithm name and its number should be determined.
 
->  The format of a new algorithm's name is "**abess+your_algorithm**", which means that using abess to solve the problem.
+The format of a new algorithm's name is "**abess+your_algorithm**", which means that using abess to solve the problem, and its number should be an integer unused by others. 
 
-Take PCA as an example, the name should be `abessPCA`. Now we can create a new file, named `AlgorithmPCA.h`, and define a concrete algorithm like: [[code link]](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmPCA.h)
+> In the following part, we suppose to create an algorthm named `abess_new_algorithm` with number 123.
 
-```Cpp
+Next, four important data type should be determined:
+
+- T1 : type of Y
+- T2 : type of coefficients
+- T3 : type of loss
+- T4 : type of X
+
+The algorithm variable are based on them: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=vector<Algorithm<)
+
+```cpp
+vector<Algorithm<{T1}, {T2}, {T3}, {T4}>*> algorithm_list(algorithm_list_size);
+```
+
+> Take `abessLm` (the linear regression on abess) as an example,
+> 
+> - Y: dense vector
+> - Coefficients: dense vector
+> - Loss: numeric
+> - X: dense/sparse matrix
+>
+> so that we define: 
+>
+> ```cpp
+> vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(algorithm_list_size);
+> vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *> algorithm_list_uni_sparse(algorithm_list_size);
+> ```
+
+After that, request memory to initial the algorithm: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=%7B-,if%20(model_type%20%3D%3D%201),%7B,-abessLm%3CEigen%3A%3AMatrixXd)
+
+```cpp
+for (int i = 0; i < algorithm_list_size; i++)
+{
+    if (model_type == 123)    // number of algorithm
+    {
+        algorithm_list[i] = new abessLm<{T4}>(...);
+    }
+}
+```
+
+Finally, call `abessWorkflow()`, which would compute the result: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=Eigen%3A%3AVectorXd%20y_vec%20%3D%20y.col(0).eval()%3B-,out_result%20%3D%20abessWorkflow,-%3CEigen%3A%3AVectorXd%2C%20Eigen%3A%3AVectorXd%2C%20double%2C%20Eigen%3A%3AMatrixXd)
+
+```cpp
+// "List" is a preset structure to store results
+List out_result = abessWorkflow<{T1}, {T2}, {T3}, {T4}>(..., algorithm_list);
+```
+
+### Implement your Algorithm
+
+> The implemented algorithms are stored in `abess/python/src/AlgorithmXXX.h`. 
+> We have implemented some algorithms (e.g. `AlgorithmGLM.h`), so you can either create a new file containing new algorithm or simply add into existing one.
+
+The new algorithm should inheritate a base class, called *Algorithm*, which defined in `Algorithm.h`. And then rewrite some virtual function interfaces to fit specify problem. The implementation is modularized such that you can easily extend the package. 
+
+A simplest concrete algorithm looks like:
+
+```cpp
+#include "Algorithm.h"
+
 template <class T4>
-class abessPCA : public Algorithm<...>
+class abess_new_algorithm : public Algorithm<{T1}, {T2}, {T3}, T4>  // T1, T2, T3 are the same as above, which are fixed.
 {
 public:
-    abessPCA(...) : Algorithm<...>::Algorithm(...){};
-    ~abessPCA(){};
- 
-    void primary_model_fit(...){...};
-        // solve the subproblem under given active set
-        // record the sparse answer in variable "beta"
+    // constructor and destructor
+    abess_new_algorithm(...) : Algorithm<...>::Algorithm(...){};
+    ~abess_new_algorithm(){};
 
-    double neg_loglik_loss(...){...};
+    double loss_function(...){
         // define and compute loss under given active set
         // return the current loss
+    };
 
-    void sacrifice(...){...};
+    void d(...){
+        // define the first order derivative of loss
+    };
+
+    void h(...){
+        // define the second order derivative of loss
+    };
+
+}
+```
+
+The abess process can automatically use the loss and its derivatives to complete algorithm. However, it should be noted that if you want to achieve higher efficiency, a FULL concrete algorithm can be: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessLogistic,-%3A%20public%20Algorithm%3CEigen)
+
+```cpp
+#include "Algorithm.h"
+
+template <class T4>
+class abess_new_algorithm : public Algorithm<{T1}, {T2}, {T3}, T4>  // T1, T2, T3 are the same as above, which are fixed.
+{
+public:
+    // constructor and destructor
+    abess_new_algorithm(...) : Algorithm<...>::Algorithm(...){};
+    ~abess_new_algorithm(){};
+
+    void primary_model_fit(...){
+        // solve the subproblem under given active set
+        // record the sparse answer in variable "beta"
+    };
+
+    double loss_function(...){
+        // define and compute loss under given active set
+        // return the current loss      
+    };
+
+    void sacrifice(...){
         // define and compute sacrifice for all variables (both forward and backward)
-        // record sacrifice in variable "bd"
+        // record sacrifice in variable "bd"        
+    };
 
-    double effective_number_of_parameter(...){...};
-		// return effective number of parameter
+    double effective_number_of_parameter(...){
+        // return effective number of parameter        
+    };
 }
 ```
 
@@ -53,68 +150,9 @@ Note that `sacrifice` function here would compute "forward/backward sacrifices" 
 - For active variable, the lower (backward) sacrifice is, the more likely it will be dropped;
 - For inactive variable, the higher (forward) sacrifice is, the more likely it will come into use.
 
-Since it can be quite different to compute sacrifices for different problem, you may need to derivate by yourself.
+> If you create a new file to store the algorithm, remember to include it inside `abess/python/src/api.cpp`. [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=%23include%20%22AlgorithmGLM.h%22)
 
-
-
-After that, turn to `abess.cpp` and you will find some `new` command like: [[code link]](https://github.com/abess-team/abess/blob/master/python/src/abess.cpp#:~:text=algorithm_uni_dense%20%3D%20new%20abessLm)
-
-```Cpp
-if (model_type == 1)
-{
-    algorithm_uni_dense = new abessLm<...>(...);
-}
-else if ...
-```
-
-They are used to request memory and call the algorithms in `Algorithm.h`. Here you need to add your own algorithm and give it a unused `model_type` number, e.g. 7.
-
-```Cpp
-...
-else if (model_type == 7) // indicates PCA
-{
-    algorithm_uni_dense = new abessPCA<...>(...);
-}
-```
-
-Note that there is a small difference between single response variable and multiple response variables question:
-
-```Cpp
-...
-else if (model_type == 123) // indicates a multiple response algorithm
-{
-    // name it "mul"
-    algorithm_mul_dense = new abessXXX<...>(...);
-}
-```
-
-What is more, the variable named `algorithm_list_uni_dense[i]` or `algorithm_list_mul_dense[i]` is similar to what we said above. They are for parallel computing. [[code link]](https://github.com/abess-team/abess/blob/master/python/src/abess.cpp#:~:text=algorithm_list_uni_dense%5Bi%5D%20%3D%20new%20abessLm)
-
-Hence, you should also add:
-
-```Cpp
-...
-else if (model_type == 7)
-{
-    // for single response variable question, name it "uni"
-    algorithm_list_uni_dense[i] = new abessPCA<...>(...);
-}
-```
-
-or,
-
-```Cpp
-...
-else if (model_type == 123)
-{
-    // for multiple response variables question, name it "mul"
-    algorithm_list_mul_dense[i] = new abessXXX<...>(...);
-}
-```
-
-
-
-After that, remember to include your new `.h` file in `abess.cpp`, like [this](https://github.com/abess-team/abess/blob/master/python/src/abess.cpp#:~:text=%23include%20%22AlgorithmPCA.h%22). Now your new method has been connected to the whole frame. In the next section, we focus on how to build R or Python package based on the core code.
+Now your new method has been connected to the whole frame. In the next section, we focus on how to build R or Python package based on the core code.
 
 ## R & Python Package
 
@@ -131,7 +169,7 @@ unified API `abessCpp`. We strongly suggest the R function is named as `abessXXX
 
 ### Python Package
 
-To make your code available for Python, `cd` into directory `abess/python` and run `$ python setup.py install`. (Same steps in [Installation](https://abess.readthedocs.io/en/latest/Installation.html#latest-release).)
+First of all, you should ensure the C++ code available for Python, `cd` into directory `abess/python` and run `$ python setup.py install`. (Same steps in [Installation](https://abess.readthedocs.io/en/latest/Installation.html#latest-release))
 
 It may take a few minutes to install:
 
@@ -140,46 +178,47 @@ It may take a few minutes to install:
 
 Now a file named `cabess.py` will be appeared in the directory `abess/python/src`, which help to link Python and C++. You need to move it into directory `abess/python/abess` and replace the duplicated file there.
 
-Then create a new python file in `abess/python/abess` or open the existed file, such as `abess/python/abess/linear.py`, to add a python api for your new method. 
+Then create a new python file in `abess/python/abess` or open the existed file, such as `abess/python/abess/linear.py`, to add a python API for your new method. 
 
-Here we create `abess/python/abess/pca.py`. A simple new method can be added like: [[code link]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py).
+A simple new method can be added like: [[code temp]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=class%20abessPCA(bess_base)%3A).
 
 ```Python
-# all methods are based on the temple class `bess_base`
+# all algorithms should inheritate the base class `bess_base`
 from .bess_base import bess_base
 
-class abessPCA(bess_base): 
+class abess_new_algorithm(bess_base): 
     """
     Here is some introduction.
     """
     def __init__(self, ...):
-        super(abessXXX, self).__init__(
+        super(abess_new_algorithm, self).__init__(
             algorithm_type="abess", 
-            model_type="PCA", 
-            # ...
+            model_type="new_algorithm", 
+            # other init
         )
+    def fit(self, ...):
+        # override `bess_base.fit()`, if necessary
+
     def custom_function(self, ...):
-        # ...
+        # some custom functions, e.g. predict
 ```
 
-As an example, we define two new functions (`ratio` and `transform`) and override the `fit` function for `abessPCA`. [[code link]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py).
+The base class implements a `fit` function, which plays a role on checking input and calling C++ API to compute results. You may want to override it for custom features. [[code temp]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=def%20fit(self%2C%20X%3DNone%2C%20is_normal%3DFalse%2C%20group%3DNone%2C%20Sigma%3DNone%2C%20number%3D1%2C%20n%3DNone)%3A).
 
-Then, the final step is to link this Python class with the model type number (it has been defined in Section **Core C++**). In `bess_base.py`, you can find somewhere like (in the `fit` function): 
+Then, the final step is to link this Python class with the model type number (it has been defined in Section **Core C++**). In the `fit` function, you would find somewhere like: 
 
 ```Python
-if self.model_type == "Lm":
-    model_type_int = 1
-elif # ...
+if self.model_type == "new_algorithm":
+    model_type_int = 123    # same number in C++
 ```
 
-Note that the new PCA method has been related to number "7" above, so we need to denote `model_type_int = 7` in our `fit` function. 
+Finally, don't forget to import the new algorithm in `abess/python/abess/__init__.py`.
 
-After finished all changes before, run `$ python setup.py install` again and this time the installation would be finished quickly. 
-
+Now run `$ python setup.py install` again and this time the installation would be finished quickly. 
 Congratulation! Your work can now be used by:
 
 ```Python
-from abess.pca import abessPCA
+from abess import abess_new_algorithm
 ```
 
 #### bess_base
@@ -190,21 +229,75 @@ As we show above, any new methods are based on `bess_base`, which can be found i
 from sklearn.base import BaseEstimator
 class bess_base(BaseEstimator):
      def __init__(...):
-        #...
-     def fit(...):	# abess process, warp with cpp
-        #...
-     #...
+        # some init
+     def fit(...):	
+        # check nput, warp with cpp
 ```
 
-Actually, it is based on `sklearn.base.BaseEstimator` [[link]](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html). Two methods, `get_params` and `set_params` are offered in this base class. 
+Actually, it is based on `sklearn.base.BaseEstimator` [[code link]](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html). Two methods, `get_params` and `set_params` are offered in this base class. 
 
 In our package, we write an method called `fit` to realize the abess process. Of cause, you can also override it like `abessPCA`.
+
+## Verify you result
+
+After programming the code, it is necessary to verify the contributed function can return a reasonable result. Here, we share our experience for it. 
+Notice that the core our algorithm are forward and backward sacrifices, as long as they are properly programming, the contributed function would work well. 
+
+- Check `primary_model_fit` and `loss_function`
+
+Secondly, we recommend you consider `primary_model_fit` for the computation of backward sacrifices. To check whether it works well, you can leverage the parameter `always.include` in R. 
+Actually, when the number of elements pass to `always.include` is equal to `support.size` (`always_include` and `support_size` in Python), our algorithm is no need to do variable selection since all element must be selected, and thus, our implementation framework would just simply solving a convex problem by conducting `primary_model_fit` and the solution should match to (or close to) the function implemented in R/Python. 
+Take the PCA task as an example, we should expect that, the results returned by `abess`:
+```R
+data(USArrests)
+abess_fit <- abesspca(USArrests, always.include = c(1:3), support.size = 3)
+as.vector(spca_fit[["coef"]])[1:3]
+```  
+should match with that returned by the `princomp` function:
+```R
+princomp_fit <- loadings(princomp(USArrests[, 1:3]))[, 1]
+princomp_fit
+``` 
+Actually, in our implementation, the results returned in two code blocks is match in magnitude. 
+If the results are match, you can congratulate for your correct coding. We also recommend you write a automatic test case for this following the content below. 
+
+At the same time, you can see whether the `loss_function` is right by comparing `spca_fit[["loss"]]` and the variance of the first principal component.  
+
+- Check `sacrifice`
+
+Thirdly, we recommend you consider `sacrifice`. Checking the function `sacrifice` needs more efforts. Monte Carlo studies should be conduct to check whether `sacrifice` is properly programmed such that the effective/relevant variables can be detected when sample size is large. 
+We strongly recommend to check the result by setting:
+- sample size at least 1000
+- dimension is less than 50 
+- the true support size is less than 5 
+- variables are independence 
+- the support size from 0 to the ground true 
+- the $l_2$ regularization is zero.
+
+In most of the cases, this setting is very helpful for checking code. Generally, the output of `abess` would match to the correct under this setting.
+Take linear regression in R as our example, the code for checking is demonstrated below:
+```R
+n <- 1000
+p <- 50
+support_size <- 3
+dataset <- generate.data(n, p, support_size, seed = 1)
+abess_fit <- abess(dataset[["x"]], dataset[["y"]], support.size = 0:support_size)
+## estimated support:
+extract(abess_fit, support.size = support_size)[["support.vars"]]
+## true support:
+which(dataset[["beta"]] != 0)
+```
+In this example, the estimated support set is the same as the true.
+
+- Check `effective_number_of_parameter`
+
+Finally, 
 
 ## Miscellaneous
 
 ### Code style
-New R code should follow the tidyverse [style guide](https://style.tidyverse.org/). You can use the styler package to apply these styles. 
-New Python code...
+New R code should follow the tidyverse [style guide](https://style.tidyverse.org/). You can use the [`styler`](https://styler.r-lib.org) R package to apply this style by conducting R command: `style_file("path-to-newfile.R")` 
+New Python code should follow the PEP8 [style guide](https://www.python.org/dev/peps/pep-0008/)
 Please don’t restyle code that has nothing to do with your code.
 
 ### Test cases

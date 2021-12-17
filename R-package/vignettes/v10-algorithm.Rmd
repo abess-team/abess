@@ -134,7 +134,7 @@ and $\left(\boldsymbol\beta^{0}, d^{0}\right):$
 5) Output $(\hat{\boldsymbol{\beta}}, \hat{\boldsymbol{d}}, \hat{\mathcal{A}}, \hat{\mathcal{I}})$.
 
 
-<!-- In practice, the support size is usually unknown. We use a datadriven procedure to determine s. Information criteria such as highdimensional BIC (HBIC) (13) and extended BIC (EBIC) (14) are commonly used for this purpose. Specifically, HBIC (13) can be applied to select the tuning parameter in penalized likelihood estimation. To recover the support size $s$ for the best-subset selection, we introduce a criterion that is a special case of HBIC (13). While HBIC aims to tune the parameter for a nonconvex penalized regression, our proposal is used to determine the size of best subset. For any active set $\mathcal{A}$, define an $\mathrm{SIC}$ as follows: -->
+<!-- In practice, the support size is usually unknown. We use a data-driven procedure to determine s. Information criteria such as highdimensional BIC (HBIC) (13) and extended BIC (EBIC) (14) are commonly used for this purpose. Specifically, HBIC (13) can be applied to select the tuning parameter in penalized likelihood estimation. To recover the support size $s$ for the best-subset selection, we introduce a criterion that is a special case of HBIC (13). While HBIC aims to tune the parameter for a nonconvex penalized regression, our proposal is used to determine the size of best subset. For any active set $\mathcal{A}$, define an $\mathrm{SIC}$ as follows: -->
 <!-- $$ -->
 <!-- \operatorname{SIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| \log (p) \log \log n, -->
 <!-- $$ -->
@@ -146,7 +146,7 @@ and $\left(\boldsymbol\beta^{0}, d^{0}\right):$
 
 ### Determining the Best Support Size with SIC
 
-In practice, the support size is usually unknown. We use a datadriven procedure to determine s. For any active set $\mathcal{A}$, define an $\mathrm{SIC}$ as follows:
+In practice, the support size is usually unknown. We use a data-driven procedure to determine s. For any active set $\mathcal{A}$, define an $\mathrm{SIC}$ as follows:
 $$
 \operatorname{SIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| \log (p) \log \log n,
 $$
@@ -359,7 +359,7 @@ $$
 $$
 where $\gamma$ is a pre-determined positive constant, controlling the diverging rate of group numbers $J$.
 
-A natural idea to determine the optimal support size is regarding $\mathrm{T}$ as a tunning parameter, and running GSplicing algorithm over a sequence about $\mathrm{T}$. Next, combined with aforementioned information criterion, we can obtain an optimal support size.
+A natural idea to determine the optimal support size is regarding $\mathrm{T}$ as a tuning parameter, and running GSplicing algorithm over a sequence about $\mathrm{T}$. Next, combined with aforementioned information criterion, we can obtain an optimal support size.
 Let $T_{\max }$ be the maximum support size. We suggest $T_{\max }=o\left(\frac{n}{p_{\max}\log J}\right)$ where $p_{\max} = \max_{j\in \mathcal{S}} p_j$. 
 
 

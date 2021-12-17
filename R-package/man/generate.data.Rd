@@ -9,7 +9,8 @@ generate.data(
   p,
   support.size = NULL,
   rho = 0,
-  family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial"),
+  family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial",
+    "gamma"),
   beta = NULL,
   cortype = 1,
   snr = 10,
@@ -47,7 +48,7 @@ where the covariance matrix has \eqn{(i,j)} entry equals \eqn{I(i \neq j)}.
 \code{cortype = 2} denotes the exponential structure,
 where the covariance matrix has \eqn{(i,j)} entry equals \eqn{rho^{|i-j|}}.
 code{cortype = 3} denotes the constant structure,
-where the non-diagnoal entries of covariance
+where the non-diagonal entries of covariance
 matrix are \eqn{rho} and diagonal entries are 1.}
 
 \item{snr}{A numerical value controlling the signal-to-noise ratio (SNR). The SNR is defined as

@@ -21,7 +21,7 @@ jobs:
         run: |
           pip install setuptools wheel twine
           pip install numpy sklearn scipy
-          choco install swig mingw git 
+          choco install swig mingw git
       - name: Build and publish
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
@@ -47,7 +47,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install setuptools wheel twine
-          sudo apt-get install -y swig bash 
+          sudo apt-get install -y swig bash
       - name: Build and publish
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}

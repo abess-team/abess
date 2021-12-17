@@ -1,11 +1,11 @@
 #' @export
 abess <- function(x, ...) UseMethod("abess")
 
-#' @title Adaptive Best-Subset Selection via Splicing
+#' @title Adaptive best subset selection (for generalized linear model)
 #'
 #' @description Adaptive best-subset selection for regression,
 #' (multi-class) classification, counting-response, censored-response,
-#' multi-response modeling in polynomial times.
+#' positive response, multi-response modeling in polynomial times.
 #'
 #' @aliases abess
 #'
@@ -24,29 +24,19 @@ abess <- function(x, ...) UseMethod("abess")
 #' For \code{family = "multinomial"}, \code{y} should be a factor of at least three levels.
 #' Note that, for either \code{"binomial"} or \code{"multinomial"},
 #' if y is presented as a numerical vector, it will be coerced into a factor.
-# @param type One of the two types of problems.
-# \code{type = "bss"} for the best subset selection,
-# and \code{type = "bsrr"} for the best subset ridge regression.
 #' @param family One of the following models:
 #' \code{"gaussian"} (continuous response),
 #' \code{"binomial"} (binary response),
 #' \code{"poisson"} (non-negative count),
 #' \code{"cox"} (left-censored response),
-#' \code{"mgaussian"} (multivariate continuous response).
+#' \code{"mgaussian"} (multivariate continuous response),
+#' \code{"multinomial"} (multi-class response),
+#' \code{"gamma"} (positive continuous response).
 #' Depending on the response. Any unambiguous substring can be given.
 #' @param tune.path The method to be used to select the optimal support size. For
 #' \code{tune.path = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
 #' For \code{tune.path = "gsection"}, we solve the best subset selection problem with support size ranged in \code{gs.range},
 #' where the specific support size to be considered is determined by golden section.
-# @param method The method to be used to select the optimal support size and \eqn{L_2} shrinkage. For
-# \code{tune.path = "sequence"}, we solve the best subset selection and the best subset ridge regression
-# problem for each \code{s} in \code{1,2,...,s.max} and \eqn{\lambda} in \code{lambda.list}.
-# For \code{tune.path = "gsection"}, which is only valid for \code{type = "bss"},
-# we solve the best subset selection problem with the range support size \code{gs.range},
-# where the specific support size to be considered is determined by golden section. we
-# solve the best subset selection problem with a range of non-continuous model
-# sizes. For \code{tune.path = "pgsection"} and \code{"psequence"}, the Powell method is used to
-# solve the best subset ridge regression problem. Any unambiguous substring can be given.
 #' @param tune.type The type of criterion for choosing the support size.
 #' Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
 #' Default is \code{"gic"}.
@@ -57,17 +47,6 @@ abess <- function(x, ...) UseMethod("abess")
 #' the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
 #' Not available now.
 #' @param lambda A single lambda value for regularized best subset selection. Default is 0.
-# 0.
-# @param s.min The minimum value of support sizes. Only used for \code{tune.path =
-# "gsection"}, \code{"psequence"} and \code{"pgsection"}. Default is 1.
-# @param s.max The maximum value of support sizes. Only used for \code{tune.path =
-# "gsection"}, \code{"psequence"} and \code{"pgsection"}. Default is \code{min(p, round(n/log(n)))}.
-# @param lambda.min The minimum value of lambda. Only used for \code{tune.path =
-# "powell"}. Default is \code{0.001}.
-# @param lambda.max The maximum value of lambda. Only used for \code{tune.path =
-# "powell"}. Default is \code{100}.
-# @param nlambda The number of \eqn{\lambda}s for the Powell path with sequence line search method.
-# Only valid for \code{tune.path = "psequence"}.
 #' @param always.include An integer vector containing the indexes of variables that should always be included in the model.
 #' @param group.index A vector of integers indicating the which group each variable is in.
 #' For variables in the same group, they should be located in adjacent columns of \code{x}
@@ -82,9 +61,9 @@ abess <- function(x, ...) UseMethod("abess")
 #' (Default: \code{splicing.type = 2}.)
 #' @param screening.num An integer number. Preserve \code{screening.num} number of predictors with the largest
 #' marginal maximum likelihood estimator before running algorithm.
-#' @param important.search An integer number indicating the number of 
-#' important variables to be splicing. 
-#' When \code{important.search} \eqn{\ll} \code{p} variables, 
+#' @param important.search An integer number indicating the number of
+#' important variables to be splicing.
+#' When \code{important.search} \eqn{\ll} \code{p} variables,
 #' it would greatly reduce runtimes. Default: \code{important.search = 128}.
 #' @param normalize Options for normalization. \code{normalize = 0} for no normalization.
 #' \code{normalize = 1} for subtracting the mean of columns of \code{x}.
@@ -101,13 +80,12 @@ abess <- function(x, ...) UseMethod("abess")
 #' Default is \code{max.splicing.iter = 20}.
 #' @param warm.start Whether to use the last solution as a warm start. Default is \code{warm.start = TRUE}.
 #' @param nfolds The number of folds in cross-validation. Default is \code{nfolds = 5}.
+#' @param foldid an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in.
+#' The default \code{foldid = NULL} would generate a random foldid.
 #' @param cov.update A logical value only used for \code{family = "gaussian"}. If \code{cov.update = TRUE},
 #' use a covariance-based implementation; otherwise, a naive implementation.
-#' The naive method is more efficient than covariance-based method when \eqn{p >> n} and \code{important.search} is much large than its default value.
+#' The naive method is more computational efficient than covariance-based method when \eqn{p >> n} and \code{important.search} is much large than its default value.
 #' Default: \code{cov.update = FALSE}.
-# @param n The number of rows of the design matrix. A must if \code{x} in triplet form.
-# @param p The number of columns of the design matrix. A must if \code{x} in triplet form.
-# @param sparse.matrix A logical value indicating whether the input is a sparse matrix.
 #' @param newton A character specify the Newton's method for fitting generalized linear models,
 #' it should be either \code{newton = "exact"} or \code{newton = "approx"}.
 #' If \code{newton = "exact"}, then the exact hessian is used,
@@ -120,7 +98,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param early.stop A boolean value decide whether early stopping.
 #' If \code{early.stop = TRUE}, algorithm will stop if the last tuning value less than the existing one.
 #' Default: \code{early.stop = FALSE}.
-#' @param ic.scale A non-negative value used for multiplying the penalty term 
+#' @param ic.scale A non-negative value used for multiplying the penalty term
 #' in information criterion. Default: \code{ic.scale = 1}.
 #' @param num.threads An integer decide the number of threads to be
 #' concurrently used for cross-validation (i.e., \code{tune.type = "cv"}).
@@ -131,50 +109,12 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param ... further arguments to be passed to or from methods.
 #'
 #' @return A S3 \code{abess} class object, which is a \code{list} with the following components:
-# \item{best.model}{The best model chosen by algorithm. It is a \code{list} object comprising the following sub-components:
-#  1. \code{beta}: a fitted \eqn{p}-dimensional coefficients vector; 2. \code{coef0}: a numeric fitted intercept;
-#  3. \code{support.index}: an index vector of best model's support set; 4. \code{support.size}: the support size of the best model;
-#  5. \code{dev}: the deviance of the model; 6. \code{tune.value}: the tune value of the model.
-# }
 #' \item{beta}{A \eqn{p}-by-\code{length(support.size)} matrix of coefficients for univariate family, stored in column format;
 #' while a list of \code{length(support.size)} coefficients matrix (with size \eqn{p}-by-\code{ncol(y)}) for multivariate family.}
 #' \item{intercept}{An intercept vector of length \code{length(support.size)} for univariate family;
 #' while a list of \code{length(support.size)} intercept vector (with size \code{ncol(y)}) for multivariate family.}
 #' \item{dev}{the deviance of length \code{length(support.size)}.}
 #' \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
-# \item{best.model}{The best fitted model for \code{type = "bss"}.}
-# \item{lambda}{The lambda chosen for the best fitting model}
-# \item{beta.all}{For \code{bess} objects obtained by \code{gsection}, \code{pgsection}
-# and \code{psequence}, \code{beta.all} is a matrix with each column be the coefficients
-# of the model in each iterative step in the tuning path.
-# For \code{bess} objects obtained by \code{sequence} method,
-# A list of the best fitting coefficients of size
-# \code{s=0,1,...,p} and \eqn{\lambda} in \code{lambda.list} with the
-# smallest loss function. For \code{"bess"} objects of \code{"bsrr"} type, the fitting coefficients of the
-# \eqn{i^{th} \lambda} and the \eqn{j^{th}} \code{s} are at the \eqn{i^{th}}
-# list component's \eqn{j^{th}} column.}
-# \item{coef0.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequence},
-# \code{coef0.all} contains the intercept for the model in each iterative step in the tuning path.
-# For \code{bess} objects obtained from \code{sequence} path,
-# \code{coef0.all} contains the best fitting
-# intercepts of size \eqn{s=0,1,\dots,p} and \eqn{\lambda} in
-# \code{lambda.list} with the smallest loss function.}
-# \item{loss.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequence},
-# \code{loss.all} contains the training loss of the model in each iterative step in the tuning path.
-# For \code{bess} objects obtained from \code{sequence} path, this is a
-# list of the training loss of the best fitting intercepts of support size
-# \eqn{s=0,1,\dots,p} and \eqn{\lambda} in \code{lambda.list}. For \code{"bess"} object obtained by \code{"bsrr"},
-# the training loss of the \eqn{i^{th} \lambda} and the \eqn{j^{th}} \code{s}
-# is at the \eqn{i^{th}} list component's \eqn{j^{th}} entry.}
-# \item{ic.all}{For \code{bess} objects obtained from \code{gsection}, \code{pgsection} and \code{psequence},
-# \code{ic.all} contains the values of the chosen information criterion of the model in each iterative step in the tuning path.
-# For \code{bess} objects obtained from \code{sequence} path, this is a
-# matrix of the values of the chosen information criterion of support size \eqn{s=0,1,\dots,p}
-# and \eqn{\lambda} in \code{lambda.list} with the smallest loss function. For \code{"bess"} object obtained by \code{"bsrr"},
-# the training loss of the \eqn{i^{th} \lambda} and the \eqn{j^{th}}
-# \code{s} is at the \eqn{i^{th}} row \eqn{j^{th}} column. Only available when
-# model selection is based on a certain information criterion.}
-# \item{lambda.all}{The lambda chosen for each step in \code{pgsection} and \code{psequence}.}
 #' \item{nobs}{The number of sample used for training.}
 #' \item{nvars}{The number of variables used for training.}
 #' \item{family}{Type of the model.}
@@ -184,9 +124,6 @@ abess <- function(x, ...) UseMethod("abess")
 #' if the later have non-integer values or duplicated values.}
 #' \item{edf}{The effective degree of freedom.
 #' It is the same as \code{support.size} when \code{lambda = 0}.}
-# \item{support.df}{The degree of freedom in each support set,
-# in other words, the number of predictors in each group.
-# Particularly, it would be a all one vector with length \code{nvars} when \code{group.index = NULL}.}
 #' \item{best.size}{The best support size selected by the tuning value.}
 #' \item{tune.type}{The criterion type for tuning parameters.}
 #' \item{tune.path}{The strategy for tuning parameters.}
@@ -194,8 +131,9 @@ abess <- function(x, ...) UseMethod("abess")
 #' selected by feature screening.
 #' It would be an empty character vector if \code{screening.num = 0}.}
 #' \item{call}{The original call to \code{abess}.}
-# \item{type}{Either \code{"bss"} or \code{"bsrr"}.}
 #'
+#' @md
+#' 
 #' @details
 #' Best-subset selection aims to find a small subset of predictors,
 #' so that the resulting model is expected to have the most desirable prediction accuracy.
@@ -203,19 +141,44 @@ abess <- function(x, ...) UseMethod("abess")
 #' \deqn{\min_\beta -2 \log L(\beta) \;\;{\rm s.t.}\;\; \|\beta\|_0 \leq s,}
 #' where \eqn{L(\beta)} is arbitrary convex functions. In
 #' the GLM case, \eqn{\log L(\beta)} is the log-likelihood function; in the Cox
-#' model, \eqn{\log L(\beta)} is the log partial-likelihood function.
-#'
-#' The best subset selection problem is solved by the "abess" algorithm in this package, see Zhu (2020) for details.
+#' model, \eqn{\log L(\beta)} is the log partial-likelihood function. 
+#' The best subset selection problem is solved by the splicing algorithm in this package, see Zhu (2020) for details.
 #' Under mild conditions, the algorithm exactly solve this problem in polynomial time.
-#' This algorithm exploits the idea of sequencing and splicing to reach a stable solution in finite steps
-#' when \eqn{s} is fixed.
+#' This algorithm exploits the idea of sequencing and splicing to reach a stable solution in finite steps when \eqn{s} is fixed.
+#' The parameters \code{c.max}, \code{splicing.type} and \code{max.splicing.iter} allow user control the splicing technique flexibly. 
+#' On the basis of our numerical experiment results, we assign properly parameters to the these parameters as the default 
+#' such that the precision and runtime are well balanced, we suggest users keep the default values unchanged. 
+#' Please see [this online page](https://abess-team.github.io/abess/articles/v10-algorithm.html) for more details about the splicing algorithm. 
+#' 
 #' To find the optimal support size \eqn{s},
-#' we provide various criterion like GIC, AIC, BIC and cross-validation error to determine it.
-#'
-#' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; DOI: 10.1073/pnas.2014241117
-#' @references Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. https://doi.org/10.1111/j.1467-9868.2008.00674.x
-#' @references Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun & Heping Zhang (2020). Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079
+#' we provide various criterion like GIC, AIC, BIC and cross-validation error to determine it. 
+#' More specifically, the sequence of models implied by \code{support.size} are fit by the splicing algorithm. 
+#' And the solved model with least information criterion or cross-validation error is the optimal model. 
+#' The sequential searching for the optimal model is somehow time-wasting. 
+#' A faster strategy is golden section (GS), which only need to specify \code{gs.range}. 
+#' More details about GS is referred to Zhang et al (2021). 
+#' 
+#' It is worthy to note that the parameters \code{newton}, \code{max.newton.iter} and \code{newton.thresh} allows 
+#' user control the parameter estimation in non-guassian models. 
+#' The parameter estimation procedure use Newton method or approximated Newton method (only consider the diagonal elements in the Hessian matrix). 
+#' Again, we suggest to use the default values unchanged because the same reason for the parameter \code{c.max}. 
+#' 
+#' \code{abess} support some well-known advanced statistical methods to analyze data, including 
+#' \itemize{
+#'   \item{sure independent screening: } {helpful for ultra-high dimensional predictors (i.e., \eqn{p \gg n}). Use the parameter \code{screening.num} to retain the marginally most important predictors. See Fan et al (2008) for more details. }
+#'   \item{best subset of group selection: } {helpful when predictors have group structure. Use the parameter \code{group.index} to specify the group structure of predictors. See Zhang et al (2021) for more details. }
+#'   \item{\eqn{l_2} regularization best subset selection: } {helpful when signal-to-ratio is relatively small. Use the parameter \code{lambda} to control the magnitude of the regularization term.}
+#'   \item{nuisance selection: } {helpful when the prior knowledge of important predictors is available. Use the parameter \code{always.include} to retain the important predictors.}
+#' }
+#' The arbitrary combination of the four methods are definitely support. 
+#' Please see [online vignettes](https://abess-team.github.io/abess/articles/v07-advancedFeatures.html) for more details about the advanced features support by \code{abess}. 
+#' 
+#' @references A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; \doi{10.1073/pnas.2014241117}
 #' @references Certifiably Polynomial Algorithm for Best Group Subset Selection. Zhang, Yanhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). arXiv preprint arXiv:2104.12576.
+#' @references abess: A Fast Best Subset Selection Library in Python and R. Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). arXiv preprint arXiv:2110.09697.
+#' @references Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. \doi{10.1111/j.1467-9868.2008.00674.x}
+#' @references Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun & Heping Zhang (2020). Journal of the American Statistical Association, \doi{10.1080/01621459.2020.1737079}
+#' 
 #'
 #' @seealso \code{\link{print.abess}},
 #' \code{\link{predict.abess}},
@@ -247,6 +210,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' str(extract(abess_fit, 3))
 #' deviance(abess_fit)
 #' plot(abess_fit)
+#' plot(abess_fit, type = "tune")
 #'
 #' ################ logistic model ################
 #' dataset <- generate.data(n, p, support.size, family = "binomial")
@@ -316,7 +280,10 @@ abess <- function(x, ...) UseMethod("abess")
 #' }
 abess.default <- function(x,
                           y,
-                          family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial","gamma"),
+                          family = c(
+                            "gaussian", "binomial", "poisson", "cox",
+                            "mgaussian", "multinomial", "gamma"
+                          ),
                           tune.path = c("sequence", "gsection"),
                           tune.type = c("gic", "ebic", "bic", "aic", "cv"),
                           weight = NULL,
@@ -330,16 +297,16 @@ abess.default <- function(x,
                           splicing.type = 2,
                           max.splicing.iter = 20,
                           screening.num = NULL,
-                          important.search = NULL, 
+                          important.search = NULL,
                           warm.start = TRUE,
                           nfolds = 5,
-                          foldid = NULL, 
+                          foldid = NULL,
                           cov.update = FALSE,
                           newton = c("exact", "approx"),
                           newton.thresh = 1e-6,
                           max.newton.iter = NULL,
                           early.stop = FALSE,
-                          ic.scale = 1.0, 
+                          ic.scale = 1.0,
                           num.threads = 0,
                           seed = 1,
                           ...) {
@@ -408,10 +375,7 @@ abess.default <- function(x,
   sparse_X <- ifelse(class(x)[1] %in% c("matrix", "data.frame"), FALSE, TRUE)
   if (sparse_X) {
     if (class(x) == "dgCMatrix") {
-      x <- summary(x)
-      x[, 1:2] <- x[, 1:2] - 1
-      x <- as.matrix(x)
-      x <- x[, c(3, 1, 2)]
+      x <- map_dgCMatrix2entry(x)
     }
   } else {
     if (is.data.frame(x)) {
@@ -487,6 +451,11 @@ abess.default <- function(x,
       stop("y must be positive integer value when family = 'poisson'.")
     }
   }
+  if (family == "gamma") {
+    if (any(y < 0)) {
+      stop("y must be positive value when family = 'gamma'.")
+    }
+  }
   if (family == "cox") {
     if (!is.matrix(y)) {
       y <- as.matrix(y)
@@ -519,7 +488,7 @@ abess.default <- function(x,
     stop("Rows of x must be the same as rows of y!")
   }
 
-  ## strategy for tunning
+  ## strategy for tuning
   tune.path <- match.arg(tune.path)
   if (tune.path == "gsection") {
     path_type <- 2
@@ -558,9 +527,9 @@ abess.default <- function(x,
     stopifnot(any(is.numeric(support.size) & support.size >= 0))
     check_integer(support.size, "support.size must be a vector with integer value.")
     if (group_select) {
-      stopifnot(max(support.size) < ngroup)
+      stopifnot(max(support.size) <= ngroup)
     } else {
-      stopifnot(max(support.size) < nvars)
+      stopifnot(max(support.size) <= nvars)
     }
     stopifnot(max(support.size) < nobs)
     support.size <- sort(support.size)
@@ -631,7 +600,7 @@ abess.default <- function(x,
   ## check parameters for sub-optimization:
   # 1:
   if (length(newton) == 2) {
-    if (family %in% c("binomial", "cox", "multinomial")) {
+    if (family %in% c("binomial", "cox", "multinomial", "gamma", "poisson")) {
       newton <- "approx"
     }
   }
@@ -643,7 +612,7 @@ abess.default <- function(x,
   #     newton <- "auto"
   #   }
   # }
-  if (family %in% c("gaussian", "mgaussian", "poisson")) {
+  if (family %in% c("gaussian", "mgaussian")) {
     newton <- "exact"
   }
   newton_type <- switch(newton,
@@ -658,6 +627,9 @@ abess.default <- function(x,
     max_newton_iter <- as.integer(max.newton.iter)
   } else {
     max_newton_iter <- ifelse(newton_type == 0, 10, 60)
+    if (family == "gamma" && newton_type == 1) {
+      max_newton_iter <- 200
+    }
   }
   # 3:
   stopifnot(is.numeric(newton.thresh) & newton.thresh > 0)
@@ -665,38 +637,22 @@ abess.default <- function(x,
 
   # tune support size method:
   tune.type <- match.arg(tune.type)
-  ic_type <- switch(tune.type,
-    "aic" = 1,
-    "bic" = 2,
-    "gic" = 3,
-    "ebic" = 4,
-    "cv" = 1
-  )
+  ic_type <- map_tunetype2numeric(tune.type)
   is_cv <- ifelse(tune.type == "cv", TRUE, FALSE)
   if (is_cv) {
-    stopifnot(is.numeric(nfolds) & nfolds >= 2)
-    check_integer_warning(
-      nfolds,
-      "nfolds should be an integer value. It is coerced to be as.integer(nfolds). "
-    )
-    nfolds <- as.integer(nfolds)
-    
     if (is.null(foldid)) {
       cv_fold_id <- integer(0)
+      nfolds <- check_nfold(nfolds)
     } else {
-      stopifnot(is.vector(foldid))
-      stopifnot(is.numeric(foldid))
-      stopifnot(length(foldid) == nobs)
-      check_integer_warning(
-        foldid,
-        "nfolds should be an integer value. It is coerced to be as.integer(foldid). "
-      )
-      foldid <- as.integer(foldid)
-      cv_fold_id <- foldid
+      cv_fold_id <- check_foldid(foldid, nobs)
+      nfolds <- length(unique(nfolds))
     }
   } else {
     cv_fold_id <- integer(0)
+    # nfolds <- 1
   }
+
+  ## information criterion
   stopifnot(is.numeric(ic.scale))
   stopifnot(ic.scale >= 0)
   ic_scale <- as.integer(ic.scale)
@@ -710,7 +666,8 @@ abess.default <- function(x,
       "poisson" = 2,
       "cox" = 3,
       "mgaussian" = 1,
-      "multinomial" = 2
+      "multinomial" = 2,
+      "gamma" = 2
     )
   } else {
     stopifnot(normalize %in% 0:3)
@@ -763,7 +720,7 @@ abess.default <- function(x,
     screening <- TRUE
     screening_num <- screening.num
   }
-  
+
   # check important searching:
   if (is.null(important.search)) {
     important_search <- min(c(nvars, 128))
@@ -818,15 +775,13 @@ abess.default <- function(x,
   }
 
   t1 <- proc.time()
-  result <- abessCpp2(
+  result <- abessGLM_API(
     x = x,
     y = y,
     n = nobs,
     p = nvars,
-    data_type = normalize,
+    normalize_type = normalize,
     weight = weight,
-    sigma = matrix(0),
-    is_normal = is_normal,
     algorithm_type = 6,
     model_type = model_type,
     max_iter = max_splicing_iter,
@@ -835,24 +790,17 @@ abess.default <- function(x,
     is_warm_start = warm.start,
     ic_type = ic_type,
     ic_coef = ic_scale,
-    is_cv = is_cv,
     Kfold = nfolds,
-    status = c(0),
     sequence = as.vector(s_list),
     lambda_seq = lambda,
     s_min = s_min,
     s_max = s_max,
-    K_max = as.integer(20),
-    epsilon = 0.0001,
     lambda_max = 0,
     lambda_min = 0,
     nlambda = 10,
-    is_screening = screening,
-    screening_size = screening_num,
-    powell_path = 1,
+    screening_size = ifelse(screening_num >= nvars, -1, screening_num),
     g_index = g_index,
     always_select = always_include,
-    tau = 0.0,
     primary_model_fit_max_iter = max_newton_iter,
     primary_model_fit_epsilon = newton_thresh,
     early_stop = early_stop,
@@ -860,8 +808,8 @@ abess.default <- function(x,
     thread = num_threads,
     covariance_update = covariance_update,
     sparse_matrix = sparse_X,
-    splicing_type = splicing_type, 
-    sub_search = important_search, 
+    splicing_type = splicing_type,
+    sub_search = important_search,
     cv_fold_id = cv_fold_id
   )
   t2 <- proc.time()
@@ -1048,7 +996,7 @@ abess.formula <- function(formula, data, subset, na.action, ...) {
   mf <- eval(mf, parent.frame())
   mt <- attr(mf, "terms")
 
-  y <- model.response(mf, "numeric")
+  suppressWarnings(y <- model.response(mf, "numeric"))
   x <- abess_model_matrix(mt, mf, contrasts)[, -1]
   x <- as.matrix(x)
 
