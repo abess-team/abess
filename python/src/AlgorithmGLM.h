@@ -47,7 +47,7 @@ class abessLogistic : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double,
         Eigen::VectorXd log_Pi = Pi.array().log();
         Eigen::VectorXd log_1_Pi = (one - Pi).array().log();
         double loglik1 = DBL_MAX, loglik0 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) -
-                                            this->lambda_level * beta.cwiseAbs2().sum();
+                                            this->lambda_level * beta0.cwiseAbs2().sum();
         Eigen::VectorXd W = Pi.cwiseProduct(one - Pi);
         for (int i = 0; i < n; i++) {
             if (W(i) < 0.001) W(i) = 0.001;
@@ -62,16 +62,16 @@ class abessLogistic : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double,
             // To do: Approximate Newton method
             if (this->approximate_Newton) {
                 Eigen::VectorXd h_diag(p + 1);
-                for (int i = 0; i < p + 1; i++) {
-                    h_diag(i) = 1.0 / X.col(i).cwiseProduct(W).cwiseProduct(weights).dot(X.col(i));
+                for (int i = 0; i < (p + 1); i++) {
+                    h_diag(i) = X.col(i).eval().cwiseProduct(W).cwiseProduct(weights).dot(X.col(i).eval());
                 }
                 g = X.transpose() * ((y - Pi).cwiseProduct(weights));
-                beta1 = beta0 + step * g.cwiseProduct(h_diag);
+                beta1 = beta0 + step * g.cwiseQuotient(h_diag);
                 Pi = pi(X, y, beta1);
                 log_Pi = Pi.array().log();
                 log_1_Pi = (one - Pi).array().log();
                 loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) -
-                          this->lambda_level * beta.cwiseAbs2().sum();
+                          this->lambda_level * beta1.cwiseAbs2().sum();
 
                 while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon) {
                     step = step / 2;
@@ -80,7 +80,7 @@ class abessLogistic : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double,
                     log_Pi = Pi.array().log();
                     log_1_Pi = (one - Pi).array().log();
                     loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) -
-                              this->lambda_level * beta.cwiseAbs2().sum();
+                              this->lambda_level * beta1.cwiseAbs2().sum();
                 }
 
                 bool condition1 =
@@ -120,7 +120,7 @@ class abessLogistic : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double,
                 log_Pi = Pi.array().log();
                 log_1_Pi = (one - Pi).array().log();
                 loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) -
-                          this->lambda_level * beta.cwiseAbs2().sum();
+                          this->lambda_level * beta0.cwiseAbs2().sum();
 
                 bool condition1 =
                     -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;

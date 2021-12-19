@@ -141,7 +141,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
 template <class T1, class T2, class T3, class T4>
 void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list,
              Metric<T1, T2, T3, T4> *metric, int s_min, int s_max, Eigen::VectorXi &sequence,
-             Eigen::VectorXd &lambda_seq, vector<Result<T2, T3>> &result_list) {
+             Eigen::VectorXd &lambda_seq, vector<Result<T2, T3> > &result_list) {
     int sequence_size = s_max - s_min + 5;
     int Kfold = metric->Kfold;
     sequence = Eigen::VectorXi::Zero(sequence_size);
