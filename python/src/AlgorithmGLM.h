@@ -347,7 +347,7 @@ class abessLm : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
                          Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda) {
         int n = X.rows();
         Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-        return (y - X * beta - coef0 * one).array().square().sum() / n + lambda * beta.cwiseAbs2().sum();
+        return (y - X * beta - coef0 * one).array().square().sum() / n / 2. + lambda * beta.cwiseAbs2().sum();
     }
 
     void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind) {
