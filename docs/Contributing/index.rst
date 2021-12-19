@@ -6,3 +6,4 @@ Contributing
     Contributing
     Before
     CodeDeveloping
+    Formatting
