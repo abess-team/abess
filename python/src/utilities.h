@@ -54,6 +54,65 @@ struct FIT_ARG {
     FIT_ARG(){};
 };
 
+struct single_parameter {
+    int support_size;
+    double lambda;
+
+    single_parameter(){};
+    single_parameter(int support_size, double lambda) {
+        this->support_size = support_size;
+        this->lambda = lambda;
+    };
+};
+
+class Parameters {
+   public:
+    Eigen::VectorXi support_size_list;
+    Eigen::VectorXd lambda_list;
+    int s_min = 0;
+    int s_max = 0;
+    Eigen::Matrix<single_parameter, -1, 1> sequence;
+
+    Parameters() {}
+    Parameters(Eigen::VectorXi &support_size_list, Eigen::VectorXd &lambda_list, int s_min, int s_max) {
+        this->support_size_list = support_size_list;
+        this->lambda_list = lambda_list;
+        this->s_min = s_min;
+        this->s_max = s_max;
+        if (support_size_list.size() > 0) {
+            // path = "seq"
+            this->build_sequence();
+        }
+    }
+
+    void build_sequence() {
+        // suppose each input vector has size >= 1
+        int ind = 0;
+        int size1 = (this->support_size_list).size();
+        int size2 = (this->lambda_list).size();
+        (this->sequence).resize(size1 * size2, 1);
+
+        for (int i1 = 0; i1 < size1; i1++) {  // other order?
+            for (int i2 = (1 - pow(-1, i1)) * (size2 - 1) / 2; i2 < size2 && i2 >= 0; i2 = i2 + pow(-1, i1)) {
+                int support_size = this->support_size_list(i1);
+                double lambda = this->lambda_list(i2);
+                single_parameter temp(support_size, lambda);
+                this->sequence(ind++) = temp;
+            }
+        }
+    }
+
+    void print_sequence() {
+        // for debug
+        std::cout << "==> Parameter List:" << endl;
+        for (int i = 0; i < (this->sequence).size(); i++) {
+            int support_size = (this->sequence(i)).support_size;
+            double lambda = (this->sequence(i)).lambda;
+            std::cout << "  support_size = " << support_size << ", lambda = " << lambda << endl;
+        }
+    }
+};
+
 #ifndef R_BUILD
 Eigen::MatrixXd Pointer2MatrixXd(double *x, int x_row, int x_col);
 Eigen::MatrixXi Pointer2MatrixXi(int *x, int x_row, int x_col);
@@ -178,43 +237,39 @@ void set_nonzeros(Eigen::SparseMatrix<double> &X, Eigen::SparseMatrix<double> &x
 // bool check_ill_condition(Eigen::MatrixXd &M);
 
 template <class T2, class T3>
-void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, Dynamic> &beta_matrix,
-                        Eigen::Matrix<T3, Dynamic, Dynamic> &coef0_matrix, bool sparse_matrix, int normalize_type,
-                        int n, Eigen::VectorXd x_mean, T3 y_mean, Eigen::VectorXd x_norm) {
+void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, 1> &beta_matrix,
+                        Eigen::Matrix<T3, Dynamic, 1> &coef0_matrix, bool sparse_matrix, int normalize_type, int n,
+                        Eigen::VectorXd x_mean, T3 y_mean, Eigen::VectorXd x_norm) {
     if (normalize_type == 0 || sparse_matrix) {
         // no need to restore
         return;
     }
+
+    int s_size = beta_matrix.rows();
     if (normalize_type == 1) {
         array_quotient(beta, x_norm, 1);
         beta = beta * sqrt(double(n));
         coef0 = y_mean - matrix_dot(beta, x_mean);
-        for (int j = 0; j < beta_matrix.cols(); j++) {
-            for (int i = 0; i < beta_matrix.rows(); i++) {
-                array_quotient(beta_matrix(i, j), x_norm, 1);
-                beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(n));
-                coef0_matrix(i, j) = y_mean - matrix_dot(beta_matrix(i, j), x_mean);
-            }
+        for (int ind = 0; ind < s_size; ind++) {
+            array_quotient(beta_matrix(ind, 1), x_norm, 1);
+            beta_matrix(ind, 1) = beta_matrix(ind, 1) * sqrt(double(n));
+            coef0_matrix(ind, 1) = y_mean - matrix_dot(beta_matrix(ind, 1), x_mean);
         }
     } else if (normalize_type == 2) {
         array_quotient(beta, x_norm, 1);
         beta = beta * sqrt(double(n));
         coef0 = coef0 - matrix_dot(beta, x_mean);
-        for (int j = 0; j < beta_matrix.cols(); j++) {
-            for (int i = 0; i < beta_matrix.rows(); i++) {
-                array_quotient(beta_matrix(i, j), x_norm, 1);
-                beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(n));
-                coef0_matrix(i, j) = coef0_matrix(i, j) - matrix_dot(beta_matrix(i, j), x_mean);
-            }
+        for (int ind = 0; ind < s_size; ind++) {
+            array_quotient(beta_matrix(ind, 1), x_norm, 1);
+            beta_matrix(ind, 1) = beta_matrix(ind, 1) * sqrt(double(n));
+            coef0_matrix(ind, 1) = coef0_matrix(ind, 1) - matrix_dot(beta_matrix(ind, 1), x_mean);
         }
     } else {
         array_quotient(beta, x_norm, 1);
         beta = beta * sqrt(double(n));
-        for (int j = 0; j < beta_matrix.cols(); j++) {
-            for (int i = 0; i < beta_matrix.rows(); i++) {
-                array_quotient(beta_matrix(i, j), x_norm, 1);
-                beta_matrix(i, j) = beta_matrix(i, j) * sqrt(double(n));
-            }
+        for (int ind = 0; ind < s_size; ind++) {
+            array_quotient(beta_matrix(ind, 1), x_norm, 1);
+            beta_matrix(ind, 1) = beta_matrix(ind, 1) * sqrt(double(n));
         }
     }
     return;
@@ -291,4 +346,5 @@ void add_weight(Eigen::MatrixXd &x, Eigen::MatrixXd &y, Eigen::VectorXd weights)
 void add_weight(Eigen::SparseMatrix<double> &x, Eigen::VectorXd &y, Eigen::VectorXd weights);
 
 void add_weight(Eigen::SparseMatrix<double> &x, Eigen::MatrixXd &y, Eigen::VectorXd weights);
+
 #endif  // SRC_UTILITIES_H
