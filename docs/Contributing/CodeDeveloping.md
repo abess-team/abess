@@ -33,7 +33,7 @@ Next, four important data type should be determined:
 
 - T1 : type of Y
 - T2 : type of coefficients
-- T3 : type of loss
+- T3 : type of intercept
 - T4 : type of X
 
 The algorithm variable are based on them: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=vector<Algorithm<)
@@ -46,7 +46,7 @@ vector<Algorithm<{T1}, {T2}, {T3}, {T4}>*> algorithm_list(algorithm_list_size);
 > 
 > - Y: dense vector
 > - Coefficients: dense vector
-> - Loss: numeric
+> - Intercept: numeric
 > - X: dense/sparse matrix
 >
 > so that we define: 
@@ -320,4 +320,3 @@ A good test code should contain:
 - possible extreme cases;
 
 All test under pytest folder should be checked after coding.
-
