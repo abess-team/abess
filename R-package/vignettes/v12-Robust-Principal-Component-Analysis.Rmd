@@ -1,0 +1,129 @@
+---
+title: "Robust Principal Component Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T)
+```
+
+This vignette introduces what is adaptive best subset selection robust principal component analysis and then we will show how it works using *abess* package on an artificial example.
+
+## PCA
+
+Principal component analysis (PCA) is an important method in the field of data science, which can reduce the dimension of data and simplify our model. It solves an optimization problem like:
+
+$$
+\max_v v^T \Sigma v, \quad s.t.\  v^Tv=1
+$$
+where $\Sigma = X^TX/(n-1)$ and $X\in \mathbb{R}^{n\times p}$ is the centered sample matrix with each row containing one observation of $p$ variables.
+
+## Robust-PCA (RPCA)
+
+However, the original PCA is sensitive to outliers, which may be unavoidable in real data:
+
+* Object has extreme performance due to fortuity, but he/she shows normal in repeated tests;
+
+* Wrong observation/recording/computing, e.g. missing or dead pixels, X-ray spikes.
+
+In these situations, PCA may spend too much attention on unnecessary variables. That's why Robust-PCA (RPCA) is presented, which can be used to recover the (low-rank) sample for subsequent processing.
+
+In mathematics, RPCA manages to divide the sample matrix $X$ into two parts:
+$$
+X=S+L,
+$$
+where $S$ is the sparse "outlier" matrix and $L$ is the "information" matrix with a low rank. Generally, we also suppose $S$ is not low-rank and $L$ is not sparse, in order to get the unique solution.
+
+<img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/Tutorial/fig/rpca.png' width="70%" height="70%"/>
+
+In Lagrange format,
+$$
+\min _{S, L}\|X-S-L\|_{F} \leq \varepsilon, s . t . \quad \operatorname{rank}(L)=r,\|S\|_{0} \leq s
+$$
+where $s$ is the sparsity of $S$.
+After RPCA, the information matrix $L$ can be used in further analysis.
+
+Note that it does NOT deal with "noise", which may stay in $L$ and need further procession.
+
+## Hard Impute
+
+To solve its sub-problem, RPCA with known outlier positions, we follow a process called "Hard Impute". The main idea is to estimate the outlier values by precise values with KPCA, where $K=r$.
+
+Here are the steps:
+
+1. Input $X$, `outliers`, $M, \varepsilon$, where outliers record the non-zero positions in $S$;
+2. Denote $X_{n e w} \leftarrow \mathbf{0}$ with the same shape of $X$;
+3. For $i=1,2, \ldots, M$
+  * $X_{o l d}=\left\{\begin{array}{ll}X_{\text {new }}, & \text { for outliers } \\ X, & \text { for others }\end{array}\right.$
+  * Form KPCA on $X_{o l d}$ with $K=r$, and denote $v$ as the eigenvectors;
+  * $X_{\text {new }}=X_{\text {old }} \cdot v \cdot v^{T}$;
+  * If $\left\|X_{n e w}-X_{o l d}\right\|<\varepsilon$, break:
+End for;
+4. Return $X_{\text {new }}$ as $L$;
+where $M$ is the maximum iteration times and $\varepsilon$ is the convergence coefficient.
+
+The final $X_{\text {new }}$ is supposed to be $L$ under given outlier positions.
+
+## RPCA Application
+
+Recently, RPCA is more widely used, for example,
+
+* Video Decomposition: in a surveillance video, the background may be unchanged for a long time while only a few pixels (e.g. people) update. In order to improve the efficiency of store and analysis, we need to decomposite the video into background and foreground. Since the background is unchanged, it can be stored well in a low-rank matrix, while the foreground, which is usually quite small, can be indicated by a sparse matrix. That is what RPCA does.
+
+* Face recognition: due to complex lighting conditions, a small part of the facial features may be unrecognized (e.g. shadow). In face recognition, we need to remove the effects of shadows and focus on the face data. Actually, since the face data is almost unchanged (for one person), and the shadows affect only a small part, it is also a suitable situation to use RPCA. Here are some examples:
+
+
+<img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/Tutorial/fig/rpca_shadow.png' width="70%" height="70%"/>
+
+## Simulated Data Example
+
+### Fitting model
+
+Simulated Data Example
+Fitting model
+Now we generate an example with 100 rows and 100 columns with 200 outliers. We are looking forward to recover it with a low rank 10.
+```{r}
+library(abess)
+n <- 100     # rows
+p <- 100     # columns
+s <- 200     # outliers
+r <- 10      # rank(L)
+
+dat <- generate.matrix(n, p, r, s)
+```
+
+In order to use our program, users should call `abessrpca` with a given outlier number `support_size` or an integer interval. For the latter case, a support size will be chosen by information criterion (e.g. GIC) adaptively. `abessrpca` will return a `abessrpca` object.
+```{r}
+res.srpca <- abessrpca(dat$x, dat$rank, support.size = s)
+```
+
+To extract the estimated coefficients from a fitted `abessrpca` object, we use the `coef` function.
+```{r, results='hide', quietly=T}
+coef(res.srpca)
+```
+
+### More on the result
+To check the performance of the program, we use TPR, FPR as the criterion.
+
+```{r}
+test.model <- function(pred, real)
+{
+  tpr <- sum(pred !=0 & real != 0)/sum(real != 0)
+  fpr <- sum(pred !=0 & real == 0)/sum(real == 0)
+  return(c(tpr = tpr, fpr = fpr))
+}
+test.model(res.srpca$S[[1]], dat$S)
+```
+We can also change different random seeds to test for more situations:
+```{r}
+M <- 30
+res.test <- lapply(1:M, function(i)
+{
+  dat <- generate.matrix(n, p, r, s, seed = i)
+  res.srpca <- abessrpca(dat$x, dat$rank, support.size = s)
+  return(test.model(res.srpca$S[[1]], dat$S))
+})
+rowMeans(simplify2array(res.test))  
+```
+
+Under all of these situations, abessRPCA has a good performance.
