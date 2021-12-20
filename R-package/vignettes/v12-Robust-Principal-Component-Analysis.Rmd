@@ -54,17 +54,11 @@ Here are the steps:
 1. Input $X$, `outliers`, $M, \varepsilon$, where outliers record the non-zero positions in $S$;
 2. Denote $X_{n e w} \leftarrow \mathbf{0}$ with the same shape of $X$;
 3. For $i=1,2, \ldots, M$
-
-A. $X_{o l d}=\left\{\begin{array}{ll}X_{\text {new }}, & \text { for outliers } \\ X, & \text { for others }\end{array}\right.$
-
-B. Form KPCA on $X_{o l d}$ with $K=r$, and denote $v$ as the eigenvectors;
-
-C. $X_{\text {new }}=X_{\text {old }} \cdot v \cdot v^{T}$;
-
-D. If $\left\|X_{n e w}-X_{o l d}\right\|<\varepsilon$, break:
-
+  * $X_{o l d}=\left\{\begin{array}{ll}X_{\text {new }}, & \text { for outliers } \\ X, & \text { for others }\end{array}\right.$
+  * Form KPCA on $X_{o l d}$ with $K=r$, and denote $v$ as the eigenvectors;
+  * $X_{\text {new }}=X_{\text {old }} \cdot v \cdot v^{T}$;
+  * If $\left\|X_{n e w}-X_{o l d}\right\|<\varepsilon$, break:
 End for;
-
 4. Return $X_{\text {new }}$ as $L$;
 where $M$ is the maximum iteration times and $\varepsilon$ is the convergence coefficient.
 
