@@ -1819,7 +1819,7 @@ class abessGamma : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4
                    Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U,
                    Eigen::VectorXi &U_ind, int num) {
         int p = X.cols();
-        int n = X.rows();
+        // int n = X.rows();
         Eigen::VectorXd EY = expect_y(XA, beta_A, coef0);
         Eigen::VectorXd EY_square_weights = EY.array().square() * weights.array();
         Eigen::VectorXd d = X.transpose() * (EY - y).cwiseProduct(weights) -
