@@ -212,11 +212,11 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     out_result.add("test_loss", best_test_loss);
     out_result.add("ic", best_ic);
     out_result.add("lambda", best_lambda);
-// out_result.add("beta_all", beta_matrix);
-// out_result.add("coef0_all", coef0_matrix);
-// out_result.add("train_loss_all", train_loss_matrix);
-// out_result.add("ic_all", ic_matrix);
-// out_result.add("test_loss_all", test_loss_sum);
+    // out_result.add("beta_all", beta_matrix);
+    // out_result.add("coef0_all", coef0_matrix);
+    // out_result.add("train_loss_all", train_loss_matrix);
+    // out_result.add("ic_all", ic_matrix);
+    // out_result.add("test_loss_all", test_loss_sum);
 #endif
 
     // Restore best_fit_result for screening
