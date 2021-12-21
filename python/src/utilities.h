@@ -102,15 +102,15 @@ class Parameters {
         }
     }
 
-    void print_sequence() {
-        // for debug
-        std::cout << "==> Parameter List:" << endl;
-        for (int i = 0; i < (this->sequence).size(); i++) {
-            int support_size = (this->sequence(i)).support_size;
-            double lambda = (this->sequence(i)).lambda;
-            std::cout << "  support_size = " << support_size << ", lambda = " << lambda << endl;
-        }
-    }
+    // void print_sequence() {
+    //     // for debug
+    //     std::cout << "==> Parameter List:" << endl;
+    //     for (int i = 0; i < (this->sequence).size(); i++) {
+    //         int support_size = (this->sequence(i)).support_size;
+    //         double lambda = (this->sequence(i)).lambda;
+    //         std::cout << "  support_size = " << support_size << ", lambda = " << lambda << endl;
+    //     }
+    // }
 };
 
 #ifndef R_BUILD
@@ -245,31 +245,31 @@ void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, 1> &beta
         return;
     }
 
-    int s_size = beta_matrix.rows();
+    int sequence_size = beta_matrix.rows();
     if (normalize_type == 1) {
         array_quotient(beta, x_norm, 1);
         beta = beta * sqrt(double(n));
         coef0 = y_mean - matrix_dot(beta, x_mean);
-        for (int ind = 0; ind < s_size; ind++) {
-            array_quotient(beta_matrix(ind, 1), x_norm, 1);
-            beta_matrix(ind, 1) = beta_matrix(ind, 1) * sqrt(double(n));
-            coef0_matrix(ind, 1) = y_mean - matrix_dot(beta_matrix(ind, 1), x_mean);
+        for (int ind = 0; ind < sequence_size; ind++) {
+            array_quotient(beta_matrix(ind), x_norm, 1);
+            beta_matrix(ind) = beta_matrix(ind) * sqrt(double(n));
+            coef0_matrix(ind) = y_mean - matrix_dot(beta_matrix(ind), x_mean);
         }
     } else if (normalize_type == 2) {
         array_quotient(beta, x_norm, 1);
         beta = beta * sqrt(double(n));
         coef0 = coef0 - matrix_dot(beta, x_mean);
-        for (int ind = 0; ind < s_size; ind++) {
-            array_quotient(beta_matrix(ind, 1), x_norm, 1);
-            beta_matrix(ind, 1) = beta_matrix(ind, 1) * sqrt(double(n));
-            coef0_matrix(ind, 1) = coef0_matrix(ind, 1) - matrix_dot(beta_matrix(ind, 1), x_mean);
+        for (int ind = 0; ind < sequence_size; ind++) {
+            array_quotient(beta_matrix(ind), x_norm, 1);
+            beta_matrix(ind) = beta_matrix(ind) * sqrt(double(n));
+            coef0_matrix(ind) = coef0_matrix(ind) - matrix_dot(beta_matrix(ind), x_mean);
         }
     } else {
         array_quotient(beta, x_norm, 1);
         beta = beta * sqrt(double(n));
-        for (int ind = 0; ind < s_size; ind++) {
-            array_quotient(beta_matrix(ind, 1), x_norm, 1);
-            beta_matrix(ind, 1) = beta_matrix(ind, 1) * sqrt(double(n));
+        for (int ind = 0; ind < sequence_size; ind++) {
+            array_quotient(beta_matrix(ind), x_norm, 1);
+            beta_matrix(ind) = beta_matrix(ind) * sqrt(double(n));
         }
     }
     return;

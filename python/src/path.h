@@ -94,18 +94,18 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
 
         // evaluate the beta
         if (metric->is_cv) {
-            test_loss_matrix(ind, 0) =
+            test_loss_matrix(ind) =
                 metric->loss_function(test_x, test_y, test_weight, g_index, g_size, test_n, p, N, algorithm);
         } else {
-            ic_matrix(ind, 0) = metric->ic(train_n, M, N, algorithm);
+            ic_matrix(ind) = metric->ic(train_n, M, N, algorithm);
         }
 
         // save for best_model fit
-        beta_matrix(ind, 0) = algorithm->get_beta();
-        coef0_matrix(ind, 0) = algorithm->get_coef0();
-        train_loss_matrix(ind, 0) = algorithm->get_train_loss();
-        bd_matrix(ind, 0) = algorithm->get_bd();
-        effective_number_matrix(ind, 0) = algorithm->get_effective_number();
+        beta_matrix(ind) = algorithm->get_beta();
+        coef0_matrix(ind) = algorithm->get_coef0();
+        train_loss_matrix(ind) = algorithm->get_train_loss();
+        bd_matrix(ind) = algorithm->get_bd();
+        effective_number_matrix(ind) = algorithm->get_effective_number();
     }
 
     // To be ensured
@@ -140,8 +140,8 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
              Metric<T1, T2, T3, T4> *metric, Parameters &parameters, vector<Result<T2, T3>> &result_list) {
     int s_min = parameters.s_min;
     int s_max = parameters.s_max;
-    int s_size = s_max - s_min + 5;
-    Eigen::VectorXi support_size_list = Eigen::VectorXi::Zero(s_size);
+    int sequence_size = s_max - s_min + 5;
+    Eigen::VectorXi support_size_list = Eigen::VectorXi::Zero(sequence_size);
 
     // init: store for each fold
     int Kfold = metric->Kfold;
@@ -153,13 +153,13 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
     vector<Eigen::Matrix<VectorXd, -1, -1>> bd_matrix(Kfold);
     vector<Eigen::MatrixXd> effective_number_matrix(Kfold);
     for (int k = 0; k < Kfold; k++) {
-        beta_matrix[k].resize(s_size, 1);
-        coef0_matrix[k].resize(s_size, 1);
-        train_loss_matrix[k].resize(s_size, 1);
-        ic_matrix[k].resize(s_size, 1);
-        test_loss_matrix[k].resize(s_size, 1);
-        bd_matrix[k].resize(s_size, 1);
-        effective_number_matrix[k].resize(s_size, 1);
+        beta_matrix[k].resize(sequence_size, 1);
+        coef0_matrix[k].resize(sequence_size, 1);
+        train_loss_matrix[k].resize(sequence_size, 1);
+        ic_matrix[k].resize(sequence_size, 1);
+        test_loss_matrix[k].resize(sequence_size, 1);
+        bd_matrix[k].resize(sequence_size, 1);
+        effective_number_matrix[k].resize(sequence_size, 1);
     }
 
     T2 beta_init;
@@ -187,15 +187,15 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
             // record: left
             support_size_list(++ind) = left;
             for (int k = 0; k < Kfold; k++) {
-                beta_matrix[k](ind, 0) = algorithm_list[k]->beta;
-                coef0_matrix[k](ind, 0) = algorithm_list[k]->coef0;
-                train_loss_matrix[k](ind, 0) = algorithm_list[k]->get_train_loss();
-                bd_matrix[k](ind, 0) = algorithm_list[k]->bd;
-                effective_number_matrix[k](ind, 0) = algorithm_list[k]->get_effective_number();
+                beta_matrix[k](ind) = algorithm_list[k]->beta;
+                coef0_matrix[k](ind) = algorithm_list[k]->coef0;
+                train_loss_matrix[k](ind) = algorithm_list[k]->get_train_loss();
+                bd_matrix[k](ind) = algorithm_list[k]->bd;
+                effective_number_matrix[k](ind) = algorithm_list[k]->get_effective_number();
                 if (metric->is_cv)
-                    test_loss_matrix[k](ind, 0) = loss_list(k);
+                    test_loss_matrix[k](ind) = loss_list(k);
                 else
-                    ic_matrix[k](ind, 0) = loss_list(k);
+                    ic_matrix[k](ind) = loss_list(k);
             }
         }
 
@@ -208,15 +208,15 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
             // record: pos 2
             support_size_list(++ind) = right;
             for (int k = 0; k < Kfold; k++) {
-                beta_matrix[k](ind, 0) = algorithm_list[k]->beta;
-                coef0_matrix[k](ind, 0) = algorithm_list[k]->coef0;
-                train_loss_matrix[k](ind, 0) = algorithm_list[k]->get_train_loss();
-                bd_matrix[k](ind, 0) = algorithm_list[k]->bd;
-                effective_number_matrix[k](ind, 0) = algorithm_list[k]->get_effective_number();
+                beta_matrix[k](ind) = algorithm_list[k]->beta;
+                coef0_matrix[k](ind) = algorithm_list[k]->coef0;
+                train_loss_matrix[k](ind) = algorithm_list[k]->get_train_loss();
+                bd_matrix[k](ind) = algorithm_list[k]->bd;
+                effective_number_matrix[k](ind) = algorithm_list[k]->get_effective_number();
                 if (metric->is_cv)
-                    test_loss_matrix[k](ind, 0) = loss_list(k);
+                    test_loss_matrix[k](ind) = loss_list(k);
                 else
-                    ic_matrix[k](ind, 0) = loss_list(k);
+                    ic_matrix[k](ind) = loss_list(k);
             }
         }
 
@@ -255,15 +255,15 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
             support_size_list(++ind) = s;
             best_loss = loss;
             for (int k = 0; k < Kfold; k++) {
-                beta_matrix[k](ind, 0) = algorithm_list[k]->beta;
-                coef0_matrix[k](ind, 0) = algorithm_list[k]->coef0;
-                train_loss_matrix[k](ind, 0) = algorithm_list[k]->get_train_loss();
-                bd_matrix[k](ind, 0) = algorithm_list[k]->bd;
-                effective_number_matrix[k](ind, 0) = algorithm_list[k]->get_effective_number();
+                beta_matrix[k](ind) = algorithm_list[k]->beta;
+                coef0_matrix[k](ind) = algorithm_list[k]->coef0;
+                train_loss_matrix[k](ind) = algorithm_list[k]->get_train_loss();
+                bd_matrix[k](ind) = algorithm_list[k]->bd;
+                effective_number_matrix[k](ind) = algorithm_list[k]->get_effective_number();
                 if (metric->is_cv)
-                    test_loss_matrix[k](ind, 0) = loss_list(k);
+                    test_loss_matrix[k](ind) = loss_list(k);
                 else
-                    ic_matrix[k](ind, 0) = loss_list(k);
+                    ic_matrix[k](ind) = loss_list(k);
             }
         }
     }

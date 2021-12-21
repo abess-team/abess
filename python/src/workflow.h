@@ -107,14 +107,14 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
 
     // Get bestmodel index && fit bestmodel
     int min_loss_index = 0;
-    int s_size = (parameters.sequence).size();
-    Eigen::Matrix<T2, Dynamic, 1> beta_matrix(s_size, 1);
-    Eigen::Matrix<T3, Dynamic, 1> coef0_matrix(s_size, 1);
-    Eigen::Matrix<VectorXd, Dynamic, 1> bd_matrix(s_size, 1);
-    Eigen::MatrixXd ic_matrix(s_size, 1);
-    Eigen::MatrixXd test_loss_sum = Eigen::MatrixXd::Zero(s_size, 1);
-    Eigen::MatrixXd train_loss_matrix(s_size, 1);
-    Eigen::MatrixXd effective_number_matrix(s_size, 1);
+    int sequence_size = (parameters.sequence).size();
+    Eigen::Matrix<T2, Dynamic, 1> beta_matrix(sequence_size, 1);
+    Eigen::Matrix<T3, Dynamic, 1> coef0_matrix(sequence_size, 1);
+    Eigen::Matrix<VectorXd, Dynamic, 1> bd_matrix(sequence_size, 1);
+    Eigen::MatrixXd ic_matrix(sequence_size, 1);
+    Eigen::MatrixXd test_loss_sum = Eigen::MatrixXd::Zero(sequence_size, 1);
+    Eigen::MatrixXd train_loss_matrix(sequence_size, 1);
+    Eigen::MatrixXd effective_number_matrix(sequence_size, 1);
 
     if (Kfold == 1) {
         beta_matrix = result_list[0].beta_matrix;
@@ -135,9 +135,9 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
 
         // refit on full data
 #pragma omp parallel for
-        for (int ind = 0; ind < s_size; ind++) {
+        for (int ind = 0; ind < sequence_size; ind++) {
             int support_size = parameters.sequence(ind).support_size;
-            int lambda = parameters.sequence(ind).lambda;
+            double lambda = parameters.sequence(ind).lambda;
 
             int algorithm_index = omp_get_thread_num();
             used_algorithm_index(algorithm_index) = 1;
@@ -149,9 +149,9 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
 
             // warmstart from CV's result
             for (int j = 0; j < Kfold; j++) {
-                beta_init = beta_init + result_list[j].beta_matrix(ind, 0) / Kfold;
-                coef0_init = coef0_init + result_list[j].coef0_matrix(ind, 0) / Kfold;
-                bd_init = bd_init + result_list[j].bd_matrix(ind, 0) / Kfold;
+                beta_init = beta_init + result_list[j].beta_matrix(ind) / Kfold;
+                coef0_init = coef0_init + result_list[j].coef0_matrix(ind) / Kfold;
+                bd_init = bd_init + result_list[j].bd_matrix(ind) / Kfold;
             }
 
             algorithm_list[algorithm_index]->update_sparsity_level(support_size);
@@ -162,11 +162,11 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
             algorithm_list[algorithm_index]->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p,
                                                  data.g_num);
 
-            beta_matrix(ind, 0) = algorithm_list[algorithm_index]->get_beta();
-            coef0_matrix(ind, 0) = algorithm_list[algorithm_index]->get_coef0();
-            train_loss_matrix(ind, 0) = algorithm_list[algorithm_index]->get_train_loss();
-            ic_matrix(ind, 0) = metric->ic(data.n, data.M, data.g_num, algorithm_list[algorithm_index]);
-            effective_number_matrix(ind, 0) = algorithm_list[algorithm_index]->get_effective_number();
+            beta_matrix(ind) = algorithm_list[algorithm_index]->get_beta();
+            coef0_matrix(ind) = algorithm_list[algorithm_index]->get_coef0();
+            train_loss_matrix(ind) = algorithm_list[algorithm_index]->get_train_loss();
+            ic_matrix(ind) = metric->ic(data.n, data.M, data.g_num, algorithm_list[algorithm_index]);
+            effective_number_matrix(ind) = algorithm_list[algorithm_index]->get_effective_number();
         }
 
         for (int i = 0; i < algorithm_list_size; i++) {
@@ -184,11 +184,11 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     T3 best_coef0;
     double best_train_loss, best_ic, best_test_loss;
 
-    best_beta = beta_matrix(min_loss_index, 0);
-    best_coef0 = coef0_matrix(min_loss_index, 0);
-    best_train_loss = train_loss_matrix(min_loss_index, 0);
-    best_ic = ic_matrix(min_loss_index, 0);
-    best_test_loss = test_loss_sum(min_loss_index, 0);
+    best_beta = beta_matrix(min_loss_index);
+    best_coef0 = coef0_matrix(min_loss_index);
+    best_train_loss = train_loss_matrix(min_loss_index);
+    best_ic = ic_matrix(min_loss_index);
+    best_test_loss = test_loss_sum(min_loss_index);
 
     // Restore best_fit_result for normal
     restore_for_normal<T2, T3>(best_beta, best_coef0, beta_matrix, coef0_matrix, sparse_matrix, data.normalize_type,
