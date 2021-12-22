@@ -10,6 +10,7 @@
 
 * Python package
   * Support user-specified cross validation division by additional argument `cv_fold_id`. 
+  * Support generalized linear model when the link function is gamma distribution in `abess.linear.abessGamma`.
 
 * R package
   * Support generalized linear model when the link function is gamma distribution. 
@@ -22,6 +23,8 @@
 * Project development
   * Source code
     * Refactoring the Cpp source code to improve its readability and scalability. Please see [Code Developing](https://abess.readthedocs.io/en/latest/Contributing/CodeDeveloping.html) section for more details. 
+    * Pack current parameters (support\_size and lambda) into class `Parameters` to improve expandability.
+    * Check code format by [CodeFactor](https://www.codefactor.io/repository/github/abess-team/abess). For more details, please check [Code Format](https://abess.readthedocs.io/en/latest/Contributing/Formatting.html).
   * Documentation
     * Add a new instruction in Tutorial for explaining robust principal component analysis. 
     * [TODO] Add instruction for Gamma regression .
