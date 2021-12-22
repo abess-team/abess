@@ -6,7 +6,6 @@ include pre.sh
 include cygwinccompiler.py
 include distutils.cfg
 recursive-include abess *
-recursive-include image *
 
 exclude src/test_*.cpp
 exclude src/*.o
