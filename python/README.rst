@@ -1,7 +1,7 @@
    
 |logopic|      
 
-.. |logopic| image:: ../docs/image/icon_long.png    
+.. |logopic| image:: ../image/icon_long.png    
 
 
 |Python build status| |R build status| |codecov| |docs| |cran| |pypi| |pyversions| |License| |Codacy|
@@ -95,7 +95,7 @@ we obtain the runtime comparison picture:
 
 |pic1| 
 
-.. |pic1| image:: ../docs/image/timings.png
+.. |pic1| image:: ../image/timings.png
    :width: 100%
 
 abess reaches a high efficient performance especially in linear regression where it gives the fastest solution.

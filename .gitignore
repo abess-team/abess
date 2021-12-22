@@ -1,6 +1,5 @@
 python/abess.egg-info/*
-python/src/test.cpp
-python/src/test.exe
+python/src/*
 R-package/.Rproj.user/
 *.o
 *.exe
