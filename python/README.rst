@@ -26,7 +26,7 @@
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/abess
 .. |License| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg 
    :target: http://www.gnu.org/licenses/gpl-3.0
-.. |Codacy| image:: https://www.codefactor.io/repository/github/abess-team/abess/badge 
+.. |CodeFactor| image:: https://www.codefactor.io/repository/github/abess-team/abess/badge 
    :target: https://www.codefactor.io/repository/github/abess-team/abess
 
 Overview
