@@ -9,6 +9,9 @@ import numpy
 os_type = 'MS_WIN64'
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
+# copy src
+os.system('bash ' + CURRENT_DIR + '/copy_src.sh ' + CURRENT_DIR)
+
 if sys.platform.startswith('win32'):
     python_path = sys.base_prefix
     temp = python_path.split("\\")
