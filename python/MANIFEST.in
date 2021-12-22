@@ -11,5 +11,3 @@ recursive-include image *
 exclude src/test_*.cpp
 exclude src/*.o
 exclude src/*.def
-
-recursive-exclude test *
