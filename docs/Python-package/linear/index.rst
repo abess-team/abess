@@ -11,3 +11,4 @@ It is used for GLM problem.
     abessCox
     abessMultigaussian
     abessMultinomial
+    abessGamma
