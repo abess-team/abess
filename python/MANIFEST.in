@@ -11,3 +11,5 @@ recursive-include image *
 exclude src/test_*.cpp
 exclude src/*.o
 exclude src/*.def
+exclude src/pywrap_wrap.cpp
+exclude src/cabess.py
