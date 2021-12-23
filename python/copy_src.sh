@@ -1,4 +1,4 @@
 #!/bin/bash
-cd $1
+cd "$1"
 cd ..
-cp -R "src" $1
+cp -R "src" "$1"
