@@ -10,7 +10,7 @@ os_type = 'MS_WIN64'
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # copy src
-os.system('bash ' + CURRENT_DIR + '/copy_src.sh ' + CURRENT_DIR)
+os.system(f'bash "{CURRENT_DIR}/copy_src.sh" "{CURRENT_DIR}"')
 
 if sys.platform.startswith('win32'):
     python_path = sys.base_prefix
@@ -18,7 +18,7 @@ if sys.platform.startswith('win32'):
     version = str(sys.version_info.major) + str(sys.version_info.minor)
     path1 = "-I" + python_path + "\\include"
     path2 = "-L" + python_path + "\\libs"
-    os.system('bash ' + CURRENT_DIR + '/pre.sh ' + python_path + ' ' + version)
+    os.system(f'bash "{CURRENT_DIR}/pre.sh" ' + python_path + ' ' + version)
 
     cabess_module = Extension(name='abess._cabess',
                               sources=[CURRENT_DIR + '/src/api.cpp', CURRENT_DIR + '/src/List.cpp', CURRENT_DIR + '/src/utilities.cpp',
@@ -43,8 +43,7 @@ elif sys.platform.startswith('darwin'):
                                        CURRENT_DIR + '/src/pywrap.i'],
                               language='c++',
                               extra_compile_args=[
-                                  "-DNDEBUG", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native", 
-                                  "-fno-asynchronous-unwind-tables"],
+                                  "-DNDEBUG", "-O2", "-Wall", "-std=c++11", "-mavx", "-mfma", "-march=native"],
                               include_dirs=[numpy.get_include(), eigen_path],
                               swig_opts=["-c++"]
                               )

@@ -102,10 +102,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                     is_warm_start, exchange_num, always_select, splicing_type, sub_search);
                 temp->approximate_Newton = approximate_Newton;
                 algorithm_list_uni_dense[i] = temp;
-            } else if (model_type == 10) {
-                algorithm_list_uni_dense[i] = new abessRPCA<Eigen::MatrixXd>(
-                    algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon,
-                    is_warm_start, exchange_num, always_select, splicing_type, sub_search);
             }
         } else {
             if (model_type == 1) {
@@ -150,10 +146,6 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                     is_warm_start, exchange_num, always_select, splicing_type, sub_search);
                 temp->approximate_Newton = approximate_Newton;
                 algorithm_list_uni_sparse[i] = temp;
-            } else if (model_type == 10) {
-                algorithm_list_uni_sparse[i] = new abessRPCA<Eigen::SparseMatrix<double>>(
-                    algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon,
-                    is_warm_start, exchange_num, always_select, splicing_type, sub_search);
             }
         }
     }
@@ -472,12 +464,8 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
     int algorithm_list_size = max(thread, Kfold);
     vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(
         algorithm_list_size);
-    vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> *> algorithm_list_mul_dense(
-        algorithm_list_size);
     vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *>
         algorithm_list_uni_sparse(algorithm_list_size);
-    vector<Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>> *>
-        algorithm_list_mul_sparse(algorithm_list_size);
 
     for (int i = 0; i < algorithm_list_size; i++) {
         if (!sparse_matrix) {
