@@ -38,7 +38,7 @@ jobs:
           # gcovr ./python/src/ --xml
           ls *
           codecov -F Python
-  
+
   codecovR:
     name: Codecov for R-package
     runs-on: ubuntu-18.04
