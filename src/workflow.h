@@ -45,7 +45,8 @@ template <class T1, class T2, class T3, class T4>
 List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::VectorXd weight, int algorithm_type,
                    int path_type, bool is_warm_start, int ic_type, double ic_coef, int Kfold, Parameters parameters,
                    int screening_size, Eigen::VectorXi g_index, bool early_stop, int thread, bool sparse_matrix,
-                   Eigen::VectorXi &cv_fold_id, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list) {
+                   Eigen::VectorXi &cv_fold_id, Eigen::VectorXi &A_init,
+                   vector<Algorithm<T1, T2, T3, T4> *> algorithm_list) {
 #ifndef R_BUILD
     std::srand(123);
 #endif
@@ -62,8 +63,8 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     // screening
     Eigen::VectorXi screening_A;
     if (screening_size >= 0) {
-        screening_A =
-            screening<T1, T2, T3, T4>(data, algorithm_list, screening_size, beta_size, parameters.lambda_list(0));
+        screening_A = screening<T1, T2, T3, T4>(data, algorithm_list, screening_size, beta_size,
+                                                parameters.lambda_list(0), A_init);
     }
 
     // For CV:
@@ -86,7 +87,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     if (path_type == 1) {
 #pragma omp parallel for
         for (int i = 0; i < Kfold; i++) {
-            sequential_path_cv<T1, T2, T3, T4>(data, algorithm_list[i], metric, parameters, early_stop, i,
+            sequential_path_cv<T1, T2, T3, T4>(data, algorithm_list[i], metric, parameters, early_stop, i, A_init,
                                                result_list[i]);
         }
     } else {
@@ -98,7 +99,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
         //     result = pgs_path(data, algorithm, metric, s_min, s_max, log_lambda_min, log_lambda_max, powell_path,
         //     nlambda);
         // }
-        gs_path<T1, T2, T3, T4>(data, algorithm_list, metric, parameters, result_list);
+        gs_path<T1, T2, T3, T4>(data, algorithm_list, metric, parameters, A_init, result_list);
     }
 
     for (int k = 0; k < Kfold; k++) {
@@ -144,6 +145,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
 
             T2 beta_init;
             T3 coef0_init;
+            Eigen::VectorXi A_init;  // clear A_init
             coef_set_zero(beta_size, data.M, beta_init, coef0_init);
             Eigen::VectorXd bd_init = Eigen::VectorXd::Zero(data.g_num);
 
@@ -159,6 +161,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
             algorithm_list[algorithm_index]->update_beta_init(beta_init);
             algorithm_list[algorithm_index]->update_coef0_init(coef0_init);
             algorithm_list[algorithm_index]->update_bd_init(bd_init);
+            algorithm_list[algorithm_index]->update_A_init(A_init, data.g_num);
             algorithm_list[algorithm_index]->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p,
                                                  data.g_num);
 

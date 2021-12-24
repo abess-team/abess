@@ -8,9 +8,9 @@ void pywrap_GLM(double *x, int x_row, int x_col, double *y, int y_row, int y_col
                 int cv_fold_id_len, int s_min, int s_max, double lambda_min, double lambda_max, int n_lambda,
                 int screening_size, int *always_select, int always_select_len, int primary_model_fit_max_iter,
                 double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton, int thread,
-                bool covariance_update, bool sparse_matrix, int splicing_type, int sub_search, double *beta_out,
-                int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out, int train_loss_out_len,
-                double *ic_out, int ic_out_len) {
+                bool covariance_update, bool sparse_matrix, int splicing_type, int sub_search, int *A_init,
+                int A_init_len, double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len,
+                double *train_loss_out, int train_loss_out_len, double *ic_out, int ic_out_len) {
     Eigen::MatrixXd x_Mat;
     Eigen::MatrixXd y_Mat;
     Eigen::VectorXd weight_Vec;
@@ -19,6 +19,7 @@ void pywrap_GLM(double *x, int x_row, int x_col, double *y, int y_row, int y_col
     Eigen::VectorXd lambda_sequence_Vec;
     Eigen::VectorXi always_select_Vec;
     Eigen::VectorXi cv_fold_id_Vec;
+    Eigen::VectorXi A_init_Vec;
 
     x_Mat = Pointer2MatrixXd(x, x_row, x_col);
     y_Mat = Pointer2MatrixXd(y, y_row, y_col);
@@ -28,13 +29,14 @@ void pywrap_GLM(double *x, int x_row, int x_col, double *y, int y_row, int y_col
     lambda_sequence_Vec = Pointer2VectorXd(lambda_sequence, lambda_sequence_len);
     always_select_Vec = Pointer2VectorXi(always_select, always_select_len);
     cv_fold_id_Vec = Pointer2VectorXi(cv_fold_id, cv_fold_id_len);
+    A_init_Vec = Pointer2VectorXi(A_init, A_init_len);
 
     List mylist =
         abessGLM_API(x_Mat, y_Mat, n, p, normalize_type, weight_Vec, algorithm_type, model_type, max_iter, exchange_num,
                      path_type, is_warm_start, ic_type, ic_coef, Kfold, sequence_Vec, lambda_sequence_Vec, s_min, s_max,
                      lambda_min, lambda_max, n_lambda, screening_size, gindex_Vec, always_select_Vec,
                      primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, thread,
-                     covariance_update, sparse_matrix, splicing_type, sub_search, cv_fold_id_Vec);
+                     covariance_update, sparse_matrix, splicing_type, sub_search, cv_fold_id_Vec, A_init_Vec);
 
     if (y_col == 1) {
         Eigen::VectorXd beta;
@@ -72,9 +74,9 @@ void pywrap_PCA(double *x, int x_row, int x_col, double *weight, int weight_len,
                 bool is_warm_start, int ic_type, double ic_coef, int Kfold, int *gindex, int gindex_len, int *sequence,
                 int sequence_row, int sequence_col, int *cv_fold_id, int cv_fold_id_len, int s_min, int s_max,
                 int screening_size, int *always_select, int always_select_len, bool early_stop, int thread,
-                bool sparse_matrix, int splicing_type, int sub_search, int pca_num, double *beta_out, int beta_out_len,
-                double *coef0_out, int coef0_out_len, double *train_loss_out, int train_loss_out_len, double *ic_out,
-                int ic_out_len) {
+                bool sparse_matrix, int splicing_type, int sub_search, int pca_num, int *A_init, int A_init_len,
+                double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
+                int train_loss_out_len, double *ic_out, int ic_out_len) {
     Eigen::MatrixXd x_Mat;
     Eigen::MatrixXd sigma_Mat;
     Eigen::MatrixXi sequence_Mat;
@@ -83,6 +85,7 @@ void pywrap_PCA(double *x, int x_row, int x_col, double *weight, int weight_len,
     Eigen::VectorXd lambda_sequence_Vec;
     Eigen::VectorXi always_select_Vec;
     Eigen::VectorXi cv_fold_id_Vec;
+    Eigen::VectorXi A_init_Vec;
 
     x_Mat = Pointer2MatrixXd(x, x_row, x_col);
     sigma_Mat = Pointer2MatrixXd(sigma, sigma_row, sigma_col);
@@ -91,11 +94,12 @@ void pywrap_PCA(double *x, int x_row, int x_col, double *weight, int weight_len,
     gindex_Vec = Pointer2VectorXi(gindex, gindex_len);
     always_select_Vec = Pointer2VectorXi(always_select, always_select_len);
     cv_fold_id_Vec = Pointer2VectorXi(cv_fold_id, cv_fold_id_len);
+    A_init_Vec = Pointer2VectorXi(A_init, A_init_len);
 
     List mylist = abessPCA_API(x_Mat, n, p, normalize_type, weight_Vec, sigma_Mat, max_iter, exchange_num, path_type,
                                is_warm_start, ic_type, ic_coef, Kfold, sequence_Mat, s_min, s_max, screening_size,
                                gindex_Vec, always_select_Vec, early_stop, thread, sparse_matrix, splicing_type,
-                               sub_search, cv_fold_id_Vec, pca_num);
+                               sub_search, cv_fold_id_Vec, pca_num, A_init_Vec);
 
     Eigen::MatrixXd beta;
     if (pca_num == 1) {
@@ -157,26 +161,29 @@ void pywrap_RPCA(double *x, int x_row, int x_col, int n, int p, int normalize_ty
                  int *sequence, int sequence_len, double *lambda_sequence, int lambda_sequence_len, int s_min,
                  int s_max, double lambda_min, double lambda_max, int n_lambda, int screening_size, int *always_select,
                  int always_select_len, int primary_model_fit_max_iter, double primary_model_fit_epsilon,
-                 bool early_stop, int thread, bool sparse_matrix, int splicing_type, int sub_search, double *beta_out,
-                 int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out, int train_loss_out_len,
-                 double *ic_out, int ic_out_len) {
+                 bool early_stop, int thread, bool sparse_matrix, int splicing_type, int sub_search, int *A_init,
+                 int A_init_len, double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len,
+                 double *train_loss_out, int train_loss_out_len, double *ic_out, int ic_out_len) {
     Eigen::MatrixXd x_Mat;
     Eigen::VectorXi sequence_Vec;
     Eigen::VectorXi gindex_Vec;
     Eigen::VectorXd lambda_sequence_Vec;
     Eigen::VectorXi always_select_Vec;
     Eigen::VectorXi cv_fold_id_Vec;
+    Eigen::VectorXi A_init_Vec;
 
     x_Mat = Pointer2MatrixXd(x, x_row, x_col);
     sequence_Vec = Pointer2VectorXi(sequence, sequence_len);
     lambda_sequence_Vec = Pointer2VectorXd(lambda_sequence, lambda_sequence_len);
     gindex_Vec = Pointer2VectorXi(gindex, gindex_len);
     always_select_Vec = Pointer2VectorXi(always_select, always_select_len);
+    A_init_Vec = Pointer2VectorXi(A_init, A_init_len);
 
-    List mylist = abessRPCA_API(x_Mat, n, p, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef,
-                                sequence_Vec, lambda_sequence_Vec, s_min, s_max, lambda_min, lambda_max, n_lambda,
-                                screening_size, primary_model_fit_max_iter, primary_model_fit_epsilon, gindex_Vec,
-                                always_select_Vec, early_stop, thread, sparse_matrix, splicing_type, sub_search);
+    List mylist =
+        abessRPCA_API(x_Mat, n, p, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, sequence_Vec,
+                      lambda_sequence_Vec, s_min, s_max, lambda_min, lambda_max, n_lambda, screening_size,
+                      primary_model_fit_max_iter, primary_model_fit_epsilon, gindex_Vec, always_select_Vec, early_stop,
+                      thread, sparse_matrix, splicing_type, sub_search, A_init_Vec);
 
     Eigen::VectorXd beta;
     double coef0 = 0;

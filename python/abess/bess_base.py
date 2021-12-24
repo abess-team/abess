@@ -151,7 +151,7 @@ class bess_base(BaseEstimator):
         return X
 
     def fit(self, X=None, y=None, is_normal=True,
-            weight=None, group=None, cv_fold_id=None):
+            weight=None, group=None, cv_fold_id=None, A_init=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -274,6 +274,18 @@ class bess_base(BaseEstimator):
             if len(set(cv_fold_id)) != self.cv:
                 raise ValueError(
                     "The number of different masks should be equal to `cv`.")
+
+        # A_init
+        if A_init is None:
+            A_init = np.array([], dtype="int32")
+        else:
+            A_init = np.array(A_init, dtype="int32")
+            if A_init.ndim > 1:
+                raise ValueError(
+                    "The initial active set should be an 1D array of integers.")
+            if (A_init.min() < 0 or A_init.max() >= p):
+                raise ValueError(
+                    "A_init contains wrong index.")
 
         # Group:
         if group is None:
@@ -457,6 +469,7 @@ class bess_base(BaseEstimator):
                             self.sparse_matrix,
                             self.splicing_type,
                             self.important_search,
+                            A_init,
                             p * M, 1 * M,
                             1, 1
                             )

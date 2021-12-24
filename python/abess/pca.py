@@ -5,6 +5,7 @@ from sklearn.utils.validation import check_array
 from .cabess import *
 from .bess_base import bess_base
 
+
 def fix_docs(cls):
     # inherit the document from base class
     index = cls.__doc__.find("Examples\n    --------\n")
@@ -107,7 +108,7 @@ class abessPCA(bess_base):
         return explain / full
 
     def fit(self, X=None, is_normal=False,
-            group=None, Sigma=None, number=1, n=None):
+            group=None, Sigma=None, number=1, n=None, A_init=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -276,6 +277,18 @@ class abessPCA(bess_base):
             raise ValueError(
                 "important_search should be a non-negative number.")
 
+        # A_init
+        if A_init is None:
+            A_init = np.array([], dtype="int32")
+        else:
+            A_init = np.array(A_init, dtype="int32")
+            if A_init.ndim > 1:
+                raise ValueError(
+                    "The initial active set should be an 1D array of integers.")
+            if (A_init.min() < 0 or A_init.max() > p):
+                raise ValueError(
+                    "A_init contains wrong index.")
+
         # Sparse X
         if self.sparse_matrix:
             if not isinstance(X, type(coo_matrix((1, 1)))):
@@ -326,6 +339,7 @@ class abessPCA(bess_base):
                             self.splicing_type,
                             self.important_search,
                             number,
+                            A_init,
                             p * number, 1,
                             1, 1
                             )
@@ -383,7 +397,7 @@ class abessRPCA(bess_base):
             splicing_type=splicing_type
         )
 
-    def fit(self, X, r, group=None):
+    def fit(self, X, r, group=None, A_init=None):
         """
         The fit function is used to transfer the information of data and return the fit result.
 
@@ -490,7 +504,7 @@ class abessRPCA(bess_base):
                 "thread should be positive number or 0 (maximum supported by your device).")
 
         # Splicing type
-        if self.splicing_type not in (0,1):
+        if self.splicing_type not in (0, 1):
             raise ValueError("splicing type should be 0 or 1.")
 
         # Important_search
@@ -498,6 +512,18 @@ class abessRPCA(bess_base):
                 or self.important_search < 0):
             raise ValueError(
                 "important_search should be a non-negative number.")
+
+        # A_init
+        if A_init is None:
+            A_init = np.array([], dtype="int32")
+        else:
+            A_init = np.array(A_init, dtype="int32")
+            if A_init.ndim > 1:
+                raise ValueError(
+                    "The initial active set should be an 1D array of integers.")
+            if (A_init.min() < 0 or A_init.max() > p):
+                raise ValueError(
+                    "A_init contains wrong index.")
 
         # Sparse X
         if self.sparse_matrix:
@@ -546,6 +572,7 @@ class abessRPCA(bess_base):
                              self.sparse_matrix,
                              self.splicing_type,
                              self.important_search,
+                             A_init,
                              n * p, 1,
                              1, 1
                              )

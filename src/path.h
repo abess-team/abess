@@ -26,7 +26,7 @@ using namespace Eigen;
 template <class T1, class T2, class T3, class T4>
 void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *algorithm,
                         Metric<T1, T2, T3, T4> *metric, Parameters &parameters, bool early_stop, int k,
-                        Result<T2, T3> &result) {
+                        Eigen::VectorXi &A_init, Result<T2, T3> &result) {
     int beta_size = algorithm->get_beta_size(data.n, data.p);
     int p = data.p;
     int N = data.g_num;
@@ -73,7 +73,6 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
     T2 beta_init;
     T3 coef0_init;
     coef_set_zero(beta_size, M, beta_init, coef0_init);
-    Eigen::VectorXi A_init;
     Eigen::VectorXd bd_init;
 
     for (int ind = 0; ind < sequence_size; ind++) {
@@ -137,7 +136,8 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
 
 template <class T1, class T2, class T3, class T4>
 void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> algorithm_list,
-             Metric<T1, T2, T3, T4> *metric, Parameters &parameters, vector<Result<T2, T3>> &result_list) {
+             Metric<T1, T2, T3, T4> *metric, Parameters &parameters, Eigen::VectorXi &A_init,
+             vector<Result<T2, T3>> &result_list) {
     int s_min = parameters.s_min;
     int s_max = parameters.s_max;
     int sequence_size = s_max - s_min + 5;
@@ -166,7 +166,6 @@ void gs_path(Data<T1, T2, T3, T4> &data, vector<Algorithm<T1, T2, T3, T4> *> alg
     T3 coef0_init;
     int beta_size = algorithm_list[0]->get_beta_size(data.n, data.p);
     coef_set_zero(beta_size, data.M, beta_init, coef0_init);
-    Eigen::VectorXi A_init;
     Eigen::VectorXd bd_init;
     // gs only support the first lambda
     FIT_ARG<T2, T3> fit_arg(0, parameters.lambda_list(0), beta_init, coef0_init, bd_init, A_init);
