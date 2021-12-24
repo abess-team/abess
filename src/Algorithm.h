@@ -526,8 +526,13 @@ class Algorithm {
             Eigen::VectorXi U = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
             Eigen::VectorXi U_ind = Eigen::VectorXi::LinSpaced(beta_size, 0, beta_size - 1);
             this->sacrifice(X, X_A, y, beta, beta_A, coef0, A, I, weights, g_index, g_size, N, A_ind, bd, U, U_ind, 0);
+            // alway_select
             for (int i = 0; i < this->always_select.size(); i++) {
                 bd(this->always_select(i)) = DBL_MAX;
+            }
+            // A_init
+            for (int i = 0; i < A.size(); i++) {
+                bd(A(i)) = DBL_MAX;
             }
         }
 

@@ -24,7 +24,7 @@ using namespace Eigen;
 
 template <class T1, class T2, class T3, class T4>
 Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, T2, T3, T4> *> algorithm_list,
-                          int screening_size, int &beta_size, double lambda) {
+                          int screening_size, int &beta_size, double lambda, Eigen::VectorXi &A_init) {
     int n = data.n;
     int M = data.M;
     int g_num = data.g_num;
@@ -38,7 +38,6 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, 
 
     T2 beta_init;
     T3 coef0_init;
-    Eigen::VectorXi A_init;
     Eigen::VectorXd bd_init;
 
     for (int i = 0; i < g_num; i++) {
