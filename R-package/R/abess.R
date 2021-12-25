@@ -810,7 +810,8 @@ abess.default <- function(x,
     sparse_matrix = sparse_X,
     splicing_type = splicing_type,
     sub_search = important_search,
-    cv_fold_id = cv_fold_id
+    cv_fold_id = cv_fold_id, 
+    A_init = as.integer(c())
   )
   t2 <- proc.time()
   # print(t2 - t1)
