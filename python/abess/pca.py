@@ -521,7 +521,7 @@ class abessRPCA(bess_base):
             if A_init.ndim > 1:
                 raise ValueError(
                     "The initial active set should be an 1D array of integers.")
-            if (A_init.min() < 0 or A_init.max() > p):
+            if (A_init.min() < 0 or A_init.max() >= n * p):
                 raise ValueError(
                     "A_init contains wrong index.")
 
