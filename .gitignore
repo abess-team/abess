@@ -125,3 +125,4 @@ python/src/pywrap_wrap.cpp
 
 src/pywrap_wrap.cpp
 src/cabess.py
+R-package/src/Makevars
