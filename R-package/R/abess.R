@@ -810,7 +810,8 @@ abess.default <- function(x,
     sparse_matrix = sparse_X,
     splicing_type = splicing_type,
     sub_search = important_search,
-    cv_fold_id = cv_fold_id
+    cv_fold_id = cv_fold_id, 
+    A_init = as.integer(c())
   )
   t2 <- proc.time()
   # print(t2 - t1)
@@ -849,7 +850,11 @@ abess.default <- function(x,
     ## change the order:
     reserve_order <- length(result[["sequence"]]):1
     result[["beta_all"]] <- result[["beta_all"]][reserve_order]
-    result[["coef0_all"]] <- result[["coef0_all"]][reserve_order, , drop = FALSE]
+    if (is.matrix(result[["coef0_all"]])) {
+      result[["coef0_all"]] <- result[["coef0_all"]][reserve_order, , drop = FALSE]
+    } else {
+      result[["coef0_all"]] <- as.matrix(result[["coef0_all"]][reserve_order])
+    }
     result[["train_loss_all"]] <- result[["train_loss_all"]][reserve_order, , drop = FALSE]
     result[["ic_all"]] <- result[["ic_all"]][reserve_order, , drop = FALSE]
     result[["test_loss_all"]] <- result[["test_loss_all"]][reserve_order, , drop = FALSE]

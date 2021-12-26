@@ -45,7 +45,7 @@ test_batch <- function(abess_fit, dataset, family) {
 
   ## deviance
   if (f[["family"]] == "gaussian") {
-    oracle_dev <- mean((oracle_est[["residuals"]])^2)
+    oracle_dev <- mean((oracle_est[["residuals"]])^2) / 2
     expect_equal(oracle_dev, abess_fit[["dev"]][fit_s_size + 1])
   } else if (f[["family"]] != "poisson") {
     oracle_dev <- deviance(oracle_est) / 2

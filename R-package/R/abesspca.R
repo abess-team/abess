@@ -435,7 +435,8 @@ abesspca <- function(x,
     splicing_type = splicing_type,
     sub_search = important_search,
     cv_fold_id = cv_fold_id,
-    pca_num = kpc.num
+    pca_num = kpc.num, 
+    A_init = as.integer(c())
   )
 
   # result[["beta"]] <- NULL

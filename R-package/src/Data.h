@@ -12,17 +12,16 @@
 #include <Eigen/Eigen>
 #endif
 #include <iostream>
-
 #include <vector>
+
 #include "normalize.h"
 #include "utilities.h"
 using namespace std;
 using namespace Eigen;
 
 template <class T1, class T2, class T3, class T4>
-class Data
-{
-public:
+class Data {
+   public:
     T4 x;
     T1 y;
     Eigen::VectorXd weight;
@@ -39,8 +38,8 @@ public:
 
     Data() = default;
 
-    Data(T4 &x, T1 &y, int normalize_type, Eigen::VectorXd &weight, Eigen::VectorXi &g_index, bool sparse_matrix, int beta_size)
-    {
+    Data(T4 &x, T1 &y, int normalize_type, Eigen::VectorXd &weight, Eigen::VectorXi &g_index, bool sparse_matrix,
+         int beta_size) {
         this->x = x;
         this->y = y;
         this->normalize_type = normalize_type;
@@ -52,32 +51,24 @@ public:
         this->x_mean = Eigen::VectorXd::Zero(this->p);
         this->x_norm = Eigen::VectorXd::Zero(this->p);
 
-        if (normalize_type > 0 && !sparse_matrix)
-        {
+        if (normalize_type > 0 && !sparse_matrix) {
             this->normalize();
         }
 
         this->g_index = g_index;
         this->g_num = g_index.size();
         Eigen::VectorXi temp = Eigen::VectorXi::Zero(this->g_num);
-        for (int i = 0; i < g_num - 1; i++)
-            temp(i) = g_index(i + 1);
+        for (int i = 0; i < g_num - 1; i++) temp(i) = g_index(i + 1);
         temp(g_num - 1) = beta_size;
         this->g_size = temp - g_index;
     };
 
-    void normalize()
-    {
-        if (this->normalize_type == 1)
-        {
+    void normalize() {
+        if (this->normalize_type == 1) {
             Normalize(this->x, this->y, this->weight, this->x_mean, this->y_mean, this->x_norm);
-        }
-        else if (this->normalize_type == 2)
-        {
+        } else if (this->normalize_type == 2) {
             Normalize3(this->x, this->weight, this->x_mean, this->x_norm);
-        }
-        else
-        {
+        } else {
             Normalize4(this->x, this->weight, this->x_norm);
         }
     };
@@ -107,4 +98,4 @@ public:
     //     return this->p;
     // };
 };
-#endif //SRC_DATA_H
+#endif  // SRC_DATA_H
