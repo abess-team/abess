@@ -205,6 +205,10 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
         Named("ic") = best_ic, Named("lambda") = best_lambda, Named("beta_all") = beta_matrix,
         Named("coef0_all") = coef0_matrix, Named("train_loss_all") = train_loss_matrix, Named("ic_all") = ic_matrix,
         Named("effective_number_all") = effective_number_matrix, Named("test_loss_all") = test_loss_sum);
+    if (path_type == 2)
+    {
+        out_result.push_back(parameters.support_size_list, "sequence");
+    }
 #else
     out_result.add("beta", best_beta);
     out_result.add("coef0", best_coef0);
