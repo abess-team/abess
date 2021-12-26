@@ -1,3 +1,9 @@
+inst/doc
+docs/*.html
+docs/
+docs
+src/tmp/*
+..pdf
 *.o
 *.so
 *.dll
