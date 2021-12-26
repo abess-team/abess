@@ -1,5 +1,11 @@
 python/abess.egg-info/*
 python/src/*
+!python/src/List.cpp
+!python/src/List.h
+!python/src/numpy.i
+!python/src/pywrap.cpp
+!python/src/pywrap.h
+!python/src/pywrap.i
 R-package/.Rproj.user/
 *.o
 *.exe
