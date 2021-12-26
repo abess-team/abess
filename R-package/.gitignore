@@ -4,3 +4,9 @@ docs/
 docs
 src/tmp/*
 ..pdf
+src/*.h
+src/*.cpp
+*.so
+*.o
+config.log
+config.status
