@@ -12,7 +12,18 @@ CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 AC_LANG(C++)
 AC_PROG_CPP
 
-cp -R ../src/ src/
+echo '*****************************************************************************************'
+: ${filename="src/workflow.h"}
+if test "${filename}"; then
+  echo "${filename} does not exist. Copy from the ../src/ directory."
+  cd ..
+  cp -R ../src/ src/
+else 
+  echo "${filename} exist. Install R package use complier code in src/ directory."
+  cd ..
+fi
+echo '*****************************************************************************************'
+
 
 OPENMP_CXXFLAGS=""
 

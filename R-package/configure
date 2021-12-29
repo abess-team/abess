@@ -3273,7 +3273,18 @@ ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ex
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
-cp -R ../src/ src/
+echo '*****************************************************************************************'
+: ${filename="src/workflow.h"}
+if test "${filename}"; then
+  echo "${filename} does not exist. Copy from the ../src/ directory."
+  cd ..
+  cp -R ../src/ src/
+else
+  echo "${filename} exist. Install R package use complier code in src/ directory."
+  cd ..
+fi
+echo '*****************************************************************************************'
+
 
 OPENMP_CXXFLAGS=""
 
