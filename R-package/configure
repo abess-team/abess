@@ -3277,11 +3277,11 @@ cd src
 echo '*****************************************************************************************'
 if test -f workflow.h
 then
-  echo "Complier code does not exist. Copy from the ../src/ directory."
+  echo "Complier code exists in src/ directory. Install R package according to the complier code."
   cd ..
-  cp -R ../src/ src/
+  cp -R ../src/* src/
 else
-  echo "Complier code exists in src/ directory. Install R package the complier code."
+  echo "Complier code does not exist. Copy from the ../src/ directory."
   cd ..
 fi
 echo '*****************************************************************************************'
