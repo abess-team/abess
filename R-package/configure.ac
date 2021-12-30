@@ -6,11 +6,6 @@ if test -z "${R_HOME}"; then
   echo "could not determine R_HOME"
   exit 1
 fi
-CXX=`"${R_HOME}/bin/R" CMD config CXX`
-CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
-CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
-AC_LANG(C++)
-AC_PROG_CPP
 
 cd src
 echo '*****************************************************************************************'
@@ -24,6 +19,11 @@ fi
 echo '*****************************************************************************************'
 cd ..
 
+CXX=`"${R_HOME}/bin/R" CMD config CXX`
+CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+AC_LANG(C++)
+AC_PROG_CPP
 
 OPENMP_CXXFLAGS=""
 

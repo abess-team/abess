@@ -2136,6 +2136,19 @@ if test -z "${R_HOME}"; then
   echo "could not determine R_HOME"
   exit 1
 fi
+
+cd src
+echo '*****************************************************************************************'
+if test -f workflow.h
+then
+  echo "Complier code exists in src/ directory. Install R package according to the complier code."
+else
+  echo "Complier code does not exist. Copy from the ../src/ directory."
+  cp -R ../../src/*.h ../../src/*.cpp .
+fi
+echo '*****************************************************************************************'
+cd ..
+
 CXX=`"${R_HOME}/bin/R" CMD config CXX`
 CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
 CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
@@ -3271,19 +3284,6 @@ ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-cd src
-echo '*****************************************************************************************'
-if test -f workflow.h
-then
-  echo "Complier code exists in src/ directory. Install R package according to the complier code."
-else
-  echo "Complier code does not exist. Copy from the ../src/ directory."
-  cp -R ../../src/*.h ../../src/*.cpp .
-fi
-echo '*****************************************************************************************'
-cd ..
 
 
 OPENMP_CXXFLAGS=""
