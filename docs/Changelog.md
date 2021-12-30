@@ -16,7 +16,7 @@ It is the fourth stable release for `abess`. More features and concrete algorith
 
 * Cpp
   * New features:
-    * Support user-specified cross validation division.
+    * Support user-specified cross validation division. 
     * Support user-specified initial active set.
     * Support flexible support size for sequentially best subset selection for principal component analysis (PCA). 
   * New best subset selection tasks: 
@@ -26,30 +26,36 @@ It is the fourth stable release for `abess`. More features and concrete algorith
     * Bug fixed
 
 * Python
+  * New best subset selection features and tasks implemented in Cpp are wrapped in Python functions. 
+  <!--
   * Support user-specified cross validation division by additional argument `cv_fold_id`. [[link]](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#User-specified-cross-validation-division)
   * Support user-specified initial active set by additional argument `A_init`.
   * Support generalized linear model when the link function is gamma distribution in `abess.linear.abessGamma`.
   * Support robust principal component analysis (RPCA) in `abess.pca.abessRPCA`. [[document]](https://abess.readthedocs.io/en/latest/Tutorial/RPCA.html)
   * Support flexible support size for sequentially best subset selection for principal component analysis (PCA). The support sizes for different PCs can be different now.
+  -->
   * More comprehensive test files. 
   * A new release in Pypi.
 
 * R package
+  * New best subset selection features and tasks implemented in Cpp are wrapped in R functions. 
+  <!--
   * Support user-specified cross validation division for `abess` and `abesspca` function by additional argument `foldid`.
   * Support generalized linear model when the link function is gamma distribution. 
   By setting `family = "gamma"` in `abess` function, it can analyze the dataset with a positive valued and skewed response.
   * Support RPCA now. A new R function `abessrpca` access it. [[document]](https://abess-team.github.io/abess/articles/v12-Robust-Principal-Component-Analysis.html)
   * Support flexible support size for sequential principal component analysis (PCA), accompanied with several helpful generic function like plot. 
+  -->
   * A new release in CRAN.
 
 * Project development
   * Source code
     * Refactoring the Cpp source code to improve its readability and scalability. Please check [Code Developing](https://abess.readthedocs.io/en/latest/Contributing/CodeDeveloping.html) section for more details. 
     * Combine all parameters (e.g. support\_size and lambda) in one list to improve expandability.
-    * Move `src/` directory to the root of repositories.
+    * Move the core code `src` directory to the root of repository.
   * Documentation
-    * Add a new instruction in Tutorial for explaining robust principal component analysis. 
-    * Add instruction for user-specified cross validation division into [Advanced Features](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html).
+    * Add instruction for robust principal component analysis in [Tutorial](https://abess.readthedocs.io/en/latest/Tutorial/RPCA.html). 
+    * Add instruction for user-specified cross validation division in [Advanced Features](https://abess.readthedocs.io/en/latest/Tutorial/advanced_featureshtml#User-specified-cross-validation-division).
     * Update development guideline according to cpp source code change in [Code Developing](https://abess.readthedocs.io/en/latest/Contributing/CodeDeveloping.html).
     * Adding more details and giving more links related to core functions.  
   * Code coverage
