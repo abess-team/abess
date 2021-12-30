@@ -31,7 +31,7 @@ If you use [Visual Studio Code](https://code.visualstudio.com/) for coding, an e
 
 However, in order to adapt to our rules, you need to add some statements in `setting.json` (the configuration file for Visual Studio Code):
 
-```json
+```javascript
 "C_Cpp.clang_format_fallbackStyle": "{BasedOnStyle: Google, UseTab: Never, IndentWidth: 4, TabWidth: 4, ColumnLimit: 120, Standard: Cpp11}",
 "files.insertFinalNewline": true,
 "files.trimFinalNewlines": true,
