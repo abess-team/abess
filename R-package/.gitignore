@@ -11,3 +11,4 @@ src/*.cpp
 config.log
 config.status
 autom4te.cache
+*.dll
