@@ -17,13 +17,12 @@ echo '**************************************************************************
 if test -f workflow.h 
 then
   echo "Complier code exists in src/ directory. Install R package according to the complier code."
-  cp -R ../src/* src/
-  cd ..
 else 
   echo "Complier code does not exist. Copy from the ../src/ directory."
-  cd ..
+  cp -R ../../src/*.h ../../src/*.cpp .
 fi
 echo '*****************************************************************************************'
+cd ..
 
 
 OPENMP_CXXFLAGS=""
