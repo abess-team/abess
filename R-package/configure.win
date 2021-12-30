@@ -1,1 +1,1 @@
-cp -r ../src/* src/
+cp -rf ../src/*.cpp ../src/*.h src

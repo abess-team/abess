@@ -2144,7 +2144,7 @@ then
   echo "Complier code exists in src/ directory. Install R package according to the complier code."
 else
   echo "Complier code does not exist. Copy from the ../src/ directory."
-  cp -R ../../src/*.h ../../src/*.cpp .
+  cp -rf ../../src/*.h ../../src/*.cpp .
 fi
 echo '*****************************************************************************************'
 cd ..
