@@ -82,9 +82,11 @@ List out_result = abessWorkflow<{T1}, {T2}, {T3}, {T4}>(..., algorithm_list);
 
 The new algorithm should inheritate a base class, called *Algorithm*, which defined in `Algorithm.h`. And then rewrite some virtual function interfaces to fit specify problem. The implementation is modularized such that you can easily extend the package. 
 
-A simplest concrete algorithm looks like:
+<!-- [NOT SUPPORTED]
+A simplest concrete algorithm looks like:  
 
 ```cpp
+// [NOT SUPPORTED]
 #include "Algorithm.h"
 
 template <class T4>
@@ -100,7 +102,7 @@ public:
         // return the current loss
     };
 
-    void d(...){
+    void g(...){
         // define the first order derivative of loss
     };
 
@@ -113,6 +115,9 @@ public:
 
 The abess process can automatically use the loss and its derivatives to complete algorithm. However, it should be noted that if you want to achieve higher efficiency, a FULL concrete algorithm can be: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessLogistic,-%3A%20public%20Algorithm%3CEigen)
 
+-->
+
+A concrete algorithm is like: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessLogistic,-%3A%20public%20Algorithm%3CEigen)
 ```cpp
 #include "Algorithm.h"
 
