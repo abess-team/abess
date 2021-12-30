@@ -1,4 +1,4 @@
-AC_INIT([abess], m4_esyscmd_s([awk -e '/^Version:/ {print $2}' DESCRIPTION]))
+AC_INIT([abess], m4_esyscmd_s([awk '/^Version:/ {print $2}' DESCRIPTION]))
 
 # Find the compiler and compiler flags used by R.
 : ${R_HOME=`R RHOME`}
@@ -14,10 +14,10 @@ AC_PROG_CPP
 
 cd src
 echo '*****************************************************************************************'
-if test -f "workflow.h"; then
+if [ -f "workflow.h" ]; then
   echo "Complier code does not exist. Copy from the ../src/ directory."
   cd ..
-  cp -R ../src/ src/
+  cp -R ../src/* src/
 else 
   echo "Complier code exists in src/ directory. Install R package according to the complier code."
   cd ..
