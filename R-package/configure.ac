@@ -14,12 +14,13 @@ AC_PROG_CPP
 
 cd src
 echo '*****************************************************************************************'
-if [ -f "workflow.h" ]; then
-  echo "Complier code does not exist. Copy from the ../src/ directory."
+if test -f workflow.h 
+then
+  echo "Complier code exists in src/ directory. Install R package according to the complier code."
   cd ..
   cp -R ../src/* src/
 else 
-  echo "Complier code exists in src/ directory. Install R package according to the complier code."
+  echo "Complier code does not exist. Copy from the ../src/ directory."
   cd ..
 fi
 echo '*****************************************************************************************'
