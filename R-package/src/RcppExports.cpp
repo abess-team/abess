@@ -6,11 +6,6 @@
 
 using namespace Rcpp;
 
-#ifdef RCPP_USE_GLOBAL_ROSTREAM
-Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
-Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
-#endif
-
 // abessGLM_API
 List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize_type, Eigen::VectorXd weight, int algorithm_type, int model_type, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef, int Kfold, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, double lambda_min, double lambda_max, int nlambda, int screening_size, Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter, double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton, int thread, bool covariance_update, bool sparse_matrix, int splicing_type, int sub_search, Eigen::VectorXi cv_fold_id, Eigen::VectorXi A_init);
 RcppExport SEXP _abess_abessGLM_API(SEXP xSEXP, SEXP ySEXP, SEXP nSEXP, SEXP pSEXP, SEXP normalize_typeSEXP, SEXP weightSEXP, SEXP algorithm_typeSEXP, SEXP model_typeSEXP, SEXP max_iterSEXP, SEXP exchange_numSEXP, SEXP path_typeSEXP, SEXP is_warm_startSEXP, SEXP ic_typeSEXP, SEXP ic_coefSEXP, SEXP KfoldSEXP, SEXP sequenceSEXP, SEXP lambda_seqSEXP, SEXP s_minSEXP, SEXP s_maxSEXP, SEXP lambda_minSEXP, SEXP lambda_maxSEXP, SEXP nlambdaSEXP, SEXP screening_sizeSEXP, SEXP g_indexSEXP, SEXP always_selectSEXP, SEXP primary_model_fit_max_iterSEXP, SEXP primary_model_fit_epsilonSEXP, SEXP early_stopSEXP, SEXP approximate_NewtonSEXP, SEXP threadSEXP, SEXP covariance_updateSEXP, SEXP sparse_matrixSEXP, SEXP splicing_typeSEXP, SEXP sub_searchSEXP, SEXP cv_fold_idSEXP, SEXP A_initSEXP) {
