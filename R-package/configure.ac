@@ -7,6 +7,8 @@ if test -z "${R_HOME}"; then
   exit 1
 fi
 
+cp -rf ../include inst
+
 cd src
 echo '*****************************************************************************************'
 if test -f workflow.h 
