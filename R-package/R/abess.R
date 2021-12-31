@@ -645,7 +645,7 @@ abess.default <- function(x,
       nfolds <- check_nfold(nfolds)
     } else {
       cv_fold_id <- check_foldid(foldid, nobs)
-      nfolds <- length(unique(nfolds))
+      nfolds <- length(unique(foldid))
     }
   } else {
     cv_fold_id <- integer(0)

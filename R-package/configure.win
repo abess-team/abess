@@ -1,0 +1,2 @@
+cp -rf ../include inst
+cp -rf ../src/*.cpp ../src/*.h src
