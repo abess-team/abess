@@ -171,6 +171,20 @@ the other best subset selection problems.
 .. _github: https://github.com/abess-team/abess
 .. _GPL-v3 License: https://www.gnu.org/licenses/gpl-3.0.html
 
+What's news
+===========
+
+New features:
+
+- Support user-specified cross validation division.
+- Support user-specified initial active set.
+- Support flexible support size for sequentially best subset selection for principal component analysis (PCA). 
+
+New best subset selection tasks: 
+
+- Generalized linear model when the link function is gamma distribution.
+- Robust principal component analysis (RPCA).
+
 Citation         
 ==========
 

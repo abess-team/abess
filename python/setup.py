@@ -68,7 +68,7 @@ with open(path.join(CURRENT_DIR, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='abess',
-      version='0.3.6',
+      version='0.4.0',
       author="Jin Zhu, Kangkang Jiang, Junhao Huang, Yanhang Zhang, Junxian Zhu, Xueqin Wang",
       author_email="zhuj37@mail2.sysu.edu.cn",
       maintainer="Kangkang Jiang",
