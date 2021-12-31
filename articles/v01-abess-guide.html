@@ -361,9 +361,9 @@
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get the deviance of the estimated model on all candidate support size</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##  [1] 202734.27 137565.32 116526.84 111214.06 106353.05 103309.59 104199.43</span>
-<span class="co">##  [8]  99179.50  95662.49  94654.62  94081.77  92868.83  92521.80  92354.17</span>
-<span class="co">## [15]  92200.23  92154.67  92088.89  92051.13  92047.79  92017.87</span></code></pre>
+<pre><code><span class="co">##  [1] 101367.13  68782.66  58263.42  55607.03  53176.52  51654.80  52099.71</span>
+<span class="co">##  [8]  49589.75  47831.24  47327.31  47040.89  46434.41  46260.90  46177.09</span>
+<span class="co">## [15]  46100.11  46077.34  46044.44  46025.56  46023.90  46008.93</span></code></pre>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># print the fitted model</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
@@ -372,26 +372,26 @@
 <span class="co">##     y = Hitters$Salary)</span>
 <span class="co">## </span>
 <span class="co">##    support.size       dev      GIC</span>
-<span class="co">## 1             0 202734.27 3213.768</span>
-<span class="co">## 2             1 137565.32 3116.836</span>
-<span class="co">## 3             2 116526.84 3078.241</span>
-<span class="co">## 4             3 111214.06 3071.026</span>
-<span class="co">## 5             4 106353.05 3064.330</span>
-<span class="co">## 6             5 103309.59 3061.752</span>
-<span class="co">## 7             6 104199.43 3069.066</span>
-<span class="co">## 8             7  99179.50 3061.138</span>
-<span class="co">## 9             8  95662.49 3056.700</span>
-<span class="co">## 10            9  94654.62 3058.972</span>
-<span class="co">## 11           10  94081.77 3062.434</span>
-<span class="co">## 12           11  92868.83 3064.079</span>
-<span class="co">## 13           12  92521.80 3068.152</span>
-<span class="co">## 14           13  92354.17 3072.733</span>
-<span class="co">## 15           14  92200.23 3077.352</span>
-<span class="co">## 16           15  92154.67 3082.280</span>
-<span class="co">## 17           16  92088.89 3087.150</span>
-<span class="co">## 18           17  92051.13 3092.101</span>
-<span class="co">## 19           18  92047.79 3097.149</span>
-<span class="co">## 20           19  92017.87 3102.121</span></code></pre>
+<span class="co">## 1             0 101367.13 3031.471</span>
+<span class="co">## 2             1  68782.66 2934.538</span>
+<span class="co">## 3             2  58263.42 2895.944</span>
+<span class="co">## 4             3  55607.03 2888.729</span>
+<span class="co">## 5             4  53176.52 2882.033</span>
+<span class="co">## 6             5  51654.80 2879.455</span>
+<span class="co">## 7             6  52099.71 2886.768</span>
+<span class="co">## 8             7  49589.75 2878.840</span>
+<span class="co">## 9             8  47831.24 2874.402</span>
+<span class="co">## 10            9  47327.31 2876.675</span>
+<span class="co">## 11           10  47040.89 2880.136</span>
+<span class="co">## 12           11  46434.41 2881.781</span>
+<span class="co">## 13           12  46260.90 2885.855</span>
+<span class="co">## 14           13  46177.09 2890.436</span>
+<span class="co">## 15           14  46100.11 2895.055</span>
+<span class="co">## 16           15  46077.34 2899.983</span>
+<span class="co">## 17           16  46044.44 2904.853</span>
+<span class="co">## 18           17  46025.56 2909.803</span>
+<span class="co">## 19           18  46023.90 2914.851</span>
+<span class="co">## 20           19  46008.93 2919.824</span></code></pre>
 <p>Prediction is allowed for all the estimated model. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">hitters_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, 
@@ -436,8 +436,8 @@
 <span class="co">##  $ support.size: num 6</span>
 <span class="co">##  $ support.vars: chr [1:6] "AtBat" "Hits" "Years" "CRuns" ...</span>
 <span class="co">##  $ support.beta: num [1:6] -1.707 7.559 -23.143 0.499 0.52 ...</span>
-<span class="co">##  $ dev         : num 104199</span>
-<span class="co">##  $ tune.value  : num 3069</span></code></pre>
+<span class="co">##  $ dev         : num 52100</span>
+<span class="co">##  $ tune.value  : num 2887</span></code></pre>
 <p>The return is a list containing the basic information of the estimated model.</p>
 </div>
 </div>
@@ -477,8 +477,8 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <span class="co">##   .. ..@ x       : num [1:528] -0.251 -0.143 6.335 -0.153 4.802 ...</span>
 <span class="co">##   .. ..@ factors : list()</span>
 <span class="co">##  $ intercept     : num [1:33] 599 2115 1257 1337 1000 ...</span>
-<span class="co">##  $ dev           : num [1:33] 381863 172847 156992 151887 146356 ...</span>
-<span class="co">##  $ tune.value    : num [1:33] 6426 6043 6007 6003 5997 ...</span>
+<span class="co">##  $ dev           : num [1:33] 190932 86423 78496 75944 73178 ...</span>
+<span class="co">##  $ tune.value    : num [1:33] 6080 5696 5661 5657 5651 ...</span>
 <span class="co">##  $ nobs          : int 500</span>
 <span class="co">##  $ nvars         : int 5253</span>
 <span class="co">##  $ family        : chr "gaussian"</span>
@@ -513,8 +513,8 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <span class="co">##  $ support.size: int 9</span>
 <span class="co">##  $ support.vars: chr [1:9] "pctBlack:pctWhite" "pctBlack:pctPopDenseHous" "pct65up:pctFemDivorc" "pctUrban:pctUnemploy" ...</span>
 <span class="co">##  $ support.beta: num [1:9] 0.227547 0.517409 1.323939 0.201385 0.000313 ...</span>
-<span class="co">##  $ dev         : num 120282</span>
-<span class="co">##  $ tune.value  : num 5962</span></code></pre>
+<span class="co">##  $ dev         : num 60141</span>
+<span class="co">##  $ tune.value  : num 5616</span></code></pre>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_vars</span> <span class="op">&lt;-</span> <span class="va">best_model</span><span class="op">[[</span><span class="st">"support.vars"</span><span class="op">]</span><span class="op">]</span>
 <span class="va">best_vars</span></code></pre></div>

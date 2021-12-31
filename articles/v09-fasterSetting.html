@@ -176,13 +176,13 @@
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## 6 x 10 sparse Matrix of class "dgCMatrix"</span>
-<span class="co">##                                                                  </span>
-<span class="co">## [1,] . . .          . .         . .         .          .        .</span>
-<span class="co">## [2,] . . .          . 0.7010552 . .         .          .        .</span>
-<span class="co">## [3,] . . .          . .         . .        -0.1429772  .        .</span>
-<span class="co">## [4,] . . .          . .         . 0.375071 -1.1777416  .        .</span>
-<span class="co">## [5,] . . .          . .         . 0.989880  .         -1.155778 .</span>
-<span class="co">## [6,] . . 0.02926795 . .         . .         .         -1.206649 .</span></code></pre>
+<span class="co">##                                                  </span>
+<span class="co">## [1,] .  .         . . . .  .         . . .       </span>
+<span class="co">## [2,] .  .         . . . .  .         . . .       </span>
+<span class="co">## [3,] .  .         . . . . -0.2041611 . . .       </span>
+<span class="co">## [4,] . -0.6422212 . . . . -1.3284481 . . .       </span>
+<span class="co">## [5,] .  .         . . . .  .         . . 1.476494</span>
+<span class="co">## [6,] .  .         . . . .  .         . . .</span></code></pre>
 <p>Then, we apply ABESS algorithm on Matrix <code>x</code> and record the runtime in <code>t1</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
@@ -191,19 +191,19 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##      [,1] [,2]       [,3] [,4]      [,5] [,6]</span>
-<span class="co">## [1,]    0    0 0.00000000    0 0.0000000    0</span>
-<span class="co">## [2,]    0    0 0.00000000    0 0.7010552    0</span>
-<span class="co">## [3,]    0    0 0.00000000    0 0.0000000    0</span>
-<span class="co">## [4,]    0    0 0.00000000    0 0.0000000    0</span>
-<span class="co">## [5,]    0    0 0.00000000    0 0.0000000    0</span>
-<span class="co">## [6,]    0    0 0.02926795    0 0.0000000    0</span></code></pre>
+<pre><code><span class="co">##      [,1]       [,2] [,3] [,4] [,5] [,6]</span>
+<span class="co">## [1,]    0  0.0000000    0    0    0    0</span>
+<span class="co">## [2,]    0  0.0000000    0    0    0    0</span>
+<span class="co">## [3,]    0  0.0000000    0    0    0    0</span>
+<span class="co">## [4,]    0 -0.6422212    0    0    0    0</span>
+<span class="co">## [5,]    0  0.0000000    0    0    0    0</span>
+<span class="co">## [6,]    0  0.0000000    0    0    0    0</span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></code></pre></div>
 <pre><code><span class="co">##    user.self sys.self elapsed</span>
-<span class="co">## t1     1.326    0.036   1.377</span>
-<span class="co">## t2     1.704    0.183   1.897</span></code></pre>
+<span class="co">## t1     1.277    0.033   1.312</span>
+<span class="co">## t2     1.607    0.161   1.773</span></code></pre>
 <p>From the comparison, we see that the time required by sparse matrix is visibly smaller, and thus, we suggest to assign a sparse matrix to <code>abess</code> when the input matrix have a lot of zero entries.</p>
 </div>
 <div class="section level2">
@@ -234,15 +234,15 @@
 <span class="co">##  $ support.size: int 3</span>
 <span class="co">##  $ support.vars: chr [1:3] "x1" "x2" "x5"</span>
 <span class="co">##  $ support.beta: num [1:3] 3.04 1.49 1.91</span>
-<span class="co">##  $ dev         : num 1.49</span>
-<span class="co">##  $ tune.value  : num 225</span></code></pre>
+<span class="co">##  $ dev         : num 0.745</span>
+<span class="co">##  $ tune.value  : num -122</span></code></pre>
 <p>The output of golden-section strategy suggests the optimal model size is accurately detected. Compare to the sequential searching, the golden section reduce the runtime because it skip some support sizes which are likely to be a non-optimal one:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></code></pre></div>
 <pre><code><span class="co">##    user.self sys.self elapsed</span>
-<span class="co">## t1     0.042    0.002   0.045</span>
-<span class="co">## t2     0.284    0.044   0.329</span></code></pre>
+<span class="co">## t1     0.038    0.002   0.040</span>
+<span class="co">## t2     0.271    0.037   0.309</span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="early-stop">Early stop<a class="anchor" aria-label="anchor" href="#early-stop"></a>
@@ -254,74 +254,74 @@
 <pre><code><span class="co">## Call:</span>
 <span class="co">## abess.formula(formula = y ~ ., data = dat, early.stop = TRUE)</span>
 <span class="co">## </span>
-<span class="co">##    support.size       dev       GIC</span>
-<span class="co">## 1             0 17.280099 1424.7777</span>
-<span class="co">## 2             1  7.791728 1034.9445</span>
-<span class="co">## 3             2  3.963347  705.3708</span>
-<span class="co">## 4             3  1.490205  224.6964</span>
-<span class="co">## 5             4  1.467577  225.4590</span>
-<span class="co">## 6             5  1.445940  226.4459</span>
-<span class="co">## 7             6  1.432624  230.2331</span>
-<span class="co">## 8             7  1.418358  233.6423</span>
-<span class="co">## 9             8  1.404924  237.2973</span>
-<span class="co">## 10            9  1.395503  242.3464</span>
-<span class="co">## 11           10  1.386509  247.5264</span>
-<span class="co">## 12           11  1.378860  253.1738</span>
-<span class="co">## 13           12  1.369313  258.1130</span>
-<span class="co">## 14           13  1.363112  264.2568</span>
-<span class="co">## 15           14  1.354559  269.5226</span>
-<span class="co">## 16           15  1.349460  276.0503</span>
-<span class="co">## 17           16  1.342953  282.0464</span>
-<span class="co">## 18           17  1.338077  288.6412</span>
-<span class="co">## 19           18  1.335379  296.0453</span>
-<span class="co">## 20           19  1.328946  302.0437</span>
-<span class="co">## 21           20  1.322636  308.0772</span>
-<span class="co">## 22           21  1.317662  314.6067</span>
-<span class="co">## 23           22  1.315003  322.0100</span>
-<span class="co">## 24           23  1.307019  327.3782</span>
-<span class="co">## 25           24  1.305670  335.2750</span>
-<span class="co">## 26           25  1.300286  341.6222</span>
-<span class="co">## 27           26  1.296708  348.6575</span>
-<span class="co">## 28           27  1.295496  356.6031</span>
-<span class="co">## 29           28  1.292647  363.9154</span>
-<span class="co">## 30           29  1.285055  369.3835</span>
-<span class="co">## 31           30  1.280376  375.9729</span>
-<span class="co">## 32           31  1.276758  382.9712</span>
-<span class="co">## 33           32  1.273704  390.1868</span>
-<span class="co">## 34           33  1.272467  398.1142</span>
-<span class="co">## 35           34  1.268332  404.9001</span>
-<span class="co">## 36           35  1.265358  412.1395</span>
-<span class="co">## 37           36  1.261647  419.0841</span>
-<span class="co">## 38           37  1.259729  426.7366</span>
-<span class="co">## 39           38  1.264535  437.0538</span>
-<span class="co">## 40           39  1.258498  443.0740</span>
-<span class="co">## 41           40  1.255934  450.4676</span>
-<span class="co">## 42           41  1.250641  456.7690</span>
-<span class="co">## 43           42  1.249271  464.6346</span>
-<span class="co">## 44           43  1.245465  471.5218</span>
-<span class="co">## 45           44  1.244823  479.6775</span>
-<span class="co">## 46           45  1.244839  488.0970</span>
-<span class="co">## 47           46  1.241505  495.1693</span>
-<span class="co">## 48           47  1.238645  502.4292</span>
-<span class="co">## 49           48  1.235082  509.4021</span>
-<span class="co">## 50           49  1.230958  516.1432</span>
-<span class="co">## 51           50  1.226956  522.9279</span>
-<span class="co">## 52           51  1.226910  531.3226</span>
-<span class="co">## 53           52  1.223281  538.2545</span>
-<span class="co">## 54           53  1.223886  546.9150</span>
-<span class="co">## 55           54  1.220571  553.9721</span>
-<span class="co">## 56           55  1.219292  561.8611</span>
-<span class="co">## 57           56  1.219155  570.2183</span>
-<span class="co">## 58           57  1.215722  577.2212</span>
-<span class="co">## 59           58  1.213850  584.8642</span>
-<span class="co">## 60           59  1.213127  592.9793</span></code></pre>
+<span class="co">##    support.size       dev         GIC</span>
+<span class="co">## 1             0 8.6400493 1078.204142</span>
+<span class="co">## 2             1 3.8958639  688.370921</span>
+<span class="co">## 3             2 1.9816733  358.797191</span>
+<span class="co">## 4             3 0.7451024 -121.877226</span>
+<span class="co">## 5             4 0.7337883 -121.114561</span>
+<span class="co">## 6             5 0.7229702 -120.127663</span>
+<span class="co">## 7             6 0.7163121 -116.340488</span>
+<span class="co">## 8             7 0.7091789 -112.931327</span>
+<span class="co">## 9             8 0.7024621 -109.276323</span>
+<span class="co">## 10            9 0.6977517 -104.227216</span>
+<span class="co">## 11           10 0.6932543  -99.047213</span>
+<span class="co">## 12           11 0.6894301  -93.399837</span>
+<span class="co">## 13           12 0.6865704  -87.064911</span>
+<span class="co">## 14           13 0.6815561  -82.316812</span>
+<span class="co">## 15           14 0.6772793  -77.051013</span>
+<span class="co">## 16           15 0.6747301  -70.523262</span>
+<span class="co">## 17           16 0.6714763  -64.527149</span>
+<span class="co">## 18           17 0.6690386  -57.932384</span>
+<span class="co">## 19           18 0.6676897  -50.528285</span>
+<span class="co">## 20           19 0.6644729  -44.529859</span>
+<span class="co">## 21           20 0.6613178  -38.496438</span>
+<span class="co">## 22           21 0.6588312  -31.966840</span>
+<span class="co">## 23           22 0.6575017  -24.563621</span>
+<span class="co">## 24           23 0.6535097  -19.195392</span>
+<span class="co">## 25           24 0.6528351  -11.298574</span>
+<span class="co">## 26           25 0.6501432   -4.951341</span>
+<span class="co">## 27           26 0.6483540    2.083920</span>
+<span class="co">## 28           27 0.6477479   10.029524</span>
+<span class="co">## 29           28 0.6463233   17.341794</span>
+<span class="co">## 30           29 0.6456438   25.229094</span>
+<span class="co">## 31           30 0.6438309   32.236335</span>
+<span class="co">## 32           31 0.6424548   39.579695</span>
+<span class="co">## 33           32 0.6408311   46.727650</span>
+<span class="co">## 34           33 0.6400493   54.530486</span>
+<span class="co">## 35           34 0.6378401   61.214890</span>
+<span class="co">## 36           35 0.6359819   68.169364</span>
+<span class="co">## 37           36 0.6339436   74.977454</span>
+<span class="co">## 38           37 0.6330736   82.704042</span>
+<span class="co">## 39           38 0.6322676   90.480210</span>
+<span class="co">## 40           39 0.6292488   96.500400</span>
+<span class="co">## 41           40 0.6279669  103.893991</span>
+<span class="co">## 42           41 0.6253203  110.195428</span>
+<span class="co">## 43           42 0.6246357  118.061001</span>
+<span class="co">## 44           43 0.6227323  124.948212</span>
+<span class="co">## 45           44 0.6224117  133.103906</span>
+<span class="co">## 46           45 0.6224196  141.523453</span>
+<span class="co">## 47           46 0.6207525  148.595716</span>
+<span class="co">## 48           47 0.6193224  155.855611</span>
+<span class="co">## 49           48 0.6175409  162.828480</span>
+<span class="co">## 50           49 0.6154792  169.569607</span>
+<span class="co">## 51           50 0.6134778  176.354312</span>
+<span class="co">## 52           51 0.6134551  184.748969</span>
+<span class="co">## 53           52 0.6116403  191.680861</span>
+<span class="co">## 54           53 0.6119431  200.341452</span>
+<span class="co">## 55           54 0.6102855  207.398472</span>
+<span class="co">## 56           55 0.6096461  215.287509</span>
+<span class="co">## 57           56 0.6095777  223.644680</span>
+<span class="co">## 58           57 0.6078609  230.647651</span>
+<span class="co">## 59           58 0.6069252  238.290580</span>
+<span class="co">## 60           59 0.6065635  246.405733</span></code></pre>
 <p>We can see that ABESS algorithm stop when support size is 4. This is because the GIC value (can be considered as an assessment in validation set) do not increase when support size reach to 3, and thus, the program early terminate. This result is match to our simulation setting. Compare with the ABESS without early-stopping:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></code></pre></div>
 <pre><code><span class="co">##    user.self sys.self elapsed</span>
-<span class="co">## t1     0.287    0.045   0.332</span>
-<span class="co">## t2     0.280    0.043   0.323</span></code></pre>
+<span class="co">## t1     0.273    0.039   0.313</span>
+<span class="co">## t2     0.271    0.037   0.308</span></code></pre>
 <p>we can conclude that early-stopping brings fast computation and might maintain statistical guarantee.</p>
 </div>
   </div>
