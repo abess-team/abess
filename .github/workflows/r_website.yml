@@ -1,4 +1,4 @@
-name: Build R Website
+name: R docs
 
 on:
   push:
