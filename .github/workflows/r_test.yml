@@ -4,9 +4,11 @@ on:
   push:
     paths:
     - 'R-package/*'
+    - '.github/workflow/r_test.yml'
   pull_request:
     paths:
     - 'R-package/*'
+    - '.github/workflow/r_test.yml'
 
 jobs:
   Install-Test:
