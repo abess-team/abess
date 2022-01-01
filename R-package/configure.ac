@@ -7,8 +7,19 @@ if test -z "${R_HOME}"; then
   exit 1
 fi
 
-cp -rf ../include inst
+# copy necessary compiler code into R-package
+echo '*****************************************************************************************'
+## Spectra library
+if test -d inst/include/Spectra/
+then
+  echo "Spectra library exists. "
+else
+  echo "Spectra library does not exist. Copy from ../include/ directory"
+  cp -rf ../include inst
+fi
+echo '*****************************************************************************************'
 
+## core code for abess
 cd src
 echo '*****************************************************************************************'
 if test -f workflow.h 
