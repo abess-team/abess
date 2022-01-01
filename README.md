@@ -6,7 +6,7 @@
 [![R Build](https://github.com/abess-team/abess/actions/workflows/r_test.yml/badge.svg)](https://github.com/abess-team/abess/actions/workflows/r_test.yml)
 [![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://codecov.io/gh/abess-team/abess)
 [![docs](https://readthedocs.org/projects/abess/badge/?version=latest)](https://abess.readthedocs.io/en/latest/?badge=latest)
-[![R website](https://abess-team.github.io/abess/)](https://github.com/abess-team/abess/actions/workflows/r_website.yml)
+[![R docs](https://github.com/abess-team/abess/actions/workflows/r_website.yml/badge.svg)](https://abess-team.github.io/abess/)
 [![cran](https://img.shields.io/cran/v/abess?logo=R)](https://cran.r-project.org/package=abess)
 [![pypi](https://badge.fury.io/py/abess.svg)](https://badge.fury.io/py/abess)
 [![pyversions](https://img.shields.io/pypi/pyversions/abess)](https://img.shields.io/pypi/pyversions/abess)
