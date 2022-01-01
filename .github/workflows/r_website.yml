@@ -2,20 +2,10 @@ name: Build R Website
 
 on:
   push:
-    paths-ignore:
-    - 'R-package/pre-release.R'
-    - 'R-package/logo.svg'
-    - 'R-package/.covrignore'
-    - 'R-package/.gitignore'
     paths:
     - 'R-package/*'
     - '.github/workflow/r_website.yml'
   pull_request:
-    paths-ignore:
-    - 'R-package/pre-release.R'
-    - 'R-package/logo.svg'
-    - 'R-package/.covrignore'
-    - 'R-package/.gitignore'
     paths:
     - 'R-package/*'
     - '.github/workflow/r_website.yml'

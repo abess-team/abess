@@ -2,21 +2,9 @@ name: R Build
 
 on:
   push:
-    paths-ignore:
-    - 'R-package/pre-release.R'
-    - 'R-package/logo.svg'
-    - 'R-package/_pkgdown.yml'
-    - 'R-package/.covrignore'
-    - 'R-package/.gitignore'
     paths:
     - 'R-package/*'
   pull_request:
-    paths-ignore:
-    - 'R-package/pre-release.R'
-    - 'R-package/logo.svg'
-    - 'R-package/_pkgdown.yml'
-    - 'R-package/.covrignore'
-    - 'R-package/.gitignore'
     paths:
     - 'R-package/*'
 
