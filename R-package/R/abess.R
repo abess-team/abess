@@ -649,7 +649,7 @@ abess.default <- function(x,
     }
   } else {
     cv_fold_id <- integer(0)
-    # nfolds <- 1
+    nfolds <- 1
   }
 
   ## information criterion
