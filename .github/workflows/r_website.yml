@@ -1,11 +1,10 @@
-name: R Build
+name: Build R Website
 
 on:
   push:
     paths-ignore:
     - 'R-package/pre-release.R'
     - 'R-package/logo.svg'
-    - 'R-package/_pkgdown.yml'
     - 'R-package/.covrignore'
     - 'R-package/.gitignore'
     paths:
@@ -14,16 +13,17 @@ on:
     paths-ignore:
     - 'R-package/pre-release.R'
     - 'R-package/logo.svg'
-    - 'R-package/_pkgdown.yml'
     - 'R-package/.covrignore'
     - 'R-package/.gitignore'
     paths:
     - 'R-package/*'
 
 jobs:
-  Install-Test:
-    name: Installation test for R-package
+  pkgdown:
+    name: pkgdown
     runs-on: macOS-latest
+    env:
+      GITHUB_PAT: ${{ secrets.ABESS_TOKEN }}
     steps:
       - uses: actions/checkout@v2
 
@@ -48,10 +48,17 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps("R-package", dependencies = TRUE)
+          install.packages("pkgdown", type = "binary")
+          install.packages("survival", type = "binary")
+          install.packages("Hmisc", type = "binary")
+          install.packages("ROCR", type = "binary")
         shell: Rscript {0}
 
       - name: Install package
         run: R CMD INSTALL R-package
-      
-      - name: Check package
-        run: R CMD CHECK R-package
+
+      - name: Deploy package
+        run: |
+          git config --local user.email "zhuj37@mail2.sysu.edu.cn"
+          git config --local user.name "Mamba413"
+          Rscript -e 'pkgdown::deploy_to_branch("./R-package", new_process = FALSE, clean = TRUE)'

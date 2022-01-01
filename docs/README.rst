@@ -26,6 +26,8 @@ Welcome to abess's documentation!
 .. |docs| image:: https://readthedocs.org/projects/abess/badge/?version=latest
    :target: https://abess.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
+.. |R website| image:: https://github.com/abess-team/abess/actions/workflows/r_website.yml
+   :target: https://abess-team.github.io/abess/
 .. |cran| image:: https://img.shields.io/cran/v/abess?logo=R
    :target: https://cran.r-project.org/package=abess
 .. |pypi| image:: https://badge.fury.io/py/abess.svg
