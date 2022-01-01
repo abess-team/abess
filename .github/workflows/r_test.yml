@@ -48,7 +48,10 @@ jobs:
           install.packages("testthat", type = "binary")
           install.packages("knitr", type = "binary")
           install.packages("rmarkdown", type = "binary")
+          install.packages("devtools", type = "binary")
         shell: Rscript {0}
 
       - name: Check package
-        run: R CMD CHECK R-package
+        run: |
+          devtools::check(pkg = "R-package/")
+        shell: Rscript {0}
