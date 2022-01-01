@@ -41,5 +41,12 @@ jobs:
       - name: Install package
         run: R CMD INSTALL R-package
 
+      - name: Install dependencies for checking
+        run: |
+          install.packages("testthat", type = "binary")
+          install.packages("knitr", type = "binary")
+          install.packages("rmarkdown", type = "binary")
+        shell: Rscript {0}
+
       - name: Check package
         run: R CMD CHECK R-package
