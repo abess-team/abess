@@ -1,19 +1,21 @@
-name: R Build
+name: R docs
 
 on:
   push:
     paths:
     - 'R-package/*'
-    - '.github/workflow/r_test.yml'
+    - '.github/workflow/r_website.yml'
   pull_request:
     paths:
     - 'R-package/*'
-    - '.github/workflow/r_test.yml'
+    - '.github/workflow/r_website.yml'
 
 jobs:
-  Install-Test:
-    name: Installation test for R-package
+  pkgdown:
+    name: pkgdown
     runs-on: macOS-latest
+    env:
+      GITHUB_PAT: ${{ secrets.ABESS_TOKEN }}
     steps:
       - uses: actions/checkout@v2
 
@@ -38,20 +40,17 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps("R-package", dependencies = TRUE)
+          install.packages("pkgdown", type = "binary")
+          install.packages("survival", type = "binary")
+          install.packages("Hmisc", type = "binary")
+          install.packages("ROCR", type = "binary")
         shell: Rscript {0}
 
       - name: Install package
         run: R CMD INSTALL R-package
 
-      - name: Install dependencies for checking
+      - name: Deploy package
         run: |
-          install.packages("testthat", type = "binary")
-          install.packages("knitr", type = "binary")
-          install.packages("rmarkdown", type = "binary")
-          install.packages("devtools", type = "binary")
-        shell: Rscript {0}
-
-      - name: Check package
-        run: |
-          devtools::check(pkg = "R-package/")
-        shell: Rscript {0}
+          git config --local user.email "zhuj37@mail2.sysu.edu.cn"
+          git config --local user.name "Mamba413"
+          Rscript -e 'pkgdown::deploy_to_branch("./R-package", new_process = FALSE, clean = TRUE)'

@@ -4,3 +4,5 @@ ignore:
   - "python/abess/cabess"
   - "R-package/inst/include"
   - "src"
+  - "include"
+

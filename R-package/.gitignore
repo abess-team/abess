@@ -4,3 +4,12 @@ docs/
 docs
 src/tmp/*
 ..pdf
+src/*.h
+src/*.cpp
+*.so
+*.o
+config.log
+config.status
+autom4te.cache
+*.dll
+inst/include

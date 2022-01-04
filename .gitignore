@@ -125,3 +125,7 @@ python/src/pywrap_wrap.cpp
 
 src/pywrap_wrap.cpp
 src/cabess.py
+R-package/src/Makevars
+R-package/configure~
+R-package/inst/.vscode/settings.json
+R-package/src/.vscode/settings.json

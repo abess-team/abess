@@ -102,6 +102,7 @@ Furthermore, if you want to develop the Python packages, some additional package
 - [Sphinx](https://pypi.org/project/Sphinx/): develop the Python documentation.
     - [nbsphinx](https://pypi.org/project/nbsphinx/): support jupyter notebook for Sphinx.
     - [myst-parser](https://pypi.org/project/myst-parser/): support markdown for Sphinx.
+    - [sphinx-rtd-theme](https://pypi.org/project/sphinx-rtd-theme/): "Read the Docs" theme for Sphinx.
 
 ### R
 

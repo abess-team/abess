@@ -123,11 +123,10 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
         effective_number_matrix = result_list[0].effective_number_matrix;
         ic_matrix.col(0).minCoeff(&min_loss_index);
     } else {
-        Eigen::MatrixXd test_loss_tmp;
         for (int i = 0; i < Kfold; i++) {
-            test_loss_tmp = result_list[i].test_loss_matrix;
-            test_loss_sum = test_loss_sum + test_loss_tmp / Kfold;
+            test_loss_sum += result_list[i].test_loss_matrix;
         }
+        test_loss_sum /= ((double) Kfold);
         test_loss_sum.col(0).minCoeff(&min_loss_index);
 
         Eigen::VectorXi used_algorithm_index = Eigen::VectorXi::Zero(algorithm_list_size);
