@@ -118,6 +118,7 @@ class bess_base(BaseEstimator):
         self.coef_ = None
         self.intercept_ = None
         self.train_loss_ = 0
+        self.test_loss_ = 0
         self.ic_ = 0
 
     def new_data_check(self, X, y=None, weights=None):
