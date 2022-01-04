@@ -10,7 +10,8 @@ void pywrap_GLM(double *x, int x_row, int x_col, double *y, int y_row, int y_col
                 double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton, int thread,
                 bool covariance_update, bool sparse_matrix, int splicing_type, int sub_search, int *A_init,
                 int A_init_len, double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len,
-                double *train_loss_out, int train_loss_out_len, double *ic_out, int ic_out_len) {
+                double *train_loss_out, int train_loss_out_len, double *test_loss_out, int test_loss_out_len,
+                double *ic_out, int ic_out_len) {
     Eigen::MatrixXd x_Mat;
     Eigen::MatrixXd y_Mat;
     Eigen::VectorXd weight_Vec;
@@ -42,29 +43,35 @@ void pywrap_GLM(double *x, int x_row, int x_col, double *y, int y_row, int y_col
         Eigen::VectorXd beta;
         double coef0 = 0;
         double train_loss = 0;
+        double test_loss = 0;
         double ic = 0;
         mylist.get_value_by_name("beta", beta);
         mylist.get_value_by_name("coef0", coef0);
         mylist.get_value_by_name("train_loss", train_loss);
+        mylist.get_value_by_name("test_loss", test_loss);
         mylist.get_value_by_name("ic", ic);
 
         VectorXd2Pointer(beta, beta_out);
         *coef0_out = coef0;
         *train_loss_out = train_loss;
+        *test_loss_out = test_loss;
         *ic_out = ic;
     } else {
         Eigen::MatrixXd beta;
         Eigen::VectorXd coef0;
         double train_loss = 0;
+        double test_loss = 0;
         double ic = 0;
         mylist.get_value_by_name("beta", beta);
         mylist.get_value_by_name("coef0", coef0);
         mylist.get_value_by_name("train_loss", train_loss);
+        mylist.get_value_by_name("test_loss", test_loss);
         mylist.get_value_by_name("ic", ic);
 
         MatrixXd2Pointer(beta, beta_out);
         VectorXd2Pointer(coef0, coef0_out);
         train_loss_out[0] = train_loss;
+        test_loss_out[0] = test_loss;
         ic_out[0] = ic;
     }
 }
@@ -76,7 +83,7 @@ void pywrap_PCA(double *x, int x_row, int x_col, double *weight, int weight_len,
                 int screening_size, int *always_select, int always_select_len, bool early_stop, int thread,
                 bool sparse_matrix, int splicing_type, int sub_search, int pca_num, int *A_init, int A_init_len,
                 double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len, double *train_loss_out,
-                int train_loss_out_len, double *ic_out, int ic_out_len) {
+                int train_loss_out_len, double *test_loss_out, int test_loss_out_len, double *ic_out, int ic_out_len) {
     Eigen::MatrixXd x_Mat;
     Eigen::MatrixXd sigma_Mat;
     Eigen::MatrixXi sequence_Mat;
@@ -114,12 +121,15 @@ void pywrap_PCA(double *x, int x_row, int x_col, double *weight, int weight_len,
 
     double coef0 = 0;
     double train_loss = 0;
+    double test_loss = 0;
     double ic = 0;
     mylist.get_value_by_name("coef0", coef0);
     mylist.get_value_by_name("train_loss", train_loss);
+    mylist.get_value_by_name("test_loss", test_loss);
     mylist.get_value_by_name("ic", ic);
     *coef0_out = coef0;
     *train_loss_out = train_loss;
+    *test_loss_out = test_loss;
     *ic_out = ic;
 
     // if (pca_num == 1)
@@ -163,7 +173,8 @@ void pywrap_RPCA(double *x, int x_row, int x_col, int n, int p, int normalize_ty
                  int always_select_len, int primary_model_fit_max_iter, double primary_model_fit_epsilon,
                  bool early_stop, int thread, bool sparse_matrix, int splicing_type, int sub_search, int *A_init,
                  int A_init_len, double *beta_out, int beta_out_len, double *coef0_out, int coef0_out_len,
-                 double *train_loss_out, int train_loss_out_len, double *ic_out, int ic_out_len) {
+                 double *train_loss_out, int train_loss_out_len, double *test_loss_out, int test_loss_out_len,
+                 double *ic_out, int ic_out_len) {
     Eigen::MatrixXd x_Mat;
     Eigen::VectorXi sequence_Vec;
     Eigen::VectorXi gindex_Vec;
@@ -188,14 +199,17 @@ void pywrap_RPCA(double *x, int x_row, int x_col, int n, int p, int normalize_ty
     Eigen::VectorXd beta;
     double coef0 = 0;
     double train_loss = 0;
+    double test_loss = 0;
     double ic = 0;
     mylist.get_value_by_name("beta", beta);
     mylist.get_value_by_name("coef0", coef0);
     mylist.get_value_by_name("train_loss", train_loss);
+    mylist.get_value_by_name("test_loss", test_loss);
     mylist.get_value_by_name("ic", ic);
 
     VectorXd2Pointer(beta, beta_out);
     *coef0_out = coef0;
     *train_loss_out = train_loss;
+    *test_loss_out = test_loss;
     *ic_out = ic;
 }
