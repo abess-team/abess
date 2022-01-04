@@ -10,7 +10,7 @@ In the following pages, the abess Python package is used for illustration. The c
 .. toctree::
     LinearRegression
     MultiTaskLearning
-    PoissonRegression
+    Poisson_Gamma
     logi_and_multiclass
     CoxRegression
     PCA
@@ -21,5 +21,3 @@ In the following pages, the abess Python package is used for illustration. The c
     algorithm
     power_of_abess
     
-
-
