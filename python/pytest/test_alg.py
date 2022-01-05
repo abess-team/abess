@@ -8,6 +8,7 @@ from sklearn.model_selection import KFold, GridSearchCV
 from sklearn.linear_model import LinearRegression, LogisticRegression, PoissonRegressor
 from lifelines import CoxPHFitter
 
+
 class TestAlgorithm:
     """
     Test for each algorithm.

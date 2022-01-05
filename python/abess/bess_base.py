@@ -118,6 +118,7 @@ class bess_base(BaseEstimator):
         self.coef_ = None
         self.intercept_ = None
         self.train_loss_ = 0
+        self.test_loss_ = 0
         self.ic_ = 0
 
     def new_data_check(self, X, y=None, weights=None):
@@ -471,7 +472,7 @@ class bess_base(BaseEstimator):
                             self.important_search,
                             A_init,
                             p * M, 1 * M,
-                            1, 1
+                            1, 1, 1
                             )
 
         # print("linear fit end")
@@ -484,6 +485,7 @@ class bess_base(BaseEstimator):
         self.intercept_ = result[1]
 
         self.train_loss_ = result[2]
-        self.ic_ = result[3]
+        self.test_loss_ = result[3]
+        self.ic_ = result[4]
 
         return self

@@ -1,10 +1,12 @@
 import numpy as np
 
+
 class data:
     """
     Data format.
     Include: x, y, coefficients.
     """
+
     def __init__(self, x, y, coef_):
         self.x = x
         self.y = y
@@ -35,6 +37,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
         "gaussian" for univariate quantitative response,
         "binomial" for binary classification response,
         "poisson" for counting response,
+        "gamma" for positive continuous response,
         "cox" for left-censored response.
     rho: float, optional
         A parameter used to characterize the pairwise correlation in predictors.
@@ -158,8 +161,26 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
         y = np.hstack((time.reshape((-1, 1)), status.reshape((-1, 1))))
 
         return data(x, y, Tbeta)
+
+    if family == "gamma":
+        x = x / 16
+        m = 5 * np.sqrt(2 * np.log(p) / n)
+        if coef_ is None:
+            Tbeta[nonzero] = np.random.uniform(m, 100 * m, k)
+        else:
+            Tbeta = coef_
+        # add noise
+        eta = x @ Tbeta + np.random.normal(0, sigma, n)
+        # set coef_0 as + abs(min(eta)) + 1
+        eta = eta + np.abs(np.min(eta)) + 10
+        # set the shape para of gamma uniformly in [0.1,100.1]
+        shape_para = 100 * np.random.uniform(0, 1, n) + 0.1
+        y = np.random.gamma(shape=shape_para, scale=1 /
+                            shape_para / eta, size=n)
+        return data(x, y, Tbeta)
+
     raise ValueError(
-        "Family should be \'gaussian\', \'binomial\', \'possion\', or \'cox\'")
+        "Family should be \'gaussian\', \'binomial\', \'possion\', \'gamma\', or \'cox\'")
 
 
 def sparse_beta_generator(p, Nonzero, k, M):

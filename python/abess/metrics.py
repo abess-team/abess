@@ -10,6 +10,7 @@ def _check_estimate_1d(estimate, test_time):
     check_consistent_length(test_time, estimate)
     return estimate
 
+
 def _check_inputs(event_indicator, event_time, estimate):
     check_consistent_length(event_indicator, event_time, estimate)
     event_indicator = check_array(event_indicator, ensure_2d=False)

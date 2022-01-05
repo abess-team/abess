@@ -742,7 +742,7 @@ class abessGamma(bess_base):
 
     def predict(self, X):
         """
-        For Poisson model,
+        For Gamma model,
         the predict function returns a numpy array of the prediction of the mean of response,
         on given data.
 
