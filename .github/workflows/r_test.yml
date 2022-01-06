@@ -3,12 +3,20 @@ name: R Build
 on:
   push:
     paths:
-    - 'R-package/*'
-    - '.github/workflow/r_test.yml'
+    - 'R-package/**'
+    - '.github/workflows/r_test.yml'
+    - '!R-package/.gitignore'
+    - '!R-package/cran-comments.md'
+    - '!R-package/pre-release.R'
+    - '!R-package/data-raw/**'
   pull_request:
     paths:
-    - 'R-package/*'
-    - '.github/workflow/r_test.yml'
+    - 'R-package/**'
+    - '.github/workflows/r_test.yml'
+    - '!R-package/.gitignore'
+    - '!R-package/cran-comments.md'
+    - '!R-package/pre-release.R'
+    - '!R-package/data-raw/**'
 
 jobs:
   Install-Test:

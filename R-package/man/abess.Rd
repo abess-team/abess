@@ -21,6 +21,7 @@
   lambda = 0,
   always.include = NULL,
   group.index = NULL,
+  init.active.set = NULL,
   splicing.type = 2,
   max.splicing.iter = 20,
   screening.num = NULL,
@@ -107,6 +108,9 @@ and their corresponding index in \code{group.index} should be the same.
 Denote the first group as \code{1}, the second \code{2}, etc.
 If you do not fit a model with a group structure,
 please set \code{group.index = NULL} (the default).}
+
+\item{init.active.set}{A vector of integers indicating the initial active set.
+Default: \code{init.active.set = NULL}.}
 
 \item{splicing.type}{Optional type for splicing.
 If \code{splicing.type = 1}, the number of variables to be spliced is

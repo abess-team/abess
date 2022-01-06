@@ -3,12 +3,22 @@ name: Code Coverage
 on:
   push:
     paths:
-    - 'python/*'
-    - 'R-package/*'
+    - 'python/**'
+    - 'R-package/**'
+    - '.github/workflows/code_coverage.yml'
+    - '!R-package/.gitignore'
+    - '!R-package/cran-comments.md'
+    - '!R-package/pre-release.R'
+    - '!R-package/data-raw/**'
   pull_request:
     paths:
-    - 'python/*'
-    - 'R-package/*'
+    - 'python/**'
+    - 'R-package/**'
+    - '.github/workflows/code_coverage.yml'
+    - '!R-package/.gitignore'
+    - '!R-package/cran-comments.md'
+    - '!R-package/pre-release.R'
+    - '!R-package/data-raw/**'
   workflow_dispatch:
 
 jobs:

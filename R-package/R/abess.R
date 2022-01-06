@@ -54,6 +54,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' Denote the first group as \code{1}, the second \code{2}, etc.
 #' If you do not fit a model with a group structure,
 #' please set \code{group.index = NULL} (the default).
+#' @param init.active.set A vector of integers indicating the initial active set. 
+#' Default: \code{init.active.set = NULL}. 
 #' @param splicing.type Optional type for splicing.
 #' If \code{splicing.type = 1}, the number of variables to be spliced is
 #' \code{c.max}, ..., \code{1}; if \code{splicing.type = 2},
@@ -294,6 +296,7 @@ abess.default <- function(x,
                           lambda = 0,
                           always.include = NULL,
                           group.index = NULL,
+                          init.active.set = NULL, 
                           splicing.type = 2,
                           max.splicing.iter = 20,
                           screening.num = NULL,
@@ -366,9 +369,9 @@ abess.default <- function(x,
   vn <- colnames(x) ## if x is not a matrix type object, it will return NULL.
   nvars <- ncol(x)
   nobs <- nrow(x)
-  if (nvars == 1) {
-    stop("x should have at least two columns!")
-  }
+  # if (nvars == 1) {
+  #   stop("x should have at least two columns!")
+  # }
   if (is.null(vn)) {
     vn <- paste0("x", 1:nvars)
   }
@@ -382,7 +385,12 @@ abess.default <- function(x,
       x <- as.matrix(x)
     }
     if (!is.numeric(x)) {
-      stop("x must be a *numeric* matrix/data.frame!")
+      warning("x should be a *numeric* matrix/data.frame! 
+              The factor value are coerced to as.numeric(x).")
+      x <- apply(x, 2, as.numeric)
+      # if (is.vector(x)) {
+      #   x <- matrix(x, nrow = nobs, ncol = nvars)
+      # }
     }
   }
   if (anyNA(x) || any(is.infinite(x))) {
@@ -649,7 +657,7 @@ abess.default <- function(x,
     }
   } else {
     cv_fold_id <- integer(0)
-    # nfolds <- 1
+    nfolds <- 1
   }
 
   ## information criterion
@@ -773,6 +781,15 @@ abess.default <- function(x,
     }
     always_include <- always.include
   }
+  
+  if (!is.null(init.active.set)) {
+    stopifnot(init.active.set >= 1)
+    stopifnot(all(init.active.set <= nvars))
+    check_integer_warning(init.active.set, "init.active.set should be a vector with integer.
+                          It is coerced to as.integer(init.active.set).")
+    init.active.set <- as.integer(init.active.set)
+    init.active.set <- sort(unique(init.active.set)) - 1
+  }
 
   t1 <- proc.time()
   result <- abessGLM_API(
@@ -811,7 +828,7 @@ abess.default <- function(x,
     splicing_type = splicing_type,
     sub_search = important_search,
     cv_fold_id = cv_fold_id, 
-    A_init = as.integer(c())
+    A_init = as.integer(init.active.set)
   )
   t2 <- proc.time()
   # print(t2 - t1)

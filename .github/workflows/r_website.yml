@@ -3,12 +3,20 @@ name: R docs
 on:
   push:
     paths:
-    - 'R-package/*'
-    - '.github/workflow/r_website.yml'
+    - 'R-package/**'
+    - '.github/workflows/r_website.yml'
+    - '!R-package/.gitignore'
+    - '!R-package/cran-comments.md'
+    - '!R-package/pre-release.R'
+    - '!R-package/tests/**'
   pull_request:
     paths:
-    - 'R-package/*'
-    - '.github/workflow/r_website.yml'
+    - 'R-package/**'
+    - '.github/workflows/r_website.yml'
+    - '!R-package/.gitignore'
+    - '!R-package/cran-comments.md'
+    - '!R-package/pre-release.R'
+    - '!R-package/tests/**'
 
 jobs:
   pkgdown:

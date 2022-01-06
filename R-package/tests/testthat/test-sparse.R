@@ -42,7 +42,7 @@ test_that("Sparse matrix (gaussian) works", {
 
 test_that("Sparse matrix (logistic) works", {
   n <- 200
-  p <- 20
+  p <- 10
   support.size <- 3
   dataset <- generate.data(n, p, support.size, family = "binomial")
   dataset[["x"]][abs(dataset[["x"]]) < 1] <- 0
