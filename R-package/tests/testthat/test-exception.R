@@ -31,11 +31,11 @@ test_that("abess (data) works", {
 
   dataset[["x"]] <- as.matrix(dataset[["x"]])
   dataset[["x"]] <- matrix(as.character(dataset[["x"]]), nrow = n)
-  expect_error(abess(dataset[["x"]], dataset[["y"]]), regexp = "x must")
+  expect_warning(abess(dataset[["x"]], dataset[["y"]]), regexp = "x should")
 
-  dataset[["x"]] <- matrix(as.numeric(dataset[["x"]]), nrow = n)
-  dataset[["x"]] <- dataset[["x"]][, 1, drop = FALSE]
-  expect_error(abess(dataset[["x"]], dataset[["y"]]), regexp = "x should")
+  # dataset[["x"]] <- matrix(as.numeric(dataset[["x"]]), nrow = n)
+  # dataset[["x"]] <- dataset[["x"]][, 1, drop = FALSE]
+  # expect_error(abess(dataset[["x"]], dataset[["y"]]), regexp = "x should")
 
   ########### Exception for y ############
   dataset <- generate.data(n, p, support_size)
@@ -187,9 +187,9 @@ test_that("abesspca exception handling works", {
 
   dataset[["x"]] <- as.matrix(dataset[["x"]])
   dataset[["x"]] <- matrix(as.character(dataset[["x"]]), nrow = n)
-  expect_error(abess(dataset[["x"]], dataset[["y"]]), regexp = "x must")
+  expect_error(abesspca(dataset[["x"]], dataset[["y"]]), regexp = "x must")
 
   dataset[["x"]] <- matrix(as.numeric(dataset[["x"]]), nrow = n)
   dataset[["x"]] <- dataset[["x"]][, 1, drop = FALSE]
-  expect_error(abess(dataset[["x"]], dataset[["y"]]), regexp = "x should")
+  expect_error(abesspca(dataset[["x"]], dataset[["y"]]), regexp = "x should")
 })

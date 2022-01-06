@@ -387,7 +387,10 @@ abess.default <- function(x,
     if (!is.numeric(x)) {
       warning("x should be a *numeric* matrix/data.frame! 
               The factor value are coerced to as.numeric(x).")
-      x <- as.numeric(x)
+      x <- apply(x, 2, as.numeric)
+      # if (is.vector(x)) {
+      #   x <- matrix(x, nrow = nobs, ncol = nvars)
+      # }
     }
   }
   if (anyNA(x) || any(is.infinite(x))) {
