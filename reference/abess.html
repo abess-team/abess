@@ -118,6 +118,7 @@ positive response, multi-response modeling in polynomial times.</p>
   lambda <span class="op">=</span> <span class="fl">0</span>,
   always.include <span class="op">=</span> <span class="cn">NULL</span>,
   group.index <span class="op">=</span> <span class="cn">NULL</span>,
+  init.active.set <span class="op">=</span> <span class="cn">NULL</span>,
   splicing.type <span class="op">=</span> <span class="fl">2</span>,
   max.splicing.iter <span class="op">=</span> <span class="fl">20</span>,
   screening.num <span class="op">=</span> <span class="cn">NULL</span>,
@@ -208,6 +209,9 @@ and their corresponding index in <code>group.index</code> should be the same.
 Denote the first group as <code>1</code>, the second <code>2</code>, etc.
 If you do not fit a model with a group structure,
 please set <code>group.index = NULL</code> (the default).</p></dd>
+<dt>init.active.set</dt>
+<dd><p>A vector of integers indicating the initial active set.
+Default: <code>init.active.set = NULL</code>.</p></dd>
 <dt>splicing.type</dt>
 <dd><p>Optional type for splicing.
 If <code>splicing.type = 1</code>, the number of variables to be spliced is
@@ -405,7 +409,7 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9             8  750.0559 698.6149</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10            9  743.0171 702.2471</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11           10  736.8746 705.9920</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12           11  730.9648 709.7618</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12           11  730.2053 709.6578</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 13           12  726.1450 713.6752</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14           13  722.1120 717.6933</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 15           14  719.8878 721.9598</span>
@@ -473,7 +477,7 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ tune.value  : num 696</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 8902.8419 5081.6351 2203.6977  921.3726  833.5074  797.0079  771.9370</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]  759.3075  750.0559  743.0171  736.8746  730.9648  726.1450  722.1120</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8]  759.3075  750.0559  743.0171  736.8746  730.2053  726.1450  722.1120</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [15]  719.8878  718.7611  717.9167  717.2695  716.6929  716.1755  716.1127</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="abess-1.png" alt="" width="700" height="433"></span>
@@ -695,14 +699,14 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span>    support.size         dev       GIC</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1             0 0.010369311 -548.2686</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2             1 0.004088476 -650.2178</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3             2 0.003224071 -668.9890</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3             2 0.002961921 -679.1658</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4             3 0.002560296 -686.9195</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5             4 0.002392097 -685.3417</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6             5 0.002304785 -680.0715</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6             5 0.002392089 -675.6100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7             6 0.002300641 -670.5554</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8             7 0.002295887 -661.0715</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9             8 0.002275372 -652.4165</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10            9 0.002256357 -643.6914</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10            9 0.002275332 -642.6865</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11           10 0.002256348 -633.9598</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12           11 0.002243761 -624.8989</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 13           12 0.002225414 -616.1521</span>

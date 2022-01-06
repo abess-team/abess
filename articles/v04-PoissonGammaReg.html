@@ -185,25 +185,25 @@
 <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## 7 x 7 sparse Matrix of class "dgCMatrix"</span>
 <span class="co">##                    0         1         2          3          4           5</span>
-<span class="co">## (intercept) 1.581038 0.4281173 0.2558214 -0.1046763 -0.1048038 -0.10377213</span>
-<span class="co">## age         .        .         .          .         -0.1220315 -0.12420272</span>
-<span class="co">## sex         .        .         .          .          .          .         </span>
-<span class="co">## job         .        1.5000590 1.3764397  1.3352379  1.3066533  1.30608518</span>
-<span class="co">## education   .        .         .          0.7481296  0.7402970  0.74057564</span>
-<span class="co">## region      .        .         0.5200980  0.6772817  0.7321942  0.72343088</span>
-<span class="co">## marriage    .        .         .          .          .         -0.01863175</span>
+<span class="co">## (intercept) 1.581038 0.4281174 0.2558212 -0.1046637 -0.1047990 -0.11247190</span>
+<span class="co">## age         .        .         .          .         -0.1220295 -0.14952539</span>
+<span class="co">## sex         .        .         .          .          .         -0.05079621</span>
+<span class="co">## job         .        1.5000589 1.3764399  1.3352332  1.3066525  1.31052716</span>
+<span class="co">## education   .        .         .          0.7481258  0.7402953  0.74962027</span>
+<span class="co">## region      .        .         0.5200980  0.6772798  0.7321922  0.73122117</span>
+<span class="co">## marriage    .        .         .          .          .          .         </span>
 <span class="co">##                        6</span>
-<span class="co">## (intercept) -0.112594621</span>
-<span class="co">## age         -0.150054463</span>
-<span class="co">## sex         -0.052978982</span>
-<span class="co">## job          1.310728269</span>
-<span class="co">## education    0.749821752</span>
-<span class="co">## region       0.733104826</span>
-<span class="co">## marriage     0.004436532</span></code></pre>
+<span class="co">## (intercept) -0.113001462</span>
+<span class="co">## age         -0.150095549</span>
+<span class="co">## sex         -0.053031541</span>
+<span class="co">## job          1.310882147</span>
+<span class="co">## education    0.749944344</span>
+<span class="co">## region       0.733193312</span>
+<span class="co">## marriage     0.004490314</span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get the deviance of the estimated model on all candidate support size</span>
 <span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1]  -282.3847  -792.8596  -936.6450 -1011.8841 -1013.1902 -1013.2601 -1013.6465</span></code></pre>
+<pre><code><span class="co">## [1]  -282.3847  -792.8596  -936.6450 -1011.8841 -1013.1902 -1013.6433 -1013.6466</span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># print the fitted model</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
@@ -216,18 +216,18 @@
 <span class="co">## 3            2  -936.6450 -1867.8174</span>
 <span class="co">## 4            3 -1011.8841 -2015.5593</span>
 <span class="co">## 5            4 -1013.1902 -2015.4350</span>
-<span class="co">## 6            5 -1013.2601 -2012.8386</span>
-<span class="co">## 7            6 -1013.6465 -2010.8750</span></code></pre>
+<span class="co">## 6            5 -1013.6433 -2013.6050</span>
+<span class="co">## 7            6 -1013.6466 -2010.8751</span></code></pre>
 <p>Prediction is allowed for all the estimated model. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##              3         4</span>
-<span class="co">## [1,]  1.838255  1.954873</span>
-<span class="co">## [2,]  2.650749  2.692234</span>
-<span class="co">## [3,]  3.080214  3.088154</span>
-<span class="co">## [4,] -1.098251 -1.302053</span>
-<span class="co">## [5,] -2.200394 -2.211221</span>
-<span class="co">## [6,]  4.107201  4.103329</span></code></pre>
+<span class="co">## [1,]  1.838261  1.954873</span>
+<span class="co">## [2,]  2.650754  2.692235</span>
+<span class="co">## [3,]  3.080212  3.088154</span>
+<span class="co">## [4,] -1.098235 -1.302043</span>
+<span class="co">## [5,] -2.200376 -2.211216</span>
+<span class="co">## [6,]  4.107197  4.103329</span></code></pre>
 <p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including <code>coef</code> for the coefficient value, <code>l2norm</code> for the L2-norm of the coefficients, <code>dev</code> for the deviance and <code>tune</code> for the tuning value. Default if <code>coef</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
@@ -267,9 +267,9 @@
 <span class="co">##                   3</span>
 <span class="co">## age       .        </span>
 <span class="co">## sex       .        </span>
-<span class="co">## job       1.3352379</span>
-<span class="co">## education 0.7481296</span>
-<span class="co">## region    0.6772817</span>
+<span class="co">## job       1.3352332</span>
+<span class="co">## education 0.7481258</span>
+<span class="co">## region    0.6772798</span>
 <span class="co">## marriage  .</span></code></pre>
 <p>The return is a list containing the basic information of the estimated model. The best model has estimated coefficients every close to the true coefficients and it successfully recovers the correct support.</p>
 </div>
