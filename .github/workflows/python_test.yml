@@ -4,9 +4,11 @@ on:
   push:
     paths:
     - 'python/**'
+    - '.github/workflows/python_test.yml'
   pull_request:
     paths:
     - 'python/**'
+    - '.github/workflows/python_test.yml'
   workflow_dispatch:
 
 jobs:
