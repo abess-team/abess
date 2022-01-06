@@ -19,7 +19,7 @@ class TestOther:
         rho = 0.
         sigma = 1.
 
-        for family in ['gaussian', 'binomial', 'poisson']:
+        for family in ['gaussian', 'binomial', 'poisson', 'gamma']:
             data1 = make_glm_data(
                 n=n,
                 p=p,
