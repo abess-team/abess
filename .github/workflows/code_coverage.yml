@@ -3,12 +3,12 @@ name: Code Coverage
 on:
   push:
     paths:
-    - 'python/*'
-    - 'R-package/*'
+    - 'python/**'
+    - 'R-package/**'
   pull_request:
     paths:
-    - 'python/*'
-    - 'R-package/*'
+    - 'python/**'
+    - 'R-package/**'
   workflow_dispatch:
 
 jobs:

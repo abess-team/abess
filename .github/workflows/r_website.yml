@@ -3,12 +3,10 @@ name: R docs
 on:
   push:
     paths:
-    - 'R-package/*'
-    - '.github/workflow/r_website.yml'
+    - 'R-package/**'
   pull_request:
     paths:
-    - 'R-package/*'
-    - '.github/workflow/r_website.yml'
+    - 'R-package/**'
 
 jobs:
   pkgdown:

@@ -3,12 +3,10 @@ name: R Build
 on:
   push:
     paths:
-    - 'R-package/*'
-    - '.github/workflow/r_test.yml'
+    - 'R-package/**'
   pull_request:
     paths:
-    - 'R-package/*'
-    - '.github/workflow/r_test.yml'
+    - 'R-package/**'
 
 jobs:
   Install-Test:
