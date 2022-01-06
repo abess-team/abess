@@ -199,8 +199,13 @@ generate.data <- function(n,
   ### pre-treatment for beta ###
   nonzero <- sample(1:p, support.size)
   if (family == "gaussian") {
-    m <- 5 * sqrt(2 * log(p) / n)
-    M <- 100 * m
+    if (p > 1) {
+      m <- 5 * sqrt(2 * log(p) / n)
+      M <- 100 * m
+    } else {
+      m <- 5 * sqrt(2 * log(2) / n)
+      M <- 100 * m
+    }
     if (is.null(input_beta)) {
       beta[nonzero] <- stats::runif(support.size, m, M)
     } else {
