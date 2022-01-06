@@ -4,9 +4,17 @@ on:
   push:
     paths:
     - 'R-package/**'
+    - '!R-package/.gitignore'
+    - '!R-package/cran-comments.md'
+    - '!R-package/pre-release.R'
+    - '!R-package/data-raw/**'
   pull_request:
     paths:
     - 'R-package/**'
+    - '!R-package/.gitignore'
+    - '!R-package/cran-comments.md'
+    - '!R-package/pre-release.R'
+    - '!R-package/data-raw/**'
 
 jobs:
   Install-Test:
