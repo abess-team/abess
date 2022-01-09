@@ -3,10 +3,12 @@ name: Python Build
 on:
   push:
     paths:
-    - 'python/*'
+    - 'python/**'
+    - '.github/workflows/python_test.yml'
   pull_request:
     paths:
-    - 'python/*'
+    - 'python/**'
+    - '.github/workflows/python_test.yml'
   workflow_dispatch:
 
 jobs:

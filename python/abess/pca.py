@@ -341,7 +341,7 @@ class abessPCA(bess_base):
                             number,
                             A_init,
                             p * number, 1,
-                            1, 1
+                            1, 1, 1
                             )
 
         self.coef_ = result[0].reshape(p, number)
@@ -574,7 +574,7 @@ class abessRPCA(bess_base):
                              self.important_search,
                              A_init,
                              n * p, 1,
-                             1, 1
+                             1, 1, 1
                              )
 
         self.coef_ = result[0].reshape(p, n).T

@@ -162,6 +162,11 @@ class abessRPCA : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>
                 bd(this->always_select(i)) = DBL_MAX;
             }
 
+            // A_init
+            for (int i = 0; i < A.size(); i++) {
+                bd(A(i)) = DBL_MAX - 1;
+            }
+
             this->r = (int)this->lambda_level;
         }
 

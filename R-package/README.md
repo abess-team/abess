@@ -85,6 +85,22 @@ By setting `family = "gamma"` in `abess` function, users can analyze the dataset
 
 * Improve the R package document by: adding more details and giving more links related to core functions.  
 
+## Citation         
+
+If you use `abess` or reference our tutorials in a presentation or publication, we would appreciate citations of our library.
+> Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). “abess: A Fast Best Subset Selection Library in Python and R.” arXiv:2110.09697.
+
+The corresponding BibteX entry:
+
+```
+@article{zhu-abess-arxiv,
+  author    = {Jin Zhu and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu and Xueqin Wang},
+  title     = {abess: A Fast Best Subset Selection Library in Python and R},
+  journal   = {arXiv:2110.09697},
+  year      = {2021},
+}
+```
+
 ## References
 
 - Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang (2020). A polynomial algorithm for best-subset selection problem. Proceedings of the National Academy of Sciences, 117(52):33117-33123.
