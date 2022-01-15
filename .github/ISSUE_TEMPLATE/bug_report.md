@@ -8,15 +8,19 @@ assignees: ''
 ---
 
 **Describe the bug**
+
 A clear and concise description of what the bug is.
 
 **Code for Reproduction**
+
 Code for reproduce the bug:
-`
+
+```
 paste your code here
-`
+```
 
 **Expected behavior**
+
 A clear and concise description of what you expected to happen.
 
 **Desktop (please complete the following information):**
@@ -39,7 +43,9 @@ packageVersion("abess")
 ```
 
 **Screenshots**
+
 If needed, add screenshots to help explain your problem.
 
 **Additional context**
+
 Add any other context about the problem here.
