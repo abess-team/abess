@@ -1,4 +1,5 @@
 import sys
+import warnings
 from time import time
 import numpy as np
 from sklearn.metrics import matthews_corrcoef
@@ -12,7 +13,6 @@ from sklearn.linear_model import OrthogonalMatchingPursuitCV
 from abess.linear import abessLm
 from abess.datasets import make_glm_data
 
-import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 
