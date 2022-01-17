@@ -1,5 +1,5 @@
-from abess import *
-from utilities import *
+import abess
+from utilities import (assert_nan,assert_value,assert_fit,assert_shape)
 import numpy as np
 
 
@@ -12,7 +12,7 @@ class TestCheck:
     def test_fit():
         # path
         try:
-            model = abessLm(path_type='other')
+            model = abess.LinearRegression(path_type='other')
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -20,7 +20,7 @@ class TestCheck:
             assert False
 
         try:
-            model = abessLm(support_size=[3])
+            model = abess.LinearRegression(support_size=[3])
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -28,7 +28,7 @@ class TestCheck:
             assert False
 
         try:
-            model = abessLm(path_type='gs', s_min=1, s_max=0)
+            model = abess.LinearRegression(path_type='gs', s_min=1, s_max=0)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -37,7 +37,7 @@ class TestCheck:
 
         # ic
         try:
-            model = abessLm(ic_type='other')
+            model = abess.LinearRegression(ic_type='other')
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -46,7 +46,7 @@ class TestCheck:
 
         # exchange_num
         try:
-            model = abessLm(exchange_num=-1)
+            model = abess.LinearRegression(exchange_num=-1)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -55,7 +55,7 @@ class TestCheck:
 
         # screening_size
         try:
-            model = abessLm(screening_size=3)
+            model = abess.LinearRegression(screening_size=3)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -63,7 +63,7 @@ class TestCheck:
             assert False
 
         try:
-            model = abessLm(support_size=[2],
+            model = abess.LinearRegression(support_size=[2],
                             screening_size=1)
             model.fit([[1, 2, 3]], [1])
         except ValueError as e:
@@ -73,7 +73,7 @@ class TestCheck:
 
         # primary_fit_xxx
         try:
-            model = abessLogistic(primary_model_fit_max_iter=0.5)
+            model = abess.LogisticRegression(primary_model_fit_max_iter=0.5)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -81,7 +81,7 @@ class TestCheck:
             assert False
 
         try:
-            model = abessLogistic(primary_model_fit_epsilon=-1)
+            model = abess.LogisticRegression(primary_model_fit_epsilon=-1)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -89,7 +89,7 @@ class TestCheck:
             assert False
 
         try:
-            model = abessLogistic(primary_model_fit_epsilon=-1)
+            model = abess.LogisticRegression(primary_model_fit_epsilon=-1)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -98,7 +98,7 @@ class TestCheck:
 
         # thread
         try:
-            model = abessLm(thread=-1)
+            model = abess.LinearRegression(thread=-1)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -107,7 +107,7 @@ class TestCheck:
 
         # splicing_type
         try:
-            model = abessLm(splicing_type=-1)
+            model = abess.LinearRegression(splicing_type=-1)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -116,7 +116,7 @@ class TestCheck:
 
         # cv
         try:
-            model = abessLm(cv=2)
+            model = abess.LinearRegression(cv=2)
             model.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -124,7 +124,7 @@ class TestCheck:
             assert False
 
         try:
-            model = abessLm(cv=2)
+            model = abess.LinearRegression(cv=2)
             cv_fold_id = [1, 1]
             model.fit([[1], [1]], [1, 1], cv_fold_id=cv_fold_id)
         except ValueError as e:
@@ -133,7 +133,7 @@ class TestCheck:
             assert False
 
         try:
-            model = abessLm(cv=2)
+            model = abess.LinearRegression(cv=2)
             cv_fold_id = [1, 2, 1]
             model.fit([[1], [1]], [1, 1], cv_fold_id=cv_fold_id)
         except ValueError as e:
@@ -141,7 +141,7 @@ class TestCheck:
         else:
             assert False
 
-        model = abessLm()
+        model = abess.LinearRegression()
         # datatype error
         try:
             model.fit([['c', 1, 1]], [1])
@@ -158,7 +158,7 @@ class TestCheck:
             assert False
 
         try:
-            model1 = abessLm(cv='c')
+            model1 = abess.LinearRegression(cv='c')
             model1.fit([[1]], [1])
         except ValueError as e:
             print(e)
@@ -220,9 +220,9 @@ class TestCheck:
     @staticmethod
     def test_pca():
         """
-        For `abess.pca.abessPCA`.
+        For `abess.pca.PCA`.
         """
-        model = abessPCA()
+        model = abess.PCA()
         # datatype error
         try:
             model.fit([['c']])
@@ -246,7 +246,7 @@ class TestCheck:
             assert False
 
         try:
-            model1 = abessPCA(cv='c')
+            model1 = abess.PCA(cv='c')
             model1.fit([[1]])
         except ValueError as e:
             print(e)
@@ -276,7 +276,7 @@ class TestCheck:
             assert False
 
         try:
-            model1 = abessPCA(support_size=np.array([1, 2]))
+            model1 = abess.PCA(support_size=np.array([1, 2]))
             model1.fit([[1]])
         except ValueError as e:
             print(e)
@@ -292,7 +292,7 @@ class TestCheck:
             assert False
 
         try:
-            model1 = abessPCA(cv=5)
+            model1 = abess.PCA(cv=5)
             model1.fit(Sigma=[[1]])
         except ValueError as e:
             print(e)
@@ -324,7 +324,7 @@ class TestCheck:
 
         # invalid arg
         try:
-            model1 = abessPCA(ic_type='other')
+            model1 = abess.PCA(ic_type='other')
             model1.fit([[1]])
         except ValueError as e:
             print(e)
@@ -332,7 +332,7 @@ class TestCheck:
             assert False
 
         try:
-            model1 = abessPCA(cv=5)
+            model1 = abess.PCA(cv=5)
             model1.fit([[1]])
         except ValueError as e:
             print(e)
@@ -341,7 +341,7 @@ class TestCheck:
 
     @staticmethod
     def test_rpca():
-        model = abessRPCA()
+        model = abess.RPCA()
         # datatype error
         try:
             model.fit([['c']], r=1)
@@ -381,7 +381,7 @@ class TestCheck:
 
         # invalid arg
         try:
-            model1 = abessRPCA(ic_type='other')
+            model1 = abess.RPCA(ic_type='other')
             model1.fit([[1]], r=1)
         except ValueError as e:
             print(e)
