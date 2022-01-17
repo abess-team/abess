@@ -7,7 +7,8 @@ from .bess_base import bess_base
 
 
 def fix_docs(cls):
-    # inherit the document from base class
+    # This function is to inherit the docstring from base class 
+    # and avoid unnecessary duplications on description.
     index = cls.__doc__.find("Examples\n    --------\n")
     if index != -1:
         cls.__doc__ = cls.__doc__[:index] + \
