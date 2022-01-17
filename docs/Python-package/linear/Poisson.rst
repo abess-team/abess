@@ -1,9 +1,9 @@
-abessGamma
-==========
+PoissonRegression
+=================
 
 .. contents::
     :backlinks: none
     :local:
 
-.. autoclass:: abess.linear.abessGamma
+.. autoclass:: abess.linear.PoissonRegression
     :members: fit, predict, score

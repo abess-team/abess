@@ -18,8 +18,8 @@ from abess.datasets import (make_glm_data, make_multivariate_glm_data)
 
 # To be deprecated in version 0.5.0
 from abess.linear import (
-    abessLogistic,
     abessLm,
+    abessLogistic,
     abessCox,
     abessPoisson,
     abessMultigaussian,

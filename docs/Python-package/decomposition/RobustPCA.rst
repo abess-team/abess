@@ -1,9 +1,9 @@
-abessRPCA
+RobustPCA
 =========
 
 .. contents::
     :backlinks: none
     :local:
 
-.. autoclass:: abess.pca.abessRPCA
+.. autoclass:: abess.pca.RobustPCA
     :members:
