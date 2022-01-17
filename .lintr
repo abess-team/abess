@@ -34,4 +34,3 @@ linters: with_defaults(
     T_and_F_symbol_linter = NULL,
     cyclocomp_linter = NULL,
     undesirable_function_linter = NULL)
-
