@@ -99,6 +99,7 @@ disable=raw-checker-failed,
         too-many-branches,
         too-many-statements,
         too-many-locals,
+        consider-using-f-string,
         line-too-long # TODO
 
 # Enable the message, report, category or checker with the given id(s). You can

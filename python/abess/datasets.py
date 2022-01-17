@@ -180,7 +180,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
         return data(x, y, Tbeta)
 
     raise ValueError(
-        "Family should be \'gaussian\', \'binomial\', \'possion\', \'gamma\', or \'cox\'")
+        "Family should be \'gaussian\', \'binomial\', \'poisson\', \'gamma\', or \'cox\'")
 
 
 def sparse_beta_generator(p, Nonzero, k, M):
