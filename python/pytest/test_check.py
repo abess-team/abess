@@ -1,5 +1,4 @@
 import abess
-from utilities import (assert_nan,assert_value,assert_fit,assert_shape)
 import numpy as np
 
 

@@ -1,6 +1,6 @@
 import numpy as np
 import abess
-from utilities import (assert_nan,assert_value,assert_fit,assert_shape)
+from utilities import assert_shape
 
 
 class TestOther:

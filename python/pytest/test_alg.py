@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 import abess
-from utilities import (assert_nan, assert_value, assert_fit, assert_shape)
+from utilities import (assert_nan, assert_value, assert_fit)
 import pandas as pd
 from scipy.sparse import coo_matrix
 from sklearn.model_selection import KFold, GridSearchCV
