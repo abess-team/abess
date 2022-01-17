@@ -12,6 +12,9 @@ from sklearn.linear_model import OrthogonalMatchingPursuitCV
 from abess.linear import abessLm
 from abess.datasets import make_glm_data
 
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+
 
 def metrics(coef, pred, test):
     pred_err = np.linalg.norm((pred - test.y))
