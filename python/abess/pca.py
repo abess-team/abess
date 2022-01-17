@@ -1,4 +1,5 @@
 import numbers
+import warnings
 import numpy as np
 from scipy.sparse import coo_matrix
 from sklearn.utils.validation import check_array
@@ -7,7 +8,7 @@ from .bess_base import bess_base
 
 
 def fix_docs(cls):
-    # This function is to inherit the docstring from base class 
+    # This function is to inherit the docstring from base class
     # and avoid unnecessary duplications on description.
     index = cls.__doc__.find("Examples\n    --------\n")
     if index != -1:
@@ -25,7 +26,7 @@ def fix_docs(cls):
 
 
 @fix_docs
-class abessPCA(bess_base):
+class PCA(bess_base):
     """
     Adaptive Best-Subset Selection(ABESS) algorithm for principal component analysis.
 
@@ -40,10 +41,10 @@ class abessPCA(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from abess.pca import abessPCA
+    >>> from abess.pca import PCA
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> model = abessPCA(support_size = 10)
+    >>> model = PCA(support_size = 10)
     >>>
     >>> ### X known
     >>> X = np.random.randn(100, 50)
@@ -356,7 +357,7 @@ class abessPCA(bess_base):
 
 
 @fix_docs
-class abessRPCA(bess_base):
+class RPCA(bess_base):
     """
     Adaptive Best-Subset Selection(ABESS) algorithm for robust principal component analysis.
 
@@ -371,10 +372,10 @@ class abessRPCA(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from abess.pca import abessPCA
+    >>> from abess.pca import RPCA
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> model = abessPCA(support_size = 10)
+    >>> model = RPCA(support_size = 10)
     >>>
     >>> ### X known
     >>> X = np.random.randn(100, 50)
@@ -583,3 +584,48 @@ class abessRPCA(bess_base):
         self.coef_ = result[0].reshape(p, n).T
         self.train_loss_ = result[2]
         return self
+
+
+class abessPCA(PCA):
+    warning_msg = "Class `abessPCA` has been renamed to `PCA`. The former will be deprecated in version 0.5.0."
+    __doc__ = warning_msg + '\n' + PCA.__doc__
+
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, s_min=None, s_max=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=None,
+                 thread=1,
+                 sparse_matrix=False,
+                 splicing_type=1
+                 ):
+        warnings.warn(self.warning_msg, FutureWarning)
+        super().__init__(
+            max_iter=max_iter, exchange_num=exchange_num, path_type=path_type, is_warm_start=is_warm_start,
+            support_size=support_size, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
+            thread=thread,
+            sparse_matrix=sparse_matrix,
+            splicing_type=splicing_type
+        )
+
+class abessRPCA(RPCA):
+    warning_msg = "Class `abessRPCA` has been renamed to `RPCA`. The former will be deprecated in version 0.5.0."
+    __doc__ = warning_msg + '\n' + RPCA.__doc__
+
+    def __init__(self, max_iter=20, exchange_num=5, is_warm_start=True, support_size=None,
+                 ic_type="gic", ic_coef=1.0,
+                 always_select=None,
+                 thread=1,
+                 sparse_matrix=False,
+                 splicing_type=1
+                 ):
+        warnings.warn(self.warning_msg, FutureWarning)
+        super().__init__(
+            max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size,
+            ic_type=ic_type, ic_coef=ic_coef,
+            always_select=always_select,
+            thread=thread,
+            sparse_matrix=sparse_matrix,
+            splicing_type=splicing_type
+        )
