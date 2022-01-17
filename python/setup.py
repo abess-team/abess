@@ -113,7 +113,7 @@ setup(
     maintainer_email="jiangkk3@mail2.sysu.edu.cn",
     package_dir={'': CURRENT_DIR},
     packages=find_packages(CURRENT_DIR),
-    description="abess Python Package",
+    description="abess: Fast Best Subset Selection",
     long_description=long_description,
     long_description_content_type="text/x-rst",
     install_requires=[
