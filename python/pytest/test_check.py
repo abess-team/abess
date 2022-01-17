@@ -219,9 +219,9 @@ class TestCheck:
     @staticmethod
     def test_pca():
         """
-        For `abess.pca.PCA`.
+        For `abess.decomposition.SparsePCA.fit`.
         """
-        model = abess.PCA()
+        model = abess.SparsePCA()
         # datatype error
         try:
             model.fit([['c']])
@@ -245,7 +245,7 @@ class TestCheck:
             assert False
 
         try:
-            model1 = abess.PCA(cv='c')
+            model1 = abess.SparsePCA(cv='c')
             model1.fit([[1]])
         except ValueError as e:
             print(e)
@@ -275,7 +275,7 @@ class TestCheck:
             assert False
 
         try:
-            model1 = abess.PCA(support_size=np.array([1, 2]))
+            model1 = abess.SparsePCA(support_size=np.array([1, 2]))
             model1.fit([[1]])
         except ValueError as e:
             print(e)
@@ -291,7 +291,7 @@ class TestCheck:
             assert False
 
         try:
-            model1 = abess.PCA(cv=5)
+            model1 = abess.SparsePCA(cv=5)
             model1.fit(Sigma=[[1]])
         except ValueError as e:
             print(e)
@@ -323,7 +323,7 @@ class TestCheck:
 
         # invalid arg
         try:
-            model1 = abess.PCA(ic_type='other')
+            model1 = abess.SparsePCA(ic_type='other')
             model1.fit([[1]])
         except ValueError as e:
             print(e)
@@ -331,7 +331,7 @@ class TestCheck:
             assert False
 
         try:
-            model1 = abess.PCA(cv=5)
+            model1 = abess.SparsePCA(cv=5)
             model1.fit([[1]])
         except ValueError as e:
             print(e)
@@ -340,7 +340,7 @@ class TestCheck:
 
     @staticmethod
     def test_rpca():
-        model = abess.RPCA()
+        model = abess.RobustPCA()
         # datatype error
         try:
             model.fit([['c']], r=1)
@@ -380,7 +380,7 @@ class TestCheck:
 
         # invalid arg
         try:
-            model1 = abess.RPCA(ic_type='other')
+            model1 = abess.RobustPCA(ic_type='other')
             model1.fit([[1]], r=1)
         except ValueError as e:
             print(e)

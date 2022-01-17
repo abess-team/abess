@@ -207,7 +207,7 @@ class TestAlgorithm:
             family=family, n=n, p=p, k=k, rho=rho, M=M)
 
         # null
-        model1 = abess.MultipleLinearRegression()
+        model1 = abess.MultiTaskRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
 
@@ -220,11 +220,11 @@ class TestAlgorithm:
         assert not np.isnan(score)
 
         # covariance update
-        model2 = abess.MultipleLinearRegression(covariance_update=True)
+        model2 = abess.MultiTaskRegression(covariance_update=True)
         model2.fit(data.x, data.y)
         assert_value(model1.coef_, model2.coef_)
 
-        model3 = abess.MultipleLinearRegression(
+        model3 = abess.MultiTaskRegression(
             covariance_update=True,
             important_search=10,
             screening_size=20,
@@ -232,7 +232,7 @@ class TestAlgorithm:
         model3.fit(data.x, data.y)
         assert_fit(model3.coef_, data.coef_)
 
-        model4 = abess.MultipleLinearRegression(
+        model4 = abess.MultiTaskRegression(
             covariance_update=True, path_type='gs', cv=5)
         model4.fit(data.x, data.y)
         assert_fit(model4.coef_, data.coef_)
@@ -287,7 +287,7 @@ class TestAlgorithm:
         g_index = g_index.repeat(group_size)
 
         # null
-        model1 = abess.PCA(support_size=support_size)
+        model1 = abess.SparsePCA(support_size=support_size)
         model1.fit(X)
         assert np.count_nonzero(model1.coef_) == s
 
@@ -297,23 +297,23 @@ class TestAlgorithm:
         model1.fit_transform(X)
 
         # sparse
-        model2 = abess.PCA(support_size=s, sparse_matrix=True)
+        model2 = abess.SparsePCA(support_size=s, sparse_matrix=True)
         model2.fit(coo_matrix(X))
         assert_value(model1.coef_, model2.coef_)
 
-        model2 = abess.PCA(support_size=s, sparse_matrix=True)
+        model2 = abess.SparsePCA(support_size=s, sparse_matrix=True)
         model2.fit(X)
         assert_value(model1.coef_, model2.coef_)
 
         # sigma input
-        model3 = abess.PCA(support_size=support_size)
+        model3 = abess.SparsePCA(support_size=support_size)
         model3.fit(Sigma=X.T.dot(X))
         model3.fit(Sigma=X.T.dot(X) / n, n=n)
         assert_fit(model1.coef_, model3.coef_)
 
         # KPCA
         support_size_m = np.hstack((support_size, support_size, support_size))
-        model4 = abess.PCA(support_size=support_size_m)
+        model4 = abess.SparsePCA(support_size=support_size_m)
         model4.fit(X, number=3)
         assert model4.coef_.shape[1] == 3
 
@@ -327,7 +327,7 @@ class TestAlgorithm:
         support_size_g = np.zeros((4, 1))
         support_size_g[1, 0] = 1
         group = np.repeat([0, 1, 2, 3], [5, 5, 5, 5])
-        model5 = abess.PCA(support_size=support_size_g)
+        model5 = abess.SparsePCA(support_size=support_size_g)
         model5.fit(X, group=group)
         coef = g_index[np.nonzero(model5.coef_)[0]]
 
@@ -335,13 +335,13 @@ class TestAlgorithm:
         assert len(np.unique(coef)) == 2
 
         # screening
-        model6 = abess.PCA(support_size=support_size, screening_size=20)
+        model6 = abess.SparsePCA(support_size=support_size, screening_size=20)
         model6.fit(X)
         assert_nan(model6.coef_)
 
         # ic
         for ic in ['aic', 'bic', 'ebic', 'gic']:
-            model4 = abess.PCA(support_size=support_size, ic_type=ic)
+            model4 = abess.SparsePCA(support_size=support_size, ic_type=ic)
             model4.fit(X, is_normal=False)
 
     @staticmethod
@@ -379,27 +379,27 @@ class TestAlgorithm:
         X = L + S
 
         # null
-        model1 = abess.RPCA(support_size=s)
+        model1 = abess.RobustPCA(support_size=s)
         model1.fit(X, r=r)
         # assert_fit(model1.coef_, S)
 
         # sparse
-        model2 = abess.RPCA(support_size=s)
+        model2 = abess.RobustPCA(support_size=s)
         model2.fit(coo_matrix(X), r=r)
         assert_value(model1.coef_, model2.coef_)
 
-        model2 = abess.RPCA(support_size=s, sparse_matrix=True)
+        model2 = abess.RobustPCA(support_size=s, sparse_matrix=True)
         model2.fit(X, r=r)
         assert_value(model1.coef_, model2.coef_)
 
         # group
         group = np.arange(n * p)
-        model3 = abess.RPCA(support_size=s)
+        model3 = abess.RobustPCA(support_size=s)
         model3.fit(X, r=r, group=group)
 
         # ic
         for ic in ['aic', 'bic', 'ebic', 'gic']:
-            model4 = abess.RPCA(support_size=s, ic_type=ic)
+            model4 = abess.RobustPCA(support_size=s, ic_type=ic)
             model4.fit(X, r=r)
 
     @staticmethod
@@ -545,7 +545,7 @@ class TestAlgorithm:
     #     support_size = np.linspace(1, s_max, s_max+1)
     #     alpha = [0., 0.1, 0.2, 0.3, 0.4]
 
-    #     model = abess.MultipleLinearRegression()
+    #     model = abess.MultiTaskRegression()
     #     cv = KFold(n_splits=5, shuffle=True, random_state=0)
     #     gcv = GridSearchCV(
     #         model,

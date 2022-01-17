@@ -11,14 +11,6 @@ def fix_docs(cls):
     if index != -1:
         cls.__doc__ = cls.__doc__[:index] + \
             cls.__bases__[0].__doc__ + cls.__doc__[index:]
-
-    # for name, func in vars(cls).items():
-    #     if isinstance(func, types.FunctionType):
-    #         # print(str(func) +  'needs doc')
-    #         for parent in cls.__bases__:
-    #             parfunc = getattr(parent, name, None)
-    #             if parfunc and getattr(parfunc, '__doc__', None):
-    #                 func.__doc__ = parfunc.__doc__ + func.__doc__
     return cls
 
 
@@ -454,7 +446,7 @@ class PoissonRegression(bess_base):
 
 
 @ fix_docs
-class MultipleLinearRegression(bess_base):
+class MultiTaskRegression(bess_base):
     """
     Adaptive Best-Subset Selection(ABESS) algorithm for multitasklearning.
 
@@ -899,9 +891,9 @@ class abessPoisson(PoissonRegression):
         )
 
 
-class abessMultigaussian(MultipleLinearRegression):
-    warning_msg = "Class `abessMultigaussian` has been renamed to `MultipleLinearRegression`. The former will be deprecated in version 0.5.0."
-    __doc__ = warning_msg + '\n' + MultipleLinearRegression.__doc__
+class abessMultigaussian(MultiTaskRegression):
+    warning_msg = "Class `abessMultigaussian` has been renamed to `MultiTaskRegression`. The former will be deprecated in version 0.5.0."
+    __doc__ = warning_msg + '\n' + MultiTaskRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
