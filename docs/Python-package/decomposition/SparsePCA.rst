@@ -5,5 +5,5 @@ SparsePCA
     :backlinks: none
     :local:
 
-.. autoclass:: abess.pca.SparsePCA
+.. autoclass:: abess.decomposition.SparsePCA
     :members:

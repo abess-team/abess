@@ -5,5 +5,5 @@ RobustPCA
     :backlinks: none
     :local:
 
-.. autoclass:: abess.pca.RobustPCA
+.. autoclass:: abess.decomposition.RobustPCA
     :members:
