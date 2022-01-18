@@ -21,7 +21,7 @@ on:
 jobs:
   pkgdown:
     name: pkgdown
-    runs-on: macOS-latest
+    runs-on: macos-latest
     env:
       GITHUB_PAT: ${{ secrets.ABESS_TOKEN }}
     steps:
