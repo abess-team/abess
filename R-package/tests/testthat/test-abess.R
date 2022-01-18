@@ -544,8 +544,8 @@ test_that("abess (gamma) works", {
 test_that("abess (ordinal) works", {
   skip_on_ci()
   n <- 2000
-  p <- 100
-  support.size <- 3
+  p <- 1000
+  support.size <- 10
   dataset <- generate.data(n, p, support.size,
                             family = "ordinal",class.num = 3, seed = 1)
    
@@ -554,8 +554,8 @@ test_that("abess (ordinal) works", {
     dataset[["y"]],
     family = "ordinal",
     tune.type = "cv", 
-    support.size = support.size,
-    always.include = which(dataset$beta != 0),
+    #support.size = support.size,
+    #always.include = which(dataset$beta != 0),
     max.splicing.iter = 1
   )
   beta.idx.true <- which(dataset[["beta"]]!=0)
