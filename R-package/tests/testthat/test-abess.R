@@ -558,6 +558,13 @@ test_that("abess (ordinal) works", {
     always.include = which(dataset$beta != 0),
     max.splicing.iter = 1
   )
+  beta.idx.true <- which(dataset[["beta"]]!=0)
+  
+  coef <- coef(abess_fit, support.size = abess_fit[["best.size"]])[[1]]
+  beta.idx.fit <- unique(coef@i)[-1]
+  
+  expect_equal(length(beta.idx.true),length(beta.idx.fit))
+  expect_equal(beta.idx.true,beta.idx.fit)
 })
 
 test_that("abess (one variable input) works", {
