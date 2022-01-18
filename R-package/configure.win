@@ -1,2 +1,11 @@
+## enter the directory with configure.win 
+## reference: http://qiushao.net/2019/01/12/Linux/get-shell-script-dir/
+SCRIPT_DIR=$(cd $(dirname ${BASH_SOURCE[0]}); pwd)
+cd $SCRIPT_DIR
+
+## copy necessary files into R-package:
 cp -rf ../include inst
 cp -rf ../src/*.cpp ../src/*.h src
+
+## use Rcpp to generate interface files:
+"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "Rcpp::compileAttributes()"
