@@ -9,6 +9,9 @@ on:
     - '!R-package/cran-comments.md'
     - '!R-package/pre-release.R'
     - '!R-package/tests/**'
+    - '!R-package/configure.win'
+    - '!R-package/abess.Rproj'
+    - '!R-package/.covrignore'
   pull_request:
     paths:
     - 'R-package/**'
@@ -17,6 +20,9 @@ on:
     - '!R-package/cran-comments.md'
     - '!R-package/pre-release.R'
     - '!R-package/tests/**'
+    - '!R-package/configure.win'
+    - '!R-package/abess.Rproj'
+    - '!R-package/.covrignore'
 
 jobs:
   pkgdown:
