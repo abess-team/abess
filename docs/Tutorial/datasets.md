@@ -43,7 +43,7 @@ Model: $y \sim \text{Gamma}(k, \theta),\ k\theta = \exp(x^T \beta + \epsilon), k
 
 ### CoxPH
 
-Usage: `family='cox'[, scal=..., cencering=..., c=...]`
+Usage: `family='cox'[, scal=..., censoring=..., c=...]`
 
 Model: $y=\min(t,C)$, where $t = \left[-\dfrac{\log U}{\exp(X \beta)}\right]^s,\ U\sim N(0,1),\ s=\dfrac{1}{\text{scal}}$ and censoring time $C\sim U(0, c)$.
 - the coefficient $\beta\sim U[2m, 10m]$, where $m = 5\sqrt{2\log p/n}$;
