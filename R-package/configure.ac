@@ -38,7 +38,7 @@ CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
 AC_LANG(C++)
 AC_PROG_CPP
 
-${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe -e "Rcpp::compileAttributes()"
+"${R_HOME}/bin/Rscript" -e "Rcpp::compileAttributes()"
 
 OPENMP_CXXFLAGS=""
 

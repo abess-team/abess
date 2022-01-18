@@ -13,3 +13,4 @@ config.status
 autom4te.cache
 *.dll
 inst/include
+R/RcppExports.R
