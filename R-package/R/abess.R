@@ -284,7 +284,7 @@ abess.default <- function(x,
                           y,
                           family = c(
                             "gaussian", "binomial", "poisson", "cox",
-                            "mgaussian", "multinomial", "gamma"
+                            "mgaussian", "multinomial", "gamma","ordinal"
                           ),
                           tune.path = c("sequence", "gsection"),
                           tune.type = c("gic", "ebic", "bic", "aic", "cv"),
@@ -361,7 +361,8 @@ abess.default <- function(x,
     "cox" = 4,
     "mgaussian" = 5,
     "multinomial" = 6,
-    "gamma" = 8
+    "gamma" = 8,
+    "ordinal" = 9
   )
 
   ## check predictors:
@@ -421,8 +422,8 @@ abess.default <- function(x,
       }
     }
   }
-  if (family == "binomial" || family == "multinomial") {
-    if (length(unique(y)) == 2 && family == "multinomial") {
+  if (family == "binomial" || family %in% c("multinomial","ordinal")) {
+    if (length(unique(y)) == 2 && family %in% c("multinomial","ordinal")) {
       warning("y is a binary variable and is not match to family = 'multinomial'.
               We change to family = 'binomial'")
       model_type <- 2
@@ -432,11 +433,11 @@ abess.default <- function(x,
       stop("Input binary y when family = 'binomial'; otherwise,
            change the option for family to 'multinomial'. ")
     }
-    if (length(unique(y)) == nobs && family == "multinomial") {
+    if (length(unique(y)) == nobs && family %in% c("multinomial","ordinal")) {
       stop("All of y value are distinct.
            Please input categorial y when family = 'multinomial'.")
     }
-    if ((nobs / length(unique(y))) < 5 && family == "multinomial") {
+    if ((nobs / length(unique(y))) < 5 && family %in% c("multinomial","ordinal")) {
       warning("The number of the category of y is relative large compare to nvars.
               The numerical result might be unstable.")
     }
@@ -449,7 +450,7 @@ abess.default <- function(x,
     if (family == "binomial") {
       y <- as.numeric(y) - 1
     }
-    if (family == "multinomial") {
+    if (family %in% c("multinomial","ordinal")) {
       y <- model.matrix(~ factor(as.numeric(y) - 1) + 0)
       colnames(y) <- NULL
     }
@@ -675,7 +676,8 @@ abess.default <- function(x,
       "cox" = 3,
       "mgaussian" = 1,
       "multinomial" = 2,
-      "gamma" = 2
+      "gamma" = 2,
+      "ordinal" = 2
     )
   } else {
     stopifnot(normalize %in% 0:3)
@@ -908,7 +910,7 @@ abess.default <- function(x,
   result[["best.size"]] <- s_list[which.min(result[["tune.value"]])]
   names(result)[which(names(result) == "coef0_all")] <- "intercept"
   if (family %in% MULTIVARIATE_RESPONSE) {
-    if (family == "multinomial") {
+    if (family %in% c("multinomial","ordinal")) {
       result[["intercept"]] <- lapply(result[["intercept"]], function(x) {
         x <- x[-y_dim]
       })

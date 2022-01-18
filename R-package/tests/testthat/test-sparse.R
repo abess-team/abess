@@ -9,7 +9,7 @@ sparse_batch_check <- function(abess_fit1, abess_fit2) {
   expect_equal(abess_fit1[["dev"]], abess_fit2[["dev"]],
     tolerance = 1e-2
   )
-  if (abess_fit1[["family"]] %in% c("mgaussian", "multinomial")) {
+  if (abess_fit1[["family"]] %in% c("mgaussian", "multinomial", "ordinal")) {
     support_size_num <- length(abess_fit1[["beta"]])
     for (i in 1:support_size_num) {
       if (length(abess_fit1[["beta"]][[1]]@i) != 0) {
