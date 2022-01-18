@@ -1,2 +1,6 @@
+## copy necessary files into R-package:
 cp -rf ../include inst
 cp -rf ../src/*.cpp ../src/*.h src
+
+## use Rcpp to generate interface files:
+"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "Rcpp::compileAttributes()"
