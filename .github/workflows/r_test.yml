@@ -3,25 +3,29 @@ name: R Build
 on:
   push:
     paths:
-    - 'R-package/**'
-    - '.github/workflows/r_test.yml'
-    - '!R-package/.gitignore'
-    - '!R-package/cran-comments.md'
-    - '!R-package/pre-release.R'
-    - '!R-package/data-raw/**'
+      - 'R-package/**'
+      - '.github/workflows/r_test.yml'
+      - '!R-package/.gitignore'
+      - '!R-package/cran-comments.md'
+      - '!R-package/pre-release.R'
+      - '!R-package/data-raw/**'
+    branches:
+      - master
   pull_request:
     paths:
-    - 'R-package/**'
-    - '.github/workflows/r_test.yml'
-    - '!R-package/.gitignore'
-    - '!R-package/cran-comments.md'
-    - '!R-package/pre-release.R'
-    - '!R-package/data-raw/**'
+      - 'R-package/**'
+      - '.github/workflows/r_test.yml'
+      - '!R-package/.gitignore'
+      - '!R-package/cran-comments.md'
+      - '!R-package/pre-release.R'
+      - '!R-package/data-raw/**'
+    branches:
+      - master
 
 jobs:
   Install-Test:
     name: Installation test for R-package
-    runs-on: macOS-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
 
