@@ -183,7 +183,7 @@ It may take a few minutes to install:
 
 Now a file named `cabess.py` will be appeared in the directory `abess/python/src`, which help to link Python and C++. You need to move it into directory `abess/python/abess` and replace the duplicated file there.
 
-Then create a new python file in `abess/python/abess` or open the existed file, such as `abess/python/abess/linear.py`, to add a python API for your new method. 
+Then create a new python file in `abess/python/abess` or open an existed file, such as `abess/python/abess/linear.py`, to add a python API for your new method. 
 
 A simple new method can be added like: [[code temp]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=class%20abessPCA(bess_base)%3A).
 
@@ -191,7 +191,7 @@ A simple new method can be added like: [[code temp]](https://github.com/abess-te
 # all algorithms should inheritate the base class `bess_base`
 from .bess_base import bess_base
 
-class abess_new_algorithm(bess_base): 
+class new_algorithm(bess_base): 
     """
     Here is some introduction.
     """
@@ -223,7 +223,7 @@ Now run `$ python setup.py install` again and this time the installation would b
 Congratulation! Your work can now be used by:
 
 ```Python
-from abess import abess_new_algorithm
+from abess import new_algorithm
 ```
 
 #### bess_base
@@ -236,12 +236,12 @@ class bess_base(BaseEstimator):
      def __init__(...):
         # some init
      def fit(...):	
-        # check nput, warp with cpp
+        # check input, warp with cpp
 ```
 
 Actually, it is based on `sklearn.base.BaseEstimator` [[code link]](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html). Two methods, `get_params` and `set_params` are offered in this base class. 
 
-In our package, we write an method called `fit` to realize the abess process. Of cause, you can also override it like `abessPCA`.
+In our package, we write an method called `fit` to realize the abess process. Of cause, you can also override it like `SparsePCA`.
 
 ## Verify you result
 

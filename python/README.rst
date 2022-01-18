@@ -69,10 +69,10 @@ Best subset selection for linear regression on a simulated dataset in Python:
 
 .. code-block:: python
 
-   from abess.linear import abessLm
+   from abess.linear import LinearRegression
    from abess.datasets import make_glm_data
    sim_dat = make_glm_data(n = 300, p = 1000, k = 10, family = "gaussian")
-   model = abessLm()
+   model = LinearRegression()
    model.fit(sim_dat.x, sim_dat.y)
 
 See more examples analyzed with Python in the tutorials; the notebooks are available `here <https://abess.readthedocs.io/en/latest/Tutorial/index.html>`_.

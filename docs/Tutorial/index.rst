@@ -19,5 +19,6 @@ In the following pages, the abess Python package is used for illustration. The c
     ComputationalImprove
     work_with_sklearn
     algorithm
+    datasets
     power_of_abess
     

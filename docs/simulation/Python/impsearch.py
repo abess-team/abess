@@ -2,7 +2,7 @@ from time import time
 import numpy as np
 from sklearn.metrics import roc_auc_score
 import matplotlib.pyplot as plt
-from abess.linear import abessLogistic
+from abess.linear import LogisticRegression
 from abess.datasets import make_glm_data
 
 np.random.seed(0)
@@ -28,7 +28,7 @@ for m in range(M):
 
     for i, imp in enumerate(search_path):
         ts = time()
-        model = abessLogistic(
+        model = LogisticRegression(
             support_size=range(100),
             important_search=imp)
         model.fit(train.x, train.y)
