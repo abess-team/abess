@@ -103,9 +103,11 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                 temp->approximate_Newton = approximate_Newton;
                 algorithm_list_uni_dense[i] = temp;
             } else if (model_type == 9) {
-                abessOrdinal<Eigen::MatrixXd> *temp = new abessOrdinal<Eigen::MatrixXd>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+                abessOrdinal<Eigen::MatrixXd> *temp = new abessOrdinal<Eigen::MatrixXd>(
+                    algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon,
+                    is_warm_start, exchange_num, always_select, splicing_type, sub_search);
                 algorithm_list_mul_dense[i] = temp;
-            }           
+            }
         } else {
             if (model_type == 1) {
                 abessLm<Eigen::SparseMatrix<double>> *temp = new abessLm<Eigen::SparseMatrix<double>>(
@@ -149,10 +151,10 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                     is_warm_start, exchange_num, always_select, splicing_type, sub_search);
                 temp->approximate_Newton = approximate_Newton;
                 algorithm_list_uni_sparse[i] = temp;
-            }
-            else if (model_type == 9)
-            {
-                abessOrdinal<Eigen::SparseMatrix<double>> *temp = new abessOrdinal<Eigen::SparseMatrix<double>>(algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+            } else if (model_type == 9) {
+                abessOrdinal<Eigen::SparseMatrix<double>> *temp = new abessOrdinal<Eigen::SparseMatrix<double>>(
+                    algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon,
+                    is_warm_start, exchange_num, always_select, splicing_type, sub_search);
                 algorithm_list_mul_sparse[i] = temp;
             }
         }

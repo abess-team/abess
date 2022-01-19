@@ -348,7 +348,7 @@ generate.data <- function(n,
           prob_y[i1,y_dim] = 1-logit[i1,y_dim-1]
         }
         else{
-          prob_y[i1,i2] = logit[i1,i2] - logit[i1,i2-1];
+          prob_y[i1,i2] = logit[i1,i2] - logit[i1,i2-1]
         } 
       }
     }
