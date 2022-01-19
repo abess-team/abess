@@ -21,7 +21,7 @@ def sample(p, k):
 
 def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
                   censoring=True, c=1, scal=10, snr=None):
-    """
+    r"""
     Generate a dataset with single response.
 
     Parameters
@@ -39,29 +39,22 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
         "poisson" for counting response,
         "gamma" for positive continuous response,
         "cox" for left-censored response.
-    rho: float, optional
+    rho: float, optional, default=0
         A parameter used to characterize the pairwise correlation in predictors.
-        Default: rho = 0.
-    sigma: float, optional
+    sigma: float, optional, default=1
         The variance of the gaussian noise.
         It would be unused if `snr` is not None.
-        Default: sigma = 1.
-    coef\\_: array_like, optional
+    coef_: array_like, optional, default=None
         The coefficient values in the underlying regression model.
-        Default: coef\\_ = None.
-    censoring: bool, optional
+    censoring: bool, optional, default=True
         For Cox data, it indicates whether censoring is existed.
-        Default: censoring = True
-    c: int, optional
+    c: int, optional, default=1
         For Cox data and `censoring=True`, it indicates the maximum censoring time.
         So that all observations have chances to be censored at (0, c).
-        Default: c = 1.
-    scal: float, optional
+    scal: float, optional, default=10
         The scale of survival time in Cox data.
-        Default: scal = 10.
-    snr: float, optional
+    snr: float, optional, default=None
         A numerical value controlling the signal-to-noise ratio (SNR) in gaussian data.
-        Default: snr = None.
 
     Returns
     -------
@@ -69,8 +62,61 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
         Design matrix of predictors.
     y: array_like, shape(n,)
         Response variable.
-    coef\\_: array_like, shape(p,)
+    coef_: array_like, shape(p,)
         The coefficients used in the underlying regression model.
+
+    Notes
+    -----
+    The output, whose type is named ``data``, contains three elements:
+    ``x``, ``y`` and ``coef_``, which correspond the variables, responses
+    and coefficients, respectively. 
+
+    Each row of ``x`` or ``y`` indicates a sample and is independent to the
+    other.
+
+    We denote :math:`x, y, \beta` for one sample in the math formulas below.
+
+    * Linear Regression
+
+        * Usage: ``family='gaussian'[, sigma=...]``
+        * Model: :math:`y \sim N(\mu, \sigma^2),\ \mu = x^T\beta`.
+
+            * the coefficient :math:`\beta\sim U[m, 100m]`, where :math:`m = 5\sqrt{2\log p/n}`;
+            * the variance :math:`\sigma = 1`.
+
+    * Logistic Regression
+
+        * Usage: ``family='binomial'``
+        * Model: :math:`y \sim \text{Binom}(\pi),\ \text{logit}(\pi) = x^T \beta`.
+
+            * the coefficient :math:`\beta\sim U[2m, 10m]`, where :math:`m = 5\sqrt{2\log p/n}`.
+
+    * Poisson Regression
+
+        * Usage: ``family='poisson'``
+        * Model: :math:`y \sim \text{Poisson}(\lambda),\ \lambda = \exp(x^T \beta)`.
+
+            * the coefficient :math:`\beta\sim U[2m, 10m]`, where :math:`m = 5\sqrt{2\log p/n}`.
+
+    * Gamma Regression
+
+        * Usage: ``family='gamma'``
+        * Model: :math:`y \sim \text{Gamma}(k, \theta),\ k\theta = \exp(x^T \beta + \epsilon), k\sim U[0.1, 100.1]` 
+          in shape-scale definition.
+
+            * the coefficient :math:`\beta\sim U[m, 100m]`, where :math:`m = 5\sqrt{2\log p/n}`.
+
+    * Cox PH Survival Analysis
+
+        * Usage: ``family='cox'[, scal=..., censoring=..., c=...]``
+        * Model: :math:`y=\min(t,C)`, 
+          where :math:`t = \left[-\dfrac{\log U}{\exp(X \beta)}\right]^s,\ U\sim N(0,1),\ s=\dfrac{1}{\text{scal}}` and 
+          censoring time :math:`C\sim U(0, c)`.
+
+            * the coefficient :math:`\beta\sim U[2m, 10m]`, where :math:`m = 5\sqrt{2\log p/n}`;
+            * the scale of survival time :math:`\text{scal} = 10`;
+            * censoring is enabled, and max censoring time :math:`c=1`.
+
     """
     zero = np.zeros([n, 1])
     ones = np.ones([n, 1])
@@ -216,39 +262,31 @@ def beta_generator(k, M):
 
 
 def make_multivariate_glm_data(
-        n=100, p=100, k=10, family="gaussian", rho=0.5, coef_=None, M=1, sparse_ratio=None):
-    """
+        n=100, p=100, k=10, family="multigaussian", rho=0.5, coef_=None, M=1, sparse_ratio=None):
+    r"""
     Generate a dataset with multi-responses.
 
     Parameters
     ----------
-    n: int, optional
+    n: int, optional, default=100
         The number of observations.
-        Default: n = 100.
-    p: int, optional
+    p: int, optional, default=100
         The number of predictors of interest.
-        Default: p = 100.
-    family: {gaussian, binomial, poisson}, optional
+    family: {multigaussian, multinomial, poisson}, optional, default="multigaussian"
         The distribution of the simulated multi-response.
-        "gaussian" for univariate quantitative response,
-        "binomial" for binary classification response,
-        "poisson" for counting response.
-        Default: family = "gaussian".
-    k: int, optional
+        "multigaussian" for univariate quantitative responses,
+        "multinomial" for binary classification responses,
+        "poisson" for counting responses.
+    k: int, optional, default=10
         The number of nonzero coefficients in the underlying regression model.
-        Default: k = 10.
-    M: int, optional
+    M: int, optional, default=1
         The number of multi-responses.
-        Default: M = 1.
-    rho: float, optional
+    rho: float, optional, default=0.5
         A parameter used to characterize the pairwise correlation in predictors.
-        Default: rho = 0.5.
-    coef\\_: array_like, optional
+    coef_: array_like, optional, default=None
         The coefficient values in the underlying regression model.
-        Default: coef\\_ = None.
-    sparse_ratio: float, optional
+    sparse_ratio: float, optional, default=None
         The sparse ratio of predictor matrix (x).
-        Default: sparse_ratio = None.
 
     Returns
     -------
@@ -256,8 +294,45 @@ def make_multivariate_glm_data(
         Design matrix of predictors.
     y: array_like, shape(n, M)
         Response variable.
-    coef\\_: array_like, shape(p, M)
+    coef_: array_like, shape(p, M)
         The coefficients used in the underlying regression model.
+
+    Notes
+    -----
+
+    The output, whose type is named ``data``, contains three elements:
+    ``x``, ``y`` and ``coef_``, which correspond the variables, responses
+    and coefficients, respectively.
+
+    Note that the ``y`` and ``coef_`` here are both matrix:
+
+    1. each row of ``x`` and ``y`` indicates a sample;
+    2. each column of ``coef_`` corresponds to the effect on one response.
+       It is rowwise sparsity. Under this setting, a "useful" variable is
+       relevant to all responses.
+
+    We :math:`x, y, \beta` for one sample in the math formulas below.
+
+    * Multitask Regression
+
+        * Usage: ``family='multigaussian'``
+        * Model: :math:`y \sim MVN(\mu, \Sigma),\ \mu^T=x^T \beta`.
+
+            * the variance :math:`\Sigma = \text{diag}(1, 1, \cdots, 1)`;
+            * the coefficient :math:`\beta` contains 30% "strong" values, 40%
+              "moderate" values and the rest are "weak". They come from
+              :math:`N(0, 10)`, :math:`N(0, 5)` and :math:`N(0, 2)`, respectively.
+
+    * Multinomial Regression
+
+        * Usage: ``family='multinomial'``
+        * Model: :math:`y` is a "0-1" array with only one "1". Its index is chosed
+          under probabilities :math:`\pi = \exp(x^T \beta)`.
+
+            * the coefficient :math:`\beta` contains 30% "strong" values, 40%
+              "moderate" values and the rest are "weak". They come from
+              :math:`N(0, 10)`, :math:`N(0, 5)` and :math:`N(0, 2)`, respectively.
+
     """
     Sigma = np.ones(p * p).reshape(p, p) * rho
     ones = np.ones([n, 1])
