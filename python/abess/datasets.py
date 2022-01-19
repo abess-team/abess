@@ -69,7 +69,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
     -----
     The output, whose type is named ``data``, contains three elements:
     ``x``, ``y`` and ``coef_``, which correspond the variables, responses
-    and coefficients, respectively. 
+    and coefficients, respectively.
 
     Each row of ``x`` or ``y`` indicates a sample and is independent to the
     other.
@@ -101,7 +101,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
     * Gamma Regression
 
         * Usage: ``family='gamma'``
-        * Model: :math:`y \sim \text{Gamma}(k, \theta),\ k\theta = \exp(x^T \beta + \epsilon), k\sim U[0.1, 100.1]` 
+        * Model: :math:`y \sim \text{Gamma}(k, \theta),\ k\theta = \exp(x^T \beta + \epsilon), k\sim U[0.1, 100.1]`
           in shape-scale definition.
 
             * the coefficient :math:`\beta\sim U[m, 100m]`, where :math:`m = 5\sqrt{2\log p/n}`.
@@ -109,8 +109,8 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
     * Cox PH Survival Analysis
 
         * Usage: ``family='cox'[, scal=..., censoring=..., c=...]``
-        * Model: :math:`y=\min(t,C)`, 
-          where :math:`t = \left[-\dfrac{\log U}{\exp(X \beta)}\right]^s,\ U\sim N(0,1),\ s=\dfrac{1}{\text{scal}}` and 
+        * Model: :math:`y=\min(t,C)`,
+          where :math:`t = \left[-\dfrac{\log U}{\exp(X \beta)}\right]^s,\ U\sim N(0,1),\ s=\dfrac{1}{\text{scal}}` and
           censoring time :math:`C\sim U(0, c)`.
 
             * the coefficient :math:`\beta\sim U[2m, 10m]`, where :math:`m = 5\sqrt{2\log p/n}`;
