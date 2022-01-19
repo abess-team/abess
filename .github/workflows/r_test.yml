@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'R-package/**'
+      - 'src/**'
       - '.github/workflows/r_test.yml'
       - '!R-package/.gitignore'
       - '!R-package/cran-comments.md'
@@ -14,6 +15,7 @@ on:
   pull_request:
     paths:
       - 'R-package/**'
+      - 'src/**'
       - '.github/workflows/r_test.yml'
       - '!R-package/.gitignore'
       - '!R-package/cran-comments.md'
