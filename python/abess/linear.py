@@ -780,7 +780,7 @@ class GammaRegression(bess_base):
 
 
 class abessLogistic(LogisticRegression):
-    warning_msg = "Class `abessLogistic` has been renamed to `LogisticRegression`. The former will be deprecated in version 0.5.0."
+    warning_msg = "Class `abessLogistic` has been renamed to `LogisticRegression`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + LogisticRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -809,7 +809,7 @@ class abessLogistic(LogisticRegression):
 
 
 class abessLm(LinearRegression):
-    warning_msg = "Class `abessLm` has been renamed to `LinearRegression`. The former will be deprecated in version 0.5.0."
+    warning_msg = "Class `abessLm` has been renamed to `LinearRegression`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + LinearRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -836,7 +836,7 @@ class abessLm(LinearRegression):
 
 
 class abessCox(CoxPHSurvivalAnalysis):
-    warning_msg = "Class `abessCox` has been renamed to `CoxPHSurvivalAnalysis`. The former will be deprecated in version 0.5.0."
+    warning_msg = "Class `abessCox` has been renamed to `CoxPHSurvivalAnalysis`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + CoxPHSurvivalAnalysis.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -865,7 +865,7 @@ class abessCox(CoxPHSurvivalAnalysis):
 
 
 class abessPoisson(PoissonRegression):
-    warning_msg = "Class `abessPoisson` has been renamed to `PoissonRegression`. The former will be deprecated in version 0.5.0."
+    warning_msg = "Class `abessPoisson` has been renamed to `PoissonRegression`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + PoissonRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -892,7 +892,7 @@ class abessPoisson(PoissonRegression):
 
 
 class abessMultigaussian(MultiTaskRegression):
-    warning_msg = "Class `abessMultigaussian` has been renamed to `MultiTaskRegression`. The former will be deprecated in version 0.5.0."
+    warning_msg = "Class `abessMultigaussian` has been renamed to `MultiTaskRegression`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + MultiTaskRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -917,7 +917,7 @@ class abessMultigaussian(MultiTaskRegression):
 
 
 class abessMultinomial(MultinomialRegression):
-    warning_msg = "Class `abessMultinomial` has been renamed to `MultinomialRegression`. The former will be deprecated in version 0.5.0."
+    warning_msg = "Class `abessMultinomial` has been renamed to `MultinomialRegression`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + MultinomialRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -946,7 +946,7 @@ class abessMultinomial(MultinomialRegression):
 
 
 class abessGamma(GammaRegression):
-    warning_msg = "Class `abessGamma` has been renamed to `GammaRegression`. The former will be deprecated in version 0.5.0."
+    warning_msg = "Class `abessGamma` has been renamed to `GammaRegression`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + GammaRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
