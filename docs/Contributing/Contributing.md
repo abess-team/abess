@@ -96,7 +96,7 @@ A typical online vignette example is present [[here]](https://abess.readthedocs.
 
 The development also follows the four basic steps for the Python API except the first step changes to: 
 
-> add/modify the tutorial files in `docs/Tutorial` directory.
+- add/modify the tutorial files in `docs/Tutorial` directory.
 
 ### R document
 
@@ -107,7 +107,7 @@ Before writing the documentation, it would be better to ensure the usage of the 
 
 There are four basic steps to write documentation for the R function in abess:
 
-1. Add comments to R files in `R-package/R` directory.
+1. Add comments to `R` files in `R-package/R` directory.
    
 2. Run `devtools::document()` in R to convert roxygen comments to `.Rd` files.
    
@@ -121,7 +121,19 @@ More advanced topics for writing object documentation are available at: https://
 
 The aim of a online R vignette is the same as a tutorial for Python package. 
 A typical online vignette example is presented in this [[link]](https://abess-team.github.io/abess/articles/v03-classification.html).
-We strongly recommend to use R markdown (`.Rmd` files) to organize a online vignette. You can learn many detail about R markdown in Hadley's website: https://r-pkgs.org/vignettes.html.
+We strongly recommend to use R markdown (`.Rmd` files) to organize a online vignette. 
+
+There are also four steps to write online vignettes:
+
+1. Add/modify to `.Rmd` files in `R-package/vignettes` directory. 
+   
+2. Run `pkgdown::build_articles()` in R to convert `.Rmd` files to webpages. (Make sure the `pkgdown` R package has been installed.)
+   
+3. Preview the webpages.
+   
+4. Repeat steps 1-3 until you are satisfied with the vignettes.
+
+You can learn many detail about `pkgdown` package and R markdown in [pkgdown's website](https://pkgdown.r-lib.org/reference/build_home.html) and [Hadley's website](https://r-pkgs.org/vignettes.html), respectively. 
 
 
 ## Contribute code      
