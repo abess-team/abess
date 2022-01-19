@@ -1,4 +1,5 @@
 import sys
+import warnings
 import numpy as np
 import abess
 from utilities import (assert_nan, assert_value, assert_fit)
@@ -7,6 +8,8 @@ from scipy.sparse import coo_matrix
 from sklearn.model_selection import KFold, GridSearchCV
 from sklearn.linear_model import LinearRegression, LogisticRegression, PoissonRegressor
 from lifelines import CoxPHFitter
+
+warnings.filterwarnings("ignore")
 
 
 class TestAlgorithm:
@@ -61,7 +64,8 @@ class TestAlgorithm:
         model3.fit(data.x, data.y)
         assert_fit(model3.coef_, data.coef_)
 
-        model4 = abess.LinearRegression(covariance_update=True, path_type='gs', cv=5)
+        model4 = abess.LinearRegression(
+            covariance_update=True, path_type='gs', cv=5)
         model4.fit(data.x, data.y)
         assert_fit(model4.coef_, data.coef_)
 
@@ -123,7 +127,8 @@ class TestAlgorithm:
         rho = 0.5
         sigma = 1
 
-        data = abess.make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data = abess.make_glm_data(
+            n, p, family=family, k=k, rho=rho, sigma=sigma)
 
         def assert_reg(coef):
             if sys.version_info[0] + 0.1 * sys.version_info[1] < 3.6:
@@ -168,7 +173,8 @@ class TestAlgorithm:
         family = "poisson"
         rho = 0.5
         sigma = 1
-        data = abess.make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data = abess.make_glm_data(
+            n, p, family=family, k=k, rho=rho, sigma=sigma)
 
         def assert_reg(coef):
             if sys.version_info[0] + 0.1 * sys.version_info[1] < 3.6:
@@ -441,7 +447,8 @@ class TestAlgorithm:
         rho = 0.5
         sigma = 1
         np.random.seed(3)
-        data = abess.make_glm_data(n, p, family=family, k=k, rho=rho, sigma=sigma)
+        data = abess.make_glm_data(
+            n, p, family=family, k=k, rho=rho, sigma=sigma)
         # data3 = abess.make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
         s_max = 20
@@ -511,9 +518,9 @@ class TestAlgorithm:
         alpha = [0., 0.1, 0.2, 0.3]
 
         model = abess.CoxPHSurvivalAnalysis(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
-                         s_min=1, s_max=p, cv=5,
-                         exchange_num=2,
-                         primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
+                                            s_min=1, s_max=p, cv=5,
+                                            exchange_num=2,
+                                            primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
         cv = KFold(n_splits=5, shuffle=True, random_state=0)
         gcv = GridSearchCV(
             model,

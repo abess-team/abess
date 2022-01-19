@@ -16,7 +16,7 @@ from abess.linear import (
 from abess.decomposition import (SparsePCA, RobustPCA)
 from abess.datasets import (make_glm_data, make_multivariate_glm_data)
 
-# To be deprecated in version 0.5.0
+# To be deprecated in version 0.6.0
 from abess.linear import (
     abessLm,
     abessLogistic,

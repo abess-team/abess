@@ -1,8 +1,11 @@
+import warnings
 from time import time
 import numpy as np
-from utilities import (assert_nan,assert_value,assert_fit)
+from utilities import (assert_nan, assert_value, assert_fit)
 from scipy.sparse import coo_matrix
 import abess
+
+warnings.filterwarnings("ignore")
 
 
 class TestWorkflow:
@@ -41,17 +44,21 @@ class TestWorkflow:
         data = abess.make_glm_data(n=n, p=p, k=k, family='gaussian')
 
         # null
-        model1 = abess.LinearRegression(path_type='seq', support_size=range(s_max))
+        model1 = abess.LinearRegression(
+            path_type='seq', support_size=range(s_max))
         model1.fit(data.x, data.y)
-        model2 = abess.LinearRegression(path_type='gs', s_min=s_min, s_max=s_max)
+        model2 = abess.LinearRegression(
+            path_type='gs', s_min=s_min, s_max=s_max)
         model2.fit(data.x, data.y)
         assert_fit(model1.coef_, model2.coef_)
 
         # cv
         t1 = time()
-        model1 = abess.LinearRegression(path_type='seq', support_size=range(s_max), cv=5)
+        model1 = abess.LinearRegression(
+            path_type='seq', support_size=range(s_max), cv=5)
         model1.fit(data.x, data.y)
-        model2 = abess.LinearRegression(path_type='gs', s_min=s_min, s_max=s_max, cv=5)
+        model2 = abess.LinearRegression(
+            path_type='gs', s_min=s_min, s_max=s_max, cv=5)
         model2.fit(data.x, data.y)
         t1 = time() - t1
         assert_fit(model1.coef_, model2.coef_)
@@ -122,12 +129,16 @@ class TestWorkflow:
         assert_nan(model.coef_)
 
         # screening
-        model = abess.LinearRegression(support_size=range(s_max), screening_size=screen)
+        model = abess.LinearRegression(
+            support_size=range(s_max),
+            screening_size=screen)
         model.fit(data.x, data.y)
         assert_nan(model.coef_)
 
         # important search
-        model = abess.LinearRegression(support_size=range(s_max), important_search=imp)
+        model = abess.LinearRegression(
+            support_size=range(s_max),
+            important_search=imp)
         model.fit(data.x, data.y)
         assert_nan(model.coef_)
 
