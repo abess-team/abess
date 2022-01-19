@@ -3,7 +3,7 @@ import numpy as np
 from scipy.sparse import coo_matrix
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.base import BaseEstimator
-from .cabess import *
+from .cabess import pywrap_GLM
 
 
 class bess_base(BaseEstimator):
@@ -450,30 +450,32 @@ class bess_base(BaseEstimator):
 
         # wrap with cpp
         # print("wrap enter.")#///
-        result = pywrap_GLM(X, y, weight,
-                            n, p, normalize,
-                            algorithm_type_int, model_type_int, self.max_iter, self.exchange_num,
-                            path_type_int, self.is_warm_start,
-                            ic_type_int, self.ic_coef, self.cv,
-                            g_index,
-                            support_sizes,
-                            alphas,
-                            cv_fold_id,
-                            new_s_min, new_s_max,
-                            new_lambda_min, new_lambda_max, self.n_lambda,
-                            self.screening_size,
-                            self.always_select,
-                            self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
-                            self.early_stop, self.approximate_Newton,
-                            self.thread,
-                            self.covariance_update,
-                            self.sparse_matrix,
-                            self.splicing_type,
-                            self.important_search,
-                            A_init,
-                            p * M, 1 * M,
-                            1, 1, 1
-                            )
+        result = pywrap_GLM(
+            X, y, weight,
+            n, p, normalize,
+            algorithm_type_int, model_type_int, self.max_iter,
+            self.exchange_num,
+            path_type_int, self.is_warm_start,
+            ic_type_int, self.ic_coef, self.cv,
+            g_index,
+            support_sizes,
+            alphas,
+            cv_fold_id,
+            new_s_min, new_s_max,
+            new_lambda_min, new_lambda_max, self.n_lambda,
+            self.screening_size,
+            self.always_select,
+            self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
+            self.early_stop, self.approximate_Newton,
+            self.thread,
+            self.covariance_update,
+            self.sparse_matrix,
+            self.splicing_type,
+            self.important_search,
+            A_init,
+            p * M, 1 * M,
+            1, 1, 1
+        )
 
         # print("linear fit end")
         # print(len(result))

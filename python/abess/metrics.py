@@ -80,7 +80,8 @@ def _estimate_concordance_index(
 
         est = estimate[order[mask]]
 
-        assert event_i, 'got censored sample at index {}, but expected uncensored'.format(order[ind])
+        assert event_i, 'got censored sample at index {}, but expected uncensored'.format(
+            order[ind])
 
         ties = numpy.absolute(est - est_i) <= tied_tol
         n_ties = ties.sum()

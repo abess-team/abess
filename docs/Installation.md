@@ -10,7 +10,7 @@ $ pip install abess
 ```
 
 If you don't have [pip](https://pip.pypa.io) installed, this [Python installation guide](http://docs.python-guide.org/en/latest/starting/installation/) can guide
-you through the process.
+you through the process. Linux and MacOS users also need to install [swig](http://www.swig.org/).
 
 ### R
 To install stable version into R environment, run the command:
@@ -19,18 +19,21 @@ To install stable version into R environment, run the command:
 install.packages("abess")
 ```
 
-## Latest release
+## Latest version
 
 This page gives instructions on how to build and install abess from the source code. 
 If the instructions do not help for you, please feel free to ask questions by opening an [issue](https://github.com/abess-team/abess/issues).
 
-### Python 
-Clone our [github project](https://github.com/abess-team/abess) to your device:
+First of all, clone our the latest [github project](https://github.com/abess-team/abess) to your device:
 
 ```bash
 $ git clone https://github.com/abess-team/abess.git
 $ cd abess
 ```
+
+Next, there have different processing depend on the programming langulage you prefer. 
+
+### Python 
 
 Before installing abess itself, some dependencies should be installed first: `swig`, `bash`, `mingw`, which may be a little different in different platforms:
 
@@ -45,15 +48,16 @@ $ cd ./python
 $ python setup.py install --user
 ```
 
-If it finishes with "*Finished processing dependencies for abess*", the installation is successful.
+If it finishes with `Finished processing dependencies for abess`, the installation is successful.
 
 ### R
-To install the development version from GitHub, run the following code in R console:
+To install the development version, run the following code in R console:
 
-```r
-library(devtools)
-install_github("abess-team/abess", subdir = "R-package")
+```bash
+R CMD INSTALL R-package
 ```
+
+If it finishes with `* DONE (abess)`, the installation is successful.
 
 Windows user will need to install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) first.
 
@@ -115,5 +119,7 @@ abess R package relies on limited R packages dependencies:
 Furthermore, if you would to develop the R package, it would be better to additionally install:
 
 - [testthat](https://cran.r-project.org/web/packages/testthat/index.html): conduct unit tests.
-- [knitr](https://cran.r-project.org/web/packages/knitr/index.html) and [rmarkdown](https://cran.r-project.org/web/packages/rmarkdown/index.html): write tutorials for R users.
+- [roxygen2](https://cran.r-project.org/web/packages/roxygen2/index.html): write R documentations.
+- [knitr](https://cran.r-project.org/web/packages/knitr/index.html) and [rmarkdown](https://cran.r-project.org/web/packages/rmarkdown/index.html): write tutorials.
+- [pkgdown](https://cran.r-project.org/web/packages/pkgdown/index.html): build website for the `abess` R package.
 
