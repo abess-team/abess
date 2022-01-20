@@ -6,13 +6,29 @@ from setuptools import setup, find_packages, Extension, dist
 dist.Distribution().fetch_build_eggs(['numpy'])
 import numpy
 
-os_type = 'MS_WIN64'
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
+
+def get_info():
+    # get information from `__init__.py`
+    labels = ["__version__", "__author__"]
+    values = ["" for label in labels]
+    with open(os.path.join(CURRENT_DIR, "abess/__init__.py")) as f:
+        for line in f.read().splitlines():
+            for i, label in enumerate(labels):
+                if line.startswith(label):
+                    values[i] = line.split('"')[1]
+                    break
+            if "" not in values:
+                break
+    return dict(zip(labels, values))
+
+package_info = get_info()
 
 # copy src
 os.system('bash "{}/copy_src.sh" "{}"'.format(CURRENT_DIR, CURRENT_DIR))
 
 if sys.platform.startswith('win32'):
+    os_type = 'MS_WIN64'
     python_path = sys.base_prefix
     temp = python_path.split("\\")
     version = str(sys.version_info.major) + str(sys.version_info.minor)
@@ -114,8 +130,8 @@ with open(os.path.join(CURRENT_DIR, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='abess',
-    version='0.4.0',
-    author="Jin Zhu, Kangkang Jiang, Junhao Huang, Yanhang Zhang, Junxian Zhu, Xueqin Wang",
+    version=package_info['__version__'],
+    author=package_info['__author__'],
     author_email="zhuj37@mail2.sysu.edu.cn",
     maintainer="Kangkang Jiang",
     maintainer_email="jiangkk3@mail2.sysu.edu.cn",
