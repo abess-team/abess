@@ -15,8 +15,14 @@ A clear and concise description of what the bug is.
 
 Paste your code for reproducing the bug:
 
+```r
+# your R code
 ```
-Here is your code
+
+or 
+
+```python
+# your Python code
 ```
 
 **Expected behavior**
