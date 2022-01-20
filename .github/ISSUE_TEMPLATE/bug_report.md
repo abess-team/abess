@@ -13,10 +13,10 @@ A clear and concise description of what the bug is.
 
 **Code for Reproduction**
 
-Code for reproduce the bug:
+Paste your code for reproducing the bug:
 
 ```
-paste your code here
+Here is your code
 ```
 
 **Expected behavior**
