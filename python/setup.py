@@ -1,5 +1,6 @@
 import os
 import sys
+import platform
 from setuptools import setup, find_packages, Extension, dist
 
 dist.Distribution().fetch_build_eggs(['numpy'])
@@ -50,8 +51,20 @@ if sys.platform.startswith('win32'):
     )
 elif sys.platform.startswith('darwin'):
     eigen_path = CURRENT_DIR + "/include"
-    # print(eigen_path)
-    # eigen_path = "/usr/local/include/eigen3/Eigen"
+
+    ## compatible compile args with M1 chip:
+    extra_compile_args = [
+        "-DNDEBUG", "-O2",
+        "-Wall", "-std=c++11",
+    ]
+    m1chip_unable_extra_compile_args=[
+        "-mavx", "-mfma",
+        "-march=native"
+    ]
+    if platform.processor() != 'arm':
+        extra_compile_args.extend(m1chip_unable_extra_compile_args)
+        pass
+
     cabess_module = Extension(
         name='abess._cabess',
         sources=[CURRENT_DIR + '/src/api.cpp',
@@ -61,12 +74,7 @@ elif sys.platform.startswith('darwin'):
                  CURRENT_DIR + '/src/pywrap.cpp',
                  CURRENT_DIR + '/src/pywrap.i'],
         language='c++',
-        extra_compile_args=[
-            "-DNDEBUG", "-O2",
-            "-Wall", "-std=c++11",
-            "-mavx", "-mfma",
-            "-march=native"
-        ],
+        extra_compile_args=extra_compile_args,
         include_dirs=[
             numpy.get_include(),
             eigen_path
