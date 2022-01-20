@@ -1,12 +1,30 @@
 import os
 import sys
 from setuptools import setup, find_packages, Extension, dist
+from collections import namedtuple
 
 dist.Distribution().fetch_build_eggs(['numpy'])
 import numpy
 
 os_type = 'MS_WIN64'
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
+
+def get_info():
+    # get information from `__init__.py`
+    Info = namedtuple('Info', 'author, version')
+    version = ""
+    author = ""
+    with open(os.path.join(CURRENT_DIR, "abess/__init__.py")) as f:
+        for line in f.read().splitlines():
+            if line.startswith("__version__"):
+                version=line.split('"')[1]
+            elif line.startswith("__author__"):
+                author=line.split('"')[1]
+            elif "" not in (author, version):
+                break
+    return Info(author, version)
+
+PackageInfo = get_info()
 
 # copy src
 os.system('bash "{}/copy_src.sh" "{}"'.format(CURRENT_DIR, CURRENT_DIR))
@@ -106,8 +124,8 @@ with open(os.path.join(CURRENT_DIR, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='abess',
-    version='0.4.0',
-    author="Jin Zhu, Kangkang Jiang, Junhao Huang, Yanhang Zhang, Junxian Zhu, Xueqin Wang",
+    version=PackageInfo.version,
+    author=PackageInfo.author,
     author_email="zhuj37@mail2.sysu.edu.cn",
     maintainer="Kangkang Jiang",
     maintainer_email="jiangkk3@mail2.sysu.edu.cn",
