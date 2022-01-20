@@ -129,3 +129,5 @@ R-package/src/Makevars
 R-package/configure~
 R-package/inst/.vscode/settings.json
 R-package/src/.vscode/settings.json
+
+**/.vscode

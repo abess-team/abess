@@ -1,27 +1,21 @@
+import warnings
 import numpy as np
 from .metrics import concordance_index_censored
 from .bess_base import bess_base
 
 
 def fix_docs(cls):
-    # inherit the document from base class
+    # This function is to inherit the docstring from base class
+    # and avoid unnecessary duplications on description.
     index = cls.__doc__.find("Examples\n    --------\n")
     if index != -1:
         cls.__doc__ = cls.__doc__[:index] + \
             cls.__bases__[0].__doc__ + cls.__doc__[index:]
-
-    # for name, func in vars(cls).items():
-    #     if isinstance(func, types.FunctionType):
-    #         # print(str(func) +  'needs doc')
-    #         for parent in cls.__bases__:
-    #             parfunc = getattr(parent, name, None)
-    #             if parfunc and getattr(parfunc, '__doc__', None):
-    #                 func.__doc__ = parfunc.__doc__ + func.__doc__
     return cls
 
 
 @ fix_docs
-class abessLogistic(bess_base):
+class LogisticRegression(bess_base):
     """
     Adaptive Best-Subset Selection (ABESS) algorithm for logistic regression.
 
@@ -41,12 +35,12 @@ class abessLogistic(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from abess.linear import abessLogistic
+    >>> from abess.linear import LogisticRegression
     >>> from abess.datasets import make_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'binomial')
-    >>> model = abessLogistic(support_size = [10])
+    >>> model = LogisticRegression(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
@@ -54,13 +48,13 @@ class abessLogistic(bess_base):
     >>>
     >>> # path_type="seq",
     >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
-    >>> model = abessLogistic(path_type = "seq")
+    >>> model = LogisticRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
     >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessLogistic(path_type="gs")
+    >>> model = LogisticRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -147,7 +141,7 @@ class abessLogistic(bess_base):
 
 
 @ fix_docs
-class abessLm(bess_base):
+class LinearRegression(bess_base):
     """
     Adaptive Best-Subset Selection(ABESS) algorithm for linear regression.
 
@@ -167,12 +161,12 @@ class abessLm(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from abess.linear import abessLm
+    >>> from abess.linear import LinearRegression
     >>> from abess.datasets import make_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'gaussian')
-    >>> model = abessLm(support_size = [10])
+    >>> model = LinearRegression(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
@@ -180,13 +174,13 @@ class abessLm(bess_base):
     >>>
     >>> # path_type="seq",
     >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
-    >>> model = abessLm(path_type = "seq")
+    >>> model = LinearRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
     >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessLm(path_type="gs")
+    >>> model = LinearRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -246,7 +240,7 @@ class abessLm(bess_base):
 
 
 @ fix_docs
-class abessCox(bess_base):
+class CoxPHSurvivalAnalysis(bess_base):
     """
     Adaptive Best-Subset Selection(ABESS) algorithm for COX proportional hazards model.
 
@@ -266,12 +260,12 @@ class abessCox(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from abess.linear import abessCox
+    >>> from abess.linear import CoxPHSurvivalAnalysis
     >>> from abess.datasets import make_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'cox')
-    >>> model = abessCox(support_size = [10])
+    >>> model = CoxPHSurvivalAnalysis(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
@@ -279,13 +273,13 @@ class abessCox(bess_base):
     >>>
     >>> # path_type="seq",
     >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
-    >>> model = abessCox(path_type = "seq")
+    >>> model = CoxPHSurvivalAnalysis(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
     >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessCox(path_type="gs")
+    >>> model = CoxPHSurvivalAnalysis(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -349,7 +343,7 @@ class abessCox(bess_base):
 
 
 @ fix_docs
-class abessPoisson(bess_base):
+class PoissonRegression(bess_base):
     """
     Adaptive Best-Subset Selection(ABESS) algorithm for Poisson regression.
 
@@ -369,12 +363,12 @@ class abessPoisson(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from abess.linear import abessPoisson
+    >>> from abess.linear import PoissonRegression
     >>> from abess.datasets import make_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'poisson')
-    >>> model = abessPoisson(support_size = [10])
+    >>> model = PoissonRegression(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
@@ -382,13 +376,13 @@ class abessPoisson(bess_base):
     >>>
     >>> # path_type="seq",
     >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
-    >>> model = abessPoisson(path_type = "seq")
+    >>> model = PoissonRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
     >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessPoisson(path_type="gs")
+    >>> model = PoissonRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -452,7 +446,7 @@ class abessPoisson(bess_base):
 
 
 @ fix_docs
-class abessMultigaussian(bess_base):
+class MultiTaskRegression(bess_base):
     """
     Adaptive Best-Subset Selection(ABESS) algorithm for multitasklearning.
 
@@ -472,12 +466,12 @@ class abessMultigaussian(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from abess.linear import abessMultigaussian
+    >>> from abess.linear import MultipleLinearRegression
     >>> from abess.datasets import make_multivariate_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_multivariate_glm_data(n = 100, p = 50, k = 10, M = 3, family = 'multigaussian')
-    >>> model = abessMultigaussian(support_size = [10])
+    >>> model = MultipleLinearRegression(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
@@ -485,13 +479,13 @@ class abessMultigaussian(bess_base):
     >>>
     >>> # path_type="seq",
     >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
-    >>> model = abessMultigaussian(path_type = "seq")
+    >>> model = MultipleLinearRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
     >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessMultigaussian(path_type="gs")
+    >>> model = MultipleLinearRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -551,7 +545,7 @@ class abessMultigaussian(bess_base):
 
 
 @ fix_docs
-class abessMultinomial(bess_base):
+class MultinomialRegression(bess_base):
     """
     Adaptive Best-Subset Selection(ABESS) algorithm for multiclassification problem.
 
@@ -571,12 +565,12 @@ class abessMultinomial(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from abess.linear import abessMultinomial
+    >>> from abess.linear import MultinomialRegression
     >>> from abess.datasets import make_multivariate_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_multivariate_glm_data(n = 100, p = 50, k = 10, M = 3, family = 'multinomial')
-    >>> model = abessMultinomial(support_size = [10])
+    >>> model = MultinomialRegression(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
@@ -584,13 +578,13 @@ class abessMultinomial(bess_base):
     >>>
     >>> # path_type="seq",
     >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
-    >>> model = abessMultinomial(path_type = "seq")
+    >>> model = MultinomialRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
     >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessMultinomial(path_type="gs")
+    >>> model = MultinomialRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -678,7 +672,7 @@ class abessMultinomial(bess_base):
 
 
 @ fix_docs
-class abessGamma(bess_base):
+class GammaRegression(bess_base):
     """
     Adaptive Best-Subset Selection(ABESS) algorithm for Gamma regression.
 
@@ -698,9 +692,9 @@ class abessGamma(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from abess.linear import abessGamma
+    >>> from abess.linear import GammaRegression
     >>> import numpy as np
-    >>> model = abessGamma(support_size = [10])
+    >>> model = GammaRegression(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
@@ -708,13 +702,13 @@ class abessGamma(bess_base):
     >>>
     >>> # path_type="seq",
     >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
-    >>> model = abessGamma(path_type = "seq")
+    >>> model = GammaRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
     >>> # path_type="gs",
     >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-    >>> model = abessGamma(path_type="gs")
+    >>> model = GammaRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
@@ -783,6 +777,199 @@ class abessGamma(bess_base):
         dev = deviance(y, y_pred)
         dev_null = deviance(y, y_mean)
         return 1 - dev / dev_null
+
+
+class abessLogistic(LogisticRegression):
+    warning_msg = "Class `abessLogistic` has been renamed to `LogisticRegression`. The former will be deprecated in version 0.5.0."
+    __doc__ = warning_msg + '\n' + LogisticRegression.__doc__
+
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=None,
+                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
+                 approximate_Newton=False,
+                 thread=1,
+                 sparse_matrix=False,
+                 splicing_type=0,
+                 important_search=128,
+                 ):
+        warnings.warn(self.warning_msg, FutureWarning)
+        super().__init__(
+            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
+            approximate_Newton=approximate_Newton,
+            thread=thread,
+            sparse_matrix=sparse_matrix,
+            splicing_type=splicing_type,
+            important_search=important_search
+        )
+
+
+class abessLm(LinearRegression):
+    warning_msg = "Class `abessLm` has been renamed to `LinearRegression`. The former will be deprecated in version 0.5.0."
+    __doc__ = warning_msg + '\n' + LinearRegression.__doc__
+
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=None,
+                 thread=1, covariance_update=False,
+                 sparse_matrix=False,
+                 splicing_type=0,
+                 important_search=128,
+                 # primary_model_fit_max_iter=10,
+                 # primary_model_fit_epsilon=1e-8, approximate_Newton=False
+                 ):
+        warnings.warn(self.warning_msg, FutureWarning)
+        super().__init__(
+            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
+            thread=thread, covariance_update=covariance_update,
+            sparse_matrix=sparse_matrix,
+            splicing_type=splicing_type,
+            important_search=important_search
+        )
+
+
+class abessCox(CoxPHSurvivalAnalysis):
+    warning_msg = "Class `abessCox` has been renamed to `CoxPHSurvivalAnalysis`. The former will be deprecated in version 0.5.0."
+    __doc__ = warning_msg + '\n' + CoxPHSurvivalAnalysis.__doc__
+
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=None,
+                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
+                 approximate_Newton=False,
+                 thread=1,
+                 sparse_matrix=False,
+                 splicing_type=0,
+                 important_search=128
+                 ):
+        warnings.warn(self.warning_msg, FutureWarning)
+        super().__init__(
+            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
+            approximate_Newton=approximate_Newton,
+            thread=thread,
+            sparse_matrix=sparse_matrix,
+            splicing_type=splicing_type,
+            important_search=important_search
+        )
+
+
+class abessPoisson(PoissonRegression):
+    warning_msg = "Class `abessPoisson` has been renamed to `PoissonRegression`. The former will be deprecated in version 0.5.0."
+    __doc__ = warning_msg + '\n' + PoissonRegression.__doc__
+
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=None,
+                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
+                 thread=1,
+                 sparse_matrix=False,
+                 splicing_type=0,
+                 important_search=128
+                 ):
+        warnings.warn(self.warning_msg, FutureWarning)
+        super().__init__(
+            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
+            thread=thread,
+            sparse_matrix=sparse_matrix,
+            splicing_type=splicing_type,
+            important_search=important_search
+        )
+
+
+class abessMultigaussian(MultiTaskRegression):
+    warning_msg = "Class `abessMultigaussian` has been renamed to `MultiTaskRegression`. The former will be deprecated in version 0.5.0."
+    __doc__ = warning_msg + '\n' + MultiTaskRegression.__doc__
+
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=None,
+                 thread=1, covariance_update=False,
+                 sparse_matrix=False,
+                 splicing_type=0,
+                 important_search=128
+                 ):
+        warnings.warn(self.warning_msg, FutureWarning)
+        super().__init__(
+            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
+            thread=thread, covariance_update=covariance_update,
+            sparse_matrix=sparse_matrix,
+            splicing_type=splicing_type,
+            important_search=important_search
+        )
+
+
+class abessMultinomial(MultinomialRegression):
+    warning_msg = "Class `abessMultinomial` has been renamed to `MultinomialRegression`. The former will be deprecated in version 0.5.0."
+    __doc__ = warning_msg + '\n' + MultinomialRegression.__doc__
+
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=None,
+                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
+                 approximate_Newton=False,
+                 thread=1,
+                 sparse_matrix=False,
+                 splicing_type=0,
+                 important_search=128
+                 ):
+        warnings.warn(self.warning_msg, FutureWarning)
+        super().__init__(
+            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
+            approximate_Newton=approximate_Newton,
+            thread=thread,
+            sparse_matrix=sparse_matrix,
+            splicing_type=splicing_type,
+            important_search=important_search
+        )
+
+
+class abessGamma(GammaRegression):
+    warning_msg = "Class `abessGamma` has been renamed to `GammaRegression`. The former will be deprecated in version 0.5.0."
+    __doc__ = warning_msg + '\n' + GammaRegression.__doc__
+
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 always_select=None,
+                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
+                 thread=1,
+                 sparse_matrix=False,
+                 splicing_type=0,
+                 important_search=128
+                 ):
+        warnings.warn(self.warning_msg, FutureWarning)
+        super().__init__(
+            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            always_select=always_select,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
+            thread=thread,
+            sparse_matrix=sparse_matrix,
+            splicing_type=splicing_type,
+            important_search=important_search
+        )
 
 
 # @fix_docs
