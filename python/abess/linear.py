@@ -97,7 +97,7 @@ class LogisticRegression(bess_base):
         Returns
         -------
         proba : array-like, shape(n_samples,)
-            Returns the probabilities for class "1" 
+            Returns the probabilities for class "1"
             on given X.
         """
         X = self.new_data_check(X)
@@ -338,7 +338,7 @@ class CoxPHSurvivalAnalysis(bess_base):
     def predict(self, X):
         r"""
         Returns the time-independent part of hazard function,
-        i.e. :math:``\exp(X\beta)`` on given data.
+        i.e. :math:`\exp(X\beta)` on given data.
 
         Parameters
         ----------
@@ -348,7 +348,7 @@ class CoxPHSurvivalAnalysis(bess_base):
         Returns
         -------
         y : array-like, shape(n_samples,)
-            Return :math:``\exp(X\beta)``.
+            Return :math:`\exp(X\beta)`.
         """
         X = self.new_data_check(X)
 
@@ -736,7 +736,7 @@ class MultinomialRegression(bess_base):
             Test data.
         y : array-like, shape(n_samples, M_responses)
             Test response (dummy variables of real class).
-        
+
         Returns
         -------
         score : float
