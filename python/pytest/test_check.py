@@ -1,5 +1,8 @@
+import warnings
 import abess
 import numpy as np
+
+warnings.filterwarnings("ignore")
 
 
 class TestCheck:
@@ -63,7 +66,7 @@ class TestCheck:
 
         try:
             model = abess.LinearRegression(support_size=[2],
-                            screening_size=1)
+                                           screening_size=1)
             model.fit([[1, 2, 3]], [1])
         except ValueError as e:
             print(e)

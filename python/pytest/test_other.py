@@ -1,6 +1,9 @@
+import warnings
 import numpy as np
 import abess
 from utilities import assert_shape
+
+warnings.filterwarnings("ignore")
 
 
 class TestOther:
