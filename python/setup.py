@@ -1,35 +1,33 @@
 import os
 import sys
 from setuptools import setup, find_packages, Extension, dist
-from collections import namedtuple
 
 dist.Distribution().fetch_build_eggs(['numpy'])
 import numpy
 
-os_type = 'MS_WIN64'
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 def get_info():
     # get information from `__init__.py`
-    Info = namedtuple('Info', 'author, version')
-    version = ""
-    author = ""
+    labels = ["__version__", "__author__"]
+    values = ["" for label in labels]
     with open(os.path.join(CURRENT_DIR, "abess/__init__.py")) as f:
         for line in f.read().splitlines():
-            if line.startswith("__version__"):
-                version=line.split('"')[1]
-            elif line.startswith("__author__"):
-                author=line.split('"')[1]
-            elif "" not in (author, version):
+            for i, label in enumerate(labels):
+                if line.startswith(label):
+                    values[i] = line.split('"')[1]
+                    break
+            if "" not in values:
                 break
-    return Info(author, version)
+    return dict(zip(labels, values))
 
-PackageInfo = get_info()
+package_info = get_info()
 
 # copy src
 os.system('bash "{}/copy_src.sh" "{}"'.format(CURRENT_DIR, CURRENT_DIR))
 
 if sys.platform.startswith('win32'):
+    os_type = 'MS_WIN64'
     python_path = sys.base_prefix
     temp = python_path.split("\\")
     version = str(sys.version_info.major) + str(sys.version_info.minor)
@@ -124,8 +122,8 @@ with open(os.path.join(CURRENT_DIR, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='abess',
-    version=PackageInfo.version,
-    author=PackageInfo.author,
+    version=package_info['__version__'],
+    author=package_info['__author__'],
     author_email="zhuj37@mail2.sysu.edu.cn",
     maintainer="Kangkang Jiang",
     maintainer_email="jiangkk3@mail2.sysu.edu.cn",
