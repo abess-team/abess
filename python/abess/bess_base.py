@@ -41,8 +41,8 @@ class bess_base(BaseEstimator):
         - If cv>1, support size will be chosen by CV's test loss, instead of IC.
 
     thread : int, optional, default=1
-        Max number of multithreads. 
-        
+        Max number of multithreads.
+
         - If thread = 0, the maximum number of threads supported by the device will be used.
 
     screening_size : int, optional, default=-1
