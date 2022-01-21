@@ -18,15 +18,15 @@ def fix_docs(cls):
 
 @fix_docs
 class SparsePCA(bess_base):
-    """
-    Adaptive Best-Subset Selection(ABESS) algorithm for principal component analysis.
+    r"""
+    Adaptive Best-Subset Selection(ABESS) algorithm for
+    principal component analysis.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h).
+    splicing_type: {0, 1}, optional, default=1
+        The type of splicing.
         "0" for decreasing by half, "1" for decresing by one.
-        Default: splicing_type = 1.
 
     Examples
     --------
@@ -349,15 +349,15 @@ class SparsePCA(bess_base):
 
 @fix_docs
 class RobustPCA(bess_base):
-    """
-    Adaptive Best-Subset Selection(ABESS) algorithm for robust principal component analysis.
+    r"""
+    Adaptive Best-Subset Selection(ABESS) algorithm for
+    robust principal component analysis.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h).
+    splicing_type: {0, 1}, optional, default=1
+        The type of splicing.
         "0" for decreasing by half, "1" for decresing by one.
-        Default: splicing_type = 1.
 
     Examples
     --------
