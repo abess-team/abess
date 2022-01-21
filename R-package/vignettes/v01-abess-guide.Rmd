@@ -1,4 +1,4 @@
----
+--
 title: "Quick start for `abess`: Linear regression"
 author: "Jin Zhu"
 output:
@@ -25,9 +25,9 @@ knitr::opts_chunk$set(warning = FALSE, eval = TRUE, message = FALSE)
 
 ## Briey introduction       
 The R package `abess` implement a polynomial algorithm in the  [\color{blue}{paper}](https://www.pnas.org/content/117/52/33117) for best-subset selection problem:
-$$\min_{\beta \in \mathbb{R}^p} \frac{1}{2n} \| y - X\beta\|_2^2, \text{ subject to } \|\beta\|_0 \leq s,$$
-where $\| \cdot \|_2$ is the $\ell_2$ norm, $\|\beta\|_0=\sum_{i=1}^pI( \beta_i\neq 0)$ is the $\ell_0$ norm of $\beta$, and the sparsity level $s$ is usually an unknown non-negative integer.
-Next, we present an example to show how to use the **abess** package to solve a simple problem. 
+$$\min_{\boldsymbol{\beta} \in \mathbb{R}^p} \mathcal{L_n}({\boldsymbol\beta}), \text{ s.t. } \|\beta\|_0 \leq s,$$
+where $\mathcal{L}_{n}(\boldsymbol \beta)=\frac{1}{2 n}\|y-X \boldsymbol{\beta}\|_{2}^{2}$, $\| \cdot \|_2$ is the $\ell_2$ norm, $\|\boldsymbol{\beta}\|_0=\sum_{i=1}^pI( \boldsymbol{\beta}_i\neq 0)$ is the $\ell_0$ norm of $\beta$, and the sparsity level $s$ is usually an unknown non-negative integer.
+Next, we present an example to show how to use the `abess` package to solve a simple problem. 
 
 ## Quick example        
 ### Fixed support size best subset selection        
