@@ -31,7 +31,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
     p: int
         The number of predictors of interest.
     k: int
-        The number of nonzero coefficients in the 
+        The number of nonzero coefficients in the
         underlying regression model.
     family: {gaussian, binomial, poisson, gamma, cox}
         The distribution of the simulated response.
@@ -41,7 +41,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
         "gamma" for positive continuous response,
         "cox" for left-censored response.
     rho: float, optional, default=0
-        A parameter used to characterize the pairwise 
+        A parameter used to characterize the pairwise
         correlation in predictors.
     sigma: float, optional, default=1
         The variance of the gaussian noise.
@@ -51,13 +51,13 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
     censoring: bool, optional, default=True
         For Cox data, it indicates whether censoring is existed.
     c: int, optional, default=1
-        For Cox data and censoring=True, it indicates the maximum 
+        For Cox data and censoring=True, it indicates the maximum
         censoring time.
         So that all observations have chances to be censored at (0, c).
     scal: float, optional, default=10
         The scale of survival time in Cox data.
     snr: float, optional, default=None
-        A numerical value controlling the signal-to-noise ratio (SNR) 
+        A numerical value controlling the signal-to-noise ratio (SNR)
         in gaussian data.
 
     Attributes

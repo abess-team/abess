@@ -19,7 +19,7 @@ def fix_docs(cls):
 @fix_docs
 class SparsePCA(bess_base):
     r"""
-    Adaptive Best-Subset Selection(ABESS) algorithm for 
+    Adaptive Best-Subset Selection(ABESS) algorithm for
     principal component analysis.
 
     Parameters
@@ -350,7 +350,7 @@ class SparsePCA(bess_base):
 @fix_docs
 class RobustPCA(bess_base):
     r"""
-    Adaptive Best-Subset Selection(ABESS) algorithm for 
+    Adaptive Best-Subset Selection(ABESS) algorithm for
     robust principal component analysis.
 
     Parameters
