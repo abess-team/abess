@@ -31,8 +31,9 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
     p: int
         The number of predictors of interest.
     k: int
-        The number of nonzero coefficients in the underlying regression model.
-    family: {gaussian, binomial, poisson, cox}
+        The number of nonzero coefficients in the
+        underlying regression model.
+    family: {gaussian, binomial, poisson, gamma, cox}
         The distribution of the simulated response.
         "gaussian" for univariate quantitative response,
         "binomial" for binary classification response,
@@ -40,30 +41,34 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
         "gamma" for positive continuous response,
         "cox" for left-censored response.
     rho: float, optional, default=0
-        A parameter used to characterize the pairwise correlation in predictors.
+        A parameter used to characterize the pairwise
+        correlation in predictors.
     sigma: float, optional, default=1
         The variance of the gaussian noise.
-        It would be unused if `snr` is not None.
+        It would be unused if snr is not None.
     coef_: array_like, optional, default=None
         The coefficient values in the underlying regression model.
     censoring: bool, optional, default=True
         For Cox data, it indicates whether censoring is existed.
     c: int, optional, default=1
-        For Cox data and `censoring=True`, it indicates the maximum censoring time.
+        For Cox data and censoring=True, it indicates the maximum
+        censoring time.
         So that all observations have chances to be censored at (0, c).
     scal: float, optional, default=10
         The scale of survival time in Cox data.
     snr: float, optional, default=None
-        A numerical value controlling the signal-to-noise ratio (SNR) in gaussian data.
+        A numerical value controlling the signal-to-noise ratio (SNR)
+        in gaussian data.
 
-    Returns
-    -------
-    x: array_like, shape(n, p)
+    Attributes
+    ----------
+    x: array-like, shape(n, p)
         Design matrix of predictors.
-    y: array_like, shape(n,)
+    y: array-like, shape(n,)
         Response variable.
     coef_: array_like, shape(p,)
         The coefficients used in the underlying regression model.
+        It has k nonzero values.
 
     Notes
     -----
@@ -274,13 +279,13 @@ def make_multivariate_glm_data(
         The number of predictors of interest.
     family: {multigaussian, multinomial, poisson}, optional, default="multigaussian"
         The distribution of the simulated multi-response.
-        "multigaussian" for univariate quantitative responses,
-        "multinomial" for binary classification responses,
+        "multigaussian" for multivariate quantitative responses,
+        "multinomial" for multiple classification responses,
         "poisson" for counting responses.
     k: int, optional, default=10
         The number of nonzero coefficients in the underlying regression model.
     M: int, optional, default=1
-        The number of multi-responses.
+        The number of responses.
     rho: float, optional, default=0.5
         A parameter used to characterize the pairwise correlation in predictors.
     coef_: array_like, optional, default=None
@@ -290,12 +295,13 @@ def make_multivariate_glm_data(
 
     Returns
     -------
-    x: array_like, shape(n, p)
+    x: array-like, shape(n, p)
         Design matrix of predictors.
-    y: array_like, shape(n, M)
+    y: array-like, shape(n, M)
         Response variable.
     coef_: array_like, shape(p, M)
         The coefficients used in the underlying regression model.
+        It is rowwise sparse, with k nonzero rows.
 
     Notes
     -----

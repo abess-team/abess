@@ -76,7 +76,7 @@ There are four basic steps to write documentation for the Python API:
    
 2. Go to the `docs` directory, and run `make html` in command line to convert comments to `.html` files.
    
-3. Preview documentation by open/refresh the `.html` files in `docs/_build/Python-package/`.
+3. Preview documentation by open/refresh the `.html` files in `docs/_build/html/Python-package/`.
    
 4. Repeat steps 1-3 until you are satisfied with the documentation for Python API.
 
@@ -94,9 +94,11 @@ A tutorial is a long-form guide to some essential functions in the `abess` packa
 
 A typical online vignette example is present [[here]](https://abess.readthedocs.io/en/latest/Tutorial/LinearRegression.html).
 
-The development also follows the four basic steps for the Python API except the first step changes to: 
+The development also follows the four basic steps for the Python API except the first and third steps change to: 
 
-- add/modify the tutorial files in `docs/Tutorial` directory.
+- Add/modify the tutorial files in `docs/Tutorial` directory;
+
+- Preview documentation by open/refresh the `.html` files in `docs/_build/html/Tutorial/`.
 
 ### R document
 
