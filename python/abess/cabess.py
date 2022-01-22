@@ -19,12 +19,14 @@ try:
 except ImportError:
     import __builtin__
 
+
 def _swig_repr(self):
     try:
         strthis = "proxy of " + self.this.__repr__()
     except __builtin__.Exception:
         strthis = ""
-    return "<%s.%s; %s >" % (self.__class__.__module__, self.__class__.__name__, strthis,)
+    return "<%s.%s; %s >" % (self.__class__.__module__,
+                             self.__class__.__name__, strthis,)
 
 
 def _swig_setattr_nondynamic_instance_variable(set):
@@ -36,7 +38,8 @@ def _swig_setattr_nondynamic_instance_variable(set):
         elif hasattr(self, name) and isinstance(getattr(type(self), name), property):
             set(self, name, value)
         else:
-            raise AttributeError("You cannot add instance attributes to %s" % self)
+            raise AttributeError(
+                "You cannot add instance attributes to %s" % self)
     return set_instance_attr
 
 
@@ -61,14 +64,19 @@ class _SwigNonDynamicMeta(type):
     __setattr__ = _swig_setattr_nondynamic_class_variable(type.__setattr__)
 
 
-
-def pywrap_GLM(x, y, weight, n, p, normalize_type, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, Kfold, gindex, sequence, lambda_sequence, cv_fold_id, s_min, s_max, lambda_min, lambda_max, n_lambda, screening_size, always_select, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, thread, covariance_update, sparse_matrix, splicing_type, sub_search, A_init, beta_out, coef0_out, train_loss_out, test_loss_out, ic_out):
-    return _cabess.pywrap_GLM(x, y, weight, n, p, normalize_type, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, Kfold, gindex, sequence, lambda_sequence, cv_fold_id, s_min, s_max, lambda_min, lambda_max, n_lambda, screening_size, always_select, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, thread, covariance_update, sparse_matrix, splicing_type, sub_search, A_init, beta_out, coef0_out, train_loss_out, test_loss_out, ic_out)
-
-def pywrap_PCA(x, weight, n, p, normalize_type, sigma, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, Kfold, gindex, sequence, cv_fold_id, s_min, s_max, screening_size, always_select, early_stop, thread, sparse_matrix, splicing_type, sub_search, pca_num, A_init, beta_out, coef0_out, train_loss_out, test_loss_out, ic_out):
-    return _cabess.pywrap_PCA(x, weight, n, p, normalize_type, sigma, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, Kfold, gindex, sequence, cv_fold_id, s_min, s_max, screening_size, always_select, early_stop, thread, sparse_matrix, splicing_type, sub_search, pca_num, A_init, beta_out, coef0_out, train_loss_out, test_loss_out, ic_out)
-
-def pywrap_RPCA(x, n, p, normalize_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, gindex, sequence, lambda_sequence, s_min, s_max, lambda_min, lambda_max, n_lambda, screening_size, always_select, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, thread, sparse_matrix, splicing_type, sub_search, A_init, beta_out, coef0_out, train_loss_out, test_loss_out, ic_out):
-    return _cabess.pywrap_RPCA(x, n, p, normalize_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, gindex, sequence, lambda_sequence, s_min, s_max, lambda_min, lambda_max, n_lambda, screening_size, always_select, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, thread, sparse_matrix, splicing_type, sub_search, A_init, beta_out, coef0_out, train_loss_out, test_loss_out, ic_out)
+def pywrap_GLM(x, y, weight, n, p, normalize_type, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, Kfold, gindex, sequence, lambda_sequence, cv_fold_id, s_min, s_max, lambda_min, lambda_max, n_lambda,
+               screening_size, always_select, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, thread, covariance_update, sparse_matrix, splicing_type, sub_search, A_init, beta_out, coef0_out, train_loss_out, test_loss_out, ic_out):
+    return _cabess.pywrap_GLM(x, y, weight, n, p, normalize_type, algorithm_type, model_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, Kfold, gindex, sequence, lambda_sequence, cv_fold_id, s_min, s_max, lambda_min, lambda_max, n_lambda,
+                              screening_size, always_select, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, thread, covariance_update, sparse_matrix, splicing_type, sub_search, A_init, beta_out, coef0_out, train_loss_out, test_loss_out, ic_out)
 
 
+def pywrap_PCA(x, weight, n, p, normalize_type, sigma, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, Kfold, gindex, sequence, cv_fold_id, s_min, s_max,
+               screening_size, always_select, early_stop, thread, sparse_matrix, splicing_type, sub_search, pca_num, A_init, beta_out, coef0_out, train_loss_out, test_loss_out, ic_out):
+    return _cabess.pywrap_PCA(x, weight, n, p, normalize_type, sigma, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, Kfold, gindex, sequence, cv_fold_id, s_min,
+                              s_max, screening_size, always_select, early_stop, thread, sparse_matrix, splicing_type, sub_search, pca_num, A_init, beta_out, coef0_out, train_loss_out, test_loss_out, ic_out)
+
+
+def pywrap_RPCA(x, n, p, normalize_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, gindex, sequence, lambda_sequence, s_min, s_max, lambda_min, lambda_max, n_lambda, screening_size,
+                always_select, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, thread, sparse_matrix, splicing_type, sub_search, A_init, beta_out, coef0_out, train_loss_out, test_loss_out, ic_out):
+    return _cabess.pywrap_RPCA(x, n, p, normalize_type, max_iter, exchange_num, path_type, is_warm_start, ic_type, ic_coef, gindex, sequence, lambda_sequence, s_min, s_max, lambda_min, lambda_max, n_lambda, screening_size,
+                               always_select, primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, thread, sparse_matrix, splicing_type, sub_search, A_init, beta_out, coef0_out, train_loss_out, test_loss_out, ic_out)

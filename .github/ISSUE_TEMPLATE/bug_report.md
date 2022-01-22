@@ -13,10 +13,16 @@ A clear and concise description of what the bug is.
 
 **Code for Reproduction**
 
-Code for reproduce the bug:
+Paste your code for reproducing the bug:
 
+```r
+# your R code
 ```
-paste your code here
+
+or 
+
+```python
+# your Python code
 ```
 
 **Expected behavior**
