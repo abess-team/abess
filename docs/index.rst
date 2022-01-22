@@ -1,24 +1,27 @@
-.. abess documentation master file, created by
-   sphinx-quickstart on Sat May  8 16:07:51 2021.
+.. sample-project documentation master file, created by
+   sphinx-quickstart on Wed Dec 11 14:44:28 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. .. role:: raw
-..    :format: html latex 
+Welcome to sample-project's documentation!
+==========================================
+
+This repository can be used as a template for using Sphinx and Sphinx-Gallery
+to document your module.
 
 .. include:: ./README.rst 
 
 .. toctree::
-   :hidden:
+   :maxdepth: 2
    :caption: USING ABESS
-
-   Installation <./Installation.md>
-   Tutorial <Tutorial/index.rst>
-   Python API <Python-package/index.rst>
+   
+   Installation
+   Tutorial <auto_gallery-1/index>
+   Python API <Python-package/index>
    R package <https://abess-team.github.io/abess/>
-   Contributing <Contributing/index.rst>
-   FAQ <./FAQ.md>
-   Changelog <./Changelog.md>
+   Contributing <Contributing/index>
+   FAQ 
+   Changelog <./Changelog>
 
 .. toctree::
    :hidden:
@@ -28,8 +31,10 @@
    abess @PyPI <https://pypi.org/project/abess/>
    abess @CRAN <https://cran.rstudio.com/web/packages/abess/index.html>
 
+
 Indices and tables
 ==================
 
 * :ref:`genindex`
+* :ref:`modindex`
 * :ref:`search`
