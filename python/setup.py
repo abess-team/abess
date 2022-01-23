@@ -43,6 +43,7 @@ if sys.platform.startswith('win32'):
     extra_compile_args=[
         "-DNDEBUG", "-fopenmp",
         "-O2", "-Wall",
+        "-Wno-int-in-bool-context"
     ]
     ## uncomment mingw64_unable_extra_compile_args if the error:
     ## "Error: invalid register for .seh_savexmm"
@@ -86,6 +87,7 @@ elif sys.platform.startswith('darwin'):
     extra_compile_args = [
         "-DNDEBUG", "-O2",
         "-Wall", "-std=c++11",
+        "-Wno-int-in-bool-context"
     ]
     m1chip_unable_extra_compile_args = [
         "-mavx", "-mfma",
@@ -128,7 +130,10 @@ else:
             "-DNDEBUG", "-fopenmp",
             "-O2", "-Wall",
             "-std=c++11", "-mavx",
-            "-mfma", "-march=native"
+            "-mfma", "-march=native",
+            # "-Wno-unused-variable",
+            # "-Wno-unused-but-set-variable",
+            "-Wno-int-in-bool-context"  # avoid warnings from Eigen
         ],
         extra_link_args=['-lgomp'],
         include_dirs=[
