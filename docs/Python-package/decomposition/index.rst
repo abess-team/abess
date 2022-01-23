@@ -1,7 +1,7 @@
 ##################################
 Principal Component Analysis (PCA)
 ##################################
-This page contains links to :code:`abess.decomposition` module and its function.
+This page contains links to :code:`abess.decomposition` module and its functions.
 It is designed for the best-subset selection for PCA problem. 
 
 .. warning::

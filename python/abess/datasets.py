@@ -1,16 +1,5 @@
+from re import X
 import numpy as np
-
-
-class data:
-    """
-    Data format.
-    Include: x, y, coefficients.
-    """
-
-    def __init__(self, x, y, coef_):
-        self.x = x
-        self.y = y
-        self.coef_ = coef_
 
 
 def sample(p, k):
@@ -19,8 +8,39 @@ def sample(p, k):
     return select
 
 
-def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
-                  censoring=True, c=1, scal=10, snr=None):
+def sparse_beta_generator(p, Nonzero, k, M):
+    Tbeta = np.zeros([p, M])
+    beta_value = beta_generator(k, M)
+    Tbeta[Nonzero, :] = beta_value
+    return Tbeta
+
+
+def beta_generator(k, M):
+    # # strong_num <- 3
+    # # moderate_num <- 7
+    # # weak_num <- 5
+    # # strong_num <- 10
+    # # moderate_num <- 10
+    # # weak_num <- 10
+    strong_num = int(k * 0.3)
+    moderate_num = int(k * 0.4)
+    weak_num = k - strong_num - moderate_num
+    # signal_num = strong_num + moderate_num + weak_num
+
+    strong_signal = np.random.normal(
+        0, 10, strong_num * M).reshape(strong_num, M)
+    moderate_signal = np.random.normal(
+        0, 5, moderate_num * M).reshape(moderate_num, M)
+    weak_signal = np.random.normal(0, 2, weak_num * M).reshape(weak_num, M)
+    beta_value = np.concatenate((strong_signal, moderate_signal, weak_signal))
+
+    beta_value = beta_value[sample(k, k), :]
+
+    # beta_value = np.random.normal(size=(k, M))
+    return beta_value
+
+
+class make_glm_data:
     r"""
     Generate a dataset with single response.
 
@@ -66,7 +86,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
         Design matrix of predictors.
     y: array-like, shape(n,)
         Response variable.
-    coef_: array_like, shape(p,)
+    coef_: array-like, shape(p,)
         The coefficients used in the underlying regression model.
         It has k nonzero values.
 
@@ -123,151 +143,123 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None,
             * censoring is enabled, and max censoring time :math:`c=1`.
 
     """
-    zero = np.zeros([n, 1])
-    ones = np.ones([n, 1])
-    X = np.random.normal(0, 1, n * p).reshape(n, p)
-    X = (X - np.matmul(ones, np.array([np.mean(X, axis=0)])))
-    normX = np.sqrt(np.matmul(ones.reshape(1, n), X ** 2))
-    X = np.sqrt(n) * X / normX
 
-    x = X + rho * \
-        (np.hstack((zero, X[:, 0:(p - 2)], zero)) +
-         np.hstack((zero, X[:, 2:p], zero)))
+    def __init__(self, n, p, k, family, rho=0, sigma=1, coef_=None,
+                 censoring=True, c=1, scal=10, snr=None):
+        self.n = n
+        self.p = p
+        self.k = k
+        self.family = family
 
-    nonzero = sample(p, k)
-    Tbeta = np.zeros(p)
+        zero = np.zeros([n, 1])
+        ones = np.ones([n, 1])
+        X = np.random.normal(0, 1, n * p).reshape(n, p)
+        X = (X - np.matmul(ones, np.array([np.mean(X, axis=0)])))
+        normX = np.sqrt(np.matmul(ones.reshape(1, n), X ** 2))
+        X = np.sqrt(n) * X / normX
 
-    if family == "gaussian":
-        m = 5 * np.sqrt(2 * np.log(p) / n)
-        M = 100 * m
-        if coef_ is None:
-            Tbeta[nonzero] = np.random.uniform(m, M, k)
+        x = X + rho * \
+            (np.hstack((zero, X[:, 0:(p - 2)], zero)) +
+             np.hstack((zero, X[:, 2:p], zero)))
+
+        nonzero = sample(p, k)
+        Tbeta = np.zeros(p)
+
+        if family == "gaussian":
+            m = 5 * np.sqrt(2 * np.log(p) / n)
+            M = 100 * m
+            if coef_ is None:
+                Tbeta[nonzero] = np.random.uniform(m, M, k)
+            else:
+                Tbeta = coef_
+
+            if snr is None:
+                y = np.matmul(x, Tbeta) + sigma * np.random.normal(0, 1, n)
+            else:
+                y = np.matmul(x, Tbeta)
+                power = np.mean(np.square(y))
+                npower = power / 10 ** (snr / 10)
+                noise = np.random.randn(len(y)) * np.sqrt(npower)
+                y += noise
+
+        elif family == "binomial":
+            m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
+            if coef_ is None:
+                Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k)
+            else:
+                Tbeta = coef_
+
+            xbeta = np.matmul(x, Tbeta)
+            xbeta[xbeta > 30] = 30
+            xbeta[xbeta < -30] = -30
+
+            p = np.exp(xbeta) / (1 + np.exp(xbeta))
+            y = np.random.binomial(1, p)
+
+        elif family == "poisson":
+            x = x / 16
+            m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
+            if coef_ is None:
+                Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k)
+                # Tbeta[nonzero] = np.random.normal(0, 4*m, k)
+            else:
+                Tbeta = coef_
+
+            xbeta = np.matmul(x, Tbeta)
+            xbeta[xbeta > 30] = 30
+            xbeta[xbeta < -30] = -30
+
+            lam = np.exp(xbeta)
+            y = np.random.poisson(lam=lam)
+
+        elif family == "cox":
+            m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
+            if coef_ is None:
+                Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k)
+            else:
+                Tbeta = coef_
+
+            time = np.power(-np.log(np.random.uniform(0, 1, n)) /
+                            np.exp(np.matmul(x, Tbeta)), 1 / scal)
+
+            if censoring:
+                ctime = c * np.random.uniform(0, 1, n)
+                status = (time < ctime) * 1
+                censoringrate = 1 - sum(status) / n
+                print("censoring rate:" + str(censoringrate))
+                for i in range(n):
+                    time[i] = min(time[i], ctime[i])
+            else:
+                status = np.ones(n)
+                print("no censoring")
+
+            y = np.hstack((time.reshape((-1, 1)), status.reshape((-1, 1))))
+
+        elif family == "gamma":
+            x = x / 16
+            m = 5 * np.sqrt(2 * np.log(p) / n)
+            if coef_ is None:
+                Tbeta[nonzero] = np.random.uniform(m, 100 * m, k)
+            else:
+                Tbeta = coef_
+            # add noise
+            eta = x @ Tbeta + np.random.normal(0, sigma, n)
+            # set coef_0 as + abs(min(eta)) + 1
+            eta = eta + np.abs(np.min(eta)) + 10
+            # set the shape para of gamma uniformly in [0.1,100.1]
+            shape_para = 100 * np.random.uniform(0, 1, n) + 0.1
+            y = np.random.gamma(shape=shape_para, scale=1 /
+                                shape_para / eta, size=n)
         else:
-            Tbeta = coef_
-
-        if snr is None:
-            y = np.matmul(x, Tbeta) + sigma * np.random.normal(0, 1, n)
-        else:
-            y = np.matmul(x, Tbeta)
-            power = np.mean(np.square(y))
-            npower = power / 10 ** (snr / 10)
-            noise = np.random.randn(len(y)) * np.sqrt(npower)
-            y += noise
-
-        return data(x, y, Tbeta)
-
-    if family == "binomial":
-        m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
-        if coef_ is None:
-            Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k)
-        else:
-            Tbeta = coef_
-
-        xbeta = np.matmul(x, Tbeta)
-        xbeta[xbeta > 30] = 30
-        xbeta[xbeta < -30] = -30
-
-        p = np.exp(xbeta) / (1 + np.exp(xbeta))
-        y = np.random.binomial(1, p)
-        return data(x, y, Tbeta)
-
-    if family == "poisson":
-        x = x / 16
-        m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
-        if coef_ is None:
-            Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k)
-            # Tbeta[nonzero] = np.random.normal(0, 4*m, k)
-        else:
-            Tbeta = coef_
-
-        xbeta = np.matmul(x, Tbeta)
-        xbeta[xbeta > 30] = 30
-        xbeta[xbeta < -30] = -30
-
-        lam = np.exp(xbeta)
-        y = np.random.poisson(lam=lam)
-        return data(x, y, Tbeta)
-
-    if family == "cox":
-        m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
-        if coef_ is None:
-            Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k)
-        else:
-            Tbeta = coef_
-
-        time = np.power(-np.log(np.random.uniform(0, 1, n)) /
-                        np.exp(np.matmul(x, Tbeta)), 1 / scal)
-
-        if censoring:
-            ctime = c * np.random.uniform(0, 1, n)
-            status = (time < ctime) * 1
-            censoringrate = 1 - sum(status) / n
-            print("censoring rate:" + str(censoringrate))
-            for i in range(n):
-                time[i] = min(time[i], ctime[i])
-        else:
-            status = np.ones(n)
-            print("no censoring")
-
-        y = np.hstack((time.reshape((-1, 1)), status.reshape((-1, 1))))
-
-        return data(x, y, Tbeta)
-
-    if family == "gamma":
-        x = x / 16
-        m = 5 * np.sqrt(2 * np.log(p) / n)
-        if coef_ is None:
-            Tbeta[nonzero] = np.random.uniform(m, 100 * m, k)
-        else:
-            Tbeta = coef_
-        # add noise
-        eta = x @ Tbeta + np.random.normal(0, sigma, n)
-        # set coef_0 as + abs(min(eta)) + 1
-        eta = eta + np.abs(np.min(eta)) + 10
-        # set the shape para of gamma uniformly in [0.1,100.1]
-        shape_para = 100 * np.random.uniform(0, 1, n) + 0.1
-        y = np.random.gamma(shape=shape_para, scale=1 /
-                            shape_para / eta, size=n)
-        return data(x, y, Tbeta)
-
-    raise ValueError(
-        "Family should be \'gaussian\', \'binomial\', \'poisson\', \'gamma\', or \'cox\'")
+            raise ValueError(
+                "Family should be \'gaussian\', \'binomial\', "
+                "\'poisson\', \'gamma\', or \'cox\'.")
+        self.x = x
+        self.y = y
+        self.coef_ = Tbeta
 
 
-def sparse_beta_generator(p, Nonzero, k, M):
-    Tbeta = np.zeros([p, M])
-    beta_value = beta_generator(k, M)
-    Tbeta[Nonzero, :] = beta_value
-    return Tbeta
-
-
-def beta_generator(k, M):
-    # # strong_num <- 3
-    # # moderate_num <- 7
-    # # weak_num <- 5
-    # # strong_num <- 10
-    # # moderate_num <- 10
-    # # weak_num <- 10
-    strong_num = int(k * 0.3)
-    moderate_num = int(k * 0.4)
-    weak_num = k - strong_num - moderate_num
-    # signal_num = strong_num + moderate_num + weak_num
-
-    strong_signal = np.random.normal(
-        0, 10, strong_num * M).reshape(strong_num, M)
-    moderate_signal = np.random.normal(
-        0, 5, moderate_num * M).reshape(moderate_num, M)
-    weak_signal = np.random.normal(0, 2, weak_num * M).reshape(weak_num, M)
-    beta_value = np.concatenate((strong_signal, moderate_signal, weak_signal))
-
-    beta_value = beta_value[sample(k, k), :]
-
-    # beta_value = np.random.normal(size=(k, M))
-    return beta_value
-
-
-def make_multivariate_glm_data(
-        n=100, p=100, k=10, family="multigaussian", rho=0.5, coef_=None, M=1, sparse_ratio=None):
+class make_multivariate_glm_data:
     r"""
     Generate a dataset with multi-responses.
 
@@ -293,13 +285,13 @@ def make_multivariate_glm_data(
     sparse_ratio: float, optional, default=None
         The sparse ratio of predictor matrix (x).
 
-    Returns
-    -------
+    Attributes
+    ----------
     x: array-like, shape(n, p)
         Design matrix of predictors.
     y: array-like, shape(n, M)
         Response variable.
-    coef_: array_like, shape(p, M)
+    coef_: array-like, shape(p, M)
         The coefficients used in the underlying regression model.
         It is rowwise sparse, with k nonzero rows.
 
@@ -340,61 +332,68 @@ def make_multivariate_glm_data(
               :math:`N(0, 10)`, :math:`N(0, 5)` and :math:`N(0, 2)`, respectively.
 
     """
-    Sigma = np.ones(p * p).reshape(p, p) * rho
-    ones = np.ones([n, 1])
-    for i in range(p):
-        Sigma[i, i] = 1
-    mean = np.zeros(p)
-    X = np.random.multivariate_normal(mean=mean, cov=Sigma, size=(n,))
 
-    # Sigma[Sigma < 1e-10] = 0
-    X = (X - np.matmul(ones, np.array([np.mean(X, axis=0)])))
-    normX = np.sqrt(np.matmul(ones.reshape(1, n), X ** 2) / (n - 1))
+    def __init__(self,
+                 n=100, p=100, k=10, family="multigaussian", rho=0.5,
+                 coef_=None, M=1, sparse_ratio=None):
+        Sigma = np.ones(p * p).reshape(p, p) * rho
+        ones = np.ones([n, 1])
+        for i in range(p):
+            Sigma[i, i] = 1
+        mean = np.zeros(p)
+        X = np.random.multivariate_normal(mean=mean, cov=Sigma, size=(n,))
 
-    X = X / normX
+        # Sigma[Sigma < 1e-10] = 0
+        X = (X - np.matmul(ones, np.array([np.mean(X, axis=0)])))
+        normX = np.sqrt(np.matmul(ones.reshape(1, n), X ** 2) / (n - 1))
 
-    if sparse_ratio is not None:
-        sparse_size = int((1 - sparse_ratio) * n * p)
-        position = sample(n * p, sparse_size)
-        print(position)
-        for i in range(sparse_size):
-            X[int(position[i] / p), position[i] % p] = 0
+        X = X / normX
 
-    Nonzero = sample(p, k)
-    # Nonzero = np.array([0, 1, 2])
-    # Nonzero[:k] = 1
-    if coef_ is None:
-        Tbeta = sparse_beta_generator(p, Nonzero, k, M)
-    else:
-        Tbeta = coef_
+        if sparse_ratio is not None:
+            sparse_size = int((1 - sparse_ratio) * n * p)
+            position = sample(n * p, sparse_size)
+            print(position)
+            for i in range(sparse_size):
+                X[int(position[i] / p), position[i] % p] = 0
 
-    if family in ("multigaussian", "gaussian"):
-        eta = np.matmul(X, Tbeta)
-        y = eta + np.random.normal(0, 1, n * M).reshape(n, M)
-        return data(X, y, Tbeta)
+        Nonzero = sample(p, k)
+        # Nonzero = np.array([0, 1, 2])
+        # Nonzero[:k] = 1
+        if coef_ is None:
+            Tbeta = sparse_beta_generator(p, Nonzero, k, M)
+        else:
+            Tbeta = coef_
 
-    if family in ("multinomial", "binomial"):
-        for i in range(M):
-            Tbeta[:, i] = Tbeta[:, i] - Tbeta[:, M - 1]
-        eta = np.exp(np.matmul(X, Tbeta))
-        # y2 = np.zeros(n)
-        y = np.zeros([n, M])
-        index = np.linspace(0, M - 1, M)
-        for i in range(n):
-            p = eta[i, :] / np.sum(eta[i, :])
-            j = np.random.choice(index, size=1, replace=True, p=p)
-            # print(j)
-            y[i, int(j[0])] = 1
-            # y2[i] = j
-        return data(X, y, Tbeta)
+        if family in ("multigaussian", "gaussian"):
+            eta = np.matmul(X, Tbeta)
+            y = eta + np.random.normal(0, 1, n * M).reshape(n, M)
 
-    if family == "poisson":
-        eta = np.matmul(X, Tbeta)
-        eta[eta > 30] = 30
-        eta[eta < -30] = -30
-        lam = np.exp(eta)
-        y = np.random.poisson(lam=lam)
-        return data(X, y, Tbeta)
+        elif family in ("multinomial", "binomial"):
+            for i in range(M):
+                Tbeta[:, i] = Tbeta[:, i] - Tbeta[:, M - 1]
+            eta = np.exp(np.matmul(X, Tbeta))
+            # y2 = np.zeros(n)
+            y = np.zeros([n, M])
+            index = np.linspace(0, M - 1, M)
+            for i in range(n):
+                p = eta[i, :] / np.sum(eta[i, :])
+                j = np.random.choice(index, size=1, replace=True, p=p)
+                # print(j)
+                y[i, int(j[0])] = 1
+                # y2[i] = j
 
-    raise ValueError(
-        "Family should be \'gaussian\', \'multigaussian\', or \'multinomial\'")
+        elif family == "poisson":
+            eta = np.matmul(X, Tbeta)
+            eta[eta > 30] = 30
+            eta[eta < -30] = -30
+            lam = np.exp(eta)
+            y = np.random.poisson(lam=lam)
+
+        else:
+            raise ValueError(
+                "Family should be \'gaussian\', \'multigaussian\', "
+                "or \'multinomial\'.")
+
+        self.x = X
+        self.y = y
+        self.coef_ = Tbeta
