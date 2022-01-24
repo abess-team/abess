@@ -20,7 +20,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 ```
 
-## Briey Introduction
+## Brief Introduction
 
 Multivariate multi-response linear regression (a.k.a., multi-task learning) aims at predicting multiple responses at the same time, and thus, it is a natural extension for classical linear regression where the response is univariate. 
 Multivariate multi-response linear regression (MMLR) is very helpful for the analysis of correlated response such as chemical measurements for soil samples and 
@@ -29,11 +29,11 @@ Let $y$ is $m$-dimensional response variable,
 $x$ is $p$-dimensional predictors, 
 $B \in R^{m \times p}$ is coefficient matrix, 
 the MMLR model for the multivariate response is given by
-$$y = B x + \epsilon,$$
-where $\epsilon$ is $m$-dimensional random noise variable with zero mean. 
+$$y = B x + \varepsilon,$$
+where $\varepsilon$ is $m$-dimensional random noise variable with zero mean. 
 
 Due to the Occam's razor principal or the high-dimensionality of predictors, it is meaningful to use a small amount of predictors to conduct multi-task learning. For example, understanding the relationship between gene expression and symptoms of a disease have significant importance in identifying potential makers. Many diseases usually involve multiple manifestations and those manifestations are usually related. In some cases, it makes sense to predict those manifestations using a small but the same set of predictors. The best subset selection problem under the MMLR model is formulated as 
-$$\frac{1}{2n} \| Y - XB \|_{2}^2, \text{ subject to: } \| B \|_{0, 2} \leq s,$$
+$$\frac{1}{2n} \| Y - XB \|_{2}^2, \text{ s.t. } \| B \|_{0, 2} \leq s,$$
 where, $Y \in R^{n \times m}$ and $X \in R^{n \times p}$ record 
 $n$ observations' response and predictors, respectively. 
 Here $\| B \|_{0, 2} = \sum_{i = 1}^{p} I(B_{i\cdot} = {\bf 0})$, 
@@ -65,7 +65,7 @@ abess_fit <- abess(dataset[["x"]], dataset[["y"]],
 extract(abess_fit)
 ```
 
-The output of `extract(abess_fit)` shows that the support set is correctly identify and the parameter estimation approach to the truth.    
+The output of `extract(abess_fit)` shows that the support set is correctly identified and the parameter estimation approach to the truth.    
 
 Since there are three responses, we will obtain three solution path plots when calling the `plot()` function. 
 The three plots corresponds to $y_1, y_2, y_3$, respectively. 
