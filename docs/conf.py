@@ -13,7 +13,8 @@
 import os
 # import sys
 import sys
-sys.path.insert(0, os.path.join(os.path.abspath('..'), "python", "abess"))
+import abess
+# sys.path.insert(0, os.path.join(os.path.abspath('..'), "python"))
 # import SampleModule
 from sphinx_gallery.sorting import FileNameSortKey
 
