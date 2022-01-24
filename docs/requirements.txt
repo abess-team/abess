@@ -1,5 +1,0 @@
-Sphinx
-sphinxcontrib-phpdomain
-sphinx-autoapi
-nbsphinx
-myst-parser

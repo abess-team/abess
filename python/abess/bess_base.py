@@ -7,81 +7,70 @@ from .cabess import pywrap_GLM
 
 
 class bess_base(BaseEstimator):
-    r"""
+    """
     Parameters
     ----------
-    max_iter : int, optional, default=20
+    max_iter : int, optional
         Maximum number of iterations taken for the splicing algorithm to converge.
         Due to the limitation of loss reduction, the splicing algorithm must be able to converge.
         The number of iterations is only to simplify the implementation.
-    is_warm_start : bool, optional, default=True
-        When tuning the optimal parameter combination, whether to use the last solution
-        as a warm start to accelerate the iterative convergence of the splicing algorithm.
-    path_type : {"seq", "gs"}, optional, default="seq"
+        Default: max_iter = 20.
+    is_warm_start : bool, optional
+        When tuning the optimal parameter combination, whether to use the last solution as a warm start to accelerate the iterative convergence of the splicing algorithm.
+        Default:is_warm_start = True.
+    path_type : {"seq", "gs"}
         The method to be used to select the optimal support size.
-
-        - For path_type = "seq", we solve the best subset selection problem for each size in support_size.
-        - For path_type = "gs", we solve the best subset selection problem with support size
-          ranged in (s_min, s_max), where the specific support size to be considered is
-          determined by golden section.
-
-    support_size : array-like, optional, default=range(min(n, int(n/(log(log(n))log(p)))))
-        An integer vector representing the alternative support sizes.
-        Only used when path_type = "seq".
-    s_min : int, optional, default=0
+        For path_type = "seq", we solve the best subset selection problem for each size in support_size.
+        For path_type = "gs", we solve the best subset selection problem with support size ranged in (s_min, s_max), where the specific support size to be considered is determined by golden section.
+    support_size : array_like, optional
+        An integer vector representing the alternative support sizes. Only used for path_type = "seq".
+        Default is 0:min(n, round(n/(log(log(n))log(p)))).
+    s_min : int, optional
         The lower bound of golden-section-search for sparsity searching.
-    s_max : int, optional, default=\min(n, int(n/(\log(\log(n))\log(p)))).
+        Default: s_min = 1.
+    s_max : int, optional
         The higher bound of golden-section-search for sparsity searching.
-    ic_type : {'aic', 'bic', 'gic', 'ebic'}, optional, default='ebic'
-        The type of criterion for choosing the support size.
-    cv : int, optional, default=1
-        The folds number when use the cross-validation method.
-
-        - If cv=1, cross-validation would not be used.
-        - If cv>1, support size will be chosen by CV's test loss, instead of IC.
-
-    thread : int, optional, default=1
-        Max number of multithreads.
-
-        - If thread = 0, the maximum number of threads supported by the device will be used.
-
-    screening_size : int, optional, default=-1
+        Default: s_max = min(n, round(n/(log(log(n))log(p)))).
+    ic_type : {'aic', 'bic', 'gic', 'ebic'}, optional
+        The type of criterion for choosing the support size. Available options are "gic", "ebic", "bic", "aic".
+        Default: ic_type = 'ebic'.
+    cv : int, optional
+        The folds number when Use the Cross-validation method. If cv=1, cross-validation would not be used.
+        Default: cv = 1.
+    thread: int, optional
+        Max number of multithreads. If thread = 0, the program will use the maximum number supported by the device.
+        Default: thread = 1.
+    screening_size: int, optional
         The number of variables remaining after screening.
-        It should be a non-negative number smaller than p, but larger than any value in support_size.
-
-        - If screening_size=-1, screening will not be used.
-        - If screening_size=0, screening_size will be set as
-          :math:`\min(p, int(n / (\log(\log(n))\log(p))))`.
-
-    always_select : array-like, optional, default=[]
+        It should be a non-negative number smaller than p, but larger than any value in support\\_size.
+        If screening_size=-1, screening will not be used.
+        If screening_size=0, screening_size will be set as min(p, int(n / (np.log(np.log(n)) * np.log(p)))).
+        Default: screening_size = -1.
+    always_select: array_like, optional
         An array contains the indexes of variables we want to consider in the model.
-    primary_model_fit_max_iter : int, optional, default=10
-        The maximal number of iteration for primary_model_fit.
-    primary_model_fit_epsilon : float, optional, default=1e-08
-        The epsilon (threshold) of iteration for primary_model_fit.
+        Default: always_select = [].
+    primary_model_fit_max_iter: int, optional
+        The maximal number of iteration in `primary_model_fit()` (in Algorithm.h).
+        Default: primary_model_fit_max_iter = 10.
+    primary_model_fit_epsilon: double, optional
+        The epsilon (threshold) of iteration in `primary_model_fit()` (in Algorithm.h).
+        Default: primary_model_fit_max_iter = 1e-08.
 
-    Attributes
-    ----------
-    coef_ : array-like, shape(p_features, ) or (p_features, M_responses)
+    Returns
+    -------
+    coef_: array of shape (n_features, ) or (n_targets, n_features)
         Estimated coefficients for the best subset selection problem.
-    intercept_ : float or array-like, shape(M_responses,)
-        The intercept in the model.
-    ic_ : float
-        If cv=1, it stores the score under chosen information criterion.
-    test_loss_ : float
-        If cv>1, it stores the test loss under cross-validation.
-    train_loss_ : float
-        The loss on training data.
+    ic_: double
+        The score under chosen information criterion.
 
     References
     ----------
-    - Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang.
-      A polynomial algorithm for best-subset selection problem.
-      Proceedings of the National Academy of Sciences, 117(52):33117-33123, 2020.
+    - Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang. A polynomial algorithm for best-subset selection problem. Proceedings of the National Academy of Sciences, 117(52):33117-33123, 2020.
+
+
     """
 
-    def __init__(self, algorithm_type, model_type, normalize_type, path_type,
-                 max_iter=20, exchange_num=5, is_warm_start=True,
+    def __init__(self, algorithm_type, model_type, normalize_type, path_type, max_iter=20, exchange_num=5, is_warm_start=True,
                  support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0,
                  cv=1, screening_size=-1,
@@ -164,32 +153,30 @@ class bess_base(BaseEstimator):
 
     def fit(self, X=None, y=None, is_normal=True,
             weight=None, group=None, cv_fold_id=None, A_init=None):
-        r"""
-        The fit function is used to transfer
-        the information of data and return the fit result.
+        """
+        The fit function is used to transfer the information of data and return the fit result.
 
         Parameters
         ----------
-        X : array-like of shape(n_samples, p_features)
-            Training data matrix. It should be a numpy array.
-        y : array-like of shape(n_samples,) or (n_samples, M_responses)
-            Training response values. It should be a numpy array.
-
-            - For regression problem, the element of y should be float.
-            - For classification problem, the element of y should be either 0 or 1.
-              In multinomial regression, the p features are actually dummy variables.
-            - For survival data, y should be a :math:`n \times 2` array,
-              where the columns indicates "censoring" and "time", respectively.
-
-        is_normal : bool, optional, default=True
+        X : array-like of shape (n_samples, p_features)
+            Training data
+        y :  array-like of shape (n_samples,) or (n_samples, n_targets)
+            Target values. Will be cast to X's dtype if necessary.
+            For linear regression problem, y should be a n time 1 numpy array with type \\code{double}.
+            For classification problem, \\code{y} should be a $n \time 1$ numpy array with values \\code{0} or \\code{1}.
+            For count data, \\code{y} should be a $n \time 1$ numpy array of non-negative integer.
+        is_normal : bool, optional
             whether normalize the variables array before fitting the algorithm.
-        weight : array-like, shape (n_samples,), optional, default=np.ones(n)
+            Default: is_normal=True.
+        weight : array-like of shape (n_samples,)
             Individual weights for each sample. Only used for is_weight=True.
-        group : int, optional, default=np.ones(p)
+            Default: weight = 1 for each observation.
+        group : int, optional
             The group index for each variable.
-        cv_fold_id: array-like, shape (n_samples,), optional, default=None
-            An array indicates different folds in CV.
-            Samples in the same fold should be given the same number.
+            Default: group = \\code{numpy.ones(p)}.
+        cv_fold_id: array_like of shape (n_samples,) , optional
+            An array indicates different folds in CV. Samples in the same fold should be given the same number.
+            Default: cv_fold_id=None
         """
 
         # print("fit enter.")#///

@@ -16,18 +16,20 @@ def fix_docs(cls):
 
 @ fix_docs
 class LogisticRegression(bess_base):
-    r"""
+    """
     Adaptive Best-Subset Selection (ABESS) algorithm for logistic regression.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional, default=0
-        The type of splicing:
+    splicing_type: {0, 1}, optional
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
-    important_search : int, optional, default=128
+        Default: splicing_type = 0.
+    important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0,
-        it would be set as the size of whole inactive set.
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -38,26 +40,26 @@ class LogisticRegression(bess_base):
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'binomial')
-    >>> model = LogisticRegression(support_size = 10)
+    >>> model = LogisticRegression(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq"
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
     >>> model = LogisticRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs"
+    >>> # path_type="gs",
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = LogisticRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None, alpha=None,
-                 s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
@@ -68,15 +70,11 @@ class LogisticRegression(bess_base):
                  important_search=128,
                  ):
         super().__init__(
-            algorithm_type="abess", model_type="Logistic", normalize_type=2,
-            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size,
-            alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
-            screening_size=screening_size,
+            algorithm_type="abess", model_type="Logistic", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter,
-            primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -85,41 +83,32 @@ class LogisticRegression(bess_base):
         )
 
     def predict_proba(self, X):
-        r"""
-        Give the probabilities of new sample
-        being assigned to different classes.
+        """
+        The predict_proba function is used to give the probabilities of new data begin assigned to different classes.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix to be predicted.
+        X : array-like of shape (n_samples, p_features)
+            Test data.
 
-        Returns
-        -------
-        proba : array-like, shape(n_samples,)
-            Returns the probabilities for class "1"
-            on given X.
         """
         X = self.new_data_check(X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = X.dot(self.coef_) + intercept_
-        proba = np.exp(xbeta) / (1 + np.exp(xbeta))
-        return proba
+        return np.exp(xbeta) / (1 + np.exp(xbeta))
 
     def predict(self, X):
-        r"""
-        This function predicts class label for given data.
+        """
+        For Logistic model,
+        the predict function returns a \\code{dict} of \\code{pr} and \\code{y}, where \\code{pr} is the probability of response variable is 1 and \\code{y} is predicted to be 1 if \\code{pr} > 0.5 else \\code{y} is 0
+        on given data.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix to be predicted.
+        X : array-like of shape (n_samples, p_features)
+            Test data.
 
-        Returns
-        -------
-        y : array-like, shape(n_samples,)
-            Predict class labels (0 or 1) for samples in X.
         """
         X = self.new_data_check(X)
 
@@ -130,20 +119,15 @@ class LogisticRegression(bess_base):
         return y
 
     def score(self, X, y):
-        r"""
+        """
         Give new data, and it returns the entropy function.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix.
-        y : array-like, shape(n_samples,)
-            Real class labels (0 or 1) for X.
-
-        Returns
-        -------
-        score : float
-            The value of entropy function under given data.
+        X : array-like of shape (n_samples, n_features)
+            Test data.
+        y : array-like of shape (n_samples, n_features), optional
+            Test response (real class).
         """
         X, y = self.new_data_check(X, y)
 
@@ -158,18 +142,20 @@ class LogisticRegression(bess_base):
 
 @ fix_docs
 class LinearRegression(bess_base):
-    r"""
+    """
     Adaptive Best-Subset Selection(ABESS) algorithm for linear regression.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional, default=0
-        The type of splicing:
+    splicing_type: {0, 1}, optional
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
-    important_search : int, optional, default=128
+        Default: splicing_type = 0.
+    important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0,
-        it would be set as the size of whole inactive set.
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -180,26 +166,26 @@ class LinearRegression(bess_base):
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'gaussian')
-    >>> model = LinearRegression(support_size = 10)
+    >>> model = LinearRegression(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq"
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
     >>> model = LinearRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs"
+    >>> # path_type="gs",
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = LinearRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  thread=1, covariance_update=False,
@@ -207,16 +193,12 @@ class LinearRegression(bess_base):
                  splicing_type=0,
                  important_search=128,
                  # primary_model_fit_max_iter=10,
-                 # primary_model_fit_epsilon=1e-8,
-                 # approximate_Newton=False
+                 # primary_model_fit_epsilon=1e-8, approximate_Newton=False
                  ):
         super().__init__(
-            algorithm_type="abess", model_type="Lm", normalize_type=1,
-            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size,
-            alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
-            screening_size=screening_size,
+            algorithm_type="abess", model_type="Lm", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
             always_select=always_select,
             thread=thread, covariance_update=covariance_update,
             sparse_matrix=sparse_matrix,
@@ -225,18 +207,16 @@ class LinearRegression(bess_base):
         )
 
     def predict(self, X):
-        r"""
-        Predict on given data.
+        """
+        For linear regression problem,
+        the predict function returns a numpy array of the prediction of the mean
+        on given data.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix to be predicted.
+        X : array-like of shape (n_samples, p_features)
+            Test data.
 
-        Returns
-        -------
-        y : array-like, shape(n_samples,)
-            Prediction of the mean on given X.
         """
         X = self.new_data_check(X)
 
@@ -244,20 +224,15 @@ class LinearRegression(bess_base):
         return X.dot(self.coef_) + intercept_
 
     def score(self, X, y):
-        r"""
-        Give data, and it returns the prediction error.
+        """
+        Give new data, and it returns the prediction error.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix.
-        y : array-like, shape(n_samples, p_features)
-            Real response for given X.
-
-        Returns
-        -------
-        score : float
-            Prediction error.
+        X : array-like of shape (n_samples, n_features)
+            Test data.
+        y : array-like of shape (n_samples, n_features), optional
+            Test response.
         """
         X, y = self.new_data_check(X, y)
         y_pred = self.predict(X)
@@ -266,19 +241,20 @@ class LinearRegression(bess_base):
 
 @ fix_docs
 class CoxPHSurvivalAnalysis(bess_base):
-    r"""
-    Adaptive Best-Subset Selection(ABESS) algorithm for
-    COX proportional hazards model.
+    """
+    Adaptive Best-Subset Selection(ABESS) algorithm for COX proportional hazards model.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional, default=0
-        The type of splicing:
+    splicing_type: {0, 1}, optional
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
-    important_search : int, optional, default=128
+        Default: splicing_type = 0.
+    important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0,
-        it would be set as the size of whole inactive set.
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -289,26 +265,26 @@ class CoxPHSurvivalAnalysis(bess_base):
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'cox')
-    >>> model = CoxPHSurvivalAnalysis(support_size = 10)
+    >>> model = CoxPHSurvivalAnalysis(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq"
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
     >>> model = CoxPHSurvivalAnalysis(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs"
+    >>> # path_type="gs",
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = CoxPHSurvivalAnalysis(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
@@ -319,15 +295,11 @@ class CoxPHSurvivalAnalysis(bess_base):
                  important_search=128
                  ):
         super().__init__(
-            algorithm_type="abess", model_type="Cox", normalize_type=3,
-            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size,
-            alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
-            screening_size=screening_size,
+            algorithm_type="abess", model_type="Cox", normalize_type=3, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter,
-            primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -336,39 +308,31 @@ class CoxPHSurvivalAnalysis(bess_base):
         )
 
     def predict(self, X):
-        r"""
-        Returns the time-independent part of hazard function,
-        i.e. :math:`\exp(X\beta)` on given data.
+        """
+        For Cox model,
+        the predict function returns the time-independent part of hazard function, i.e. :math:`\\exp(X\\beta)`,
+        on given data.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix to be predicted.
+        X : array-like of shape (n_samples, p_features)
+            Test data.
 
-        Returns
-        -------
-        y : array-like, shape(n_samples,)
-            Return :math:`\exp(X\beta)`.
         """
         X = self.new_data_check(X)
 
         return np.exp(X.dot(self.coef_))
 
     def score(self, X, y):
-        r"""
-        Give data, and it returns C-index.
+        """
+        Give new data, and it returns C-index.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix.
-        y : array-like, shape(n_samples, p_features)
-            Real response for given X.
-
-        Returns
-        -------
-        score : float
-            C-index.
+        X : array-like of shape (n_samples, n_features)
+            Test data.
+        y : array-like of shape (n_samples, n_features), optional
+            Test response.
         """
         X, y = self.new_data_check(X, y)
         risk_score = X.dot(self.coef_)
@@ -380,18 +344,20 @@ class CoxPHSurvivalAnalysis(bess_base):
 
 @ fix_docs
 class PoissonRegression(bess_base):
-    r"""
+    """
     Adaptive Best-Subset Selection(ABESS) algorithm for Poisson regression.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional, default=0
-        The type of splicing:
+    splicing_type: {0, 1}, optional
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
-    important_search : int, optional, default=128
+        Default: splicing_type = 0.
+    important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0,
-        it would be set as the size of whole inactive set.
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -402,26 +368,26 @@ class PoissonRegression(bess_base):
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'poisson')
-    >>> model = PoissonRegression(support_size = 10)
+    >>> model = PoissonRegression(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq"
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
     >>> model = PoissonRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs"
+    >>> # path_type="gs",
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = PoissonRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
@@ -431,15 +397,11 @@ class PoissonRegression(bess_base):
                  important_search=128
                  ):
         super().__init__(
-            algorithm_type="abess", model_type="Poisson", normalize_type=2,
-            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size,
-            alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
-            screening_size=screening_size,
+            algorithm_type="abess", model_type="Poisson", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter,
-            primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
@@ -447,18 +409,16 @@ class PoissonRegression(bess_base):
         )
 
     def predict(self, X):
-        r"""
-        Predict on given data.
+        """
+        For Poisson model,
+        the predict function returns a numpy array of the prediction of the mean of response,
+        on given data.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix to be predicted.
+        X : array-like of shape (n_samples, p_features)
+            Test data.
 
-        Returns
-        -------
-        y : array-like, shape(n_samples,)
-            Prediction of the mean on X.
         """
         X = self.new_data_check(X)
 
@@ -467,20 +427,15 @@ class PoissonRegression(bess_base):
         return xbeta_exp
 
     def score(self, X, y):
-        r"""
+        """
         Give new data, and it returns the prediction error.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix.
-        y : array-like, shape(n_samples, p_features)
-            Real response for given X.
-
-        Returns
-        -------
-        score : float
-            Prediction error.
+        X : array-like of shape (n_samples, n_features)
+            Test data.
+        y : array-like of shape (n_samples, n_features), optional
+            Test response.
         """
         X, y = self.new_data_check(X, y)
 
@@ -492,18 +447,20 @@ class PoissonRegression(bess_base):
 
 @ fix_docs
 class MultiTaskRegression(bess_base):
-    r"""
+    """
     Adaptive Best-Subset Selection(ABESS) algorithm for multitasklearning.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional, default=0
-        The type of splicing:
+    splicing_type: {0, 1}, optional
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
-    important_search : int, optional, default=128
+        Default: splicing_type = 0.
+    important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0,
-        it would be set as the size of whole inactive set.
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -513,28 +470,27 @@ class MultiTaskRegression(bess_base):
     >>> from abess.datasets import make_multivariate_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> data = make_multivariate_glm_data(
-    >>>     n = 100, p = 50, k = 10, M = 3, family = 'multigaussian')
-    >>> model = MultipleLinearRegression(support_size = 10)
+    >>> data = make_multivariate_glm_data(n = 100, p = 50, k = 10, M = 3, family = 'multigaussian')
+    >>> model = MultipleLinearRegression(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq"
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
     >>> model = MultipleLinearRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs"
+    >>> # path_type="gs",
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = MultipleLinearRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  thread=1, covariance_update=False,
@@ -543,13 +499,9 @@ class MultiTaskRegression(bess_base):
                  important_search=128
                  ):
         super().__init__(
-            algorithm_type="abess", model_type="Multigaussian",
-            normalize_type=1, path_type=path_type,
-            max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size,
-            alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
-            screening_size=screening_size,
+            algorithm_type="abess", model_type="Multigaussian", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
             always_select=always_select,
             thread=thread, covariance_update=covariance_update,
             sparse_matrix=sparse_matrix,
@@ -558,19 +510,16 @@ class MultiTaskRegression(bess_base):
         )
 
     def predict(self, X):
-        r"""
-        Prediction of the mean of each response on given data.
+        """
+        For Multigaussian model,
+        the predict function returns a numpy matrix of the prediction of the mean of responses,
+        on given data.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix to be predicted.
+        X : array-like of shape (n_samples, p_features)
+            Test data.
 
-        Returns
-        -------
-        y : array-like, shape(n_samples, M_responses)
-            Prediction of the mean of each response on given X.
-            Each column indicates one response.
         """
         X = self.new_data_check(X)
 
@@ -579,20 +528,15 @@ class MultiTaskRegression(bess_base):
         return X.dot(self.coef_) + intercept_
 
     def score(self, X, y):
-        r"""
-        Give data, and it returns the prediction error.
+        """
+        Give new data, and it returns prediction error.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix.
-        y : array-like, shape(n_samples, M_responses)
-            Real responses for given X.
-
-        Returns
-        -------
-        score : float
-            Prediction error.
+        X : array-like of shape (n_samples, n_features)
+            Test data.
+        y : array-like of shape (n_samples, n_features), optional
+            Test response.
         """
         X, y = self.new_data_check(X, y)
 
@@ -602,19 +546,20 @@ class MultiTaskRegression(bess_base):
 
 @ fix_docs
 class MultinomialRegression(bess_base):
-    r"""
-    Adaptive Best-Subset Selection(ABESS) algorithm for
-    multiclassification problem.
+    """
+    Adaptive Best-Subset Selection(ABESS) algorithm for multiclassification problem.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional, default=0
-        The type of splicing:
+    splicing_type: {0, 1}, optional
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
-    important_search : int, optional, default=128
+        Default: splicing_type = 0.
+    important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0,
-        it would be set as the size of whole inactive set.
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -624,33 +569,30 @@ class MultinomialRegression(bess_base):
     >>> from abess.datasets import make_multivariate_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> data = make_multivariate_glm_data(
-    >>>     n = 100, p = 50, k = 10, M = 3, family = 'multinomial')
-    >>> model = MultinomialRegression(support_size = 10)
+    >>> data = make_multivariate_glm_data(n = 100, p = 50, k = 10, M = 3, family = 'multinomial')
+    >>> model = MultinomialRegression(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq"
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
     >>> model = MultinomialRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs"
+    >>> # path_type="gs",
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = MultinomialRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1,
-                 screening_size=-1,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
-                 primary_model_fit_max_iter=10,
-                 primary_model_fit_epsilon=1e-8,
+                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
                  thread=1,
                  sparse_matrix=False,
@@ -658,15 +600,11 @@ class MultinomialRegression(bess_base):
                  important_search=128
                  ):
         super().__init__(
-            algorithm_type="abess", model_type="Multinomial", normalize_type=2,
-            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size,
-            alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
-            screening_size=screening_size,
+            algorithm_type="abess", model_type="Multinomial", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter,
-            primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -675,19 +613,14 @@ class MultinomialRegression(bess_base):
         )
 
     def predict_proba(self, X):
-        r"""
-        Give the probabilities of new data being assigned to different classes.
+        """
+        The predict_proba function is used to give the probabilities of new data begin assigned to different classes.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix to be predicted.
+        X : array-like of shape (n_samples, p_features)
+            Test data.
 
-        Returns
-        -------
-        proba : array-like, shape(n_samples, M_responses)
-            Returns the probability of given samples for each class.
-            Each column indicates one class.
         """
         X = self.new_data_check(X)
 
@@ -700,20 +633,15 @@ class MultinomialRegression(bess_base):
         return pr
 
     def predict(self, X):
-        r"""
-        Return the most possible class for given data.
+        """
+        For Multinomial model,
+        the predict function returns return the most possible class the given data may be.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix to be predicted.
+        X : array-like of shape (n_samples, p_features)
+            Test data.
 
-        Returns
-        -------
-        y : array-like, shape(n_samples, M_responses)
-            Predict class labels for samples in X.
-            Each row contains only one "1", and its column index is the
-            predicted class for related sample.
         """
         X = self.new_data_check(X)
 
@@ -732,15 +660,10 @@ class MultinomialRegression(bess_base):
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
+        X : array-like of shape (n_samples, n_features)
             Test data.
-        y : array-like, shape(n_samples, M_responses)
+        y : array-like of shape (n_samples, n_features), optional
             Test response (dummy variables of real class).
-
-        Returns
-        -------
-        score : float
-            entropy function
         """
         X, y = self.new_data_check(X, y)
 
@@ -750,18 +673,20 @@ class MultinomialRegression(bess_base):
 
 @ fix_docs
 class GammaRegression(bess_base):
-    r"""
+    """
     Adaptive Best-Subset Selection(ABESS) algorithm for Gamma regression.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional, default=0
-        The type of splicing:
+    splicing_type: {0, 1}, optional
+        The type of splicing in `fit()` (in Algorithm.h).
         "0" for decreasing by half, "1" for decresing by one.
-    important_search : int, optional, default=128
+        Default: splicing_type = 0.
+    important_search : int, optional
         The size of inactive set during updating active set when splicing.
-        It should be a non-positive integer and if important_search=0,
-        it would be set as the size of whole inactive set.
+        It should be a non-positive integer and if important_search=128, it would be set as
+        the size of whole inactive set.
+        Default: 0.
 
     Examples
     --------
@@ -769,18 +694,20 @@ class GammaRegression(bess_base):
     >>>
     >>> from abess.linear import GammaRegression
     >>> import numpy as np
-    >>> model = GammaRegression(support_size = 10)
+    >>> model = GammaRegression(support_size = [10])
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
 
     >>> ### Sparsity unknown
     >>>
-    >>> # path_type="seq"
+    >>> # path_type="seq",
+    >>> # Default: support_size = list(range(0, max(min(p, int(n / (np.log(np.log(n)) * np.log(p)))), 1))).
     >>> model = GammaRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
     >>>
-    >>> # path_type="gs"
+    >>> # path_type="gs",
+    >>> # Default: s_min=1, s_max=min(p, int(n / (np.log(np.log(n)) * np.log(p)))), K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
     >>> model = GammaRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     >>> model.predict(data.x)
@@ -808,18 +735,16 @@ class GammaRegression(bess_base):
         )
 
     def predict(self, X):
-        r"""
-        Predict on given data.
+        """
+        For Gamma model,
+        the predict function returns a numpy array of the prediction of the mean of response,
+        on given data.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix to be predicted.
+        X : array-like of shape (n_samples, p_features)
+            Test data.
 
-        Returns
-        -------
-        y : array-like, shape(n_samples,)
-            Prediction of the mean on given X.
         """
         X = self.new_data_check(X)
 
@@ -828,20 +753,15 @@ class GammaRegression(bess_base):
         return xbeta_exp
 
     def score(self, X, y, weights=None):
-        r"""
+        """
         Give new data, and it returns the prediction error.
 
         Parameters
         ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix.
-        y : array-like, shape(n_samples, p_features)
-            Real response for given X.
-
-        Returns
-        -------
-        score : float
-            Prediction error.
+        X : array-like of shape (n_samples, n_features)
+            Test data.
+        y : array-like of shape (n_samples, n_features), optional
+            Test response.
         """
         if weights is None:
             X = np.array(X)
@@ -860,7 +780,7 @@ class GammaRegression(bess_base):
 
 
 class abessLogistic(LogisticRegression):
-    warning_msg = "Class ``abessLogistic`` has been renamed to ``LogisticRegression``. The former will be deprecated in version 0.6.0."
+    warning_msg = "Class `abessLogistic` has been renamed to `LogisticRegression`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + LogisticRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -889,7 +809,7 @@ class abessLogistic(LogisticRegression):
 
 
 class abessLm(LinearRegression):
-    warning_msg = "Class ``abessLm`` has been renamed to ``LinearRegression``. The former will be deprecated in version 0.6.0."
+    warning_msg = "Class `abessLm` has been renamed to `LinearRegression`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + LinearRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -916,7 +836,7 @@ class abessLm(LinearRegression):
 
 
 class abessCox(CoxPHSurvivalAnalysis):
-    warning_msg = "Class ``abessCox`` has been renamed to ``CoxPHSurvivalAnalysis``. The former will be deprecated in version 0.6.0."
+    warning_msg = "Class `abessCox` has been renamed to `CoxPHSurvivalAnalysis`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + CoxPHSurvivalAnalysis.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -945,7 +865,7 @@ class abessCox(CoxPHSurvivalAnalysis):
 
 
 class abessPoisson(PoissonRegression):
-    warning_msg = "Class ``abessPoisson`` has been renamed to ``PoissonRegression``. The former will be deprecated in version 0.6.0."
+    warning_msg = "Class `abessPoisson` has been renamed to `PoissonRegression`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + PoissonRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -972,7 +892,7 @@ class abessPoisson(PoissonRegression):
 
 
 class abessMultigaussian(MultiTaskRegression):
-    warning_msg = "Class ``abessMultigaussian`` has been renamed to ``MultiTaskRegression``. The former will be deprecated in version 0.6.0."
+    warning_msg = "Class `abessMultigaussian` has been renamed to `MultiTaskRegression`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + MultiTaskRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -997,7 +917,7 @@ class abessMultigaussian(MultiTaskRegression):
 
 
 class abessMultinomial(MultinomialRegression):
-    warning_msg = "Class ``abessMultinomial`` has been renamed to ``MultinomialRegression``. The former will be deprecated in version 0.6.0."
+    warning_msg = "Class `abessMultinomial` has been renamed to `MultinomialRegression`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + MultinomialRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
@@ -1026,7 +946,7 @@ class abessMultinomial(MultinomialRegression):
 
 
 class abessGamma(GammaRegression):
-    warning_msg = "Class ``abessGamma`` has been renamed to ``GammaRegression``. The former will be deprecated in version 0.6.0."
+    warning_msg = "Class `abessGamma` has been renamed to `GammaRegression`. The former will be deprecated in version 0.6.0."
     __doc__ = warning_msg + '\n' + GammaRegression.__doc__
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,

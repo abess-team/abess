@@ -8,7 +8,6 @@ import numpy
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
-
 def get_info():
     # get information from `__init__.py`
     labels = ["__version__", "__author__"]
@@ -22,7 +21,6 @@ def get_info():
             if "" not in values:
                 break
     return dict(zip(labels, values))
-
 
 package_info = get_info()
 
@@ -39,28 +37,6 @@ if sys.platform.startswith('win32'):
     os.system('bash "{}/pre.sh" '.format(CURRENT_DIR) +
               python_path + ' ' + version)
 
-    ## compiler options:
-    extra_compile_args=[
-        "-DNDEBUG", "-fopenmp",
-        "-O2", "-Wall",
-        "-Wno-int-in-bool-context"
-    ]
-    ## uncomment mingw64_unable_extra_compile_args if the error:
-    ## "Error: invalid register for .seh_savexmm"
-    mingw64_unable_extra_compile_args=[
-        "-mavx", "-mfma",
-        "-march=native"
-    ]
-    extra_compile_args2=[
-        "-std=c++11",
-        "-mtune=generic",
-        "-D%s" % os_type,
-        path1, path2
-    ]
-    extra_compile_args.extend(mingw64_unable_extra_compile_args)
-    extra_compile_args.extend(extra_compile_args2)
-
-    ## C extension:
     cabess_module = Extension(
         name='abess._cabess',
         sources=[
@@ -71,7 +47,16 @@ if sys.platform.startswith('win32'):
             CURRENT_DIR + '/src/pywrap.cpp',
             CURRENT_DIR + '/src/pywrap.i'],
         language='c++',
-        extra_compile_args=extra_compile_args,
+        extra_compile_args=[
+            "-DNDEBUG", "-fopenmp",
+            "-O2", "-Wall",
+            "-mavx", "-mfma",
+            "-march=native",
+            "-std=c++11",
+            "-mtune=generic",
+            "-D%s" % os_type,
+            path1, path2
+        ],
         extra_link_args=['-lgomp'],
         libraries=["vcruntime140"],
         include_dirs=[
@@ -83,13 +68,12 @@ if sys.platform.startswith('win32'):
 elif sys.platform.startswith('darwin'):
     eigen_path = CURRENT_DIR + "/include"
 
-    # compatible compile args with M1 chip:
+    ## compatible compile args with M1 chip:
     extra_compile_args = [
         "-DNDEBUG", "-O2",
         "-Wall", "-std=c++11",
-        "-Wno-int-in-bool-context"
     ]
-    m1chip_unable_extra_compile_args = [
+    m1chip_unable_extra_compile_args=[
         "-mavx", "-mfma",
         "-march=native"
     ]
@@ -130,10 +114,7 @@ else:
             "-DNDEBUG", "-fopenmp",
             "-O2", "-Wall",
             "-std=c++11", "-mavx",
-            "-mfma", "-march=native",
-            # "-Wno-unused-variable",
-            # "-Wno-unused-but-set-variable",
-            "-Wno-int-in-bool-context"  # avoid warnings from Eigen
+            "-mfma", "-march=native"
         ],
         extra_link_args=['-lgomp'],
         include_dirs=[
@@ -166,12 +147,6 @@ setup(
     ],
     license="GPL-3",
     url="https://abess.readthedocs.io",
-    download_url="https://pypi.python.org/pypi/abess",
-    project_urls={
-        "Bug Tracker": "https://github.com/abess-team/abess/issues",
-        "Documentation": "https://abess.readthedocs.io",
-        "Source Code": "https://github.com/abess-team/abess",
-    },
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.5",
