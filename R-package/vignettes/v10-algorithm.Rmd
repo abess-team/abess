@@ -175,18 +175,18 @@ where $[x]$ denotes the integer part of $x$.
 
 
 
-# Group linear model
-Group linear model is a linear model which the $p$ predictors are separated into $J$ pre-determined non-overlapping groups,
+<!-- # Group linear model -->
+<!-- Group linear model is a linear model which the $p$ predictors are separated into $J$ pre-determined non-overlapping groups, -->
 
-$$
-y = \sum_{j=1}^J X_{G_i} \boldsymbol{\beta_{G_j}}+\epsilon.
-$$
+<!-- $$ -->
+<!-- y = \sum_{j=1}^J X_{G_i} \boldsymbol{\beta_{G_j}}+\epsilon. -->
+<!-- $$ -->
 
-Consider the quadratic minimization problem with $\ell_{0,2}$ constraint,
-$$
-\min _{\boldsymbol{{\boldsymbol\beta}}} \mathcal{L_n}({\boldsymbol\beta}), \quad \text { s.t }\|{{\boldsymbol\beta}}\|_{0,2} \leq \mathrm{s},
-$$
-where the $\ell_{0,2}$ (-pseudo) norm is defined as $\|{{\boldsymbol\beta}}\|_{0,2} = \sum_{j=1}^J \mathrm{I} (\|\boldsymbol{\beta_{G_j}}\|_2 \neq 0)$.
+<!-- Consider the quadratic minimization problem with $\ell_{0,2}$ constraint, -->
+<!-- $$ -->
+<!-- \min _{\boldsymbol{{\boldsymbol\beta}}} \mathcal{L_n}({\boldsymbol\beta}), \quad \text { s.t }\|{{\boldsymbol\beta}}\|_{0,2} \leq \mathrm{s}, -->
+<!-- $$ -->
+<!-- where the $\ell_{0,2}$ (-pseudo) norm is defined as $\|{{\boldsymbol\beta}}\|_{0,2} = \sum_{j=1}^J \mathrm{I} (\|\boldsymbol{\beta_{G_j}}\|_2 \neq 0)$. -->
 
 
 
@@ -197,10 +197,11 @@ where the $\ell_{0,2}$ (-pseudo) norm is defined as $\|{{\boldsymbol\beta}}\|_{0
 # The corresponding notations in `abess()` function
 
 | Notations in algorithm      | Parameters in $\mathtt{abess}$ | Definitions     |
-| :----:       |    :----:   |    :----: |
+| :----       |    :----   |    :---- |
 | $m_{\max}$      | max.splicing.iter       | The maximum number of splicing algorithm    |
 | $k_{\max}$  | c.max        | The maximum splicing size    |
 | $1,\ldots,s_{\max}$  | support.size| A sequence representing the support sizes|
 |$\operatorname{SIC}$| tune.type| The type of criterion for choosing the support size|
 |$\{G_1, \ldots, G_J\}$|group.index|A vector indicator the group that each variable belongs to|
 |$\lambda$| lambda |A value for regularized best subset selection |
+|Golden-section searching| gs.range|Upper and lower bounds of the search range|

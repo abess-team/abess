@@ -55,9 +55,8 @@ coef(abess_fit, support.size = abess_fit$support.size[which.min(abess_fit$tune.v
 In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vanilla type of $L_0$ constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the `abess` package provides option of best subset selection with $L_2$ norm regularization called the regularized best subset selection (BESS). The model has this following form:
 
 \begin{align}
-\min_{\boldsymbol\beta} \mathcal{L_n}({\boldsymbol\beta}) + \lambda \|\boldsymbol\beta\|_2^2,
+\min_{\boldsymbol\beta} \mathcal{L_n}({\boldsymbol\beta}) + \lambda \|\boldsymbol\beta\|_2^2.
 \end{align}
-where $\mathcal{L}_{n}(\boldsymbol \beta)=\frac{1}{2 n}\|y-X \boldsymbol{\beta}\|_{2}^{2}.$ 
 
 
 ### Carrying out the Regularized BESS
@@ -74,7 +73,7 @@ data.test <- generate.data(n, p, snr = snr, beta = dataset$beta, seed = 100)
 abess_fit <- abess(dataset[["x"]], dataset[["y"]], lambda = 0.7)
 ```
 
-Let's test the regularized best subset selection against the no-regularized one over 100 replicas in terms of prediction performance.
+Let's test the regularized best subset selection against the no-regularized one over 100 replications in terms of prediction performance.
 ```{r}
 M <- 100
 err.l0 <- rep(0, M)
@@ -137,7 +136,7 @@ p <- 20
 support.size <- 3
 dataset <- generate.data(n, p, beta = c(10, 5, 5, rep(0, 17)))
 ```
-Support we have some prior information that the second and third variables belong to the same group, then we can set the `group_index` as:
+Supposing we have some prior information that the second and third variables belong to the same group, then we can set the `group_index` as:
 ```{r}
 group_index <- c(1, 2, 2, seq(3, 19, by = 1))
 ```
