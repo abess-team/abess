@@ -5,7 +5,10 @@
 # @Site    :
 # @File    : __init__.py
 
-from abess.linear import (
+__version__ = "0.4.0"
+__author__ = "Jin Zhu, Kangkang Jiang, Junhao Huang, Yanhang Zhang, Junxian Zhu, Xueqin Wang"
+
+from .linear import (
     LinearRegression,
     LogisticRegression,
     CoxPHSurvivalAnalysis,
@@ -13,11 +16,11 @@ from abess.linear import (
     MultiTaskRegression,
     MultinomialRegression,
     GammaRegression)
-from abess.decomposition import (SparsePCA, RobustPCA)
-from abess.datasets import (make_glm_data, make_multivariate_glm_data)
+from .decomposition import (SparsePCA, RobustPCA)
+from .datasets import (make_glm_data, make_multivariate_glm_data)
 
-# To be deprecated in version 0.5.0
-from abess.linear import (
+# To be deprecated in version 0.6.0
+from .linear import (
     abessLm,
     abessLogistic,
     abessCox,
@@ -25,4 +28,4 @@ from abess.linear import (
     abessMultigaussian,
     abessMultinomial,
     abessGamma)
-from abess.pca import (abessPCA, abessRPCA)
+from .pca import (abessPCA, abessRPCA)
