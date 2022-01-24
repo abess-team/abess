@@ -39,7 +39,7 @@ Before installing abess itself, some dependencies should be installed first: `sw
 
 - **Linux**: `$ sudo apt install swig bash mingw-w64` (for Ubuntu, but other Linux systems are similar);
 - **Windows**: `$ choco install swig mingw git ` (using [Chocolatey](https://community.chocolatey.org/packages)), or manually install the software and add them into PATH;
-- **MacOS**: `$ brew install swig mingw-w64 bash` (using [Homebrew](https://brew.sh/)).
+- **MacOS**: `$ brew install swig mingw-w64 bash` (using [Homebrew](https://brew.sh/)). Notice that, if using Apple M1 Silicon, please following the guided in [here](https://github.com/abess-team/abess/issues/310#issuecomment-1017504301) to configure your development environment. 
 
 After that, you can manually install abess by conducting command:
 
