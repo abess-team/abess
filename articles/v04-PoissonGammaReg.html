@@ -138,10 +138,10 @@
 <div class="section level2">
 <h2 id="poisson-regression">Poisson Regression<a class="anchor" aria-label="anchor" href="#poisson-regression"></a>
 </h2>
-<p>Poisson regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of costumers in line at a reception desk. The response variables are assumed to be generated from Poisson distributions.</p>
-<p>The general mathematical equation for Poisson regression is <span class="math display">\[
+<p>Poisson regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of customers in line at a reception desk. The response variable is assumed to be generated from Poisson distribution.</p>
+<p>The Poisson regression is defined as <span class="math display">\[
 \log(E(y_i|x_i)) = x_i^T \beta.
-\]</span> We generate some artificial data using this logic. Consider a dataset containing the information of complain calls about 100 companies over a period of 10 years. <code>count</code> gives the number of complains, and the dataset also have other variables like <code>age</code>, <code>sex</code>, <code>job</code>, <code>education</code>, <code>region</code>, <code>marriage</code>. The <code><a href="../reference/generate.data.html">generate.data()</a></code> function allow you to generate simulated data. By specifying <code>support.size = 3</code>, here we set only 3 of the 5 above mentioned variable have effect on the expectation of the response <code>count</code>.</p>
+\]</span> We generate some artificial data using the following logic. Consider a dataset containing the information of complain calls about 100 companies over a period of 10 years. <code>count</code> gives the number of complains, and the dataset also have other variables like <code>age</code>, <code>sex</code>, <code>job</code>, <code>education</code>, <code>region</code>, <code>marriage</code>. The <code><a href="../reference/generate.data.html">generate.data()</a></code> function allow you to generate simulated data. By specifying <code>support.size = 3</code>, here we set only 3 of the 5 above mentioned variable have effect on the expectation of the response <code>count</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
 <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, p <span class="op">=</span> <span class="fl">6</span>, support.size <span class="op">=</span> <span class="fl">3</span>,family <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span>
@@ -159,7 +159,7 @@
 <span class="co">## [5,]  0.3295078 -0.65458464 -2.2852355  1.6541453 -0.4162220  0.99160104</span>
 <span class="co">## [6,] -0.8204684  1.76728727  2.4976616  1.5122127 -0.3756574  1.59396745</span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">complain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">'count'</span><span class="op">=</span><span class="va">dat</span><span class="op">$</span><span class="va">y</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">complain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">'count'</span> <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">y</span>, <span class="va">dat</span><span class="op">$</span><span class="va">x</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="best-subset-selection-for-poisson-regression">Best Subset Selection for Poisson Regression<a class="anchor" aria-label="anchor" href="#best-subset-selection-for-poisson-regression"></a>
@@ -171,10 +171,6 @@
 <span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">count</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">complain</span>, family <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## [1] "abess"</span></code></pre>
-<!-- By default, the `abess` function implements the ABESS algorithm with the support size changing from 0 to $\min\{p,n/log(n)p \}$ and the best support size is determined by the Generalized Informatoin Criterion (GIC). You can change the tunging criterion by specifying the argument `tune.type`. The available tuning criterion now are `gic`, `aic`, `bic`, `ebic` and `cv`. For a quicker solution, you can change the tuning strategy to a golden section path which trys to find the elbow point of the tuning criterion over the hyperparameter space. Here we give an example. -->
-<!-- ```{r} -->
-<!-- abess_fit.gs <- abess(Salary~., Hitters, family = "poisson", tune.type = "bic", tune.path = "gs") -->
-<!-- ``` -->
 </div>
 <div class="section level2">
 <h2 id="interpret-the-result">Interpret the Result<a class="anchor" aria-label="anchor" href="#interpret-the-result"></a>
@@ -218,7 +214,7 @@
 <span class="co">## 5            4 -1013.1902 -2015.4350</span>
 <span class="co">## 6            5 -1013.6433 -2013.6050</span>
 <span class="co">## 7            6 -1013.6466 -2010.8751</span></code></pre>
-<p>Prediction is allowed for all the estimated model. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
+<p>Prediction is allowed for all the estimated models. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##              3         4</span>
@@ -232,8 +228,8 @@
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
-<p>The graph shows that, beginning from the most dense model, the 3th variable (job) is included in the active set until the support size reaches 0.</p>
-<p>We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size.</p>
+<p>The graph shows that, beginning from the most dense model, the 3rd variable (job) is included in the active set until the support size reaches 0.</p>
+<p>We can also generate a graph about the tuning value. Remember that we use the default GIC to tune the support size.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></code></pre></div>
 <p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
@@ -241,7 +237,7 @@
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">abess_fit</span><span class="op">$</span><span class="va">support.size</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">$</span><span class="va">tune.value</span><span class="op">)</span><span class="op">]</span></code></pre></div>
 <pre><code><span class="co">## [1] 3</span></code></pre>
-<p>To extract any model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.abess.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals to 3.</p>
+<p>To extract the specified model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.abess.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals to 3.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best.model</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
@@ -276,9 +272,9 @@
 <div class="section level2">
 <h2 id="gamma-regression">Gamma Regression<a class="anchor" aria-label="anchor" href="#gamma-regression"></a>
 </h2>
-<p>Gamma regression can be used when you have positive continuous response variables such as payments for insurance claims, or the lifetime of a redundant system. It is well known that the density of Gamma distribution can be represented as a function of a mean parameter (<span class="math inline">\(\mu\)</span>) and a shape parameter (<span class="math inline">\(\alpha\)</span>), specifically, <span class="math display">\[
+<p>Gamma regression can be used when you meet a positive continuous response variable such as payments for insurance claims, or the lifetime of a redundant system. It is well known that the density of Gamma distribution can be represented as a function of a mean parameter (<span class="math inline">\(\mu\)</span>) and a shape parameter (<span class="math inline">\(\alpha\)</span>), specifically, <span class="math display">\[
 f(y \mid \mu, \alpha)=\frac{1}{y \Gamma(\alpha)}\left(\frac{\alpha y}{\mu}\right)^{\alpha} e^{-\alpha y / \mu} {I}_{(0, \infty)}(y),
-\]</span> where <span class="math inline">\(I(\cdot)\)</span> denotes the indicator function. In the Gamma regression model, response variables are assumed to follow Gamma distributions. Specifically, <span class="math display">\[
+\]</span> where <span class="math inline">\(I(\cdot)\)</span> denotes the indicator function. In the Gamma regression model, response variable IS assumed to follow Gamma distribution. Specifically, <span class="math display">\[
 y_i \sim Gamma(\mu_i, \alpha),
 \]</span> where <span class="math inline">\(1/\mu_i = x_i^T\beta\)</span>.</p>
 <p>We apply the above procedure for gamma regression simply by changing <code>family = "poisson"</code> to <code>family = "gamma"</code>. This time we consider the response variables as (continuous) levels of satisfaction. Also, instead of GIC, we carry out cross validation to tune the support size by setting <code>tune.type = "cv"</code> in <code>abess</code>.</p>

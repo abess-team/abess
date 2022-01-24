@@ -134,7 +134,6 @@
 
     
     
-<p>This vignettes introduces what is adaptive best subset selection principal component analysis (abessPCA) and use a real data example to show how to use it.</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -142,11 +141,15 @@
 <p><span class="math display">\[
     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1.
 \]</span></p>
-<p>where <span class="math inline">\(\Sigma = X^TX / (n-1)\)</span> and <span class="math inline">\(X\)</span> is the <strong>centered</strong> sample matrix. We also denote that <span class="math inline">\(X\)</span> is a <span class="math inline">\(n\times p\)</span> matrix, where each row is an observation and each column is a variables.</p>
+<p>where <span class="math inline">\(\Sigma = X^TX / (n-1)\)</span> and <span class="math inline">\(X\)</span> is the <strong>centered</strong> sample matrix. We also denote that <span class="math inline">\(X\)</span> is a <span class="math inline">\(n\times p\)</span> matrix, where each row is an observation and each column is a variable.</p>
 <p>Then, before further analysis, we can project <span class="math inline">\(X\)</span> to <span class="math inline">\(v\)</span> (thus dimensional reduction), without losing too much information.</p>
-<p>However, consider that: - The PC is a linear combination of all primary variables (<span class="math inline">\(Xv\)</span>), but sometimes we may tend to use less variables for clearer interpretation (and less computational complexity); - It has been proved that if <span class="math inline">\(p/n\)</span> does not converge to <span class="math inline">\(0\)</span>, the classical PCA is not consistent, but this would happen in some high-dimensional data analysis.</p>
+<p>However, consider that:</p>
+<ul>
+<li><p>The PC is a linear combination of all primary variables (<span class="math inline">\(Xv\)</span>), but sometimes we may tend to use less variables for clearer interpretation (and less computational complexity);</p></li>
+<li><p>It has been proved that if <span class="math inline">\(p/n\)</span> does not converge to <span class="math inline">\(0\)</span>, the classical PCA is not consistent, but this would happen in some high-dimensional data analysis.</p></li>
+</ul>
 <p>For example, in gene analysis, the dataset may contain plenty of genes (variables) and we would like to find a subset of them, which can explain most information. Compared with using all genes, this small subset may perform better on interpretation, without loss much information. Then we can focus on these variables in the further analysis.</p>
-<p>When we trapped by these problems, a classical PCA may not be a best choice, since it use all variables. One of the alternatives is abessPCA, which is able to seek for principal component with a sparsity limitation:</p>
+<p>When we are trapped by these problems, a classical PCA may not be a best choice, since it use all variables. One of the alternatives is abessPCA, which is able to seek for principal component with a sparsity limitation:</p>
 <p><span class="math display">\[
     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq s.
 \]</span></p>
@@ -363,9 +366,7 @@ This result shows that using less than half of all 99 variables can be close to 
     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ \sum_{g=1}^G I(||v_g||\neq 0)\leq s.
 \]</span></p>
 <p>where we suppose there are <span class="math inline">\(G\)</span> groups, and the <span class="math inline">\(g\)</span>-th one correspond to <span class="math inline">\(v_g\)</span>, <span class="math inline">\(v = [v_1^T,v_2^T,\cdots,v_G^T]^T\)</span>. Then we are interested to find <span class="math inline">\(s\)</span> (or less) important groups.</p>
-<blockquote>
 <p>Group problem is extraordinary important in real data analysis. Still take gene analysis as an example, several sites would be related to one pathway, and it is meaningless to consider each of them alone.</p>
-</blockquote>
 <p>abessPCA can also deal with group information. Here we make sure that variables in the same group address close to each other (if not, the data should be sorted first).</p>
 <p>Suppose that the data above have group information like:</p>
 <ul>
@@ -414,7 +415,7 @@ This result shows that using less than half of all 99 variables can be close to 
 <p><span class="math display">\[
 \Sigma' = (1-vv^{\top})\Sigma(1-vv^{\top})
 \]</span></p>
-<p>where <span class="math inline">\(\Sigma\)</span> is the correct covariance matrix and <span class="math inline">\(v\)</span> is its (sparse) loading vector. We map it into <span class="math inline">\(\Sigma'\)</span>, which indicates the orthogonal space of <span class="math inline">\(v\)</span>, and then solve the sparse principal component for <span class="math inline">\(\Sigma'\)</span> again. By this iteration process, we can acquire multiple principal components and they are sorted from the largest to the smallest. In our program, there is an additional argument <code>sparse.type</code> to support this feature. By setting <code>sparse.type = "kpc"</code>, then best subset selection performs on the first <span class="math inline">\(K\)</span> principal components where <span class="math inline">\(K\)</span> is decided by argument <code>support.size</code>.</p>
+<p>where <span class="math inline">\(\Sigma\)</span> is the covariance matrix and <span class="math inline">\(v\)</span> is its (sparse) loading vector. We map it into <span class="math inline">\(\Sigma'\)</span>, which indicates the orthogonal space of <span class="math inline">\(v\)</span>, and then solve the sparse principal component for <span class="math inline">\(\Sigma'\)</span> again. By this iteration process, we can acquire multiple principal components and they are sorted from the largest to the smallest. In our program, there is an additional argument <code>sparse.type</code> to support this feature. By setting <code>sparse.type = "kpc"</code>, then best subset selection performs on the first <span class="math inline">\(K\)</span> principal components where <span class="math inline">\(K\)</span> is decided by argument <code>support.size</code>.</p>
 <p>Suppose we are interested in the first two principal components, and the support size is 50 in the first loading vector and is 40 in the second loading vector. In other words, we consecutively solve two problem: <span class="math display">\[
     v_1 \leftarrow \arg\max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq 10,
 \]</span> <span class="math display">\[

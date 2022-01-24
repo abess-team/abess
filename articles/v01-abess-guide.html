@@ -135,9 +135,9 @@
     
     
 <div class="section level2">
-<h2 id="briey-introduction">Briey introduction<a class="anchor" aria-label="anchor" href="#briey-introduction"></a>
+<h2 id="brief-introduction">Brief introduction<a class="anchor" aria-label="anchor" href="#brief-introduction"></a>
 </h2>
-<p>The R package <code>abess</code> implement a polynomial algorithm in the <a href="https://www.pnas.org/content/117/52/33117" class="external-link"></a> for best-subset selection problem: <span class="math display">\[\min_{\beta \in \mathbb{R}^p} \frac{1}{2n} \| y - X\beta\|_2^2, \text{ subject to } \|\beta\|_0 \leq s,\]</span> where <span class="math inline">\(\| \cdot \|_2\)</span> is the <span class="math inline">\(\ell_2\)</span> norm, <span class="math inline">\(\|\beta\|_0=\sum_{i=1}^pI( \beta_i\neq 0)\)</span> is the <span class="math inline">\(\ell_0\)</span> norm of <span class="math inline">\(\beta\)</span>, and the sparsity level <span class="math inline">\(s\)</span> is usually an unknown non-negative integer. Next, we present an example to show how to use the <strong>abess</strong> package to solve a simple problem.</p>
+<p>The R package <code>abess</code> implement a polynomial algorithm <a href="https://www.pnas.org/content/117/52/33117" class="external-link"></a> for solving the best-subset selection problem: <span class="math display">\[\min_{\boldsymbol{\beta} \in \mathbb{R}^p} \mathcal{L_n}({\boldsymbol\beta}), \text{ s.t. } \|\boldsymbol\beta\|_0 \leq s,\]</span> where <span class="math inline">\(\mathcal{L}_{n}(\boldsymbol \beta)=\frac{1}{2 n}\|y-X \boldsymbol{\beta}\|_{2}^{2}\)</span>, <span class="math inline">\(\|\boldsymbol{\beta}\|_0=\sum_{i=1}^pI( \boldsymbol{\beta}_i\neq 0)\)</span> is the <span class="math inline">\(\ell_0\)</span>(-pseudo) norm of <span class="math inline">\(\beta\)</span>, and the sparsity level <span class="math inline">\(s\)</span> is usually an unknown non-negative integer. Next, we present an example to show how to use the <code>abess</code> package to solve a simple problem.</p>
 </div>
 <div class="section level2">
 <h2 id="quick-example">Quick example<a class="anchor" aria-label="anchor" href="#quick-example"></a>
@@ -145,7 +145,7 @@
 <div class="section level3">
 <h3 id="fixed-support-size-best-subset-selection">Fixed support size best subset selection<a class="anchor" aria-label="anchor" href="#fixed-support-size-best-subset-selection"></a>
 </h3>
-<p>We generate a design matrix <span class="math inline">\(X\)</span> containing 300 observation and each observation has 1000 predictors. The response variable <span class="math inline">\(y\)</span> is linearly related to the first, second, and fifth predictors in <span class="math inline">\(X\)</span>: <span class="math display">\[y = 3X_1 + 1.5X_2 + 2X_5 + \epsilon,\]</span> where <span class="math inline">\(\epsilon\)</span> is a standard normal random variable.</p>
+<p>We generate a design matrix <span class="math inline">\(X\)</span> containing 300 observations and each observation has 1000 predictors. The response variable <span class="math inline">\(y\)</span> is linearly related to the first, second, and fifth predictors in <span class="math inline">\(X\)</span>: <span class="math display">\[y = 3X_1 + 1.5X_2 + 2X_5 + \epsilon,\]</span> where <span class="math inline">\(\varepsilon\)</span> is a standard normal random variable.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
 <span class="va">synthetic_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">300</span>, p <span class="op">=</span> <span class="fl">1000</span>, 
@@ -164,7 +164,7 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind.data.frame</a></span><span class="op">(</span><span class="st">"y"</span> <span class="op">=</span> <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, 
                         <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<p>Then, we use the main function <code>abess</code> in the package to fit this dataset. By setting the arguments <code>support.size = s</code>, <code>abess</code> function conducts <strong>Algorithm 1</strong> in the <a href="https://www.pnas.org/content/117/52/33117" class="external-link"></a> for best-subset selection with a sparsity level <code>s</code>. In our example, we set the options: <code>support.size = 3</code>, and we run <strong>Algorithm 1</strong> with the following command:</p>
+<p>Then, we use the main function <code>abess</code> in the package to fit this dataset. By setting the arguments <code>support.size = s</code>, <code><a href="../reference/abess.html">abess()</a></code> function conducts <strong>Algorithm 1</strong> <a href="https://www.pnas.org/content/117/52/33117" class="external-link"></a> for the best-subset selection with a sparsity level <code>s</code>. In our example, we set the options: <code>support.size = 3</code>, and we run <strong>Algorithm 1</strong> with the following command:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 <p>The output of <code>abess</code> comprises the selected best model:</p>
@@ -177,7 +177,7 @@
 <span class="co">## x3           0.00000000</span>
 <span class="co">## x4           0.00000000</span>
 <span class="co">## x5           1.90592036</span></code></pre>
-<p>The best model’s support set is identical to the ground truth, and the coefficient estimation is the same as the oracle estimator given by <code>lm</code> function:</p>
+<p>The support set of the best model is identical to the ground truth, and the coefficient estimation is the same as the oracle estimator given by <code>lm</code> function:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## </span>
@@ -192,10 +192,10 @@
 <div class="section level3">
 <h3 id="adaptive-best-subset-selection">Adaptive best subset selection<a class="anchor" aria-label="anchor" href="#adaptive-best-subset-selection"></a>
 </h3>
-<p>Imaging we are unknown about the true sparsity level in real world data, and thus, we need to determine the most proper one. The <strong>Algorithm 3</strong> in the <a href="https://www.pnas.org/content/117/52/33117" class="external-link"></a> is designed for this scenario. <code>abess</code> is capable of performing this algorithm:</p>
+<p>Supposing we are unknown about the true sparsity level in real world data, and thus, we need to determine the most proper one. The <strong>Algorithm 3</strong> <a href="https://www.pnas.org/content/117/52/33117" class="external-link"></a> is designed for this scenario. <code>abess</code> is capable of performing this algorithm:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></code></pre></div>
-<p>The output of <code>abess</code> also comprises the selected best model:</p>
+<p>The output of <code><a href="../reference/abess.html">abess()</a></code> also comprises the selected best model:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">best_size</span> <span class="op">&lt;-</span> <span class="va">abess_fit</span><span class="op">[[</span><span class="st">"best.size"</span><span class="op">]</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">best_size</span><span class="op">)</span></code></pre></div>
@@ -242,7 +242,7 @@
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## [1] 59</span></code></pre>
-<p>Note that this dataset contains some missing data. So we use the <code><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit()</a></code> function to delete rows that have incomplete information. After that, we have 263 observations remains.</p>
+<p>Note that this dataset contains some missing data. So we use the <code><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit()</a></code> function to delete rows that have incomplete information. After that, we have 263 observations remaining.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></code></pre></div>
@@ -250,7 +250,7 @@
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## [1] 0</span></code></pre>
-<p>Then we change the factors into dummy variables with the <code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix()</a></code> function. Note that the <code>abess</code> function will automatically include the intercept.</p>
+<p>Then we change the factors into dummy variables with the <code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix()</a></code> function. Note that the <code><a href="../reference/abess.html">abess()</a></code> function will automatically include the intercept.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">.</span>, <span class="va">Hitters</span><span class="op">)</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>
 <span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></code></pre></div>
@@ -258,7 +258,7 @@
 <div class="section level3">
 <h3 id="running-abess">Running ABESS<a class="anchor" aria-label="anchor" href="#running-abess"></a>
 </h3>
-<p>The <code><a href="../reference/abess.html">abess()</a></code> function in the <code>abess</code> package allows you to perform best subset selection in a highly efficient way. You can call the <code><a href="../reference/abess.html">abess()</a></code> function using formula just like what you do with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>. Or you can specify the design matrix <code>x</code> and the response <code>y</code>. The <code>system.time</code> function records the run time.</p>
+<p>The <code><a href="../reference/abess.html">abess()</a></code> function in the <code>abess</code> package allows you to perform best subset selection in a highly efficient way. You can call the <code><a href="../reference/abess.html">abess()</a></code> function using formula just like what you do with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>. Or you can specify the design matrix <code>x</code> and the response <code>y</code>. The <code><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time()</a></code> function records the run time.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
 <span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">Salary</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">Hitters</span><span class="op">)</span>
@@ -392,7 +392,7 @@
 <span class="co">## 18           17  46032.63 2909.843</span>
 <span class="co">## 19           18  46016.41 2914.808</span>
 <span class="co">## 20           19  46008.93 2919.824</span></code></pre>
-<p>Prediction is allowed for all the estimated model. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
+<p>Prediction is allowed for all the estimated models. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">hitters_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, 
                         newx <span class="op">=</span> <span class="va">Hitters</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span> <span class="op">==</span> <span class="st">"Salary"</span><span class="op">)</span><span class="op">]</span>, 

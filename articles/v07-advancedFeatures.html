@@ -124,9 +124,9 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Advanced Features</h1>
-                        <h4 data-toc-skip class="author">Jin Zhu</h4>
+                        <h4 data-toc-skip class="author">Jin Zhu, Yanhang Zhang</h4>
             
-            <h4 data-toc-skip class="date">6/13/2021</h4>
+            <h4 data-toc-skip class="date">1/21/2022</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v07-advancedFeatures.Rmd" class="external-link"><code>../vignettes/v07-advancedFeatures.Rmd</code></a></small>
       <div class="hidden name"><code>v07-advancedFeatures.Rmd</code></div>
@@ -194,12 +194,12 @@
 <div class="section level2">
 <h2 id="regularized-adaptive-best-subset-selection">Regularized Adaptive Best Subset Selection<a class="anchor" aria-label="anchor" href="#regularized-adaptive-best-subset-selection"></a>
 </h2>
-<p>In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vallina type of <span class="math inline">\(L_0\)</span> constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the <code>abess</code> package provides option of best subset selection with <span class="math inline">\(L_2\)</span> norm regularization called the regularized best subset selection (BESS). The model has this following form:</p>
+<p>In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vanilla type of <span class="math inline">\(L_0\)</span> constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the <code>abess</code> package provides option of best subset selection with <span class="math inline">\(L_2\)</span> norm regularization called the regularized best subset selection (BESS). The model has this following form:</p>
 <p><span class="math display">\[\begin{align}
-\min_\beta L(\beta) + \lambda \|\beta\|_2^2
+\min_{\boldsymbol\beta} \mathcal{L_n}({\boldsymbol\beta}) + \lambda \|\boldsymbol\beta\|_2^2.
 \end{align}\]</span></p>
 <div class="section level3">
-<h3 id="carrying-out-the-regularized-bess">Carrying out the Regularized Bess<a class="anchor" aria-label="anchor" href="#carrying-out-the-regularized-bess"></a>
+<h3 id="carrying-out-the-regularized-bess">Carrying out the Regularized BESS<a class="anchor" aria-label="anchor" href="#carrying-out-the-regularized-bess"></a>
 </h3>
 <p>To implement the regularized BESS, user need to specify a value to the <code>lambda</code> in the <code><a href="../reference/abess.html">abess()</a></code> function. This <code>lambda</code> value corresponds to the penalization parameter in the model above. Here we give an example.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -209,9 +209,8 @@
 <span class="va">snr</span> <span class="op">&lt;-</span> <span class="fl">0.05</span>
 <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, snr <span class="op">=</span> <span class="va">snr</span>, seed <span class="op">=</span> <span class="fl">1</span>, beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span> ,<span class="fl">5</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, rho <span class="op">=</span> <span class="fl">0.8</span>, cortype <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="va">data.test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, snr <span class="op">=</span> <span class="va">snr</span>, beta <span class="op">=</span> <span class="va">dataset</span><span class="op">$</span><span class="va">beta</span>, seed <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
-
 <span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, lambda <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></code></pre></div>
-<p>Let’s test the regularized best subset selection against the no-regularized one over 100 replicas in terms of prediction performance.</p>
+<p>Let’s test the regularized best subset selection against the no-regularized one over 100 replications in terms of prediction performance.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span> <span class="fl">100</span>
 <span class="va">err.l0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">M</span><span class="op">)</span>
@@ -230,7 +229,6 @@
   <span class="va">pe.l0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/norm.html" class="external-link">norm</a></span><span class="op">(</span><span class="va">data.test</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_l0</span>, newx <span class="op">=</span> <span class="va">data.test</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>, <span class="st">'2'</span><span class="op">)</span>
   <span class="va">err.l0l2</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">pe.l0</span>
 <span class="op">}</span>
-
 <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">err.l0</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## [1] 136.7881</span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -239,50 +237,20 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html" class="external-link">boxplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"ABESS"</span> <span class="op">=</span> <span class="va">err.l0</span>, <span class="st">"RABESS"</span> <span class="op">=</span> <span class="va">err.l0l2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="v07-advancedFeatures_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
-<p>We see that the regularized best subset select indeed reduces the prediction error. <!-- ```{r} --></p>
-<!-- snr = 0.05 -->
-<!-- dataset <- generate.data(n, p, snr = snr, seed = 1, beta = rep(c(1, rep(0 ,5)), each = 5), rho = 0.8, cortype = 3) -->
-<!-- dataset$beta -->
-<!-- data.test <- generate.data(n, p, beta = dataset$beta, seed = 100, snr = snr) -->
-<!-- tpr.l0l2 <- rep(0, M) -->
-<!-- fpr.l0l2 <- rep(0, M) -->
-<!-- abess_l0 <- abess(dataset[["x"]], dataset[["y"]]) -->
-<!-- beta.l0 = coef(abess_l0, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)]) -->
-<!-- tpr.l0 <-length(which(dataset$beta!=0 & beta.l0[-1] !=0)) -->
-<!-- fpr.l0 <-length(which(dataset$beta==0 & beta.l0[-1] !=0)) -->
-<!-- err.l0l2 = rep(0, M) -->
-<!-- err.l0=norm(data.test$y -predict(abess_l0, newx = data.test$x), '2') -->
-<!-- # tpr <- rep(0, M) -->
-<!-- M=100 -->
-<!-- lambda_list = exp(seq(log(5) ,log(0.001), length.out = M)) -->
-<!-- # dataset <- generate.data(n, p, support.size, snr = 0.5, seed = 123) -->
-<!-- # dataset$beta -->
-<!-- # -->
-<!-- # data.test <- generate.data(n, p, beta = dataset$beta, seed = 100, snr = snr) -->
-<!-- for(i in 1:M){ -->
-<!--   abess_fit <- abess(dataset[["x"]], dataset[["y"]], lambda = lambda_list[i]) -->
-<!--   beta.fit = coef(abess_fit, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)]) -->
-<!--   tpr.l0l2[i] = length(which(dataset$beta !=0 & beta.fit[-1] !=0)) -->
-<!--   fpr.l0l2[i] = length(which(dataset$beta ==0 & beta.fit[-1] !=0)) -->
-<!--   # coef(abess_fit, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)]) -->
-<!--   # -->
-<!--   err.l0l2[i] = norm(data.test$y - predict(abess_fit, newx = data.test$x),'2') -->
-<!--   # abess_l0 <- abess(dataset[["x"]], dataset[["y"]]) -->
-<!--   # beta.l0 = coef(abess_l0, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)]) -->
-<!--   # tpr.l0[i] =length(which(dataset$beta!=0 & beta.l0[-1] !=0)) -->
-<!--   # fpr.l0[i] = length(which(dataset$beta==0 & beta.l0[-1] !=0)) -->
-<!--   # err.l0 = norm(data.test$y -predict(abess_l0, newx = data.test$x), '2') -->
-<!-- } -->
-<!-- ``` -->
+<p>We see that the regularized best subset select indeed reduces the prediction error.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="best-group-subset-selection">Best group subset selection<a class="anchor" aria-label="anchor" href="#best-group-subset-selection"></a>
 </h2>
-<p>Best group subset selection (BGSS) aims to choose a small part of non-overlapping groups to achieve the best interpretability on the response variable. BGSS is practically useful for the analysis of ubiquitously existing variables with certain group structures. For instance, a categorical variable with several levels is often represented by a group of dummy variables. Besides, in a nonparametric additive model, a continuous component can be represented by a set of basis functions (e.g., a linear combination of spline basis functions). Finally, specific prior knowledge can impose group structures on variables. A typical example is that the genes belonging to the same biological pathway can be considered as a group in the genomic data analysis.</p>
+<p>Group linear model is a linear model which the <span class="math inline">\(p\)</span> predictors are separated into <span class="math inline">\(J\)</span> pre-determined non-overlapping groups,</p>
+<p><span class="math display">\[
+y = \sum_{j=1}^J X_{G_j} \boldsymbol{\beta_{G_j}}+\epsilon,
+\]</span> where <span class="math inline">\(\{G_j\}_{j=1}^J\)</span> are the group indices of the <span class="math inline">\(p\)</span> predictors.</p>
+<p>Best group subset selection (BGSS) aims to choose a small part of groups to achieve the best interpretability on the response variable. BGSS is practically useful for the analysis of variables with certain group structures. <!-- For instance, a categorical variable with several levels is often represented by a group of dummy variables. --> <!-- Besides, in a nonparametric additive model, a continuous component can be represented by a set of basis functions --> <!-- (e.g., a linear combination of spline basis functions). --> <!-- Finally, specific prior knowledge can impose group structures on variables. A typical example is that --> <!-- the genes belonging to the same biological pathway can be considered as a group in the genomic data analysis. --></p>
 <p>The BGSS can be achieved by solving: <span class="math display">\[\begin{equation}\label{eq:constraint}
-\min\limits_{\beta \in \mathbb{R}^p} \frac{1}{2n}\|y-X\beta\|_2^2,\quad s.t.\ \|\beta\|_{0,r}\leqslant s,
-\end{equation}\]</span> where <span class="math inline">\(\|\beta\|_{0,r} = \sum_{j=1}^J I(\|\beta_{G_j}\|_{2}\neq 0)\)</span> in which <span class="math inline">\(\|.\|_r\)</span> is the <span class="math inline">\(L_2\)</span> norm and model size <span class="math inline">\(s\)</span> is a positive integer to be determined from data. Regardless of the NP-hard of this problem, Zhang et al develop a certifiably polynomial algorithm to solve it. This algorithm is integrated in the <code>abess</code> package, and user can handily select best group subset by assigning a proper value to the <code>group.index</code> arguments in <code><a href="../reference/abess.html">abess()</a></code> function.</p>
+\min\limits_{\beta \in \mathbb{R}^p} \mathcal{L_n}({\boldsymbol\beta}),\quad s.t.\ \|\boldsymbol{\beta}\|_{0,2}\leqslant s,
+\end{equation}\]</span> where the <span class="math inline">\(\ell_{0,2}\)</span> (-pseudo) norm is defined as <span class="math inline">\(\|{{\boldsymbol\beta}}\|_{0,2} = \sum_{j=1}^J \mathrm{I} (\|\boldsymbol{\beta_{G_j}}\|_2 \neq 0)\)</span> and model size <span class="math inline">\(s\)</span> is a positive integer to be determined from data. Regardless of the NP-hard of this problem, Zhang et al develop a certifiably polynomial algorithm with a high probability to solve it. This algorithm is integrated in the <code>abess</code> package, and user can handily select best group subset by assigning a proper value to the <code>group.index</code> arguments in <code><a href="../reference/abess.html">abess()</a></code> function.</p>
 <div class="section level3">
 <h3 id="quick-example">Quick example<a class="anchor" aria-label="anchor" href="#quick-example"></a>
 </h3>
@@ -293,7 +261,7 @@
 <span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">20</span>
 <span class="va">support.size</span> <span class="op">&lt;-</span> <span class="fl">3</span>
 <span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">17</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Support we have some prior information that the second and third variables belong to the same group, then we can set the <code>group_index</code> as:</p>
+<p>Supposing we have some prior information that the second and third variables belong to the same group, then we can set the <code>group_index</code> as:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">group_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">19</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Then, pass this <code>group_index</code> to the <code><a href="../reference/abess.html">abess()</a></code> function:</p>
@@ -327,8 +295,7 @@
 <div class="section level3">
 <h3 id="integrate-sis-in-abess-package">Integrate SIS in <code>abess</code> package<a class="anchor" aria-label="anchor" href="#integrate-sis-in-abess-package"></a>
 </h3>
-<p>Ultra-high dimensional predictors increase computational cost but reduce estimation accuracy for any statistical procedure. To reduce dimensionality from high to a relatively acceptable level, a fairly general asymptotic framework, named feature screening (sure independence screening) is proposed to tackle even exponentially growing dimension. The feature screening can theoretically maintain all effective predictors with a high probability, which is called ``the sure screening property’’.</p>
-<p>In the <code><a href="../reference/abess.html">abess()</a></code> function, to carrying out the Integrate SIS, user need to passed an integer smaller than the number of the predictors to the <code>screening.num</code>. Then the <code><a href="../reference/abess.html">abess()</a></code> function will first calculate the marginal likelihood of each predictor and reserve those predictors with the <code>screening.num</code> largest marginal likelihood. Then, the ABESS algorithm is conducted only on this screened subset. Here is an example.</p>
+<p>Ultra-high dimensional predictors increase computational cost but reduce estimation accuracy for any statistical procedure. To reduce dimensionality from high to a relatively acceptable level, a fairly general asymptotic framework, named feature screening (sure independence screening) is proposed to tackle even exponentially growing dimension. The feature screening can theoretically maintain all effective predictors with a high probability, which is called the sure screening property. In the <code><a href="../reference/abess.html">abess()</a></code> function, to carrying out the Integrate SIS, user need to passed an integer smaller than the number of the predictors to the <code>screening.num</code>. Then the <code><a href="../reference/abess.html">abess()</a></code> function will first calculate the marginal likelihood of each predictor and reserve those predictors with the <code>screening.num</code> largest marginal likelihood. Then, the ABESS algorithm is conducted only on this screened subset. Here is an example.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
 <span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>

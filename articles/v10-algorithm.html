@@ -124,9 +124,9 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>ABESS algorithm: details</h1>
-                        <h4 data-toc-skip class="author">Jin Zhu</h4>
+                        <h4 data-toc-skip class="author">Jin Zhu, Yanhang Zhang</h4>
             
-            <h4 data-toc-skip class="date">7/22/2021</h4>
+            <h4 data-toc-skip class="date">1/20/2022</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v10-algorithm.Rmd" class="external-link"><code>../vignettes/v10-algorithm.Rmd</code></a></small>
       <div class="hidden name"><code>v10-algorithm.Rmd</code></div>
@@ -138,17 +138,17 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The ABESS algorithm employing “splicing” technique can exactly solve general best subset problem in a polynomial time. The aim of this page to provide a complete and coherent documentation for ABESS algorithm such that users can easily understand the ABESS algorithm and its variants, thereby facilitating the usage of <code>abess</code> software.</p>
+<p>The ABESS algorithm employing “splicing” technique can exactly solve general best subset problem in a polynomial time. The aim of this page to provide a complete and coherent documentation for ABESS algorithm such that users can easily understand the ABESS algorithm and its variants, thereby facilitating the usage of <code>abess</code> software. We provide the details of splicing approach to linear model as follows, and its variants can be applied in similar ways.</p>
 </div>
 <div class="section level2">
-<h2 id="linear-regression">linear regression<a class="anchor" aria-label="anchor" href="#linear-regression"></a>
+<h2 id="linear-model">Linear model<a class="anchor" aria-label="anchor" href="#linear-model"></a>
 </h2>
 <div class="section level3">
 <h3 id="sacrifices">Sacrifices<a class="anchor" aria-label="anchor" href="#sacrifices"></a>
 </h3>
 <p>Consider the <span class="math inline">\(\ell_{0}\)</span> constraint minimization problem, <span class="math display">\[
-\min _{\boldsymbol{\beta}} \mathcal{L}_{n}(\beta), \quad \text { s.t }\|\boldsymbol{\beta}\|_{0} \leq \mathrm{s},
-\]</span> where <span class="math inline">\(\mathcal{L}_{n}(\boldsymbol \beta)=\frac{1}{2 n}\|y-X \beta\|_{2}^{2} .\)</span> Without loss of generality, we consider <span class="math inline">\(\|\boldsymbol{\beta}\|_{0}=\mathrm{s}\)</span>. Given any initial set <span class="math inline">\(\mathcal{A} \subset \mathcal{S}=\{1,2, \ldots, p\}\)</span> with cardinality <span class="math inline">\(|\mathcal{A}|=s\)</span>, denote <span class="math inline">\(\mathcal{I}=\mathcal{A}^{\mathrm{c}}\)</span> and compute <span class="math display">\[
+\min _{\boldsymbol{\beta}} \mathcal{L}_{n}(\boldsymbol{\beta}), \quad \text { s.t }\|\boldsymbol{\beta}\|_{0} \leq \mathrm{s},
+\]</span> where $<em>{n}()=|y-X |</em>{2}^{2}. $ Without loss of generality, we consider <span class="math inline">\(\|\boldsymbol{\beta}\|_{0}=\mathrm{s}\)</span>. Given any initial set <span class="math inline">\(\mathcal{A} \subset \mathcal{S}=\{1,2, \ldots, p\}\)</span> with cardinality <span class="math inline">\(|\mathcal{A}|=s\)</span>, denote <span class="math inline">\(\mathcal{I}=\mathcal{A}^{\mathrm{c}}\)</span> and compute <span class="math display">\[
 \hat{\boldsymbol{\beta}}=\arg \min _{\boldsymbol{\beta}_{\mathcal{I}}=0} \mathcal{L}_{n}(\boldsymbol{\beta}).
 \]</span> We call <span class="math inline">\(\mathcal{A}\)</span> and <span class="math inline">\(\mathcal{I}\)</span> as the active set and the inactive set, respectively.</p>
 <p>Given the active set <span class="math inline">\(\mathcal{A}\)</span> and <span class="math inline">\(\hat{\boldsymbol{\beta}}\)</span>, we can define the following two types of sacrifices:</p>
@@ -180,7 +180,7 @@
 <h5 id="algorithm-1-bess-fixs-best-subset-selection-with-a-given-support-size-s-">Algorithm 1: BESS.Fix(s): Best-Subset Selection with a given support size s.<a class="anchor" aria-label="anchor" href="#algorithm-1-bess-fixs-best-subset-selection-with-a-given-support-size-s-"></a>
 </h5>
 <ol style="list-style-type: decimal">
-<li>Input: <span class="math inline">\(X, y\)</span>, a positive integer <span class="math inline">\(k_{\max }\)</span>, and a threshold <span class="math inline">\(\tau_{s}\)</span>.</li>
+<li>Input: <span class="math inline">\(X, y\)</span>, positive integers <span class="math inline">\(k_{\max}, m_{\max}\)</span>, and a threshold <span class="math inline">\(\tau_{s}\)</span>.</li>
 <li>Initialize <span class="math inline">\(\mathcal{A}^{0}=\left\{j: \sum_{i=1}^{p} \mathrm{I}\left(\left|\frac{X_{j}^{\top} y}{\sqrt{X_{j}^{\top} X_{j}}}\right| \leq \left| \frac{X_{i}^{\top} y}{\sqrt{X_{i}^{\top} X_{i}}}\right| \leq \mathrm{s}\right\}, \mathcal{I}^{0}=\left(\mathcal{A}^{0}\right)^{c}\right.\)</span>, and <span class="math inline">\(\left(\boldsymbol\beta^{0}, d^{0}\right):\)</span>
 </li>
 </ol>
@@ -192,7 +192,7 @@
 \end{align*}\]</span></p>
 <ol start="3" style="list-style-type: decimal">
 <li>
-<p>For <span class="math inline">\(m=0,1, \ldots\)</span>, do</p>
+<p>For <span class="math inline">\(m=0,1, \ldots, m_{\max}\)</span>, do</p>
 <p><span class="math display">\[\left(\boldsymbol{\beta}^{m+1}, \boldsymbol{d}^{m+1}, \mathcal{A}^{m+1}, \mathcal{I}^{m+1}\right)= \text{Splicing} \left(\boldsymbol{\beta}^{m}, \boldsymbol{d}^{m}, \mathcal{A}^{m}, \mathcal{I}^{m}, k_{\max }, \tau_{s}\right).\]</span></p>
 <p>If <span class="math inline">\(\left(\mathcal{A}^{m+1}, \mathcal{I}^{m+1}\right)=\left(\mathcal{A}^{m}, \mathcal{I}^{m}\right)\)</span>, then stop</p>
 <p>End For</p>
@@ -222,7 +222,7 @@
 <li><p>If <span class="math inline">\(L_{0}-L&lt;\tau_{s}\)</span>, then <span class="math inline">\((\hat{\boldsymbol\beta}, \hat{d}, \hat{A}, \hat{I})=(\boldsymbol\beta, d, \mathcal{A}, \mathcal{I}).\)</span></p></li>
 <li><p>Output <span class="math inline">\((\hat{\boldsymbol{\beta}}, \hat{\boldsymbol{d}}, \hat{\mathcal{A}}, \hat{\mathcal{I}})\)</span>.</p></li>
 </ol>
-<!-- In practice, the support size is usually unknown. We use a data-driven procedure to determine s. Information criteria such as highdimensional BIC (HBIC) (13) and extended BIC (EBIC) (14) are commonly used for this purpose. Specifically, HBIC (13) can be applied to select the tuning parameter in penalized likelihood estimation. To recover the support size $s$ for the best-subset selection, we introduce a criterion that is a special case of HBIC (13). While HBIC aims to tune the parameter for a nonconvex penalized regression, our proposal is used to determine the size of best subset. For any active set $\mathcal{A}$, define an $\mathrm{SIC}$ as follows: --><!-- $$ --><!-- \operatorname{SIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| \log (p) \log \log n, --><!-- $$ --><!-- where $\mathcal{L}_{\mathcal{A}}=\min _{\beta_{\mathcal{I}}=0} \mathcal{L}_{n}(\beta), \mathcal{I}=(\mathcal{A})^{c}$. To identify the true model, the --><!-- model complexity penalty is $\log p$ and the slow diverging rate $\log \log n$ is set to prevent underfitting. Theorem 4 states that the following ABESS algorithm selects the true support size via SIC. --><!-- Let $s_{\max }$ be the maximum support size. Theorem 4 suggests $s_{\max }=o\left(\frac{n}{\log p}\right)$ as the maximum possible recovery size. Typically, we set $s_{\max }=\left[\frac{n}{\log p \log \log n}\right]$ --><!-- where $[x]$ denotes the integer part of $x$. -->
+<!-- In practice, the support size is usually unknown. We use a data-driven procedure to determine s. Information criteria such as highdimensional BIC (HBIC) (13) and extended BIC (EBIC) (14) are commonly used for this purpose. Specifically, HBIC (13) can be applied to select the tuning parameter in penalized likelihood estimation. To recover the support size $s$ for the best-subset selection, we introduce a criterion that is a special case of HBIC (13). While HBIC aims to tune the parameter for a nonconvex penalized regression, our proposal is used to determine the size of best subset. For any active set $\mathcal{A}$, define an $\mathrm{SIC}$ as follows: --><!-- $$ --><!-- \operatorname{SIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| \log (p) \log \log n, --><!-- $$ --><!-- where $\mathcal{L}_{\mathcal{A}}=\min _{\beta_{\mathcal{I}}=0} \mathcal{L}_{n}(\beta), \mathcal{I}=(\mathcal{A})^{c}$. To identify the true model, the --><!-- model complexity penalty is $\log p$ and the slow diverging rate $\log \log n$ is set to prevent underfitting. Theorem 4 states that the following ABESS algorithm selects the true support size via SIC. --><!-- Let $s_{\max }$ be the maximum support size. Theorem 4 suggests $s_{\max }=o\left(\frac{n}{\log p}\right)$ as the maximum possible recovery size. Typically, we set $s_{\max }=\left[\frac{n}{\log (p) \log \log n}\right]$ --><!-- where $[x]$ denotes the integer part of $x$. -->
 </div>
 </div>
 <div class="section level4">
@@ -231,7 +231,7 @@
 <p>In practice, the support size is usually unknown. We use a data-driven procedure to determine s. For any active set <span class="math inline">\(\mathcal{A}\)</span>, define an <span class="math inline">\(\mathrm{SIC}\)</span> as follows: <span class="math display">\[
 \operatorname{SIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| \log (p) \log \log n,
 \]</span> where <span class="math inline">\(\mathcal{L}_{\mathcal{A}}=\min _{\beta_{\mathcal{I}}=0} \mathcal{L}_{n}(\beta), \mathcal{I}=(\mathcal{A})^{c}\)</span>. To identify the true model, the model complexity penalty is <span class="math inline">\(\log p\)</span> and the slow diverging rate <span class="math inline">\(\log \log n\)</span> is set to prevent underfitting. Theorem 4 states that the following ABESS algorithm selects the true support size via SIC.</p>
-<p>Let <span class="math inline">\(s_{\max }\)</span> be the maximum support size. We suggest <span class="math inline">\(s_{\max }=o\left(\frac{n}{\log p}\right)\)</span> as the maximum possible recovery size. Typically, we set <span class="math inline">\(s_{\max }=\left[\frac{n}{\log p \log \log n}\right]\)</span> where <span class="math inline">\([x]\)</span> denotes the integer part of <span class="math inline">\(x\)</span>.</p>
+<p>Let <span class="math inline">\(s_{\max }\)</span> be the maximum support size. We suggest <span class="math inline">\(s_{\max }=o\left(\frac{n}{\log p}\right)\)</span> as the maximum possible recovery size. Typically, we set <span class="math inline">\(s_{\max }=\left[\frac{n}{\log (p) \log \log n}\right]\)</span> where <span class="math inline">\([x]\)</span> denotes the integer part of <span class="math inline">\(x\)</span>.</p>
 <div class="section level5">
 <h5 id="algorithm-3-abess-">Algorithm 3: ABESS.<a class="anchor" aria-label="anchor" href="#algorithm-3-abess-"></a>
 </h5>
@@ -248,170 +248,64 @@
 </li>
 <li><p>Output <span class="math inline">\(\left(\hat{\boldsymbol{\beta}}_{s_{\operatorname{min}}}, \hat{\boldsymbol{d}}_{s_{\min }}, \hat{A}_{s_{\min }}, \hat{\mathcal{I}}_{s_{\min }}\right) .\)</span></p></li>
 </ol>
+<!-- # Group linear model --><!-- Group linear model is a linear model which the $p$ predictors are separated into $J$ pre-determined non-overlapping groups, --><!-- $$ --><!-- y = \sum_{j=1}^J X_{G_i} \boldsymbol{\beta_{G_j}}+\epsilon. --><!-- $$ --><!-- Consider the quadratic minimization problem with $\ell_{0,2}$ constraint, --><!-- $$ --><!-- \min _{\boldsymbol{{\boldsymbol\beta}}} \mathcal{L_n}({\boldsymbol\beta}), \quad \text { s.t }\|{{\boldsymbol\beta}}\|_{0,2} \leq \mathrm{s}, --><!-- $$ --><!-- where the $\ell_{0,2}$ (-pseudo) norm is defined as $\|{{\boldsymbol\beta}}\|_{0,2} = \sum_{j=1}^J \mathrm{I} (\|\boldsymbol{\beta_{G_j}}\|_2 \neq 0)$. --><!-- # Nuisance selection --><!-- # Principal component analysis -->
 </div>
 </div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="group-linear-model">Group linear model<a class="anchor" aria-label="anchor" href="#group-linear-model"></a>
+<h2 id="the-corresponding-notations-in-abess-function">The corresponding notations in <code>abess()</code> function<a class="anchor" aria-label="anchor" href="#the-corresponding-notations-in-abess-function"></a>
 </h2>
-<div class="section level3">
-<h3 id="sacrifices-1">Sacrifices<a class="anchor" aria-label="anchor" href="#sacrifices-1"></a>
-</h3>
-<p>Consider the <span class="math inline">\(\ell_{0,2}\)</span> constraint minimization problem with <span class="math inline">\(n\)</span> samples and <span class="math inline">\(J\)</span> non-overlapping groups, <span class="math display">\[
-\min _{\boldsymbol{{\boldsymbol\beta}}} \mathcal{L}({\boldsymbol\beta}), \quad \text { s.t }\|{{\boldsymbol\beta}}\|_{0,2} \leq \mathrm{T}.
-\]</span> where <span class="math inline">\(\mathcal{L}({\boldsymbol\beta})\)</span> is the negative log-likelihood function and support size <span class="math inline">\(\mathrm{T}\)</span> is a positive number. Without loss of generality, we consider <span class="math inline">\(\|\boldsymbol{{\boldsymbol\beta}}\|_{0,2}=\mathrm{T}\)</span>. Given any group subset <span class="math inline">\(\mathcal{A} \subset \mathcal{S}=\{1,2, \ldots, J\}\)</span> with cardinality <span class="math inline">\(|\mathcal{A}|=\mathrm{T}\)</span>, denote <span class="math inline">\(\mathcal{I}=\mathcal{A}^{\mathrm{c}}\)</span> and compute <span class="math display">\[
-\hat{{{\boldsymbol\beta}}}=\arg \min _{{{\boldsymbol\beta}}_{\mathcal{I}}=0} \mathcal{L}({{\boldsymbol\beta}}).
-\]</span> We call <span class="math inline">\(\mathcal{A}\)</span> and <span class="math inline">\(\mathcal{I}\)</span> as the selected group subset and the unselected group subset, respectively. Denote $g_{G_j} = [{} ({})]<em>{G_j} $ as the <span class="math inline">\(j\)</span>th group gradient of <span class="math inline">\(({\boldsymbol\beta})\)</span> and $h</em>{G_j} = [{}^2 ({})]_{G_j} $ as the <span class="math inline">\(j\)</span>th group diagonal sub-matrix of hessian matrix of <span class="math inline">\(\mathcal{L}({\boldsymbol\beta})\)</span>. Let dual variable <span class="math inline">\(d_{G_j} = -g_{G_j}\)</span> and <span class="math inline">\(\Psi_{G_j} = (h_{G_j})^{\frac{1}{2}}\)</span>.</p>
-<p>Given the selected group subset <span class="math inline">\(\mathcal{A}\)</span> and <span class="math inline">\(\hat{\boldsymbol{{\boldsymbol\beta}}}\)</span>, we can define the following two types of sacrifices:</p>
-<ol style="list-style-type: decimal">
-<li>Backward sacrifice: For any <span class="math inline">\(j \in \mathcal{A}\)</span>, the magnitude of discarding group <span class="math inline">\(j\)</span> is, <span class="math display">\[
-\xi_j = \mathcal{L}({\boldsymbol\beta}^{\mathcal{A}^k\backslash j})-\mathcal{L}({\boldsymbol\beta}^k)=\frac{1}{2}({\boldsymbol\beta}^k_{G_j})^k h^k_{G_j}{\boldsymbol\beta}^k_{G_j} = \frac{1}{2}\|\bar{{\boldsymbol\beta}}_{G_j}^k\|_2^2,
-\]</span> where <span class="math inline">\({\boldsymbol\beta}^{\mathcal{A}^k\backslash j}\)</span> is the estimator assigning the <span class="math inline">\(j\)</span>th group of <span class="math inline">\({\boldsymbol\beta}^k\)</span> to be zero and <span class="math inline">\(\bar {\boldsymbol\beta}_{G_j}^k=\Psi^k_{G_j} {\boldsymbol\beta}_{G_j}^k\)</span>.</li>
-<li>Forward sacrifice: For any <span class="math inline">\(j \in \mathcal{I}\)</span>, the magnitude of adding variable <span class="math inline">\(j\)</span> is, <span class="math display">\[
-\zeta_{j}=\mathcal{L}({\boldsymbol\beta}^k)-\mathcal{L}({\boldsymbol\beta}^k+t_j^k)=\frac{1}{2}(d_{G_j}^k)^\top (h^k_{G_j})^{-1} d^k_{G_j}= \frac{1}{2}\|\bar{d}^k_{G_j}\|_2^2,
-\]</span> where <span class="math inline">\(t^k_j = \arg\min\limits_{t_{G_j} \neq 0}L({\boldsymbol\beta}^k+t)\)</span> and <span class="math inline">\(\bar d_{G_j}^k = (\Psi^k_{G_j})^{-1} d^k_{G_j}\)</span>.</li>
-</ol>
-<p>Intuitively, for <span class="math inline">\(j \in \mathcal{A}\)</span> (or <span class="math inline">\(j \in \mathcal{I}\)</span> ), a large <span class="math inline">\(\xi_{j}\)</span> (or <span class="math inline">\(\zeta_{j}\)</span>) implies the <span class="math inline">\(j\)</span> th group is potentially important.</p>
-<p>We show four useful examples in the following.</p>
-<div class="section level5">
-<h5 id="case-1-group-linear-model-">Case 1 : Group linear model.<a class="anchor" aria-label="anchor" href="#case-1-group-linear-model-"></a>
-</h5>
-<p>In group linear model, the loss function is <span class="math display">\[\begin{equation*}
-\mathcal{L}({\boldsymbol\beta}) = \frac{1}{2}\|y-X{\boldsymbol\beta}\|_2^2.
-\end{equation*}\]</span> We have <span class="math display">\[\begin{equation*}
-d_{G_j} = X_{G_j}^\top(y-X{\boldsymbol\beta})/n,\ \Psi_{G_j} = (X_{G_j}^\top X_{G_j}/n)^{\frac{1}{2}}, \ j=1,\ldots,J.
-\end{equation*}\]</span></p>
-<p>Under the assumption of orthonormalization, that is <span class="math inline">\(X_{G_j}^\top X_{G_j}/n = I_{p_j}, j=1,\ldots, J\)</span>. we have <span class="math inline">\(\Psi_{G_j}=I_{p_j}\)</span>. Thus for linear regression model, we do not need to update <span class="math inline">\(\Psi\)</span> during iteration procedures.</p>
-</div>
-<div class="section level5">
-<h5 id="case-2-group-logistic-model-">Case 2 : Group logistic model.<a class="anchor" aria-label="anchor" href="#case-2-group-logistic-model-"></a>
-</h5>
-<p>Given the data <span class="math inline">\(\{(X_i, y_i)\}_{i=1}^{n}\)</span> with <span class="math inline">\(y_i \in \{0, 1\}, X_i \in \mathbb{R}^p\)</span>, and denote <span class="math inline">\(X_i = (X_{i, G_1}^\top,\ldots, X_{i, G_J}^\top)^\top\)</span>. Consider the logistic model <span class="math inline">\(\log\{\pi/(1-\pi)\} = {\boldsymbol\beta}_0 + x^\top{\boldsymbol\beta}\)</span> with <span class="math inline">\(x \in \mathbb{R}^p\)</span> and <span class="math inline">\(\pi = P(y=1|x)\)</span>.</p>
-<p>Thus the negative log-likelihood function is <span class="math display">\[\begin{equation*}
-  \mathcal{L}({\boldsymbol\beta}_0, {\boldsymbol\beta}) =  \sum_{i=1}^n  \{\log(1+\exp({\boldsymbol\beta}_0+X_i^\top {\boldsymbol\beta}))-y_i ({\boldsymbol\beta}_0+X_i^\top {\boldsymbol\beta})\}.
-\end{equation*}\]</span></p>
-<p>We have</p>
-<p><span class="math display">\[\begin{equation*}
-d_{G_j} = X_{G_j}^\top(y-\pi),\ \Psi_{G_j} = (X_{G_j}^\top W X_{G_j})^{\frac{1}{2}}, \ j=1,\ldots,J,
-\end{equation*}\]</span> where <span class="math inline">\(\pi = (\pi_1,\ldots,\pi_n)\)</span> with <span class="math inline">\(\pi_i = \exp(X_i^\top {\boldsymbol\beta})/(1+\exp(X_i^\top {\boldsymbol\beta}))\)</span>, and <span class="math inline">\(W\)</span> is a diagonal matrix with <span class="math inline">\(i\)</span>th diagonal entry equal to <span class="math inline">\(\pi_i(1-\pi_i)\)</span>.</p>
-</div>
-<div class="section level5">
-<h5 id="case-3-group-poisson-model-">Case 3 : Group poisson model.<a class="anchor" aria-label="anchor" href="#case-3-group-poisson-model-"></a>
-</h5>
-<p>Given the data <span class="math inline">\(\{(X_i, y_i)\}_{i=1}^{n}\)</span> with <span class="math inline">\(y_i \in \mathbb{N}, X_i \in \mathbb{R}^p\)</span>, and denote <span class="math inline">\(X_i = (X_{i, G_1}^\top,\ldots, X_{i, G_J}^\top)^\top\)</span>. Consider the poisson model <span class="math inline">\(\log(\mathbb{E}(y|x)) = {\boldsymbol\beta}_0 + x^\top {\boldsymbol\beta}\)</span> with <span class="math inline">\(x \in \mathbb{R}^p\)</span>.</p>
-<p>Thus the negative log-likelihood function is <span class="math display">\[\begin{equation*}
-  \mathcal{L}({\boldsymbol\beta}_0, {\boldsymbol\beta}) =  \sum_{i=1}^n  \{\exp({\boldsymbol\beta}_0+X_i^\top {\boldsymbol\beta})+\log(y_i !)-y_i ({\boldsymbol\beta}_0+X_i^\top {\boldsymbol\beta})\}.
-\end{equation*}\]</span></p>
-<p>We have</p>
-<p><span class="math display">\[\begin{equation*}
-d_{G_j} = X_{G_j}^\top(y-\eta),\ \Psi_{G_j} = (X_{G_j}^\top W X_{G_j})^{\frac{1}{2}}, \ j=1,\ldots,J,
-\end{equation*}\]</span> where <span class="math inline">\(\eta = (\eta_1,\ldots,\eta_n)\)</span> with <span class="math inline">\(\eta_i = \exp({\boldsymbol\beta}_0+X_i^\top{\boldsymbol\beta})\)</span>, and <span class="math inline">\(W\)</span> is a diagonal matrix with <span class="math inline">\(i\)</span>th diagonal entry equal to <span class="math inline">\(\eta_i\)</span>.\</p>
-</div>
-<div class="section level5">
-<h5 id="case-4-group-cox-proportional-hazard-model-">Case 4 : Group Cox proportional hazard model.<a class="anchor" aria-label="anchor" href="#case-4-group-cox-proportional-hazard-model-"></a>
-</h5>
-<p>Given the survival data <span class="math inline">\(\{(T_i, \delta_i, x_i)\}_{i=1}^n\)</span> with observation of survival time <span class="math inline">\(T_i\)</span> an censoring indicator <span class="math inline">\(\delta_i\)</span>. Consider the Cox proportional hazard model <span class="math inline">\(\lambda(x|t) = \lambda_0(t) \exp(x^\top {\boldsymbol\beta})\)</span> with a baseline hazard <span class="math inline">\(\lambda_0(t)\)</span> and <span class="math inline">\(x \in \mathbb{R}^p\)</span>. By the method of partial likelihood, we can write the negative log-likelihood function as <span class="math display">\[\begin{equation*}
-  \mathcal{L}({\boldsymbol\beta}) =  \log\{\sum_{i':T_{i'} \geqslant T_i} \exp(X_i^\top{\boldsymbol\beta})\}-\sum_{i:\delta_i = 1} X_i^\top {\boldsymbol\beta}.
-\end{equation*}\]</span></p>
-<p>We have</p>
-<p><span class="math display">\[\begin{align*}
-  &amp;d_{G_j} = \sum_{i:\delta_i=1} (X_{i, G_j} - \sum_{i':T_{i'} &gt; T_i} X_{i', G_j} \omega_{i, i'}),\\
-  &amp;\Psi_{G_j}=\{\sum_{i:\delta_i=1} (\{\sum_{i':T_{i'} &gt; T_i} \omega_{i, i'} X_{i',G_j}\}\{\sum_{i':T_{i'} &gt; T_i} \omega_{i, i'} X_{i',G_j}\}^\top-\sum_{i':T_{i'} &gt; T_i} \omega_{i, i'} X_{i',G_j} X_{i', G_j}^\top)\}^{\frac{1}{2}},
-\end{align*}\]</span> where <span class="math inline">\(\omega_{i, i'} = \exp(X_{i'}^\top{\boldsymbol\beta})/\sum_{i':T_{i'} &gt; T_i} \exp(X_{i'}^\top {\boldsymbol\beta})\)</span>.</p>
-</div>
-</div>
-<div class="section level3">
-<h3 id="algorithm-1">Algorithm<a class="anchor" aria-label="anchor" href="#algorithm-1"></a>
-</h3>
-<div class="section level4">
-<h4 id="best-group-subset-selection-with-a-determined-support-size">Best Group Subset Selection with a determined support size<a class="anchor" aria-label="anchor" href="#best-group-subset-selection-with-a-determined-support-size"></a>
-</h4>
-<p>Motivated by the definition of sacrifices, we can extract the “irrelevant” groups in <span class="math inline">\(\mathcal{A}\)</span> and the “important” groups in <span class="math inline">\(\mathcal{I}\)</span>, respectively, and then exchange them to get a high-quality solution.</p>
-<p>Given any exchange subset size <span class="math inline">\(C \leq C_{max}\)</span>, define the exchanged group subset as</p>
-<p><span class="math display">\[
-\mathcal{S}_{C,1}=\left\{j \in \mathcal{A}: \sum_{i \in \mathcal{A}} \mathrm{I}\left(\frac{1}{p_j}\xi_{j} \geq \frac{1}{p_i}\xi_{i}\right) \leq C\right\}
-\]</span> and <span class="math display">\[
-\mathcal{S}_{C,2}=\left\{j \in \mathcal{I}: \sum_{i \in \mathcal{I}} I\left(\frac{1}{p_j}\zeta_{j} \leq \frac{1}{p_i}\zeta_{i}\right) \leq C\right\},
-\]</span> where <span class="math inline">\(p_j\)</span> is the number of variables in <span class="math inline">\(j\)</span>th group.</p>
-<p>From the definition of sacrifices, <span class="math inline">\(\mathcal{S}_{C,1}\ (\mathcal{S}_{C,2})\)</span> can be interpreted as the groups in <span class="math inline">\(\mathcal{A}\ (\mathcal{I})\)</span> with <span class="math inline">\(C\)</span> smallest (largest) contributions to the loss function. Then, we splice <span class="math inline">\(\mathcal{A}\)</span> and <span class="math inline">\(\mathcal{I}\)</span> by exchanging <span class="math inline">\(\mathcal{S}_{C,1}\)</span> and <span class="math inline">\(\mathcal{S}_{C,2}\)</span> and obtain a novel selected group subset <span class="math display">\[
-\tilde{\mathcal{A}}=\left(\mathcal{A} \backslash \mathcal{S}_{C,1}\right) \cup \mathcal{S}_{C,2}.
-\]</span> Let <span class="math inline">\(\tilde{\mathcal{I}}=\tilde{\mathcal{A}}^{c}, \tilde{\boldsymbol{{\boldsymbol\beta}}}=\arg \min _{\boldsymbol{{\boldsymbol\beta}}_{\overline{\mathcal{I}}}=0} \mathcal{L}(\boldsymbol{{\boldsymbol\beta}})\)</span>, and <span class="math inline">\(\pi_{T}&gt;0\)</span> be a threshold to eliminate unnecessary iterations. <!-- If $\tau_{s}<$ --> <!-- $\mathcal{L}_{n}(\hat{{\boldsymbol\beta}})-\mathcal{L}_{n}(\tilde{{\boldsymbol\beta}})$, then $\tilde{A}$ is preferable to $\mathcal{A} .$ The active set can be updated --> <!-- iteratively until the loss function cannot be improved by splicing. Once the algorithm recovers the true active set, we may splice some irrelevant variables, and then the loss function may decrease slightly. The threshold $\tau_{s}$ can reduce this unnecessary calculation. Typically, $\tau_{s}$ is relatively small, e.g. $\tau_{s}=0.01 s \log (p) \log (\log n) / n$ --></p>
-<p>We summarize the group-splicing algorithm as follows:</p>
-<div class="section level5">
-<h5 id="algorithm-1-group-splicing-">Algorithm 1: Group-Splicing.<a class="anchor" aria-label="anchor" href="#algorithm-1-group-splicing-"></a>
-</h5>
-<ol style="list-style-type: decimal">
-<li><p>Input: <span class="math inline">\(X,\ y,\ \{G_j\}_{j=1}^J,\ T, \ \mathcal{A}^0,\ \pi_T, \ C_{\max}\)</span>.</p></li>
-<li><p>Initialize <span class="math inline">\(\mathcal{A}^{0}=\left\{j: \sum_{i=1}^{J} \mathrm{I}\left( g_{G_j} \leq g_{G_i}\right) \leq \mathrm{T}\right\}\)</span> with <span class="math inline">\({\boldsymbol\beta} = \boldsymbol{0}\)</span>, <span class="math inline">\(\mathcal{I}^{0}=\left(\mathcal{A}^{0}\right)^{c}\)</span>, and <span class="math inline">\(\left({\boldsymbol\beta}^{0}, d^{0}\right):\)</span> <span class="math display">\[\begin{align*}
- &amp;{{\boldsymbol\beta}}_{\mathcal{A}^{0}}^{0}=[\arg \min _{{{\boldsymbol\beta}}_{\mathcal{I}^{0}}=0} \mathcal{L}({{\boldsymbol\beta}})]_{\mathcal{A}^{0}},\ {{\boldsymbol\beta}}_{\mathcal{I}^{0}}^{0}=0,\\
- &amp;d_{\mathcal{I}^{0}}^{0}=[\nabla \mathcal{L}({\boldsymbol\beta}^0)]_{\mathcal{I}^0},\ d_{\mathcal{A}^{0}}^{0}=0.\\
- \end{align*}\]</span></p></li>
-<li>
-<p>For <span class="math inline">\(k=0,1, \ldots\)</span>, do</p>
-<p>Compute <span class="math inline">\(L=\mathcal{L}({\boldsymbol\beta}^k)\)</span> and update <span class="math inline">\(\mathcal{S}_1^k, \mathcal{S}_2^k\)</span> <span class="math display">\[\begin{align*}
-  &amp;\mathcal{S}_1^k = \{j \in \mathcal{A}^k: \sum\limits_{i\in \mathcal{A}^k} I(\frac{1}{p_j}\|{\bar {\boldsymbol\beta}_{G_j}^k}\|_2^2 \geq \frac{1}{p_i}\|{\bar {\boldsymbol\beta}_{G_i}^k}\|_2^2) \leq C_{\max}\},\\
-  &amp;\mathcal{S}_2^k = \{j \in \mathcal{I}^k: \sum\limits_{i\in \mathcal{I}^k} I(\frac{1}{p_j}\|{\bar d_{G_j}^k}\|_2^2 \leq \frac{1}{p_i}\|{\bar d_{G_i}^k}\|_2^2) \leq C_{\max}\}.
-\end{align*}\]</span></p>
-</li>
-<li>
-<p>For <span class="math inline">\(C=C_{\max}, \ldots, 1\)</span>, do</p>
-<p>Let <span class="math inline">\(\tilde{\mathcal{A}}^k_C=(\mathcal{A}^k\backslash \mathcal{S}_1^k)\cup \mathcal{S}_2^k\ \text{and}\ \tilde{\mathcal{I}}^k_C = (\mathcal{I}^k\backslash \mathcal{S}_2^k)\cup \mathcal{S}_1^k\)</span>.</p>
-<p>Update primal variable <span class="math inline">\(\tilde{{\boldsymbol\beta}}\)</span> and dual variable <span class="math inline">\(\tilde{d}\)</span> <span class="math display">\[\begin{align*}
-  \tilde{\boldsymbol\beta}=\arg \min _{{{\boldsymbol\beta}}_{\tilde{\mathcal{I}}^k_C}=0} \mathcal{L}({{\boldsymbol\beta}}),\ \tilde d = \nabla \mathcal{L}(\tilde{\boldsymbol\beta}).
-\end{align*}\]</span></p>
-<p>Compute <span class="math inline">\(\tilde L = \mathcal{L}(\tilde {\boldsymbol\beta})\)</span>.</p>
-<p>If <span class="math inline">\(L-\tilde L &lt; \pi_T\)</span>, Denote <span class="math inline">\((\tilde{\mathcal{A}}^k_C, \tilde{\mathcal{I}}^k_C, \tilde {\boldsymbol\beta} , \tilde d )\)</span> as <span class="math inline">\((\mathcal{A}^{k+1}, \mathcal{I}^{k+1}, {\boldsymbol\beta}^{k+1}, d^{k+1})\)</span> and break.</p>
-<p>Else, Update <span class="math inline">\(\mathcal{S}_1^k \text{and} \mathcal{S}_2^k\)</span> <span class="math display">\[\begin{align*}
-  &amp;\mathcal{S}_1^k = \mathcal{S}_1^k\backslash \arg\max\limits_{i \in \mathcal{S}_1^k} \{\frac{1}{p_i}\|{\bar {\boldsymbol\beta}_{G_i}^k}\|_2^2\},\\
-  &amp;\mathcal{S}_2^k = \mathcal{S}_2^k\backslash \arg\min\limits_{i \in \mathcal{S}_2^k} \{\frac{1}{p_i}\|{\bar d_{G_i}^k}\|_2^2\}.
-\end{align*}\]</span></p>
-<p>End For</p>
-<p>If <span class="math inline">\(\left(\mathcal{A}^{k+1}, \mathcal{I}^{k+1}\right)=\left(\mathcal{A}^{k}, \mathcal{I}^{k}\right)\)</span>, then stop.</p>
-<p>End for</p>
-</li>
-<li><p>Output <span class="math inline">\((\hat{\boldsymbol{{\boldsymbol\beta}}}, \hat{\boldsymbol{d}}, \hat{\mathcal{A}}, \hat{\mathcal{I}})=\left(\boldsymbol{{\boldsymbol\beta}}^{m+1}, \boldsymbol{d}^{m+1} \mathcal{A}^{m+1}, \mathcal{I}^{m+1}\right).\)</span></p></li>
-</ol>
-</div>
-</div>
-<div class="section level4">
-<h4 id="determining-the-best-support-size-with-information-criterion">Determining the best support size with information criterion<a class="anchor" aria-label="anchor" href="#determining-the-best-support-size-with-information-criterion"></a>
-</h4>
-<p>Practically, the optimal support size is usually unknown. Thus, we use a data-driven procedure to determine <span class="math inline">\(\mathrm{T}\)</span>. Due to the computational burden of cross validation, we prefer information criterion to conduct the selection procedure. For any selected group subset <span class="math inline">\(\mathcal{A}\)</span>, define an group information criterion(GIC) as follows: <span class="math display">\[
-\operatorname{GIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| \log J \log \log n,
-\]</span> where <span class="math inline">\(\mathcal{L}_{\mathcal{A}}=\min _{{\boldsymbol\beta}_{\mathcal{I}}=0} \mathcal{L}_{n}({\boldsymbol\beta}), \mathcal{I}=(\mathcal{A})^{c}\)</span>. To identify the true model, the model complexity penalty is <span class="math inline">\(\log J\)</span> and the slow diverging rate <span class="math inline">\(\log \log n\)</span> is set to prevent underfitting. Besides, we define the Bayesian group information criterion (BGIC) as follows: <span class="math display">\[
-\operatorname{BGIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| (\gamma \log J +\log n),
-\]</span> where <span class="math inline">\(\gamma\)</span> is a pre-determined positive constant, controlling the diverging rate of group numbers <span class="math inline">\(J\)</span>.</p>
-<p>A natural idea to determine the optimal support size is regarding <span class="math inline">\(\mathrm{T}\)</span> as a tuning parameter, and running GSplicing algorithm over a sequence about <span class="math inline">\(\mathrm{T}\)</span>. Next, combined with aforementioned information criterion, we can obtain an optimal support size. Let <span class="math inline">\(T_{\max }\)</span> be the maximum support size. We suggest <span class="math inline">\(T_{\max }=o\left(\frac{n}{p_{\max}\log J}\right)\)</span> where <span class="math inline">\(p_{\max} = \max_{j\in \mathcal{S}} p_j\)</span>.</p>
-<p>We summarize the sequential group-splicing algorithm with GIC as follows:</p>
-<div class="section level5">
-<h5 id="algorithm-2-sequential-group-splicing-sgsplicing-">Algorithm 2: Sequential Group-Splicing (SGSplicing).<a class="anchor" aria-label="anchor" href="#algorithm-2-sequential-group-splicing-sgsplicing-"></a>
-</h5>
-<ol style="list-style-type: decimal">
-<li><p>Input: <span class="math inline">\(X,\ y,\ \{G_j\}_{j=1}^J,\ T_{\max}, \ \pi_T, \ C_{\max}.\)</span></p></li>
-<li>
-<p>For <span class="math inline">\(T=1,2, \ldots, T_{\max }\)</span>, do</p>
-<p><span class="math display">\[\left(\hat{\boldsymbol{{\boldsymbol\beta}}}_{T}, \hat{\boldsymbol{d}}_{T}, \hat{\mathcal{A}}_{T}, \hat{\mathcal{I}}_{T}\right)=\text{GSplicing}(X, y, \{G_j\}_{j=1}^J, T,  \mathcal{A}^0_T, \pi_T, C_{\max}).\]</span></p>
-<p>End for</p>
-</li>
-<li>
-<p>Compute the minimum of GIC:</p>
-<p><span class="math display">\[T_{\min }=\arg \min _{T} \operatorname{GIC}\left(\hat{\mathcal{A}}_{T}\right).\]</span></p>
-</li>
-<li><p>Output <span class="math inline">\(\left(\hat{\boldsymbol{{\boldsymbol\beta}}}_{T_{\operatorname{min}}}, \hat{\boldsymbol{d}}_{T_{\min }}, \hat{A}_{T_{\min }}, \hat{\mathcal{I}}_{T_{\min }}\right) .\)</span></p></li>
-</ol>
-</div>
-</div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="nuisance-selection">Nuisance selection<a class="anchor" aria-label="anchor" href="#nuisance-selection"></a>
-</h2>
-</div>
-<div class="section level2">
-<h2 id="principal-component-analysis">Principal component analysis<a class="anchor" aria-label="anchor" href="#principal-component-analysis"></a>
-</h2>
-<p>(By Junhao Huang)</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Notations in algorithm</th>
+<th align="left">Parameters in <span class="math inline">\(\mathtt{abess}\)</span>
+</th>
+<th align="left">Definitions</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(m_{\max}\)</span></td>
+<td align="left">max.splicing.iter</td>
+<td align="left">The maximum number of splicing algorithm</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(k_{\max}\)</span></td>
+<td align="left">c.max</td>
+<td align="left">The maximum splicing size</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(1,\ldots,s_{\max}\)</span></td>
+<td align="left">support.size</td>
+<td align="left">A sequence representing the support sizes</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(\operatorname{SIC}\)</span></td>
+<td align="left">tune.type</td>
+<td align="left">The type of criterion for choosing the support size</td>
+</tr>
+<tr class="odd">
+<td align="left"><span class="math inline">\(\{G_1, \ldots, G_J\}\)</span></td>
+<td align="left">group.index</td>
+<td align="left">A vector indicator the group that each variable belongs to</td>
+</tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(\lambda\)</span></td>
+<td align="left">lambda</td>
+<td align="left">A value for regularized best subset selection</td>
+</tr>
+<tr class="odd">
+<td align="left">Golden-section searching</td>
+<td align="left">gs.range</td>
+<td align="left">Upper and lower bounds of the search range</td>
+</tr>
+</tbody>
+</table>
 </div>
   </div>
 
