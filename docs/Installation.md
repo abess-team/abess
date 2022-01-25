@@ -24,7 +24,7 @@ install.packages("abess")
 This page gives instructions on how to build and install abess from the source code. 
 If the instructions do not help for you, please feel free to ask questions by opening an [issue](https://github.com/abess-team/abess/issues).
 
-First of all, clone our the latest [github project](https://github.com/abess-team/abess) to your device:
+First of all, use [git](https://git-scm.com/downloads) to clone our the latest [github project](https://github.com/abess-team/abess) to your device:
 
 ```bash
 $ git clone https://github.com/abess-team/abess.git
@@ -35,10 +35,10 @@ Next, there have different processing depend on the programming langulage you pr
 
 ### Python 
 
-Before installing abess itself, some dependencies should be installed first: `swig`, `bash`, `mingw`, which may be a little different in different platforms:
+Before installing abess itself, some dependencies should be installed first, which may be a little different in different platforms:
 
-- **Linux**: `$ sudo apt install swig bash mingw-w64` (for Ubuntu, but other Linux systems are similar);
-- **Windows**: `$ choco install swig mingw git ` (using [Chocolatey](https://community.chocolatey.org/packages)), or manually install the software and add them into PATH;
+- **Linux**: `$ sudo apt install swig` (for Ubuntu, but other Linux systems are similar);
+- **Windows**: `$ choco install swig mingw` (using [Chocolatey](https://community.chocolatey.org/packages)), or manually install the software and add them into PATH;
 - **MacOS**: `$ brew install swig mingw-w64 bash` (using [Homebrew](https://brew.sh/)).
 
 After that, you can manually install abess by conducting command:
@@ -49,6 +49,8 @@ $ python setup.py install --user
 ```
 
 If it finishes with `Finished processing dependencies for abess`, the installation is successful.
+
+*If you meet any errors here, please check [FAQ](https://abess.readthedocs.io/en/latest/FAQ.html#installation-failed).*
 
 ### R
 To install the development version, run the following code in R console:
