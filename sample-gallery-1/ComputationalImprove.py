@@ -1,6 +1,6 @@
 """
 Computational Improvement
-=======================
+============================
  The generic splicing technique certifiably guarantees the best subset can be selected in a polynomial time. In practice, the computational efficiency can be improved to handle large scale datasets. The tips for computational improvement include:
  
  - exploit sparse strucute of input matrix;
@@ -70,7 +70,7 @@ print("sparse matrix:  ", time() - t)
 
 ###############################################################################
 # Golden-section searching
-# ------------------------
+# -----------------------------
 # Here we generate a simple example and draw the path of scores of information criterion. Typically, the curve should be a strictly unimodal function achieving minimum at the true subset size.
 
 

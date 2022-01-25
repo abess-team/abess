@@ -21,3 +21,27 @@ df = pd.DataFrame({'col1': [1,2,3],
 df
 
 s = pd.Series([1,2,3])
+
+#%%
+# test numpy
+
+import numpy as np 
+x = np.empty([3,2], dtype = int) 
+print (x)
+
+#%%
+# test abess
+
+from abess.datasets import make_glm_data
+np.random.seed(0)
+
+n = 300
+p = 1000
+k = 3
+real_coef = np.zeros(p)
+real_coef[[0, 1, 4]] = 3, 1.5, 2
+data1 = make_glm_data(n = n, p = p, k = k, family = "gaussian", coef_ = real_coef)
+
+
+print(data1.x.shape)
+print(data1.y.shape)

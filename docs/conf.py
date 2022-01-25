@@ -10,18 +10,18 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import sphinx_gallery
+import sphinx_rtd_theme
 import os
 # import sys
 import sys
-import abess
+# import abess
 import matplotlib
 sys.path.insert(0, os.path.join(os.path.abspath('..'), "python"))
 # import SampleModule
 # from sphinx_gallery.sorting import FileNameSortKey
 
 # Use RTD Theme
-import sphinx_rtd_theme
-import sphinx_gallery
 
 # -- Project information -----------------------------------------------------
 
@@ -41,15 +41,15 @@ release = '0.0.1'
 extensions = [
     'sphinx.ext.autodoc',
     "sphinx.ext.autosummary",
-     "sphinx.ext.todo",
+    "sphinx.ext.todo",
     "sphinx.ext.viewcode",
-     "sphinx.ext.mathjax",
+    "sphinx.ext.mathjax",
     'sphinx.ext.napoleon',
-           "sphinx.ext.ifconfig",
+    "sphinx.ext.ifconfig",
     "sphinx.ext.githubpages",
     'sphinx.ext.intersphinx',
-        'sphinx_gallery.gen_gallery',
-    ]
+    'sphinx_gallery.gen_gallery',
+]
 
 matplotlib.use('agg')
 
@@ -112,9 +112,11 @@ html_context = {
 }
 htmlhelp_basename = "abessdoc"
 
-def setup(app):
-    # to hide/show the prompt in code examples:
-    app.add_javascript("js/copybutton.js")
+
+# def setup(app):
+#     # to hide/show the prompt in code examples:
+#     app.add_javascript("js/copybutton.js")
+
 
 # sphinx-gallery configuration
 sphinx_gallery_conf = {
@@ -130,7 +132,7 @@ sphinx_gallery_conf = {
     # Modules for which function level galleries are created.  In
     # this case sphinx_gallery and numpy in a tuple of strings.
     # 'doc_module': ('SampleModule'),
-     'reference_url': {
+    'reference_url': {
         'abess': None,
     },
     'ignore_pattern': r'noinclude\.py'
@@ -141,6 +143,6 @@ intersphinx_mapping = {
     "numpy": ("https://docs.scipy.org/doc/numpy", None),
     'python': ('https://docs.python.org/{.major}'.format(sys.version_info), None),
     'matplotlib': ('https://matplotlib.org/', None),
-    "sklearn": ("http://scikit-learn.org/dev", None),
-    'pandas': ('https://pandas.pydata.org/', None)
+    "sklearn": ("https://scikit-learn.org/dev/objects.inv", None),
+    'pandas': ('http://pandas.pydata.org/pandas-docs/stable/objects.inv', None)
 }

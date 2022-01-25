@@ -63,7 +63,7 @@ The hazard ratio for these two cases is
 which is independent of time.
 
 Real Data Example (Lung Cancer Dataset)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 We are going to apply best subset selection to the NCCTG Lung Cancer Dataset from [https://www.kaggle.com/ukveteran/ncctg-lung-cancer-data](https://www.kaggle.com/ukveteran/ncctg-lung-cancer-data). 
 This dataset consists of survival informatoin of patients with advanced lung cancer from the North Central Cancer Treatment Group. The proportional hazards model allows the analysis of survival data by regression modeling. Linearity is assumed on the log scale of the hazard. The hazard ratio in Cox proportional hazard model is assumed constant. 
 

@@ -19,7 +19,7 @@
 
 
 Positive response: Poisson and Gamma regression
-===========================
+=======================================================
 
 .. GENERATED FROM PYTHON SOURCE LINES 6-21
 

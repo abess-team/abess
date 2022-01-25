@@ -25,19 +25,91 @@ We can use the same ``iris`` dataset in this example, without downloading it
 twice as we know ``data_download`` will check if the data has already been
 downloaded.
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-18
-
-
-
-
-
-
+.. GENERATED FROM PYTHON SOURCE LINES 9-14
 
 .. code-block:: default
 
 
-    import numpy as np
-    # from abess.datasets import make_glm_data
+    import matplotlib.pyplot as plt
+
+    _ = plt.plot([1,2,3])
+
+
+
+
+.. image-sg:: /auto_gallery-1/images/sphx_glr_plot_2_data2_001.png
+   :alt: plot 2 data2
+   :srcset: /auto_gallery-1/images/sphx_glr_plot_2_data2_001.png
+   :class: sphx-glr-single-img
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 15-16
+
+pandas dataframes have a html representation, and this is captured:
+
+.. GENERATED FROM PYTHON SOURCE LINES 16-25
+
+.. code-block:: default
+
+
+    import pandas as pd
+
+    df = pd.DataFrame({'col1': [1,2,3],
+                       'col2': [4,5,6]})
+    df
+
+    s = pd.Series([1,2,3])
+
+
+
+
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 26-27
+
+test numpy
+
+.. GENERATED FROM PYTHON SOURCE LINES 27-32
+
+.. code-block:: default
+
+
+    import numpy as np 
+    x = np.empty([3,2], dtype = int) 
+    print (x)
+
+
+
+
+
+.. rst-class:: sphx-glr-script-out
+
+ Out:
+
+ .. code-block:: none
+
+    [[338928016     32767]
+     [338928048     32767]
+     [338928080     32767]]
+
+
+
+
+.. GENERATED FROM PYTHON SOURCE LINES 33-34
+
+test abess
+
+.. GENERATED FROM PYTHON SOURCE LINES 34-48
+
+.. code-block:: default
+
+
+    from abess.datasets import make_glm_data
     np.random.seed(0)
 
     n = 300
@@ -45,10 +117,37 @@ downloaded.
     k = 3
     real_coef = np.zeros(p)
     real_coef[[0, 1, 4]] = 3, 1.5, 2
+    data1 = make_glm_data(n = n, p = p, k = k, family = "gaussian", coef_ = real_coef)
+
+
+    print(data1.x.shape)
+    print(data1.y.shape)
+
+
+.. rst-class:: sphx-glr-script-out
+
+.. code-block:: pytb
+
+    Traceback (most recent call last):
+      File "C:\Users\test\OneDrive\coding\pkgs\abess\sample-gallery-1\plot_2_data2.py", line 35, in <module>
+        from abess.datasets import make_glm_data
+      File "C:\Users\test\OneDrive\coding\pkgs\abess\python\abess\__init__.py", line 11, in <module>
+        from .linear import (
+      File "C:\Users\test\OneDrive\coding\pkgs\abess\python\abess\linear.py", line 4, in <module>
+        from .bess_base import bess_base
+      File "C:\Users\test\OneDrive\coding\pkgs\abess\python\abess\bess_base.py", line 6, in <module>
+        from .cabess import pywrap_GLM
+      File "C:\Users\test\OneDrive\coding\pkgs\abess\python\abess\cabess.py", line 13, in <module>
+        from . import _cabess
+    ImportError: cannot import name '_cabess' from 'abess' (C:\Users\test\OneDrive\coding\pkgs\abess\python\abess\__init__.py)
+
+
+
+
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.001 seconds)
+   **Total running time of the script:** ( 0 minutes  1.229 seconds)
 
 
 .. _sphx_glr_download_auto_gallery-1_plot_2_data2.py:
