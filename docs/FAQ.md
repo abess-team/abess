@@ -19,7 +19,7 @@ To make sure that `abess` package runs correctly,
 What's more, the newer version is recommended. So if you meet some 
 errors, please try to update the complier first.
 
-In Windows, you may receive an error said `Microsoft Visual C++ *version* is required*`. That is because MinGW is not used to complie. Please check if MinGW is in the PATH ( or try to reinstall it) and run the installation again. 
+In Windows, you may receive an error said `Microsoft Visual C++ *version* is required`. That is because MinGW is not used to complie. Please check if MinGW is in the PATH ( or try to reinstall it) and run the installation again. 
 
 However, if it still doesn't work, please install by:
 
