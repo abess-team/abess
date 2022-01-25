@@ -32,7 +32,7 @@ in linear regression with both simulated data and real data.
 
 
 import numpy as np
-# from abess.datasets import make_glm_data
+from abess.datasets import make_glm_data
 np.random.seed(0)
 
 n = 300

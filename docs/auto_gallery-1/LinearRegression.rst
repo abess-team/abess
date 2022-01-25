@@ -48,7 +48,7 @@ We generate a design matrix :math:`X` containing 300 observation and each observ
 
 where :math:`\epsilon` is a standard normal random variable. 
 
-.. GENERATED FROM PYTHON SOURCE LINES 32-61
+.. GENERATED FROM PYTHON SOURCE LINES 32-184
 
 .. code-block:: default
 
@@ -69,197 +69,141 @@ where :math:`\epsilon` is a standard normal random variable.
     print(data1.x.shape)
     print(data1.y.shape)
 
-
-    # Use `LinearRegression` to fit the data, with a fixed support size:
-
-    from abess import LinearRegression
-    model = LinearRegression(support_size = 3)
-    model.fit(data1.x, data1.y)
-
-
-    # After fitting, the predicted coefficients are stored in `model.coef_`:
-
-    print("shape:", model.coef_.shape)
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 62-67
-
-.. code-block:: default
-
-
-    ind = np.nonzero(model.coef_)
-    print("predicted non-zero: ", ind)
-    print("predicted coef: ", model.coef_[ind])
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 68-73
-
-From the result, we know that `abess` found which 3 predictors are useful among all 1000 variables. Besides, the predicted coefficients of them are quite close to the real ones. 
-
-Adaptive Best Subset Selection
-""""""""""""""""""""""""""""""""""""""""""""""
-However, we may not know the true sparsity level in real world data, and thus we need to determine the most proper one from a large range. Suppose that we believe the real sparsity level is between 0 to 30 (so that `range(0, 31)`):
-
-.. GENERATED FROM PYTHON SOURCE LINES 73-82
-
-.. code-block:: default
-
-
-
-    model = LinearRegression(support_size = range(31))
-    model.fit(data1.x, data1.y)
-
-    ind = np.nonzero(model.coef_)
-    print("predicted non-zero: ", ind)
-    print("predicted coef: ", model.coef_[ind])
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 83-84
-
-The program can adaptively choose the sparsity level that best fit the data. It is not surprising that it choose 3 variables, the same as the last section. 
-
-.. GENERATED FROM PYTHON SOURCE LINES 86-95
-
-Real data example
-------------------------
-
-Hitters Dataset
-~~~~~~~~~~~~~~~~~~~~~~
-Now we focus on real data on the `Hitters` dataset: [https://www.kaggle.com/floser/hitters](https://www.kaggle.com/floser/hitters).
-We hope to use sevral predictors related to the performance of the baseball atheltes last year to predict their salary.
-
-First, let's have a look at this dataset. There are 19 variables except `Salary` and 322 observations.
-
-.. GENERATED FROM PYTHON SOURCE LINES 95-105
-
-.. code-block:: default
-
-
-
-    import pandas as pd
-
-    data2 = pd.read_csv('./Hitters.csv')
-    print(data2.shape)
-
-
-    print(data2.head(5))
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 106-107
-
-Since the dataset contains some missing values, we simply drop those rows with missing values. Then we have 263 observations remains:
-
-.. GENERATED FROM PYTHON SOURCE LINES 107-112
-
-.. code-block:: default
-
-
-
-    data2 = data2.dropna()
-    print(data2.shape)
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 113-114
-
-What is more, before fitting, we need to transfer the character variables to dummy variables: 
-
-.. GENERATED FROM PYTHON SOURCE LINES 114-121
-
-.. code-block:: default
-
-
-
-    data2 = pd.get_dummies(data2)
-    data2 = data2.drop(['League_A', 'Division_E', 'NewLeague_A'], axis = 1)
-    print(data2.shape)
-    print(data2.head(5))
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 122-125
-
-Model Fitting
-~~~~~~~~~~~~~~~~~~~~~~
-As what we do in simulated data, an adaptive best subset can be formed easily:
-
-.. GENERATED FROM PYTHON SOURCE LINES 125-140
-
-.. code-block:: default
-
-
-    x = np.array(data2.drop('Salary', axis = 1))
-    y = np.array(data2['Salary'])
-
-    model = LinearRegression(support_size = range(20))
-    model.fit(x, y)
-
-
-    # The result can be showed:
-
-
-    ind = np.nonzero(model.coef_)
-    print("non-zero:\n", data2.columns[ind])
-    print("coef:\n", model.coef_)
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 141-142
-
-Automatically, variables $Hits$, $CRBI$, $PutOuts$, $League\_N$ are chosen in the model (the chosen sparsity level is 4).
-
-.. GENERATED FROM PYTHON SOURCE LINES 144-147
-
-More on the results
-~~~~~~~~~~~~~~~~~~~~~~
-We can also plot the path of abess process:
-
-.. GENERATED FROM PYTHON SOURCE LINES 147-167
-
-.. code-block:: default
-
-
-
     import matplotlib.pyplot as plt
 
-    coef = np.zeros((20, 19))
-    ic = np.zeros(20)
-    for s in range(20):
-        model = LinearRegression(support_size = s)
-        model.fit(x, y)
-        coef[s, :] = model.coef_
-        ic[s] = model.ic_
+    _ = plt.plot([1,2,3])
+    # # Use `LinearRegression` to fit the data, with a fixed support size:
 
-    for i in range(19):
-        plt.plot(coef[:, i], label = i)
-
-    plt.xlabel('support_size')
-    plt.ylabel('coefficients')
-    # plt.legend() # too long to plot
-    plt.show()
+    # from abess import LinearRegression
+    # model = LinearRegression(support_size = 3)
+    # model.fit(data1.x, data1.y)
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 168-169
+    # # After fitting, the predicted coefficients are stored in `model.coef_`:
 
-Besides, we can also generate a graph about the tuning value. Remember that we used the default EBIC to tune the support size.
+    # print("shape:", model.coef_.shape)
 
-.. GENERATED FROM PYTHON SOURCE LINES 169-175
+    # #%%
 
-.. code-block:: default
+    # ind = np.nonzero(model.coef_)
+    # print("predicted non-zero: ", ind)
+    # print("predicted coef: ", model.coef_[ind])
+
+    # #%%
+    # # From the result, we know that `abess` found which 3 predictors are useful among all 1000 variables. Besides, the predicted coefficients of them are quite close to the real ones. 
+    # # 
+    # # Adaptive Best Subset Selection
+    # # """"""""""""""""""""""""""""""""""""""""""""""
+    # # However, we may not know the true sparsity level in real world data, and thus we need to determine the most proper one from a large range. Suppose that we believe the real sparsity level is between 0 to 30 (so that `range(0, 31)`):
 
 
-    plt.plot(ic, 'o-')
-    plt.xlabel('support_size')
-    plt.ylabel('EBIC')
-    plt.show()
+    # model = LinearRegression(support_size = range(31))
+    # model.fit(data1.x, data1.y)
+
+    # ind = np.nonzero(model.coef_)
+    # print("predicted non-zero: ", ind)
+    # print("predicted coef: ", model.coef_[ind])
+
+    # #%%
+    # # The program can adaptively choose the sparsity level that best fit the data. It is not surprising that it choose 3 variables, the same as the last section. 
+
+    # ###############################################################################
+    # # Real data example
+    # # ------------------------
+    # #
+    # # Hitters Dataset
+    # # ~~~~~~~~~~~~~~~~~~~~~~
+    # # Now we focus on real data on the `Hitters` dataset: [https://www.kaggle.com/floser/hitters](https://www.kaggle.com/floser/hitters).
+    # # We hope to use sevral predictors related to the performance of the baseball atheltes last year to predict their salary.
+    # # 
+    # # First, let's have a look at this dataset. There are 19 variables except `Salary` and 322 observations.
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 176-177
+    # import pandas as pd
 
-In EBIC criterion, `support_size = 4` has the lowest value, so the process adaptively choose 4 variables. Note that under other information criterion, the result may be different. 
+    # data2 = pd.read_csv('./Hitters.csv')
+    # print(data2.shape)
 
-.. GENERATED FROM PYTHON SOURCE LINES 179-182
 
-R tutorial 
-~~~~~~~~~~~~~~~~~~~~~~
-For R tutorial, please view [https://abess-team.github.io/abess/articles/v01-abess-guide.html](https://abess-team.github.io/abess/articles/v01-abess-guide.html).
+    # print(data2.head(5))
+
+    # #%%
+    # # Since the dataset contains some missing values, we simply drop those rows with missing values. Then we have 263 observations remains:
+
+
+    # data2 = data2.dropna()
+    # print(data2.shape)
+
+    # #%%
+    # # What is more, before fitting, we need to transfer the character variables to dummy variables: 
+
+
+    # data2 = pd.get_dummies(data2)
+    # data2 = data2.drop(['League_A', 'Division_E', 'NewLeague_A'], axis = 1)
+    # print(data2.shape)
+    # print(data2.head(5))
+
+    # ###############################################################################
+    # # Model Fitting
+    # # ~~~~~~~~~~~~~~~~~~~~~~
+    # # As what we do in simulated data, an adaptive best subset can be formed easily:
+
+    # x = np.array(data2.drop('Salary', axis = 1))
+    # y = np.array(data2['Salary'])
+
+    # model = LinearRegression(support_size = range(20))
+    # model.fit(x, y)
+
+
+    # # The result can be showed:
+
+
+    # ind = np.nonzero(model.coef_)
+    # print("non-zero:\n", data2.columns[ind])
+    # print("coef:\n", model.coef_)
+
+    # #%%
+    # # Automatically, variables $Hits$, $CRBI$, $PutOuts$, $League\_N$ are chosen in the model (the chosen sparsity level is 4).
+
+    # ###############################################################################
+    # # More on the results
+    # # ~~~~~~~~~~~~~~~~~~~~~~
+    # # We can also plot the path of abess process:
+
+
+    # import matplotlib.pyplot as plt
+
+    # coef = np.zeros((20, 19))
+    # ic = np.zeros(20)
+    # for s in range(20):
+    #     model = LinearRegression(support_size = s)
+    #     model.fit(x, y)
+    #     coef[s, :] = model.coef_
+    #     ic[s] = model.ic_
+
+    # for i in range(19):
+    #     plt.plot(coef[:, i], label = i)
+
+    # plt.xlabel('support_size')
+    # plt.ylabel('coefficients')
+    # # plt.legend() # too long to plot
+    # plt.show()
+
+    # #%%
+    # # Besides, we can also generate a graph about the tuning value. Remember that we used the default EBIC to tune the support size.
+
+    # plt.plot(ic, 'o-')
+    # plt.xlabel('support_size')
+    # plt.ylabel('EBIC')
+    # plt.show()
+
+    # #%%
+    # # In EBIC criterion, `support_size = 4` has the lowest value, so the process adaptively choose 4 variables. Note that under other information criterion, the result may be different. 
+
+    # ###############################################################################
+    # # R tutorial 
+    # # ~~~~~~~~~~~~~~~~~~~~~~
+    # # For R tutorial, please view [https://abess-team.github.io/abess/articles/v01-abess-guide.html](https://abess-team.github.io/abess/articles/v01-abess-guide.html).
 
 
 .. rst-class:: sphx-glr-timing

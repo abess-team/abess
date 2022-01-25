@@ -38,7 +38,7 @@ This notebook introduces what is adaptive best subset selection principal compon
 # 
 # In the next section, we will show how to form `SparsePCA`.
 # Real Data Example (Communities and Crime Dataset)
-# ---------------------------------------------
+# -----------------------------------------------------------
 # Here we will use real data analysis to show how to form `SparsePCA`. The data we use is from [UCI:
 # Communities and Crime Data Set](https://archive.ics.uci.edu/ml/datasets/Communities+and+Crime) and we pick up its 99 predictive variables as our samples.
 # 
@@ -89,7 +89,7 @@ print(model.coef_.T)
 
 ###############################################################################
 # Adaptive sparsity
-#  """"""""""""""""""""""""""""""""
+# """"""""""""""""""""""""""""""""
 # What's more, **abess** also support a range of sparsity and adaptively choose the best-explain one. However, usually a higher sparsity level would lead to better explaination.
 # 
 # Now, you need to build an :math:`s_{max} \times 1` binomial matrix, where :math:`s_{max}` indicates the max target sparsity and each row indicates one sparsity level (i.e. start from :math:`1`, until :math:`s_{max}`). For each position with :math:`1`, **abess** would try to fit the model under that sparsity and finally give the best one.
@@ -199,7 +199,7 @@ print('non-zero position: \n', temp)
 # `SparsePCA` can also deal with group information. Here we make sure that variables in the same group address close to each other (if not, the data should be sorted first).
 # 
 # Simulated Data Example
-# ^^^^^^^^^^^^^^^^^^^
+# ^^^^^^^^^^^^^^^^^^^^^^^^^
 # Suppose that the data above have group information like:
 # 
 # - Group 0: {the 1st, 2nd, ..., 6th variable};
@@ -242,7 +242,7 @@ print('chosen sparsity: ', temp.size)
 # Extension: Multiple principal components
 # --------------------------------------------
 #  Multiple principal components
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # In some cases, we may seek for more than one principal components under sparsity. Actually, we can iteratively solve the largest principal component and then mapping the covariance matrix to its orthogonal space:
 # 
 # :math:``
