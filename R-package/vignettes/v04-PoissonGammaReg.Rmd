@@ -25,13 +25,13 @@ knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
 
 ## Poisson Regression
 
-Poisson regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of costumers in line at a  reception desk. The response variables are assumed to be generated from Poisson distributions.
+Poisson regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of customers in line at a  reception desk. The response variable is assumed to be generated from Poisson distribution.
 
-The general mathematical equation for Poisson regression is
+The Poisson regression is defined as
 $$
 \log(E(y_i|x_i)) = x_i^T \beta.
 $$
-We generate some artificial data using this logic.
+We generate some artificial data using the following logic.
 Consider a dataset containing the information of complain calls about 100 companies over a period of 10 years. `count` gives the number of complains, and the dataset also have other variables like `age`, `sex`, `job`, `education`, `region`, `marriage`. The `generate.data()` function allow you to generate simulated data. By specifying `support.size = 3`, here we set only 3 of the 5 above mentioned variable have effect on the expectation of the response `count`. 
 
 ```{r}
@@ -41,7 +41,7 @@ colnames(dat$x) <- c("age", "sex", "job",
                      "education", "region", "marriage")
 dat$beta
 head(dat$x)
-complain <- data.frame('count'=dat$y, dat$x)
+complain <- data.frame('count' = dat$y, dat$x)
 ```
 
 ## Best Subset Selection for Poisson Regression
@@ -55,10 +55,6 @@ abess_fit <- abess(count ~ ., complain, family = "poisson")
 class(abess_fit)
 ```
 
-<!-- By default, the `abess` function implements the ABESS algorithm with the support size changing from 0 to $\min\{p,n/log(n)p \}$ and the best support size is determined by the Generalized Informatoin Criterion (GIC). You can change the tunging criterion by specifying the argument `tune.type`. The available tuning criterion now are `gic`, `aic`, `bic`, `ebic` and `cv`. For a quicker solution, you can change the tuning strategy to a golden section path which trys to find the elbow point of the tuning criterion over the hyperparameter space. Here we give an example. -->
-<!-- ```{r} -->
-<!-- abess_fit.gs <- abess(Salary~., Hitters, family = "poisson", tune.type = "bic", tune.path = "gs") -->
-<!-- ``` -->
 
 ## Interpret the Result
 
@@ -75,7 +71,7 @@ deviance(abess_fit)
 print(abess_fit)
 ```
 
-Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value.
+Prediction is allowed for all the estimated models. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value.
 
 ```{r}
 head(predict(abess_fit, newx = dat$x, support.size = c(3, 4)))
@@ -88,9 +84,9 @@ The `plot.abess()` function helps to visualize the change of models with the cha
 plot(abess_fit, label = TRUE)
 ```
       
-The graph shows that, beginning from the most dense model, the 3th variable (job) is included in the active set until the support size reaches 0.
+The graph shows that, beginning from the most dense model, the 3rd variable (job) is included in the active set until the support size reaches 0.
 
-We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size. 
+We can also generate a graph about the tuning value. Remember that we use the default GIC to tune the support size. 
 ```{r}
 plot(abess_fit, type = "tune")
 ```
@@ -101,7 +97,7 @@ In fact, the tuning values of different model sizes are provided in `tune.value`
 ```{r}
 abess_fit$support.size[which.min(abess_fit$tune.value)]
 ```
-To extract any model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals to 3.
+To extract the specified model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals to 3.
 ```{r}
 best.model = extract(abess_fit, support.size = 3)
 str(best.model)
@@ -112,11 +108,11 @@ The return is a list containing the basic information of the estimated model. Th
 
 ## Gamma Regression
 
-Gamma regression can be used when you have positive continuous response variables such as payments for insurance claims, or the lifetime of a redundant system. It is well known that the density of Gamma distribution can be represented as a function of a mean parameter ($\mu$) and a shape parameter ($\alpha$), specifically,
+Gamma regression can be used when you meet a positive continuous response variable such as payments for insurance claims, or the lifetime of a redundant system. It is well known that the density of Gamma distribution can be represented as a function of a mean parameter ($\mu$) and a shape parameter ($\alpha$), specifically,
 $$
 f(y \mid \mu, \alpha)=\frac{1}{y \Gamma(\alpha)}\left(\frac{\alpha y}{\mu}\right)^{\alpha} e^{-\alpha y / \mu} {I}_{(0, \infty)}(y),
 $$
-where $I(\cdot)$ denotes the indicator function. In the Gamma regression model, response variables are assumed to follow Gamma distributions. Specifically, 
+where $I(\cdot)$ denotes the indicator function. In the Gamma regression model, response variable IS assumed to follow Gamma distribution. Specifically, 
 $$
 y_i \sim Gamma(\mu_i, \alpha),
 $$
