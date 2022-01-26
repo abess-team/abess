@@ -80,6 +80,13 @@ class bess_base(BaseEstimator):
       Proceedings of the National Academy of Sciences, 117(52):33117-33123, 2020.
     """
 
+    # attributes
+    coef_ = None
+    intercept_ = None
+    ic_ = 0
+    train_loss_ = 0
+    test_loss_ = 0
+
     def __init__(self, algorithm_type, model_type, normalize_type, path_type,
                  max_iter=20, exchange_num=5, is_warm_start=True,
                  support_size=None, alpha=None, s_min=None, s_max=None,
@@ -93,8 +100,8 @@ class bess_base(BaseEstimator):
                  sparse_matrix=False,
                  splicing_type=0,
                  important_search=0,
-                 # early_stop=False, lambda_min=None, lambda_max=None,
-                 # n_lambda=100,
+                 # lambda_min=None, lambda_max=None,
+                 # early_stop=False, n_lambda=100
                  ):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
@@ -105,12 +112,12 @@ class bess_base(BaseEstimator):
         self.is_warm_start = is_warm_start
         self.support_size = support_size
         self.alpha = alpha
-        self.n_features_in_ = 0
+        self.n_features_in_: int
         self.s_min = s_min
         self.s_max = s_max
-        self.lambda_min = None
-        self.lambda_max = None
-        self.n_lambda = 100
+        # self.lambda_min = None
+        # self.lambda_max = None
+        # self.n_lambda = 100
         self.ic_type = ic_type
         self.ic_coef = ic_coef
         self.cv = cv
@@ -118,19 +125,13 @@ class bess_base(BaseEstimator):
         self.always_select = always_select
         self.primary_model_fit_max_iter = primary_model_fit_max_iter
         self.primary_model_fit_epsilon = primary_model_fit_epsilon
-        self.early_stop = False
+        # self.early_stop = False
         self.approximate_Newton = approximate_Newton
         self.thread = thread
         self.covariance_update = covariance_update
         self.sparse_matrix = sparse_matrix
         self.splicing_type = splicing_type
         self.important_search = important_search
-        # output
-        self.coef_ = None
-        self.intercept_ = None
-        self.train_loss_ = 0
-        self.test_loss_ = 0
-        self.ic_ = 0
 
     def new_data_check(self, X, y=None, weights=None):
         # Check1 : whether fit had been called
@@ -152,7 +153,7 @@ class bess_base(BaseEstimator):
         if weights is not None:
             X, y = check_X_y(X, y, accept_sparse=True,
                              multi_output=True, y_numeric=True)
-            weights = np.array(weights, dtype=np.float)
+            weights = np.array(weights, dtype=float)
 
             if len(weights.shape) != 1:
                 raise ValueError("weights should be 1-dimension.")
@@ -459,7 +460,13 @@ class bess_base(BaseEstimator):
 
         # always_select
         if self.always_select is None:
-            self.always_select = []
+            always_select_list = np.zeros(0, dtype="int32")
+        else:
+            always_select_list = np.array(self.always_select, dtype="int32")
+
+        # unused
+        n_lambda = 100
+        early_stop = False
 
         # wrap with cpp
         # print("wrap enter.")#///
@@ -475,11 +482,11 @@ class bess_base(BaseEstimator):
             alphas,
             cv_fold_id,
             new_s_min, new_s_max,
-            new_lambda_min, new_lambda_max, self.n_lambda,
+            new_lambda_min, new_lambda_max, n_lambda,
             self.screening_size,
-            self.always_select,
+            always_select_list,
             self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
-            self.early_stop, self.approximate_Newton,
+            early_stop, self.approximate_Newton,
             self.thread,
             self.covariance_update,
             self.sparse_matrix,
