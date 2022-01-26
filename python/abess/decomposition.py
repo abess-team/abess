@@ -311,7 +311,12 @@ class SparsePCA(bess_base):
 
         # always_select
         if self.always_select is None:
-            self.always_select = []
+            always_select_list = np.zeros(0, dtype="int32")
+        else:
+            always_select_list = np.array(self.always_select, dtype="int32")
+
+        # unused
+        early_stop = False
 
         # wrap with cpp
         weight = np.ones(n)
@@ -326,8 +331,8 @@ class SparsePCA(bess_base):
             cv_fold_id,
             new_s_min, new_s_max,
             self.screening_size,
-            self.always_select,
-            self.early_stop,
+            always_select_list,
+            early_stop,
             self.thread,
             self.sparse_matrix,
             self.splicing_type,
@@ -477,7 +482,7 @@ class RobustPCA(bess_base):
         support_sizes = np.array(support_sizes).astype('int32')
 
         # alphas
-        if isinstance(r, (numbers.Integral)):
+        if r == int(r):
             alphas = np.array([r], dtype=float)
         else:
             raise ValueError("r should be integer")
@@ -546,7 +551,13 @@ class RobustPCA(bess_base):
 
         # always_select
         if self.always_select is None:
-            self.always_select = []
+            always_select_list = np.zeros(0, dtype="int32")
+        else:
+            always_select_list = np.array(self.always_select, dtype="int32")
+
+        # unused
+        n_lambda = 100
+        early_stop = False
 
         # wrap with cpp
         result = pywrap_RPCA(
@@ -558,11 +569,11 @@ class RobustPCA(bess_base):
             support_sizes,
             alphas,
             new_s_min, new_s_max,
-            new_lambda_min, new_lambda_max, self.n_lambda,
+            new_lambda_min, new_lambda_max, n_lambda,
             self.screening_size,
-            self.always_select,
+            always_select_list,
             self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
-            self.early_stop,
+            early_stop,
             self.thread,
             self.sparse_matrix,
             self.splicing_type,

@@ -80,6 +80,7 @@ class bess_base(BaseEstimator):
       Proceedings of the National Academy of Sciences, 117(52):33117-33123, 2020.
     """
 
+    # attributes
     coef_ = None
     intercept_ = None
     ic_ = 0
@@ -152,7 +153,7 @@ class bess_base(BaseEstimator):
         if weights is not None:
             X, y = check_X_y(X, y, accept_sparse=True,
                              multi_output=True, y_numeric=True)
-            weights = np.array(weights, dtype=np.float)
+            weights = np.array(weights, dtype=float)
 
             if len(weights.shape) != 1:
                 raise ValueError("weights should be 1-dimension.")
@@ -459,11 +460,11 @@ class bess_base(BaseEstimator):
 
         # always_select
         if self.always_select is None:
-            always_select_list = np.zeros(0, dtype=np.int32)
+            always_select_list = np.zeros(0, dtype="int32")
         else:
-            always_select_list = np.array(self.always_select)
+            always_select_list = np.array(self.always_select, dtype="int32")
 
-        # not used
+        # unused
         n_lambda = 100
         early_stop = False
 
