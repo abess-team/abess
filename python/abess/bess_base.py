@@ -80,7 +80,6 @@ class bess_base(BaseEstimator):
       Proceedings of the National Academy of Sciences, 117(52):33117-33123, 2020.
     """
 
-    # output
     coef_ = None
     intercept_ = None
     ic_ = 0
@@ -101,7 +100,7 @@ class bess_base(BaseEstimator):
                  splicing_type=0,
                  important_search=0,
                  # lambda_min=None, lambda_max=None,
-                 #  early_stop=False, n_lambda=100
+                 # early_stop=False, n_lambda=100
                  ):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
@@ -112,7 +111,7 @@ class bess_base(BaseEstimator):
         self.is_warm_start = is_warm_start
         self.support_size = support_size
         self.alpha = alpha
-        # self.n_features_in_ = 0
+        self.n_features_in_: int
         self.s_min = s_min
         self.s_max = s_max
         # self.lambda_min = None
@@ -132,12 +131,6 @@ class bess_base(BaseEstimator):
         self.sparse_matrix = sparse_matrix
         self.splicing_type = splicing_type
         self.important_search = important_search
-        # # output
-        # self.coef_ = None
-        # self.intercept_ = None
-        # self.train_loss_ = 0
-        # self.test_loss_ = 0
-        # self.ic_ = 0
 
     def new_data_check(self, X, y=None, weights=None):
         # Check1 : whether fit had been called
@@ -470,10 +463,12 @@ class bess_base(BaseEstimator):
         else:
             always_select_list = np.array(self.always_select)
 
-        # wrap with cpp
-        # print("wrap enter.")#///
+        # not used
         n_lambda = 100
         early_stop = False
+
+        # wrap with cpp
+        # print("wrap enter.")#///
         result = pywrap_GLM(
             X, y, weight,
             n, p, normalize,
