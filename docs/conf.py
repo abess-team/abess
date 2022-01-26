@@ -15,9 +15,9 @@ import sphinx_rtd_theme
 import os
 # import sys
 import sys
-# import abess
+import abess
 import matplotlib
-sys.path.insert(0, os.path.join(os.path.abspath('..'), "python"))
+# sys.path.insert(0, os.path.join(os.path.abspath('..'), "python"))
 # import SampleModule
 # from sphinx_gallery.sorting import FileNameSortKey
 
@@ -144,5 +144,5 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/{.major}'.format(sys.version_info), None),
     'matplotlib': ('https://matplotlib.org/', None),
     "sklearn": ("https://scikit-learn.org/dev/objects.inv", None),
-    'pandas': ('http://pandas.pydata.org/pandas-docs/stable/objects.inv', None)
+    'pandas': ('http://pandas.pydata.org/pandas-docs/stable/', None)
 }
