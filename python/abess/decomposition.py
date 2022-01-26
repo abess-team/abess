@@ -65,14 +65,14 @@ class SparsePCA(bess_base):
         )
 
     def transform(self, X):
-        """
+        r"""
         For PCA model, apply dimensionality reduction
         to given data.
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, p_features)
-            Test data.
+        X : array-like, shape (n_samples, p_features)
+            Sample matrix to be transformed.
 
         """
         X = self.new_data_check(X)
@@ -80,13 +80,13 @@ class SparsePCA(bess_base):
         return X.dot(self.coef_)
 
     def ratio(self, X):
-        """
+        r"""
         Give new data, and it returns the explained ratio.
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
-            Test data.
+        X : array-like, shape (n_samples, n_features)
+            Sample matrix.
         """
         X = self.new_data_check(X)
         s = np.cov(X.T)
@@ -102,32 +102,33 @@ class SparsePCA(bess_base):
 
     def fit(self, X=None, is_normal=False,
             group=None, Sigma=None, number=1, n=None, A_init=None):
-        """
-        The fit function is used to transfer the information of data and return the fit result.
+        r"""
+        The fit function is used to transfer the information of data and 
+        return the fit result.
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, p_features)
-            Training data
-        is_normal : bool, optional
+        X : array-like, shape(n_samples, p_features)
+            Training data.
+        is_normal : bool, optional, default=False
             whether normalize the variables array before fitting the algorithm.
-            Default: is_normal=False.
-        weight : array-like of shape (n_samples,)
+        is_normal : bool, optional, default=True
+            whether normalize the variables array before fitting the algorithm.
+        weight : array-like, shape(n_samples,), optional, default=np.ones(n)
             Individual weights for each sample. Only used for is_weight=True.
-            Default is 1 for each observation.
-        group : int, optional
+        group : int, optional, default=np.ones(p)
             The group index for each variable.
-            Default: group = \\code{numpy.ones(p)}.
-        Sigma : array-like of shape (n_features, n_features), optional
+        Sigma : array-like, shape(p_features, p_features), optional, default=np.cov(X.T)
             Sample covariance matrix.
-            For PCA, it can be given as input, instead of X. But if X is given, Sigma will be set to \\code{np.cov(X.T)}.
-            Default: Sigma = \\code{np.cov(X.T)}.
-        number : int, optional
+            For PCA, it can be given as input, instead of X. 
+            But if X is given, Sigma will be set to np.cov(X.T).
+        number : int, optional, default=1
             Indicates the number of PCs returned.
-            Default: 1
-        n : int, optional
-            Sample size. If X is given, it would be X.shape[0]; if Sigma is given, it would be 1 by default.
-            Default: X.shape[0] or 1.
+        n : int, optional, default=X.shape[0] or 1
+            Sample size.
+
+            - if X is given, it would be X.shape[0] by default; 
+            - if X is not given (Sigma is given), it would be 1 by default.
         """
 
         # Input check
@@ -397,18 +398,20 @@ class RobustPCA(bess_base):
         )
 
     def fit(self, X, r, group=None, A_init=None):
-        """
-        The fit function is used to transfer the information of data and return the fit result.
+        r"""
+        The fit function is used to transfer the information of 
+        data and return the fit result.
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, p_features)
-            Training data
+        X : array-like, shape(n_samples, p_features)
+            Training data.
         r : int
             Rank of the (recovered) information matrix L.
-        group : int, optional
+            It should be smaller than rank of X 
+            (at least smaller than X.shape[1]).
+        group : int, optional, default=np.ones(p)
             The group index for each variable.
-            Default: group = \\code{numpy.ones(p)}.
         """
 
         # Input check
