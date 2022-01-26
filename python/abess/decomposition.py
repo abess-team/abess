@@ -103,7 +103,7 @@ class SparsePCA(bess_base):
     def fit(self, X=None, is_normal=False,
             group=None, Sigma=None, number=1, n=None, A_init=None):
         r"""
-        The fit function is used to transfer the information of data and 
+        The fit function is used to transfer the information of data and
         return the fit result.
 
         Parameters
@@ -120,14 +120,14 @@ class SparsePCA(bess_base):
             The group index for each variable.
         Sigma : array-like, shape(p_features, p_features), optional, default=np.cov(X.T)
             Sample covariance matrix.
-            For PCA, it can be given as input, instead of X. 
+            For PCA, it can be given as input, instead of X.
             But if X is given, Sigma will be set to np.cov(X.T).
         number : int, optional, default=1
             Indicates the number of PCs returned.
         n : int, optional, default=X.shape[0] or 1
             Sample size.
 
-            - if X is given, it would be X.shape[0] by default; 
+            - if X is given, it would be X.shape[0] by default;
             - if X is not given (Sigma is given), it would be 1 by default.
         """
 
@@ -399,7 +399,7 @@ class RobustPCA(bess_base):
 
     def fit(self, X, r, group=None, A_init=None):
         r"""
-        The fit function is used to transfer the information of 
+        The fit function is used to transfer the information of
         data and return the fit result.
 
         Parameters
@@ -408,7 +408,7 @@ class RobustPCA(bess_base):
             Training data.
         r : int
             Rank of the (recovered) information matrix L.
-            It should be smaller than rank of X 
+            It should be smaller than rank of X
             (at least smaller than X.shape[1]).
         group : int, optional, default=np.ones(p)
             The group index for each variable.
