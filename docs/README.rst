@@ -26,6 +26,8 @@ Welcome to abess's documentation!
 .. |docs| image:: https://readthedocs.org/projects/abess/badge/?version=latest
    :target: https://abess.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
+.. |R website| image:: https://github.com/abess-team/abess/actions/workflows/r_website.yml
+   :target: https://abess-team.github.io/abess/
 .. |cran| image:: https://img.shields.io/cran/v/abess?logo=R
    :target: https://cran.r-project.org/package=abess
 .. |pypi| image:: https://badge.fury.io/py/abess.svg
@@ -171,10 +173,24 @@ the other best subset selection problems.
 .. _github: https://github.com/abess-team/abess
 .. _GPL-v3 License: https://www.gnu.org/licenses/gpl-3.0.html
 
+What's news
+===========
+
+New features:
+
+- Support user-specified cross validation division.
+- Support user-specified initial active set.
+- Support flexible support size for sequentially best subset selection for principal component analysis (PCA). 
+
+New best subset selection tasks: 
+
+- Generalized linear model when the link function is gamma distribution.
+- Robust principal component analysis (RPCA).
+
 Citation         
 ==========
 
-If you use `abess` or reference our tutorials in a presentation or publication, we would appreciate citations of our library.
+If you use `abess` or reference our tutorials in a presentation or publication, we would appreciate citations of our library [#5abesslib]_.
 
 | Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). “abess: A Fast Best Subset Selection Library in Python and R.” arXiv:2110.09697.
 
@@ -199,4 +215,6 @@ References
 .. [#2gbes] Yanhang Zhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). Certifiably Polynomial Algorithm for Best Group Subset Selection. arXiv preprint arXiv:2104.12576.
 
 .. [#3nbes] Qiang Sun and Heping Zhang (2020). Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079.
+
+.. [#5abesslib] Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, and Xueqin Wang (2021). abess: A Fast Best Subset Selection Library in Python and R. arXiv preprint arXiv:2110.09697.
     

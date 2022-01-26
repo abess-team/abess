@@ -336,7 +336,8 @@ abessrpca <- function(x,
     thread = num.threads,
     sparse_matrix = sparse_X,
     splicing_type = splicing_type,
-    sub_search = important_search
+    sub_search = important_search, 
+    A_init = as.integer(c())
   )
 
   result_R <- list()

@@ -10,7 +10,7 @@ $ pip install abess
 ```
 
 If you don't have [pip](https://pip.pypa.io) installed, this [Python installation guide](http://docs.python-guide.org/en/latest/starting/installation/) can guide
-you through the process.
+you through the process. Linux and MacOS users also need to install [swig](http://www.swig.org/).
 
 ### R
 To install stable version into R environment, run the command:
@@ -19,24 +19,27 @@ To install stable version into R environment, run the command:
 install.packages("abess")
 ```
 
-## Latest release
+## Latest version
 
 This page gives instructions on how to build and install abess from the source code. 
 If the instructions do not help for you, please feel free to ask questions by opening an [issue](https://github.com/abess-team/abess/issues).
 
-### Python 
-Clone our [github project](https://github.com/abess-team/abess) to your device:
+First of all, use [git](https://git-scm.com/downloads) to clone our the latest [github project](https://github.com/abess-team/abess) to your device:
 
 ```bash
 $ git clone https://github.com/abess-team/abess.git
 $ cd abess
 ```
 
-Before installing abess itself, some dependencies should be installed first: `swig`, `bash`, `mingw`, which may be a little different in different platforms:
+Next, there have different processing depend on the programming langulage you prefer. 
 
-- **Linux**: `$ sudo apt install swig bash mingw-w64` (for Ubuntu, but other Linux systems are similar);
-- **Windows**: `$ choco install swig mingw git ` (using [Chocolatey](https://community.chocolatey.org/packages)), or manually install the software and add them into PATH;
-- **MacOS**: `$ brew install swig mingw-w64 bash` (using [Homebrew](https://brew.sh/)).
+### Python 
+
+Before installing abess itself, some dependencies should be installed first, which may be a little different in different platforms:
+
+- **Linux**: `$ sudo apt install swig` (for Ubuntu, but other Linux systems are similar);
+- **Windows**: `$ choco install swig mingw` (using [Chocolatey](https://community.chocolatey.org/packages)), or manually install the software and add them into PATH;
+- **MacOS**: `$ brew install swig mingw-w64 bash` (using [Homebrew](https://brew.sh/)). Notice that, if using Apple M1 Silicon, please following the guided in [here](https://github.com/abess-team/abess/issues/310#issuecomment-1017504301) to configure your development environment. 
 
 After that, you can manually install abess by conducting command:
 
@@ -45,15 +48,18 @@ $ cd ./python
 $ python setup.py install --user
 ```
 
-If it finishes with "*Finished processing dependencies for abess*", the installation is successful.
+If it finishes with `Finished processing dependencies for abess`, the installation is successful.
+
+*If you meet any errors here, please check [FAQ](https://abess.readthedocs.io/en/latest/FAQ.html#installation-failed).*
 
 ### R
-To install the development version from GitHub, run the following code in R console:
+To install the development version, run the following code in R console:
 
-```r
-library(devtools)
-install_github("abess-team/abess", subdir = "R-package")
+```bash
+R CMD INSTALL R-package
 ```
+
+If it finishes with `* DONE (abess)`, the installation is successful.
 
 Windows user will need to install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) first.
 
@@ -102,6 +108,7 @@ Furthermore, if you want to develop the Python packages, some additional package
 - [Sphinx](https://pypi.org/project/Sphinx/): develop the Python documentation.
     - [nbsphinx](https://pypi.org/project/nbsphinx/): support jupyter notebook for Sphinx.
     - [myst-parser](https://pypi.org/project/myst-parser/): support markdown for Sphinx.
+    - [sphinx-rtd-theme](https://pypi.org/project/sphinx-rtd-theme/): "Read the Docs" theme for Sphinx.
 
 ### R
 
@@ -114,5 +121,7 @@ abess R package relies on limited R packages dependencies:
 Furthermore, if you would to develop the R package, it would be better to additionally install:
 
 - [testthat](https://cran.r-project.org/web/packages/testthat/index.html): conduct unit tests.
-- [knitr](https://cran.r-project.org/web/packages/knitr/index.html) and [rmarkdown](https://cran.r-project.org/web/packages/rmarkdown/index.html): write tutorials for R users.
+- [roxygen2](https://cran.r-project.org/web/packages/roxygen2/index.html): write R documentations.
+- [knitr](https://cran.r-project.org/web/packages/knitr/index.html) and [rmarkdown](https://cran.r-project.org/web/packages/rmarkdown/index.html): write tutorials.
+- [pkgdown](https://cran.r-project.org/web/packages/pkgdown/index.html): build website for the `abess` R package.
 

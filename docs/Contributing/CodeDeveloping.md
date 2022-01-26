@@ -33,7 +33,7 @@ Next, four important data type should be determined:
 
 - T1 : type of Y
 - T2 : type of coefficients
-- T3 : type of loss
+- T3 : type of intercept
 - T4 : type of X
 
 The algorithm variable are based on them: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=vector<Algorithm<)
@@ -46,7 +46,7 @@ vector<Algorithm<{T1}, {T2}, {T3}, {T4}>*> algorithm_list(algorithm_list_size);
 > 
 > - Y: dense vector
 > - Coefficients: dense vector
-> - Loss: numeric
+> - Intercept: numeric
 > - X: dense/sparse matrix
 >
 > so that we define: 
@@ -82,9 +82,11 @@ List out_result = abessWorkflow<{T1}, {T2}, {T3}, {T4}>(..., algorithm_list);
 
 The new algorithm should inheritate a base class, called *Algorithm*, which defined in `Algorithm.h`. And then rewrite some virtual function interfaces to fit specify problem. The implementation is modularized such that you can easily extend the package. 
 
-A simplest concrete algorithm looks like:
+<!-- [NOT SUPPORTED]
+A simplest concrete algorithm looks like:  
 
 ```cpp
+// [NOT SUPPORTED]
 #include "Algorithm.h"
 
 template <class T4>
@@ -100,7 +102,7 @@ public:
         // return the current loss
     };
 
-    void d(...){
+    void g(...){
         // define the first order derivative of loss
     };
 
@@ -113,6 +115,9 @@ public:
 
 The abess process can automatically use the loss and its derivatives to complete algorithm. However, it should be noted that if you want to achieve higher efficiency, a FULL concrete algorithm can be: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessLogistic,-%3A%20public%20Algorithm%3CEigen)
 
+-->
+
+A concrete algorithm is like: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessLogistic,-%3A%20public%20Algorithm%3CEigen)
 ```cpp
 #include "Algorithm.h"
 
@@ -178,7 +183,7 @@ It may take a few minutes to install:
 
 Now a file named `cabess.py` will be appeared in the directory `abess/python/src`, which help to link Python and C++. You need to move it into directory `abess/python/abess` and replace the duplicated file there.
 
-Then create a new python file in `abess/python/abess` or open the existed file, such as `abess/python/abess/linear.py`, to add a python API for your new method. 
+Then create a new python file in `abess/python/abess` or open an existed file, such as `abess/python/abess/linear.py`, to add a python API for your new method. 
 
 A simple new method can be added like: [[code temp]](https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=class%20abessPCA(bess_base)%3A).
 
@@ -186,7 +191,7 @@ A simple new method can be added like: [[code temp]](https://github.com/abess-te
 # all algorithms should inheritate the base class `bess_base`
 from .bess_base import bess_base
 
-class abess_new_algorithm(bess_base): 
+class new_algorithm(bess_base): 
     """
     Here is some introduction.
     """
@@ -218,7 +223,7 @@ Now run `$ python setup.py install` again and this time the installation would b
 Congratulation! Your work can now be used by:
 
 ```Python
-from abess import abess_new_algorithm
+from abess import new_algorithm
 ```
 
 #### bess_base
@@ -231,12 +236,12 @@ class bess_base(BaseEstimator):
      def __init__(...):
         # some init
      def fit(...):	
-        # check nput, warp with cpp
+        # check input, warp with cpp
 ```
 
 Actually, it is based on `sklearn.base.BaseEstimator` [[code link]](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html). Two methods, `get_params` and `set_params` are offered in this base class. 
 
-In our package, we write an method called `fit` to realize the abess process. Of cause, you can also override it like `abessPCA`.
+In our package, we write an method called `fit` to realize the abess process. Of cause, you can also override it like `SparsePCA`.
 
 ## Verify you result
 
@@ -320,4 +325,3 @@ A good test code should contain:
 - possible extreme cases;
 
 All test under pytest folder should be checked after coding.
-

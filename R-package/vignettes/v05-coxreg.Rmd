@@ -51,21 +51,21 @@ h(t) = h_0(t)\exp(\eta).
 $$
 where,
 
-* $\eta = x\beta.$
+* $\eta = x\boldsymbol\beta.$
 * $t$ is the survival time.
 * $h(t)$ is the hazard function which evaluate the risk of dying at time $t$.
 * $h_0(t)$ is called the baseline hazard. It describes value of the hazard if all the predictors are zero.
-* $\beta$ measures the impact of covariates.
+* $\boldsymbol\beta$ measures the impact of covariates.
 
 
-Consider two case $i$ and $i'$ that have different x values. Their hazard function can be simply written as follow
+Consider two case $i$ and $i'$ that have different x values. Their hazard functions can be simply written as follow
 
 $$
-h_i(t) = h_0(t)\exp(\eta_i) = h_0(t)\exp(x_i\beta)
+h_i(t) = h_0(t)\exp(\eta_i) = h_0(t)\exp(x_i\boldsymbol\beta)
 $$
 and
 $$
-h_{i'}(t) = h_0(t)\exp(\eta_{i'}) = h_0(t)\exp(x_{i'}\beta).
+h_{i'}(t) = h_0(t)\exp(\eta_{i'}) = h_0(t)\exp(x_{i'}\boldsymbol\beta).
 $$
 The hazard ratio for these two cases is
 
@@ -80,7 +80,7 @@ which is independent of time.
 
 We are going to apply best subset selection to the NCCTG Lung Cancer Dataset. This dataset consists of survival information of patients with advanced lung cancer from the North Central Cancer Treatment Group. The proportional hazards model allows the analysis of survival data by regression modeling.
 Linearity is assumed on the log scale of the hazard. The hazard ratio in Cox proportional hazard model
- is assumed constant. First, we load the data. 
+ is assumed constant. First, we load the data
  
 ```{r}
 lung = read.csv("lung.csv", header = T)
@@ -94,7 +94,7 @@ lung <- na.omit(lung)
 lung <- lung[, -1]
 dim(lung)
 ```
-Then we change the factors into dummy variables with the `model.matrix()` function. Note that the `abess` function will automatically include the intercept.
+Then we change the factors into dummy variables with the `model.matrix()` function. Note that the `abess()` function will automatically include the intercept.
 ```{r}
 lung$ph.ecog <- as.factor(lung$ph.ecog)
 lung <- model.matrix(~., lung)[, -1]
@@ -107,22 +107,16 @@ test <- lung[-(1:round((167*2)/3)), ]
 
 ## Best Subset Selection for CoxPH Regression
 
-The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. For CoxPH model, the survival information should be passed to `y` as a matrix with the first column storing the observed time and the second the status. The covariates should be passed to `x`.
+The `abess()` function in the `abess` package allows you to perform the best subset selection in a highly efficient way. For CoxPH model, the survival information should be passed to `y` as a matrix with the first column storing the observed time and the second the status. The covariates should be passed to `x`.
 
 ```{r}
 library(abess)
 abess_fit <- abess(x = train[, -(1:2)], y = train[, 1:2], family = "cox")
 ```
 
-<!-- By default, the `abess` function implements the ABESS algorithm with the support size changing from 0 to $\min\{p,n/log(n)p \}$ and the best support size is determined by the Generalized information Criterion (GIC). You can change the tunging criterion by specifying the argument `tune.type`. The available tuning criterion now are `gic`, `aic`, `bic`, `ebic` and `cv`. Here we give an example. -->
-
-<!-- ```{r} -->
-<!-- abess_fit.gs <- abess(x = train[, -(1:2)], y = train[, 1:2], family = "cox", tune.type = "bic") -->
-<!-- ``` -->
 ## Interpret the Result
 
-Hold on, we aren't finished yet. After get the estimator, we can further do more exploring work.
-The output of `abess()` function contains the best model for all the candidate support size in the `support.size`. You can use some generic function to quickly draw some information of those estimators.
+After getting the estimator, we can further do more exploring work. The output of `abess()` function contains the best model for all the candidate support size in the `support.size`. You can use some generic function to quickly draw some information of those estimators.
 ```{r}
 # draw the estimated coefficients on all candidate support size
 coef(abess_fit)
@@ -134,7 +128,7 @@ deviance(abess_fit)
 print(abess_fit)
 ```
 
-The `plot.abess()` function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including `coef` for the coefficient value, `l2norm` for the L2-norm of the coefficients, `dev` for the deviance and `tune` for the tuning value. Default if `coef`.
+The `plot.abess()` function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including `coef` for the coefficient value, `l2norm` for the L2-norm of the coefficients, `dev` for the deviance and `tune` for the tuning value.
 ```{r}
 plot(abess_fit, label=T)
 ```
@@ -148,7 +142,7 @@ plot(abess_fit, type="tune")
       
 The tuning value reaches the lowest point at 5. And We might choose the estimated model with support size equals 5 as our final model. 
 
-To extract any model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.
+To extract the specified model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.
 ```{r}
 best.model = extract(abess_fit, support.size = 5)
 str(best.model)
@@ -158,7 +152,7 @@ The return is a list containing the basic information of the estimated model.
 
 ## Make a Prediction
 
-Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value. The `predict.abess()` can provide both `link`, stands for the linear predictors, and the `response`, stands for the fitted relative-risk. Here We will predict fitted relative-risk on the test data.
+Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value. The `predict.abess()` can provide both `link`, standing for the linear predictors, and the `response`, standing for the fitted relative-risk. Here We will predict fitted relative-risk on the test data.
 ```{r}
 fitted.results <- predict(abess_fit, newx = test, type = 'response')
 ```

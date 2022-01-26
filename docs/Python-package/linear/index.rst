@@ -5,9 +5,10 @@ This page contains links to :code:`abess.linear` module and its functions.
 It is used for GLM problem. 
 
 .. toctree::
-    abessLm
-    abessLogistic
-    abessPoisson
-    abessCox
-    abessMultigaussian
-    abessMultinomial
+    Linear
+    Logistic
+    Poisson
+    Cox
+    Multigaussian
+    Multinomial
+    Gamma

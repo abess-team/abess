@@ -5,12 +5,18 @@
 <!-- badges: start -->
 [![Python Build](https://github.com/abess-team/abess/actions/workflows/python_test.yml/badge.svg)](https://github.com/abess-team/abess/actions/workflows/python_test.yml)
 [![R Build](https://github.com/abess-team/abess/actions/workflows/r_test.yml/badge.svg)](https://github.com/abess-team/abess/actions/workflows/r_test.yml)
-[![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://app.codecov.io/gh/abess-team/abess)
+[![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://codecov.io/gh/abess-team/abess)
+[![docs](https://readthedocs.org/projects/abess/badge/?version=latest)](https://abess.readthedocs.io/en/latest/?badge=latest)
+[![R docs](https://github.com/abess-team/abess/actions/workflows/r_website.yml/badge.svg)](https://abess-team.github.io/abess/)
 [![cran](https://img.shields.io/cran/v/abess?logo=R)](https://cran.r-project.org/package=abess)
+[![pypi](https://badge.fury.io/py/abess.svg)](https://badge.fury.io/py/abess)
+[![pyversions](https://img.shields.io/pypi/pyversions/abess)](https://img.shields.io/pypi/pyversions/abess)
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76)](https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abess-team/abess&amp;utm_campaign=Badge_Grade)
+[![CodeFactor](https://www.codefactor.io/repository/github/abess-team/abess/badge)](https://www.codefactor.io/repository/github/abess-team/abess)
 <!-- badges: end -->
 
-`abess` (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
+`abess` (Adaptive BEst Subset Selection) library aims to solve the general best subset selection problem, i.e., 
 find a small subset of predictors such that the resulting model is expected to have the highest accuracy. 
 The selection for best subset shows great value in scientific researches and practical application. 
 For example, clinicians wants to know whether a patient is health or not based on the expression level of a few of important genes.
@@ -25,7 +31,7 @@ This framework now supports the detection of best subset under:
 It also supports the variants of best subset selection like 
 [group best subset selection](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Best-group-subset-selection),
 [nuisance penalized regression](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Nuisance-Regression),
-Especially, the time complexity of (group) best subset selection for linear regression is certifiably polynomial.
+especially, the time complexity of the best (group) subset selection for linear regression is certifiably polynomial.
 
 ## Installation
 
@@ -78,6 +84,22 @@ By setting `family = "gamma"` in `abess` function, users can analyze the dataset
 * Support robust principal component analysis now. A new R function `abessrpca` can access it.
 
 * Improve the R package document by: adding more details and giving more links related to core functions.  
+
+## Citation         
+
+If you use `abess` or refer to our tutorials in a presentation or publication, we would appreciate citations of our library.
+< Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). “abess: A Fast Best Subset Selection Library in Python and R.” arXiv:2110.09697.>
+
+The corresponding BibteX entry:
+
+```
+@article{zhu-abess-arxiv,
+  author    = {Jin Zhu and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu and Xueqin Wang},
+  title     = {abess: A Fast Best Subset Selection Library in Python and R},
+  journal   = {arXiv:2110.09697},
+  year      = {2021},
+}
+```
 
 ## References
 

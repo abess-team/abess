@@ -1,6 +1,11 @@
 python/abess.egg-info/*
-python/src/test.cpp
-python/src/test.exe
+python/src/*
+!python/src/List.cpp
+!python/src/List.h
+!python/src/numpy.i
+!python/src/pywrap.cpp
+!python/src/pywrap.h
+!python/src/pywrap.i
 R-package/.Rproj.user/
 *.o
 *.exe
@@ -117,3 +122,12 @@ TODO.md
 R-package/R/omit
 R-package/pca_x.csv
 python/src/pywrap_wrap.cpp
+
+src/pywrap_wrap.cpp
+src/cabess.py
+R-package/src/Makevars
+R-package/configure~
+R-package/inst/.vscode/settings.json
+R-package/src/.vscode/settings.json
+
+**/.vscode

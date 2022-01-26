@@ -39,6 +39,7 @@
 ^vignettes/v09-fasterSetting\.Rmd$
 ^vignettes/v10-algorithm\.Rmd$
 ^vignettes/v11-power-of-abess\.Rmd$
+^vignettes/v12-Robust-Principal-Component-Analysis\.Rmd$
 ^\.covrignore$
 ^logo\.png$
 ^logo\.svg

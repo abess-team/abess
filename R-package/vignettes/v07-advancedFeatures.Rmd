@@ -1,7 +1,7 @@
 ---
 title: "Advanced Features"
-author: "Jin Zhu"
-date: "6/13/2021"
+author: "Jin Zhu, Yanhang Zhang"
+date: "1/21/2022"
 output:
   html_document: 
     toc: yes
@@ -46,21 +46,20 @@ p <- 20
 support.size <- 3
 dataset <- generate.data(n, p, support.size)
 dataset$beta
-
 abess_fit <- abess(dataset[["x"]], dataset[["y"]], always.include = 6)
 coef(abess_fit, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)])
 ```
 
 ## Regularized Adaptive Best Subset Selection
 
-In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vallina type of $L_0$ constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the `abess` package provides option of best subset selection with $L_2$ norm regularization called the regularized best subset selection (BESS). The model has this following form:
+In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vanilla type of $L_0$ constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the `abess` package provides option of best subset selection with $L_2$ norm regularization called the regularized best subset selection (BESS). The model has this following form:
 
 \begin{align}
-\min_\beta L(\beta) + \lambda \|\beta\|_2^2
+\min_{\boldsymbol\beta} \mathcal{L_n}({\boldsymbol\beta}) + \lambda \|\boldsymbol\beta\|_2^2.
 \end{align}
 
 
-### Carrying out the Regularized Bess
+### Carrying out the Regularized BESS
 
 To implement the regularized BESS, user need to specify a value to the `lambda` in the `abess()` function. This `lambda` value corresponds to the penalization parameter in the model above. Here we give an example.
 
@@ -71,11 +70,10 @@ p <- 30
 snr <- 0.05
 dataset <- generate.data(n, p, snr = snr, seed = 1, beta = rep(c(1, rep(0 ,5)), each = 5), rho = 0.8, cortype = 3)
 data.test <- generate.data(n, p, snr = snr, beta = dataset$beta, seed = 100)
-
 abess_fit <- abess(dataset[["x"]], dataset[["y"]], lambda = 0.7)
 ```
 
-Let's test the regularized best subset selection against the no-regularized one over 100 replicas in terms of prediction performance.
+Let's test the regularized best subset selection against the no-regularized one over 100 replications in terms of prediction performance.
 ```{r}
 M <- 100
 err.l0 <- rep(0, M)
@@ -94,78 +92,42 @@ for(i in 1:M){
   pe.l0 <- norm(data.test$y -predict(abess_l0, newx = data.test$x), '2')
   err.l0l2[i] <- pe.l0
 }
-
 mean(err.l0)
 mean(err.l0l2)
 boxplot(list("ABESS" = err.l0, "RABESS" = err.l0l2))
 ```
 
 We see that the regularized best subset select indeed reduces the prediction error.
-<!-- ```{r} -->
-
-<!-- snr = 0.05 -->
-<!-- dataset <- generate.data(n, p, snr = snr, seed = 1, beta = rep(c(1, rep(0 ,5)), each = 5), rho = 0.8, cortype = 3) -->
-<!-- dataset$beta -->
-
-<!-- data.test <- generate.data(n, p, beta = dataset$beta, seed = 100, snr = snr) -->
-
-<!-- tpr.l0l2 <- rep(0, M) -->
-<!-- fpr.l0l2 <- rep(0, M) -->
-
-<!-- abess_l0 <- abess(dataset[["x"]], dataset[["y"]]) -->
-<!-- beta.l0 = coef(abess_l0, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)]) -->
-<!-- tpr.l0 <-length(which(dataset$beta!=0 & beta.l0[-1] !=0)) -->
-<!-- fpr.l0 <-length(which(dataset$beta==0 & beta.l0[-1] !=0)) -->
-<!-- err.l0l2 = rep(0, M) -->
-<!-- err.l0=norm(data.test$y -predict(abess_l0, newx = data.test$x), '2') -->
-<!-- # tpr <- rep(0, M) -->
-<!-- M=100 -->
-<!-- lambda_list = exp(seq(log(5) ,log(0.001), length.out = M)) -->
-<!-- # dataset <- generate.data(n, p, support.size, snr = 0.5, seed = 123) -->
-<!-- # dataset$beta -->
-<!-- # -->
-<!-- # data.test <- generate.data(n, p, beta = dataset$beta, seed = 100, snr = snr) -->
-
-<!-- for(i in 1:M){ -->
-
-<!--   abess_fit <- abess(dataset[["x"]], dataset[["y"]], lambda = lambda_list[i]) -->
-<!--   beta.fit = coef(abess_fit, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)]) -->
-<!--   tpr.l0l2[i] = length(which(dataset$beta !=0 & beta.fit[-1] !=0)) -->
-<!--   fpr.l0l2[i] = length(which(dataset$beta ==0 & beta.fit[-1] !=0)) -->
-<!--   # coef(abess_fit, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)]) -->
-<!--   # -->
-<!--   err.l0l2[i] = norm(data.test$y - predict(abess_fit, newx = data.test$x),'2') -->
 
 
-<!--   # abess_l0 <- abess(dataset[["x"]], dataset[["y"]]) -->
-<!--   # beta.l0 = coef(abess_l0, support.size = abess_fit$support.size[which.min(abess_fit$tune.value)]) -->
-<!--   # tpr.l0[i] =length(which(dataset$beta!=0 & beta.l0[-1] !=0)) -->
-<!--   # fpr.l0[i] = length(which(dataset$beta==0 & beta.l0[-1] !=0)) -->
-<!--   # err.l0 = norm(data.test$y -predict(abess_l0, newx = data.test$x), '2') -->
-<!-- } -->
-<!-- ``` -->
 
+## Best group subset selection      
+Group linear model is a linear model which the $p$ predictors are separated into $J$ pre-determined non-overlapping groups,
 
-## Best group subset selection        
-Best group subset selection (BGSS) aims to choose a small part of non-overlapping groups to achieve the best interpretability on the response variable. 
-BGSS is practically useful for the analysis of ubiquitously existing variables with certain group structures.
-For instance, a categorical variable with several levels is often represented by a group of dummy variables.
-Besides, in a nonparametric additive model, a continuous component can be represented by a set of basis functions
-(e.g., a linear combination of spline basis functions).
-Finally, specific prior knowledge can impose group structures on variables. A typical example is that
-the genes belonging to the same biological pathway can be considered as a group in the genomic data analysis.
+$$
+y = \sum_{j=1}^J X_{G_j} \boldsymbol{\beta_{G_j}}+\epsilon,
+$$
+where $\{G_j\}_{j=1}^J$ are the group indices of the $p$ predictors.
+
+Best group subset selection (BGSS) aims to choose a small part of groups to achieve the best interpretability on the response variable. 
+BGSS is practically useful for the analysis of variables with certain group structures.
+<!-- For instance, a categorical variable with several levels is often represented by a group of dummy variables. -->
+<!-- Besides, in a nonparametric additive model, a continuous component can be represented by a set of basis functions -->
+<!-- (e.g., a linear combination of spline basis functions). -->
+<!-- Finally, specific prior knowledge can impose group structures on variables. A typical example is that -->
+<!-- the genes belonging to the same biological pathway can be considered as a group in the genomic data analysis. -->
 
 The BGSS can be achieved by solving:
 \begin{equation}\label{eq:constraint}
-\min\limits_{\beta \in \mathbb{R}^p} \frac{1}{2n}\|y-X\beta\|_2^2,\quad s.t.\ \|\beta\|_{0,r}\leqslant s,
+\min\limits_{\beta \in \mathbb{R}^p} \mathcal{L_n}({\boldsymbol\beta}),\quad s.t.\ \|\boldsymbol{\beta}\|_{0,2}\leqslant s,
 \end{equation}
-where $\|\beta\|_{0,r} = \sum_{j=1}^J I(\|\beta_{G_j}\|_{2}\neq 0)$ in which $\|.\|_r$ is the $L_2$ norm and model size $s$ is a positive integer to be determined from data.
-Regardless of the NP-hard of this problem, Zhang et al develop a certifiably polynomial algorithm to solve it. 
+where the $\ell_{0,2}$ (-pseudo) norm is defined as $\|{{\boldsymbol\beta}}\|_{0,2} = \sum_{j=1}^J \mathrm{I} (\|\boldsymbol{\beta_{G_j}}\|_2 \neq 0)$ and model size $s$ is a positive integer to be determined from data.
+Regardless of the NP-hard of this problem, Zhang et al develop a certifiably polynomial algorithm with a high probability to solve it. 
 This algorithm is integrated in the `abess` package, and user can handily select best group subset by assigning a proper value to the `group.index` arguments in `abess()` function. 
 
 ### Quick example
 
-We use a synthetic dataset to demonstrate its usage. 
+We use a synthetic dataset to demonstrate its  usage. 
 The dataset consists of 100 observations. Each observation has 20 predictors but only the first three predictors among them have a impact on the response. 
 ```{r}
 set.seed(1234)
@@ -174,7 +136,7 @@ p <- 20
 support.size <- 3
 dataset <- generate.data(n, p, beta = c(10, 5, 5, rep(0, 17)))
 ```
-Support we have some prior information that the second and third variables belong to the same group, then we can set the `group_index` as:
+Supposing we have some prior information that the second and third variables belong to the same group, then we can set the `group_index` as:
 ```{r}
 group_index <- c(1, 2, 2, seq(3, 19, by = 1))
 ```
@@ -192,10 +154,8 @@ In the case of ultra high-dimensional data, it is more effective to do feature s
 
 ### Integrate SIS in `abess` package
 Ultra-high dimensional predictors increase computational cost but reduce estimation accuracy for any statistical procedure. To reduce dimensionality from high to a relatively acceptable level, 
-a fairly general asymptotic framework, named feature screening (sure independence screening) is proposed to tackle even exponentially growing dimension. The feature screening can theoretically maintain all effective predictors with a high probability, which is called ``the sure screening property''.
-
+a fairly general asymptotic framework, named feature screening (sure independence screening) is proposed to tackle even exponentially growing dimension. The feature screening can theoretically maintain all effective predictors with a high probability, which is called the sure screening property.
 In the `abess()` function, to carrying out the Integrate SIS, user need to passed an integer smaller than the number of the predictors to the `screening.num`. Then the `abess()` function will first calculate the marginal likelihood of each predictor and reserve those predictors with the `screening.num` largest marginal likelihood. Then, the ABESS algorithm is conducted only on this screened subset. Here is an example.
-
 ```{r}
 library(abess)
 n <- 100

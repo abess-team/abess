@@ -57,7 +57,7 @@ test_batch <- function(abess_fit, dataset, family) {
   ## deviance
   f <- family()
   if (f[["family"]] == "gaussian") {
-    oracle_dev <- mean((oracle_est[["residuals"]])^2)
+    oracle_dev <- mean((oracle_est[["residuals"]])^2) / 2
   } else if (f[["family"]] == "Gamma") {
     oracle_dev <- extract(abess_fit)[["dev"]]
   } else if (f[["family"]] != "poisson") {
@@ -539,4 +539,52 @@ test_that("abess (gamma) works", {
   )
 
   test_batch(abess_fit, dataset, Gamma)
+})
+
+test_that("abess (one variable input) works", {
+  n <- 100
+  p <- 1
+  support.size <- 1
+  dataset <- generate.data(n, p, support.size, seed = 1)
+
+  abess_fit <- abess(
+    dataset[["x"]],
+    dataset[["y"]],
+    tune.type = "gic",
+    support.size = 0:support.size
+  )
+  test_batch(abess_fit, dataset, gaussian)
+  
+  abess_fit <- abess(
+    dataset[["x"]],
+    dataset[["y"]],
+    tune.type = "cv",
+    support.size = 0:support.size
+  )
+  test_batch(abess_fit, dataset, gaussian)
+})
+
+test_that("abess (init.active.set) works", {
+  n <- 100
+  p <- 50
+  support.size <- 3
+  dataset <- generate.data(n, p, support.size, seed = 1)
+  
+  abess_fit <- abess(
+    dataset[["x"]],
+    dataset[["y"]],
+    tune.type = "gic",
+    support.size = 0:support.size, 
+    init.active.set = c(1, 2)
+  )
+  test_batch(abess_fit, dataset, gaussian)
+  
+  abess_fit <- abess(
+    dataset[["x"]],
+    dataset[["y"]],
+    tune.type = "gic",
+    support.size = 0:support.size, 
+    init.active.set = 1:4
+  )
+  test_batch(abess_fit, dataset, gaussian)
 })

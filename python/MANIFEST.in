@@ -5,13 +5,10 @@ recursive-include src *
 include pre.sh
 include cygwinccompiler.py
 include distutils.cfg
-recursive-include example *
-recursive-include perform *
 recursive-include abess *
-
 
 exclude src/test_*.cpp
 exclude src/*.o
 exclude src/*.def
-
-recursive-exclude test *
+exclude src/pywrap_wrap.cpp
+exclude src/cabess.py
