@@ -94,8 +94,9 @@ print("predicted coef: ", model.coef_[ind])
 
 
 import pandas as pd
+import os
 
-data2 = pd.read_csv('Hitters.csv')
+data2 = pd.read_csv(os.path.join(os.getcwd(), 'Hitters.csv'))
 print(data2.shape)
 
 
@@ -178,4 +179,3 @@ plt.show()
 # R tutorial 
 # ~~~~~~~~~~~~~~~~~~~~~~
 # For R tutorial, please view [https://abess-team.github.io/abess/articles/v01-abess-guide.html](https://abess-team.github.io/abess/articles/v01-abess-guide.html).
-
