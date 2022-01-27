@@ -9,7 +9,7 @@ This notebook introduces what is adaptive best subset selection robust principal
 # ---------------------------
 # Principal component analysis (PCA) is an important method in the field of data science, which can reduce the dimension of data and simplify our model. It solves an optimization problem like:
 # 
-# ..math::
+# .. math::
 #     \max_{v} v^T\Sigma v,\qquad s.t.\quad v^Tv=1.
 # 
 # 
@@ -29,7 +29,7 @@ This notebook introduces what is adaptive best subset selection robust principal
 # 
 # In mathematics, RPCA manages to divide the sample matrix :math:`X` into two parts: 
 # 
-# ..math::
+# .. math::
 #     X = S + L, 
 # 
 # 
@@ -40,7 +40,7 @@ This notebook introduces what is adaptive best subset selection robust principal
 # 
 # In Lagrange format, 
 # 
-# ..math::
+# .. math::
 #     \min _{S, L}\|X-S-L\|_{F} \leq \varepsilon, s . t . \quad \operatorname{rank}(L)=r,\|S\|_{0} \leq s
 # 
 # 
@@ -50,7 +50,7 @@ This notebook introduces what is adaptive best subset selection robust principal
 # > Note that it does NOT deal with "noise", which may stay in :math:`L` and need further procession.  
 # 
 # Hard Impute
-# ---------------------------
+# ^^^^^^^^^^^^^^^^^^^
 # To solve its sub-problem, RPCA under known outlier positions, we follow a process called "Hard Impute".
 # The main idea is to estimate the outlier values by precise values with KPCA, where :math:`K=r`.
 # 
@@ -78,8 +78,8 @@ This notebook introduces what is adaptive best subset selection robust principal
 # 
 # The final :math:`X_{\text{new}}` is supposed to be :math:`L` under given outlier positions.
 # 
-# ## RPCA Application
-# 
+# RPCA Application
+# ^^^^^^^^^^^^^^^^^^^
 # Recently, RPCA is more widely used, for example,
 # 
 # - Video Decomposition: 
@@ -92,7 +92,8 @@ This notebook introduces what is adaptive best subset selection robust principal
 # due to complex lighting conditions, a small part of the facial features may be unrecognized (e.g. shadow).
 # In the face recognition, we need to remove the effects of shadows and focus on the face data. Actually, since the face data is almost unchanged (for one person), and the shadows affect only a small part, it is also a suitable situation to use RPCA. Here are some examples: 
 # 
-# ![](./fig/rpca_shadow.png)
+# .. image:: ./fig/rpca_shadow.png
+# 
 # 
 
 ###############################################################################
