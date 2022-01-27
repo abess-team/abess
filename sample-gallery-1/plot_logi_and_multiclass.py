@@ -16,7 +16,7 @@ Logistic Regression and Multinomial Extension
 import numpy as np 
 import pandas as pd
 
-dt = pd.read_csv("./train.csv")
+dt = pd.read_csv("train.csv")
 print(dt.head(5))
 
 #%%

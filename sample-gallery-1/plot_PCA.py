@@ -37,8 +37,10 @@ This notebook introduces what is adaptive best subset selection principal compon
 # > With less variables, the PC must have lower explained variance. However, this decrease is slight if we choose a good :math:`s` and at this price, we can interpret the PC much better. It is worthy. 
 # 
 # In the next section, we will show how to form `SparsePCA`.
+#
 # Real Data Example (Communities and Crime Dataset)
 # -----------------------------------------------------------
+#
 # Here we will use real data analysis to show how to form `SparsePCA`. The data we use is from [UCI:
 # Communities and Crime Data Set](https://archive.ics.uci.edu/ml/datasets/Communities+and+Crime) and we pick up its 99 predictive variables as our samples.
 # 

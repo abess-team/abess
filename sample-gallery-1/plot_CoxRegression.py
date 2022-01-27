@@ -51,7 +51,7 @@ Cox Regression
 
 import pandas as pd 
 
-data = pd.read_csv('./cancer.csv')
+data = pd.read_csv('cancer.csv')
 data = data.drop(data.columns[[0, 1]], axis = 1)
 print(data.head())
 
