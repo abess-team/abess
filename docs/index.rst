@@ -16,7 +16,7 @@ to document your module.
    :caption: USING ABESS
    
    Installation
-   Tutorial <auto_gallery-1/index>
+   Tutorial <auto_gallery/index>
    Python API <Python-package/index>
    R package <https://abess-team.github.io/abess/>
    Contributing <Contributing/index>
