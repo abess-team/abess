@@ -42,8 +42,8 @@ Overview
 
 `abess` (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
 find a small subset of predictors such that the resulting model is expected to have the highest accuracy. 
-The selection for best subset shows great value in scientific researches and practical application. 
-For example, clinicians wants to know whether a patient is health or not  
+The selection for best subset shows great value in scientific researches and practical applications. 
+For example, clinicians want to know whether a patient is healthy or not  
 based on the expression level of a few of important genes.
 
 This library implements a generic algorithm framework to find the optimal solution in an extremely fast way [#1abess]_. 
@@ -116,7 +116,7 @@ Runtime Performance
 ===================
 
 To show the power of `abess` in computation, 
-we assess its timings of the CPU execution (seconds) on synthetic datasets, and compare to 
+we assess its timings of the CPU execution (seconds) on synthetic datasets, and compare them to 
 state-of-the-art variable selection methods. 
 The variable selection and estimation results as well as the details of settings are deferred to `Python performance`_  
 and `R performance`_. All computations are conducted on a Ubuntu platform with Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM.
@@ -134,7 +134,7 @@ Results are presented in the below figure:
 .. |pic1| image:: ./image/timings.png
    :width: 100%
 
-It can be see that `abess` uses the least runtime to find the solution. This results can be reproduced by running the commands in shell:
+It can be seen that `abess` uses the least runtime to find the solution. The results can be reproduced by running the commands in shell:
 
 .. code-block:: shell
 
@@ -164,7 +164,7 @@ Conducting the following commands in shell can reproduce the above results:
 Open source software     
 ====================
 
-`abess` is a free software and its source code are publicly available in `Github`_.  
+`abess` is a free software and its source code is publicly available in `Github`_.  
 The core framework is programmed in C++, and user-friendly R and Python interfaces are offered.
 You can redistribute it and/or modify it under the terms of the `GPL-v3 License`_. 
 We welcome contributions for `abess`, especially stretching `abess` to 
@@ -173,12 +173,12 @@ the other best subset selection problems.
 .. _github: https://github.com/abess-team/abess
 .. _GPL-v3 License: https://www.gnu.org/licenses/gpl-3.0.html
 
-What's news
+What's new
 ===========
 
 New features:
 
-- Support user-specified cross validation division.
+- Support user-specified cross-validation division.
 - Support user-specified initial active set.
 - Support flexible support size for sequentially best subset selection for principal component analysis (PCA). 
 
