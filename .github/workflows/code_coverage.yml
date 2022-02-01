@@ -46,11 +46,13 @@ jobs:
           pip install codecov
           # pip install gcovr
           # export CFLAGS="--coverage"
-          python ./python/setup.py install
+          cd python
+          pip install . --user
           ls *
       - name: Generate coverage report
         run: |
-          pytest ./python/pytest --cov=abess --cov-report=xml
+          cd python/pytest
+          pytest -v --cov=abess --cov-report=xml
           # gcovr ./python/src/ --xml
           ls *
           codecov -F Python
