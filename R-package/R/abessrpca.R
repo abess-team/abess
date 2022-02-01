@@ -90,19 +90,28 @@ abessrpca <- function(x,
                       num.threads = 0,
                       seed = 1,
                       ...) {
+  ## 独有                      
   ## strategy for tuning
-  tune.path <- match.arg(tune.path)
-  if (tune.path == "gsection") {
-    path_type <- 2
-  } else if (tune.path == "sequence") {
-    path_type <- 1
-  }
+  # tune.path <- match.arg(tune.path)
+  # if (tune.path == "gsection") {
+  #   path_type <- 2
+  # } else if (tune.path == "sequence") {
+  #   path_type <- 1
+  # }
 
+  check <- 1
+  attr(check,'class') <- 'rpca'
+
+  path_type <- strategy_for_tuning(check,tune.path)
+  rank(check,rank)
+  num_threads <- number_of_thread(check,num.threads)
+  ## 独有
   ## check rank:
   stopifnot(!missing(rank))
   stopifnot(!anyNA(rank))
   stopifnot(all(rank >= 0))
 
+  ## 与PCA一样
   ## check number of thread:
   stopifnot(is.numeric(num.threads) & num.threads >= 0)
   num_threads <- as.integer(num.threads)
@@ -123,6 +132,10 @@ abessrpca <- function(x,
   lambda <- 0
   stopifnot(!anyNA(lambda))
   stopifnot(all(lambda >= 0))
+  #lambda_seq = rank,
+  #lambda_min = 0,
+  #lambda_max = 0,
+  #nlambda = 0,
 
   ## check warm start:
   stopifnot(is.logical(warm.start))
@@ -136,6 +149,7 @@ abessrpca <- function(x,
   stopifnot(is.numeric(max.splicing.iter) & max.splicing.iter >= 1)
   max_splicing_iter <- as.integer(max.splicing.iter)
 
+  ## check x matrix:
   stopifnot(class(x)[1] %in% c("matrix", "data.frame", "dgCMatrix"))
   nvars <- ncol(x)
   nobs <- nrow(x)
@@ -160,8 +174,9 @@ abessrpca <- function(x,
   if (is.null(vn)) {
     vn <- paste0("x", 1:nvars)
   }
-
-  screening_num <- nobs * nvars
+    
+  ## screening num
+  screening_num <- nobs * nvars 
 
   ## group variable:
   group_select <- FALSE

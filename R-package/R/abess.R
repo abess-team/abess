@@ -313,13 +313,15 @@ abess.default <- function(x,
                           num.threads = 0,
                           seed = 1,
                           ...) {
-  tau <- NULL
+  ## 无用
+  tau <- NULL 
 
   ## check lambda
   stopifnot(length(lambda) == 1)
   stopifnot(!anyNA(lambda))
   stopifnot(all(lambda >= 0))
-  lambda.list <- lambda
+  ## 无用
+  lambda.list <- lambda 
   lambda.min <- 0.001
   lambda.max <- 100
   nlambda <- 100
@@ -339,8 +341,8 @@ abess.default <- function(x,
 
   ## check splicing type
   stopifnot(length(splicing.type) == 1)
-  stopifnot(splicing.type %in% c(1, 2))
-  splicing_type <- 2 - splicing.type
+  stopifnot(splicing.type %in% c(1, 2)) 
+  splicing_type <- 2 - splicing.type ## maybe bug
   splicing_type <- as.integer(splicing_type)
 
   ## check max splicing iteration
@@ -701,6 +703,7 @@ abess.default <- function(x,
     }
   }
 
+  ## screening num
   if (is.null(screening.num)) {
     screening <- FALSE
     screening_num <- nvars

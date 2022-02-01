@@ -158,11 +158,13 @@ abesspca <- function(x,
   ## check warm start:
   stopifnot(is.logical(warm.start))
 
+  ## GLM多一行
   ## check splicing type
   stopifnot(length(splicing.type) == 1)
   stopifnot(splicing.type %in% c(1, 2))
   splicing_type <- as.integer(splicing.type)
 
+  ## GLM多一行
   ## check max splicing iteration
   stopifnot(is.numeric(max.splicing.iter) & max.splicing.iter >= 1)
   max_splicing_iter <- as.integer(max.splicing.iter)
@@ -173,13 +175,16 @@ abesspca <- function(x,
   nobs <- nrow(x)
   sparse_X <- ifelse(class(x)[1] %in% c("matrix", "data.frame"), FALSE, TRUE)
   if (sparse_X) {
+    ## GLM变换x
   } else {
     if (is.data.frame(x)) {
       x <- as.matrix(x)
     }
     if (!is.numeric(x)) {
+      ## GLM转换
       stop("x must be a *numeric* matrix/data.frame!")
     }
+    ## GLM不限制
     if (nvars == 1) {
       stop("x should have at least two columns!")
     }
@@ -192,6 +197,7 @@ abesspca <- function(x,
     vn <- paste0("x", 1:nvars)
   }
 
+  ## 独有
   ## check sparse.type
   sparse.type <- match.arg(sparse.type)
   stopifnot(kpc.num >= 1)
@@ -254,6 +260,7 @@ abesspca <- function(x,
   # total_variance <- sum((svdobj[["d"]])^2)
   # v <- svdobj[["v"]]
 
+  ## 无用
   ## check lambda:
   lambda <- 0
   stopifnot(!anyNA(lambda))
@@ -265,6 +272,7 @@ abesspca <- function(x,
     g_index <- 1:nvars - 1
     ngroup <- 1
   } else {
+    ## 差检查
     group_select <- TRUE
     gi <- unique(group.index)
     g_index <- match(gi, group.index) - 1
@@ -272,7 +280,7 @@ abesspca <- function(x,
     ngroup <- length(g_index)
     max_group_size <- max(g_df)
   }
-
+  ## 差别太大
   # sparse level list (sequence):
   if (group_select) {
     s_max <- ngroup
@@ -350,6 +358,7 @@ abesspca <- function(x,
   if (is.null(c.max)) {
     c_max <- max(c(2, round(s_list_max / 2)))
   } else {
+    ## 这部分和GLM一样
     stopifnot(is.numeric(c.max) & c.max >= 1)
     check_integer_warning(
       c.max,
@@ -357,7 +366,8 @@ abesspca <- function(x,
     )
     c_max <- as.integer(c.max)
   }
-
+  
+  ## 差别大
   ## check always included variables:
   if (is.null(always.include)) {
     always_include <- numeric(0)
@@ -379,20 +389,23 @@ abesspca <- function(x,
 
   ## important searching:
   if (is.null(important.search)) {
+    ## 不同
     important_search <- as.integer(0)
   } else {
     stopifnot(is.numeric(important.search))
     stopifnot(important.search >= 0)
+    ## 一行检查
     important_search <- as.integer(important.search)
   }
 
-  ##
+  ## tune support size method:
   tune_type <- match.arg(tune.type)
   if (cov_type == "gram" && tune_type == "cv") {
     warnings("Cross validation is not allow when input a gram matrix.
              Coerce into tune.type = 'gic'.")
     tune_type <- "gic"
   }
+  ## 和GLM本质一样
   ic_type <- map_tunetype2numeric(tune_type)
   if (tune_type != "cv") {
     nfolds <- 1
