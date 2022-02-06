@@ -7,24 +7,24 @@ This notebook introduces what is adaptive best subset selection principal compon
 ###############################################################################
 # PCA
 # ---------------
-# Principal component analysis (PCA) is an important method in the field of data science, which can reduce the dimension of data and simplify our model. It actually solve an optimization problem like:
+# Principal component analysis (PCA) is an important method in the field of data science, which can reduce the dimension of data and simplify our model. It actually solves an optimization problem like:
 # 
 # ..math::
 #     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^Tv=1.
 # 
 # 
-# where :math:`\Sigma = X^TX / (n-1)` and :math:`X` is the **centered** sample matrix. We also denote that :math:`X` is a :math:`n\times p` matrix, where each row is an observation and each column is a variables.
+# where :math:`\Sigma = X^TX / (n-1)` and :math:`X` is the **centered** sample matrix. We also denote that :math:`X` is a :math:`n\times p` matrix, where each row is an observation and each column is a variable.
 # 
-# Then, before further analysis, we can project :math:`X` to :math:`v` (thus dimensional reduction), without losing too much information.
+# Then, before further analysis, we can project :math:`X` to :math:`v` (thus dimension reduction), without losing too much information.
 # 
 # However, consider that: 
 # 
 # - The PC is a linear combination of all primary variables (:math:`Xv`), but sometimes we may tend to use less variables for clearer interpretation (and less computational complexity);
 # - It has been proved that if :math:`p/n` does not converge to :math:`0`, the classical PCA is not consistent, but this would happen in some high-dimensional data analysis.
 # 
-# > For example, in gene analysis, the dataset may contain plenty of genes (variables) and we would like to find a subset of them, which can explain most information. Compared with using all genes, this small subset may perform better on interpretation, without loss much information. Then we can focus on these variables in the further analysis.
+# > For example, in gene analysis, the dataset may contain plenty of genes (variables) and we would like to find a subset of them, which can explain most information. Compared with using all genes, this small subset may perform better on interpretation, without losing much information. Then we can focus on these variables in further analysis.
 # 
-# When we trapped by these problems, a classical PCA may not be a best choice, since it use all variables. One of the alternatives is `SparsePCA`, which is able to seek for principal component with a sparsity limitation:
+# When we are trapped by these problems, a classical PCA may not be a best choice, since it uses all variables. One of the alternatives is `SparsePCA`, which is able to seek for principal component with a sparsity limitation:
 # 
 # ..math::
 #     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq s.
@@ -36,15 +36,15 @@ This notebook introduces what is adaptive best subset selection principal compon
 # 
 # > With less variables, the PC must have lower explained variance. However, this decrease is slight if we choose a good :math:`s` and at this price, we can interpret the PC much better. It is worthy. 
 # 
-# In the next section, we will show how to form `SparsePCA`.
+# In the next section, we will show how to perform `SparsePCA`.
 #
 # Real Data Example (Communities and Crime Dataset)
 # -----------------------------------------------------------
 #
-# Here we will use real data analysis to show how to form `SparsePCA`. The data we use is from [UCI:
+# Here we will use real data analysis to show how to perform `SparsePCA`. The data we use is from [UCI:
 # Communities and Crime Data Set](https://archive.ics.uci.edu/ml/datasets/Communities+and+Crime) and we pick up its 99 predictive variables as our samples.
 # 
-# Firstly, we read the data and pick up those variables we interested.
+# Firstly, we read the data and pick up those variables we are interested in.
 
 
 
@@ -66,14 +66,14 @@ print(p)
 # 
 # Fixed sparsity
 #  """"""""""""""""""""""""""""""""
-# If we only focus on one fixed sparsity, you can simply give a single integer to fit on this situation. And then the fitted sparse principal component is stored in `SparsePCA.coef_`:
+# If we only focus on one fixed sparsity, we can simply give a single integer to fit on this situation. And then the fitted sparse principal component is stored in `SparsePCA.coef_`:
 
 
 
 model = SparsePCA(support_size = 20)
 
 #%%
-# Give either :math:`X` or :math:`\Sigma` to `model.fit()` and the fitting process will start. The argument `is_normal = False` here means that the program will not normalize :math:`X`. Note that if both :math:`X` and :math:`Sigma` are given, the program prefer to use :math:`X`.
+# Give either :math:`X` or :math:`\Sigma` to `model.fit()`, the fitting process will start. The argument `is_normal = False` here means that the program will not normalize :math:`X`. Note that if both :math:`X` and :math:`Sigma` are given, the program prefers to use :math:`X`.
 
 
 
@@ -94,7 +94,7 @@ print(model.coef_.T)
 # """"""""""""""""""""""""""""""""
 # What's more, **abess** also support a range of sparsity and adaptively choose the best-explain one. However, usually a higher sparsity level would lead to better explaination.
 # 
-# Now, you need to build an :math:`s_{max} \times 1` binomial matrix, where :math:`s_{max}` indicates the max target sparsity and each row indicates one sparsity level (i.e. start from :math:`1`, until :math:`s_{max}`). For each position with :math:`1`, **abess** would try to fit the model under that sparsity and finally give the best one.
+# Now, we need to build an :math:`s_{max} \times 1` binomial matrix, where :math:`s_{max}` indicates the max target sparsity and each row indicates one sparsity level (i.e. start from :math:`1`, till :math:`s_{max}`). For each position with :math:`1`, **abess** would try to fit the model under that sparsity and finally give the best one.
 
 
 # fit sparsity from 1 to 20
@@ -109,7 +109,7 @@ print('non-zero position: \n', temp)
 print(model.coef_.T)
 
 #%%
-# *Because of warm-start, the results here may not be the same as fitted sparsity.*
+# *Because of warm-start, the results here may not be the same as fixed sparsity.*
 # 
 # Then, the explained variance can be computed by:
 
@@ -124,7 +124,7 @@ print( 'explained ratio: ', explained / total )
 ###############################################################################
 # More on the results
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^
-# We can give different target sparsity (change `s_begin` and `s_end`) to get different sparse loading. Interestingly, we can seek for a smaller sparsity which can explain most of the variance.
+# We can give different target sparsity (change `s_begin` and `s_end`) to get different sparse loadings. Interestingly, we can seek for a smaller sparsity which can explain most of the variance.
 # 
 # In this example, if we try sparsities from :math:`0` to :math:`p`, and calculate the ratio of explained variance:
 
@@ -188,7 +188,7 @@ print('non-zero position: \n', temp)
 # ----------------------------
 # Group PCA
 # ^^^^^^^^^^^^^^^^^^^
-# Furthermore, in some situation, some variables may need to consider together, that is, they should be "used" or "unused" for PC at the same time, which we call "group information". The optimization problem becomes:
+# Furthermore, in some situations, some variables may need to be considered together, that is, they should be "used" or "unused" for PC at the same time, which we call "group information". The optimization problem becomes:
 # 
 # :math:``
 #     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^Tv=1,\ \sum_{g=1}^G I(||v_g||\neq 0)\leq s.
@@ -196,7 +196,7 @@ print('non-zero position: \n', temp)
 # 
 # where we suppose there are :math:`G` groups, and the :math:`g`-th one correspond to :math:`v_g`, :math:`v = [v_1^{\top},v_2^{\top},\cdots,v_G^{\top}]^{\top}`. Then we are interested to find :math:`s` (or less) important groups.
 # 
-# > Group problem is extraordinary important in real data analysis. Still take gene analysis as an example, several sites would be related to one charcter, and it is meaningless to consider each of them alone. 
+# > Group problem is extraordinarily important in real data analysis. Still take gene analysis as an example, several sites would be related to one character, and it is meaningless to consider each of them alone. 
 # 
 # `SparsePCA` can also deal with group information. Here we make sure that variables in the same group address close to each other (if not, the data should be sorted first).
 # 
@@ -210,7 +210,7 @@ print('non-zero position: \n', temp)
 # - Group 15: {the 91st, 92nd, ..., 96th variable};
 # - Group 16: {the 97th, 98th, 99th variables}.
 # 
-# Denote different groups as different number:  
+# Denote different groups as different numbers:  
 
 
 g_info = np.arange(17) 

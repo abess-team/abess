@@ -8,17 +8,17 @@ Multi-Response Linear Regression
 # Multivariate multi-response linear regression (a.k.a., multi-task learning) aims at predicting multiple responses at the same time, and thus, it is a natural extension for classical linear regression where the response is univariate. 
 # Multivariate multi-response linear regression (MMLR) is very helpful for the analysis of correlated response such as chemical measurements for soil samples and 
 # microRNAs associated with Glioblastoma multiforme cancer. 
-# Let :math:`y` is :math:`m`-dimensional response variable, 
+# Suppose :math:`y` is an :math:`m`-dimensional response variable, 
 # :math:`x` is :math:`p`-dimensional predictors, 
-# :math:`B \in R^{m \times p}` is coefficient matrix, 
+# :math:`B \in R^{m \times p}` is the coefficient matrix, 
 # the MMLR model for the multivariate response is given by
 # 
 # ..math::
 #   y = B x + \epsilon,
 # 
-# where :math:`\epsilon` is :math:`m`-dimensional random noise variable with zero mean. 
+# where :math:`\epsilon` is an :math:`m`-dimensional random noise variable with zero mean. 
 # 
-# Due to the Occam`s razor principal or the high-dimensionality of predictors, it is meaningful to use a small amount of predictors to conduct multi-task learning. For example, understanding the relationship between gene expression and symptoms of a disease have significant importance in identifying potential makers. Many diseases usually involve multiple manifestations and those manifestations are usually related. In some cases, it makes sense to predict those manifestations using a small but the same set of predictors. The best subset selection problem under the MMLR model is formulated as 
+# Due to the Occam`s razor principle or the high-dimensionality of predictors, it is meaningful to use a small amount of predictors to conduct multi-task learning. For example, understanding the relationship between gene expression and symptoms of a disease has significant importance in identifying potential markers. Many diseases usually involve multiple manifestations and those manifestations are usually related. In some cases, it makes sense to predict those manifestations using a small but the same set of predictors. The best subset selection problem under the MMLR model is formulated as 
 # 
 # ..math::
 #   \frac{1}{2n} \| Y - XB \|_{2}^2, \text{ subject to: } \| B \|_{0, 2} \leq s,
@@ -27,13 +27,13 @@ Multi-Response Linear Regression
 # :math:`n` observations` response and predictors, respectively. 
 # Here :math:`\| B \|_{0, 2} = \sum_{i = 1}^{p} I(B_{i\cdot} = {\bf 0})`, 
 # where :math:`B_{i\cdot}` is the :math:`i`-th row of coefficient matrix :math:`B` and 
-# :math:`{\bf 0} \in R^{m}` is an all zero vector. 
+# :math:`{\bf 0} \in R^{m}` is an all-zero vector. 
 # 
 # Simulated Data Example
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # We use an artificial dataset to demonstrate how to solve best subset selection problem for MMLR with `abess` package. 
-# The `make_multivariate_glm_data()` function provides a simple way to generate suitable for this task. 
-# The synthetic data have 100 observations with 3-dimensional responses and 20-dimensional predictors. Note that there are three predictors have an impact on the responses.
+# The `make_multivariate_glm_data()` function provides a simple way to generate suitable dataset for this task. 
+# The synthetic data have 100 observations with 3-dimensional responses and 20-dimensional predictors. Note that there are three predictors having an impact on the responses.
 
 
 from abess.datasets import make_multivariate_glm_data
@@ -55,7 +55,7 @@ print("non-zero: ", set(np.nonzero(data.coef_)[0]))
 ###############################################################################
 # Model Fitting
 # """"""""""""""
-# To carry out sparse mutli-task learning, you can call the `MultiTaskRegression` like:
+# To carry out sparse mutli-task learning, we can call the `MultiTaskRegression` like:
 
 
 from abess import MultiTaskRegression
@@ -70,12 +70,12 @@ print(model.coef_)
 print("non-zero: ", set(np.nonzero(model.coef_)[0]))
 
 #%%
-# The outputs show that the support set is correctly identify and the parameter estimation approach to the truth.    
+# The outputs show that the support set is correctly identifing and the parameter estimation approaches to the truth.    
 # 
 # More on the results
 # """"""""""""""""""""""""""""
-# Since there are three responses, there are three solution paths, which correspond to three responses, respectively. 
-# To plot the figure, we can fix the `support_size` at different level:
+# Since there are three responses, we have three solution paths, which correspond to three responses, respectively. 
+# To plot the figure, we can fix the `support_size` at different levels:
 
 
 

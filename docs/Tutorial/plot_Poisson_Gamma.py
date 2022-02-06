@@ -5,7 +5,7 @@ Positive response: Poisson and Gamma regression
 ###############################################################################
 # Poisson Regression
 # ----------------------
-# Poisson Regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of costumers in line at a reception desk. The expectation of the response variables is assumed to follow a Poisson distribution.
+# Poisson Regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of customers in line at a reception desk. The expectation of the response variables is assumed to follow a Poisson distribution.
 # 
 # The general mathematical equation for Poisson regression is
 # 
@@ -16,7 +16,7 @@ Positive response: Poisson and Gamma regression
 # ### Simulated Data Example
 # 
 # We generate some artificial data using this logic.
-# Consider a dataset containing `n=100` observations with `p=6` variables. The `make_glm_data()` function allow you to generate simulated data. By specifying `k = 3`, here we set only 3 of the 6 variables have effect on the expectation of the response. 
+# Consider a dataset containing `n=100` observations with `p=6` variables. The `make_glm_data()` function allows uss to generate simulated data. By specifying `k = 3`, we set only 3 of the 6 variables to have effect on the expectation of the response. 
 # 
 
 import numpy as np
@@ -38,7 +38,7 @@ print("the first 5 y:\n",data.y[0:5])
 ###############################################################################
 # Model Fitting
 # ^^^^^^^^^^^^^^^^^^^^^^^ 
-# The `PoissonRegression()` function in the **abess** package allows you to perform best subset selection in a highly efficient way. You can call the function using formula like: 
+# The `PoissonRegression()` function in the **abess** package allows you to perform best subset selection in a highly efficient way. We can call the function using formula like: 
 
 
 from abess.linear import PoissonRegression
@@ -47,7 +47,7 @@ model = PoissonRegression(support_size = range(7))
 model.fit(data.x, data.y)
 
 #%%
-# where `support_size` contains the level of sparsity we consider, and the program can adaptively choose the "best" one. The result of coefficients can be viewed on `model.coef_`:
+# where `support_size` contains the level of sparsity we consider, and the program can adaptively choose the "best" one. The result of coefficients can be viewed through `model.coef_`:
 
 
 
@@ -58,7 +58,7 @@ print(model.coef_)
 # 
 # More on the Results
 # ^^^^^^^^^^^^^^^^^^^^^^^ 
-# Actually, we can also plot the path of coefficients in abess process. This can be computed by fitting the `support_size` in one number from 0 to 6:
+# Actually, we can also plot the path of coefficients in abess process. This can be computed by fixing the `support_size` as one number from 0 to 6 each time:
 
 
 
@@ -81,7 +81,7 @@ plt.legend()
 plt.show()
 
 #%%
-# And the decreasing of information criterion (by default, we use EBIC):
+# And the evolution of information criterion (by default, we use EBIC):
 
 
 
@@ -91,11 +91,11 @@ plt.ylabel('EBIC')
 plt.show()
 
 #%%
-# The lowest point is shown on `support_size=3` and that's why the program choose 3 variables as output.
+# The lowest point is shown on `support_size=3` and that's why the program chooses 3 variables as output.
 # 
 # Gamma Regression
 # ----------------------
-# Gamma regression can be used when you have positive continuous response variables such as payments for insurance claims, or the lifetime of a redundant system. It is well known that the density of Gamma distribution can be represented as a function of a mean parameter (:math:`\mu`) and a shape parameter (:math:`\alpha`), specifically,
+# Gamma regression can be used when you have positive continuous response variables such as payments for insurance claims, or the lifetime of a redundant system. It is well known that the density of Gamma distribution can be represented as a function of a mean parameter (:math:`\mu`) and a shape parameter (:math:`\alpha`), respectively,
 # 
 # ..math::
 #   f(y \mid \mu, \alpha)=\frac{1}{y \Gamma(\alpha)}\left(\frac{\alpha y}{\mu}\right)^{\alpha} e^{-\alpha y / \mu} {I}_{(0, \infty)}(y),

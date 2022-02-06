@@ -1,7 +1,7 @@
 """
 Logistic Regression and Multinomial Extension
 ===============================================
-# We would like to use an example to show how the best subset selection for logistic regression work in our program.
+# We would like to use an example to show how the best subset selection for logistic regression works in our program.
 """
 
 ###############################################################################
@@ -10,7 +10,7 @@ Logistic Regression and Multinomial Extension
 # Titanic Dataset
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # Consider the Titanic dataset obtained from the Kaggle competition: https://www.kaggle.com/c/titanic/data. 
-# The dataset consists of data about 889 passengers, and the goal of the competition is to predict the survival (yes/no) based on features including the class of service, the sex, the age etc. 
+# The dataset consists of data of 889 passengers, and the goal of the competition is to predict the survival status (yes/no) based on features including the class of service, the sex, the age, etc. 
 
 
 import numpy as np 
@@ -20,7 +20,7 @@ dt = pd.read_csv("train.csv")
 print(dt.head(5))
 
 #%%
-# We only focus on some numeric or classification variables:
+# We only focus on some numerical or categorical variables:
 # 
 # - predictor variables: :math:`Pclass,\ Sex,\ Age,\ SibSp,\ Parch,\ Fare,\ Embarked`;
 # - response variable is :math:`Survived`.
@@ -32,7 +32,7 @@ dt['Pclass'] = dt['Pclass'].astype(str)
 print(dt.head(5))
 
 #%%
-# However, some rows contain missing value (NaN) and we need to drop them.
+# However, some rows contain missing values (NaN) and we need to drop them.
 
 
 
@@ -80,7 +80,7 @@ print('train_y:\n', train_y[0:5])
 ###############################################################################
 # Model Fitting
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-# The `LogisticRegression()` function in the `abess.linear` allows you to perform best subset selection in a highly efficient way. For example, in the Titanic sample, if you want to look for a best subset with no more than 5 variables on the logistic model, you can call:
+# The `LogisticRegression()` function in the `abess.linear` allows us to perform best subset selection in a highly efficient way. For example, in the Titanic sample, if you want to look for a best subset with no more than 5 variables on the logistic model, you can call:
 
 
 from abess.linear import LogisticRegression
@@ -97,7 +97,7 @@ model.fit(train_x, train_y)
 print(model.coef_)
 
 #%%
-# By default, the `LogisticRegression` function set the `support_size = range(0, min(p,n/log(n)p)` and the best support size is determined by theExtended Bayesian Information Criteria (EBIC). You can change the tunging criterion by specifying the argument `ic_type`. The available tuning criterion now are `gic`, `aic`, `bic`, `ebic`. 
+# By default, the `LogisticRegression` function set `support_size = range(0, min(p,n/log(n)p)` and the best support size is determined by the Extended Bayesian Information Criteria (EBIC). You can change the tunging criterion by specifying the argument `ic_type`. The available tuning criteria now are `gic`, `aic`, `bic`, `ebic`. 
 # 
 # For a quicker solution, you can change the tuning strategy to a golden section path which trys to find the elbow point of the tuning criterion over the hyperparameter space. Here we give an example.
 
@@ -107,12 +107,12 @@ model_gs.fit(train_x, train_y)
 print(model_gs.coef_)
 
 #%%
-# where `s_min` and `s_max` bound the support size and this model give the same answer as before.
+# where `s_min` and `s_max` bound the support size and this model gives the same answer as before.
 
 # More on the Results
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # After fitting with `model.fit()`, we can further do more exploring work to interpret it. 
-# As we show above, `model.coef_` contains the sparse coefficients of variables and those non-zero values indicates "important" varibles chosen in the model.
+# As we show above, `model.coef_` contains the sparse coefficients of variables and those non-zero values indicate \"important\" varibles chosen in the model.
 
 
 print('Intercept: ', model.intercept_)
@@ -133,7 +133,7 @@ fitted_y = model.predict(test_x)
 print(fitted_y)
 
 #%%
-# Besides, you can also call for the survival probability of each observation by `model.predict_proba()`. Actually, those who with a probability greater than 0.5 is classified to "1" (survived).
+# Besides, we can also call for the survival probability of each observation by `model.predict_proba()`. Actually, those people with a probability greater than 0.5 are classified as "1" (survived)..
 
 
 
@@ -174,13 +174,13 @@ print('AUC: ', auc(fpr, tpr))
 #     \mathbb{P}(y=j) = \frac{\exp(x^T\beta^{(j)})}{1+\sum_{k=1}^{K-1} \exp(x^T\beta^{(k)})},
 # 
 # 
-# and subsequently, we would predict the :math:`j^*`-th class if the :math:`j^*=\arg\max_j \mathbb{P}(y=j)`. Notice that, for :math:`K` possible classes case, there are :math:`p\times(K−1)` unknown parameters: :math:`\beta^{(1)},\dots,\beta^{(K−1)}` to be estimated. Because the number of parameters increase as :math:`K`, it is even more urge to constrain the model complexity. And the best subset selection for multinomial logistic regression aims to maximize the log-likelihood function and control the model complexity by restricting :math:`B=(\beta^{(1)},\dots,\beta^{(K−1)})` with :math:`||B||_{0,2}\leq s` where :math:`||B||_{0,2}=\sum_{i=1}^p I(B_{i\cdot}=0)`, :math:`B_{i\cdot}` is the :math:`i`-th row of coefficient matrix :math:`B` and :math:`0\in R^{K-1}` is an all zero vector. In other words, each row of :math:`B` would be either all zero or all non-zero.
+# and subsequently, we would that the object belongs to the :math:`j^*`-th class if the :math:`j^*=\arg\max_j \mathbb{P}(y=j)`. Notice that, for :math:`K` possible classes case, there are :math:`p\times(K−1)` unknown parameters: :math:`\beta^{(1)},\dots,\beta^{(K−1)}` to be estimated. Because the number of parameters increases as :math:`K`, it is even more urgent to constrain the model complexity. And the best subset selection for multinomial logistic regression aims to maximize the log-likelihood function and control the model complexity by restricting :math:`B=(\beta^{(1)},\dots,\beta^{(K−1)})` with :math:`||B||_{0,2}\leq s` where :math:`||B||_{0,2}=\sum_{i=1}^p I(B_{i\cdot}=0)`, :math:`B_{i\cdot}` is the :math:`i`-th row of coefficient matrix :math:`B` and :math:`0\in R^{K-1}` is an all zero vector. In other words, each row of :math:`B` would be either all zero or all non-zero.
 # 
 # ### Simulated Data Example
 # 
-# We shall conduct Multinomial logistic regression on an artificial dataset for demonstration. The `make_multivariate_glm_data()` provides a simple way to generate suitable for this task. 
+# We shall conduct Multinomial logistic regression on an artificial dataset for demonstration. The `make_multivariate_glm_data()` provides a simple way to generate suitable dataset for this task. 
 # 
-# The assumption behind is the response vector following a multinomial distribution. The artifical dataset contain 100 observations and 20 predictors but only five predictors have influence on the three possible classes.
+# The assumption behind this model is that the response vector follows a multinomial distribution. The artifical dataset contains 100 observations and 20 predictors but only five predictors have influence on the three possible classes.
 
 
 
@@ -214,7 +214,7 @@ print('intercept:\n', model.intercept_)
 print('coefficients:\n', model.coef_)
 
 #%%
-# So those variables used in model can be recognized and we ca find that they are the same as the data's "real" coefficients we generate.
+# So those variables used in model can be recognized and we can find that they are the same as the data's "real" coefficients we generate.
 
 
 
