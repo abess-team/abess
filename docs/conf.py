@@ -99,8 +99,8 @@ html_theme_options = {
     "navigation_depth": 3,
     "logo_only": True,
 }
-html_logo = "./image/icon.png"
-html_favicon = "./image/icon.png"
+html_logo = "./image/apple-touch-icon.png"
+html_favicon = "./image/favicon-32x32.png"
 html_context = {
     # Enable the "Edit in GitHub link within the header of each page.
     "display_github": True,
