@@ -41,7 +41,7 @@ Robust-PCA (RPCA)
 -----------------------------------
 However, the original PCA is sensitive to outliers, which may be unavoidable in real data:
 
-- Object has extreme performance due to fortuity, but he/she shows normal in repeated test;
+- Object has extreme performance due to fortuity, but he/she shows normal in repeated tests;
 - Wrong observation/recording/computing, e.g. missing or dead pixels, X-ray spikes.
 
 In this situation, PCA may spend too much attention on unnecessary variables. 
@@ -104,7 +104,7 @@ Recently, RPCA is more widely used, for example,
 
 - Video Decomposition: 
 in a surveillance video, the background may be unchanged for a long time while only a few pixels (e.g. people) update. 
-In order to improve the efficiency of store and analysis, we need to decomposite the video into background and 
+In order to improve the efficiency of storing and analysis, we need to decomposite the video into background and 
 foreground. Since the background is unchanged, it can be stored well in a low-rank matrix, while the foreground, which is 
 usually quite small, can be indicated by a sparse matrix. That is what RPCA does.
 
@@ -123,7 +123,7 @@ Simulated Data Example
 Fitting model
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Now we generate an example with :math:`100` rows and :math:`100` columns with :math:`200` outliers.
-We are looking forward to recover it with a low rank :math:`10`.
+We are looking forward to recovering it with a low rank :math:`10`.
 
 .. GENERATED FROM PYTHON SOURCE LINES 106-130
 
@@ -191,7 +191,7 @@ In order to use our program, users should call `RobustPCA()` and give the outlie
 
 .. GENERATED FROM PYTHON SOURCE LINES 139-140
 
-It is quite easy to fit this model, with `RobustPCA.fit` function. Given the original sample matrix :math:`X` and :math:`rank(L)` we wnat, the program will give a result quickly.
+It is quite easy to fit this model, with `RobustPCA.fit` function. Given the original sample matrix :math:`X` and :math:`rank(L)` we want, the program will give a result quickly.
 
 .. GENERATED FROM PYTHON SOURCE LINES 140-143
 
@@ -326,12 +326,12 @@ We can also change different random seed to test for more situation:
 
 .. GENERATED FROM PYTHON SOURCE LINES 190-191
 
-Under all of these situations, `RobustPCA` have a good performance.
+Under all of these situations, `RobustPCA` has a good performance.
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.247 seconds)
+   **Total running time of the script:** ( 0 minutes  1.043 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_plot_RPCA.py:

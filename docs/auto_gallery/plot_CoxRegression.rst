@@ -23,9 +23,9 @@ Cox Regression
 
 .. GENERATED FROM PYTHON SOURCE LINES 6-51
 
-Cox Proportional Hazrds Regression
+Cox Proportional Hazards Regression
 ----------------------------------------
-Cox Proportional Hazrds (CoxPH) regression is to describe the survival according to several corvariates. The difference between CoxPH regression and Kaplan-Meier curves or the logrank tests is that the latter only focus on modeling the survival according to one factor (categorical predictor is best) while the former is able to take into consideration any covariates simultaneouly, regardless of whether they're quantitatrive or categorical. The model is as follow:
+Cox Proportional Hazards (CoxPH) regression is to describe the survival according to several corvariates. The difference between CoxPH regression and Kaplan-Meier curves or the logrank tests is that the latter only focus on modeling the survival according to one factor (categorical predictor is best) while the former is able to take into consideration any covariates simultaneouly, regardless of whether they're quantitive or categorical. The model is as follows:
 
 .. math::
   h(t) = h_0(t)\exp(\eta).
@@ -35,12 +35,12 @@ where,
 
 - :math:`\eta = x\beta.`
 - :math:`t` is the survival time.
-- :math:`h(t)` is the hazard function which evaluate the risk of dying at time :math:`t`.
+- :math:`h(t)` is the hazard function which evaluates the risk of dying at time :math:`t`.
 - :math:`h_0(t)` is called the baseline hazard. It describes value of the hazard if all the predictors are zero.
 - :math:`beta` measures the impact of covariates.
 
 
-Consider two case :math:`i` and :math:`i'` that have different x values. Their hazard function can be simply written as follow
+Consider two cases :math:`i` and :math:`i'` that have different :math:`x` values. Their hazard function can be simply written as follow
 
 .. math::
   h_i(t) = h_0(t)\exp(\eta_i) = h_0(t)\exp(x_i\beta),
@@ -200,9 +200,9 @@ We split the dataset into a training set and a test set. The model is going to b
 
 Model Fitting
 """"""""""""""""""""""""""""""
-The `CoxPHSurvivalAnalysis()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. 
+The `CoxPHSurvivalAnalysis()` function in the `abess` package allows we to perform best subset selection in a highly efficient way. 
 
-By default, the function implements the abess algorithm with the support size (sparsity level) changing from 0 to :math:`\min\{p,n/log(n)p \}` and the best support size is determined by EBIC. You can change the tunging criterion by specifying the argument `ic_type` and the support size by `support_size`. The available tuning criterion now are gic, aic, bic, ebic. Here we give an example.
+By default, the function implements the abess algorithm with the support size (sparsity level) changing from 0 to $\\min\\{p,n/log(n)p \\}$ and the best support size is determined by EBIC. You can change the tunging criterion by specifying the argument `ic_type` and the support size by `support_size`. The available tuning criteria now are `gic`, `aic`, `bic`, `ebic`. Here we give an example.
 
 .. GENERATED FROM PYTHON SOURCE LINES 91-98
 
@@ -266,9 +266,9 @@ This result shows that 4 variables (the 2nd, 3rd, 7th, 8th, 9th) are chosen into
 
 More on the results
 """"""""""""""""""""""""""""""
-Hold on, we aren’t finished yet. After get the estimator, we can further do more exploring work. For example, you can use some generic steps to quickly draw some information of those estimators.
+Hold on, we haven’t finished yet. After getting the estimator, we can further do more exploring work. For example, you can use some generic steps to quickly draw some information of those estimators.
 
-Simply fix the `support_size` in different level, you can plot a path of coefficients like: 
+Simply fix the `support_size` in different levels, we can plot a path of coefficients like: 
 
 .. GENERATED FROM PYTHON SOURCE LINES 113-134
 
@@ -309,7 +309,7 @@ Simply fix the `support_size` in different level, you can plot a path of coeffic
 
 .. GENERATED FROM PYTHON SOURCE LINES 135-136
 
-Or a view of decreasing of information criterion:
+Or a view of evolution of information criterion:
 
 .. GENERATED FROM PYTHON SOURCE LINES 136-142
 
@@ -337,7 +337,7 @@ Or a view of decreasing of information criterion:
 
 Prediction is allowed for all the estimated model. Just call `predict()` function under the model you are interested in. The values it return are :math:`\exp(\eta)=\exp(x\beta)`, which is part of Cox PH hazard function.
 
-Here he give the prediction on the `test` data.
+Here we give the prediction on the `test` data.
 
 .. GENERATED FROM PYTHON SOURCE LINES 146-150
 
@@ -373,7 +373,7 @@ Here he give the prediction on the `test` data.
 
 .. GENERATED FROM PYTHON SOURCE LINES 151-152
 
-With these predictions, we can compute the hazard ratio between every two observations (by deviding their values). Or, we can also compute the C-Index for our model, i.e., the probability that, for a pair of randomly chosen comparable samples, the sample with the higher risk prediction will experience an event before the other sample or belong to a higher binary class. 
+With these predictions, we can compute the hazard ratio between every two observations (by dividing their values). And, we can also compute the C-Index for our model, i.e., the probability that, for a pair of randomly chosen comparable samples, the sample with the higher risk prediction will experience an event before the other sample or belong to a higher binary class. 
 
 .. GENERATED FROM PYTHON SOURCE LINES 152-157
 
@@ -412,7 +412,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v05-cox
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  3.604 seconds)
+   **Total running time of the script:** ( 0 minutes  1.672 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_plot_CoxRegression.py:

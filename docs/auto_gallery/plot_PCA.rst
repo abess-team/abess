@@ -26,24 +26,24 @@ This notebook introduces what is adaptive best subset selection principal compon
 
 PCA
 ---------------
-Principal component analysis (PCA) is an important method in the field of data science, which can reduce the dimension of data and simplify our model. It actually solve an optimization problem like:
+Principal component analysis (PCA) is an important method in the field of data science, which can reduce the dimension of data and simplify our model. It actually solves an optimization problem like:
 
 ..math::
     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^Tv=1.
 
 
-where :math:`\Sigma = X^TX / (n-1)` and :math:`X` is the **centered** sample matrix. We also denote that :math:`X` is a :math:`n\times p` matrix, where each row is an observation and each column is a variables.
+where :math:`\Sigma = X^TX / (n-1)` and :math:`X` is the **centered** sample matrix. We also denote that :math:`X` is a :math:`n\times p` matrix, where each row is an observation and each column is a variable.
 
-Then, before further analysis, we can project :math:`X` to :math:`v` (thus dimensional reduction), without losing too much information.
+Then, before further analysis, we can project :math:`X` to :math:`v` (thus dimension reduction), without losing too much information.
 
 However, consider that: 
 
 - The PC is a linear combination of all primary variables (:math:`Xv`), but sometimes we may tend to use less variables for clearer interpretation (and less computational complexity);
 - It has been proved that if :math:`p/n` does not converge to :math:`0`, the classical PCA is not consistent, but this would happen in some high-dimensional data analysis.
 
-> For example, in gene analysis, the dataset may contain plenty of genes (variables) and we would like to find a subset of them, which can explain most information. Compared with using all genes, this small subset may perform better on interpretation, without loss much information. Then we can focus on these variables in the further analysis.
+> For example, in gene analysis, the dataset may contain plenty of genes (variables) and we would like to find a subset of them, which can explain most information. Compared with using all genes, this small subset may perform better on interpretation, without losing much information. Then we can focus on these variables in further analysis.
 
-When we trapped by these problems, a classical PCA may not be a best choice, since it use all variables. One of the alternatives is `SparsePCA`, which is able to seek for principal component with a sparsity limitation:
+When we are trapped by these problems, a classical PCA may not be a best choice, since it uses all variables. One of the alternatives is `SparsePCA`, which is able to seek for principal component with a sparsity limitation:
 
 ..math::
     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^Tv=1,\ ||v||_0\leq s.
@@ -55,15 +55,15 @@ where :math:`s` is a non-negative integer, which indicates how many primary vari
 
 > With less variables, the PC must have lower explained variance. However, this decrease is slight if we choose a good :math:`s` and at this price, we can interpret the PC much better. It is worthy. 
 
-In the next section, we will show how to form `SparsePCA`.
+In the next section, we will show how to perform `SparsePCA`.
 
 Real Data Example (Communities and Crime Dataset)
 -----------------------------------------------------------
 
-Here we will use real data analysis to show how to form `SparsePCA`. The data we use is from [UCI:
+Here we will use real data analysis to show how to perform `SparsePCA`. The data we use is from [UCI:
 Communities and Crime Data Set](https://archive.ics.uci.edu/ml/datasets/Communities+and+Crime) and we pick up its 99 predictive variables as our samples.
 
-Firstly, we read the data and pick up those variables we interested.
+Firstly, we read the data and pick up those variables we are interested in.
 
 .. GENERATED FROM PYTHON SOURCE LINES 48-62
 
@@ -107,7 +107,7 @@ To build an SparsePCA model, we need to give the target sparisty to its `support
 
 Fixed sparsity
  """"""""""""""""""""""""""""""""
-If we only focus on one fixed sparsity, you can simply give a single integer to fit on this situation. And then the fitted sparse principal component is stored in `SparsePCA.coef_`:
+If we only focus on one fixed sparsity, we can simply give a single integer to fit on this situation. And then the fitted sparse principal component is stored in `SparsePCA.coef_`:
 
 .. GENERATED FROM PYTHON SOURCE LINES 70-75
 
@@ -127,7 +127,7 @@ If we only focus on one fixed sparsity, you can simply give a single integer to 
 
 .. GENERATED FROM PYTHON SOURCE LINES 76-77
 
-Give either :math:`X` or :math:`\Sigma` to `model.fit()` and the fitting process will start. The argument `is_normal = False` here means that the program will not normalize :math:`X`. Note that if both :math:`X` and :math:`Sigma` are given, the program prefer to use :math:`X`.
+Give either :math:`X` or :math:`\Sigma` to `model.fit()`, the fitting process will start. The argument `is_normal = False` here means that the program will not normalize :math:`X`. Note that if both :math:`X` and :math:`Sigma` are given, the program prefers to use :math:`X`.
 
 .. GENERATED FROM PYTHON SOURCE LINES 77-83
 
@@ -179,38 +179,26 @@ After fitting, `model.coef_` returns the sparse principal component and its non-
 
  .. code-block:: none
 
-    sparsity:  99
+    sparsity:  20
     non-zero position: 
-     [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-     24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
-     48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71
-     72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95
-     96 97 98]
-    [[2.12199579e-314 6.36598737e-314 1.06099790e-313 1.48539705e-313
-      1.90979621e-313 2.33419537e-313 2.75859453e-313 3.18299369e-313
-      3.60739285e-313 4.03179200e-313 4.45619116e-313 4.88059032e-313
-      5.30498948e-313 5.72938864e-313 6.15378780e-313 6.57818695e-313
-      7.00258611e-313 7.42698527e-313 7.85138443e-313 8.27578359e-313
-      8.70018274e-313 9.12458190e-313 9.54898106e-313 9.97338022e-313
-      1.03977794e-312 1.08221785e-312 1.12465777e-312 1.16709769e-312
-      1.20953760e-312 1.25197752e-312 1.29441743e-312 1.33685735e-312
-      1.37929726e-312 1.42173718e-312 1.46417710e-312 1.50661701e-312
-      1.54905693e-312 1.59149684e-312 1.63393676e-312 1.67637668e-312
-      1.71881659e-312 1.76125651e-312 1.80369642e-312 1.84613634e-312
-      1.88857625e-312 1.93101617e-312 1.97345609e-312 2.01589600e-312
-      2.05833592e-312 4.84184333e-322 1.13736728e-311 4.94065646e-320
-      1.13736732e-311 1.27493560e-308 1.13725454e-311 1.13729286e-311
-      1.13736740e-311 4.94065646e-320 5.21338358e+000 8.47616731e-001
-      8.25203229e+000 1.27485918e-308 1.13725465e-311 1.13725433e-311
-      6.58896913e+000 7.00632650e+000 6.82028644e+000 6.79079694e+000
-      7.04667943e+000 7.08750988e+000 6.82289060e+000 6.76170391e+000
-      2.00000000e+000 2.00000000e+000 1.00000000e+000 1.27470846e-308
-      1.13729287e-311 1.13725444e-311 1.00000000e+000 2.00000000e+000
-      1.00000000e+000 2.00000000e+000 1.00000000e+000 2.00000000e+000
-      2.00000000e+000 2.00000000e+000 2.00000000e+000 2.00000000e+000
-      2.00000000e+000 2.00000000e+000 2.00000000e+000 2.00000000e+000
-      2.00000000e+000 2.00000000e+000 2.00000000e+000 1.00000000e+000
-      2.00000000e+000 2.00000000e+000 1.00000000e+000]]
+     [ 3  4  5 17 28 49 55 56 57 58 59 60 61 62 65 66 67 69 90 96]
+    [[ 0.          0.          0.         -0.20905321  0.15082783  0.26436836
+       0.          0.          0.          0.          0.          0.
+       0.          0.          0.          0.          0.          0.13962306
+       0.          0.          0.          0.          0.          0.
+       0.          0.          0.          0.          0.14795039  0.
+       0.          0.          0.          0.          0.          0.
+       0.          0.          0.          0.          0.          0.
+       0.          0.          0.          0.          0.          0.
+       0.          0.13366389  0.          0.          0.          0.
+       0.          0.28227473  0.28982717  0.29245315  0.29340846 -0.27796975
+       0.27817835  0.20793385  0.19020622  0.          0.          0.15462671
+      -0.13627653  0.25848049  0.         -0.14433668  0.          0.
+       0.          0.          0.          0.          0.          0.
+       0.          0.          0.          0.          0.          0.
+       0.          0.          0.          0.          0.          0.
+       0.27644605  0.          0.          0.          0.          0.
+       0.16881151  0.          0.        ]]
 
 
 
@@ -221,7 +209,7 @@ Adaptive sparsity
 """"""""""""""""""""""""""""""""
 What's more, **abess** also support a range of sparsity and adaptively choose the best-explain one. However, usually a higher sparsity level would lead to better explaination.
 
-Now, you need to build an :math:`s_{max} \times 1` binomial matrix, where :math:`s_{max}` indicates the max target sparsity and each row indicates one sparsity level (i.e. start from :math:`1`, until :math:`s_{max}`). For each position with :math:`1`, **abess** would try to fit the model under that sparsity and finally give the best one.
+Now, we need to build an :math:`s_{max} \times 1` binomial matrix, where :math:`s_{max}` indicates the max target sparsity and each row indicates one sparsity level (i.e. start from :math:`1`, till :math:`s_{max}`). For each position with :math:`1`, **abess** would try to fit the model under that sparsity and finally give the best one.
 
 .. GENERATED FROM PYTHON SOURCE LINES 98-111
 
@@ -264,7 +252,7 @@ Now, you need to build an :math:`s_{max} \times 1` binomial matrix, where :math:
 
 .. GENERATED FROM PYTHON SOURCE LINES 112-115
 
-*Because of warm-start, the results here may not be the same as fitted sparsity.*
+*Because of warm-start, the results here may not be the same as fixed sparsity.*
 
 Then, the explained variance can be computed by:
 
@@ -300,7 +288,7 @@ Then, the explained variance can be computed by:
 
 More on the results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-We can give different target sparsity (change `s_begin` and `s_end`) to get different sparse loading. Interestingly, we can seek for a smaller sparsity which can explain most of the variance.
+We can give different target sparsity (change `s_begin` and `s_end`) to get different sparse loadings. Interestingly, we can seek for a smaller sparsity which can explain most of the variance.
 
 In this example, if we try sparsities from :math:`0` to :math:`p`, and calculate the ratio of explained variance:
 
@@ -339,8 +327,8 @@ In this example, if we try sparsities from :math:`0` to :math:`p`, and calculate
 
  .. code-block:: none
 
-    80%+ :  [44 71 87 94 98]
-    90%+ :  [44 71 87 94 98]
+    80%+ :  [44 54 57 87 98]
+    90%+ :  [54 87 98]
 
 
 
@@ -415,10 +403,7 @@ This result shows that using less than half of all 99 variables can be close to 
  .. code-block:: none
 
     non-zero position: 
-     [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 19 20 21 22 23 24
-     25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48
-     49 50 51 52 53 54 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76
-     77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98]
+     []
 
 
 
@@ -429,7 +414,7 @@ Extension: Group PCA
 ----------------------------
 Group PCA
 ^^^^^^^^^^^^^^^^^^^
-Furthermore, in some situation, some variables may need to consider together, that is, they should be "used" or "unused" for PC at the same time, which we call "group information". The optimization problem becomes:
+Furthermore, in some situations, some variables may need to be considered together, that is, they should be "used" or "unused" for PC at the same time, which we call "group information". The optimization problem becomes:
 
 :math:``
     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^Tv=1,\ \sum_{g=1}^G I(||v_g||\neq 0)\leq s.
@@ -437,7 +422,7 @@ Furthermore, in some situation, some variables may need to consider together, th
 
 where we suppose there are :math:`G` groups, and the :math:`g`-th one correspond to :math:`v_g`, :math:`v = [v_1^{\top},v_2^{\top},\cdots,v_G^{\top}]^{\top}`. Then we are interested to find :math:`s` (or less) important groups.
 
-> Group problem is extraordinary important in real data analysis. Still take gene analysis as an example, several sites would be related to one charcter, and it is meaningless to consider each of them alone. 
+> Group problem is extraordinarily important in real data analysis. Still take gene analysis as an example, several sites would be related to one character, and it is meaningless to consider each of them alone. 
 
 `SparsePCA` can also deal with group information. Here we make sure that variables in the same group address close to each other (if not, the data should be sorted first).
 
@@ -451,7 +436,7 @@ Suppose that the data above have group information like:
 - Group 15: {the 91st, 92nd, ..., 96th variable};
 - Group 16: {the 97th, 98th, 99th variables}.
 
-Denote different groups as different number:  
+Denote different groups as different numbers:  
 
 .. GENERATED FROM PYTHON SOURCE LINES 214-222
 
@@ -546,7 +531,7 @@ The result comes to:
 
  .. code-block:: none
 
-    [[-0.04254394 -0.13073001 -0.02175317  0.21364915 -0.18491782 -0.29566382
+    [[ 0.          0.          0.          0.          0.          0.
        0.          0.          0.          0.          0.          0.
        0.          0.          0.          0.          0.          0.
        0.          0.          0.          0.          0.          0.
@@ -555,8 +540,8 @@ The result comes to:
        0.          0.          0.          0.          0.          0.
        0.          0.          0.          0.          0.          0.
        0.          0.          0.          0.          0.          0.
-      -0.13339245 -0.31870661 -0.32687138 -0.33045196 -0.33116357  0.31134696
-      -0.30753794 -0.23878138 -0.22572062 -0.14031475 -0.11513574 -0.18937091
+      -0.196633   -0.44897571 -0.45494348 -0.45631741 -0.45174114  0.37481605
+       0.          0.          0.          0.          0.          0.
        0.          0.          0.          0.          0.          0.
        0.          0.          0.          0.          0.          0.
        0.          0.          0.          0.          0.          0.
@@ -564,8 +549,8 @@ The result comes to:
        0.          0.          0.          0.          0.          0.
        0.          0.          0.        ]]
     non-zero group: 
-     [ 0  9 10]
-    chosen sparsity:  3
+     [9]
+    chosen sparsity:  1
 
 
 
@@ -688,7 +673,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v08-sPC
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  17.128 seconds)
+   **Total running time of the script:** ( 0 minutes  17.077 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_plot_PCA.py:
