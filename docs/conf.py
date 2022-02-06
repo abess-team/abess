@@ -126,7 +126,7 @@ sphinx_gallery_conf = {
     # path to where to save gallery generated output
     'gallery_dirs': ['auto_gallery'],
     # specify that examples should be ordered according to filename
-    # 'within_subsection_order': FileNameSortKey #,
+    'within_subsection_order': FileNameSortKey,
     # directory where function granular galleries are stored
     # 'backreferences_dir': 'gen_modules/backreferences',
     # Modules for which function level galleries are created.  In
