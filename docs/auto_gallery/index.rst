@@ -37,14 +37,14 @@ In the following pages, the abess Python package is used for illustration. The c
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Multi-Response Linear Regression">
+    <div class="sphx-glr-thumbcontainer" tooltip="ABESS algorithm: details">
 
 .. only:: html
 
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_2_MultiTaskLearning_thumb.png
-     :alt: Multi-Response Linear Regression
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_11_algorithm_thumb.png
+     :alt: ABESS algorithm: details
 
-     :ref:`sphx_glr_auto_gallery_plot_2_MultiTaskLearning.py`
+     :ref:`sphx_glr_auto_gallery_plot_11_algorithm.py`
 
 .. raw:: html
 
@@ -54,18 +54,18 @@ In the following pages, the abess Python package is used for illustration. The c
 .. toctree::
    :hidden:
 
-   /auto_gallery/plot_2_MultiTaskLearning
+   /auto_gallery/plot_11_algorithm
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Cox Regression">
+    <div class="sphx-glr-thumbcontainer" tooltip="Power of abess">
 
 .. only:: html
 
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_5_CoxRegression_thumb.png
-     :alt: Cox Regression
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_12_power_of_abess_thumb.png
+     :alt: Power of abess
 
-     :ref:`sphx_glr_auto_gallery_plot_5_CoxRegression.py`
+     :ref:`sphx_glr_auto_gallery_plot_12_power_of_abess.py`
 
 .. raw:: html
 
@@ -75,49 +75,7 @@ In the following pages, the abess Python package is used for illustration. The c
 .. toctree::
    :hidden:
 
-   /auto_gallery/plot_5_CoxRegression
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Robust Principal Component Analysis">
-
-.. only:: html
-
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_7_RPCA_thumb.png
-     :alt: Robust Principal Component Analysis
-
-     :ref:`sphx_glr_auto_gallery_plot_7_RPCA.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_gallery/plot_7_RPCA
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Positive response: Poisson and Gamma regression">
-
-.. only:: html
-
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_3_Poisson_Gamma_thumb.png
-     :alt: Positive response: Poisson and Gamma regression
-
-     :ref:`sphx_glr_auto_gallery_plot_3_Poisson_Gamma.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_gallery/plot_3_Poisson_Gamma
+   /auto_gallery/plot_12_power_of_abess
 
 .. raw:: html
 
@@ -142,6 +100,48 @@ In the following pages, the abess Python package is used for illustration. The c
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="Multi-Response Linear Regression">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_2_MultiTaskLearning_thumb.png
+     :alt: Multi-Response Linear Regression
+
+     :ref:`sphx_glr_auto_gallery_plot_2_MultiTaskLearning.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_gallery/plot_2_MultiTaskLearning
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Positive response: Poisson and Gamma regression">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_3_Poisson_Gamma_thumb.png
+     :alt: Positive response: Poisson and Gamma regression
+
+     :ref:`sphx_glr_auto_gallery_plot_3_Poisson_Gamma.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_gallery/plot_3_Poisson_Gamma
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="Logistic Regression and Multinomial Extension">
 
 .. only:: html
@@ -163,14 +163,14 @@ In the following pages, the abess Python package is used for illustration. The c
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Computational Improvement">
+    <div class="sphx-glr-thumbcontainer" tooltip="Cox Regression">
 
 .. only:: html
 
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_9_ComputationalImprove_thumb.png
-     :alt: Computational Improvement
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_5_CoxRegression_thumb.png
+     :alt: Cox Regression
 
-     :ref:`sphx_glr_auto_gallery_plot_9_ComputationalImprove.py`
+     :ref:`sphx_glr_auto_gallery_plot_5_CoxRegression.py`
 
 .. raw:: html
 
@@ -180,7 +180,7 @@ In the following pages, the abess Python package is used for illustration. The c
 .. toctree::
    :hidden:
 
-   /auto_gallery/plot_9_ComputationalImprove
+   /auto_gallery/plot_5_CoxRegression
 
 .. raw:: html
 
@@ -205,6 +205,27 @@ In the following pages, the abess Python package is used for illustration. The c
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="Robust Principal Component Analysis">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_7_RPCA_thumb.png
+     :alt: Robust Principal Component Analysis
+
+     :ref:`sphx_glr_auto_gallery_plot_7_RPCA.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_gallery/plot_7_RPCA
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="When analyzing the real world datasets, we may have the following targets:   1. certain variabl...">
 
 .. only:: html
@@ -223,6 +244,27 @@ In the following pages, the abess Python package is used for illustration. The c
    :hidden:
 
    /auto_gallery/plot_8_advanced_features
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Computational Improvement">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_9_ComputationalImprove_thumb.png
+     :alt: Computational Improvement
+
+     :ref:`sphx_glr_auto_gallery_plot_9_ComputationalImprove.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_gallery/plot_9_ComputationalImprove
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>

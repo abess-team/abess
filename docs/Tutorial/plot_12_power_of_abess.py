@@ -1,6 +1,10 @@
-# Power of abess
-# ==============
+"""
+Power of abess
+==============
+"""
+import abess
 
+#%%
 # In this part, we are going to explore the power of the abess package
 # using simulated data. We compare the abess package with popular Python
 # packages:
@@ -14,16 +18,15 @@
 # L0bnb cannot adaptively choose sparsity level. So their results are not
 # showed here.
 
+######################################
 # Simulation
 # ----------
-
 # Setting
 # ~~~~~~~
-
 # Both packages are compared in three aspects including the prediction
 # performance, the variable selection performance, and the computation
 # efficiency.
-
+#
 # -  The prediction performance of the linear model is measured by
 #    :math:`||y−\hat{y}||_2` on a test set and for logistic regression
 #    this is measured by the area under the ROC Curve (AUC).
@@ -36,7 +39,6 @@
 # -  Timings of the CPU execution are recorded in seconds and all the
 #    performances are averaged over 20 replications on a sequence of 100
 #    regularization parameters.
-
 # The simulated data are made by ``abess.datasets.make_glm_data()``. The
 # number of predictors is :math:`p=8000` and the size of data is
 # :math:`n=500`. The true coefficient contains :math:`k=10` nonzero
@@ -48,25 +50,24 @@
 # What’s more, a random noise generated from a standard Gaussian
 # distribution is added to the linear predictor :math:`x′β` for linear
 # regression.
-
+#
 # All experiments are evaluated on a Ubuntu platform with Intel(R)
 # Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM.
-
+#
 # .. code:: bash
-
+#
 #    $ python abess/docs/simulation/Python/perform.py
 
+##############################################################
 # Results
 # ~~~~~~~
-
+#
 #    For linear regression, we compare three methods in the two packages:
 #    Lasso, OMP and abess. For logistic regression, we compare two
 #    methods: lasso and abess.
-
 # The results are presented in the following pictures. The first column is
 # the result of linear regression and the second one is of logistic
 # regression.
-
 # -  Firstly, among all of the methods implemented in different packages,
 #    the estimator obtained by the abess package shows both the best
 #    prediction performance and the best coefficient error.
@@ -75,16 +76,13 @@
 #    methods’ TPR are 1, the figure is not plotted.)
 # -  Furthermore, our abess package is highly efficient compared with
 #    other packages, especially in the linear regression.
-
 # |image0|
-
 # |image1|
-
+#
 # R performance
 # ~~~~~~~~~~~~~
-
 # For R performance, please view
 # https://abess-team.github.io/abess/articles/v11-power-of-abess.html.
-
+#
 # .. |image0| image:: ../image/perform.png
 # .. |image1| image:: ../image/timings.png
