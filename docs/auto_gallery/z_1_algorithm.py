@@ -1,5 +1,9 @@
-# ABESS algorithm: details
-# ========================
+"""
+ABESS algorithm: details
+========================
+"""
+
+import abess
 
 # Introduction 
 # ------------

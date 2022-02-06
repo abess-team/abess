@@ -5,26 +5,30 @@
 
 Computation times
 =================
-**00:32.361** total execution time for **auto_gallery** files:
+**00:00.146** total execution time for **auto_gallery** files:
 
 +--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_6_PCA.py` (``plot_6_PCA.py``)                                   | 00:17.364 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_plot_11_algorithm.py` (``plot_11_algorithm.py``)                     | 00:00.146 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_10_work_with_sklearn.py` (``plot_10_work_with_sklearn.py``)     | 00:09.883 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_plot_10_work_with_sklearn.py` (``plot_10_work_with_sklearn.py``)     | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_9_ComputationalImprove.py` (``plot_9_ComputationalImprove.py``) | 00:01.984 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_plot_12_power_of_abess.py` (``plot_12_power_of_abess.py``)           | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_7_RPCA.py` (``plot_7_RPCA.py``)                                 | 00:01.134 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_plot_1_LinearRegression.py` (``plot_1_LinearRegression.py``)         | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_5_CoxRegression.py` (``plot_5_CoxRegression.py``)               | 00:00.605 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_plot_2_MultiTaskLearning.py` (``plot_2_MultiTaskLearning.py``)       | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_8_advanced_features.py` (``plot_8_advanced_features.py``)       | 00:00.553 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_plot_3_Poisson_Gamma.py` (``plot_3_Poisson_Gamma.py``)               | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_1_LinearRegression.py` (``plot_1_LinearRegression.py``)         | 00:00.250 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_plot_4_logi_and_multiclass.py` (``plot_4_logi_and_multiclass.py``)   | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_4_logi_and_multiclass.py` (``plot_4_logi_and_multiclass.py``)   | 00:00.238 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_plot_5_CoxRegression.py` (``plot_5_CoxRegression.py``)               | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_3_Poisson_Gamma.py` (``plot_3_Poisson_Gamma.py``)               | 00:00.217 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_plot_6_PCA.py` (``plot_6_PCA.py``)                                   | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_2_MultiTaskLearning.py` (``plot_2_MultiTaskLearning.py``)       | 00:00.133 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_plot_7_RPCA.py` (``plot_7_RPCA.py``)                                 | 00:00.000 | 0.0 MB |
++--------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_auto_gallery_plot_8_advanced_features.py` (``plot_8_advanced_features.py``)       | 00:00.000 | 0.0 MB |
++--------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_auto_gallery_plot_9_ComputationalImprove.py` (``plot_9_ComputationalImprove.py``) | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
