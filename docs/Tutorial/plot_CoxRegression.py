@@ -3,9 +3,9 @@ Cox Regression
 =============================
 """
 ###############################################################################
-# Cox Proportional Hazrds Regression
+# Cox Proportional Hazards Regression
 # ----------------------------------------
-# Cox Proportional Hazrds (CoxPH) regression is to describe the survival according to several corvariates. The difference between CoxPH regression and Kaplan-Meier curves or the logrank tests is that the latter only focus on modeling the survival according to one factor (categorical predictor is best) while the former is able to take into consideration any covariates simultaneouly, regardless of whether they're quantitatrive or categorical. The model is as follow:
+# Cox Proportional Hazards (CoxPH) regression is to describe the survival according to several corvariates. The difference between CoxPH regression and Kaplan-Meier curves or the logrank tests is that the latter only focus on modeling the survival according to one factor (categorical predictor is best) while the former is able to take into consideration any covariates simultaneouly, regardless of whether they're quantitive or categorical. The model is as follows:
 # 
 # .. math::
 #   h(t) = h_0(t)\exp(\eta).
@@ -15,12 +15,12 @@ Cox Regression
 # 
 # - :math:`\eta = x\beta.`
 # - :math:`t` is the survival time.
-# - :math:`h(t)` is the hazard function which evaluate the risk of dying at time :math:`t`.
+# - :math:`h(t)` is the hazard function which evaluates the risk of dying at time :math:`t`.
 # - :math:`h_0(t)` is called the baseline hazard. It describes value of the hazard if all the predictors are zero.
 # - :math:`beta` measures the impact of covariates.
 # 
 # 
-# Consider two case :math:`i` and :math:`i'` that have different x values. Their hazard function can be simply written as follow
+# Consider two cases :math:`i` and :math:`i'` that have different :math:`x` values. Their hazard function can be simply written as follow
 # 
 # .. math::
 #   h_i(t) = h_0(t)\exp(\eta_i) = h_0(t)\exp(x_i\beta),
@@ -85,9 +85,9 @@ print('test size:', test.shape[0])
 ###############################################################################
 #  Model Fitting
 # """"""""""""""""""""""""""""""
-# The `CoxPHSurvivalAnalysis()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. 
+# The `CoxPHSurvivalAnalysis()` function in the `abess` package allows we to perform best subset selection in a highly efficient way. 
 # 
-# By default, the function implements the abess algorithm with the support size (sparsity level) changing from 0 to :math:`\min\{p,n/log(n)p \}` and the best support size is determined by EBIC. You can change the tunging criterion by specifying the argument `ic_type` and the support size by `support_size`. The available tuning criterion now are gic, aic, bic, ebic. Here we give an example.
+# By default, the function implements the abess algorithm with the support size (sparsity level) changing from 0 to $\\min\\{p,n/log(n)p \\}$ and the best support size is determined by EBIC. You can change the tunging criterion by specifying the argument `ic_type` and the support size by `support_size`. The available tuning criteria now are `gic`, `aic`, `bic`, `ebic`. Here we give an example.
 
 
 
@@ -107,9 +107,9 @@ print(model.coef_)
 ###############################################################################
 # More on the results
 # """"""""""""""""""""""""""""""
-# Hold on, we aren’t finished yet. After get the estimator, we can further do more exploring work. For example, you can use some generic steps to quickly draw some information of those estimators.
+# Hold on, we haven’t finished yet. After getting the estimator, we can further do more exploring work. For example, you can use some generic steps to quickly draw some information of those estimators.
 # 
-# Simply fix the `support_size` in different level, you can plot a path of coefficients like: 
+# Simply fix the `support_size` in different levels, we can plot a path of coefficients like: 
 
 
 
@@ -132,7 +132,7 @@ plt.legend()
 plt.show()
 
 #%%
-# Or a view of decreasing of information criterion:
+# Or a view of evolution of information criterion:
 
 plt.plot(ic, 'o-')
 plt.xlabel('support_size')
@@ -142,13 +142,13 @@ plt.show()
 #%%
 # Prediction is allowed for all the estimated model. Just call `predict()` function under the model you are interested in. The values it return are :math:`\exp(\eta)=\exp(x\beta)`, which is part of Cox PH hazard function.
 # 
-# Here he give the prediction on the `test` data.
+# Here we give the prediction on the `test` data.
 
 pred = model.predict(test[:, 2:])
 print(pred)
 
 #%%
-# With these predictions, we can compute the hazard ratio between every two observations (by deviding their values). Or, we can also compute the C-Index for our model, i.e., the probability that, for a pair of randomly chosen comparable samples, the sample with the higher risk prediction will experience an event before the other sample or belong to a higher binary class. 
+# With these predictions, we can compute the hazard ratio between every two observations (by dividing their values). And, we can also compute the C-Index for our model, i.e., the probability that, for a pair of randomly chosen comparable samples, the sample with the higher risk prediction will experience an event before the other sample or belong to a higher binary class. 
 
 from sksurv.metrics import concordance_index_censored
 cindex = concordance_index_censored(test[:, 1] == 2, test[:, 0], pred)

@@ -21,7 +21,7 @@ This notebook introduces what is adaptive best subset selection robust principal
 # -----------------------------------
 # However, the original PCA is sensitive to outliers, which may be unavoidable in real data:
 # 
-# - Object has extreme performance due to fortuity, but he/she shows normal in repeated test;
+# - Object has extreme performance due to fortuity, but he/she shows normal in repeated tests;
 # - Wrong observation/recording/computing, e.g. missing or dead pixels, X-ray spikes.
 # 
 # In this situation, PCA may spend too much attention on unnecessary variables. 
@@ -84,7 +84,7 @@ This notebook introduces what is adaptive best subset selection robust principal
 # 
 # - Video Decomposition: 
 # in a surveillance video, the background may be unchanged for a long time while only a few pixels (e.g. people) update. 
-# In order to improve the efficiency of store and analysis, we need to decomposite the video into background and 
+# In order to improve the efficiency of storing and analysis, we need to decomposite the video into background and 
 # foreground. Since the background is unchanged, it can be stored well in a low-rank matrix, while the foreground, which is 
 # usually quite small, can be indicated by a sparse matrix. That is what RPCA does.
 # 
@@ -102,7 +102,7 @@ This notebook introduces what is adaptive best subset selection robust principal
 # Fitting model
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # Now we generate an example with :math:`100` rows and :math:`100` columns with :math:`200` outliers.
-# We are looking forward to recover it with a low rank :math:`10`.
+# We are looking forward to recovering it with a low rank :math:`10`.
 
 
 import numpy as np
@@ -136,7 +136,7 @@ from abess.decomposition import RobustPCA
 model = RobustPCA(support_size = s) # support_size can be a interval like `range(s_min, s_max)`
 
 #%%
-# It is quite easy to fit this model, with `RobustPCA.fit` function. Given the original sample matrix :math:`X` and :math:`rank(L)` we wnat, the program will give a result quickly.
+# It is quite easy to fit this model, with `RobustPCA.fit` function. Given the original sample matrix :math:`X` and :math:`rank(L)` we want, the program will give a result quickly.
 
 model.fit(X, r = r) # r=rank(L)
 
@@ -187,4 +187,4 @@ for seed in range(M):
 print(f'[TPR  FPR] = {res/M}')
 
 #%%
-# Under all of these situations, `RobustPCA` have a good performance.
+# Under all of these situations, `RobustPCA` has a good performance.
