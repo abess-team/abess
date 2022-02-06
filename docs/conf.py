@@ -135,7 +135,9 @@ sphinx_gallery_conf = {
     # 'doc_module': ('SampleModule'),
     'reference_url': {
         'abess': None,
-    }#,
+    },
+    'filename_pattern': '/plot_',
+    'ignore_pattern': r'__init__\.py',
     # 'ignore_pattern': r'noinclude\.py'
     
 }
