@@ -29,7 +29,7 @@ in linear regression with both simulated data and real data.
 Linear Regression
 ------------------------
 
-Our package `abess` implement a polynomial algorithm in the for best-subset selection problem:
+Our package `abess` implements a polynomial algorithm in the following best-subset selection problem:
 
 .. math::
   \min_{\beta\in \mathbb{R}^p} \frac{1}{2n} ||y-X\beta||^2_2,\quad \text{s.t.}\ ||\beta||_0\leq s,
@@ -42,7 +42,7 @@ Simulated Data Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Fixed Support Size Best Subset Selection
 """"""""""""""""""""""""""""""""""""""""""""""
-We generate a design matrix :math:`X` containing 300 observation and each observation has 1000 predictors. The response variable $y$ is linearly related to the first, second, and fifth predictors in $X$:
+We generate a design matrix :math:`X` containing 300 observations and each observation has 1000 predictors. The response variable $y$ is linearly related to the first, second, and fifth predictors in $X$:
  .. math::
   y = 3X_1 + 1.5X_2 + 2X_5 + \epsilon,
 
@@ -128,7 +128,7 @@ From the result, we know that `abess` found which 3 predictors are useful among 
 
 Adaptive Best Subset Selection
 """"""""""""""""""""""""""""""""""""""""""""""
-However, we may not know the true sparsity level in real world data, and thus we need to determine the most proper one from a large range. Suppose that we believe the real sparsity level is between 0 to 30 (so that `range(0, 31)`):
+However, we may not know the true sparsity level in real world data, and thus we need to determine the most proper one from a large range. Suppose that we believe the real sparsity level is between 0 and 30 (so that `range(0, 31)`):
 
 .. GENERATED FROM PYTHON SOURCE LINES 72-81
 
@@ -161,7 +161,7 @@ However, we may not know the true sparsity level in real world data, and thus we
 
 .. GENERATED FROM PYTHON SOURCE LINES 82-83
 
-The program can adaptively choose the sparsity level that best fit the data. It is not surprising that it choose 3 variables, the same as the last section. 
+The program can adaptively choose the sparsity level that best fits the data. It is not surprising that it chooses 3 variables, the same as the last section. 
 
 .. GENERATED FROM PYTHON SOURCE LINES 85-94
 
@@ -213,7 +213,7 @@ First, let's have a look at this dataset. There are 19 variables except `Salary`
 
 .. GENERATED FROM PYTHON SOURCE LINES 106-107
 
-Since the dataset contains some missing values, we simply drop those rows with missing values. Then we have 263 observations remains:
+Since the dataset contains some missing values, we simply drop those rows with missing values. Then we have 263 observations remain:
 
 .. GENERATED FROM PYTHON SOURCE LINES 107-112
 
@@ -293,7 +293,7 @@ As what we do in simulated data, an adaptive best subset can be formed easily:
     model.fit(x, y)
 
 
-    # The result can be showed:
+    # The result can is shown as follows:
 
 
     ind = np.nonzero(model.coef_)
@@ -369,7 +369,7 @@ We can also plot the path of abess process:
 
 .. GENERATED FROM PYTHON SOURCE LINES 168-169
 
-Besides, we can also generate a graph about the tuning value. Remember that we used the default EBIC to tune the support size.
+Besides, we can also generate a graph about the tuning parameter. Remember that we used the default EBIC to tune the support size.
 
 .. GENERATED FROM PYTHON SOURCE LINES 169-175
 
@@ -395,7 +395,7 @@ Besides, we can also generate a graph about the tuning value. Remember that we u
 
 .. GENERATED FROM PYTHON SOURCE LINES 176-177
 
-In EBIC criterion, `support_size = 4` has the lowest value, so the process adaptively choose 4 variables. Note that under other information criterion, the result may be different. 
+In EBIC criterion, `support_size = 4` has the lowest value, so the process adaptively chooses 4 variables. Note that under other information criteria, the result may be different. 
 
 .. GENERATED FROM PYTHON SOURCE LINES 179-182
 
@@ -406,7 +406,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v01-abe
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.227 seconds)
+   **Total running time of the script:** ( 0 minutes  0.232 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_plot_LinearRegression.py:

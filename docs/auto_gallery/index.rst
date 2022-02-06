@@ -7,30 +7,12 @@
 Tutorial
 ================
 
-Below are examples using my module:
+The Tutorial section aims to provide working code samples demonstrating how to use the `abess` library to solve real world issues. 
+In the following pages, the abess Python package is used for illustration. The counterpart for R package is available at `here`_. 
+
+.. _here: https://abess-team.github.io/abess/articles/
 
 
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="We can use the same iris dataset in this example, without downloading it twice as we know data_...">
-
-.. only:: html
-
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_2_data2_thumb.png
-     :alt: Data download example 2
-
-     :ref:`sphx_glr_auto_gallery_plot_2_data2.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_gallery/plot_2_data2
 
 .. raw:: html
 
@@ -38,10 +20,10 @@ Below are examples using my module:
 
 .. only:: html
 
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_work_with_sklearn_thumb.png
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_10_work_with_sklearn_thumb.png
      :alt: Work with scikit-learn
 
-     :ref:`sphx_glr_auto_gallery_plot_work_with_sklearn.py`
+     :ref:`sphx_glr_auto_gallery_plot_10_work_with_sklearn.py`
 
 .. raw:: html
 
@@ -51,7 +33,7 @@ Below are examples using my module:
 .. toctree::
    :hidden:
 
-   /auto_gallery/plot_work_with_sklearn
+   /auto_gallery/plot_10_work_with_sklearn
 
 .. raw:: html
 
@@ -59,10 +41,10 @@ Below are examples using my module:
 
 .. only:: html
 
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_MultiTaskLearning_thumb.png
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_2_MultiTaskLearning_thumb.png
      :alt: Multi-Response Linear Regression
 
-     :ref:`sphx_glr_auto_gallery_plot_MultiTaskLearning.py`
+     :ref:`sphx_glr_auto_gallery_plot_2_MultiTaskLearning.py`
 
 .. raw:: html
 
@@ -72,7 +54,7 @@ Below are examples using my module:
 .. toctree::
    :hidden:
 
-   /auto_gallery/plot_MultiTaskLearning
+   /auto_gallery/plot_2_MultiTaskLearning
 
 .. raw:: html
 
@@ -80,10 +62,10 @@ Below are examples using my module:
 
 .. only:: html
 
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_CoxRegression_thumb.png
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_5_CoxRegression_thumb.png
      :alt: Cox Regression
 
-     :ref:`sphx_glr_auto_gallery_plot_CoxRegression.py`
+     :ref:`sphx_glr_auto_gallery_plot_5_CoxRegression.py`
 
 .. raw:: html
 
@@ -93,7 +75,7 @@ Below are examples using my module:
 .. toctree::
    :hidden:
 
-   /auto_gallery/plot_CoxRegression
+   /auto_gallery/plot_5_CoxRegression
 
 .. raw:: html
 
@@ -101,10 +83,10 @@ Below are examples using my module:
 
 .. only:: html
 
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_RPCA_thumb.png
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_7_RPCA_thumb.png
      :alt: Robust Principal Component Analysis
 
-     :ref:`sphx_glr_auto_gallery_plot_RPCA.py`
+     :ref:`sphx_glr_auto_gallery_plot_7_RPCA.py`
 
 .. raw:: html
 
@@ -114,28 +96,7 @@ Below are examples using my module:
 .. toctree::
    :hidden:
 
-   /auto_gallery/plot_RPCA
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial, we are going to demonstrate how to use the abess package to carry out best su...">
-
-.. only:: html
-
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_LinearRegression_thumb.png
-     :alt: Linear Regression
-
-     :ref:`sphx_glr_auto_gallery_plot_LinearRegression.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_gallery/plot_LinearRegression
+   /auto_gallery/plot_7_RPCA
 
 .. raw:: html
 
@@ -143,10 +104,10 @@ Below are examples using my module:
 
 .. only:: html
 
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_Poisson_Gamma_thumb.png
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_3_Poisson_Gamma_thumb.png
      :alt: Positive response: Poisson and Gamma regression
 
-     :ref:`sphx_glr_auto_gallery_plot_Poisson_Gamma.py`
+     :ref:`sphx_glr_auto_gallery_plot_3_Poisson_Gamma.py`
 
 .. raw:: html
 
@@ -156,7 +117,28 @@ Below are examples using my module:
 .. toctree::
    :hidden:
 
-   /auto_gallery/plot_Poisson_Gamma
+   /auto_gallery/plot_3_Poisson_Gamma
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial, we are going to demonstrate how to use the abess package to carry out best su...">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_1_LinearRegression_thumb.png
+     :alt: Linear Regression
+
+     :ref:`sphx_glr_auto_gallery_plot_1_LinearRegression.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_gallery/plot_1_LinearRegression
 
 .. raw:: html
 
@@ -164,10 +146,10 @@ Below are examples using my module:
 
 .. only:: html
 
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_logi_and_multiclass_thumb.png
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_4_logi_and_multiclass_thumb.png
      :alt: Logistic Regression and Multinomial Extension
 
-     :ref:`sphx_glr_auto_gallery_plot_logi_and_multiclass.py`
+     :ref:`sphx_glr_auto_gallery_plot_4_logi_and_multiclass.py`
 
 .. raw:: html
 
@@ -177,7 +159,7 @@ Below are examples using my module:
 .. toctree::
    :hidden:
 
-   /auto_gallery/plot_logi_and_multiclass
+   /auto_gallery/plot_4_logi_and_multiclass
 
 .. raw:: html
 
@@ -185,10 +167,10 @@ Below are examples using my module:
 
 .. only:: html
 
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_ComputationalImprove_thumb.png
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_9_ComputationalImprove_thumb.png
      :alt: Computational Improvement
 
-     :ref:`sphx_glr_auto_gallery_plot_ComputationalImprove.py`
+     :ref:`sphx_glr_auto_gallery_plot_9_ComputationalImprove.py`
 
 .. raw:: html
 
@@ -198,7 +180,7 @@ Below are examples using my module:
 .. toctree::
    :hidden:
 
-   /auto_gallery/plot_ComputationalImprove
+   /auto_gallery/plot_9_ComputationalImprove
 
 .. raw:: html
 
@@ -206,10 +188,10 @@ Below are examples using my module:
 
 .. only:: html
 
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_PCA_thumb.png
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_6_PCA_thumb.png
      :alt: Principal Component Analysis
 
-     :ref:`sphx_glr_auto_gallery_plot_PCA.py`
+     :ref:`sphx_glr_auto_gallery_plot_6_PCA.py`
 
 .. raw:: html
 
@@ -219,7 +201,28 @@ Below are examples using my module:
 .. toctree::
    :hidden:
 
-   /auto_gallery/plot_PCA
+   /auto_gallery/plot_6_PCA
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="When analyzing the real world datasets, we may have the following targets:   1. certain variabl...">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_8_advanced_features_thumb.png
+     :alt: Advanced Features
+
+     :ref:`sphx_glr_auto_gallery_plot_8_advanced_features.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_gallery/plot_8_advanced_features
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
