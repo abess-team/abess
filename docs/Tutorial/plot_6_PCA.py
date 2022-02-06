@@ -60,12 +60,12 @@ print(n)
 print(p)
 
 ###############################################################################
-#  Model fitting
+# Model fitting
 # ^^^^^^^^^^^^^^^^^^^^
 # To build an SparsePCA model, we need to give the target sparisty to its `support_size` argument. Our program supports adaptively finding a best sparisty in a given range. 
 # 
 # Fixed sparsity
-#  """"""""""""""""""""""""""""""""
+# """"""""""""""""""""""""""""""""
 # If we only focus on one fixed sparsity, we can simply give a single integer to fit on this situation. And then the fitted sparse principal component is stored in `SparsePCA.coef_`:
 
 
@@ -109,7 +109,7 @@ print('non-zero position: \n', temp)
 print(model.coef_.T)
 
 #%%
-# *Because of warm-start, the results here may not be the same as fixed sparsity.*
+# Because of warm-start, the results here may not be the same as fixed sparsity.
 # 
 # Then, the explained variance can be computed by:
 
@@ -240,10 +240,12 @@ print('chosen sparsity: ', temp.size)
 
 #%%
 # Hence we can focus on variables in Group 0, 8, 9, 10, 11, 15.
-###############################################################################
+# 
+#
 # Extension: Multiple principal components
 # --------------------------------------------
-#  Multiple principal components
+#
+# Multiple principal components
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # In some cases, we may seek for more than one principal components under sparsity. Actually, we can iteratively solve the largest principal component and then mapping the covariance matrix to its orthogonal space:
 # 
