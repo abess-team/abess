@@ -162,7 +162,6 @@ for m in range(M):
         ind += 1
 
         t_start = time()
-        # model = LinearRegression(is_cv = True, path_type = "pgs", s_min = 0, s_max = 99, thread = 0)
         model = LinearRegression(cv=5, support_size=range(100), thread=5)
         fit = model.fit(train.x, train.y)
         t_end = time()
