@@ -1,4 +1,4 @@
-Sample gallery 1
+Tutorial
 ================
 
 Below are examples using my module:
