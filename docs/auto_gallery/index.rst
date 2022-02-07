@@ -16,69 +16,6 @@ In the following pages, the abess Python package is used for illustration. The c
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Work with scikit-learn">
-
-.. only:: html
-
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_10_work_with_sklearn_thumb.png
-     :alt: Work with scikit-learn
-
-     :ref:`sphx_glr_auto_gallery_plot_10_work_with_sklearn.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_gallery/plot_10_work_with_sklearn
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="ABESS algorithm: details">
-
-.. only:: html
-
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_11_algorithm_thumb.png
-     :alt: ABESS algorithm: details
-
-     :ref:`sphx_glr_auto_gallery_plot_11_algorithm.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_gallery/plot_11_algorithm
-
-.. raw:: html
-
-    <div class="sphx-glr-thumbcontainer" tooltip="Power of abess">
-
-.. only:: html
-
- .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_12_power_of_abess_thumb.png
-     :alt: Power of abess
-
-     :ref:`sphx_glr_auto_gallery_plot_12_power_of_abess.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_gallery/plot_12_power_of_abess
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial, we are going to demonstrate how to use the abess package to carry out best su...">
 
 .. only:: html
@@ -265,6 +202,69 @@ In the following pages, the abess Python package is used for illustration. The c
    :hidden:
 
    /auto_gallery/plot_9_ComputationalImprove
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Work with scikit-learn">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_z1_work_with_sklearn_thumb.png
+     :alt: Work with scikit-learn
+
+     :ref:`sphx_glr_auto_gallery_plot_z1_work_with_sklearn.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_gallery/plot_z1_work_with_sklearn
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="ABESS algorithm: details">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_z2_algorithm_thumb.png
+     :alt: ABESS algorithm: details
+
+     :ref:`sphx_glr_auto_gallery_plot_z2_algorithm.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_gallery/plot_z2_algorithm
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Power of abess">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_z3_power_of_abess_thumb.png
+     :alt: Power of abess
+
+     :ref:`sphx_glr_auto_gallery_plot_z3_power_of_abess.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_gallery/plot_z3_power_of_abess
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
