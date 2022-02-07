@@ -2,7 +2,7 @@
 Power of abess
 ==============
 """
-import abess
+
 
 #%%
 # In this part, we are going to explore the power of the abess package

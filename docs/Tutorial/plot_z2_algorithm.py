@@ -3,7 +3,6 @@ ABESS algorithm: details
 ========================
 """
 
-import abess
 
 ###########################################################
 # Introduction 
@@ -170,57 +169,57 @@ import abess
 #       Compute:
 #       :math:`\mathcal{L}_{n}(\tilde{\boldsymbol\beta})=\frac{1}{2 n}\|y-X \tilde{\boldsymbol\beta}\|_{2}^{2}.`
 #       If :math:`L>\mathcal{L}_{n}(\tilde{\boldsymbol\beta})`, then
-
+#
 #       .. math::
-
+#
 #          (\hat{\boldsymbol{\beta}}, \hat{\boldsymbol{d}}, \hat{\mathcal{A}}, \hat{\mathcal{I}})=\left(\tilde{\boldsymbol{\beta}}, \tilde{\boldsymbol{d}}, \tilde{\mathcal{A}}_{k}, \tilde{\mathcal{I}}_{k}\right)\\
 #          L=\mathcal{L}_{n}(\tilde{\boldsymbol\beta}).
-
+#
 #    End for
-
+#
 # 3. If :math:`L_{0}-L<\tau_{s}`, then
 #    :math:`(\hat{\boldsymbol\beta}, \hat{d}, \hat{A}, \hat{I})=(\boldsymbol\beta, d, \mathcal{A}, \mathcal{I}).`
-
+#
 # 2. Output
 #    :math:`(\hat{\boldsymbol{\beta}}, \hat{\boldsymbol{d}}, \hat{\mathcal{A}}, \hat{\mathcal{I}})`.
-
+#
 # Determining the Best Support Size with SIC
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+#
 # In practice, the support size is usually unknown. We use a datadriven
 # procedure to determine s. For any active set :math:`\mathcal{A}`, define
 # an :math:`\mathrm{SIC}` as follows:
-
+#
 # .. math:: \operatorname{SIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| \log (p) \log \log n,
-
+#
 # where
 # :math:`\mathcal{L}_{\mathcal{A}}=\min _{\beta_{\mathcal{I}}=0} \mathcal{L}_{n}(\beta), \mathcal{I}=(\mathcal{A})^{c}`.
 # To identify the true model, the model complexity penalty is
 # :math:`\log p` and the slow diverging rate :math:`\log \log n` is set to
 # prevent underfitting. Theorem 4 states that the following ABESS
 # algorithm selects the true support size via SIC.
-
+#
 # Let :math:`s_{\max }` be the maximum support size. We suggest
 # :math:`s_{\max }=o\left(\frac{n}{\log p}\right)` as the maximum possible
 # recovery size. Typically, we set
 # :math:`s_{\max }=\left[\frac{n}{\log p \log \log n}\right]` where
 # :math:`[x]` denotes the integer part of :math:`x`.
-
+#
 # .. _algorithm-3-abess:
-
+#
 # Algorithm 3: ABESS.
 # '''''''''''''''''''
-
+#
 # 1. Input: :math:`X, y`, and the maximum support size :math:`s_{\max } .`
-
+#
 # 2. For :math:`s=1,2, \ldots, s_{\max }`, do
-
+#
 #    .. math:: \left(\hat{\boldsymbol{\beta}}_{s}, \hat{\boldsymbol{d}}_{s}, \hat{\mathcal{A}}_{s}, \hat{\mathcal{I}}_{s}\right)= \text{BESS.Fixed}(s).
-
+#
 #    End for
-
+#
 # 3. Compute the minimum of SIC:
-
+#
 #    .. math:: s_{\min }=\arg \min _{s} \operatorname{SIC}\left(\hat{\mathcal{A}}_{s}\right).
 
 # 4. Output
@@ -793,7 +792,7 @@ import abess
 #    	I(||v_i - \frac{\alpha_i}{\rho}||_2\leq||v_j - \frac{\alpha_j}{\rho}||_2)\leq s\},\\
 #    \mathcal{I} = \{i|\sum_j
 #    	I(||v_i - \frac{\alpha_i}{\rho}||_2\leq||v_j - \frac{\alpha_j}{\rho}||_2)> s\},\\
-
+#
 # We can define forward and backward sacrifice by
 
 # 1. Forward sacrifice: for each :math:`i\in \mathcal{I}`, the larger
@@ -862,11 +861,11 @@ import abess
 
 # Algorithm : Important Search
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+#
 # 1. Input :math:`s, X, y, group\_index, group\_size, \zeta, \xi, U\_size, max\_iter`;
-
+#
 # 2. Sort all sacrifices and choose the largest :math:`U\_size` variables as :math:`U`, initially;
-
+#
 # 3. For :math:`iter = 0, 1, \cdots, max\_iter` do:
 
 #       Mapping :math:`X, y, group\_index, group\_size` to `U`;

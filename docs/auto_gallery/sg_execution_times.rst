@@ -5,14 +5,10 @@
 
 Computation times
 =================
-**00:00.146** total execution time for **auto_gallery** files:
+**00:00.143** total execution time for **auto_gallery** files:
 
 +--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_11_algorithm.py` (``plot_11_algorithm.py``)                     | 00:00.146 | 0.0 MB |
-+--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_10_work_with_sklearn.py` (``plot_10_work_with_sklearn.py``)     | 00:00.000 | 0.0 MB |
-+--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_12_power_of_abess.py` (``plot_12_power_of_abess.py``)           | 00:00.000 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_plot_z2_algorithm.py` (``plot_z2_algorithm.py``)                     | 00:00.143 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_auto_gallery_plot_1_LinearRegression.py` (``plot_1_LinearRegression.py``)         | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
@@ -31,4 +27,8 @@ Computation times
 | :ref:`sphx_glr_auto_gallery_plot_8_advanced_features.py` (``plot_8_advanced_features.py``)       | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_auto_gallery_plot_9_ComputationalImprove.py` (``plot_9_ComputationalImprove.py``) | 00:00.000 | 0.0 MB |
++--------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_auto_gallery_plot_z1_work_with_sklearn.py` (``plot_z1_work_with_sklearn.py``)     | 00:00.000 | 0.0 MB |
++--------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_auto_gallery_plot_z3_power_of_abess.py` (``plot_z3_power_of_abess.py``)           | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
