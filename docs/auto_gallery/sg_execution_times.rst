@@ -5,10 +5,10 @@
 
 Computation times
 =================
-**00:00.143** total execution time for **auto_gallery** files:
+**00:00.173** total execution time for **auto_gallery** files:
 
 +--------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_plot_z2_algorithm.py` (``plot_z2_algorithm.py``)                     | 00:00.143 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_plot_z2_algorithm.py` (``plot_z2_algorithm.py``)                     | 00:00.173 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_auto_gallery_plot_1_LinearRegression.py` (``plot_1_LinearRegression.py``)         | 00:00.000 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------+-----------+--------+
