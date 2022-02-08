@@ -5,10 +5,22 @@
 * R package
   * [TODO] Support user-specified initial active set.
 
+* Python
+  * Rename classes for better readability.
+  * Change the dataset generator as class.
+  * Package information can be called like "abess.\_\_version\_\_" and "abess.\_\_author\_\_".
+  * Support ["editable" install](https://pip.pypa.io/en/stable/cli/pip_install/#editable-installs).
+  * GLM estimators pass the [scikit-learn estimator check](https://scikit-learn.org/stable/modules/generated/sklearn.utils.estimator_checks.check_estimator.html).
+  * Update docstring.
+  * Formatting to fit PEP8.
+
 * Project development
   * Documentation
-    * [TODO] Add instruction for Gamma regression.
-    * [TODO] Update the usage of `support_size` in PCA.
+    * Add instruction for Gamma regression.
+    * Update the usage of `support_size` in PCA.
+    * Update Python API document (rename).
+    * Update Windows installation FAQ.
+    * Beautify images.
 
 ## Version 0.4.0
 
