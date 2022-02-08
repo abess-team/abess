@@ -153,7 +153,8 @@ class LogisticRegression(bess_base):
         xbeta[xbeta < -30] = -30
         pr = np.exp(xbeta) / (1 + np.exp(xbeta))
         return (y * np.log(pr) +
-                (np.ones(X.shape[0]) - y) * np.log(np.ones(X.shape[0]) - pr)).sum()
+                (np.ones(X.shape[0]) - y) *
+                np.log(np.ones(X.shape[0]) - pr)).sum()
 
 
 @ fix_docs
@@ -786,7 +787,9 @@ class GammaRegression(bess_base):
     >>> model.predict(data.x)
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
+                 is_warm_start=True, support_size=None, alpha=None,
+                 s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
@@ -796,11 +799,15 @@ class GammaRegression(bess_base):
                  important_search=128
                  ):
         super().__init__(
-            algorithm_type="abess", model_type="Gamma", normalize_type=2, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            algorithm_type="abess", model_type="Gamma", normalize_type=2,
+            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size,
+            alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
+            screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter,
+            primary_model_fit_epsilon=primary_model_fit_epsilon,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
@@ -860,10 +867,14 @@ class GammaRegression(bess_base):
 
 
 class abessLogistic(LogisticRegression):
-    warning_msg = "Class ``abessLogistic`` has been renamed to ``LogisticRegression``. The former will be deprecated in version 0.6.0."
+    warning_msg = ("Class ``abessLogistic`` has been renamed to "
+                   "``LogisticRegression``. "
+                   "The former will be deprecated in version 0.6.0.")
     __doc__ = warning_msg + '\n' + LogisticRegression.__doc__
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
+                 is_warm_start=True, support_size=None, alpha=None,
+                 s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
@@ -876,10 +887,13 @@ class abessLogistic(LogisticRegression):
         warnings.warn(self.warning_msg, FutureWarning)
         super().__init__(
             path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            is_warm_start=is_warm_start, support_size=support_size,
+            alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
+            screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter,
+            primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -889,10 +903,14 @@ class abessLogistic(LogisticRegression):
 
 
 class abessLm(LinearRegression):
-    warning_msg = "Class ``abessLm`` has been renamed to ``LinearRegression``. The former will be deprecated in version 0.6.0."
+    warning_msg = ("Class ``abessLm`` has been renamed to"
+                   " ``LinearRegression``. "
+                   "The former will be deprecated in version 0.6.0.")
     __doc__ = warning_msg + '\n' + LinearRegression.__doc__
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
+                 is_warm_start=True, support_size=None, alpha=None,
+                 s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  thread=1, covariance_update=False,
@@ -905,8 +923,10 @@ class abessLm(LinearRegression):
         warnings.warn(self.warning_msg, FutureWarning)
         super().__init__(
             path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            is_warm_start=is_warm_start, support_size=support_size,
+            alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
+            screening_size=screening_size,
             always_select=always_select,
             thread=thread, covariance_update=covariance_update,
             sparse_matrix=sparse_matrix,
@@ -916,10 +936,14 @@ class abessLm(LinearRegression):
 
 
 class abessCox(CoxPHSurvivalAnalysis):
-    warning_msg = "Class ``abessCox`` has been renamed to ``CoxPHSurvivalAnalysis``. The former will be deprecated in version 0.6.0."
+    warning_msg = ("Class ``abessCox`` has been renamed to "
+                   "``CoxPHSurvivalAnalysis``. "
+                   "The former will be deprecated in version 0.6.0.")
     __doc__ = warning_msg + '\n' + CoxPHSurvivalAnalysis.__doc__
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
+                 is_warm_start=True, support_size=None, alpha=None,
+                 s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
@@ -932,10 +956,13 @@ class abessCox(CoxPHSurvivalAnalysis):
         warnings.warn(self.warning_msg, FutureWarning)
         super().__init__(
             path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            is_warm_start=is_warm_start, support_size=support_size,
+            alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
+            screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter,
+            primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -945,10 +972,14 @@ class abessCox(CoxPHSurvivalAnalysis):
 
 
 class abessPoisson(PoissonRegression):
-    warning_msg = "Class ``abessPoisson`` has been renamed to ``PoissonRegression``. The former will be deprecated in version 0.6.0."
+    warning_msg = ("Class ``abessPoisson`` has been renamed to "
+                   "``PoissonRegression``. "
+                   "The former will be deprecated in version 0.6.0.")
     __doc__ = warning_msg + '\n' + PoissonRegression.__doc__
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
+                 is_warm_start=True, support_size=None, alpha=None,
+                 s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
@@ -960,10 +991,13 @@ class abessPoisson(PoissonRegression):
         warnings.warn(self.warning_msg, FutureWarning)
         super().__init__(
             path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            is_warm_start=is_warm_start, support_size=support_size,
+            alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
+            screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter,
+            primary_model_fit_epsilon=primary_model_fit_epsilon,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
@@ -972,10 +1006,14 @@ class abessPoisson(PoissonRegression):
 
 
 class abessMultigaussian(MultiTaskRegression):
-    warning_msg = "Class ``abessMultigaussian`` has been renamed to ``MultiTaskRegression``. The former will be deprecated in version 0.6.0."
+    warning_msg = ("Class ``abessMultigaussian`` has been renamed to "
+                   "``MultiTaskRegression``. "
+                   "The former will be deprecated in version 0.6.0.")
     __doc__ = warning_msg + '\n' + MultiTaskRegression.__doc__
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
+                 is_warm_start=True, support_size=None, alpha=None,
+                 s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  thread=1, covariance_update=False,
@@ -986,8 +1024,10 @@ class abessMultigaussian(MultiTaskRegression):
         warnings.warn(self.warning_msg, FutureWarning)
         super().__init__(
             path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            is_warm_start=is_warm_start, support_size=support_size,
+            alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
+            screening_size=screening_size,
             always_select=always_select,
             thread=thread, covariance_update=covariance_update,
             sparse_matrix=sparse_matrix,
@@ -997,10 +1037,14 @@ class abessMultigaussian(MultiTaskRegression):
 
 
 class abessMultinomial(MultinomialRegression):
-    warning_msg = "Class ``abessMultinomial`` has been renamed to ``MultinomialRegression``. The former will be deprecated in version 0.6.0."
+    warning_msg = ("Class ``abessMultinomial`` has been renamed to "
+                   "``MultinomialRegression``. "
+                   "The former will be deprecated in version 0.6.0.")
     __doc__ = warning_msg + '\n' + MultinomialRegression.__doc__
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
+                 is_warm_start=True, support_size=None,
+                 alpha=None, s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
@@ -1013,10 +1057,13 @@ class abessMultinomial(MultinomialRegression):
         warnings.warn(self.warning_msg, FutureWarning)
         super().__init__(
             path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            is_warm_start=is_warm_start, support_size=support_size,
+            alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
+            screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter,
+            primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -1026,13 +1073,18 @@ class abessMultinomial(MultinomialRegression):
 
 
 class abessGamma(GammaRegression):
-    warning_msg = "Class ``abessGamma`` has been renamed to ``GammaRegression``. The former will be deprecated in version 0.6.0."
+    warning_msg = ("Class ``abessGamma`` has been renamed to "
+                   "``GammaRegression``. "
+                   "The former will be deprecated in version 0.6.0.")
     __doc__ = warning_msg + '\n' + GammaRegression.__doc__
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
+                 is_warm_start=True, support_size=None, alpha=None,
+                 s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
-                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
+                 primary_model_fit_max_iter=10,
+                 primary_model_fit_epsilon=1e-8,
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=0,
@@ -1041,503 +1093,15 @@ class abessGamma(GammaRegression):
         warnings.warn(self.warning_msg, FutureWarning)
         super().__init__(
             path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            is_warm_start=is_warm_start, support_size=support_size,
+            alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
+            screening_size=screening_size,
             always_select=always_select,
-            primary_model_fit_max_iter=primary_model_fit_max_iter, primary_model_fit_epsilon=primary_model_fit_epsilon,
+            primary_model_fit_max_iter=primary_model_fit_max_iter,
+            primary_model_fit_epsilon=primary_model_fit_epsilon,
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
             important_search=important_search
         )
-
-
-# @fix_docs
-# class PdasLm(bess_base):
-#     '''
-#     PdasLm
-
-#     The PDAS solution to the best subset selection for linear regression.
-
-
-#     Examples
-#     --------
-#     ### Sparsity known
-#     >>> from bess.linear import *
-#     >>> import numpy as np
-#     >>> np.random.seed(12345)   # fix seed to get the same result
-#     >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-#     >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-#     >>> noise = np.random.normal(0, 1, 100)
-#     >>> y = np.matmul(x, beta) + noise
-#     >>> model = PdasLm(path_type="seq", support_size=[5])
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     ### Sparsity unknown
-#     >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-#     >>> model = PdasLm(path_type="seq")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasLm(path_type="gs")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-#     '''
-
-#     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", cv=1, screening_size=-1, powell_path=1,
-#                  always_select=[], tau=0.):
-#         super(PdasLm, self).__init__(
-#             algorithm_type="Pdas", model_type="Lm", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-#             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, screening_size=screening_size, powell_path=powell_path,
-#             always_select=always_select, tau=tau)
-#         self.normalize_type = 1
-
-
-# @fix_docs
-# class PdasLogistic(bess_base):
-#     """
-#     Examples
-#     --------
-#     ### Sparsity known
-#     >>> from bess.linear import *
-#     >>> import numpy as np
-#     >>> np.random.seed(12345)
-#     >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-#     >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-#     >>> xbeta = np.matmul(x, beta)
-#     >>> p = np.exp(xbeta)/(1+np.exp(xbeta))
-#     >>> y = np.random.binomial(1, p)
-#     >>> model = PdasLogistic(path_type="seq", support_size=[5])
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     ### Sparsity unknown
-#     >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-#     >>> model = PdasLogistic(path_type="seq")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasLogistic(path_type="gs")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-#     """
-
-#     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", cv=1, screening_size=-1, powell_path=1,
-#                  always_select=[], tau=0.
-#                  ):
-#         super(PdasLogistic, self).__init__(
-#             algorithm_type="Pdas", model_type="Logistic", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-#             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, screening_size=screening_size, powell_path=powell_path,
-#             always_select=always_select, tau=tau)
-#         self.normalize_type = 2
-
-
-# @fix_docs
-# class PdasPoisson(bess_base):
-#     """
-#     Examples
-#     --------
-#     ### Sparsity known
-#     >>> from bess.linear import *
-#     >>> import numpy as np
-#     >>> np.random.seed(12345)
-#     >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-#     >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-#     >>> lam = np.exp(np.matmul(x, beta))
-#     >>> y = np.random.poisson(lam=lam)
-#     >>> model = PdasPoisson(path_type="seq", support_size=[5])
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     ### Sparsity unknown
-#     >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-#     >>> model = PdasPoisson(path_type="seq")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasPoisson(path_type="gs")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-#     """
-
-#     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", cv=1, screening_size=-1, powell_path=1,
-#                  always_select=[], tau=0.
-#                  ):
-#         super(PdasPoisson, self).__init__(
-#             algorithm_type="Pdas", model_type="Poisson", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-#             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, screening_size=screening_size, powell_path=powell_path,
-#             always_select=always_select, tau=tau
-#         )
-#         self.normalize_type = 2
-
-
-# @fix_docs
-# class PdasCox(bess_base):
-#     """
-#     Examples
-#     --------
-#     ### Sparsity known
-#     >>> from bess.linear import *
-#     >>> import numpy as np
-#     >>> np.random.seed(12345)
-#     >>> data = make_glm_data(100, 200, family="cox", cv=1, rho=0, sigma=1, c=10)
-#     >>> model = PdasCox(path_type="seq", support_size=[5])
-#     >>> model.fit(data.x, data.y, is_normal=True)
-#     >>> model.predict(data.x)
-
-#     ### Sparsity unknown
-#     >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-#     >>> model = PdasCox(path_type="seq")
-#     >>> model.fit(data.x, data.y, is_normal=True)
-#     >>> model.predict(data.x)
-
-#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasCox(path_type="gs")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-#     """
-
-#     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", cv=1, screening_size=-1, powell_path=1,
-#                  always_select=[], tau=0.
-#                  ):
-#         super(PdasCox, self).__init__(
-#             algorithm_type="Pdas", model_type="Cox", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-#             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, screening_size=screening_size, powell_path=powell_path,
-#             always_select=always_select, tau=tau)
-#         self.normalize_type = 3
-
-
-# @fix_docs
-# class L0L2Lm(bess_base):
-#     """
-#     Examples
-#     --------
-#     ### Sparsity known
-#     >>> from bess.linear import *
-#     >>> import numpy as np
-#     >>> np.random.seed(12345)   # fix seed to get the same result
-#     >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-#     >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-#     >>> noise = np.random.normal(0, 1, 100)
-#     >>> y = np.matmul(x, beta) + noise
-#     >>> model = PdasLm(path_type="seq", support_size=[5])
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     ### Sparsity unknown
-#     >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-#     >>> model = PdasLm(path_type="seq")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasLm(path_type="gs")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-#     """
-
-#     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", cv=1, screening_size=-1, powell_path=1,
-#                  always_select=[], tau=0.
-#                  ):
-#         super(L0L2Lm, self).__init__(
-#             algorithm_type="L0L2", model_type="Lm", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-#             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, screening_size=screening_size, powell_path=powell_path,
-#             always_select=always_select, tau=tau
-#         )
-#         self.normalize_type = 1
-
-
-# @fix_docs
-# class L0L2Logistic(bess_base):
-#     """
-#     Examples
-#     --------
-#     ### Sparsity known
-#     >>> from bess.linear import *
-#     >>> import numpy as np
-#     >>> np.random.seed(12345)   # fix seed to get the same result
-#     >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-#     >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-#     >>> noise = np.random.normal(0, 1, 100)
-#     >>> y = np.matmul(x, beta) + noise
-#     >>> model = PdasLm(path_type="seq", support_size=[5])
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     ### Sparsity unknown
-#     >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-#     >>> model = PdasLm(path_type="seq")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasLm(path_type="gs")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-#         """
-
-#     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", cv=1, screening_size=-1, powell_path=1,
-#                  always_select=[], tau=0.
-#                  ):
-#         super(L0L2Logistic, self).__init__(
-#             algorithm_type="L0L2", model_type="Logistic", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-#             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, screening_size=screening_size, powell_path=powell_path,
-#             always_select=always_select, tau=tau)
-#         self.normalize_type = 2
-
-
-# @fix_docs
-# class L0L2Poisson(bess_base):
-#     """
-#     Examples
-#     --------
-#     ### Sparsity known
-#     >>> from bess.linear import *
-#     >>> import numpy as np
-#     >>> np.random.seed(12345)
-#     >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-#     >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-#     >>> lam = np.exp(np.matmul(x, beta))
-#     >>> y = np.random.poisson(lam=lam)
-#     >>> model = PdasPoisson(path_type="seq", support_size=[5])
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     ### Sparsity unknown
-#     >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-#     >>> model = PdasPoisson(path_type="seq")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasPoisson(path_type="gs")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-#     """
-
-#     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", cv=1, screening_size=-1, powell_path=1,
-#                  always_select=[], tau=0.
-#                  ):
-#         super(L0L2Poisson, self).__init__(
-#             algorithm_type="L0L2", model_type="Poisson", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-#             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, screening_size=screening_size, powell_path=powell_path,
-#             always_select=always_select, tau=tau
-#         )
-#         self.normalize_type = 2
-
-
-# @fix_docs
-# class L0L2Cox(bess_base):
-#     """
-#     Examples
-#     --------
-#     ### Sparsity known
-#     >>> from bess.linear import *
-#     >>> import numpy as np
-#     >>> np.random.seed(12345)
-#     >>> data = make_glm_data(100, 200, family="cox", cv=1, rho=0, sigma=1, c=10)
-#     >>> model = PdasCox(path_type="seq", support_size=[5])
-#     >>> model.fit(data.x, data.y, is_normal=True)
-#     >>> model.predict(data.x)
-
-#     ### Sparsity unknown
-#     >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-#     >>> model = PdasCox(path_type="seq")
-#     >>> model.fit(data.x, data.y, is_normal=True)
-#     >>> model.predict(data.x)
-
-#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = PdasCox(path_type="gs")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-#     """
-
-#     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", cv=1, screening_size=-1, powell_path=1,
-#                  always_select=[], tau=0.
-#                  ):
-#         super(L0L2Cox, self).__init__(
-#             algorithm_type="L0L2", model_type="Cox", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-#             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, screening_size=screening_size, powell_path=powell_path,
-#             always_select=always_select, tau=tau)
-#         self.normalize_type = 3
-
-
-# @fix_docs
-# class GroupPdasLm(bess_base):
-#     """
-#     Examples
-#     --------
-#     ### Sparsity known
-#     >>> from bess.linear import *
-#     >>> import numpy as np
-#     >>> np.random.seed(12345)   # fix seed to get the same result
-#     >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-#     >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-#     >>> noise = np.random.normal(0, 1, 100)
-#     >>> y = np.matmul(x, beta) + noise
-#     >>> model = GroupPdasLm(path_type="seq", support_size=[5])
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     ### Sparsity unknown
-#     >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-#     >>> model = GroupPdasLm(path_type="seq")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = GroupPdasLm(path_type="gs")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-#         """
-
-#     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", cv=1, screening_size=-1, powell_path=1,
-#                  always_select=[], tau=0.
-#                  ):
-#         super(GroupPdasLm, self).__init__(
-#             algorithm_type="GroupPdas", model_type="Lm", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-#             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, screening_size=screening_size, powell_path=powell_path,
-#             always_select=always_select, tau=tau)
-#         self.normalize_type = 1
-
-
-# @fix_docs
-# class GroupPdasLogistic(bess_base):
-#     """
-#     Examples
-#     --------
-#     ### Sparsity known
-#     >>> from bess.linear import *
-#     >>> import numpy as np
-#     >>> np.random.seed(12345)
-#     >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-#     >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-#     >>> xbeta = np.matmul(x, beta)
-#     >>> p = np.exp(xbeta)/(1+np.exp(xbeta))
-#     >>> y = np.random.binomial(1, p)
-#     >>> model = GroupPdasLogistic(path_type="seq", support_size=[5])
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     ### Sparsity unknown
-#     >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-#     >>> model = GroupPdasLogistic(path_type="seq")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = GroupPdasLogistic(path_type="gs")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-#     """
-
-#     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", cv=1, screening_size=-1, powell_path=1,
-#                  always_select=[], tau=0.
-#                  ):
-#         super(GroupPdasLogistic, self).__init__(
-#             algorithm_type="GroupPdas", model_type="Logistic", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-#             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, screening_size=screening_size, powell_path=powell_path,
-#             always_select=always_select, tau=tau
-#         )
-#         self.normalize_type = 2
-
-
-# @fix_docs
-# class GroupPdasPoisson(bess_base):
-#     """
-#     Examples
-#     --------
-#     ### Sparsity known
-#     >>> from bess.linear import *
-#     >>> import numpy as np
-#     >>> np.random.seed(12345)
-#     >>> x = np.random.normal(0, 1, 100 * 150).reshape((100, 150))
-#     >>> beta = np.hstack((np.array([1, 1, -1, -1, -1]), np.zeros(145)))
-#     >>> lam = np.exp(np.matmul(x, beta))
-#     >>> y = np.random.poisson(lam=lam)
-#     >>> model = GroupPdasPoisson(path_type="seq", support_size=[5])
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     ### Sparsity unknown
-#     >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-#     >>> model = GroupPdasPoisson(path_type="seq")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-
-#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = GroupPdasPoisson(path_type="gs")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-#     """
-
-#     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", cv=1, screening_size=-1, powell_path=1,
-#                  always_select=[], tau=0.
-#                  ):
-#         super(GroupPdasPoisson, self).__init__(
-#             algorithm_type="GroupPdas", model_type="Poisson", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-#             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, screening_size=screening_size, powell_path=powell_path,
-#             always_select=always_select, tau=tau)
-#         self.normalize_type = 2
-
-
-# @fix_docs
-# class GroupPdasCox(bess_base):
-#     """
-#     Examples
-#     --------
-#     ### Sparsity known
-#     >>> from bess.linear import *
-#     >>> import numpy as np
-#     >>> np.random.seed(12345)
-#     >>> data = make_glm_data(100, 200, family="cox", cv=1, rho=0, sigma=1, c=10)
-#     >>> model = GroupPdasCox(path_type="seq", support_size=[5])
-#     >>> model.fit(data.x, data.y, is_normal=True)
-#     >>> model.predict(data.x)
-
-#     ### Sparsity unknown
-#     >>> # path_type="seq", Default:support_size=[1,2,...,min(x.shape[0], x.shape[1])]
-#     >>> model = GroupPdasCox(path_type="seq")
-#     >>> model.fit(data.x, data.y, is_normal=True)
-#     >>> model.predict(data.x)
-
-#     >>> # path_type="gs", Default:s_min=1, s_max=X.shape[1], K_max = int(math.log(p, 2/(math.sqrt(5) - 1)))
-#     >>> model = GroupPdasCox(path_type="gs")
-#     >>> model.fit(X=x, y=y)
-#     >>> model.predict(x)
-#     """
-
-#     def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, alpha=None, s_min=None, s_max=None,
-#                  K_max=1, epsilon=0.0001, lambda_min=None, lambda_max=None, ic_type="ebic", cv=1, screening_size=-1, powell_path=1
-#                  ):
-#         super(GroupPdasCox, self).__init__(
-#             algorithm_type="GroupPdas", model_type="Cox", path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-#             is_warm_start=is_warm_start, support_size=support_size, alpha=alpha, s_min=s_min, s_max=s_max, K_max=K_max,
-#             epsilon=epsilon, lambda_min=lambda_min, lambda_max=lambda_max, ic_type=ic_type, cv=cv, screening_size=screening_size, powell_path=powell_path)
-#         self.normalize_type = 3
