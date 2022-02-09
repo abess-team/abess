@@ -31,7 +31,8 @@ class bess_base(BaseEstimator):
           specific support size to be considered is
           determined by golden section.
 
-    support_size : array-like, optional, default=range(min(n, int(n/(log(log(n))log(p)))))
+    support_size : array-like, optional
+        default=range(min(n, int(n/(log(log(n))log(p))))).
         An integer vector representing the alternative support sizes.
         Only used when path_type = "seq".
     s_min : int, optional, default=0
