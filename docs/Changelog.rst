@@ -14,6 +14,7 @@ Unreleased
 
       -  [TODO] Add instruction for Gamma regression.
       -  [TODO] Update the usage of ``support_size`` in PCA.
+      -  [TODO] Use Sphinx-Gallery for website layout.
 
 Version 0.4.0
 -------------
