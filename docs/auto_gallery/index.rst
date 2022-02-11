@@ -356,7 +356,7 @@ Computational Improvement
  - covariance update for `LinearRegression` or `MultiTaskRegression`;
  - approximate Newton iteration for `LogisticRegression`, `PoissonRegression`, `CoxRegression`.
  
- This vignette illustrate the first two tips. For the other tips, they have been efficiently implemented and set as the default in abess package.
+ The following contents illustrate the first two tips. For the other tips, they have been efficiently implemented and set as the default in abess package.
 
 
 
