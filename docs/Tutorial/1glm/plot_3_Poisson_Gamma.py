@@ -6,6 +6,7 @@ Positive response: Poisson and Gamma regression
 ###############################################################################
 # Poisson Regression
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#
 # Poisson Regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of customers in line at a reception desk. The expectation of the response variables is assumed to follow a Poisson distribution.
 # 
 # The general mathematical equation for Poisson regression is
@@ -16,6 +17,7 @@ Positive response: Poisson and Gamma regression
 # 
 # Simulated Data Example
 # """"""""""""""""""""""""
+#
 # We generate some artificial data using this logic.
 # Consider a dataset containing `n=100` observations with `p=6` variables. The `make_glm_data()` function allows uss to generate simulated data. By specifying `k = 3`, we set only 3 of the 6 variables to have effect on the expectation of the response. 
 # 
@@ -30,9 +32,6 @@ k = 3
 data = make_glm_data(n = n, p = p , k = k, family="poisson")
 print("non-zero:\n", np.nonzero(data.coef_))
 print("real coef:\n", data.coef_)
-
-
-
 print("the first 5 x:\n", data.x[0:5,])
 print("the first 5 y:\n",data.y[0:5])
 

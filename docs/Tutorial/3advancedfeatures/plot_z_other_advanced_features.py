@@ -194,9 +194,9 @@ model.fit(dt.x, dt.y, A_init = [0, 1, 2])
 #%%
 # Some strategies for initial active set are:
 # 
-# - If :math:`sparsity = len(A\_init)$, the splicing process would start from :math:`A\_init$.
-# - If :math:`sparsity > len(A\_init)$, the initial set includes :math:`A\_init` and other variables `inital screening` chooses.
-# - If :math:`sparsity < len(A\_init)$, the initial set includes part of :math:`A\_init$.
+# - If `sparsity = len(A_init)`, the splicing process would start from `A_init`.
+# - If `sparsity > len(A_init)`, the initial set includes `A_init` and other variables `inital screening` chooses.
+# - If `sparsity < len(A_init)`, the initial set includes part of `A_init`.
 # - If both `A_init` and `always_select` are given, `always_select` first.
 # - For warm-start, `A_init` will only affect splicing under the first sparsity in `support_size`.
 # - For CV, `A_init` will affect each fold but not the re-fitting on full data.

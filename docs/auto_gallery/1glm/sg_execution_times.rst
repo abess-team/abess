@@ -5,18 +5,18 @@
 
 Computation times
 =================
-**00:01.890** total execution time for **auto_gallery_1glm** files:
+**00:00.966** total execution time for **auto_gallery_1glm** files:
 
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_1glm_plot_4_logi_and_multiclass.py` (``plot_4_logi_and_multiclass.py``) | 00:01.011 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_1glm_plot_4_logi_and_multiclass.py` (``plot_4_logi_and_multiclass.py``) | 00:00.580 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_1glm_plot_5_CoxRegression.py` (``plot_5_CoxRegression.py``)             | 00:00.489 | 0.0 MB |
-+-----------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_1glm_plot_3_Poisson_Gamma.py` (``plot_3_Poisson_Gamma.py``)             | 00:00.390 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_1glm_plot_3_Poisson_Gamma.py` (``plot_3_Poisson_Gamma.py``)             | 00:00.386 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_auto_gallery_1glm_plot_1_LinearRegression.py` (``plot_1_LinearRegression.py``)       | 00:00.000 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_auto_gallery_1glm_plot_2_MultiTaskLearning.py` (``plot_2_MultiTaskLearning.py``)     | 00:00.000 | 0.0 MB |
++-----------------------------------------------------------------------------------------------------+-----------+--------+
+| :ref:`sphx_glr_auto_gallery_1glm_plot_5_CoxRegression.py` (``plot_5_CoxRegression.py``)             | 00:00.000 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_auto_gallery_1glm_plot_z2_algorithm.py` (``plot_z2_algorithm.py``)                   | 00:00.000 | 0.0 MB |
 +-----------------------------------------------------------------------------------------------------+-----------+--------+

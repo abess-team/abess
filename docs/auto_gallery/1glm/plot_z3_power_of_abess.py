@@ -85,5 +85,5 @@ Power of abess
 # For R performance, please view
 # https://abess-team.github.io/abess/articles/v11-power-of-abess.html.
 #
-# .. |image0| image:: ../image/perform.png
-# .. |image1| image:: ../image/timings.png
+# .. |image0| image:: ./images/perform.png
+# .. |image1| image:: ./images/timings.png

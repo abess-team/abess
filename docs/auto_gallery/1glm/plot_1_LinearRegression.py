@@ -26,7 +26,9 @@ in linear regression with both simulated data and real data.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Fixed Support Size Best Subset Selection
 # """"""""""""""""""""""""""""""""""""""""""""""
-# We generate a design matrix :math:`X` containing 300 observations and each observation has 1000 predictors. The response variable $y$ is linearly related to the first, second, and fifth predictors in $X$:
+#
+# We generate a design matrix :math:`X` containing 300 observations and each observation has 1000 predictors. 
+# The response variable :math:`y` is linearly related to the first, second, and fifth predictors in :math:`X`:
 #  .. math::
 #   y = 3X_1 + 1.5X_2 + 2X_5 + \epsilon,
 # 
@@ -135,7 +137,7 @@ print("non-zero:\n", data2.columns[ind])
 print("coef:\n", model.coef_)
 
 #%%
-# Automatically, variables $Hits$, $CRBI$, $PutOuts$, $League\_N$ are chosen in the model (the chosen sparsity level is 4).
+# Automatically, variables :math:`Hits`, :math:`CRBI`, :math:`PutOuts`, :math:`League\_N` are chosen in the model (the chosen sparsity level is 4).
 
 ###############################################################################
 # More on the results

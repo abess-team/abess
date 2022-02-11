@@ -22,10 +22,11 @@
 Positive response: Poisson and Gamma regression
 =======================================================
 
-.. GENERATED FROM PYTHON SOURCE LINES 7-22
+.. GENERATED FROM PYTHON SOURCE LINES 7-24
 
 Poisson Regression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Poisson Regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of customers in line at a reception desk. The expectation of the response variables is assumed to follow a Poisson distribution.
 
 The general mathematical equation for Poisson regression is
@@ -36,11 +37,12 @@ The general mathematical equation for Poisson regression is
 
 Simulated Data Example
 """"""""""""""""""""""""
+
 We generate some artificial data using this logic.
 Consider a dataset containing `n=100` observations with `p=6` variables. The `make_glm_data()` function allows uss to generate simulated data. By specifying `k = 3`, we set only 3 of the 6 variables to have effect on the expectation of the response. 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 22-39
+.. GENERATED FROM PYTHON SOURCE LINES 24-38
 
 .. code-block:: default
 
@@ -55,9 +57,6 @@ Consider a dataset containing `n=100` observations with `p=6` variables. The `ma
     data = make_glm_data(n = n, p = p , k = k, family="poisson")
     print("non-zero:\n", np.nonzero(data.coef_))
     print("real coef:\n", data.coef_)
-
-
-
     print("the first 5 x:\n", data.x[0:5,])
     print("the first 5 y:\n",data.y[0:5])
 
@@ -87,13 +86,13 @@ Consider a dataset containing `n=100` observations with `p=6` variables. The `ma
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 40-43
+.. GENERATED FROM PYTHON SOURCE LINES 39-42
 
 Model Fitting
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 The `PoissonRegression()` function in the **abess** package allows you to perform best subset selection in a highly efficient way. We can call the function using formula like: 
 
-.. GENERATED FROM PYTHON SOURCE LINES 43-50
+.. GENERATED FROM PYTHON SOURCE LINES 42-49
 
 .. code-block:: default
 
@@ -119,11 +118,11 @@ The `PoissonRegression()` function in the **abess** package allows you to perfor
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 51-52
+.. GENERATED FROM PYTHON SOURCE LINES 50-51
 
 where `support_size` contains the level of sparsity we consider, and the program can adaptively choose the "best" one. The result of coefficients can be viewed through `model.coef_`:
 
-.. GENERATED FROM PYTHON SOURCE LINES 52-57
+.. GENERATED FROM PYTHON SOURCE LINES 51-56
 
 .. code-block:: default
 
@@ -147,7 +146,7 @@ where `support_size` contains the level of sparsity we consider, and the program
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 58-63
+.. GENERATED FROM PYTHON SOURCE LINES 57-62
 
 So that the first, third and last variables are thought to be useful in the model (the chosen sparsity is 3), which is the same as "real" variables. What's more, the predicted coefficients are also close to the real ones.
 
@@ -155,7 +154,7 @@ More on the Results
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 Actually, we can also plot the path of coefficients in abess process. This can be computed by fixing the `support_size` as one number from 0 to 6 each time:
 
-.. GENERATED FROM PYTHON SOURCE LINES 63-84
+.. GENERATED FROM PYTHON SOURCE LINES 62-83
 
 .. code-block:: default
 
@@ -192,11 +191,11 @@ Actually, we can also plot the path of coefficients in abess process. This can b
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 85-86
+.. GENERATED FROM PYTHON SOURCE LINES 84-85
 
 And the evolution of information criterion (by default, we use EBIC):
 
-.. GENERATED FROM PYTHON SOURCE LINES 86-94
+.. GENERATED FROM PYTHON SOURCE LINES 85-93
 
 .. code-block:: default
 
@@ -220,7 +219,7 @@ And the evolution of information criterion (by default, we use EBIC):
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 95-118
+.. GENERATED FROM PYTHON SOURCE LINES 94-117
 
 The lowest point is shown on `support_size=3` and that's why the program chooses 3 variables as output.
 
@@ -246,7 +245,7 @@ Simulated Data Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Firstly, we also generate data from `make_glm_data()`, but `family = "gamma"` is given this time:
 
-.. GENERATED FROM PYTHON SOURCE LINES 118-132
+.. GENERATED FROM PYTHON SOURCE LINES 117-131
 
 .. code-block:: default
 
@@ -290,13 +289,13 @@ Firstly, we also generate data from `make_glm_data()`, but `family = "gamma"` is
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 133-136
+.. GENERATED FROM PYTHON SOURCE LINES 132-135
 
 Model Fitting
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 We apply the above procedure for gamma regression simply by using `abess.linear.GammaRegression`. It has similar member functions for fitting.
 
-.. GENERATED FROM PYTHON SOURCE LINES 136-144
+.. GENERATED FROM PYTHON SOURCE LINES 135-143
 
 .. code-block:: default
 
@@ -323,11 +322,11 @@ We apply the above procedure for gamma regression simply by using `abess.linear.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 145-146
+.. GENERATED FROM PYTHON SOURCE LINES 144-145
 
 The fitted coefficients:
 
-.. GENERATED FROM PYTHON SOURCE LINES 146-151
+.. GENERATED FROM PYTHON SOURCE LINES 145-150
 
 .. code-block:: default
 
@@ -351,13 +350,13 @@ The fitted coefficients:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 152-155
+.. GENERATED FROM PYTHON SOURCE LINES 151-154
 
 More on the Results
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 We can also plot the path of coefficients in abess process.
 
-.. GENERATED FROM PYTHON SOURCE LINES 155-176
+.. GENERATED FROM PYTHON SOURCE LINES 154-175
 
 .. code-block:: default
 
@@ -394,7 +393,7 @@ We can also plot the path of coefficients in abess process.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 177-180
+.. GENERATED FROM PYTHON SOURCE LINES 176-179
 
 R tutorial
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -403,7 +402,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v04-Poi
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.390 seconds)
+   **Total running time of the script:** ( 0 minutes  0.386 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_3_Poisson_Gamma.py:

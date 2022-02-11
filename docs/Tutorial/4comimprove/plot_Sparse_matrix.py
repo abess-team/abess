@@ -3,7 +3,8 @@ Sparse matrix
 ==============
 """
 #%%
-# We sometimes meet with problems where the :math:`N×p` input matrix :math:`X` is extremely sparse, i.e., many entries in :math:`X:math:` have zero values. A notable example comes from document classification: aiming to assign classes to a document, making it easier to manage for publishers and news sites. The input variables for characterizing documents are generated from a so called "bag-of-words" model. In this model, each variable is scored for the presence of each of the words in the entire dictionary under consideration. Since most words are absent, the input variables for each document is mostly zero, and so the entire matrix is mostly zero. 
+# We sometimes meet with problems where the :math:`N×p` input matrix :math:`X` is extremely sparse, i.e., 
+# many entries in :math:`X` have zero values. A notable example comes from document classification: aiming to assign classes to a document, making it easier to manage for publishers and news sites. The input variables for characterizing documents are generated from a so called "bag-of-words" model. In this model, each variable is scored for the presence of each of the words in the entire dictionary under consideration. Since most words are absent, the input variables for each document is mostly zero, and so the entire matrix is mostly zero. 
 # 
 # For example, we create a sparse matrix like:
 

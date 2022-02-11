@@ -21,7 +21,7 @@
 ===============================================
 Logistic Regression and Multinomial Extension
 ===============================================
-# We would like to use an example to show how the best subset selection for logistic regression works in our program.
+We would like to use an example to show how the best subset selection for logistic regression works in our program.
 
 .. GENERATED FROM PYTHON SOURCE LINES 9-15
 
@@ -762,7 +762,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v03-cla
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.011 seconds)
+   **Total running time of the script:** ( 0 minutes  0.580 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_4_logi_and_multiclass.py:

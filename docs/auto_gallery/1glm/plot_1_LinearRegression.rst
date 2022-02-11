@@ -26,7 +26,7 @@ Linear Regression
 In this tutorial, we are going to demonstrate how to use the `abess` package to carry out best subset selection 
 in linear regression with both simulated data and real data.
 
-.. GENERATED FROM PYTHON SOURCE LINES 13-34
+.. GENERATED FROM PYTHON SOURCE LINES 13-36
 
 Linear Regression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -44,13 +44,15 @@ Simulated Data Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Fixed Support Size Best Subset Selection
 """"""""""""""""""""""""""""""""""""""""""""""
-We generate a design matrix :math:`X` containing 300 observations and each observation has 1000 predictors. The response variable $y$ is linearly related to the first, second, and fifth predictors in $X$:
+
+We generate a design matrix :math:`X` containing 300 observations and each observation has 1000 predictors. 
+The response variable :math:`y` is linearly related to the first, second, and fifth predictors in :math:`X`:
  .. math::
   y = 3X_1 + 1.5X_2 + 2X_5 + \epsilon,
 
 where :math:`\epsilon` is a standard normal random variable. 
 
-.. GENERATED FROM PYTHON SOURCE LINES 34-50
+.. GENERATED FROM PYTHON SOURCE LINES 36-52
 
 .. code-block:: default
 
@@ -86,11 +88,11 @@ where :math:`\epsilon` is a standard normal random variable.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 51-52
+.. GENERATED FROM PYTHON SOURCE LINES 53-54
 
 Use `LinearRegression` to fit the data, with a fixed support size:
 
-.. GENERATED FROM PYTHON SOURCE LINES 52-57
+.. GENERATED FROM PYTHON SOURCE LINES 54-59
 
 .. code-block:: default
 
@@ -114,11 +116,11 @@ Use `LinearRegression` to fit the data, with a fixed support size:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 58-59
+.. GENERATED FROM PYTHON SOURCE LINES 60-61
 
 After fitting, the predicted coefficients are stored in `model.coef_`:
 
-.. GENERATED FROM PYTHON SOURCE LINES 59-65
+.. GENERATED FROM PYTHON SOURCE LINES 61-67
 
 .. code-block:: default
 
@@ -145,7 +147,7 @@ After fitting, the predicted coefficients are stored in `model.coef_`:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 66-71
+.. GENERATED FROM PYTHON SOURCE LINES 68-73
 
 From the result, we know that `abess` found which 3 predictors are useful among all 1000 variables. Besides, the predicted coefficients of them are quite close to the real ones. 
 
@@ -153,7 +155,7 @@ Adaptive Best Subset Selection
 """"""""""""""""""""""""""""""""""""""""""""""
 However, we may not know the true sparsity level in real world data, and thus we need to determine the most proper one from a large range. Suppose that we believe the real sparsity level is between 0 and 30 (so that `range(0, 31)`):
 
-.. GENERATED FROM PYTHON SOURCE LINES 71-80
+.. GENERATED FROM PYTHON SOURCE LINES 73-82
 
 .. code-block:: default
 
@@ -182,11 +184,11 @@ However, we may not know the true sparsity level in real world data, and thus we
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 81-82
+.. GENERATED FROM PYTHON SOURCE LINES 83-84
 
 The program can adaptively choose the sparsity level that best fits the data. It is not surprising that it chooses 3 variables, the same as the last section. 
 
-.. GENERATED FROM PYTHON SOURCE LINES 84-93
+.. GENERATED FROM PYTHON SOURCE LINES 86-95
 
 Real data example
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -198,7 +200,7 @@ We hope to use sevral predictors related to the performance of the baseball athe
 
 First, let's have a look at this dataset. There are 19 variables except `Salary` and 322 observations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 93-102
+.. GENERATED FROM PYTHON SOURCE LINES 95-104
 
 .. code-block:: default
 
@@ -234,11 +236,11 @@ First, let's have a look at this dataset. There are 19 variables except `Salary`
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 103-104
+.. GENERATED FROM PYTHON SOURCE LINES 105-106
 
 Since the dataset contains some missing values, we simply drop those rows with missing values. Then we have 263 observations remain:
 
-.. GENERATED FROM PYTHON SOURCE LINES 104-109
+.. GENERATED FROM PYTHON SOURCE LINES 106-111
 
 .. code-block:: default
 
@@ -262,11 +264,11 @@ Since the dataset contains some missing values, we simply drop those rows with m
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 110-111
+.. GENERATED FROM PYTHON SOURCE LINES 112-113
 
 What is more, before fitting, we need to transfer the character variables to dummy variables: 
 
-.. GENERATED FROM PYTHON SOURCE LINES 111-118
+.. GENERATED FROM PYTHON SOURCE LINES 113-120
 
 .. code-block:: default
 
@@ -300,13 +302,13 @@ What is more, before fitting, we need to transfer the character variables to dum
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 119-122
+.. GENERATED FROM PYTHON SOURCE LINES 121-124
 
 Model Fitting
 ~~~~~~~~~~~~~~~~~~~~~~
 As what we do in simulated data, an adaptive best subset can be formed easily:
 
-.. GENERATED FROM PYTHON SOURCE LINES 122-129
+.. GENERATED FROM PYTHON SOURCE LINES 124-131
 
 .. code-block:: default
 
@@ -332,11 +334,11 @@ As what we do in simulated data, an adaptive best subset can be formed easily:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 130-131
+.. GENERATED FROM PYTHON SOURCE LINES 132-133
 
 The result can be shown as follows:
 
-.. GENERATED FROM PYTHON SOURCE LINES 131-137
+.. GENERATED FROM PYTHON SOURCE LINES 133-139
 
 .. code-block:: default
 
@@ -367,17 +369,17 @@ The result can be shown as follows:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 138-139
+.. GENERATED FROM PYTHON SOURCE LINES 140-141
 
-Automatically, variables $Hits$, $CRBI$, $PutOuts$, $League\_N$ are chosen in the model (the chosen sparsity level is 4).
+Automatically, variables :math:`Hits`, :math:`CRBI`, :math:`PutOuts`, :math:`League\_N` are chosen in the model (the chosen sparsity level is 4).
 
-.. GENERATED FROM PYTHON SOURCE LINES 141-144
+.. GENERATED FROM PYTHON SOURCE LINES 143-146
 
 More on the results
 ~~~~~~~~~~~~~~~~~~~~~~
 We can also plot the path of abess process:
 
-.. GENERATED FROM PYTHON SOURCE LINES 144-164
+.. GENERATED FROM PYTHON SOURCE LINES 146-166
 
 .. code-block:: default
 
@@ -413,11 +415,11 @@ We can also plot the path of abess process:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 165-166
+.. GENERATED FROM PYTHON SOURCE LINES 167-168
 
 Besides, we can also generate a graph about the tuning parameter. Remember that we used the default EBIC to tune the support size.
 
-.. GENERATED FROM PYTHON SOURCE LINES 166-172
+.. GENERATED FROM PYTHON SOURCE LINES 168-174
 
 .. code-block:: default
 
@@ -439,11 +441,11 @@ Besides, we can also generate a graph about the tuning parameter. Remember that 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 173-174
+.. GENERATED FROM PYTHON SOURCE LINES 175-176
 
 In EBIC criterion, `support_size = 4` has the lowest value, so the process adaptively chooses 4 variables. Note that under other information criteria, the result may be different. 
 
-.. GENERATED FROM PYTHON SOURCE LINES 176-179
+.. GENERATED FROM PYTHON SOURCE LINES 178-181
 
 R tutorial 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -452,7 +454,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v01-abe
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  4.036 seconds)
+   **Total running time of the script:** ( 0 minutes  1.168 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_1_LinearRegression.py:

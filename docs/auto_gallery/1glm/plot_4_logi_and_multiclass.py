@@ -2,7 +2,7 @@
 ===============================================
 Logistic Regression and Multinomial Extension
 ===============================================
-# We would like to use an example to show how the best subset selection for logistic regression works in our program.
+We would like to use an example to show how the best subset selection for logistic regression works in our program.
 """
 
 ###############################################################################
