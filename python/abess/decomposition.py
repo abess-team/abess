@@ -123,7 +123,8 @@ class SparsePCA(bess_base):
             Individual weights for each sample. Only used for is_weight=True.
         group : int, optional, default=np.ones(p)
             The group index for each variable.
-        Sigma : array-like, shape(p_features, p_features), optional, default=np.cov(X.T)
+        Sigma : array-like, shape(p_features, p_features), optional
+            default=np.cov(X.T).
             Sample covariance matrix.
             For PCA, it can be given as input, instead of X.
             But if X is given, Sigma will be set to np.cov(X.T).

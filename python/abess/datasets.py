@@ -277,7 +277,8 @@ class make_multivariate_glm_data:
         The number of observations.
     p: int, optional, default=100
         The number of predictors of interest.
-    family: {multigaussian, multinomial, poisson}, optional, default="multigaussian"
+    family: {multigaussian, multinomial, poisson}, optional
+        default="multigaussian".
         The distribution of the simulated multi-response.
         "multigaussian" for multivariate quantitative responses,
         "multinomial" for multiple classification responses,

@@ -18,13 +18,15 @@
 # sys.path.insert(0, curr_path)
 # sys.path.insert(0, sys.path.insert(0, os.path.abspath("../python/")))
 
+# print("======> TEST TEST !!! ", sys.path)
+
 # -- Project information -----------------------------------------------------
 project = 'abess'
 copyright = '2021, abess team'
 author = 'abess team'
 
 # The full version, including alpha/beta/rc tags
-release = '0.3.0'
+release = '0.4.0'
 
 
 # -- General configuration ---------------------------------------------------
