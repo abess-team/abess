@@ -5,4 +5,4 @@ make\_multivariate\_glm\_data
     :backlinks: none
     :local:
 
-.. autoclass:: abess.datasets.make_multivariate_glm_data
+.. autofunction:: abess.datasets.make_multivariate_glm_data
