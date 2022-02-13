@@ -7,7 +7,7 @@ from .cabess import pywrap_GLM
 
 
 class bess_base(BaseEstimator):
-    r"""
+    """
     Parameters
     ----------
     max_iter : int, optional, default=20
@@ -75,14 +75,8 @@ class bess_base(BaseEstimator):
     ----------
     coef_ : array-like, shape(p_features, ) or (p_features, M_responses)
         Estimated coefficients for the best subset selection problem.
-    intercept_ : float or array-like, shape(M_responses,)
-        The intercept in the model.
-    ic_ : float
-        If cv=1, it stores the score under chosen information criterion.
-    test_loss_ : float
-        If cv>1, it stores the test loss under cross-validation.
-    train_loss_ : float
-        The loss on training data.
+    ic_: double
+        The score under chosen information criterion.
 
     References
     ----------
@@ -227,11 +221,13 @@ class bess_base(BaseEstimator):
             before fitting the algorithm.
         weight : array-like, shape (n_samples,), optional, default=np.ones(n)
             Individual weights for each sample. Only used for is_weight=True.
-        group : int, optional, default=np.ones(p)
+            Default: weight = 1 for each observation.
+        group : int, optional
             The group index for each variable.
-        cv_fold_id: array-like, shape (n_samples,), optional, default=None
-            An array indicates different folds in CV.
-            Samples in the same fold should be given the same number.
+            Default: group = \\code{numpy.ones(p)}.
+        cv_fold_id: array_like of shape (n_samples,) , optional
+            An array indicates different folds in CV. Samples in the same fold should be given the same number.
+            Default: cv_fold_id=None
         """
 
         # print("fit enter.")#///
