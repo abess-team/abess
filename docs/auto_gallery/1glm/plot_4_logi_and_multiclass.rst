@@ -54,14 +54,12 @@ The dataset consists of data of 889 passengers, and the goal of the competition 
 
  .. code-block:: none
 
-       PassengerId  Survived  Pclass  ...     Fare Cabin  Embarked
-    0            1         0       3  ...   7.2500   NaN         S
-    1            2         1       1  ...  71.2833   C85         C
-    2            3         1       3  ...   7.9250   NaN         S
-    3            4         1       1  ...  53.1000  C123         S
-    4            5         0       3  ...   8.0500   NaN         S
-
-    [5 rows x 12 columns]
+       PassengerId  Survived  Pclass                                               Name     Sex   Age  SibSp  Parch            Ticket     Fare Cabin Embarked
+    0            1         0       3                            Braund, Mr. Owen Harris    male  22.0      1      0         A/5 21171   7.2500   NaN        S
+    1            2         1       1  Cumings, Mrs. John Bradley (Florence Briggs Th...  female  38.0      1      0          PC 17599  71.2833   C85        C
+    2            3         1       3                             Heikkinen, Miss. Laina  female  26.0      0      0  STON/O2. 3101282   7.9250   NaN        S
+    3            4         1       1       Futrelle, Mrs. Jacques Heath (Lily May Peel)  female  35.0      1      0            113803  53.1000  C123        S
+    4            5         0       3                           Allen, Mr. William Henry    male  35.0      0      0            373450   8.0500   NaN        S
 
 
 
@@ -157,14 +155,12 @@ Then use dummy variables to replace classification variables:
 
  .. code-block:: none
 
-       Survived   Age  SibSp  Parch     Fare  Pclass_1  ...  Pclass_3  Sex_female  Sex_male  Embarked_C  Embarked_Q  Embarked_S
-    0         0  22.0      1      0   7.2500         0  ...         1           0         1           0           0           1
-    1         1  38.0      1      0  71.2833         1  ...         0           1         0           1           0           0
-    2         1  26.0      0      0   7.9250         0  ...         1           1         0           0           0           1
-    3         1  35.0      1      0  53.1000         1  ...         0           1         0           0           0           1
-    4         0  35.0      0      0   8.0500         0  ...         1           0         1           0           0           1
-
-    [5 rows x 13 columns]
+       Survived   Age  SibSp  Parch     Fare  Pclass_1  Pclass_2  Pclass_3  Sex_female  Sex_male  Embarked_C  Embarked_Q  Embarked_S
+    0         0  22.0      1      0   7.2500         0         0         1           0         1           0           0           1
+    1         1  38.0      1      0  71.2833         1         0         0           1         0           1           0           0
+    2         1  26.0      0      0   7.9250         0         0         1           1         0           0           0           1
+    3         1  35.0      1      0  53.1000         1         0         0           1         0           0           0           1
+    4         0  35.0      0      0   8.0500         0         0         1           0         1           0           0           1
 
 
 
@@ -762,7 +758,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v03-cla
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.580 seconds)
+   **Total running time of the script:** ( 0 minutes  0.722 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_4_logi_and_multiclass.py:

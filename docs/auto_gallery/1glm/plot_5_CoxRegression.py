@@ -85,7 +85,7 @@ print('test size:', test.shape[0])
 
 ###############################################################################
 # Model Fitting
-# """"""""""""""""""""""""""""""
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # The `CoxPHSurvivalAnalysis()` function in the `abess` package allows we to perform best subset selection in a highly efficient way. 
 # 
 # By default, the function implements the abess algorithm with the support size (sparsity level) changing from 0 to :math:`\min\{p,n/\log(n)p \}` and the best support size is determined by EBIC. You can change the tunging criterion by specifying the argument `ic_type` and the support size by `support_size`. The available tuning criteria now are `gic`, `aic`, `bic`, `ebic`. Here we give an example.
@@ -107,7 +107,7 @@ print(model.coef_)
 
 ###############################################################################
 # More on the results
-# """"""""""""""""""""""""""""""
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Hold on, we haven’t finished yet. After getting the estimator, we can further do more exploring work. For example, you can use some generic steps to quickly draw some information of those estimators.
 # 
 # Simply fix the `support_size` in different levels, we can plot a path of coefficients like: 
@@ -151,7 +151,7 @@ print(pred)
 #%%
 # With these predictions, we can compute the hazard ratio between every two observations (by dividing their values). And, we can also compute the C-Index for our model, i.e., the probability that, for a pair of randomly chosen comparable samples, the sample with the higher risk prediction will experience an event before the other sample or belong to a higher binary class. 
 
-from sksurv.metrics import concordance_index_censored
+from abess.metrics import concordance_index_censored
 cindex = concordance_index_censored(test[:, 1] == 2, test[:, 0], pred)
 print(cindex[0])
 

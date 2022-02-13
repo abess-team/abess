@@ -115,7 +115,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v07-adv
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.469 seconds)
+   **Total running time of the script:** ( 0 minutes  0.486 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_3advancedfeatures_plot_regularized.py:

@@ -28,7 +28,7 @@ Generalized Linear Model
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip=" In this tutorial, we are going to demonstrate how to use the abess package to carry out best s...">
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial, we are going to demonstrate how to use the abess package to carry out best su...">
 
 .. only:: html
 

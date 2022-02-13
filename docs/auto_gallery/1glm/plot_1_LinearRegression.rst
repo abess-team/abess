@@ -22,11 +22,10 @@
 Linear Regression
 ======================================================
 
-
 In this tutorial, we are going to demonstrate how to use the `abess` package to carry out best subset selection 
 in linear regression with both simulated data and real data.
 
-.. GENERATED FROM PYTHON SOURCE LINES 13-36
+.. GENERATED FROM PYTHON SOURCE LINES 11-34
 
 Linear Regression
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -52,7 +51,7 @@ The response variable :math:`y` is linearly related to the first, second, and fi
 
 where :math:`\epsilon` is a standard normal random variable. 
 
-.. GENERATED FROM PYTHON SOURCE LINES 36-52
+.. GENERATED FROM PYTHON SOURCE LINES 34-49
 
 .. code-block:: default
 
@@ -68,7 +67,6 @@ where :math:`\epsilon` is a standard normal random variable.
     real_coef = np.zeros(p)
     real_coef[[0, 1, 4]] = 3, 1.5, 2
     data1 = make_glm_data(n = n, p = p, k = k, family = "gaussian", coef_ = real_coef)
-
 
     print(data1.x.shape)
     print(data1.y.shape)
@@ -88,11 +86,11 @@ where :math:`\epsilon` is a standard normal random variable.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 53-54
+.. GENERATED FROM PYTHON SOURCE LINES 50-51
 
 Use `LinearRegression` to fit the data, with a fixed support size:
 
-.. GENERATED FROM PYTHON SOURCE LINES 54-59
+.. GENERATED FROM PYTHON SOURCE LINES 51-56
 
 .. code-block:: default
 
@@ -116,11 +114,11 @@ Use `LinearRegression` to fit the data, with a fixed support size:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 60-61
+.. GENERATED FROM PYTHON SOURCE LINES 57-58
 
 After fitting, the predicted coefficients are stored in `model.coef_`:
 
-.. GENERATED FROM PYTHON SOURCE LINES 61-67
+.. GENERATED FROM PYTHON SOURCE LINES 58-64
 
 .. code-block:: default
 
@@ -147,7 +145,7 @@ After fitting, the predicted coefficients are stored in `model.coef_`:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 68-73
+.. GENERATED FROM PYTHON SOURCE LINES 65-70
 
 From the result, we know that `abess` found which 3 predictors are useful among all 1000 variables. Besides, the predicted coefficients of them are quite close to the real ones. 
 
@@ -155,7 +153,7 @@ Adaptive Best Subset Selection
 """"""""""""""""""""""""""""""""""""""""""""""
 However, we may not know the true sparsity level in real world data, and thus we need to determine the most proper one from a large range. Suppose that we believe the real sparsity level is between 0 and 30 (so that `range(0, 31)`):
 
-.. GENERATED FROM PYTHON SOURCE LINES 73-82
+.. GENERATED FROM PYTHON SOURCE LINES 70-79
 
 .. code-block:: default
 
@@ -184,11 +182,11 @@ However, we may not know the true sparsity level in real world data, and thus we
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 83-84
+.. GENERATED FROM PYTHON SOURCE LINES 80-81
 
 The program can adaptively choose the sparsity level that best fits the data. It is not surprising that it chooses 3 variables, the same as the last section. 
 
-.. GENERATED FROM PYTHON SOURCE LINES 86-95
+.. GENERATED FROM PYTHON SOURCE LINES 83-92
 
 Real data example
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -200,7 +198,7 @@ We hope to use sevral predictors related to the performance of the baseball athe
 
 First, let's have a look at this dataset. There are 19 variables except `Salary` and 322 observations.
 
-.. GENERATED FROM PYTHON SOURCE LINES 95-104
+.. GENERATED FROM PYTHON SOURCE LINES 92-101
 
 .. code-block:: default
 
@@ -224,23 +222,21 @@ First, let's have a look at this dataset. There are 19 variables except `Salary`
  .. code-block:: none
 
     (322, 20)
-       AtBat  Hits  HmRun  Runs  RBI  Walks  Years  ...  League  Division  PutOuts  Assists  Errors  Salary NewLeague
-    0    293    66      1    30   29     14      1  ...       A         E      446       33      20     NaN         A
-    1    315    81      7    24   38     39     14  ...       N         W      632       43      10   475.0         N
-    2    479   130     18    66   72     76      3  ...       A         W      880       82      14   480.0         A
-    3    496   141     20    65   78     37     11  ...       N         E      200       11       3   500.0         N
-    4    321    87     10    39   42     30      2  ...       N         E      805       40       4    91.5         N
-
-    [5 rows x 20 columns]
+       AtBat  Hits  HmRun  Runs  RBI  Walks  Years  CAtBat  CHits  CHmRun  CRuns  CRBI  CWalks League Division  PutOuts  Assists  Errors  Salary NewLeague
+    0    293    66      1    30   29     14      1     293     66       1     30    29      14      A        E      446       33      20     NaN         A
+    1    315    81      7    24   38     39     14    3449    835      69    321   414     375      N        W      632       43      10   475.0         N
+    2    479   130     18    66   72     76      3    1624    457      63    224   266     263      A        W      880       82      14   480.0         A
+    3    496   141     20    65   78     37     11    5628   1575     225    828   838     354      N        E      200       11       3   500.0         N
+    4    321    87     10    39   42     30      2     396    101      12     48    46      33      N        E      805       40       4    91.5         N
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 105-106
+.. GENERATED FROM PYTHON SOURCE LINES 102-103
 
 Since the dataset contains some missing values, we simply drop those rows with missing values. Then we have 263 observations remain:
 
-.. GENERATED FROM PYTHON SOURCE LINES 106-111
+.. GENERATED FROM PYTHON SOURCE LINES 103-108
 
 .. code-block:: default
 
@@ -264,11 +260,11 @@ Since the dataset contains some missing values, we simply drop those rows with m
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 112-113
+.. GENERATED FROM PYTHON SOURCE LINES 109-110
 
 What is more, before fitting, we need to transfer the character variables to dummy variables: 
 
-.. GENERATED FROM PYTHON SOURCE LINES 113-120
+.. GENERATED FROM PYTHON SOURCE LINES 110-117
 
 .. code-block:: default
 
@@ -290,25 +286,25 @@ What is more, before fitting, we need to transfer the character variables to dum
  .. code-block:: none
 
     (263, 20)
-       AtBat  Hits  HmRun  Runs  RBI  Walks  Years  ...  PutOuts  Assists  Errors  Salary  League_N  Division_W  NewLeague_N
-    1    315    81      7    24   38     39     14  ...      632       43      10   475.0         1           1            1
-    2    479   130     18    66   72     76      3  ...      880       82      14   480.0         0           1            0
-    3    496   141     20    65   78     37     11  ...      200       11       3   500.0         1           0            1
-    4    321    87     10    39   42     30      2  ...      805       40       4    91.5         1           0            1
-    5    594   169      4    74   51     35     11  ...      282      421      25   750.0         0           1            0
+       AtBat  Hits  HmRun  Runs  RBI  Walks  Years  CAtBat  CHits  ...  CRBI  CWalks  PutOuts  Assists  Errors  Salary  League_N  Division_W  NewLeague_N
+    1    315    81      7    24   38     39     14    3449    835  ...   414     375      632       43      10   475.0         1           1            1
+    2    479   130     18    66   72     76      3    1624    457  ...   266     263      880       82      14   480.0         0           1            0
+    3    496   141     20    65   78     37     11    5628   1575  ...   838     354      200       11       3   500.0         1           0            1
+    4    321    87     10    39   42     30      2     396    101  ...    46      33      805       40       4    91.5         1           0            1
+    5    594   169      4    74   51     35     11    4408   1133  ...   336     194      282      421      25   750.0         0           1            0
 
     [5 rows x 20 columns]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 121-124
+.. GENERATED FROM PYTHON SOURCE LINES 118-121
 
 Model Fitting
 ~~~~~~~~~~~~~~~~~~~~~~
 As what we do in simulated data, an adaptive best subset can be formed easily:
 
-.. GENERATED FROM PYTHON SOURCE LINES 124-131
+.. GENERATED FROM PYTHON SOURCE LINES 121-128
 
 .. code-block:: default
 
@@ -334,11 +330,11 @@ As what we do in simulated data, an adaptive best subset can be formed easily:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 132-133
+.. GENERATED FROM PYTHON SOURCE LINES 129-130
 
 The result can be shown as follows:
 
-.. GENERATED FROM PYTHON SOURCE LINES 133-139
+.. GENERATED FROM PYTHON SOURCE LINES 130-136
 
 .. code-block:: default
 
@@ -369,17 +365,17 @@ The result can be shown as follows:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 140-141
+.. GENERATED FROM PYTHON SOURCE LINES 137-138
 
 Automatically, variables :math:`Hits`, :math:`CRBI`, :math:`PutOuts`, :math:`League\_N` are chosen in the model (the chosen sparsity level is 4).
 
-.. GENERATED FROM PYTHON SOURCE LINES 143-146
+.. GENERATED FROM PYTHON SOURCE LINES 140-143
 
 More on the results
 ~~~~~~~~~~~~~~~~~~~~~~
 We can also plot the path of abess process:
 
-.. GENERATED FROM PYTHON SOURCE LINES 146-166
+.. GENERATED FROM PYTHON SOURCE LINES 143-163
 
 .. code-block:: default
 
@@ -415,11 +411,11 @@ We can also plot the path of abess process:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 167-168
+.. GENERATED FROM PYTHON SOURCE LINES 164-165
 
 Besides, we can also generate a graph about the tuning parameter. Remember that we used the default EBIC to tune the support size.
 
-.. GENERATED FROM PYTHON SOURCE LINES 168-174
+.. GENERATED FROM PYTHON SOURCE LINES 165-171
 
 .. code-block:: default
 
@@ -441,11 +437,11 @@ Besides, we can also generate a graph about the tuning parameter. Remember that 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 175-176
+.. GENERATED FROM PYTHON SOURCE LINES 172-173
 
 In EBIC criterion, `support_size = 4` has the lowest value, so the process adaptively chooses 4 variables. Note that under other information criteria, the result may be different. 
 
-.. GENERATED FROM PYTHON SOURCE LINES 178-181
+.. GENERATED FROM PYTHON SOURCE LINES 175-178
 
 R tutorial 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -454,7 +450,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v01-abe
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.168 seconds)
+   **Total running time of the script:** ( 0 minutes  3.267 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_1_LinearRegression.py:

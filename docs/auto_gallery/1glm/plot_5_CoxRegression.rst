@@ -200,7 +200,7 @@ We split the dataset into a training set and a test set. The model is going to b
 .. GENERATED FROM PYTHON SOURCE LINES 87-92
 
 Model Fitting
-""""""""""""""""""""""""""""""
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The `CoxPHSurvivalAnalysis()` function in the `abess` package allows we to perform best subset selection in a highly efficient way. 
 
 By default, the function implements the abess algorithm with the support size (sparsity level) changing from 0 to :math:`\min\{p,n/\log(n)p \}` and the best support size is determined by EBIC. You can change the tunging criterion by specifying the argument `ic_type` and the support size by `support_size`. The available tuning criteria now are `gic`, `aic`, `bic`, `ebic`. Here we give an example.
@@ -266,7 +266,7 @@ This result shows that 4 variables (the 2nd, 3rd, 7th, 8th, 9th) are chosen into
 .. GENERATED FROM PYTHON SOURCE LINES 109-114
 
 More on the results
-""""""""""""""""""""""""""""""
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Hold on, we haven’t finished yet. After getting the estimator, we can further do more exploring work. For example, you can use some generic steps to quickly draw some information of those estimators.
 
 Simply fix the `support_size` in different levels, we can plot a path of coefficients like: 
@@ -381,7 +381,7 @@ With these predictions, we can compute the hazard ratio between every two observ
 .. code-block:: default
 
 
-    from sksurv.metrics import concordance_index_censored
+    from abess.metrics import concordance_index_censored
     cindex = concordance_index_censored(test[:, 1] == 2, test[:, 0], pred)
     print(cindex[0])
 
@@ -413,7 +413,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v05-cox
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.489 seconds)
+   **Total running time of the script:** ( 0 minutes  0.450 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_5_CoxRegression.py:

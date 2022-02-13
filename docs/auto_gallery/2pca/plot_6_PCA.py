@@ -20,6 +20,7 @@ This notebook introduces what is adaptive best subset selection principal compon
 # However, consider that: 
 # 
 # - The PC is a linear combination of all primary variables (:math:`Xv`), but sometimes we may tend to use less variables for clearer interpretation (and less computational complexity);
+#
 # - It has been proved that if :math:`p/n` does not converge to :math:`0`, the classical PCA is not consistent, but this would happen in some high-dimensional data analysis.
 # 
 # > For example, in gene analysis, the dataset may contain plenty of genes (variables) and we would like to find a subset of them, which can explain most information. Compared with using all genes, this small subset may perform better on interpretation, without losing much information. Then we can focus on these variables in further analysis.
@@ -205,9 +206,13 @@ print('non-zero position: \n', temp)
 # Suppose that the data above have group information like:
 # 
 # - Group 0: {the 1st, 2nd, ..., 6th variable};
+#
 # - Group 1: {the 7th, 8th, ..., 12th variable};
+#
 # - ...
+#
 # - Group 15: {the 91st, 92nd, ..., 96th variable};
+#
 # - Group 16: {the 97th, 98th, 99th variables}.
 # 
 # Denote different groups as different numbers:  

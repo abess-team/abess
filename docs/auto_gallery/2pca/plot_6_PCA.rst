@@ -22,7 +22,7 @@ Principal Component Analysis
 ==================================
 This notebook introduces what is adaptive best subset selection principal component analysis (SparsePCA) and uses a real data example to show how to use it. 
 
-.. GENERATED FROM PYTHON SOURCE LINES 8-48
+.. GENERATED FROM PYTHON SOURCE LINES 8-49
 
 PCA
 ---------------
@@ -39,6 +39,7 @@ Then, before further analysis, we can project :math:`X` to :math:`v` (thus dimen
 However, consider that: 
 
 - The PC is a linear combination of all primary variables (:math:`Xv`), but sometimes we may tend to use less variables for clearer interpretation (and less computational complexity);
+
 - It has been proved that if :math:`p/n` does not converge to :math:`0`, the classical PCA is not consistent, but this would happen in some high-dimensional data analysis.
 
 > For example, in gene analysis, the dataset may contain plenty of genes (variables) and we would like to find a subset of them, which can explain most information. Compared with using all genes, this small subset may perform better on interpretation, without losing much information. Then we can focus on these variables in further analysis.
@@ -65,7 +66,7 @@ Communities and Crime Data Set](https://archive.ics.uci.edu/ml/datasets/Communit
 
 Firstly, we read the data and pick up those variables we are interested in.
 
-.. GENERATED FROM PYTHON SOURCE LINES 48-62
+.. GENERATED FROM PYTHON SOURCE LINES 49-63
 
 .. code-block:: default
 
@@ -99,7 +100,7 @@ Firstly, we read the data and pick up those variables we are interested in.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 63-70
+.. GENERATED FROM PYTHON SOURCE LINES 64-71
 
 Model fitting
 ^^^^^^^^^^^^^^^^^^^^
@@ -109,7 +110,7 @@ Fixed sparsity
 """"""""""""""""""""""""""""""""
 If we only focus on one fixed sparsity, we can simply give a single integer to fit on this situation. And then the fitted sparse principal component is stored in `SparsePCA.coef_`:
 
-.. GENERATED FROM PYTHON SOURCE LINES 70-75
+.. GENERATED FROM PYTHON SOURCE LINES 71-76
 
 .. code-block:: default
 
@@ -125,11 +126,11 @@ If we only focus on one fixed sparsity, we can simply give a single integer to f
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 76-77
+.. GENERATED FROM PYTHON SOURCE LINES 77-78
 
 Give either :math:`X` or :math:`\Sigma` to `model.fit()`, the fitting process will start. The argument `is_normal = False` here means that the program will not normalize :math:`X`. Note that if both :math:`X` and :math:`Sigma` are given, the program prefers to use :math:`X`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 77-83
+.. GENERATED FROM PYTHON SOURCE LINES 78-84
 
 .. code-block:: default
 
@@ -154,11 +155,11 @@ Give either :math:`X` or :math:`\Sigma` to `model.fit()`, the fitting process wi
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 84-85
+.. GENERATED FROM PYTHON SOURCE LINES 85-86
 
 After fitting, `model.coef_` returns the sparse principal component and its non-zero positions correspond to variables used. 
 
-.. GENERATED FROM PYTHON SOURCE LINES 85-92
+.. GENERATED FROM PYTHON SOURCE LINES 86-93
 
 .. code-block:: default
 
@@ -179,41 +180,43 @@ After fitting, `model.coef_` returns the sparse principal component and its non-
 
  .. code-block:: none
 
-    sparsity:  52
+    sparsity:  99
     non-zero position: 
-     [ 0  1  2  5  7  9 11 13 15 17 19 21 23 25 27 29 31 33 34 35 36 37 39 41
-     43 45 47 49 51 53 55 57 59 61 63 65 67 69 71 73 75 77 79 81 83 85 87 89
-     91 93 95 97]
-    [[ 2.91498731e-322  8.80211059e-312 -1.05658906e+270  0.00000000e+000
-       0.00000000e+000 -1.97715761e-315  0.00000000e+000 -5.43428671e-312
-       0.00000000e+000 -1.08665950e-311  0.00000000e+000 -1.62989045e-311
-       0.00000000e+000 -2.17312128e-311  0.00000000e+000 -2.71635223e-311
-       0.00000000e+000 -3.25958306e-311  0.00000000e+000 -3.80281401e-311
-       0.00000000e+000 -4.34604484e-311  0.00000000e+000 -4.88927579e-311
-       0.00000000e+000 -5.43250662e-311  0.00000000e+000 -5.97573757e-311
-       0.00000000e+000 -6.51896840e-311  0.00000000e+000 -7.06219935e-311
-       0.00000000e+000 -7.60543018e-311  8.80211058e-312 -8.14866113e-311
-       1.00000000e+000 -8.69189196e-311  0.00000000e+000 -9.23512291e-311
-       0.00000000e+000 -9.77835374e-311  0.00000000e+000 -1.03215847e-310
-       0.00000000e+000 -1.08648155e-310  0.00000000e+000 -1.14080465e-310
-       0.00000000e+000 -1.19512773e-310  0.00000000e+000 -1.24945083e-310
-       0.00000000e+000 -1.30377391e-310  0.00000000e+000 -1.35809700e-310
-       0.00000000e+000 -1.41242009e-310  0.00000000e+000 -1.46674318e-310
-       0.00000000e+000 -1.52106647e-310  0.00000000e+000 -1.57538957e-310
-       0.00000000e+000 -1.68148935e-310  0.00000000e+000 -1.71756328e-310
-       0.00000000e+000 -1.73835883e-310  0.00000000e+000 -1.79268192e-310
-       0.00000000e+000 -1.84700501e-310  0.00000000e+000 -1.90132810e-310
-       0.00000000e+000 -1.95565118e-310  0.00000000e+000 -2.00997428e-310
-       0.00000000e+000 -2.06429736e-310  0.00000000e+000 -2.11862046e-310
-       0.00000000e+000 -2.17294354e-310  0.00000000e+000 -2.22726663e-310
-       0.00000000e+000 -2.28158972e-310  0.00000000e+000 -2.33591281e-310
-       0.00000000e+000 -2.39023590e-310  0.00000000e+000 -2.44455899e-310
-       0.00000000e+000 -2.49888207e-310  0.00000000e+000]]
+     [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+     24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
+     48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71
+     72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95
+     96 97 98]
+    [[5.38406264e-04 2.39001766e-03 6.43388533e-04 4.37032431e-02
+      2.27490338e-02 6.98906294e-02 2.42411140e-04 8.92638112e-04
+      4.19200912e-04 7.21427732e-04 5.78654815e-04 2.60191153e-03
+      3.21227002e-04 4.15994818e-06 7.73014369e-05 2.88300138e-03
+      4.84427611e-04 1.94946000e-02 1.37597979e-03 5.46124355e-04
+      5.90842314e-04 1.32274597e-04 1.41405795e-05 5.74163918e-08
+      2.38994975e-04 6.03321625e-04 6.85493005e-04 3.26683594e-03
+      2.18893167e-02 4.26827359e-03 5.91846002e-04 4.20667511e-03
+      3.02168785e-04 2.31777409e-05 4.67902930e-04 6.99772391e-04
+      9.13639425e-04 1.74222722e-04 2.59610154e-03 9.19512052e-04
+      5.27726749e-04 4.03223300e-03 1.79918988e-03 2.70295390e-03
+      1.57377598e-03 1.33335038e-03 9.59743650e-04 2.48022921e-03
+      4.32118547e-04 1.78660358e-02 1.09494597e-03 1.83989074e-03
+      2.80312003e-03 3.34855771e-03 4.24754514e-03 7.96790216e-02
+      8.39997865e-02 8.55288442e-02 8.60885251e-02 7.72671819e-02
+      7.73831950e-02 4.32364850e-02 3.61784054e-02 2.68807633e-03
+      1.64508389e-03 2.39094183e-02 1.85712922e-02 6.68121630e-02
+      3.69755571e-03 2.08330776e-02 3.41099877e-04 6.72612579e-06
+      3.79115245e-03 9.15899646e-04 1.07881671e-03 4.45990337e-05
+      1.40454645e-03 3.35471640e-03 1.51663365e-03 1.74746135e-03
+      1.68427433e-03 9.44117296e-04 7.79568929e-04 1.16923594e-03
+      5.17914548e-04 2.44378788e-03 3.60280705e-03 4.08771440e-05
+      2.82656589e-04 3.57004161e-04 7.64224185e-02 3.02502856e-03
+      7.29047614e-04 1.18057148e-05 2.30305959e-04 5.59765034e-08
+      2.84973268e-02 2.67047793e-03 1.66567843e-03]]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 93-98
+.. GENERATED FROM PYTHON SOURCE LINES 94-99
 
 Adaptive sparsity
 """"""""""""""""""""""""""""""""
@@ -221,7 +224,7 @@ What's more, **abess** also support a range of sparsity and adaptively choose th
 
 Now, we need to build an :math:`s_{max} \times 1` binomial matrix, where :math:`s_{max}` indicates the max target sparsity and each row indicates one sparsity level (i.e. start from :math:`1`, till :math:`s_{max}`). For each position with :math:`1`, **abess** would try to fit the model under that sparsity and finally give the best one.
 
-.. GENERATED FROM PYTHON SOURCE LINES 98-111
+.. GENERATED FROM PYTHON SOURCE LINES 99-112
 
 .. code-block:: default
 
@@ -248,37 +251,25 @@ Now, we need to build an :math:`s_{max} \times 1` binomial matrix, where :math:`
 
  .. code-block:: none
 
-    chosen sparsity:  18
+    chosen sparsity:  1
     non-zero position: 
-     [11 12 17 19 20 21 27 29 30 44 76 78 79 80 81 82 83 84]
-    [[ 0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.         -0.29141806
-      -0.24429062  0.          0.          0.          0.          0.18689545
-       0.         -0.23325933 -0.21616287 -0.20097403  0.          0.
-       0.          0.          0.          0.2225711   0.          0.1824316
-      -0.18693836  0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.         -0.19055426  0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.24579232  0.
-      -0.25105229 -0.25712164 -0.25805289 -0.24935922 -0.24556669 -0.29104528
-      -0.24805333  0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.        ]]
+     [66]
+    [[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+      0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+      0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0.
+      0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+      0. 0. 0.]]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 112-115
+.. GENERATED FROM PYTHON SOURCE LINES 113-116
 
 Because of warm-start, the results here may not be the same as fixed sparsity.
 
 Then, the explained variance can be computed by:
 
-.. GENERATED FROM PYTHON SOURCE LINES 115-124
+.. GENERATED FROM PYTHON SOURCE LINES 116-125
 
 .. code-block:: default
 
@@ -301,12 +292,12 @@ Then, the explained variance can be computed by:
 
  .. code-block:: none
 
-    explained ratio:  [[0.15925463]]
+    explained ratio:  [[0.00978855]]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 125-130
+.. GENERATED FROM PYTHON SOURCE LINES 126-131
 
 More on the results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -314,7 +305,7 @@ We can give different target sparsity (change `s_begin` and `s_end`) to get diff
 
 In this example, if we try sparsities from :math:`0` to :math:`p`, and calculate the ratio of explained variance:
 
-.. GENERATED FROM PYTHON SOURCE LINES 130-151
+.. GENERATED FROM PYTHON SOURCE LINES 131-152
 
 .. code-block:: default
 
@@ -349,19 +340,17 @@ In this example, if we try sparsities from :math:`0` to :math:`p`, and calculate
 
  .. code-block:: none
 
-    80%+ :  [ 1  4  7 11 14 17 21 24 27 31 37 41 47 51 54 61 64 67 74 77 81 84 87 91
-     94 98]
-    90%+ :  [ 1  4  7 11 14 17 21 24 27 31 37 41 47 51 54 61 64 67 74 77 81 84 87 91
-     94 98]
+    80%+ :  [51 54 77 94 98]
+    90%+ :  [77 94 98]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 152-153
+.. GENERATED FROM PYTHON SOURCE LINES 153-154
 
 If we denote the explained ratio from all 99 variables as 100%, the curve indicates that at least 31 variables can reach 80% (blue dashed line) and 41 variables can reach 90% (red dashed line).
 
-.. GENERATED FROM PYTHON SOURCE LINES 153-177
+.. GENERATED FROM PYTHON SOURCE LINES 154-178
 
 .. code-block:: default
 
@@ -401,11 +390,11 @@ If we denote the explained ratio from all 99 variables as 100%, the curve indica
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 178-179
+.. GENERATED FROM PYTHON SOURCE LINES 179-180
 
 This result shows that using less than half of all 99 variables can be close to perfect. For example, if we choose sparsity 31, the used variables are:
 
-.. GENERATED FROM PYTHON SOURCE LINES 179-186
+.. GENERATED FROM PYTHON SOURCE LINES 180-187
 
 .. code-block:: default
 
@@ -427,15 +416,16 @@ This result shows that using less than half of all 99 variables can be close to 
  .. code-block:: none
 
     non-zero position: 
-     [ 2  3  4  5  6  7  8  9 11 12 13 15 16 17 19 20 21 22 23 24 25 26 27 28
-     29 30 31 32 33 35 36 37 38 39 40 42 43 44 45 48 49 51 52 53 54 59 60 61
-     62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85
-     86 90 91 92 94 97 98]
+     [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+     24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
+     48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71
+     72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95
+     96 97 98]
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 187-214
+.. GENERATED FROM PYTHON SOURCE LINES 188-219
 
 Extension: Group PCA
 ----------------------------
@@ -458,14 +448,18 @@ Simulated Data Example
 Suppose that the data above have group information like:
 
 - Group 0: {the 1st, 2nd, ..., 6th variable};
+
 - Group 1: {the 7th, 8th, ..., 12th variable};
+
 - ...
+
 - Group 15: {the 91st, 92nd, ..., 96th variable};
+
 - Group 16: {the 97th, 98th, 99th variables}.
 
 Denote different groups as different numbers:  
 
-.. GENERATED FROM PYTHON SOURCE LINES 214-222
+.. GENERATED FROM PYTHON SOURCE LINES 219-227
 
 .. code-block:: default
 
@@ -496,11 +490,11 @@ Denote different groups as different numbers:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 223-224
+.. GENERATED FROM PYTHON SOURCE LINES 228-229
 
 And fit a group sparse PCA model with additional argument `group=g_info`:
 
-.. GENERATED FROM PYTHON SOURCE LINES 224-229
+.. GENERATED FROM PYTHON SOURCE LINES 229-234
 
 .. code-block:: default
 
@@ -530,11 +524,11 @@ And fit a group sparse PCA model with additional argument `group=g_info`:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 230-231
+.. GENERATED FROM PYTHON SOURCE LINES 235-236
 
 The result comes to:
 
-.. GENERATED FROM PYTHON SOURCE LINES 231-241
+.. GENERATED FROM PYTHON SOURCE LINES 236-246
 
 .. code-block:: default
 
@@ -558,31 +552,31 @@ The result comes to:
 
  .. code-block:: none
 
-    [[ 0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-      -0.196633   -0.44897571 -0.45494348 -0.45631741 -0.45174114  0.37481605
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.          0.          0.          0.
-       0.          0.          0.        ]]
+    [[-0.02694347 -0.05128316 -0.02783354  0.11680497 -0.09037604 -0.14123539
+      -0.02326839 -0.03968266 -0.03118288  0.03839888 -0.02774967 -0.05583493
+       0.01407781 -0.01332622  0.00535976  0.05097072  0.03543487 -0.06602807
+       0.04605424  0.0186457   0.02019145  0.00645184  0.00249126 -0.00060767
+       0.01834636  0.0241549  -0.02892475 -0.05678726 -0.06820051 -0.05228066
+       0.01077099 -0.05648022  0.00947932  0.01362916  0.01599    -0.01552924
+       0.02124419 -0.01276287 -0.05849619 -0.0314613  -0.02323144 -0.06165891
+       0.04042985  0.04945715  0.03591585  0.03643427  0.02842307  0.04654331
+      -0.02240855 -0.07288571 -0.034593   -0.06611639 -0.07630041 -0.08044145
+      -0.08576257 -0.16306326 -0.16625995 -0.16694735 -0.1664045   0.14794787
+      -0.14878822 -0.11128683 -0.10136112 -0.05054954 -0.03977688 -0.08489829
+       0.08055439 -0.14117734 -0.06254824  0.08287409 -0.02296578  0.00498932
+       0.06742878 -0.02514476  0.04235779 -0.00866664 -0.03319314 -0.05220757
+      -0.04252318 -0.04598565 -0.04600791 -0.03755147 -0.03319264 -0.04042077
+      -0.02781246 -0.05220075 -0.06393138  0.01328238 -0.01885705 -0.02073558
+      -0.15227313  0.07002346  0.04505134  0.02481716  0.03505334 -0.00346731
+      -0.08821465 -0.05147297 -0.04458672]]
     non-zero group: 
-     [9]
-    chosen sparsity:  1
+     [ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16]
+    chosen sparsity:  17
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 242-261
+.. GENERATED FROM PYTHON SOURCE LINES 247-266
 
 Hence we can focus on variables in Group 0, 8, 9, 10, 11, 15.
 
@@ -604,7 +598,7 @@ By this iteration process, we can acquire multiple principal components and they
 In our program, there is an additional argument `number`, which indicates the number of principal components we need, defaulted by 1.
 Now the `support_size` is shaped in :math:`s_{max}\times \text{number}` and each column indicates one principal component.
 
-.. GENERATED FROM PYTHON SOURCE LINES 261-268
+.. GENERATED FROM PYTHON SOURCE LINES 266-273
 
 .. code-block:: default
 
@@ -630,11 +624,11 @@ Now the `support_size` is shaped in :math:`s_{max}\times \text{number}` and each
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 269-270
+.. GENERATED FROM PYTHON SOURCE LINES 274-275
 
 Here, each column of the `model.coef_` is a sparse PC (from the largest to the smallest), for example the second one is that:
 
-.. GENERATED FROM PYTHON SOURCE LINES 270-275
+.. GENERATED FROM PYTHON SOURCE LINES 275-280
 
 .. code-block:: default
 
@@ -663,11 +657,11 @@ Here, each column of the `model.coef_` is a sparse PC (from the largest to the s
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 276-277
+.. GENERATED FROM PYTHON SOURCE LINES 281-282
 
 If we want to compute the explained variance of them, it is also quite easy: 
 
-.. GENERATED FROM PYTHON SOURCE LINES 277-284
+.. GENERATED FROM PYTHON SOURCE LINES 282-289
 
 .. code-block:: default
 
@@ -693,7 +687,7 @@ If we want to compute the explained variance of them, it is also quite easy:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 285-288
+.. GENERATED FROM PYTHON SOURCE LINES 290-293
 
 R tutorial
 ----------------------
@@ -702,7 +696,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v08-sPC
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  19.120 seconds)
+   **Total running time of the script:** ( 0 minutes  19.018 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_2pca_plot_6_PCA.py:

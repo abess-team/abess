@@ -19,7 +19,7 @@
 
 
 p>>N (Important Search)
--------------------
+--------------------------
 Suppose that there are only a few variables are important (i.e. too many noise variables), it may be a vise choice to focus on some important variables in splicing process. This can save a lot of time, especially under a large :math:`p`.
 
 In abess package, an argument called `important_search` is used for it, which means the size of inactive set for each splicing process. By default, this argument is set as 0, and the total inactive variables would be contained in the inactive set. But if an positive integer is given, the splicing process would focus on active set and the most important `important_search` inactive variables.
@@ -60,8 +60,8 @@ Here we take `LogisticRegression` for an example.
  .. code-block:: none
 
     non_zero :
-     [1862 2349 3059 3342 6396 6465 6645 6660 9044 9391]
-    time :  0.5943801403045654
+     [ 475 1192 3183 3708 3893 4846 5956 8417 8601 9977]
+    time :  0.6732010841369629
 
 
 
@@ -95,8 +95,8 @@ However, if we only focus on 500 important inactive variables when searching:
  .. code-block:: none
 
     non_zero :
-     [1862 2349 3059 3342 6396 6465 6645 6660 9044 9391]
-    time :  0.8597321510314941
+     [ 475 1192 3183 3708 3893 4846 5956 8417 8601 9977]
+    time :  0.9056007862091064
 
 
 
@@ -121,7 +121,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v09-fas
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.740 seconds)
+   **Total running time of the script:** ( 0 minutes  1.904 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_4comimprove_plot_importantsearch.py:

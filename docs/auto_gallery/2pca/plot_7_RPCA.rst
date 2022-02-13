@@ -337,7 +337,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v08-sPC
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.167 seconds)
+   **Total running time of the script:** ( 0 minutes  1.152 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_2pca_plot_7_RPCA.py:

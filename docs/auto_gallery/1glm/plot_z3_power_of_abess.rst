@@ -22,7 +22,7 @@
 Power of abess
 ==============
 
-.. GENERATED FROM PYTHON SOURCE LINES 6-8
+.. GENERATED FROM PYTHON SOURCE LINES 7-9
 
 .. code-block:: default
 
@@ -35,7 +35,7 @@ Power of abess
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-21
+.. GENERATED FROM PYTHON SOURCE LINES 10-22
 
 In this part, we are going to explore the power of the abess package
 using simulated data. We compare the abess package with popular Python
@@ -50,7 +50,7 @@ presents a poor prediction error, the statsmodels runs slow and the
 L0bnb cannot adaptively choose sparsity level. So their results are not
 showed here.
 
-.. GENERATED FROM PYTHON SOURCE LINES 23-61
+.. GENERATED FROM PYTHON SOURCE LINES 24-63
 
 Simulation
 ^^^^^^^^^^^^
@@ -69,6 +69,7 @@ efficiency.
    correctly identified) and the false positive rate (FPR, which is the
    proportion of the varibales in the inactive set that are falsely
    identified as a signal).
+
 -  Timings of the CPU execution are recorded in seconds and all the
    performances are averaged over 20 replications on a sequence of 100
    regularization parameters.
@@ -91,23 +92,25 @@ Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM.
 
    $ python abess/docs/simulation/Python/perform.py
 
-.. GENERATED FROM PYTHON SOURCE LINES 63-90
+.. GENERATED FROM PYTHON SOURCE LINES 65-94
 
 Results
 ~~~~~~~
 
-   For linear regression, we compare three methods in the two packages:
-   Lasso, OMP and abess. For logistic regression, we compare two
-   methods: lasso and abess.
+For linear regression, we compare three methods in the two packages:
+Lasso, OMP and abess. For logistic regression, we compare two
+methods: lasso and abess.
 The results are presented in the following pictures. The first column is
 the result of linear regression and the second one is of logistic
 regression.
 -  Firstly, among all of the methods implemented in different packages,
    the estimator obtained by the abess package shows both the best
    prediction performance and the best coefficient error.
+
 -  Secondly, the estimator obtained by the abess package can reasonably
    control FPR in a low level while the TPR stays at 1. (Since all
    methods’ TPR are 1, the figure is not plotted.)
+
 -  Furthermore, our abess package is highly efficient compared with
    other packages, especially in the linear regression.
 |image0|
@@ -124,7 +127,7 @@ https://abess-team.github.io/abess/articles/v11-power-of-abess.html.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.174 seconds)
+   **Total running time of the script:** ( 0 minutes  0.000 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_z3_power_of_abess.py:
