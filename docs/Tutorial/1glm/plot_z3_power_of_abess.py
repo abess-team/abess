@@ -2,6 +2,7 @@
 ==============
 Power of abess
 ==============
+
 """
 
 # sphinx_gallery_thumbnail_path = '_static/timings.png'
@@ -37,6 +38,7 @@ Power of abess
 #    correctly identified) and the false positive rate (FPR, which is the
 #    proportion of the varibales in the inactive set that are falsely
 #    identified as a signal).
+#
 # -  Timings of the CPU execution are recorded in seconds and all the
 #    performances are averaged over 20 replications on a sequence of 100
 #    regularization parameters.
@@ -63,18 +65,20 @@ Power of abess
 # Results
 # ~~~~~~~
 #
-#    For linear regression, we compare three methods in the two packages:
-#    Lasso, OMP and abess. For logistic regression, we compare two
-#    methods: lasso and abess.
+# For linear regression, we compare three methods in the two packages:
+# Lasso, OMP and abess. For logistic regression, we compare two
+# methods: lasso and abess.
 # The results are presented in the following pictures. The first column is
 # the result of linear regression and the second one is of logistic
 # regression.
 # -  Firstly, among all of the methods implemented in different packages,
 #    the estimator obtained by the abess package shows both the best
 #    prediction performance and the best coefficient error.
+#
 # -  Secondly, the estimator obtained by the abess package can reasonably
 #    control FPR in a low level while the TPR stays at 1. (Since all
 #    methods’ TPR are 1, the figure is not plotted.)
+#
 # -  Furthermore, our abess package is highly efficient compared with
 #    other packages, especially in the linear regression.
 # |image0|

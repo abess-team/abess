@@ -3,10 +3,8 @@
 Linear Regression
 ======================================================
 
-
 In this tutorial, we are going to demonstrate how to use the `abess` package to carry out best subset selection 
 in linear regression with both simulated data and real data.
-
 """
 
 ###############################################################################
@@ -45,7 +43,6 @@ k = 3
 real_coef = np.zeros(p)
 real_coef[[0, 1, 4]] = 3, 1.5, 2
 data1 = make_glm_data(n = n, p = p, k = k, family = "gaussian", coef_ = real_coef)
-
 
 print(data1.x.shape)
 print(data1.y.shape)

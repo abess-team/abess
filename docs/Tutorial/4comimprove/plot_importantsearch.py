@@ -1,6 +1,6 @@
 """
 p>>N (Important Search)
--------------------
+--------------------------
 Suppose that there are only a few variables are important (i.e. too many noise variables), it may be a vise choice to focus on some important variables in splicing process. This can save a lot of time, especially under a large :math:`p`.
 
 In abess package, an argument called `important_search` is used for it, which means the size of inactive set for each splicing process. By default, this argument is set as 0, and the total inactive variables would be contained in the inactive set. But if an positive integer is given, the splicing process would focus on active set and the most important `important_search` inactive variables.
