@@ -13,6 +13,7 @@ In the following pages, the abess Python package is used for illustration. The c
 .. _here: https://abess-team.github.io/abess/articles/
 
 
+<<<<<<< Updated upstream
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
@@ -36,6 +37,19 @@ Generalized Linear Model
      :alt: Linear Regression
 
      :ref:`sphx_glr_auto_gallery_1glm_plot_1_LinearRegression.py`
+=======
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In this tutorial, we are going to demonstrate how to use the abess package to carry out best su...">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_1_LinearRegression_thumb.png
+     :alt: Linear Regression
+
+     :ref:`sphx_glr_auto_gallery_plot_1_LinearRegression.py`
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -45,7 +59,11 @@ Generalized Linear Model
 .. toctree::
    :hidden:
 
+<<<<<<< Updated upstream
    /auto_gallery/1glm/plot_1_LinearRegression
+=======
+   /auto_gallery/plot_1_LinearRegression
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -53,10 +71,17 @@ Generalized Linear Model
 
 .. only:: html
 
+<<<<<<< Updated upstream
  .. figure:: /auto_gallery/1glm/images/thumb/sphx_glr_plot_2_MultiTaskLearning_thumb.png
      :alt: Multi-Response Linear Regression
 
      :ref:`sphx_glr_auto_gallery_1glm_plot_2_MultiTaskLearning.py`
+=======
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_2_MultiTaskLearning_thumb.png
+     :alt: Multi-Response Linear Regression
+
+     :ref:`sphx_glr_auto_gallery_plot_2_MultiTaskLearning.py`
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -66,7 +91,11 @@ Generalized Linear Model
 .. toctree::
    :hidden:
 
+<<<<<<< Updated upstream
    /auto_gallery/1glm/plot_2_MultiTaskLearning
+=======
+   /auto_gallery/plot_2_MultiTaskLearning
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -74,10 +103,17 @@ Generalized Linear Model
 
 .. only:: html
 
+<<<<<<< Updated upstream
  .. figure:: /auto_gallery/1glm/images/thumb/sphx_glr_plot_3_Poisson_Gamma_thumb.png
      :alt: Positive response: Poisson and Gamma regression
 
      :ref:`sphx_glr_auto_gallery_1glm_plot_3_Poisson_Gamma.py`
+=======
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_3_Poisson_Gamma_thumb.png
+     :alt: Positive response: Poisson and Gamma regression
+
+     :ref:`sphx_glr_auto_gallery_plot_3_Poisson_Gamma.py`
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -87,7 +123,11 @@ Generalized Linear Model
 .. toctree::
    :hidden:
 
+<<<<<<< Updated upstream
    /auto_gallery/1glm/plot_3_Poisson_Gamma
+=======
+   /auto_gallery/plot_3_Poisson_Gamma
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -95,10 +135,17 @@ Generalized Linear Model
 
 .. only:: html
 
+<<<<<<< Updated upstream
  .. figure:: /auto_gallery/1glm/images/thumb/sphx_glr_plot_4_logi_and_multiclass_thumb.png
      :alt: Logistic Regression and Multinomial Extension
 
      :ref:`sphx_glr_auto_gallery_1glm_plot_4_logi_and_multiclass.py`
+=======
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_4_logi_and_multiclass_thumb.png
+     :alt: Logistic Regression and Multinomial Extension
+
+     :ref:`sphx_glr_auto_gallery_plot_4_logi_and_multiclass.py`
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -108,7 +155,11 @@ Generalized Linear Model
 .. toctree::
    :hidden:
 
+<<<<<<< Updated upstream
    /auto_gallery/1glm/plot_4_logi_and_multiclass
+=======
+   /auto_gallery/plot_4_logi_and_multiclass
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -116,10 +167,17 @@ Generalized Linear Model
 
 .. only:: html
 
+<<<<<<< Updated upstream
  .. figure:: /auto_gallery/1glm/images/thumb/sphx_glr_plot_5_CoxRegression_thumb.png
      :alt: Cox Regression
 
      :ref:`sphx_glr_auto_gallery_1glm_plot_5_CoxRegression.py`
+=======
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_5_CoxRegression_thumb.png
+     :alt: Cox Regression
+
+     :ref:`sphx_glr_auto_gallery_plot_5_CoxRegression.py`
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -129,6 +187,7 @@ Generalized Linear Model
 .. toctree::
    :hidden:
 
+<<<<<<< Updated upstream
    /auto_gallery/1glm/plot_5_CoxRegression
 
 .. raw:: html
@@ -183,6 +242,9 @@ Generalized Linear Model
 Principal Component Analysis
 -------------------------------
 
+=======
+   /auto_gallery/plot_5_CoxRegression
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -190,10 +252,17 @@ Principal Component Analysis
 
 .. only:: html
 
+<<<<<<< Updated upstream
  .. figure:: /auto_gallery/2pca/images/thumb/sphx_glr_plot_6_PCA_thumb.png
      :alt: Principal Component Analysis
 
      :ref:`sphx_glr_auto_gallery_2pca_plot_6_PCA.py`
+=======
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_6_PCA_thumb.png
+     :alt: Principal Component Analysis
+
+     :ref:`sphx_glr_auto_gallery_plot_6_PCA.py`
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -203,7 +272,11 @@ Principal Component Analysis
 .. toctree::
    :hidden:
 
+<<<<<<< Updated upstream
    /auto_gallery/2pca/plot_6_PCA
+=======
+   /auto_gallery/plot_6_PCA
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -211,10 +284,17 @@ Principal Component Analysis
 
 .. only:: html
 
+<<<<<<< Updated upstream
  .. figure:: /auto_gallery/2pca/images/thumb/sphx_glr_plot_7_RPCA_thumb.png
      :alt: Robust Principal Component Analysis
 
      :ref:`sphx_glr_auto_gallery_2pca_plot_7_RPCA.py`
+=======
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_7_RPCA_thumb.png
+     :alt: Robust Principal Component Analysis
+
+     :ref:`sphx_glr_auto_gallery_plot_7_RPCA.py`
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -224,6 +304,7 @@ Principal Component Analysis
 .. toctree::
    :hidden:
 
+<<<<<<< Updated upstream
    /auto_gallery/2pca/plot_7_RPCA
 .. raw:: html
 
@@ -261,6 +342,20 @@ Actually, in our methods, the targets can be properly handled by simply change s
      :alt: Best group subset selection
 
      :ref:`sphx_glr_auto_gallery_3advancedfeatures_plot_group.py`
+=======
+   /auto_gallery/plot_7_RPCA
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="When analyzing the real world datasets, we may have the following targets:   1. certain variabl...">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_8_advanced_features_thumb.png
+     :alt: Advanced Features
+
+     :ref:`sphx_glr_auto_gallery_plot_8_advanced_features.py`
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -270,6 +365,7 @@ Actually, in our methods, the targets can be properly handled by simply change s
 .. toctree::
    :hidden:
 
+<<<<<<< Updated upstream
    /auto_gallery/3advancedfeatures/plot_group
 
 .. raw:: html
@@ -282,6 +378,20 @@ Actually, in our methods, the targets can be properly handled by simply change s
      :alt: Nuisance Regression
 
      :ref:`sphx_glr_auto_gallery_3advancedfeatures_plot_nuisance.py`
+=======
+   /auto_gallery/plot_8_advanced_features
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Computational Improvement">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_9_ComputationalImprove_thumb.png
+     :alt: Computational Improvement
+
+     :ref:`sphx_glr_auto_gallery_plot_9_ComputationalImprove.py`
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -291,6 +401,7 @@ Actually, in our methods, the targets can be properly handled by simply change s
 .. toctree::
    :hidden:
 
+<<<<<<< Updated upstream
    /auto_gallery/3advancedfeatures/plot_nuisance
 
 .. raw:: html
@@ -391,6 +502,20 @@ Computational Improvement
      :alt: Golden-section searching
 
      :ref:`sphx_glr_auto_gallery_4comimprove_plot_golden.py`
+=======
+   /auto_gallery/plot_9_ComputationalImprove
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Work with scikit-learn">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_z1_work_with_sklearn_thumb.png
+     :alt: Work with scikit-learn
+
+     :ref:`sphx_glr_auto_gallery_plot_z1_work_with_sklearn.py`
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -400,6 +525,7 @@ Computational Improvement
 .. toctree::
    :hidden:
 
+<<<<<<< Updated upstream
    /auto_gallery/4comimprove/plot_golden
 
 .. raw:: html
@@ -412,6 +538,20 @@ Computational Improvement
      :alt: p>>N (Important Search)
 
      :ref:`sphx_glr_auto_gallery_4comimprove_plot_importantsearch.py`
+=======
+   /auto_gallery/plot_z1_work_with_sklearn
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="ABESS algorithm: details">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_z2_algorithm_thumb.png
+     :alt: ABESS algorithm: details
+
+     :ref:`sphx_glr_auto_gallery_plot_z2_algorithm.py`
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -421,6 +561,7 @@ Computational Improvement
 .. toctree::
    :hidden:
 
+<<<<<<< Updated upstream
    /auto_gallery/4comimprove/plot_importantsearch
 .. raw:: html
 
@@ -444,6 +585,20 @@ Connect to Popular Libraries with Scikit-learn API
      :alt: Work with scikit-learn
 
      :ref:`sphx_glr_auto_gallery_5scikit_plot_z1_work_with_sklearn.py`
+=======
+   /auto_gallery/plot_z2_algorithm
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Power of abess">
+
+.. only:: html
+
+ .. figure:: /auto_gallery/images/thumb/sphx_glr_plot_z3_power_of_abess_thumb.png
+     :alt: Power of abess
+
+     :ref:`sphx_glr_auto_gallery_plot_z3_power_of_abess.py`
+>>>>>>> Stashed changes
 
 .. raw:: html
 
@@ -453,7 +608,11 @@ Connect to Popular Libraries with Scikit-learn API
 .. toctree::
    :hidden:
 
+<<<<<<< Updated upstream
    /auto_gallery/5scikit/plot_z1_work_with_sklearn
+=======
+   /auto_gallery/plot_z3_power_of_abess
+>>>>>>> Stashed changes
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
