@@ -1,2 +1,0 @@
-Principal Component Analysis
--------------------------------
