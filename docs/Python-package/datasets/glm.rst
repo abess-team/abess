@@ -5,5 +5,4 @@ make\_glm\_data
     :backlinks: none
     :local:
 
-.. autoclass:: abess.datasets.make_glm_data
-    :members:
+.. autofunction:: abess.datasets.make_glm_data
