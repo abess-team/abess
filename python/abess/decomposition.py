@@ -18,15 +18,15 @@ def fix_docs(cls):
 
 @fix_docs
 class SparsePCA(bess_base):
-    """
-    Adaptive Best-Subset Selection(ABESS) algorithm for principal component analysis.
+    r"""
+    Adaptive Best-Subset Selection(ABESS) algorithm for
+    principal component analysis.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h).
+    splicing_type: {0, 1}, optional, default=1
+        The type of splicing.
         "0" for decreasing by half, "1" for decresing by one.
-        Default: splicing_type = 1.
 
     Examples
     --------
@@ -40,113 +40,11 @@ class SparsePCA(bess_base):
     >>> ### X known
     >>> X = np.random.randn(100, 50)
     >>> model.fit(X)
-    SparsePCA(always_select=[], support_size=10)
     >>> print(model.coef_)
-    [[ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [-0.26348747]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [-0.25116457]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.246006  ]
-     [ 0.        ]
-     [ 0.33525413]
-     [ 0.        ]
-     [ 0.29103013]
-     [-0.40993835]
-     [ 0.        ]
-     [-0.35352296]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [-0.41322479]
-     [ 0.26514089]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.2753099 ]]
     >>>
     >>> ### X unknown, but Sigma known
     >>> model.fit(Sigma = np.cov(X.T))
-    SparsePCA(always_select=[], support_size=10)
     >>> print(model.coef_)
-    [[ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [-0.26348747]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [-0.25116457]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.246006  ]
-     [ 0.        ]
-     [ 0.33525413]
-     [ 0.        ]
-     [ 0.29103013]
-     [-0.40993835]
-     [ 0.        ]
-     [-0.35352296]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [-0.41322479]
-     [ 0.26514089]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.2753099 ]]
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
@@ -467,15 +365,15 @@ class SparsePCA(bess_base):
 
 @fix_docs
 class RobustPCA(bess_base):
-    """
-    Adaptive Best-Subset Selection(ABESS) algorithm for robust principal component analysis.
+    r"""
+    Adaptive Best-Subset Selection(ABESS) algorithm for
+    robust principal component analysis.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h).
+    splicing_type: {0, 1}, optional, default=1
+        The type of splicing.
         "0" for decreasing by half, "1" for decresing by one.
-        Default: splicing_type = 1.
 
     Examples
     --------
@@ -488,16 +386,8 @@ class RobustPCA(bess_base):
     >>>
     >>> ### X known
     >>> X = np.random.randn(100, 50)
-    >>> model.fit(X, r = 10)
-    RobustPCA(always_select=[], support_size=10)
+    >>> model.fit(X)
     >>> print(model.coef_)
-    [[0.         0.         0.         ... 0.         3.71203604 0.        ]
-     [0.         0.         0.         ... 0.         0.         0.        ]
-     [0.         0.         0.         ... 0.         0.         0.        ]
-     ...
-     [0.         0.         0.         ... 0.         0.         0.        ]
-     [0.         0.         0.         ... 0.         0.         0.        ]
-     [0.         0.         0.         ... 0.         0.         0.        ]]
     """
 
     def __init__(self, max_iter=20, exchange_num=5, is_warm_start=True,

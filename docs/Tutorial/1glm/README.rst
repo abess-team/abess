@@ -1,2 +1,0 @@
-Generalized Linear Model
--------------------------
