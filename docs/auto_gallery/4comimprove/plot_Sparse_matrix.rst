@@ -21,13 +21,14 @@
 Sparse matrix
 ==============
 
-.. GENERATED FROM PYTHON SOURCE LINES 6-9
+.. GENERATED FROM PYTHON SOURCE LINES 6-10
 
-We sometimes meet with problems where the :math:`N×p` input matrix :math:`X` is extremely sparse, i.e., many entries in :math:`X:math:` have zero values. A notable example comes from document classification: aiming to assign classes to a document, making it easier to manage for publishers and news sites. The input variables for characterizing documents are generated from a so called "bag-of-words" model. In this model, each variable is scored for the presence of each of the words in the entire dictionary under consideration. Since most words are absent, the input variables for each document is mostly zero, and so the entire matrix is mostly zero. 
+We sometimes meet with problems where the :math:`N×p` input matrix :math:`X` is extremely sparse, i.e., 
+many entries in :math:`X` have zero values. A notable example comes from document classification: aiming to assign classes to a document, making it easier to manage for publishers and news sites. The input variables for characterizing documents are generated from a so called "bag-of-words" model. In this model, each variable is scored for the presence of each of the words in the entire dictionary under consideration. Since most words are absent, the input variables for each document is mostly zero, and so the entire matrix is mostly zero. 
 
 For example, we create a sparse matrix like:
 
-.. GENERATED FROM PYTHON SOURCE LINES 9-20
+.. GENERATED FROM PYTHON SOURCE LINES 10-21
 
 .. code-block:: default
 
@@ -66,11 +67,11 @@ For example, we create a sparse matrix like:
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 21-22
+.. GENERATED FROM PYTHON SOURCE LINES 22-23
 
 The sparse matrix can be directly used in `abess` pacakages. We just need to set argument `sparse_matrix = T`. Note that if the input matrix is not sparse matrix, the program would automatically transfer it into the sparse one, so this argument can also make some improvement.
 
-.. GENERATED FROM PYTHON SOURCE LINES 22-34
+.. GENERATED FROM PYTHON SOURCE LINES 23-35
 
 .. code-block:: default
 
@@ -104,11 +105,11 @@ The sparse matrix can be directly used in `abess` pacakages. We just need to set
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 35-36
+.. GENERATED FROM PYTHON SOURCE LINES 36-37
 
 We compare the runtime when the input matrix is dense matrix:
 
-.. GENERATED FROM PYTHON SOURCE LINES 36-50
+.. GENERATED FROM PYTHON SOURCE LINES 37-51
 
 .. code-block:: default
 
@@ -137,12 +138,12 @@ We compare the runtime when the input matrix is dense matrix:
  .. code-block:: none
 
     dense matrix:   0.0
-    sparse matrix:   0.0
+    sparse matrix:   0.0009987354278564453
 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 51-57
+.. GENERATED FROM PYTHON SOURCE LINES 52-58
 
 From the comparison, we see that the time required by sparse matrix is smaller, and this sould be more visible when the sparse imput matrix is large. Hence, we suggest to assign a sparse matrix to `abess` when the input matrix have a lot of zero entries.
 
@@ -154,7 +155,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v09-fas
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.004 seconds)
+   **Total running time of the script:** ( 0 minutes  0.005 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_4comimprove_plot_Sparse_matrix.py:

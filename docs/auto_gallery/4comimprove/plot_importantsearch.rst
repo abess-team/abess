@@ -61,7 +61,7 @@ Here we take `LogisticRegression` for an example.
 
     non_zero :
      [1862 2349 3059 3342 6396 6465 6645 6660 9044 9391]
-    time :  0.5695071220397949
+    time :  0.5943801403045654
 
 
 
@@ -96,7 +96,7 @@ However, if we only focus on 500 important inactive variables when searching:
 
     non_zero :
      [1862 2349 3059 3342 6396 6465 6645 6660 9044 9391]
-    time :  0.8576765060424805
+    time :  0.8597321510314941
 
 
 
@@ -108,7 +108,7 @@ It takes much less time to reach the same result. We recommend use this method f
 Here we compare the AUC and runtime for `LogisticRegression` under different `important_search` and the test code can be found [here](https://github.com/abess-team/abess/blob/master/docs/simulation/Python/impsearch.py).
 
 
-.. image:: ./images/impsearch.png.png
+.. image:: ./images/impsearch.png
 At a low level of `important_search`, however, the performance (AUC) has been very good. In this situation, a lower `important_search` can save lots of time and space.
 
 .. GENERATED FROM PYTHON SOURCE LINES 51-55
@@ -121,7 +121,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v09-fas
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.715 seconds)
+   **Total running time of the script:** ( 0 minutes  1.740 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_4comimprove_plot_importantsearch.py:

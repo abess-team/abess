@@ -21,304 +21,7 @@
 Other Advanced Features
 ========================
 
-.. GENERATED FROM PYTHON SOURCE LINES 6-11
-
-Nuisance Regression
-----------------------------
-Nuisance regression refers to best subset selection with some prior information that some variables are required to stay in the active set. For example, if we are interested in a certain gene and want to find out what other genes are associated with the response when this particular gene shows effect.
-
-In the `LinearRegression()` (or other methods), the argument `always_select` is designed to realize this goal. User can pass a vector containing the indexes of the target variables to `always_select`. Here is an example.
-
-.. GENERATED FROM PYTHON SOURCE LINES 11-32
-
-.. code-block:: default
-
-
-
-    import numpy as np
-    from abess.datasets import make_glm_data
-    from abess.linear import LinearRegression
-
-    np.random.seed(0)
-
-    # gene data
-    n = 100
-    p = 20
-    k = 5
-    dt = make_glm_data(n = n, p = p, k = k, family = 'gaussian')
-    print('real coefficients:\n', dt.coef_, '\n')
-    print('real coefficients\' indexes:\n', np.nonzero(dt.coef_)[0])
-
-    model = LinearRegression(support_size = range(0, 6))
-    model.fit(dt.x, dt.y)
-    print('fitted coefficients:\n', model.coef_, '\n')
-    print('fitted coefficients\' indexes:\n', np.nonzero(model.coef_)[0])
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    real coefficients:
-     [  0.           0.         115.01218243   0.           0.
-      81.84924757   0.           0.           0.           0.
-     104.77568224  64.30426355   0.           0.           0.
-       0.           0.           0.         108.5408557    0.        ] 
-
-    real coefficients' indexes:
-     [ 2  5 10 11 18]
-    fitted coefficients:
-     [  0.           0.         114.93792167   0.           0.
-      81.8124385    0.           0.           0.           0.
-     104.67076232  64.40856101   0.           0.           0.
-       0.           0.           0.         108.73726174   0.        ] 
-
-    fitted coefficients' indexes:
-     [ 2  5 10 11 18]
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 33-35
-
-The coefficients are located in \[2, 5, 10, 11, 18\]. 
-But if we suppose that the 7th and 8th variables are worthy to be included in the model, we can call:
-
-.. GENERATED FROM PYTHON SOURCE LINES 35-42
-
-.. code-block:: default
-
-
-
-    model = LinearRegression(support_size = range(0, 6), always_select = [7, 8])
-    model.fit(dt.x, dt.y)
-    print('fitted coefficients:\n', model.coef_, '\n')
-    print('fitted coefficients\' indexes:\n', np.nonzero(model.coef_)[0])
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    fitted coefficients:
-     [  0.           0.         117.18370615   0.           0.
-       0.           0.           5.09643891  -1.00521149   0.
-      91.65760504   0.           0.           0.           0.
-       0.           0.           0.         121.21120638   0.        ] 
-
-    fitted coefficients' indexes:
-     [ 2  7  8 10 18]
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 43-55
-
-Now the variables we chosen are always in the model.
-
-Regularized Adaptive Best Subset Selection
-------------------------------------------------
-In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated, the vallina type of :math:`L_0` constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed. Under this concern, the `abess` pakcage provides option of best subset selection with :math:`L_2` norm regularization called the regularized bess. The model has this following form:
-
-.. math::
-    \arg\min_\beta L(\beta) + \alpha \|\beta\|_2^2.
-
-To implement the regularized bess, user need to specify a value to an additive argument `alpha` in the `LinearRegression()` function (or other methods). This value corresponds to the penalization parameter in the model above. 
-
-Let’s test the regularized best subset selection against the no-regularized one over 100 replicas in terms of prediction performance. With argument `snr` in `make_glm_data()`, we can add white noise into generated data.
-
-.. GENERATED FROM PYTHON SOURCE LINES 55-78
-
-.. code-block:: default
-
-
-
-
-    loss = np.zeros((2, 100))
-    coef = np.repeat([1, 0], [5, 25])
-    for i in range(100):
-        np.random.seed(i)
-        train = make_glm_data(n = 100, p = 30, k = 5, family = 'gaussian', coef_ = coef, snr = 0.05)
-        np.random.seed(i + 100)
-        test = make_glm_data(n = 100, p = 30, k = 5, family = 'gaussian', coef_ = coef, snr = 0.05)
-    
-        # normal
-        model = LinearRegression()
-        model.fit(train.x, train.y)
-        loss[0, i] = np.linalg.norm(model.predict(test.x) - test.y)
-        # regularized
-        model = LinearRegression(alpha = 0.7)
-        model.fit(train.x, train.y)
-        loss[1, i] = np.linalg.norm(model.predict(test.x) - test.y)
-
-    print("normal model's loss:", np.mean(loss[0,:]))
-    print("regularized model's loss:", np.mean(loss[1,:]))
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    normal model's loss: 24.740937201741712
-    regularized model's loss: 28.332125562008272
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 79-80
-
-The regularized model has a lower test loss. And we can also make a boxplot:
-
-.. GENERATED FROM PYTHON SOURCE LINES 80-87
-
-.. code-block:: default
-
-
-
-
-    import matplotlib.pyplot as plt
-    plt.boxplot([loss[0,:], loss[1,:]], labels = ['ABESS', 'RABESS'])
-    plt.show()
-
-
-
-
-.. image-sg:: /auto_gallery/3advancedfeatures/images/sphx_glr_plot_z_other_advanced_features_001.png
-   :alt: plot z other advanced features
-   :srcset: /auto_gallery/3advancedfeatures/images/sphx_glr_plot_z_other_advanced_features_001.png
-   :class: sphx-glr-single-img
-
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 88-103
-
-We see that the regularized best subset select ("RABESS" in figure)  indeed reduces the prediction error.
-
-Best group subset selection
----------------------------------
-Best group subset selection (BGSS) aims to choose a small part of non-overlapping groups to achieve the best interpretability on the response variable. BGSS is practically useful for the analysis of ubiquitously existing variables with certain group structures. For instance, a categorical variable with several levels is often represented by a group of dummy variables. Besides, in a nonparametric additive model, a continuous component can be represented by a set of basis functions (e.g., a linear combination of spline basis functions). Finally, specific prior knowledge can impose group structures on variables. A typical example is that the genes belonging to the same biological pathway can be considered as a group in the genomic data analysis.
-
-The BGSS can be achieved by solving:
-
-.. math::
-    \min_{\beta\in \mathbb{R}^p} \frac{1}{2n} ||y-X\beta||_2^2,\quad s.t.\ ||\beta||_{0,2}\leq s .
-
-
-where :math:`||\beta||_{0,2} = \sum_{j=1}^J I(||\beta_{G_j}||_2\neq 0)` in which :math:`||\cdot||_2` is the :math:`L_2` norm and model size :math:`s` is a positive integer to be determined from data. Regardless of the NP-hard of this problem, Zhang et al develop a certifiably polynomial algorithm to solve it. This algorithm is integrated in the `abess` package, and user can handily select best group subset by assigning a proper value to the `group` arguments:
-
-We still use the dataset `dt` generated before, which has 100 samples, 5 useful variables and 15 irrelevant varibales.
-
-.. GENERATED FROM PYTHON SOURCE LINES 103-108
-
-.. code-block:: default
-
-
-
-
-    print('real coefficients:\n', dt.coef_, '\n')
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    real coefficients:
-     [  0.           0.         115.01218243   0.           0.
-      81.84924757   0.           0.           0.           0.
-     104.77568224  64.30426355   0.           0.           0.
-       0.           0.           0.         108.5408557    0.        ] 
-
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 109-110
-
-Support we have some prior information that every 5 variables as a group:
-
-.. GENERATED FROM PYTHON SOURCE LINES 110-116
-
-.. code-block:: default
-
-
-
-
-    group = np.linspace(0, 3, 4).repeat(5)
-    print('group index:\n', group)
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    group index:
-     [0. 0. 0. 0. 0. 1. 1. 1. 1. 1. 2. 2. 2. 2. 2. 3. 3. 3. 3. 3.]
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 117-118
-
-Then we can set the `group` argument in function. Besides, the `support_size` here indicates the number of groups, instead of the number of variables.
-
-.. GENERATED FROM PYTHON SOURCE LINES 118-123
-
-.. code-block:: default
-
-
-    model = LinearRegression(support_size = range(0, 3))
-    model.fit(dt.x, dt.y, group = group)
-    print('coefficients:\n', model.coef_)
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out:
-
- .. code-block:: none
-
-    coefficients:
-     [  4.07330876  14.02654966 133.63659942  -3.25926433  -8.02172721
-       0.           0.           0.           0.           0.
-       0.           0.           0.           0.           0.
-      -4.14697258   1.53447211  16.29386214 112.43896075   8.85388996]
-
-
-
-
-.. GENERATED FROM PYTHON SOURCE LINES 124-133
-
-The fitted result suggest that only two groups are selected (since `support_size` is from 0 to 2) and the selected variables are shown before.
+.. GENERATED FROM PYTHON SOURCE LINES 6-13
 
 Integrate SIS
 -------------------
@@ -328,10 +31,15 @@ In our program, to carrying out the Integrate SIS, user need to pass an integer 
 
 Here is an example.
 
-.. GENERATED FROM PYTHON SOURCE LINES 133-148
+.. GENERATED FROM PYTHON SOURCE LINES 13-33
 
 .. code-block:: default
 
+    import numpy as np
+    from abess.datasets import make_glm_data
+    from abess.linear import LinearRegression
+
+    np.random.seed(0)
 
     n = 100
     p = 1000
@@ -363,7 +71,7 @@ Here is an example.
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 149-155
+.. GENERATED FROM PYTHON SOURCE LINES 34-40
 
 User-specified cross validation division
 ---------------------------------------------
@@ -372,11 +80,9 @@ One simple method is to fix a random seed, such as `numpy.random.seed()`. But in
 
 In our program, an additional argument `cv_fold_id` is for this user-specified cross validation division. An integer array with the same size of input samples can be given, and those with same integer would be assigned to the same "fold" in K-fold CV.
 
-.. GENERATED FROM PYTHON SOURCE LINES 155-173
+.. GENERATED FROM PYTHON SOURCE LINES 40-56
 
 .. code-block:: default
-
-
 
 
     n = 100
@@ -409,7 +115,7 @@ In our program, an additional argument `cv_fold_id` is for this user-specified c
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 174-182
+.. GENERATED FROM PYTHON SOURCE LINES 57-65
 
 User-specified initial active set
 -----------------------------------------
@@ -420,7 +126,7 @@ It might come from prior analysis, whose result is not quite precise but better 
 
 To specify initial active set, an additive argument `A_init` should be given in `fit()`.
 
-.. GENERATED FROM PYTHON SOURCE LINES 182-194
+.. GENERATED FROM PYTHON SOURCE LINES 65-77
 
 .. code-block:: default
 
@@ -451,13 +157,13 @@ To specify initial active set, an additive argument `A_init` should be given in 
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 195-207
+.. GENERATED FROM PYTHON SOURCE LINES 78-90
 
 Some strategies for initial active set are:
 
-- If :math:`sparsity = len(A\_init)$, the splicing process would start from :math:`A\_init$.
-- If :math:`sparsity > len(A\_init)$, the initial set includes :math:`A\_init` and other variables `inital screening` chooses.
-- If :math:`sparsity < len(A\_init)$, the initial set includes part of :math:`A\_init$.
+- If `sparsity = len(A_init)`, the splicing process would start from `A_init`.
+- If `sparsity > len(A_init)`, the initial set includes `A_init` and other variables `inital screening` chooses.
+- If `sparsity < len(A_init)`, the initial set includes part of `A_init`.
 - If both `A_init` and `always_select` are given, `always_select` first.
 - For warm-start, `A_init` will only affect splicing under the first sparsity in `support_size`.
 - For CV, `A_init` will affect each fold but not the re-fitting on full data.
@@ -469,7 +175,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v07-adv
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.527 seconds)
+   **Total running time of the script:** ( 0 minutes  0.045 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_3advancedfeatures_plot_z_other_advanced_features.py:

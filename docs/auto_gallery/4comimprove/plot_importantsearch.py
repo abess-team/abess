@@ -44,7 +44,7 @@ print("time : ", t2 - t1)
 # Here we compare the AUC and runtime for `LogisticRegression` under different `important_search` and the test code can be found [here](https://github.com/abess-team/abess/blob/master/docs/simulation/Python/impsearch.py).
 # 
 # 
-# .. image:: ./images/impsearch.png.png
+# .. image:: ./images/impsearch.png
 # At a low level of `important_search`, however, the performance (AUC) has been very good. In this situation, a lower `important_search` can save lots of time and space.
 
 ###############################################################################

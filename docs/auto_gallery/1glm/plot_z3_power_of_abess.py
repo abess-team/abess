@@ -4,7 +4,7 @@ Power of abess
 ==============
 """
 
-
+# sphinx_gallery_thumbnail_path = '_static/timings.png'
 #%%
 # In this part, we are going to explore the power of the abess package
 # using simulated data. We compare the abess package with popular Python
