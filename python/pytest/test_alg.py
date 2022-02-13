@@ -2,12 +2,15 @@ import sys
 import warnings
 import numpy as np
 import abess
-from utilities import (assert_nan, assert_value, assert_fit)
 import pandas as pd
 from scipy.sparse import coo_matrix
 from sklearn.model_selection import KFold, GridSearchCV
-from sklearn.linear_model import LinearRegression, LogisticRegression, PoissonRegressor
+from sklearn.linear_model import (
+    LinearRegression,
+    LogisticRegression,
+    PoissonRegressor)
 from lifelines import CoxPHFitter
+from utilities import (assert_nan, assert_value, assert_fit)
 
 warnings.filterwarnings("ignore")
 
@@ -478,7 +481,6 @@ class TestAlgorithm:
         # sigma = 1
         # M = 1
         np.random.seed(3)
-        # data = abess.make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
         data = abess.make_glm_data(n, p, family=family, k=k, rho=rho)
         # data3 = abess.make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
@@ -509,7 +511,6 @@ class TestAlgorithm:
         # sigma = 1
         # M = 1
         np.random.seed(3)
-        # data = abess.make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
         data = abess.make_glm_data(n, p, family=family, k=k, rho=rho)
         # data3 = abess.make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
@@ -517,10 +518,13 @@ class TestAlgorithm:
         support_size = np.linspace(1, s_max, s_max + 1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3]
 
-        model = abess.CoxPHSurvivalAnalysis(path_type="seq", support_size=support_size, ic_type='ebic', screening_size=20,
-                                            s_min=1, s_max=p, cv=5,
-                                            exchange_num=2,
-                                            primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6, approximate_Newton=True, ic_coef=1., thread=5)
+        model = abess.CoxPHSurvivalAnalysis(
+            path_type="seq", support_size=support_size,
+            ic_type='ebic', screening_size=20,
+            s_min=1, s_max=p, cv=5,
+            exchange_num=2,
+            primary_model_fit_max_iter=30, primary_model_fit_epsilon=1e-6,
+            approximate_Newton=True, ic_coef=1., thread=5)
         cv = KFold(n_splits=5, shuffle=True, random_state=0)
         gcv = GridSearchCV(
             model,
@@ -543,7 +547,6 @@ class TestAlgorithm:
     #     sigma = 1
     #     M = 1
     #     np.random.seed(2)
-    #     # data = abess.make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
     #     data = abess.make_multivariate_glm_data(
     #         family=family, n=n, p=p,  k=k, rho=rho, M=M)
     #     # data3 = abess.make_multivariate_glm_data(
@@ -574,7 +577,6 @@ class TestAlgorithm:
     #     sigma = 1
     #     M = 1
     #     np.random.seed(2)
-    #     # data = abess.make_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
     #     data = abess.make_multivariate_glm_data(
     #         family=family, n=n, p=p,  k=k, rho=rho, M=M)
     #     # data3 = abess.make_multivariate_glm_data(

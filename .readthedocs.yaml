@@ -8,9 +8,9 @@ formats:
   - pdf
 
 python:
-  version: 3.7
+  version: 3.8
   install:
     - requirements: docs/requirements.txt
-    - method: setuptools
+    - method: pip
       path: python
   system_packages: true

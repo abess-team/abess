@@ -23,17 +23,17 @@ knitr::opts_chunk$set(warning = FALSE, eval = TRUE, message = FALSE)
 ```
 
 
-## Briey introduction       
-The R package `abess` implement a polynomial algorithm in the  [\color{blue}{paper}](https://www.pnas.org/content/117/52/33117) for best-subset selection problem:
-$$\min_{\beta \in \mathbb{R}^p} \frac{1}{2n} \| y - X\beta\|_2^2, \text{ subject to } \|\beta\|_0 \leq s,$$
-where $\| \cdot \|_2$ is the $\ell_2$ norm, $\|\beta\|_0=\sum_{i=1}^pI( \beta_i\neq 0)$ is the $\ell_0$ norm of $\beta$, and the sparsity level $s$ is usually an unknown non-negative integer.
-Next, we present an example to show how to use the **abess** package to solve a simple problem. 
+## Brief introduction       
+The R package `abess` implement a polynomial algorithm [\color{blue}{paper}](https://www.pnas.org/content/117/52/33117) for solving the best-subset selection problem:
+$$\min_{\boldsymbol{\beta} \in \mathbb{R}^p} \mathcal{L_n}({\boldsymbol\beta}), \text{ s.t. } \|\boldsymbol\beta\|_0 \leq s,$$
+where $\mathcal{L}_{n}(\boldsymbol \beta)=\frac{1}{2 n}\|y-X \boldsymbol{\beta}\|_{2}^{2}$, $\|\boldsymbol{\beta}\|_0=\sum_{i=1}^pI( \boldsymbol{\beta}_i\neq 0)$ is the $\ell_0$(-pseudo) norm of $\beta$, and the sparsity level $s$ is usually an unknown non-negative integer.
+Next, we present an example to show how to use the `abess` package to solve a simple problem. 
 
 ## Quick example        
 ### Fixed support size best subset selection        
-We generate a design matrix $X$ containing 300 observation and each observation has 1000 predictors. The response variable $y$ is linearly related to the first, second, and fifth predictors in $X$: 
+We generate a design matrix $X$ containing 300 observations and each observation has 1000 predictors. The response variable $y$ is linearly related to the first, second, and fifth predictors in $X$: 
 $$y = 3X_1 + 1.5X_2 + 2X_5 + \epsilon,$$
-where $\epsilon$ is a standard normal random variable. 
+where $\varepsilon$ is a standard normal random variable. 
 ```{r}
 library(abess)
 synthetic_data <- generate.data(n = 300, p = 1000, 
@@ -45,7 +45,7 @@ dat <- cbind.data.frame("y" = synthetic_data[["y"]],
 ```
 
 Then, we use the main function `abess` in the package to fit this dataset. 
-By setting the arguments `support.size = s`, `abess` function conducts **Algorithm 1** in the [\color{blue}{paper}](https://www.pnas.org/content/117/52/33117) for best-subset selection with a sparsity level `s`. In our example, we set the options: `support.size = 3`, and we run **Algorithm 1** with the following command: 
+By setting the arguments `support.size = s`, `abess()` function conducts **Algorithm 1** [\color{blue}{paper}](https://www.pnas.org/content/117/52/33117) for the best-subset selection with a sparsity level `s`. In our example, we set the options: `support.size = 3`, and we run **Algorithm 1** with the following command: 
 ```{r}
 abess_fit <- abess(y ~ ., data = dat, support.size = 3)
 ```
@@ -54,7 +54,7 @@ The output of `abess` comprises the selected best model:
 ```{r}
 head(coef(abess_fit, sparse = FALSE))
 ```
-The best model's support set is identical to the ground truth, and the coefficient estimation is the same as the oracle estimator given by `lm` function:
+The support set of the best model is identical to the ground truth, and the coefficient estimation is the same as the oracle estimator given by `lm` function:
 ```{r}
 lm(y ~ ., data = dat[, c(1, c(1, 2, 5) + 1)])
 ```
@@ -62,12 +62,12 @@ lm(y ~ ., data = dat[, c(1, c(1, 2, 5) + 1)])
 <!-- Users could `print`, `summary` or `predict` this bestmodel object just like working with classical regression modeling. This would be helpful for data scientists who are familiar with `lm` functions in R. -->
 
 ### Adaptive best subset selection        
-Imaging we are unknown about the true sparsity level in real world data, and thus, we need to determine the most proper one. The **Algorithm 3** in the [\color{blue}{paper}](https://www.pnas.org/content/117/52/33117) is designed for this scenario. `abess` is capable of performing this algorithm: 
+Supposing we are unknown about the true sparsity level in real world data, and thus, we need to determine the most proper one. The **Algorithm 3** [\color{blue}{paper}](https://www.pnas.org/content/117/52/33117) is designed for this scenario. `abess` is capable of performing this algorithm: 
 ```{r}
 abess_fit <- abess(y ~ ., data = dat)
 ```
 
-The output of `abess` also comprises the selected best model: 
+The output of `abess()` also comprises the selected best model: 
 ```{r}
 best_size <- abess_fit[["best.size"]]
 print(best_size)
@@ -87,13 +87,13 @@ head(Hitters)
 dim(Hitters)
 sum(is.na(Hitters))
 ```
-Note that this dataset contains some missing data. So we use the `na.omit()` function to delete rows that have incomplete information. After that, we have 263 observations remains.
+Note that this dataset contains some missing data. So we use the `na.omit()` function to delete rows that have incomplete information. After that, we have 263 observations remaining.
 ```{r}
 Hitters <- na.omit(Hitters)
 dim(Hitters)
 sum(is.na(Hitters))
 ```
-Then we change the factors into dummy variables with the `model.matrix()` function. Note that the `abess` function will automatically include the intercept.
+Then we change the factors into dummy variables with the `model.matrix()` function. Note that the `abess()` function will automatically include the intercept.
 
 ```{r}
 Hitters <- model.matrix(~., Hitters)[, -1]
@@ -101,7 +101,7 @@ Hitters <- as.data.frame(Hitters)
 ```
 
 ### Running ABESS
-The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. You can call the `abess()` function using formula just like what you do with `lm()`. Or you can specify the design matrix `x` and the response `y`. The `system.time` function records the run time.
+The `abess()` function in the `abess` package allows you to perform best subset selection in a highly efficient way. You can call the `abess()` function using formula just like what you do with `lm()`. Or you can specify the design matrix `x` and the response `y`. The `system.time()` function records the run time.
 ```{r}
 library(abess)
 abess_fit <- abess(Salary ~ ., Hitters)
@@ -124,7 +124,7 @@ deviance(abess_fit)
 print(abess_fit)
 ```
 
-Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value.   
+Prediction is allowed for all the estimated models. Just call `predict.abess()` function with the `support.size` set to the size of model you are interested in. If `support.size` is not provided, prediction will be made on the model with best tuning value.   
 ```{r}
 hitters_pred <- predict(abess_fit, 
                         newx = Hitters[, -which(colnames(Hitters) == "Salary")], 

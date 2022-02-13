@@ -15,8 +15,6 @@ output:
     keep_md: yes
 ---
 
-This vignettes introduces what is adaptive best subset selection principal component analysis (abessPCA) and use a real data example to show how to use it. 
-
 ## Introduction
 Principal component analysis (PCA) is an important method in the field of data science, which can reduce the dimension of data and simplify our model. It actually solve an optimization problem like:
 
@@ -24,17 +22,19 @@ $$
     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1.
 $$
 
-where $\Sigma = X^TX / (n-1)$ and $X$ is the **centered** sample matrix. We also denote that $X$ is a $n\times p$ matrix, where each row is an observation and each column is a variables.
+where $\Sigma = X^TX / (n-1)$ and $X$ is the **centered** sample matrix. We also denote that $X$ is a $n\times p$ matrix, where each row is an observation and each column is a variable.
 
 Then, before further analysis, we can project $X$ to $v$ (thus dimensional reduction), without losing too much information.
 
 However, consider that: 
+
 - The PC is a linear combination of all primary variables ($Xv$), but sometimes we may tend to use less variables for clearer interpretation (and less computational complexity);
+
 - It has been proved that if $p/n$ does not converge to $0$, the classical PCA is not consistent, but this would happen in some high-dimensional data analysis.
 
 For example, in gene analysis, the dataset may contain plenty of genes (variables) and we would like to find a subset of them, which can explain most information. Compared with using all genes, this small subset may perform better on interpretation, without loss much information. Then we can focus on these variables in the further analysis.
 
-When we trapped by these problems, a classical PCA may not be a best choice, since it use all variables. One of the alternatives is abessPCA, which is able to seek for principal component with a sparsity limitation:
+When we are trapped by these problems, a classical PCA may not be a best choice, since it use all variables. One of the alternatives is abessPCA, which is able to seek for principal component with a sparsity limitation:
 
 $$
     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq s.
@@ -115,7 +115,7 @@ $$
 
 where we suppose there are $G$ groups, and the $g$-th one correspond to $v_g$, $v = [v_1^T,v_2^T,\cdots,v_G^T]^T$. Then we are interested to find $s$ (or less) important groups.
 
-> Group problem is extraordinary important in real data analysis. Still take gene analysis as an example, several sites would be related to one pathway, and it is meaningless to consider each of them alone. 
+Group problem is extraordinary important in real data analysis. Still take gene analysis as an example, several sites would be related to one pathway, and it is meaningless to consider each of them alone. 
 
 abessPCA can also deal with group information. Here we make sure that variables in the same group address close to each other (if not, the data should be sorted first).
 
@@ -147,7 +147,7 @@ $$
 \Sigma' = (1-vv^{\top})\Sigma(1-vv^{\top})
 $$
 
-where $\Sigma$ is the correct covariance matrix and $v$ is its (sparse) loading vector. 
+where $\Sigma$ is the covariance matrix and $v$ is its (sparse) loading vector. 
 We map it into $\Sigma'$, which indicates the orthogonal space of $v$, 
 and then solve the sparse principal component for $\Sigma'$ again. 
 By this iteration process, we can acquire multiple principal components and they are sorted from the largest to the smallest.
@@ -155,7 +155,7 @@ In our program, there is an additional argument `sparse.type` to support this fe
 By setting `sparse.type = "kpc"`, then best subset selection performs on the first $K$ principal components 
 where $K$ is decided by argument `support.size`.    
 
-Suppose we are interested in the first two principal components, 
+Suppose we are interested in the first two principal components,
 and the support size is 50 in the first loading vector and is 40 in the second loading vector. 
 In other words, we consecutively solve two problem:
 $$
