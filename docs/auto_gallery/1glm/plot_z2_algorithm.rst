@@ -22,6 +22,19 @@
 ABESS algorithm: details
 ========================
 
+.. GENERATED FROM PYTHON SOURCE LINES 6-8
+
+.. code-block:: default
+
+    # sphinx_gallery_thumbnail_path = '_static/icon_noborder.png'
+
+
+
+
+
+
+
+
 .. GENERATED FROM PYTHON SOURCE LINES 9-228
 
 Introduction 
@@ -247,7 +260,7 @@ Algorithm 3: ABESS.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.000 seconds)
+   **Total running time of the script:** ( 0 minutes  0.171 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_z2_algorithm.py:
