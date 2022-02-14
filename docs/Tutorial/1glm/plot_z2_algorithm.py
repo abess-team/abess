@@ -3,7 +3,7 @@
 ABESS algorithm: details
 ========================
 """
-# sphinx_gallery_thumbnail_path = '_static/icon_noborder.jpg'
+# sphinx_gallery_thumbnail_path = '_static/icon_noborder.png'
 
 ###########################################################
 # Introduction 
