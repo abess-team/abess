@@ -271,7 +271,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v06-Mul
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.150 seconds)
+   **Total running time of the script:** ( 0 minutes  0.148 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_2_MultiTaskLearning.py:

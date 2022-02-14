@@ -5,12 +5,12 @@
 
 Computation times
 =================
-**00:00.539** total execution time for **auto_gallery_3advancedfeatures** files:
+**00:00.568** total execution time for **auto_gallery_3advancedfeatures** files:
 
 +--------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_3advancedfeatures_plot_regularized.py` (``plot_regularized.py``)                             | 00:00.486 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_3advancedfeatures_plot_regularized.py` (``plot_regularized.py``)                             | 00:00.513 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------------------------------+-----------+--------+
-| :ref:`sphx_glr_auto_gallery_3advancedfeatures_plot_z_other_advanced_features.py` (``plot_z_other_advanced_features.py``) | 00:00.044 | 0.0 MB |
+| :ref:`sphx_glr_auto_gallery_3advancedfeatures_plot_z_other_advanced_features.py` (``plot_z_other_advanced_features.py``) | 00:00.047 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------------------------------+-----------+--------+
 | :ref:`sphx_glr_auto_gallery_3advancedfeatures_plot_nuisance.py` (``plot_nuisance.py``)                                   | 00:00.005 | 0.0 MB |
 +--------------------------------------------------------------------------------------------------------------------------+-----------+--------+

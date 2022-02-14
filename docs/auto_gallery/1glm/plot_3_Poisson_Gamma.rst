@@ -402,7 +402,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v04-Poi
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.223 seconds)
+   **Total running time of the script:** ( 0 minutes  0.204 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_3_Poisson_Gamma.py:
