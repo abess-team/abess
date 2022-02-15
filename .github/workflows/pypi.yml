@@ -5,9 +5,9 @@ on:
   push:
     branches:
      - develop_pybind11
-  release:
-    types:
-      - published    
+  # release:
+  #   types:
+  #     - published    
 
 jobs:
   build_sdist:
@@ -32,7 +32,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [macos-latest]
+        # os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -41,9 +42,10 @@ jobs:
         uses: pypa/cibuildwheel@v2.3.1
         with: 
           package-dir: ./python  ## trigger cibuildwheel in sub-directory 
-        # env:
+        env:
+          CIBW_BEFORE_TEST: pip install lifelines pandas
+          CIBW_TEST_COMMAND: pytest {package}
         #   CIBW_BEFORE_ALL: cd ./python
-        # env:
         #   CIBW_ARCHS_MACOS: auto universal2
 
       - name: Verify clean directory
@@ -54,7 +56,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: wheelhouse/*.whl
-
 
   # upload_all:
   #   name: Upload if release
