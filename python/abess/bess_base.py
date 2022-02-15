@@ -3,7 +3,7 @@ import numpy as np
 from scipy.sparse import coo_matrix
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.base import BaseEstimator
-from .cabess import pywrap_GLM
+from pybind_cabess import pywrap_GLM
 
 
 class bess_base(BaseEstimator):
@@ -526,17 +526,13 @@ class bess_base(BaseEstimator):
             self.primary_model_fit_epsilon, early_stop,
             self.approximate_Newton, self.thread, self.covariance_update,
             self.sparse_matrix, self.splicing_type, self.important_search,
-            A_init, p * M, 1 * M, 1, 1, 1)
+            A_init)
 
         # print("linear fit end")
         # print(len(result))
         # print(result)
-        if M != 1:
-            self.coef_ = result[0].reshape(p, M)
-        else:
-            self.coef_ = result[0]
+        self.coef_ = result[0]
         self.intercept_ = result[1]
-
         self.train_loss_ = result[2]
         self.test_loss_ = result[3]
         self.ic_ = result[4]

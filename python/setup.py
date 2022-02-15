@@ -2,9 +2,7 @@ import os
 import sys
 import platform
 from setuptools import setup, find_packages, Extension, dist
-
-dist.Distribution().fetch_build_eggs(['numpy'])
-import numpy
+from pybind11.setup_helpers import Pybind11Extension
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -81,35 +79,28 @@ elif sys.platform.startswith('darwin'):
         extra_compile_args.extend(m1chip_unable_extra_compile_args)
         pass
 
-    cabess_module = Extension(
-        name='abess._cabess',
+    pybind_cabess_module = Pybind11Extension(
+        name='pybind_cabess',
         sources=[CURRENT_DIR + '/src/api.cpp',
                  CURRENT_DIR + '/src/List.cpp',
                  CURRENT_DIR + '/src/utilities.cpp',
                  CURRENT_DIR + '/src/normalize.cpp',
-                 CURRENT_DIR + '/src/pywrap.cpp',
-                 CURRENT_DIR + '/src/pywrap.i'],
-        language='c++',
+                 CURRENT_DIR + '/src/pywrap.cpp'],
         extra_compile_args=extra_compile_args,
         include_dirs=[
-            numpy.get_include(),
             eigen_path
-        ],
-        swig_opts=["-c++"]
+        ]
     )
 else:
     eigen_path = CURRENT_DIR + "/include"
-    # print(eigen_path)
-    # eigen_path = "/usr/local/include/eigen3/Eigen"
-    cabess_module = Extension(
-        name='abess._cabess',
+    ## Pybind11Extension inherits Extension 
+    pybind_cabess_module = Pybind11Extension(
+        name='pybind_cabess',
         sources=[CURRENT_DIR + '/src/api.cpp',
                  CURRENT_DIR + '/src/List.cpp',
                  CURRENT_DIR + '/src/utilities.cpp',
                  CURRENT_DIR + '/src/normalize.cpp',
-                 CURRENT_DIR + '/src/pywrap.cpp',
-                 CURRENT_DIR + '/src/pywrap.i'],
-        language='c++',
+                 CURRENT_DIR + '/src/pywrap.cpp'],
         extra_compile_args=[
             "-DNDEBUG", "-fopenmp",
             "-O2", "-Wall",
@@ -118,10 +109,8 @@ else:
         ],
         extra_link_args=['-lgomp'],
         include_dirs=[
-            numpy.get_include(),
             eigen_path
-        ],
-        swig_opts=["-c++"]
+        ]
     )
     pass
 
@@ -156,5 +145,5 @@ setup(
         "Programming Language :: Python :: 3.9",
     ],
     python_requires='>=3.5',
-    ext_modules=[cabess_module]
+    ext_modules=[pybind_cabess_module]
 )

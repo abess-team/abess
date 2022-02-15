@@ -2,7 +2,7 @@ import numbers
 import numpy as np
 from scipy.sparse import coo_matrix
 from sklearn.utils.validation import check_array
-from .cabess import pywrap_PCA, pywrap_RPCA
+from pybind_cabess import pywrap_PCA, pywrap_RPCA
 from .bess_base import bess_base
 
 
@@ -451,9 +451,7 @@ class SparsePCA(bess_base):
             self.splicing_type,
             self.important_search,
             number,
-            A_init,
-            p * number, 1,
-            1, 1, 1
+            A_init
         )
 
         self.coef_ = result[0].reshape(p, number)
@@ -707,9 +705,7 @@ class RobustPCA(bess_base):
             self.sparse_matrix,
             self.splicing_type,
             self.important_search,
-            A_init,
-            n * p, 1,
-            1, 1, 1
+            A_init
         )
 
         self.coef_ = result[0].reshape(p, n).T
