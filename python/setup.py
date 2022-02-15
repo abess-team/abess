@@ -1,7 +1,7 @@
 import os
 import sys
 import platform
-import numpy as np
+# import numpy as np
 from setuptools import setup, find_packages, Extension
 from pybind11.setup_helpers import Pybind11Extension
 
@@ -27,25 +27,23 @@ package_info = get_info()
 os.system('bash "{}/copy_src.sh" "{}"'.format(CURRENT_DIR, CURRENT_DIR))
 
 if sys.platform.startswith('win32'):
-    os_type = 'MS_WIN64'
+    # os_type = 'MS_WIN64'
     python_path = sys.base_prefix
     temp = python_path.split("\\")
     version = str(sys.version_info.major) + str(sys.version_info.minor)
     path1 = "-I" + python_path + "\\include"
     path2 = "-L" + python_path + "\\libs"
-    os.system('bash "{}/pre.sh" '.format(CURRENT_DIR) +
-              python_path + ' ' + version)
+    # os.system('bash "{}/pre.sh" '.format(CURRENT_DIR) +
+    #           python_path + ' ' + version)
 
-    cabess_module = Extension(
-        name='abess._cabess',
+    pybind_cabess_module = Pybind11Extension(
+        name='pybind_cabess',
         sources=[
             CURRENT_DIR + '/src/api.cpp',
             CURRENT_DIR + '/src/List.cpp',
             CURRENT_DIR + '/src/utilities.cpp',
             CURRENT_DIR + '/src/normalize.cpp',
-            CURRENT_DIR + '/src/pywrap.cpp',
-            CURRENT_DIR + '/src/pywrap.i'],
-        language='c++',
+            CURRENT_DIR + '/src/pywrap.cpp'],
         extra_compile_args=[
             "-DNDEBUG", "-fopenmp",
             "-O2", "-Wall",
@@ -53,16 +51,15 @@ if sys.platform.startswith('win32'):
             "-march=native",
             "-std=c++11",
             "-mtune=generic",
-            "-D%s" % os_type,
+            # "-D%s" % os_type,
             path1, path2
         ],
         extra_link_args=['-lgomp'],
-        libraries=["vcruntime140"],
+        # libraries=["vcruntime140"],
         include_dirs=[
-            np.get_include(),
+            # np.get_include(),
             CURRENT_DIR + '/include'
-        ],
-        swig_opts=["-c++"]
+        ]
     )
 elif sys.platform.startswith('darwin'):
     eigen_path = CURRENT_DIR + "/include"
