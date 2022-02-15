@@ -73,6 +73,7 @@ elif sys.platform.startswith('darwin'):
         "-mavx", "-mfma",
         "-march=native"
     ]
+    print("platform.processor() output: {}".format(platform.processor()))
     if platform.processor() not in ('arm', 'arm64'):
         extra_compile_args.extend(m1chip_unable_extra_compile_args)
         pass
