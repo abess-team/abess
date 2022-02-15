@@ -5,23 +5,26 @@ on:
   push:
     branches:
      - develop_pybind11
+  release:
+    types:
+      - published    
 
 jobs:
-  # build_sdist:
-  #   name: Build SDist
-  #   runs-on: ubuntu-latest
-  #   steps:        
-  #     - uses: actions/checkout@v2
+  build_sdist:
+    name: Build SDist
+    runs-on: ubuntu-latest
+    steps:        
+      - uses: actions/checkout@v2
 
-  #     - name: Build SDist
-  #       run: pipx run build --sdist
+      - name: Build SDist
+        run: pipx run build --sdist
 
-  #     - name: Check metadata
-  #       run: pipx run twine check dist/*
+      - name: Check metadata
+        run: pipx run twine check dist/*
 
-  #     - uses: actions/upload-artifact@v2
-  #       with:
-  #         path: dist/*.tar.gz
+      - uses: actions/upload-artifact@v2
+        with:
+          path: dist/*.tar.gz
 
   build_wheels:
     name: Wheels on ${{ matrix.os }}
@@ -29,11 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # os: [ubuntu-latest, windows-latest, macos-latest]
-        os: [windows-latest]
-    # defaults:
-    #   run:
-    #     working-directory: python
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -41,7 +40,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.3.1
         with: 
-          package-dir: ./python
+          package-dir: ./python  ## trigger cibuildwheel in sub-directory 
         # env:
         #   CIBW_BEFORE_ALL: cd ./python
         # env:
