@@ -45,7 +45,7 @@ jobs:
         with: 
           package-dir: ./python  ## trigger cibuildwheel in sub-directory 
         env:
-          CIBW_BEFORE_TEST: pip install lifelines pandas
+          CIBW_BEFORE_TEST: pip install pytest lifelines pandas
           CIBW_TEST_COMMAND: pytest {package}
         #   CIBW_BEFORE_ALL: cd ./python
         #   CIBW_ARCHS_MACOS: auto universal2
