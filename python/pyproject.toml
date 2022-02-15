@@ -12,5 +12,4 @@ build-backend = "setuptools.build_meta"
 test-requires = "pytest"
 before-test = "pip install lifelines pandas"
 test-command = "pytest {package}"
-
 test-skip = "*-macosx_arm64 *-macosx_universal2:arm64"
