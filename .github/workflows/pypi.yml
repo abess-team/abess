@@ -10,19 +10,21 @@ jobs:
   build_sdist:
     name: Build SDist
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
+    steps:        
+      - uses: actions/checkout@v2
 
-    - name: Build SDist
-      run: pipx run build --sdist
+      - name: enter python directory
+        run: cd ./python
 
-    - name: Check metadata
-      run: pipx run twine check dist/*
+      - name: Build SDist
+        run: pipx run build --sdist
 
-    - uses: actions/upload-artifact@v2
-      with:
-        path: dist/*.tar.gz
+      - name: Check metadata
+        run: pipx run twine check dist/*
 
+      - uses: actions/upload-artifact@v2
+        with:
+          path: dist/*.tar.gz
 
   build_wheels:
     name: Wheels on ${{ matrix.os }}
@@ -34,6 +36,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      
+      - name: enter python directory
+        run: cd ./python
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.3.1
