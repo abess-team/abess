@@ -31,8 +31,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     defaults:
-    run:
-      working-directory: python
+      run:
+        working-directory: python
 
     steps:
       - uses: actions/checkout@v2
