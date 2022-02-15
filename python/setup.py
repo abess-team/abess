@@ -1,7 +1,8 @@
 import os
 import sys
 import platform
-from setuptools import setup, find_packages, Extension, dist
+import numpy as np
+from setuptools import setup, find_packages, Extension
 from pybind11.setup_helpers import Pybind11Extension
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -58,7 +59,7 @@ if sys.platform.startswith('win32'):
         extra_link_args=['-lgomp'],
         libraries=["vcruntime140"],
         include_dirs=[
-            numpy.get_include(),
+            np.get_include(),
             CURRENT_DIR + '/include'
         ],
         swig_opts=["-c++"]
