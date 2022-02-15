@@ -30,15 +30,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-    defaults:
-      run:
-        working-directory: python
+    # defaults:
+    #   run:
+    #     working-directory: python
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.3.1
+        CIBW_BEFORE_ALL: cd ./python
         # env:
         #   CIBW_ARCHS_MACOS: auto universal2
 
