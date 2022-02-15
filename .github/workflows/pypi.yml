@@ -17,7 +17,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build SDist
-        run: pipx run build --sdist
+        run: | 
+          cd ./python
+          pipx run build --sdist
 
       - name: Check metadata
         run: pipx run twine check dist/*
