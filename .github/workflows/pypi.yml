@@ -13,16 +13,19 @@ jobs:
   build_sdist:
     name: Build SDist
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python
     steps:        
       - uses: actions/checkout@v2
 
       - name: Build SDist
         run: | 
-          cd ./python
           pipx run build --sdist
 
       - name: Check metadata
-        run: pipx run twine check dist/*
+        run: | 
+          pipx run twine check dist/*
 
       - uses: actions/upload-artifact@v2
         with:
