@@ -49,3 +49,7 @@ jobs:
           cd ./python
           # python setup.py install
           pip install .
+      - name: A simple test
+        run: |
+          echo "import abess;print(abess.__version__);" > ./test.py
+          python ./test.py
