@@ -73,8 +73,8 @@ elif sys.platform.startswith('darwin'):
         "-Wall", "-std=c++11",
     ]
     m1chip_unable_extra_compile_args=[
-        # "-mavx", 
-        # "-mfma",
+        "-mavx", 
+        "-mfma"
         # "-march=native"
     ]
     if platform.processor() not in ('arm', 'arm64'):
