@@ -43,6 +43,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: check avx
+        run: platform.processor()
+
       - name: Set up QEMU
         if: runner.os == 'Linux'
         uses: docker/setup-qemu-action@v1

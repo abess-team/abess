@@ -26,6 +26,9 @@ package_info = get_info()
 # copy src
 os.system('bash "{}/copy_src.sh" "{}"'.format(CURRENT_DIR, CURRENT_DIR))
 
+print("sys.platform output: {}".format(sys.platform))
+print("platform.processor() output: {}".format(platform.processor()))
+
 if sys.platform.startswith('win32'):
     # os_type = 'MS_WIN64'
     python_path = sys.base_prefix
@@ -70,10 +73,10 @@ elif sys.platform.startswith('darwin'):
         "-Wall", "-std=c++11",
     ]
     m1chip_unable_extra_compile_args=[
-        "-mavx", "-mfma",
-        "-march=native"
+        # "-mavx", 
+        # "-mfma",
+        # "-march=native"
     ]
-    print("platform.processor() output: {}".format(platform.processor()))
     if platform.processor() not in ('arm', 'arm64'):
         extra_compile_args.extend(m1chip_unable_extra_compile_args)
         pass
