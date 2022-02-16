@@ -73,8 +73,11 @@ elif sys.platform.startswith('darwin'):
         "-Wall", "-std=c++11",
     ]
     m1chip_unable_extra_compile_args=[
-        "-mavx", 
-        "-mfma"
+        ## Enable the "-mavx", "-mfma", "-march=native" would improve the computational efficiency. 
+        ## "-mavx" and "-mfma" do not supported by github-action environment when arch = x86_64
+        # "-mavx", 
+        # "-mfma"
+        ## "-mavx" and "-mfma" do not supported by github-action when building arm64 (because it the default is not arm64)
         # "-march=native"
     ]
     if platform.processor() not in ('arm', 'arm64'):
