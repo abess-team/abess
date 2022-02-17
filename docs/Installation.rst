@@ -163,6 +163,9 @@ packages should be installed:
 
 -  `pytest <https://pypi.org/project/pytest/>`__: simple powerful
    testing with Python.
+   
+   - `lifelines <https://pypi.org/project/lifelines/>`__: support testing 
+   for survival analysis.
 -  `Sphinx <https://pypi.org/project/Sphinx/>`__: develop the Python
    documentation.
 
