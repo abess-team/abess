@@ -460,21 +460,3 @@ MULTIVARIATE_RESPONSE <- c("mgaussian", "multinomial")
 }
 
 
-strategy_for_tuning <- function(model, ...) UseMethod("strategy_for_tuning")
-
-strategy_for_tuning.default <- function(model,tune.path){
-    stop("This function is not implemented!")
-}
-
-strategy_for_tuning.rpca <- function(model,tune.path = c("sequence", "gsection")){
-  print(123)
-    tune.path <- match.arg(tune.path)
-    print(321)
-    if (tune.path == "gsection") {
-        path_type <- 2
-    } else if (tune.path == "sequence") {
-        path_type <- 1
-    }
-    
-    return(path_type)
-}

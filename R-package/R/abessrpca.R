@@ -90,7 +90,7 @@ abessrpca <- function(x,
                       num.threads = 0,
                       seed = 1,
                       ...) {
-  ## 独有                      
+                      
   ## strategy for tuning
   # tune.path <- match.arg(tune.path)
   # if (tune.path == "gsection") {
