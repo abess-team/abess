@@ -163,6 +163,9 @@ packages should be installed:
 
 -  `pytest <https://pypi.org/project/pytest/>`__: simple powerful
    testing with Python.
+   
+   - `lifelines <https://pypi.org/project/lifelines/>`__: support testing 
+   for survival analysis.
 -  `Sphinx <https://pypi.org/project/Sphinx/>`__: develop the Python
    documentation.
 
@@ -172,6 +175,7 @@ packages should be installed:
       markdown for Sphinx.
    -  `sphinx-rtd-theme <https://pypi.org/project/sphinx-rtd-theme/>`__:
       “Read the Docs” theme for Sphinx.
+-  `sphinix-gallery <https://pypi.org/project/sphinx-gallery/>`__: develop the gallery of Python examples.
 
 .. _r-2:
 

@@ -131,3 +131,4 @@ R-package/inst/.vscode/settings.json
 R-package/src/.vscode/settings.json
 
 **/.vscode
+python/abess/*.so

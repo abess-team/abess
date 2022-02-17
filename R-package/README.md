@@ -16,7 +16,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/abess-team/abess/badge)](https://www.codefactor.io/repository/github/abess-team/abess)
 <!-- badges: end -->
 
-`abess` (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
+`abess` (Adaptive BEst Subset Selection) library aims to solve the general best subset selection problem, i.e., 
 find a small subset of predictors such that the resulting model is expected to have the highest accuracy. 
 The selection for best subset shows great value in scientific researches and practical application. 
 For example, clinicians wants to know whether a patient is health or not based on the expression level of a few of important genes.
@@ -31,7 +31,7 @@ This framework now supports the detection of best subset under:
 It also supports the variants of best subset selection like 
 [group best subset selection](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Best-group-subset-selection),
 [nuisance penalized regression](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Nuisance-Regression),
-Especially, the time complexity of (group) best subset selection for linear regression is certifiably polynomial.
+especially, the time complexity of the best (group) subset selection for linear regression is certifiably polynomial.
 
 ## Installation
 
@@ -87,8 +87,8 @@ By setting `family = "gamma"` in `abess` function, users can analyze the dataset
 
 ## Citation         
 
-If you use `abess` or reference our tutorials in a presentation or publication, we would appreciate citations of our library.
-> Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). “abess: A Fast Best Subset Selection Library in Python and R.” arXiv:2110.09697.
+If you use `abess` or refer to our tutorials in a presentation or publication, we would appreciate citations of our library.
+< Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). “abess: A Fast Best Subset Selection Library in Python and R.” arXiv:2110.09697.>
 
 The corresponding BibteX entry:
 

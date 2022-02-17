@@ -33,19 +33,19 @@ head(dat)
 Logistic regression is one of powerful tool to tackle this problem. 
 In statistics, the logistic regression is used to model the probability of a certain class or event existing such as alive/dead, pass/fail, win/lose, or healthy/sick. 
 <!-- Therefore, logistic regression is capable of predicting binary results. -->
-Logistic regression function is an $s$-shaped curve modeling the posterior probability $p$ via a linear combination of the features. The curve is defined as $p = \frac{1}{1+\exp(-\eta)}$ where $\eta = \beta_0+x\beta$ and $x$ are predictors, and $\beta_0, \beta$ are coefficients to be learned from data. 
+Logistic regression function is an $s$-shaped curve modeling the posterior probability $p$ via a linear combination of the features. The curve is defined as $p = \frac{1}{1+\exp(-\eta)}$ where $\eta = \boldsymbol\beta_0+x\boldsymbol\beta$ and $x$ are predictors, and $\boldsymbol\beta_0, \boldsymbol\beta$ are coefficients to be learned from data. 
 The logistic regression model has this form:
 $$
-\log(p/(1-p)) = \beta_0 + x\beta.
+\log(p/(1-p)) = \boldsymbol\beta_0 + x\boldsymbol\beta.
 $$
 The quantity $\log(p/(1-p))$ is called the logarithm of the odd, also called log-odd or logit. 
 The best subset selection for logistic regression aim to balance model accuracy and model complexity, 
 where the former is achieves by maximizing the log-likelihood function and 
-the latter is characterized by a constraint: $\| \beta \|_0 \leq s$ and $s$ can be determined in a data driven way.
+the latter is characterized by a constraint: $\| \boldsymbol\beta \|_0 \leq s$ and $s$ can be determined in a data driven way.
 
 ## Best Subset Selection for Logistic Regression
 
-The `abess()` function in the `abess` package allows user to perform best subset selection in a highly efficient way. User can call the `abess()` function using formula just like what users do with `lm()`. Or users can specify the design matrix `x` and the response `y`. As an example, the Titanic dataset is used to demonstrated the usage of `abess` package. 
+The `abess()` function in the `abess` package allows users to perform best subset selection in a highly efficient way. Users can call the `abess()` function using formula just like what users do with `lm()`. Or users can specify the design matrix `x` and the response `y`. As an example, the Titanic dataset is used to demonstrated the usage of `abess` package. 
 
 ### Data preprocessing
 
@@ -93,8 +93,8 @@ abess_fit <- abess(x = train[, -1], y = train$Survived,
 <!-- ``` -->
 
 <!-- Hold on, we aren't finished yet.  -->
-After get the estimator, we can further do more exploring work.
-The output of `abess()` function contains the best model for all the candidate support size in the `support.size`. users can use some generic function to quickly draw some information of those estimators. 
+After getting the estimator, we can further do more exploring work.
+The output of `abess()` function contains the best model for all the candidate support sizes in the `support.size`. Users can use some generic functions to quickly draw some information of those estimators. 
 Typical examples include:       
 i. print the fitted model:
 ```{r}
@@ -104,7 +104,7 @@ abess_fit
 ```{r}
 coef(abess_fit)
 ```
-(iii) get the deviance of the estimated model on all candidate support size via `deviance()` function:
+(iii) get the deviance of the estimated model on all candidate support sizes via `deviance()` function:
 ```{r}
 deviance(abess_fit)
 ```
@@ -121,7 +121,7 @@ plot(abess_fit, type = "tune")
 The tuning value reaches the lowest point at 4, which implies the best model consists of four variables.  
 <!-- And We might choose the estimated model with support size equals 6 as our final model.  -->
 
-Finally, to extract any model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.
+Finally, to extract the specified model from the `abess` object, we can call the `extract()` function with a given `support.size`. If `support.size` is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.
 ```{r}
 best.model <- extract(abess_fit, support.size = 4)
 str(best.model)
@@ -131,12 +131,12 @@ The return is a list containing the basic information of the estimated model.
 
 ### Make a Prediction
 
-Prediction is allowed for all the estimated model. Just call `predict.abess()` function with the `support.size` set to the size of model users are interested in. If a `support.size` is not provided, prediction will be made on the model with best tuning value. The `predict.abess()` can provide both `link`, stands for the linear predictors, and the `response`, stands for the fitted probability. Here We will predict the probability of survival on the `test.csv` data.
+Prediction is allowed for all the estimated models. Just call `predict.abess()` function with the `support.size` set to the size of model users are interested in. If `support.size` is not provided, prediction will be made based on the best tuning value. The `predict.abess()` can provide both `link`, standing for the linear predictors, and the `response`, standing for the fitted probability. Here We will predict the probability of survival on the `test.csv` data.
 ```{r}
 fitted.results <- predict(abess_fit, newx = test, type = 'response')
 ```
 
-If we chose 0.5 as the cut point, i.e, we predict the person survived the sinking of the Titanic if the fitted probability is greater than 0.5, the accuracy will be 0.80.
+If we chose 0.5 as the cut point, i.e, we predict the person survives the sinking of the Titanic if the fitted probability is greater than 0.5, the accuracy will be 0.80.
 
 ```{r}
 fitted.results <- ifelse(fitted.results > 0.5, 1, 0)
@@ -144,7 +144,7 @@ misClasificError <- mean(fitted.results != test$Survived)
 print(paste('Accuracy',1-misClasificError))
 ```
 
-We can also generate an ROC curve and calculate the AUC value. On this dataset, the AUC is 0.87, which is quite close to 1.
+We can also generate an ROC and calculate the AUC value. On this dataset, the AUC is 0.87, which is quite close to 1.
 ```{r}
 library(ROCR)
 fitted.results <- predict(abess_fit, newx = test, type = 'response')
@@ -161,21 +161,21 @@ auc
 ### Best subset selection for multinomial logistic regression
 When the number of classes is more than 2, we call it multi-class classification task. 
 Logistic regression can be extended to model several classes of events such as determining whether an image contains a cat, dog, lion, etc. 
-Each object being detected in the image would be assigned a probability between 0 and 1, with a sum of one.
+Each object detected in the image would be assigned a probability between 0 and 1, with a sum of one.
 The extended model is multinomial logistic regression. 
 
 To arrive at the multinomial logistic model, one can imagine, for $K$ possible classes, running $K-1$ independent logistic regression models, in which one class is chosen as a ``pivot'' and then the other $K-1$ classes are separately regressed against the pivot outcome. This would proceed as follows, if class K (the last outcome) is chosen as the pivot:
-$$\ln(\mathbb{P}(y = 1) / \mathbb{P}(y = K)) = x^\top \beta^{(1)}, $$
+$$\ln(\mathbb{P}(y = 1) / \mathbb{P}(y = K)) = x^\top \boldsymbol\beta^{(1)}, $$
 $$\cdots \cdots$$
-$$\ln(\mathbb{P}(y = K - 1) / \mathbb{P}(y = K)) = x^\top \beta^{(K - 1)}.$$
+$$\ln(\mathbb{P}(y = K - 1) / \mathbb{P}(y = K)) = x^\top \boldsymbol\beta^{(K - 1)}.$$
 Then, the probability to choose the $j$-th class can be easily derived to be:
-$$\mathbb{P}(y = j) = \frac{\exp{(x^\top \beta^{(j)})}}{1 + \sum_{k=1}^{K-1} \exp{(x^\top \beta^{(k)})}}, $$
+$$\mathbb{P}(y = j) = \frac{\exp{(x^\top \boldsymbol\beta^{(j)})}}{1 + \sum_{k=1}^{K-1} \exp{(x^\top \boldsymbol\beta^{(k)})}}, $$
 and subsequently, we would predict the $j^{*}$-th class if the $j^* = \arg\max_{j} \mathbb{P}(y = j)$.
 Notice that, for $K$ possible classes case, there are $p \times (K - 1)$ unknown parameters: 
-$\beta^{(1)}, \ldots, \beta^{(K-1)}$ to be estimated. 
+$\boldsymbol\beta^{(1)}, \ldots, \boldsymbol\beta^{(K-1)}$ to be estimated. 
 Because the number of parameters increase as $K$, it is even more urge to constrain the model complexity. 
 And the best subset selection for multinomial logistic regression aims to maximize the log-likelihood function 
-and control the model complexity by restricting $B = (\beta^{(1)}, \ldots, \beta^{(K-1)})$ with 
+and control the model complexity by restricting $B = (\boldsymbol\beta^{(1)}, \ldots, \boldsymbol\beta^{(K-1)})$ with 
 $\| B \|_{0, 2} \leq s$
 where $\| B \|_{0, 2} = \sum_{i = 1}^{p} I(B_{i\cdot} = {\bf 0})$, 
 $B_{i\cdot}$ is the $i$-th row of coefficient matrix $B$ and 

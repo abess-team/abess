@@ -49,7 +49,9 @@ extensions = [
     "sphinx.ext.ifconfig",
     "sphinx.ext.githubpages",
     'sphinx.ext.intersphinx',
-    'sphinx_gallery.gen_gallery',
+    'sphinx_gallery.gen_gallery'
+    # ,
+    # 'sphinx_toggleprompt'
 ]
 
 matplotlib.use('agg')
@@ -114,9 +116,9 @@ html_context = {
 htmlhelp_basename = "abessdoc"
 
 
-# def setup(app):
-#     # to hide/show the prompt in code examples:
-#     app.add_javascript("js/copybutton.js")
+def setup(app):
+    # to hide/show the prompt in code examples:
+    app.add_js_file("js/copybutton.js")
 
 
 # sphinx-gallery configuration
