@@ -413,7 +413,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v05-cox
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.427 seconds)
+   **Total running time of the script:** ( 0 minutes  0.378 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_5_CoxRegression.py:

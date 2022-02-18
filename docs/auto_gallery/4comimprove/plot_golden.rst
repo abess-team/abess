@@ -143,8 +143,8 @@ The output of golden-section strategy suggests the optimal model size is accurat
 
  .. code-block:: none
 
-    sequential time:  0.0019943714141845703
-    golden-section time:  0.0009970664978027344
+    sequential time:  0.0019979476928710938
+    golden-section time:  0.0009946823120117188
 
 
 
@@ -163,7 +163,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v09-fas
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.070 seconds)
+   **Total running time of the script:** ( 0 minutes  0.071 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_4comimprove_plot_golden.py:

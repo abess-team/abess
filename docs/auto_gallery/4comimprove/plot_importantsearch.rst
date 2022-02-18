@@ -61,7 +61,7 @@ Here we take `LogisticRegression` for an example.
 
     non_zero :
      [ 475 1192 3183 3708 3893 4846 5956 8417 8601 9977]
-    time :  0.6133325099945068
+    time :  0.6462688446044922
 
 
 
@@ -96,7 +96,7 @@ However, if we only focus on 500 important inactive variables when searching:
 
     non_zero :
      [ 475 1192 3183 3708 3893 4846 5956 8417 8601 9977]
-    time :  0.8537440299987793
+    time :  0.9135630130767822
 
 
 
@@ -121,7 +121,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v09-fas
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.804 seconds)
+   **Total running time of the script:** ( 0 minutes  1.875 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_4comimprove_plot_importantsearch.py:

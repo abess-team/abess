@@ -149,7 +149,7 @@ We compare the runtime when the input matrix is dense matrix:
 
  .. code-block:: none
 
-    dense matrix:   0.000997781753540039
+    dense matrix:   0.0009965896606445312
     sparse matrix:   0.0
 
 
@@ -167,7 +167,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v09-fas
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.183 seconds)
+   **Total running time of the script:** ( 0 minutes  0.005 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_4comimprove_plot_Sparse_matrix.py:

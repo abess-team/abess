@@ -450,7 +450,7 @@ For R tutorial, please view [https://abess-team.github.io/abess/articles/v01-abe
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  1.737 seconds)
+   **Total running time of the script:** ( 0 minutes  0.712 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_1_LinearRegression.py:
