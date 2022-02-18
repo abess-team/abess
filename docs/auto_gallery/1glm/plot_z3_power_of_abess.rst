@@ -127,7 +127,7 @@ https://abess-team.github.io/abess/articles/v11-power-of-abess.html.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.000 seconds)
+   **Total running time of the script:** ( 0 minutes  0.001 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_z3_power_of_abess.py:

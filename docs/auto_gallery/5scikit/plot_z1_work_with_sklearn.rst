@@ -199,7 +199,7 @@ The best choice of parameter combination is shown above: 2 degree with "self-com
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  9.569 seconds)
+   **Total running time of the script:** ( 0 minutes  9.417 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_5scikit_plot_z1_work_with_sklearn.py:

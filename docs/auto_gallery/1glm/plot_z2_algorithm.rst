@@ -260,7 +260,7 @@ Algorithm 3: ABESS.
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  0.171 seconds)
+   **Total running time of the script:** ( 0 minutes  0.000 seconds)
 
 
 .. _sphx_glr_download_auto_gallery_1glm_plot_z2_algorithm.py:
