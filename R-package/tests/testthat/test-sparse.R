@@ -47,6 +47,7 @@ test_that("Sparse matrix (logistic) works", {
   dataset <- generate.data(n, p, support.size, family = "binomial")
   dataset[["x"]][abs(dataset[["x"]]) < 1] <- 0
   dataset[["x"]] <- Matrix(dataset[["x"]])
+ 
   abess_fit1 <-
     abess(dataset[["x"]], dataset[["y"]], family = "binomial")
   abess_fit2 <-

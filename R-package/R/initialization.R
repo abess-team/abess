@@ -338,7 +338,9 @@ x_matrix_content.glm <- function(para,data){
   para$sparse_X <- class(data$x)[1] == "dgCMatrix"
   if (para$sparse_X) {
     if (class(data$x) == "dgCMatrix") {
+      print(nrow(data$x))
       data$x <- map_dgCMatrix2entry(data$x)
+      print(nrow(data$x))
     }
   } else {
     if (is.data.frame(data$x)) {
@@ -402,7 +404,7 @@ y_matrix.glm <- function(para,data){
       data$y <- as.numeric(data$y) - 1
     }
     if (para$family == "multinomial") {
-      data$y <- para.matrix(~ factor(as.numeric(data$y) - 1) + 0)
+      data$y <- model.matrix(~ factor(as.numeric(data$y) - 1) + 0)
       colnames(data$y) <- NULL
     }
   }

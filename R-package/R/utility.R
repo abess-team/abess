@@ -458,5 +458,3 @@ MULTIVARIATE_RESPONSE <- c("mgaussian", "multinomial")
 .onUnload <- function(libpath) {
   library.dynam.unload("abess", libpath)
 }
-
-
