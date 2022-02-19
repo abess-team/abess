@@ -92,7 +92,51 @@ Initialization_GLM <- function(
   return(para)
 }
 
+Initialization_PCA <- function(
+  c.max,
+  support.size,
+  always.include,
+  group.index,
+  splicing.type,
+  max.splicing.iter,
+  warm.start,
+  ic.scale,
+  num.threads,
+  tune.type,
+  kpc.num,
+  cor,
+  type,
+  support.num,
+  important.search,
+  sparse.type,
+  nfolds,
+  foldid
+)
+{
+  para <- Initialization(
+    c.max,
+    support.size,
+    always.include,
+    group.index,
+    splicing.type,
+    max.splicing.iter,
+    warm.start,
+    ic.scale,
+    num.threads,
+    tune.type,
+    important.search
+  )
+  para$kpc.num <- kpc.num
+  para$support.num <- support.num
+  para$cor <- cor
+  para$type <- type
+  para$sparse.type <- sparse.type
+  para$nfolds <- nfolds
+  para$foldid <- foldid
 
+  class(para) <- append("pca",class(para))
+  return(para)
+}
 
 strategy_for_tuning <- function(para) UseMethod("strategy_for_tuning")
 
@@ -509,7 +553,6 @@ sparse_level_list.rpca <- function(para){
 }
 
 sparse_level_list.pca <- function(para){
-  
   if (para$group_select) {
     para$s_max <- para$ngroup
   } else {
@@ -542,20 +585,13 @@ sparse_level_list.pca <- function(para){
       stopifnot(max(para$support.size) <= para$nvars)
     }
     if (para$kpc.num == 1) {
-      para$support.size <- sort(para$support.size)
-      para$support.size <- unique(para$support.size)
+      para$support.size <- unique(sort(para$support.size))
     } else {
       if (class(para$support.size) == "list") {
         stopifnot(length(para$support.size) == para$kpc.num)
-        ##? 
-        para$support.size <- lapply(support.size, function(x) {
-          x <- unique(x)
-          x
-        })
+        para$support.size <- lapply(support.size, unique)
       } else if (is.vector(para$support.size)) {
-        para$support.size <- sort(para$support.size)
-        para$support.size <- unique(para$support.size)
-        para$support.size <- rep(list(para$support.size), para$kpc.num)
+        para$support.size <- rep(list(unique(sort(para$support.size))), para$kpc.num)
       } else {
         stop("support.size must be vector or list.")
       }
@@ -671,7 +707,7 @@ tune_support_size_method.glm <- function(para){
 }
 
 tune_support_size_method.pca <- function(para){
-  
+  para$tune_type <- para$tune.type
   if (para$cov_type == "gram" && para$tune_type == "cv") {
     warnings("Cross validation is not allow when input a gram matrix.
              Coerce into tune.type = 'gic'.")
@@ -862,24 +898,39 @@ always_included_variables.pca <- function(para){
   para
 }
 
-## 可以合并
+## 
 sparse_type <- function(para) UseMethod("sparse_type")
 
 sparse_type.pca <- function(para){
-  
-  stopifnot(para$kpc.num >= 1)
-  check_integer_warning(para$kpc.num, "kpc.num should be an integer. It is coerced to as.integer(kpc.num).")
-  para$sparse.type <- ifelse(para$kpc.num == 1, "fpc", "kpc")
-  
-  
+  if(is.null(para$kpc.num)){
+    para$kpc.num <- ifelse(para$sparse.type == "fpc", 1, 2)
+  }
+  else{
+    stopifnot(para$kpc.num >= 1)
+    check_integer_warning(para$kpc.num, "kpc.num should be an integer. It is coerced to as.integer(kpc.num).")
+    para$kpc.num <- as.integer(para$kpc.num)
+    para$sparse.type <- ifelse(para$kpc.num == 1, "fpc", "kpc")
+  }
   para
 }
 
+sparse.cov <- function(x, cor = FALSE) {
+  n <- nrow(x)
+  cMeans <- colMeans(x)
+  covmat <- (as.matrix(crossprod(x)) - n * tcrossprod(cMeans)) / (n - 1)
+
+  if (cor) {
+    sdvec <- sqrt(diag(covmat))
+    covmat <- covmat / crossprod(t(sdvec))
+  }
+
+  as.matrix(covmat)
+}
 
 compute_gram_matrix <- function(para,data) UseMethod("compute_gram_matrix")
 
 compute_gram_matrix.pca <- function(para,data){
-  
+  para$cov_type <- para$type
   para$sparse_matrix <- FALSE
   if (para$cov_type == "gram") {
     stopifnot(dim(data$x)[1] == dim(data$x)[2])
@@ -1127,5 +1178,29 @@ initializate.glm <- function(para,data){
   para <- always_included_variables(para)
   para <- init_active_set(para)
 
+  list(para=para,data=data)
+}
+
+initializate.pca <- function(para,data){
+  para <- information_criterion(para)
+  para <- number_of_thread(para)
+  para <- warm_start(para)
+  para <- splicing_type(para)
+  para <- max_splicing_iter(para)
+  para <- x_matrix_info(para,data)
+  model <- x_matrix_content(para,data)
+  para <- model$para
+  data <- model$data
+  para <- sparse_type(para)
+  model <- compute_gram_matrix(para,data)
+  para <- model$para
+  data <- model$data
+  para <- group_variable(para)
+  para <- sparse_level_list(para)
+  para <- C_max(para)
+  para <- always_included_variables(para)
+  para <- important_searching(para)
+  para <- tune_support_size_method(para)
+  
   list(para=para,data=data)
 }
