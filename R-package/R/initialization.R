@@ -60,17 +60,17 @@ Initialization_GLM <- function(
 )
 {
   para <- Initialization(
-    c.max,
-    support.size,
-    always.include,
-    group.index,
-    splicing.type,
-    max.splicing.iter,
-    warm.start,
-    ic.scale,
-    num.threads,
-    tune.type,
-    important.search
+    c.max = c.max,
+    support.size = support.size,
+    always.include = always.include,
+    group.index = group.index,
+    splicing.type = splicing.type,
+    max.splicing.iter = max.splicing.iter,
+    warm.start = warm.start,
+    ic.scale = ic.scale,
+    num.threads = num.threads,
+    tune.type = tune.type,
+    important.search = important.search
   )
   para$newton.thresh <- newton.thresh
   para$tune.path <- tune.path
@@ -114,17 +114,17 @@ Initialization_PCA <- function(
 )
 {
   para <- Initialization(
-    c.max,
-    support.size,
-    always.include,
-    group.index,
-    splicing.type,
-    max.splicing.iter,
-    warm.start,
-    ic.scale,
-    num.threads,
-    tune.type,
-    important.search
+    c.max = c.max,
+    support.size = support.size,
+    always.include = always.include,
+    group.index = group.index,
+    splicing.type = splicing.type,
+    max.splicing.iter = max.splicing.iter,
+    warm.start = warm.start,
+    ic.scale = ic.scale,
+    num.threads = num.threads,
+    tune.type = tune.type,
+    important.search = important.search
   )
   para$kpc.num <- kpc.num
   para$support.num <- support.num
@@ -133,8 +133,51 @@ Initialization_PCA <- function(
   para$sparse.type <- sparse.type
   para$nfolds <- nfolds
   para$foldid <- foldid
-
+  
   class(para) <- append("pca",class(para))
+  return(para)
+}
+
+Initialization_RPCA <- function(
+  rank,
+  support.size,
+  tune.path,
+  gs.range,
+  tune.type,
+  ic.scale,
+  lambda,
+  always.include,
+  group.index,
+  c.max,
+  splicing.type,
+  max.splicing.iter,
+  warm.start,
+  important.search,
+  max.newton.iter,
+  newton.thresh,
+  num.threads
+)
+{
+  para <- Initialization(
+    c.max = c.max,
+    support.size = support.size,
+    always.include = always.include,
+    group.index = group.index,
+    splicing.type = splicing.type,
+    max.splicing.iter = max.splicing.iter,
+    warm.start = warm.start,
+    ic.scale = ic.scale,
+    num.threads = num.threads,
+    tune.type = tune.type,
+    important.search = important.search
+  )
+  para$rank <- rank
+  para$tune.path <- tune.path
+  para$gs.range <- gs.range
+  para$max.newton.iter <- max.newton.iter
+  para$newton.thresh <- newton.thresh
+  
+  class(para) <- append("rpca",class(para))
   return(para)
 }
 
@@ -226,7 +269,7 @@ max_newton_iter.glm <- function(para){
 lambda <- function(para) UseMethod("lambda")
 
 lambda.rpca <- function(para){
-  
+  stopifnot(length(para$lambda) == 1)
   stopifnot(!anyNA(para$lambda))
   stopifnot(all(para$lambda >= 0))
   
@@ -495,24 +538,24 @@ screening_num.glm <- function(para){
 group_variable <- function(para) UseMethod("group_variable")
 
 group_variable_private <- function(para,screening_num){
-    if (is.null(para$group.index)) {
-      para$group_select <- FALSE
-      para$g_index <- 1:screening_num - 1
-      para$ngroup <- 1
-      para$max_group_size <- 1
-    } else {
-      stopifnot(all(!is.na(para$group.index)))
-      stopifnot(all(is.finite(para$group.index)))
-      stopifnot(diff(para$group.index) >= 0)
-      check_integer(para$group.index, "group.index must be a vector with integer value.")
-      para$group_select <- TRUE
-      gi <- unique(para$group.index)
-      para$g_index <- match(gi, para$group.index) - 1
-      g_df <- c(diff(para$g_index), para$nvars - max(para$g_index))
-      para$ngroup <- length(para$g_index)
-      para$max_group_size <- max(g_df)
-    }
-    para
+  if (is.null(para$group.index)) {
+    para$group_select <- FALSE
+    para$g_index <- 1:screening_num - 1
+    para$ngroup <- 1
+    para$max_group_size <- 1
+  } else {
+    stopifnot(all(!is.na(para$group.index)))
+    stopifnot(all(is.finite(para$group.index)))
+    stopifnot(diff(para$group.index) >= 0)
+    check_integer(para$group.index, "group.index must be a vector with integer value.")
+    para$group_select <- TRUE
+    gi <- unique(para$group.index)
+    para$g_index <- match(gi, para$group.index) - 1
+    g_df <- c(diff(para$g_index), para$nvars - max(para$g_index))
+    para$ngroup <- length(para$g_index)
+    para$max_group_size <- max(g_df)
+  }
+  para
 }
 
 group_variable.glm <- function(para){
@@ -729,7 +772,7 @@ tune_support_size_method.pca <- function(para){
       para$nfolds <- length(unique(para$nfolds))
     }
   }
-
+  
   
   para
 }
@@ -920,12 +963,12 @@ sparse.cov <- function(x, cor = FALSE) {
   n <- nrow(x)
   cMeans <- colMeans(x)
   covmat <- (as.matrix(crossprod(x)) - n * tcrossprod(cMeans)) / (n - 1)
-
+  
   if (cor) {
     sdvec <- sqrt(diag(covmat))
     covmat <- covmat / crossprod(t(sdvec))
   }
-
+  
   as.matrix(covmat)
 }
 
@@ -980,7 +1023,7 @@ compute_gram_matrix.pca <- function(para,data){
   # }
   para$pc_variance <- eigen_value
   para$total_variance <- sum(eigen_value)
- 
+  
   list(para=para,data=data)
 }
 
@@ -1000,13 +1043,13 @@ model_type <- function(para) UseMethod("model_type")
 model_type.glm <- function(para){
   
   para$model_type <- switch(para$family,
-                             "gaussian" = 1,
-                             "binomial" = 2,
-                             "poisson" = 3,
-                             "cox" = 4,
-                             "mgaussian" = 5,
-                             "multinomial" = 6,
-                             "gamma" = 8
+                            "gaussian" = 1,
+                            "binomial" = 2,
+                            "poisson" = 3,
+                            "cox" = 4,
+                            "mgaussian" = 5,
+                            "multinomial" = 6,
+                            "gamma" = 8
   )
   
   
@@ -1067,13 +1110,13 @@ normalize_strategy.glm <- function(para){
   
   if (is.null(para$normalize)) {
     para$normalize <- switch(para$family,
-                              "gaussian" = 1,
-                              "binomial" = 2,
-                              "poisson" = 2,
-                              "cox" = 3,
-                              "mgaussian" = 1,
-                              "multinomial" = 2,
-                              "gamma" = 2
+                             "gaussian" = 1,
+                             "binomial" = 2,
+                             "poisson" = 2,
+                             "cox" = 3,
+                             "mgaussian" = 1,
+                             "multinomial" = 2,
+                             "gamma" = 2
     )
   } else {
     stopifnot(para$normalize %in% 0:3)
@@ -1133,9 +1176,9 @@ newton_type.glm <- function(para){
     para$newton <- "exact"
   }
   para$newton_type <- switch(para$newton,
-                              "exact" = 0,
-                              "approx" = 1,
-                              "auto" = 2
+                             "exact" = 0,
+                             "approx" = 1,
+                             "auto" = 2
   )
   para$approximate_newton <- ifelse(para$newton_type == 1, TRUE, FALSE)
   
@@ -1147,6 +1190,7 @@ newton_type.glm <- function(para){
 initializate <- function(para,data) UseMethod("initializate")
 
 initializate.glm <- function(para,data){
+  para <- x_y_matching(para,data)
   para <- lambda(para)
   para <- number_of_thread(para)
   para <- early_stop(para)
@@ -1162,7 +1206,6 @@ initializate.glm <- function(para,data){
   model <- y_matrix(para,data)
   para <- model$para
   data <- model$data
-  para <- x_y_matching(para,data)
   para <- strategy_for_tuning(para)
   para <- group_variable(para)
   para <- sparse_level_list(para)
@@ -1179,7 +1222,7 @@ initializate.glm <- function(para,data){
   para <- important_searching(para)
   para <- always_included_variables(para)
   para <- init_active_set(para)
-
+  
   list(para=para,data=data)
 }
 
@@ -1203,6 +1246,33 @@ initializate.pca <- function(para,data){
   para <- always_included_variables(para)
   para <- important_searching(para)
   para <- tune_support_size_method(para)
+  
+  list(para=para,data=data)
+}
+
+initializate.rpca <- function(para,data){
+  para <- strategy_for_tuning(para)
+  para <- rank(para)
+  para <- number_of_thread(para)
+  para <- max_newton_iter(para)
+  para <- newton_thresh(para)
+  para <- lambda(para)
+  para <- warm_start(para)
+  para <- splicing_type(para)
+  para <- max_splicing_iter(para)
+  para <- x_matrix_info(para,data)
+  model <- x_matrix_content(para,data)
+  para <- model$para
+  data <- model$data
+  para <- screening_num(para)
+  para <- group_variable(para)
+  para <- sparse_level_list(para)
+  para <- C_max(para)
+  para <- tune_support_size_method(para)
+  para <- information_criterion(para)
+  para <- important_searching(para)
+  para <- sparse_range(para)
+  para <- always_included_variables(para)
   
   list(para=para,data=data)
 }
