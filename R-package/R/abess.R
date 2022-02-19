@@ -318,8 +318,12 @@ abess.default <- function(x,
   tune.path <- match.arg(tune.path)
   tune.type <- match.arg(tune.type)
   
-  model <- Initialization_GLM(
-    x=x,
+  data <- list(
+    x = x,
+    y = y
+  )
+
+  para <- Initialization_GLM(
     c.max=c.max,
     support.size=support.size,
     always.include=always.include,
@@ -332,7 +336,6 @@ abess.default <- function(x,
     newton.thresh=newton.thresh,
     tune.type=tune.type,
     important.search=important.search,
-    y=y,
     tune.path=tune.path,
     max.newton.iter=max.newton.iter,
     lambda=lambda,
@@ -348,10 +351,53 @@ abess.default <- function(x,
     foldid=foldid,
     nfolds=nfolds
   )
+
+  model <- initializate(para,data)
+  para <- model$para
+  data <- model$data
   
-  initializate(model)
+  y <- data$y
+  x <- data$x
+  tune.path <- para$tune.path
+  lambda <- para$lambda
+  family <- para$family
+  gs.range <- para$gs.range
+  weight <- para$weight
+  normalize <- para$normalize
+  init.active.set <- para$init.active.set
+  nfolds <- para$nfolds
+  warm.start <- para$warm.start
+  num_threads  <- para$num_threads 
+  splicing_type  <- para$splicing_type 
+  max_splicing_iter <- para$max_splicing_iter
+  nobs <- para$nobs
+  nvars <- para$nvars
+  vn <- para$vn
+  sparse_X <- para$sparse_X
+  screening_num <- para$screening_num
+  g_index <- para$g_index
+  s_list <- para$s_list
+  c_max <- para$c_max
+  ic_scale <- para$ic_scale
+  important_search <- para$important_search
+  always_include   <- para$always_include  
+  max_newton_iter   <- para$max_newton_iter  
+  path_type <- para$path_type
+  newton_thresh <- para$newton_thresh
+  screening <- para$screening
+  ic_type <- para$ic_type
+  is_cv <- para$is_cv
+  cv_fold_id <- para$cv_fold_id
+  s_min <- para$s_min
+  s_max <- para$s_max
+  model_type <- para$model_type
+  covariance_update <- para$covariance_update
+  approximate_newton <- para$approximate_newton
+  y_vn <- para$y_vn
+  y_dim <- para$y_dim
+  multi_y <- para$multi_y
+  early_stop <- para$early_stop
   
-  attach(model)
   t1 <- proc.time()
   result <- abessGLM_API(
     x = x,
@@ -542,7 +588,6 @@ abess.default <- function(x,
   class(result) <- "abess"
 
   set.seed(NULL)
-  detach(model)
   return(result)
 }
 
