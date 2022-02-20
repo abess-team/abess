@@ -40,19 +40,25 @@ class LogisticRegression(bess_base):
     >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'binomial')
     >>> model = LogisticRegression(support_size = 10)
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    LogisticRegression(always_select=[], support_size=10)
+    >>> model.predict(data.x)[1:10]
+    array([0., 0., 1., 1., 0., 1., 0., 1., 0.])
 
     >>> ### Sparsity unknown
     >>>
     >>> # path_type="seq"
     >>> model = LogisticRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    LogisticRegression(always_select=[])
+    >>> model.predict(data.x)[1:10]
+    array([0., 1., 0., 0., 1., 0., 1., 0., 1., 1.])
     >>>
     >>> # path_type="gs"
     >>> model = LogisticRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    LogisticRegression(always_select=[], path_type='gs')
+    >>> model.predict(data.x)[1:10]
+    array([0., 0., 0., 1., 1., 0., 1., 0., 1., 0.])
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
@@ -183,19 +189,25 @@ class LinearRegression(bess_base):
     >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'gaussian')
     >>> model = LinearRegression(support_size = 10)
     >>> model.fit(data.x, data.y)
+    LinearRegression(always_select=[], support_size=10)
     >>> model.predict(data.x)
+    array([   1.42163813,  -43.23929886, -139.79509191,  141.45138403])
 
     >>> ### Sparsity unknown
     >>>
     >>> # path_type="seq"
     >>> model = LinearRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    LinearRegression(always_select=[])
+    >>> model.predict(data.x)[1:4]
+    array([   1.42163813,  -43.23929886, -139.79509191,  141.45138403])
     >>>
     >>> # path_type="gs"
     >>> model = LinearRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    LinearRegression(always_select=[], path_type='gs')
+    >>> model.predict(data.x)[1:4]
+    array([   1.42163813,  -43.23929886, -139.79509191,  141.45138403])
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
@@ -290,21 +302,28 @@ class CoxPHSurvivalAnalysis(bess_base):
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'cox')
+    censoring rate:0.65
     >>> model = CoxPHSurvivalAnalysis(support_size = 10)
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    CoxPHSurvivalAnalysis(always_select=[], support_size=10)
+    >>> model.predict(data.x)[1:4]
+    array([1.08176927e+00, 6.37029117e-04, 3.64112556e-06, 4.09523406e+05])
 
     >>> ### Sparsity unknown
     >>>
     >>> # path_type="seq"
     >>> model = CoxPHSurvivalAnalysis(path_type = "seq")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    CoxPHSurvivalAnalysis(always_select=[], support_size=10)
+    >>> model.predict(data.x)[1:4]
+    array([1.08176927e+00, 6.37029117e-04, 3.64112556e-06, 4.09523406e+05])
     >>>
     >>> # path_type="gs"
     >>> model = CoxPHSurvivalAnalysis(path_type="gs")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    CoxPHSurvivalAnalysis(always_select=[], path_type='gs')
+    >>> model.predict(data.x)[1:4]
+    array([1.07629689e+00, 6.47263126e-04, 4.30660826e-06, 3.66389638e+05])
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
@@ -405,19 +424,25 @@ class PoissonRegression(bess_base):
     >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'poisson')
     >>> model = PoissonRegression(support_size = 10)
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    PoissonRegression(always_select=[], support_size=10)
+    >>> model.predict(data.x)[1:4]
+    array([1.06757251e+00, 8.92711312e-01, 5.64414159e-01, 1.35820866e+00])
 
     >>> ### Sparsity unknown
     >>>
     >>> # path_type="seq"
     >>> model = PoissonRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    PoissonRegression(always_select=[])
+    >>> model.predict(data.x)[1:4]
+    array([1.03373139e+00, 4.32229653e-01, 4.48811009e-01, 2.27170366e+00])
     >>>
     >>> # path_type="gs"
     >>> model = PoissonRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    PoissonRegression(always_select=[], path_type='gs')
+    >>> model.predict(data.x)[1:4]
+    array([1.03373139e+00, 4.32229653e-01, 4.48811009e-01, 2.27170366e+00])
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
@@ -518,19 +543,37 @@ class MultiTaskRegression(bess_base):
     >>>     n = 100, p = 50, k = 10, M = 3, family = 'multigaussian')
     >>> model = MultipleLinearRegression(support_size = 10)
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    MultinomialRegression(always_select=[], support_size=10)
+    >>> model.predict(data.x)[1:5, ]
+    array([[1., 0., 0.],
+       [0., 0., 1.],
+       [1., 0., 0.],
+       [1., 0., 0.],
+       [0., 0., 1.]])
 
     >>> ### Sparsity unknown
     >>>
     >>> # path_type="seq"
     >>> model = MultipleLinearRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    MultinomialRegression(always_select=[])
+    >>> model.predict(data.x)[1:5, ]
+    array([[1., 0., 0.],
+       [0., 0., 1.],
+       [1., 0., 0.],
+       [1., 0., 0.],
+       [0., 0., 1.]])
     >>>
     >>> # path_type="gs"
     >>> model = MultipleLinearRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    MultinomialRegression(always_select=[], path_type='gs')
+    >>> model.predict(data.x)[1:5, ]
+    array([[1., 0., 0.],
+       [0., 0., 1.],
+       [1., 0., 0.],
+       [1., 0., 0.],
+       [0., 0., 1.]])
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
@@ -629,19 +672,37 @@ class MultinomialRegression(bess_base):
     >>>     n = 100, p = 50, k = 10, M = 3, family = 'multinomial')
     >>> model = MultinomialRegression(support_size = 10)
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    MultinomialRegression(always_select=[], support_size=10)
+    >>> model.predict(data.x)[1:5, ]
+    array([[1., 0., 0.],
+       [1., 0., 0.],
+       [1., 0., 0.],
+       [1., 0., 0.],
+       [0., 1., 0.]])
 
     >>> ### Sparsity unknown
     >>>
     >>> # path_type="seq"
     >>> model = MultinomialRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    MultinomialRegression(always_select=[])
+    >>> model.predict(data.x)[1:5, ]
+    array([[1., 0., 0.],
+       [1., 0., 0.],
+       [1., 0., 0.],
+       [1., 0., 0.],
+       [0., 1., 0.]])
     >>>
     >>> # path_type="gs"
     >>> model = MultinomialRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    MultinomialRegression(always_select=[], path_type='gs')
+    >>> model.predict(data.x)[1:5, ]
+    array([[1., 0., 0.],
+       [1., 0., 0.],
+       [1., 0., 0.],
+       [1., 0., 0.],
+       [0., 1., 0.]])
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
@@ -769,22 +830,31 @@ class GammaRegression(bess_base):
     >>> ### Sparsity known
     >>>
     >>> from abess.linear import GammaRegression
+    >>> from abess.datasets import make_glm_data
     >>> import numpy as np
+    >>> np.random.seed(12345)
+    >>> data = make_glm_data(n = 100, p = 50, k = 10, family = 'gamma')
     >>> model = GammaRegression(support_size = 10)
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    GammaRegression(always_select=[], support_size=10)
+    >>> model.predict(data.x)[1:4]
+    array([1.34510045e+22, 2.34908508e+30, 1.91570199e+21, 1.29563315e+25])
 
     >>> ### Sparsity unknown
     >>>
     >>> # path_type="seq"
     >>> model = GammaRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    GammaRegression(always_select=[])
+    >>> model.predict(data.x)[1:4]
+    array([7.03065424e+19, 7.03065424e+19, 7.03065424e+19, 7.03065424e+19])
     >>>
     >>> # path_type="gs"
     >>> model = GammaRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
-    >>> model.predict(data.x)
+    GammaRegression(always_select=[], path_type='gs')
+    >>> model.predict(data.x)[1:4]
+    array([7.03065424e+19, 7.03065424e+19, 7.03065424e+19, 7.03065424e+19])
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
