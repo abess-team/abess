@@ -40,11 +40,25 @@ class SparsePCA(bess_base):
     >>> ### X known
     >>> X = np.random.randn(100, 50)
     >>> model.fit(X)
-    >>> print(model.coef_)
+    SparsePCA(always_select=[], support_size=10)
+    >>> # print(model.coef_)
+    >>> print(model.coef_[1:6,])
+    [[6.36598737e-314]
+     [1.06099790e-313]
+     [1.48539705e-313]
+     [1.90979621e-313]
+     [2.33419537e-313]]
     >>>
     >>> ### X unknown, but Sigma known
     >>> model.fit(Sigma = np.cov(X.T))
-    >>> print(model.coef_)
+    SparsePCA(always_select=[], support_size=10)
+    >>> # print(model.coef_)
+    >>> print(model.coef_[1:6,])
+    [[6.36598737e-314]
+     [1.06099790e-313]
+     [1.48539705e-313]
+     [1.90979621e-313]
+     [2.33419537e-313]]
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
@@ -386,8 +400,17 @@ class RobustPCA(bess_base):
     >>>
     >>> ### X known
     >>> X = np.random.randn(100, 50)
-    >>> model.fit(X)
+    >>> model.fit(X, r = 10)
+    RobustPCA(always_select=[], support_size=10)
     >>> print(model.coef_)
+    [[0.         0.         0.         ... 0.         3.71203604 0.        ]
+     [0.         0.         0.         ... 0.         0.         0.        ]
+     [0.         0.         0.         ... 0.         0.         0.        ]
+     ...
+     [0.         0.         0.         ... 0.         0.         0.        ]
+     [0.         0.         0.         ... 0.         0.         0.        ]
+     [0.         0.         0.         ... 0.         0.         0.        ]]
+
     """
 
     def __init__(self, max_iter=20, exchange_num=5, is_warm_start=True,
