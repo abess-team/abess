@@ -17,10 +17,10 @@ import matplotlib.patches as mpatches
 #         break
 
 python_path = sys.executable
-os.system(python_path + './linear_test.py 0.1')
-os.system(python_path + './linear_test.py 0.7')
-os.system(python_path + './logi_test.py 0.1')
-os.system(python_path + './logi_test.py 0.7')
+os.system(python_path + ' ./linear_test.py 0.1')
+os.system(python_path + ' ./linear_test.py 0.7')
+os.system(python_path + ' ./logi_test.py 0.1')
+os.system(python_path + ' ./logi_test.py 0.7')
 
 # simulation results
 lm1 = np.load('./Lm0.1_data.npy')
