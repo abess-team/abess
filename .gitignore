@@ -115,6 +115,7 @@ docs/simulation/R/*.png
 docs/simulation/Python/*.png
 docs/simulation/R/*.rda
 docs/simulation/Python/*.npy
+docs/auto_gallery/*
 .vscode/*
 .vs/*
 TODO.md
