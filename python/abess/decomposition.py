@@ -4,6 +4,7 @@ from scipy.sparse import coo_matrix
 from sklearn.utils.validation import check_array
 from .cabess import pywrap_PCA, pywrap_RPCA
 from .bess_base import bess_base
+from .utilities import new_data_check
 
 
 def fix_docs(cls):
@@ -94,7 +95,7 @@ class SparsePCA(bess_base):
             Sample matrix to be transformed.
 
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
 
         return X.dot(self.coef_)
 
@@ -107,7 +108,7 @@ class SparsePCA(bess_base):
         X : array-like, shape (n_samples, n_features)
             Sample matrix.
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
         s = np.cov(X.T)
         if len(self.coef_.shape) == 1:
             explain = self.coef_.T.dot(s).dot(self.coef_)

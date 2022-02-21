@@ -277,6 +277,12 @@ class TestAlgorithm:
         model2.fit(data.x, data.y)
         assert_fit(model1.coef_, model2.coef_)
 
+        # categorical y
+        cate_y = np.repeat(np.arange(n / 10), 10)
+        model1.fit(data.x, cate_y)
+        score = model1.score(data.x, cate_y)
+        assert not np.isnan(score)
+
     @staticmethod
     def test_PCA():
         np.random.seed(2)
