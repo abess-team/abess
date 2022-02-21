@@ -1,9 +1,10 @@
 import numbers
 import numpy as np
 from scipy.sparse import coo_matrix
-from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.base import BaseEstimator
+from sklearn.utils.validation import check_X_y
 from .cabess import pywrap_GLM
+from .utilities import categorical_to_dummy
 
 
 class bess_base(BaseEstimator):
@@ -158,42 +159,6 @@ class bess_base(BaseEstimator):
         self.splicing_type = splicing_type
         self.important_search = important_search
 
-    def new_data_check(self, X, y=None, weights=None):
-        # Check1 : whether fit had been called
-        check_is_fitted(self)
-
-        # Check2 : X validation
-        X = check_array(X, accept_sparse=True)
-        if X.shape[1] != self.n_features_in_:
-            raise ValueError("X.shape[1] should be " +
-                             str(self.n_features_in_))
-
-        # Check3 : X, y validation
-        if (y is not None) and (weights is None):
-            X, y = check_X_y(X,
-                             y,
-                             accept_sparse=True,
-                             multi_output=True,
-                             y_numeric=True)
-            return X, y
-
-        # Check4: X, y, weights validation
-        if weights is not None:
-            X, y = check_X_y(X,
-                             y,
-                             accept_sparse=True,
-                             multi_output=True,
-                             y_numeric=True)
-            weights = np.array(weights, dtype=float)
-
-            if len(weights.shape) != 1:
-                raise ValueError("weights should be 1-dimension.")
-            if weights.shape[0] != X.shape[0]:
-                raise ValueError("weights should have a length of X.shape[0].")
-            return X, y, weights
-
-        return X
-
     def fit(self,
             X=None,
             y=None,
@@ -254,6 +219,10 @@ class bess_base(BaseEstimator):
                 X = X[y[:, 0].argsort()]
                 y = y[y[:, 0].argsort()]
                 y = y[:, 1].reshape(-1)
+
+            # Dummy y for Multinomial
+            if self.model_type == "Multinomial" and len(y.shape) == 1:
+                y = categorical_to_dummy(y)
 
             # Init
             n = X.shape[0]

@@ -2,6 +2,7 @@ import warnings
 import numpy as np
 from .metrics import concordance_index_censored
 from .bess_base import bess_base
+from .utilities import (new_data_check, categorical_to_dummy)
 
 
 def fix_docs(cls):
@@ -106,7 +107,7 @@ class LogisticRegression(bess_base):
             Returns the probabilities for class "1"
             on given X.
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = X.dot(self.coef_) + intercept_
@@ -127,7 +128,7 @@ class LogisticRegression(bess_base):
         y : array-like, shape(n_samples,)
             Predict class labels (0 or 1) for samples in X.
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = X.dot(self.coef_) + intercept_
@@ -151,7 +152,7 @@ class LogisticRegression(bess_base):
         score : float
             The value of entropy function under given data.
         """
-        X, y = self.new_data_check(X, y)
+        X, y = new_data_check(self, X, y)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = X.dot(self.coef_) + intercept_
@@ -251,7 +252,7 @@ class LinearRegression(bess_base):
         y : array-like, shape(n_samples,)
             Prediction of the mean on given X.
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         return X.dot(self.coef_) + intercept_
@@ -272,7 +273,7 @@ class LinearRegression(bess_base):
         score : float
             Prediction error.
         """
-        X, y = self.new_data_check(X, y)
+        X, y = new_data_check(self, X, y)
         y_pred = self.predict(X)
         return -((y - y_pred) * (y - y_pred)).sum()
 
@@ -370,7 +371,7 @@ class CoxPHSurvivalAnalysis(bess_base):
         y : array-like, shape(n_samples,)
             Return :math:`\exp(X\beta)`.
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
 
         return np.exp(X.dot(self.coef_))
 
@@ -390,7 +391,7 @@ class CoxPHSurvivalAnalysis(bess_base):
         score : float
             C-index.
         """
-        X, y = self.new_data_check(X, y)
+        X, y = new_data_check(self, X, y)
         risk_score = X.dot(self.coef_)
         y = np.array(y)
         result = concordance_index_censored(
@@ -486,7 +487,7 @@ class PoissonRegression(bess_base):
         y : array-like, shape(n_samples,)
             Prediction of the mean on X.
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta_exp = np.exp(X.dot(self.coef_) + intercept_)
@@ -508,7 +509,7 @@ class PoissonRegression(bess_base):
         score : float
             Prediction error.
         """
-        X, y = self.new_data_check(X, y)
+        X, y = new_data_check(self, X, y)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         eta = X.dot(self.coef_) + intercept_
@@ -616,7 +617,7 @@ class MultiTaskRegression(bess_base):
             Prediction of the mean of each response on given X.
             Each column indicates one response.
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
 
         intercept_ = np.repeat(
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
@@ -638,7 +639,7 @@ class MultiTaskRegression(bess_base):
         score : float
             Prediction error.
         """
-        X, y = self.new_data_check(X, y)
+        X, y = new_data_check(self, X, y)
 
         y_pred = self.predict(X)
         return -((y - y_pred) * (y - y_pred)).sum()
@@ -751,7 +752,7 @@ class MultinomialRegression(bess_base):
             Returns the probability of given samples for each class.
             Each column indicates one class.
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
 
         intercept_ = np.repeat(
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
@@ -777,7 +778,7 @@ class MultinomialRegression(bess_base):
             Each row contains only one "1", and its column index is the
             predicted class for related sample.
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
 
         intercept_ = np.repeat(
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
@@ -804,7 +805,9 @@ class MultinomialRegression(bess_base):
         score : float
             entropy function
         """
-        X, y = self.new_data_check(X, y)
+        X, y = new_data_check(self, X, y)
+        if len(y.shape) == 1:
+            y = categorical_to_dummy(y)
 
         pr = self.predict_proba(X)
         return np.sum(y * np.log(pr))
@@ -898,7 +901,7 @@ class GammaRegression(bess_base):
         y : array-like, shape(n_samples,)
             Prediction of the mean on given X.
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta_exp = np.exp(X.dot(self.coef_) + intercept_)
@@ -923,7 +926,7 @@ class GammaRegression(bess_base):
         if weights is None:
             X = np.array(X)
             weights = np.ones(X.shape[0])
-        X, y, weights = self.new_data_check(X, y, weights)
+        X, y, weights = new_data_check(self, X, y, weights)
 
         def deviance(y, y_pred):
             dev = 2 * (np.log(y_pred / y) + y / y_pred - 1)
