@@ -5,9 +5,10 @@ Power of abess
 
 """
 
-# sphinx_gallery_thumbnail_path = '_static/timings.png'
-#%%
-# In this part, we are going to explore the power of the abess package
+######################################
+# Introduction
+# ^^^^^^^^^^^^
+# In this part, we are going to explore the power of the ``abess`` package
 # using simulated data. We compare the abess package with popular Python
 # packages:
 # `scikit-learn <https://scikit-learn.org/stable/supervised_learning.html#supervised-learning>`__
@@ -89,5 +90,5 @@ Power of abess
 # For R performance, please view
 # https://abess-team.github.io/abess/articles/v11-power-of-abess.html.
 #
-# .. |image0| image:: ./images/perform.png
-# .. |image1| image:: ./images/timings.png
+# .. |image0| image:: ../../Tutorial/figure/perform.png
+# .. |image1| image:: ../../Tutorial/figure/timings.png

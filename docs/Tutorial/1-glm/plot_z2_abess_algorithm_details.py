@@ -3,17 +3,14 @@
 ABESS algorithm: details
 ========================
 """
-# sphinx_gallery_thumbnail_path = '_static/icon_noborder.png'
 
 ###########################################################
 # Introduction 
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#
-# The ABESS algorithm employing "splicing" technique can exactly solve
-# general best subset problem in a polynomial time. The aim of this page
-# to provide a complete and coherent documentation for ABESS algorithm
-# such that users can easily understand the ABESS algorithm and its
-# variants, thereby facilitating the usage of ``abess`` software.
+# With the ``abess`` library, users can use the ABESS algorithm to efficiently solve many best subset selection problems.
+# The aim of this page is providing a complete and coherent documentation for ABESS algorithm under linear model 
+# such that users can easily understand the ABESS algorithm, 
+# thereby facilitating the usage of ``abess`` software.
 #
 # linear regression 
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -225,3 +222,7 @@ ABESS algorithm: details
 #
 # 4. Output
 #    :math:`\left(\hat{\boldsymbol{\beta}}_{s_{\min}}, \hat{\boldsymbol{d}}_{s_{\min }}, \hat{A}_{s_{\min }}, \hat{\mathcal{I}}_{s_{\min }}\right) .`
+# 
+# Now, enjoy the data analysis with ``abess`` library:
+import abess
+# sphinx_gallery_thumbnail_path = '_static/icon_noborder.png'

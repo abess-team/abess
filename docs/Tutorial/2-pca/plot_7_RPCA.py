@@ -36,7 +36,7 @@ This notebook introduces what is adaptive best subset selection robust principal
 # where :math:`S` is the sparse "outlier" matrix and :math:`L` is the "information" matrix with a low rank. 
 # Generally, we also suppose :math:`S` is not low-rank and :math:`L` is not sparse, in order to get unique solution.
 # 
-# .. image:: ./images/rpca.png
+# .. image:: ../../Tutorial/figure/rpca.png
 # 
 # In Lagrange format, 
 # 
@@ -92,7 +92,7 @@ This notebook introduces what is adaptive best subset selection robust principal
 # due to complex lighting conditions, a small part of the facial features may be unrecognized (e.g. shadow).
 # In the face recognition, we need to remove the effects of shadows and focus on the face data. Actually, since the face data is almost unchanged (for one person), and the shadows affect only a small part, it is also a suitable situation to use RPCA. Here are some examples: 
 # 
-# .. image:: ./images/rpca_shadow.png
+# .. image:: ../../Tutorial/figure/rpca_shadow.png
 # 
 # 
 
