@@ -70,7 +70,7 @@ def categorical_to_dummy(x, classes=None):
             dummy_x[i, index[x_i]] = 1
         else:
             print(
-                "Data {} (index {}) is not in classes. It would be passed.".format(
+                "Data {} (index {}) is not in classes.".format(
                     x_i,
                     i))
     return dummy_x

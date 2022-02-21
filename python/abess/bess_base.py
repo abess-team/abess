@@ -2,9 +2,9 @@ import numbers
 import numpy as np
 from scipy.sparse import coo_matrix
 from sklearn.base import BaseEstimator
+from sklearn.utils.validation import check_X_y
 from .cabess import pywrap_GLM
 from .utilities import categorical_to_dummy
-from sklearn.utils.validation import check_X_y
 
 
 class bess_base(BaseEstimator):
