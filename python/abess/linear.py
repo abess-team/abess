@@ -116,7 +116,7 @@ class LogisticRegression(bess_base):
         X = self.new_data_check(X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        xbeta = X.dot(self.coef_).reshape(-1) + intercept_
+        xbeta = X.dot(self.coef_) + intercept_
         return np.exp(xbeta) / (1 + np.exp(xbeta))
 
     def predict(self, X):
@@ -134,7 +134,7 @@ class LogisticRegression(bess_base):
         X = self.new_data_check(X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        xbeta = X.dot(self.coef_).reshape(-1) + intercept_
+        xbeta = X.dot(self.coef_) + intercept_
         y = np.zeros(xbeta.size)
         y[xbeta > 0] = 1
         return y
@@ -153,7 +153,7 @@ class LogisticRegression(bess_base):
         X, y = self.new_data_check(X, y)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        xbeta = X.dot(self.coef_).reshape(-1) + intercept_
+        xbeta = X.dot(self.coef_) + intercept_
         xbeta[xbeta > 30] = 30
         xbeta[xbeta < -30] = -30
         pr = np.exp(xbeta) / (1 + np.exp(xbeta))
@@ -321,7 +321,7 @@ class LinearRegression(bess_base):
         X = self.new_data_check(X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        return X.dot(self.coef_).reshape(-1) + intercept_
+        return X.dot(self.coef_) + intercept_
 
     def score(self, X, y):
         """
@@ -500,7 +500,7 @@ class CoxPHSurvivalAnalysis(bess_base):
         """
         X = self.new_data_check(X)
 
-        return np.exp(X.dot(self.coef_).reshape(-1))
+        return np.exp(X.dot(self.coef_))
 
     def score(self, X, y):
         """
@@ -514,7 +514,7 @@ class CoxPHSurvivalAnalysis(bess_base):
             Test response.
         """
         X, y = self.new_data_check(X, y)
-        risk_score = X.dot(self.coef_).reshape(-1)
+        risk_score = X.dot(self.coef_)
         y = np.array(y)
         result = concordance_index_censored(
             np.array(y[:, 1], np.bool_), y[:, 0], risk_score)
@@ -680,7 +680,7 @@ class PoissonRegression(bess_base):
         X = self.new_data_check(X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        xbeta_exp = np.exp(X.dot(self.coef_).reshape(-1) + intercept_)
+        xbeta_exp = np.exp(X.dot(self.coef_) + intercept_)
         return xbeta_exp
 
     def score(self, X, y):
@@ -697,7 +697,7 @@ class PoissonRegression(bess_base):
         X, y = self.new_data_check(X, y)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        eta = X.dot(self.coef_).reshape(-1) + intercept_
+        eta = X.dot(self.coef_) + intercept_
         exp_eta = np.exp(eta)
         return (y * eta - exp_eta).sum()
 
@@ -1699,7 +1699,7 @@ class GammaRegression(bess_base):
         X = self.new_data_check(X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        xbeta_exp = np.exp(X.dot(self.coef_).reshape(-1) + intercept_)
+        xbeta_exp = np.exp(X.dot(self.coef_) + intercept_)
         return xbeta_exp
 
     def score(self, X, y, weights=None):

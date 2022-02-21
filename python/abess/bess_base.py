@@ -61,7 +61,7 @@ class bess_base(BaseEstimator):
 
         - If screening_size=-1, screening will not be used.
         - If screening_size=0, screening_size will be set as
-          :math:`\min(p, int(n / (\log(\log(n))\log(p))))`.
+          :math:`\\min(p, int(n / (\\log(\\log(n))\\log(p))))`.
 
     always_select : array-like, optional, default=[]
         An array contains the indexes of variables
@@ -531,8 +531,8 @@ class bess_base(BaseEstimator):
         # print("linear fit end")
         # print(len(result))
         # print(result)
-        self.coef_ = result[0]
-        self.intercept_ = result[1]
+        self.coef_ = result[0].squeeze()
+        self.intercept_ = result[1].squeeze()
         self.train_loss_ = result[2]
         self.test_loss_ = result[3]
         self.ic_ = result[4]
