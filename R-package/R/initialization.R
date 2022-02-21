@@ -666,10 +666,9 @@ C_max.glm <- C_max_private(2)
 ## TODO 
 tune_support_size_method <- function(para) UseMethod("tune_support_size_method")
 
-tune_support_size_method.glm <- function(para){
-  
+tune_support_size_method_private <- function(para){
   para$ic_type <- map_tunetype2numeric(para$tune.type)
-  para$is_cv <- ifelse(para$tune.type == "cv", TRUE, FALSE)
+  para$is_cv <- para$tune.type == "cv"
   if (para$is_cv) {
     if (is.null(para$foldid)) {
       para$cv_fold_id <- integer(0)
@@ -682,10 +681,9 @@ tune_support_size_method.glm <- function(para){
     para$cv_fold_id <- integer(0)
     para$nfolds <- 1
   }
-  
-  
   para
 }
+tune_support_size_method.glm <- tune_support_size_method_private
 
 tune_support_size_method.pca <- function(para){
   para$tune_type <- para$tune.type
@@ -694,32 +692,15 @@ tune_support_size_method.pca <- function(para){
              Coerce into tune.type = 'gic'.")
     para$tune_type <- "gic"
   }
-  ## 和GLM本质一样
-  para$ic_type <- map_tunetype2numeric(para$tune_type)
-  if (para$tune_type != "cv") {
-    para$nfolds <- 1
-    para$cv_fold_id <- integer(0)
-  } else {
-    if (is.null(para$foldid)) {
-      para$cv_fold_id <- integer(0)
-      para$nfolds <- check_nfold(para$nfolds)
-    } else {
-      para$cv_fold_id <- check_foldid(para$foldid, para$nobs)
-      para$nfolds <- length(unique(para$nfolds))
-    }
-  }
   
-  
-  para
+  tune_support_size_method.glm(para)
 }
 
 tune_support_size_method.rpca <- function(para){
-  
   para$ic_type <- map_tunetype2numeric(para$tune.type)
   para$is_cv <- FALSE
   para$cv_fold_id <- integer(0)
-  
-  
+ 
   para
 }
 
@@ -727,53 +708,39 @@ tune_support_size_method.rpca <- function(para){
 information_criterion <- function(para) UseMethod("information_criterion")
 
 information_criterion.Initialization <- function(para){
-  
   stopifnot(is.numeric(para$ic.scale))
   stopifnot(para$ic.scale >= 0)
   para$ic_scale <- as.integer(para$ic.scale)
   
-  
   para
 }
 
-##
+
 important_searching <- function(para) UseMethod("important_searching")
 
-important_searching.Initialization <- function(para){
-  
-  if (is.null(para$important.search)) {
-    para$important_search <- as.integer(min(c(para$nvars, 128)))
-  } else {
-    stopifnot(is.numeric(para$important.search))
-    stopifnot(para$important.search >= 0)
-    check_integer_warning(para$important.search)
-    para$important_search <- as.integer(para$important.search)
+important_searching_private <- function(default){
+  function(para){
+    if (is.null(para$important.search)) {
+      para$important_search <- as.integer(min(c(para$nvars, default)))
+    } else {
+      stopifnot(is.numeric(para$important.search))
+      stopifnot(para$important.search >= 0)
+      check_integer_warning(para$important.search)
+      para$important_search <- as.integer(para$important.search)
+    }
+
+    para
   }
-  
-  
-  para
 }
 
-important_searching.pca <- function(para){
-  
-  if (is.null(para$important.search)) {
-    para$important_search <- as.integer(0)
-  } else {
-    stopifnot(is.numeric(para$important.search))
-    stopifnot(para$important.search >= 0)
-    check_integer_warning(para$important.search)
-    para$important_search <- as.integer(para$important.search)
-  }
-  
-  
-  para
-}
+important_searching.Initialization <- important_searching_private(128)
+
+important_searching.pca <- important_searching_private(0)
 
 
 sparse_range <- function(para) UseMethod("sparse_range")
 
 sparse_range.Initialization <- function(para){
-  
   if (is.null(para$gs.range)) {
     para$s_min <- 1
     if (para$group_select) {
@@ -804,12 +771,24 @@ sparse_range.Initialization <- function(para){
   para
 }
 
+sparse_type <- function(para) UseMethod("sparse_type")
 
+sparse_type.pca <- function(para){
+  if(is.null(para$kpc.num)){
+    para$kpc.num <- ifelse(para$sparse.type == "fpc", 1, 2)
+  }
+  else{
+    stopifnot(para$kpc.num >= 1)
+    check_integer_warning(para$kpc.num, "kpc.num should be an integer. It is coerced to as.integer(kpc.num).")
+    para$kpc.num <- as.integer(para$kpc.num)
+    para$sparse.type <- ifelse(para$kpc.num == 1, "fpc", "kpc")
+  }
+  para
+}
 
 always_included_variables <- function(para) UseMethod("always_included_variables")
-## glm and rpca
+
 always_included_variables.Initialization <- function(para){
-  
   if (is.null(para$always.include)) {
     para$always_include <- numeric(0)
   } else {
@@ -851,12 +830,10 @@ always_included_variables.Initialization <- function(para){
     para$always_include <- para$always.include
   }
   
-  
   para
 }
 
 always_included_variables.pca <- function(para){
-  
   if (is.null(para$always.include)) {
     para$always_include <- numeric(0)
   } else {
@@ -879,21 +856,6 @@ always_included_variables.pca <- function(para){
   para
 }
 
-## 
-sparse_type <- function(para) UseMethod("sparse_type")
-
-sparse_type.pca <- function(para){
-  if(is.null(para$kpc.num)){
-    para$kpc.num <- ifelse(para$sparse.type == "fpc", 1, 2)
-  }
-  else{
-    stopifnot(para$kpc.num >= 1)
-    check_integer_warning(para$kpc.num, "kpc.num should be an integer. It is coerced to as.integer(kpc.num).")
-    para$kpc.num <- as.integer(para$kpc.num)
-    para$sparse.type <- ifelse(para$kpc.num == 1, "fpc", "kpc")
-  }
-  para
-}
 
 sparse.cov <- function(x, cor = FALSE) {
   n <- nrow(x)
@@ -967,9 +929,9 @@ compute_gram_matrix.pca <- function(para,data){
 early_stop <- function(para) UseMethod("early_stop")
 
 early_stop.glm <- function(para){
-  
   stopifnot(is.logical(para$early.stop))
   para$early_stop <- para$early.stop
+
   para
 }
 
@@ -977,7 +939,6 @@ early_stop.glm <- function(para){
 model_type <- function(para) UseMethod("model_type")
 
 model_type.glm <- function(para){
-  
   para$model_type <- switch(para$family,
                             "gaussian" = 1,
                             "binomial" = 2,
@@ -987,8 +948,7 @@ model_type.glm <- function(para){
                             "multinomial" = 6,
                             "gamma" = 8
   )
-  
-  
+
   para
 }
 
@@ -1007,7 +967,6 @@ x_y_matching.glm <- function(para,data){
 weight <- function(para) UseMethod("weight")
 
 weight.glm <- function(para){
-  
   if (is.null(para$weight)) {
     para$weight <- rep(1, para$nobs)
   }
@@ -1019,7 +978,6 @@ weight.glm <- function(para){
     stopifnot(all(is.numeric(para$weight)), all(para$weight >= 0))
   }
   
-  
   para
 }
 
@@ -1027,14 +985,12 @@ weight.glm <- function(para){
 covariance_update <- function(para) UseMethod("covariance_update")
 
 covariance_update.glm <- function(para){
-  
   stopifnot(is.logical(para$cov.update))
   if (para$model_type == 1) {
     para$covariance_update <- para$cov.update
   } else {
     para$covariance_update <- FALSE
   }
-  
   
   para
 }
@@ -1043,7 +999,6 @@ covariance_update.glm <- function(para){
 normalize_strategy <- function(para) UseMethod("normalize_strategy")
 
 normalize_strategy.glm <- function(para){
-  
   if (is.null(para$normalize)) {
     para$normalize <- switch(para$family,
                              "gaussian" = 1,
@@ -1056,20 +1011,15 @@ normalize_strategy.glm <- function(para){
     )
   } else {
     stopifnot(para$normalize %in% 0:3)
-    if (para$normalize != 0) {
-      if (para$normalize == 1) {
-        para$normalize <- 2
-      } else if (para$normalize == 2) {
-        para$normalize <- 3
-      } else if (para$normalize == 3) {
-        para$normalize <- 1
-      } else {
-      }
-    } else {
-      para$normalize <- 0
+  
+    if (para$normalize == 1) {
+      para$normalize <- 2
+    } else if (para$normalize == 2) {
+      para$normalize <- 3
+    } else if (para$normalize == 3) {
+      para$normalize <- 1
     }
   }
-  
   
   para
 }
@@ -1078,7 +1028,6 @@ normalize_strategy.glm <- function(para){
 init_active_set <- function(para) UseMethod("init_active_set")
 
 init_active_set.glm <- function(para){
-  
   if (!is.null(para$init.active.set)) {
     stopifnot(para$init.active.set >= 1)
     stopifnot(all(para$init.active.set <= para$nvars))
@@ -1087,8 +1036,7 @@ init_active_set.glm <- function(para){
     para$init.active.set <- as.integer(para$init.active.set)
     para$init.active.set <- sort(unique(para$model_type)) - 1
   }
-  
-  
+
   para
 }
 
@@ -1096,7 +1044,6 @@ init_active_set.glm <- function(para){
 newton_type <- function(para) UseMethod("newton_type")
 
 newton_type.glm <- function(para){
-  
   if (length(para$newton) == 2) {
     if (para$family %in% c("binomial", "cox", "multinomial", "gamma", "poisson")) {
       para$newton <- "approx"
@@ -1116,8 +1063,7 @@ newton_type.glm <- function(para){
                              "approx" = 1,
                              "auto" = 2
   )
-  para$approximate_newton <- ifelse(para$newton_type == 1, TRUE, FALSE)
-  
+  para$approximate_newton <- para$newton_type == 1
   
   para
 }
