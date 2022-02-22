@@ -1,2 +1,2 @@
-Connect to Popular Libraries with Scikit-learn API
+Connect to Popular Libraries with ``scikit-learn`` API
 ---------------------------------------------------------

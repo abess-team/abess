@@ -1,6 +1,6 @@
 """
 ========================
-ABESS algorithm: details
+ABESS Algorithm: Details
 ========================
 """
 
