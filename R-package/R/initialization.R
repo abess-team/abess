@@ -274,7 +274,7 @@ warm_start.Initialization <- function(para){
   para
 }
 
-##
+
 splicing_type <- function(para) UseMethod("splicing_type")
 
 splicing_type.Initialization <- function(para){
@@ -629,7 +629,7 @@ sparse_level_list.glm <- function(para){
   para
 }
 
-##
+
 C_max <- function(para) UseMethod("C_max")
 
 C_max_private <- function(default){
@@ -659,7 +659,7 @@ C_max.rpca <- function(para){
 
 C_max.glm <- C_max_private(2)
 
-## TODO 
+
 tune_support_size_method <- function(para) UseMethod("tune_support_size_method")
 
 tune_support_size_method_private <- function(para){
@@ -679,6 +679,7 @@ tune_support_size_method_private <- function(para){
   }
   para
 }
+
 tune_support_size_method.glm <- tune_support_size_method_private
 
 tune_support_size_method.pca <- function(para){
