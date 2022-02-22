@@ -4,6 +4,7 @@ from scipy.sparse import coo_matrix
 from sklearn.utils.validation import check_array
 from .cabess import pywrap_PCA, pywrap_RPCA
 from .bess_base import bess_base
+from .utilities import new_data_check
 
 
 def fix_docs(cls):
@@ -40,14 +41,30 @@ class SparsePCA(bess_base):
     >>> ### X known
     >>> X = np.random.randn(100, 50)
     >>> model.fit(X)
-    >>> print(model.coef_)
+    SparsePCA(always_select=[], support_size=10)
+    >>> # print(model.coef_)
+    >>> print(model.coef_[1:6,])
+    [[6.36598737e-314]
+     [1.06099790e-313]
+     [1.48539705e-313]
+     [1.90979621e-313]
+     [2.33419537e-313]]
     >>>
     >>> ### X unknown, but Sigma known
     >>> model.fit(Sigma = np.cov(X.T))
-    >>> print(model.coef_)
+    SparsePCA(always_select=[], support_size=10)
+    >>> # print(model.coef_)
+    >>> print(model.coef_[1:6,])
+    [[6.36598737e-314]
+     [1.06099790e-313]
+     [1.48539705e-313]
+     [1.90979621e-313]
+     [2.33419537e-313]]
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq", is_warm_start=True, support_size=None, s_min=None, s_max=None,
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
+                 is_warm_start=True, support_size=None,
+                 s_min=None, s_max=None,
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  thread=1,
@@ -55,9 +72,12 @@ class SparsePCA(bess_base):
                  splicing_type=1
                  ):
         super().__init__(
-            algorithm_type="abess", model_type="PCA", normalize_type=1, path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv, screening_size=screening_size,
+            algorithm_type="abess", model_type="PCA", normalize_type=1,
+            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size,
+            s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
+            screening_size=screening_size,
             always_select=always_select,
             thread=thread,
             sparse_matrix=sparse_matrix,
@@ -75,7 +95,7 @@ class SparsePCA(bess_base):
             Sample matrix to be transformed.
 
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
 
         return X.dot(self.coef_)
 
@@ -88,7 +108,7 @@ class SparsePCA(bess_base):
         X : array-like, shape (n_samples, n_features)
             Sample matrix.
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
         s = np.cov(X.T)
         if len(self.coef_.shape) == 1:
             explain = self.coef_.T.dot(s).dot(self.coef_)
@@ -118,7 +138,8 @@ class SparsePCA(bess_base):
             Individual weights for each sample. Only used for is_weight=True.
         group : int, optional, default=np.ones(p)
             The group index for each variable.
-        Sigma : array-like, shape(p_features, p_features), optional, default=np.cov(X.T)
+        Sigma : array-like, shape(p_features, p_features), optional
+            default=np.cov(X.T).
             Sample covariance matrix.
             For PCA, it can be given as input, instead of X.
             But if X is given, Sigma will be set to np.cov(X.T).
@@ -222,7 +243,8 @@ class SparsePCA(bess_base):
             elif (len(self.support_size.shape) != 2 or
                     self.support_size.shape[1] != number):
                 raise ValueError(
-                    "`support_size` should be 2-dimension and its number of columns should be equal to `number`")
+                    "`support_size` should be 2-dimension and its number of"
+                    " columns should be equal to `number`")
             elif self.support_size.shape[0] > p:
                 raise ValueError(
                     "`support_size` should not larger than p")
@@ -254,7 +276,8 @@ class SparsePCA(bess_base):
         # Thread
         if (not isinstance(self.thread, int) or self.thread < 0):
             raise ValueError(
-                "thread should be positive number or 0 (maximum supported by your device).")
+                "thread should be positive number or 0"
+                " (maximum supported by your device).")
 
         # Splicing type
         if self.splicing_type not in (0, 1):
@@ -263,7 +286,8 @@ class SparsePCA(bess_base):
         # number
         if (not isinstance(number, int) or number <= 0 or number > p):
             raise ValueError(
-                "number should be an positive integer and not bigger than X.shape[1].")
+                "number should be an positive integer and"
+                " not bigger than X.shape[1].")
 
         # Important_search
         if (not isinstance(self.important_search, int)
@@ -278,7 +302,8 @@ class SparsePCA(bess_base):
             A_init = np.array(A_init, dtype="int32")
             if A_init.ndim > 1:
                 raise ValueError(
-                    "The initial active set should be an 1D array of integers.")
+                    "The initial active set should be an 1D array of"
+                    " integers.")
             if (A_init.min() < 0 or A_init.max() > p):
                 raise ValueError(
                     "A_init contains wrong index.")
@@ -376,11 +401,21 @@ class RobustPCA(bess_base):
     >>>
     >>> ### X known
     >>> X = np.random.randn(100, 50)
-    >>> model.fit(X)
+    >>> model.fit(X, r = 10)
+    RobustPCA(always_select=[], support_size=10)
     >>> print(model.coef_)
+    [[0.         0.         0.         ... 0.         3.71203604 0.        ]
+     [0.         0.         0.         ... 0.         0.         0.        ]
+     [0.         0.         0.         ... 0.         0.         0.        ]
+     ...
+     [0.         0.         0.         ... 0.         0.         0.        ]
+     [0.         0.         0.         ... 0.         0.         0.        ]
+     [0.         0.         0.         ... 0.         0.         0.        ]]
+
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, is_warm_start=True, support_size=None,
+    def __init__(self, max_iter=20, exchange_num=5, is_warm_start=True,
+                 support_size=None,
                  ic_type="gic", ic_coef=1.0,
                  always_select=None,
                  thread=1,
@@ -388,8 +423,10 @@ class RobustPCA(bess_base):
                  splicing_type=1
                  ):
         super().__init__(
-            algorithm_type="abess", model_type="RPCA", normalize_type=1, path_type="seq", max_iter=max_iter, exchange_num=exchange_num,
-            is_warm_start=is_warm_start, support_size=support_size, s_min=None, s_max=None, cv=1,
+            algorithm_type="abess", model_type="RPCA", normalize_type=1,
+            path_type="seq", max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size,
+            s_min=None, s_max=None, cv=1,
             ic_type=ic_type, ic_coef=ic_coef,
             always_select=always_select,
             thread=thread,
@@ -459,7 +496,8 @@ class RobustPCA(bess_base):
                 raise ValueError("group should be an 1D array of integers.")
             if group.size != n * p:
                 raise ValueError(
-                    "The length of group should be equal to (X.shape[0] * X.shape[1]).")
+                    "The length of group should be equal to"
+                    " (X.shape[0] * X.shape[1]).")
             g_index = []
             group.sort()
             group_set = list(set(group))
@@ -503,7 +541,8 @@ class RobustPCA(bess_base):
         # Thread
         if (not isinstance(self.thread, int) or self.thread < 0):
             raise ValueError(
-                "thread should be positive number or 0 (maximum supported by your device).")
+                "thread should be positive number or 0"
+                " (maximum supported by your device).")
 
         # Splicing type
         if self.splicing_type not in (0, 1):
@@ -522,7 +561,8 @@ class RobustPCA(bess_base):
             A_init = np.array(A_init, dtype="int32")
             if A_init.ndim > 1:
                 raise ValueError(
-                    "The initial active set should be an 1D array of integers.")
+                    "The initial active set should be an 1D array of"
+                    " integers.")
             if (A_init.min() < 0 or A_init.max() >= n * p):
                 raise ValueError(
                     "A_init contains wrong index.")
