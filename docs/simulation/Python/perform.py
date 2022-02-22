@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
@@ -16,10 +17,10 @@ import matplotlib.patches as mpatches
 #         break
 
 python_path = sys.executable
-os.system(python_path + './linear_test.py 0.1')
-os.system(python_path + './linear_test.py 0.7')
-os.system(python_path + './logi_test.py 0.1')
-os.system(python_path + './logi_test.py 0.7')
+os.system(python_path + ' ./linear_test.py 0.1')
+os.system(python_path + ' ./linear_test.py 0.7')
+os.system(python_path + ' ./logi_test.py 0.1')
+os.system(python_path + ' ./logi_test.py 0.7')
 
 # simulation results
 lm1 = np.load('./Lm0.1_data.npy')
@@ -37,7 +38,9 @@ c3 = mpatches.Patch(color=color[2], label='ABESS')
 
 plt.subplot(321)
 for i in range(lm1.shape[0]):
-    plt.boxplot(x=[lm1[i, lm1[i, :, 0] < 100, 0], lm7[i, lm7[i, :, 0] < 100, 0]], patch_artist=True,
+    plt.boxplot(x=[lm1[i, lm1[i, :, 0] < 100, 0],
+                   lm7[i, lm7[i, :, 0] < 100, 0]],
+                patch_artist=True,
                 labels=['', ''], positions=[i + 1, i + 5], widths=0.7,
                 boxprops=dict(facecolor=color[i]))
 
@@ -77,7 +80,8 @@ plt.subplot(324)
 for i in range(logi1.shape[0]):
     plt.boxplot(x=[logi1[i, :, 1], logi7[i, :, 1]], patch_artist=True,
                 labels=['', ''], positions=[i + 1, i + 4], widths=0.7,
-                boxprops=dict(facecolor=color[i]), medianprops=dict(color=color[i]))
+                boxprops=dict(facecolor=color[i]),
+                medianprops=dict(color=color[i]))
 plt.xlabel('low corr                                         high corr')
 plt.title('Logistic - Coefficient error')
 

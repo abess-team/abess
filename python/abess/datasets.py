@@ -105,39 +105,48 @@ class make_glm_data:
         * Usage: ``family='gaussian'[, sigma=...]``
         * Model: :math:`y \sim N(\mu, \sigma^2),\ \mu = x^T\beta`.
 
-            * the coefficient :math:`\beta\sim U[m, 100m]`, where :math:`m = 5\sqrt{2\log p/n}`;
+            * the coefficient :math:`\beta\sim U[m, 100m]`,
+              where :math:`m = 5\sqrt{2\log p/n}`;
             * the variance :math:`\sigma = 1`.
 
     * Logistic Regression
 
         * Usage: ``family='binomial'``
-        * Model: :math:`y \sim \text{Binom}(\pi),\ \text{logit}(\pi) = x^T \beta`.
+        * Model: :math:`y \sim \text{Binom}(\pi),\
+          \text{logit}(\pi) = x^T \beta`.
 
-            * the coefficient :math:`\beta\sim U[2m, 10m]`, where :math:`m = 5\sqrt{2\log p/n}`.
+            * the coefficient :math:`\beta\sim U[2m, 10m]`,
+              where :math:`m = 5\sqrt{2\log p/n}`.
 
     * Poisson Regression
 
         * Usage: ``family='poisson'``
-        * Model: :math:`y \sim \text{Poisson}(\lambda),\ \lambda = \exp(x^T \beta)`.
+        * Model: :math:`y \sim \text{Poisson}(\lambda),\
+          \lambda = \exp(x^T \beta)`.
 
-            * the coefficient :math:`\beta\sim U[2m, 10m]`, where :math:`m = 5\sqrt{2\log p/n}`.
+            * the coefficient :math:`\beta\sim U[2m, 10m]`,
+              where :math:`m = 5\sqrt{2\log p/n}`.
 
     * Gamma Regression
 
         * Usage: ``family='gamma'``
-        * Model: :math:`y \sim \text{Gamma}(k, \theta),\ k\theta = \exp(x^T \beta + \epsilon), k\sim U[0.1, 100.1]`
+        * Model: :math:`y \sim \text{Gamma}(k, \theta),\
+          k\theta = \exp(x^T \beta + \epsilon), k\sim U[0.1, 100.1]`
           in shape-scale definition.
 
-            * the coefficient :math:`\beta\sim U[m, 100m]`, where :math:`m = 5\sqrt{2\log p/n}`.
+            * the coefficient :math:`\beta\sim U[m, 100m]`,
+              where :math:`m = 5\sqrt{2\log p/n}`.
 
     * Cox PH Survival Analysis
 
         * Usage: ``family='cox'[, scal=..., censoring=..., c=...]``
         * Model: :math:`y=\min(t,C)`,
-          where :math:`t = \left[-\dfrac{\log U}{\exp(X \beta)}\right]^s,\ U\sim N(0,1),\ s=\dfrac{1}{\text{scal}}` and
+          where :math:`t = \left[-\dfrac{\log U}{\exp(X \beta)}\right]^s,\
+          U\sim N(0,1),\ s=\dfrac{1}{\text{scal}}` and
           censoring time :math:`C\sim U(0, c)`.
 
-            * the coefficient :math:`\beta\sim U[2m, 10m]`, where :math:`m = 5\sqrt{2\log p/n}`;
+            * the coefficient :math:`\beta\sim U[2m, 10m]`,
+              where :math:`m = 5\sqrt{2\log p/n}`;
             * the scale of survival time :math:`\text{scal} = 10`;
             * censoring is enabled, and max censoring time :math:`c=1`.
 
@@ -268,7 +277,8 @@ class make_multivariate_glm_data:
         The number of observations.
     p: int, optional, default=100
         The number of predictors of interest.
-    family: {multigaussian, multinomial, poisson}, optional, default="multigaussian"
+    family: {multigaussian, multinomial, poisson}, optional
+        default="multigaussian".
         The distribution of the simulated multi-response.
         "multigaussian" for multivariate quantitative responses,
         "multinomial" for multiple classification responses,
@@ -278,7 +288,8 @@ class make_multivariate_glm_data:
     M: int, optional, default=1
         The number of responses.
     rho: float, optional, default=0.5
-        A parameter used to characterize the pairwise correlation in predictors.
+        A parameter used to characterize the pairwise correlation
+        in predictors.
     coef_: array_like, optional, default=None
         The coefficient values in the underlying regression model.
     sparse_ratio: float, optional, default=None
@@ -318,17 +329,19 @@ class make_multivariate_glm_data:
             * the variance :math:`\Sigma = \text{diag}(1, 1, \cdots, 1)`;
             * the coefficient :math:`\beta` contains 30% "strong" values, 40%
               "moderate" values and the rest are "weak". They come from
-              :math:`N(0, 10)`, :math:`N(0, 5)` and :math:`N(0, 2)`, respectively.
+              :math:`N(0, 10)`, :math:`N(0, 5)` and :math:`N(0, 2)`,
+              respectively.
 
     * Multinomial Regression
 
         * Usage: ``family='multinomial'``
-        * Model: :math:`y` is a "0-1" array with only one "1". Its index is chosed
-          under probabilities :math:`\pi = \exp(x^T \beta)`.
+        * Model: :math:`y` is a "0-1" array with only one "1". Its index is
+          chosed under probabilities :math:`\pi = \exp(x^T \beta)`.
 
             * the coefficient :math:`\beta` contains 30% "strong" values, 40%
               "moderate" values and the rest are "weak". They come from
-              :math:`N(0, 10)`, :math:`N(0, 5)` and :math:`N(0, 2)`, respectively.
+              :math:`N(0, 10)`, :math:`N(0, 5)` and :math:`N(0, 2)`,
+              respectively.
 
     """
 

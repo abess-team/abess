@@ -120,6 +120,8 @@ $ Rscript abess/docs/simulation/R/timings.R
 
 New features:
 
+- Rename estimators in Python. Please check [here](https://abess.readthedocs.io/en/latest/Python-package/index.html).
+- Support ["editable" install](https://pip.pypa.io/en/stable/cli/pip_install/#editable-installs).
 - Support user-specified cross validation division.
 - Support user-specified initial active set.
 - Support flexible support size for sequentially best subset selection for principal component analysis (PCA). 

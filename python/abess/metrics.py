@@ -6,7 +6,8 @@ def _check_estimate_1d(estimate, test_time):
     estimate = check_array(estimate, ensure_2d=False)
     if estimate.ndim != 1:
         raise ValueError(
-            'Expected 1D array, got {}D array instead:\narray={}.\n'.format(estimate.ndim, estimate))
+            'Expected 1D array, got {}D array instead:\narray={}.\n'.format(
+                estimate.ndim, estimate))
     check_consistent_length(test_time, estimate)
     return estimate
 
@@ -19,7 +20,8 @@ def _check_inputs(event_indicator, event_time, estimate):
 
     if not numpy.issubdtype(event_indicator.dtype, numpy.bool_):
         raise ValueError(
-            'only boolean arrays are supported as class labels for survival analysis, got {}'.format(event_indicator.dtype))
+            'only boolean arrays are supported as class labels '
+            'for survival analysis, got {}'.format(event_indicator.dtype))
 
     if len(event_time) < 2:
         raise ValueError("Need a minimum of two samples")
@@ -66,7 +68,8 @@ def _estimate_concordance_index(
 
     # if len(comparable) == 0:
     #     raise NoComparablePairException(
-    #         "Data has no comparable pairs, cannot estimate concordance index.")
+    #         "Data has no comparable pairs, "
+    #         "cannot estimate concordance index.")
 
     concordant = 0
     discordant = 0
@@ -80,8 +83,9 @@ def _estimate_concordance_index(
 
         est = estimate[order[mask]]
 
-        assert event_i, 'got censored sample at index {}, but expected uncensored'.format(
-            order[ind])
+        msg = 'got censored sample at index {}'.format(
+            order[ind]) + ', but expected uncensored'
+        assert event_i, msg
 
         ties = numpy.absolute(est - est_i) <= tied_tol
         n_ties = ties.sum()
@@ -104,18 +108,26 @@ def concordance_index_censored(
         event_indicator, event_time, estimate, tied_tol=1e-8):
     """Concordance index for right-censored data
 
-    Reference from scikit-survival: `sksurv.metrics.concordance_index_censored`.
+    Reference from scikit-survival:
+    `sksurv.metrics.concordance_index_censored`.
 
-    The concordance index is defined as the proportion of all comparable pairs
+    The concordance index is defined as the proportion of
+    all comparable pairs
     in which the predictions and outcomes are concordant.
-    Two samples are comparable if (i) both of them experienced an event (at different times),
-    or (ii) the one with a shorter observed survival time experienced an event, in which case
-    the event-free subject "outlived" the other. A pair is not comparable if they experienced
+    Two samples are comparable if (i) both of them experienced an event
+    (at different times),
+    or (ii) the one with a shorter observed survival time experienced an event,
+    in which case
+    the event-free subject "outlived" the other.
+    A pair is not comparable if they experienced
     events at the same time.
-    Concordance intuitively means that two samples were ordered correctly by the model.
-    More specifically, two samples are concordant, if the one with a higher estimated
+    Concordance intuitively means that two samples were
+    ordered correctly by the model.
+    More specifically, two samples are concordant,
+    if the one with a higher estimated
     risk score has a shorter actual survival time.
-    When predicted risks are identical for a pair, 0.5 rather than 1 is added to the count
+    When predicted risks are identical for a pair,
+    0.5 rather than 1 is added to the count
     of concordant pairs.
     See the :ref:`User Guide </user_guide/evaluating-survival-models.ipynb>`
     and [1]_ for further description.
@@ -151,7 +163,8 @@ def concordance_index_censored(
     ----------
     .. [1] Harrell, F.E., Califf, R.M., Pryor, D.B., Lee, K.L., Rosati, R.A,
            "Multivariable prognostic models: issues in developing models,
-           evaluating assumptions and adequacy, and measuring and reducing errors",
+           evaluating assumptions and adequacy,
+           and measuring and reducing errors",
            Statistics in Medicine, 15(4), 361-87, 1996.
     """
     event_indicator, event_time, estimate = _check_inputs(

@@ -154,6 +154,7 @@ setup(
     author_email="zhuj37@mail2.sysu.edu.cn",
     maintainer="Kangkang Jiang",
     maintainer_email="jiangkk3@mail2.sysu.edu.cn",
+    # package_dir={'': CURRENT_DIR},
     packages=find_packages(),
     description="abess: Fast Best Subset Selection",
     long_description=long_description,
