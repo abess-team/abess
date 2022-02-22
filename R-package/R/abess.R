@@ -284,7 +284,7 @@ abess.default <- function(x,
                           y,
                           family = c(
                             "gaussian", "binomial", "poisson", "cox",
-                            "mgaussian", "multinomial", "gamma"
+                            "mgaussian", "multinomial", "gamma","ordinal"
                           ),
                           tune.path = c("sequence", "gsection"),
                           tune.type = c("gic", "ebic", "bic", "aic", "cv"),
@@ -515,7 +515,7 @@ abess.default <- function(x,
   result[["best.size"]] <- s_list[which.min(result[["tune.value"]])]
   names(result)[which(names(result) == "coef0_all")] <- "intercept"
   if (family %in% MULTIVARIATE_RESPONSE) {
-    if (family == "multinomial") {
+    if (family %in% c("multinomial","ordinal")) {
       result[["intercept"]] <- lapply(result[["intercept"]], function(x) {
         x <- x[-y_dim]
       })

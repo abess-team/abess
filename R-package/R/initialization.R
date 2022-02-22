@@ -365,9 +365,9 @@ y_matrix.glm <- function(para,data){
       }
     }
   }
-  if (para$family == "binomial" || para$family == "multinomial") {
-    if (length(unique(data$y)) == 2 && para$family == "multinomial") {
-      warning("y is a binary variable and is not match to family = 'multinomial'.
+  if (para$family %in% c("binomial","multinomial","ordinal")) {
+    if (length(unique(data$y)) == 2 && para$family %in% c("multinomial","ordinal")) {
+      warning("y is a binary variable and is not match to family = 'multinomial' or 'ordinal'.
               We change to family = 'binomial'")
       para$model_type <- 2
       para$family <- "binomial"
@@ -376,11 +376,11 @@ y_matrix.glm <- function(para,data){
       stop("Input binary y when family = 'binomial'; otherwise,
            change the option for family to 'multinomial'. ")
     }
-    if (length(unique(data$y)) == para$nobs && para$family == "multinomial") {
+    if (length(unique(data$y)) == para$nobs && para$family %in% c("multinomial","ordinal")) {
       stop("All of y value are distinct.
-           Please input categorial y when family = 'multinomial'.")
+           Please input categorial y when family = 'multinomial' or 'ordinal'.")
     }
-    if ((para$nobs / length(unique(data$y))) < 5 && para$family == "multinomial") {
+    if ((para$nobs / length(unique(data$y))) < 5 && para$family %in% c("multinomial","ordinal")) {
       warning("The number of the category of y is relative large compare to nvars.
               The numerical result might be unstable.")
     }
@@ -393,7 +393,7 @@ y_matrix.glm <- function(para,data){
     if (para$family == "binomial") {
       data$y <- as.numeric(data$y) - 1
     }
-    if (para$family == "multinomial") {
+    if (para$family %in% c("multinomial","ordinal")) {
       data$y <- model.matrix(~ factor(as.numeric(data$y) - 1) + 0)
       colnames(data$y) <- NULL
     }
@@ -938,7 +938,9 @@ model_type.glm <- function(para){
                             "cox" = 4,
                             "mgaussian" = 5,
                             "multinomial" = 6,
-                            "gamma" = 8
+                            "gamma" = 8,
+                            "ordinal" = 9
+                            
   )
 
   para
@@ -1001,7 +1003,8 @@ normalize_strategy.glm <- function(para){
                              "cox" = 3,
                              "mgaussian" = 1,
                              "multinomial" = 2,
-                             "gamma" = 2
+                             "gamma" = 2,
+                             "ordinal" = 2
     )
   } else {
     stopifnot(para$normalize %in% 0:3)
