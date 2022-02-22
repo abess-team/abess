@@ -1,5 +1,5 @@
 """
-Sparse inputs
+Sparse Inputs
 ==============
 We sometimes meet with problems where the :math:`N × p` input matrix :math:`X` is extremely sparse, i.e., 
 many entries in :math:`X` have zero values. A notable example comes from document classification: aiming to assign classes to a document, 

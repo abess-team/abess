@@ -4,10 +4,10 @@ Multi-Response Linear Regression
 =====================================
 """
 ###############################################################################
-# Multi-Response Linear Regression
+# Introduction: model setting
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-# Multivariate multi-response linear regression (a.k.a., multi-task learning) aims at predicting multiple responses at the same time, and thus, it is a natural extension for classical linear regression where the response is univariate. 
-# Multivariate multi-response linear regression (MMLR) is very helpful for the analysis of correlated response such as chemical measurements for soil samples and 
+# Multi-response linear regression (a.k.a., multi-task learning) aims at predicting multiple responses at the same time, and thus, it is a natural extension for classical linear regression where the response is univariate. 
+# Multi-response linear regression (MRLR) is very helpful for the analysis of correlated response such as chemical measurements for soil samples and 
 # microRNAs associated with Glioblastoma multiforme cancer. 
 # Suppose :math:`y` is an :math:`m`-dimensional response variable, 
 # :math:`x` is :math:`p`-dimensional predictors, 
@@ -32,9 +32,10 @@ Multi-Response Linear Regression
 # 
 # Simulated Data Example
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# We use an artificial dataset to demonstrate how to solve best subset selection problem for MMLR with `abess` package. 
-# The `make_multivariate_glm_data()` function provides a simple way to generate suitable dataset for this task. 
-# The synthetic data have 100 observations with 3-dimensional responses and 20-dimensional predictors. Note that there are three predictors having an impact on the responses.
+# We use an artificial dataset to demonstrate how to solve best subset selection problem for MMLR with ``abess`` package. 
+# The ``make_multivariate_glm_data()`` function provides a simple way to generate suitable dataset for this task. 
+# The synthetic data have 100 observations with 3-dimensional responses and 20-dimensional predictors. 
+# Note that there are three predictors having an impact on the responses.
 
 
 from abess.datasets import make_multivariate_glm_data
@@ -55,7 +56,7 @@ print("non-zero: ", set(np.nonzero(data.coef_)[0]))
 ###############################################################################
 # Model Fitting
 # """"""""""""""
-# To carry out sparse mutli-task learning, we can call the `MultiTaskRegression` like:
+# To carry out sparse mutli-task learning, we can call the ``MultiTaskRegression`` like:
 
 
 from abess import MultiTaskRegression
@@ -63,21 +64,19 @@ model = MultiTaskRegression()
 model.fit(data.x, data.y)
 
 #%%
-# After fitting, `model.coef_` contains the predicted coefficients:
+# After fitting, ``model.coef_`` contains the predicted coefficients:
 
 
 print(model.coef_)
 print("non-zero: ", set(np.nonzero(model.coef_)[0]))
 
 #%%
-# The outputs show that the support set is correctly identifing and the parameter estimation approaches to the truth.    
+# The outputs show that the support set is correctly identifying and the parameter estimation approaches to the truth.    
 # 
 # More on the results
 # """"""""""""""""""""""""""""
 # Since there are three responses, we have three solution paths, which correspond to three responses, respectively. 
-# To plot the figure, we can fix the `support_size` at different levels:
-
-
+# To plot the figure, we can fix the ``support_size`` at different levels:
 
 import matplotlib.pyplot as plt
 
@@ -118,6 +117,6 @@ plt.title('the 3rd response\`s coefficients')
 plt.show()
 
 ###############################################################################
-# R tutorial
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-# For R tutorial, please view [https://abess-team.github.io/abess/articles/v06-MultiTaskLearning.html](https://abess-team.github.io/abess/articles/v06-MultiTaskLearning.html).
+# The ``abess`` R package also supports MRLR. 
+# For R tutorial, please view https://abess-team.github.io/abess/articles/v06-MultiTaskLearning.html.
+# 

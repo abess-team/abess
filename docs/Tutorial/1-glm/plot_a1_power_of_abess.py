@@ -1,9 +1,11 @@
 """
-==============
-Power of abess
-==============
+============================
+Power of **abess** Library
+============================
 
 """
+
+# sphinx_gallery_thumbnail_path = '_static/timings.png'
 
 ######################################
 # Introduction
@@ -85,9 +87,7 @@ Power of abess
 # |image0|
 # |image1|
 #
-# R performance
-# ~~~~~~~~~~~~~
-# For R performance, please view
+# For ``abess`` R library's performance, please view
 # https://abess-team.github.io/abess/articles/v11-power-of-abess.html.
 #
 # .. |image0| image:: ../../Tutorial/figure/perform.png

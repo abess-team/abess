@@ -3,7 +3,7 @@
 Linear Regression
 ======================================================
 
-In this tutorial, we are going to demonstrate how to use the `abess` package to carry out best subset selection 
+In this tutorial, we are going to demonstrate how to use the ``abess`` package to carry out best subset selection 
 in linear regression with both simulated data and real data.
 """
 
@@ -11,14 +11,14 @@ in linear regression with both simulated data and real data.
 # Linear Regression
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #
-# Our package `abess` implements a polynomial algorithm in the following best-subset selection problem:
+# Our package ``abess`` implements a polynomial algorithm in the following best-subset selection problem:
 # 
 # .. math::
 #   \min_{\beta\in \mathbb{R}^p} \frac{1}{2n} ||y-X\beta||^2_2,\quad \text{s.t.}\ ||\beta||_0\leq s,
 # 
 # 
 # where :math:`\| \cdot \|_2` is the :math:`\ell_2` norm, :math:`\|\beta\|_0=\sum_{i=1}^pI( \beta_i\neq 0)` is the :math:`\ell_0` norm of :math:`\beta`, and the sparsity level :math:`s` is usually an unknown non-negative integer.
-# Next, we present an example to show how to use the `abess` package to solve a simple problem. 
+# Next, we present an example to show how to use the ``abess`` package to solve a simple problem. 
 # 
 # Simulated Data Example
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,14 +47,14 @@ data1 = make_glm_data(n = n, p = p, k = k, family = "gaussian", coef_ = real_coe
 print(data1.x.shape)
 print(data1.y.shape)
 #%%
-# Use `LinearRegression` to fit the data, with a fixed support size:
+# Use ``LinearRegression`` to fit the data, with a fixed support size:
 
 from abess import LinearRegression
 model = LinearRegression(support_size = 3)
 model.fit(data1.x, data1.y)
 
 #%%
-# After fitting, the predicted coefficients are stored in `model.coef_`:
+# After fitting, the predicted coefficients are stored in ``model.coef_``:
 
 print("shape:", model.coef_.shape)
 ind = np.nonzero(model.coef_)
@@ -62,11 +62,14 @@ print("predicted non-zero: ", ind)
 print("predicted coef: ", model.coef_[ind])
 
 #%%
-# From the result, we know that `abess` found which 3 predictors are useful among all 1000 variables. Besides, the predicted coefficients of them are quite close to the real ones. 
+# From the result, we know that ``abess`` found which 3 predictors are useful among all 1000 variables. 
+# Besides, the predicted coefficients of them are quite close to the real ones. 
 # 
 # Adaptive Best Subset Selection
 # """"""""""""""""""""""""""""""""""""""""""""""
-# However, we may not know the true sparsity level in real world data, and thus we need to determine the most proper one from a large range. Suppose that we believe the real sparsity level is between 0 and 30 (so that `range(0, 31)`):
+# However, we may not know the true sparsity level in real world data, 
+# and thus we need to determine the most proper one from a large range. 
+# Suppose that we believe the real sparsity level is between 0 and 30 (so that ``range(0, 31)``):
 
 
 model = LinearRegression(support_size = range(31))
@@ -85,8 +88,8 @@ print("predicted coef: ", model.coef_[ind])
 #
 # Hitters Dataset
 # ~~~~~~~~~~~~~~~~~~~~~~
-# Now we focus on real data on the `Hitters` dataset: [https://www.kaggle.com/floser/hitters](https://www.kaggle.com/floser/hitters).
-# We hope to use sevral predictors related to the performance of the baseball atheltes last year to predict their salary.
+# Now we focus on real data on the `Hitters` dataset: https://www.kaggle.com/floser/hitters](https://www.kaggle.com/floser/hitters.
+# We hope to use several predictors related to the performance of the baseball athletes last year to predict their salary.
 # 
 # First, let's have a look at this dataset. There are 19 variables except `Salary` and 322 observations.
 
@@ -99,7 +102,8 @@ print(data2.shape)
 print(data2.head(5))
 
 #%%
-# Since the dataset contains some missing values, we simply drop those rows with missing values. Then we have 263 observations remain:
+# Since the dataset contains some missing values, we simply drop those rows with missing values. 
+# Then we have 263 observations remain:
 
 
 data2 = data2.dropna()
@@ -134,7 +138,7 @@ print("non-zero:\n", data2.columns[ind])
 print("coef:\n", model.coef_)
 
 #%%
-# Automatically, variables :math:`Hits`, :math:`CRBI`, :math:`PutOuts`, :math:`League\_N` are chosen in the model (the chosen sparsity level is 4).
+# Automatically, variables `Hits`, `CRBI`, `PutOuts`, `League\_N` are chosen in the model (the chosen sparsity level is 4).
 
 ###############################################################################
 # More on the results
@@ -169,7 +173,8 @@ plt.ylabel('EBIC')
 plt.show()
 
 #%%
-# In EBIC criterion, `support_size = 4` has the lowest value, so the process adaptively chooses 4 variables. Note that under other information criteria, the result may be different. 
+# In EBIC criterion, a subset with the support size 4 has the lowest value, so the process adaptively chooses 4 variables. 
+# Note that under other information criteria, the result may be different. 
 
 ###############################################################################
 # R tutorial 

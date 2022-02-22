@@ -1,5 +1,5 @@
 """
-Initial active set
+Initial Active Set
 ========================
 """
 

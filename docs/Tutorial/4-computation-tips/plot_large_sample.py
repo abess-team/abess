@@ -1,5 +1,5 @@
 """
-Large-sample data
+Large-Sample Data
 =========================
 
 Golden-section searching: avoid support size enumeration

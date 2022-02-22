@@ -1,18 +1,18 @@
 """
-Best group subset selection
+Best Subset of Group Selection
 ================================================
 """
 #%%
 # Introduction
 # -----------------
-# Best group subset selection (BGSS) aims to choose a small part of non-overlapping groups to achieve the best interpretability on the response variable. 
-# BGSS is practically useful for the analysis of ubiquitously existing variables with certain group structures. 
+# Best subset of group selection (BSGS) aims to choose a small part of non-overlapping groups to achieve the best interpretability on the response variable. 
+# BSGS is practically useful for the analysis of ubiquitously existing variables with certain group structures. 
 # For instance, a categorical variable with several levels is often represented by a group of dummy variables. 
 # Besides, in a nonparametric additive model, a continuous component can be represented by a set of basis functions 
 # (e.g., a linear combination of spline basis functions). Finally, specific prior knowledge can impose group structures on variables. 
 # A typical example is that the genes belonging to the same biological pathway can be considered as a group in the genomic data analysis.
 # 
-# The BGSS can be achieved by solving:
+# The BSGS can be achieved by solving:
 # 
 # .. math::
 #     \min_{\beta\in \mathbb{R}^p} \frac{1}{2n} ||y-X\beta||_2^2,\quad s.t.\ ||\beta||_{0,2}\leq s .
@@ -27,6 +27,7 @@ Best group subset selection
 # We still use the dataset ``data`` generated before, which has 100 samples, 5 useful variables and 15 irrelevant variables.
 
 
+# sphinx_gallery_thumbnail_path = '_static/best-subset-group-selection.png'
 import numpy as np
 from abess.datasets import make_glm_data
 from abess.linear import LinearRegression

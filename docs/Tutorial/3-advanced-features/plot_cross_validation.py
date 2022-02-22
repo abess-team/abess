@@ -1,5 +1,5 @@
 """
-Cross-validation division
+Cross-Validation Division
 ========================
 """
 

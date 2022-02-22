@@ -1,66 +1,69 @@
 """
-Specific models
+Specific Models
 ==============
-We sometimes meet with problems where the :math:`N x p` input matrix :math:`X` is extremely sparse, i.e., 
-many entries in :math:`X` have zero values. A notable example comes from document classification: aiming to assign classes to a document, 
-making it easier to manage for publishers and news sites. The input variables for characterizing documents are generated from a so called "bag-of-words" model. 
-In this model, each variable is scored for the presence of each of the words in the entire dictionary under consideration. 
-Since most words are absent, the input variables for each document is mostly zero, and so the entire matrix is mostly zero. 
 """
 
-#%% 
-# Example
-# ^^^^^^^^^^^^^^^
-# We create a sparse matrix as our example:
+##########################################
+# Introduction
+# ^^^^^^^^^^^^^^^^
+# From the algorithm preseneted in “ABESS algorithm: details”, 
+# one of the bottleneck in algorithm is the computation of forward and backward sacrifices, 
+# which requires conducting iterative algorithms or frequently visiting :math:`p` variables. 
+# To improve computational efficiency, 
+# we designed specialize strategies for computing forward and backward sacrifices for different models.
+# The specialize strategies is roughly divide into two classes: (i) covariance update for (multivariate) linear model;
+# (ii) quasi Newton iteration for non-linear model (e.g., logistic regression).
+# We going to specify the two strategies as follows.
+# 
+# Covariance update
+# ^^^^^^^^^^^^^^^^
+# Under linear model, the core bottleneck is computing backward sacrifices, i.e., 
+# 
 #
-from scipy.sparse import coo_matrix
-import numpy as np
-import matplotlib.pyplot as plt
-
-row  = np.array([0, 1, 2, 3, 4, 4,  5, 6, 7, 7, 8, 9])
-col  = np.array([0, 3, 1, 2, 4, 3, 5, 2, 3, 1, 5, 2])
-data = np.array([4, 5, 7, 9, 1, 23, 4, 5, 6, 8, 77, 100])
-x = coo_matrix((data, (row, col)))
-
-#%%
-# And visualize the sparsity pattern via:
-plt.spy(x)
-plt.show()
-
-#%%
-# Usage: sparse matrix
-# ^^^^^^^^^^^^^^^
-# The sparse matrix can be directly used in ``abess`` pacakages. We just need to set argument ``sparse_matrix = True``. Note that if the input matrix is not sparse matrix, the program would automatically transfer it into the sparse one, so this argument can also make some improvement.
-
-from abess import LinearRegression
-
-coef = np.array([1, 1, 1, 0, 0, 0])
-y = x.dot(coef)
-model = LinearRegression(sparse_matrix = True)
-model.fit(x, y)
-
-print("real coef: \n", coef)
-print("pred coef: \n", model.coef_)
-
-#%%
-# Sparse v.s. Dense: runtime comparsion
-# ^^^^^^^^^^^^^^^
-# We compare the runtime when the input matrix is dense matrix:
-
-
-from time import time
-
-t = time()
-model = LinearRegression()
-model.fit(x.toarray(), y)
-print("dense matrix:  ", time() - t)
-
-t = time()
-model = LinearRegression(sparse_matrix = True)
-model.fit(x, y)
-print("sparse matrix:  ", time() - t)
-
-#%%
-# From the comparison, we see that the time required by sparse matrix is smaller, and this sould be more visible when the sparse imput matrix is large. Hence, we suggest to assign a sparse matrix to ``abess`` when the input matrix have a lot of zero entries.
-#
-# The ``abess`` R package also supports sparse matrix. For R tutorial, please view https://abess-team.github.io/abess/articles/v09-fasterSetting.html
+# Quasi Newton iteration 
+# ^^^^^^^^^^^^^^^^
+# In the fourth step in Algorithm 2, we need to solve a convex optimization problem:
+# 
+# .. math::
+#     \tilde{\beta} = \arg\min_{\text{supp}(\beta) = \tilde{\mathcal{A}} }  l_n(\beta ).
+# 
+# 
+# But generally, it has no closed-form solution, and has to be solved via iterative algorithm.
+# A natural method for solving this problem is Netwon method, i.e.,
+# conduct the update:
+# 
+# .. math::
+#     \beta_{\tilde{\mathcal{A}} }^{m+1} \leftarrow \boldsymbol  \beta_{\tilde{\mathcal{A}} }^m - \Big( \left.\frac{\partial^2 l_n( \boldsymbol  \beta )}{ (\partial \boldsymbol  \beta_{\tilde{\mathcal{A}}}  )^2 }\right|_{\boldsymbol  \beta = \boldsymbol  \beta^m} \Big)^{-1} \Big( \left.\frac{\partial  l_n( \boldsymbol  \beta )}{  \partial \boldsymbol  \beta_{\tilde{\mathcal{A}}}    }\right|_{\boldsymbol  \beta = \boldsymbol  \beta^m}  \Big),
+# 
+# 
+# until :math:`\| \beta_{\tilde{\mathcal{A}} }^{m+1} - \beta_{\tilde{\mathcal{A}} }^{m}\|_2 \leq \epsilon` or :math:`m \geq k`,
+# where :math:`\epsilon, k` are two user-specific parameters. 
+# Generally, setting :math:`\epsilon = 10^{-6}` and :math:`k = 80` achieves desirable estimation.
+# Generally, the inverse of second derivative is computationally intensive, and thus,
+# we approximate it with its diagonalized version. Then, the update formulate changes to:
+# 
+# .. math::
+#     \beta_{\tilde{\mathcal{A}} }^{m+1} \leftarrow \boldsymbol  \beta_{\tilde{\mathcal{A}} }^m -  \rho D \Big( \left.\frac{\partial  l_n( \boldsymbol  \beta )}{  \partial \boldsymbol  \beta_{\tilde{\mathcal{A}}}    }\right|_{\boldsymbol  \beta = \boldsymbol  \beta^m}  \Big),
+# 
+# 
+# where :math:`D = \textup{diag}( (\left.\frac{\partial^2 l_n( \boldsymbol  \beta )}{ (\partial \boldsymbol  \beta_{\tilde{\mathcal{A}_{1}}}  )^2 }\right|_{\boldsymbol  \beta = \boldsymbol  \beta^m} )^{-1}, \ldots, (\left.\frac{\partial^2 l_n( \boldsymbol  \beta )}{ (\partial \boldsymbol  \beta_{\tilde{\mathcal{A}}_{|A|}}  )^2 }\right|_{\boldsymbol  \beta = \boldsymbol  \beta^m} )^{-1})`
+# and :math:`\rho`` is step size.
+# Although using the approximation may increase the iteration time,
+# it avoids a large computational complexity when computing the matrix inversion.
+# Furthermore, we use a heuristic strategy to reduce the iteration time.
+# Observing that not every new support after exchanging the elements in active set and inactive set
+# may not reduce the loss function,
+# we can early stop the newton iteration on these support.
+# Specifically, support :math:`l_1 = L({\beta}^{m}), l_2 = L({\beta}^{m+1})`,
+# if :math:`l_1 - (k - m - 1) \times (l_2 - l_1)) > L - \tau`,
+# then we can expect the new support cannot lead to a better loss after :math:`k` iteration,
+# and hence, it is no need to conduct the remaining :math:`k - m - 1` times Newton update.
+# This heuristic strategy is motivated by the convergence rate of Netwon method is linear at least.
+# |image0|
+# 
+# 
+# 
+# The ``abess`` R package also supports covariance update and quasi Newton iteration. 
+# For R tutorial, please view https://abess-team.github.io/abess/articles/v09-fasterSetting.html
+# 
+# .. |image0| image:: ../../Tutorial/figure/convergence_rates.png
