@@ -176,6 +176,7 @@ Initialization_RPCA <- function(
   para$gs.range <- gs.range
   para$max.newton.iter <- max.newton.iter
   para$newton.thresh <- newton.thresh
+  para$lambda <- lambda
   
   class(para) <- append("rpca",class(para))
   return(para)
@@ -199,7 +200,6 @@ strategy_for_tuning.glm <- strategy_for_tuning_private
 rank <- function(para) UseMethod("rank")
 
 rank.rpca <- function(para){
-  stopifnot(!missing(para$rank))
   stopifnot(!anyNA(para$rank))
   stopifnot(all(para$rank >= 0))
   para
@@ -326,11 +326,7 @@ x_matrix_content_private <- function(least_col){
       stop("x should have at least two columns!")
     }
     para$sparse_X <- class(data$x)[1] == "dgCMatrix"
-    if (para$sparse_X) {
-      if (class(data$x) == "dgCMatrix") {
-        data$x <- map_dgCMatrix2entry(data$x)
-      }
-    } else {
+    if (!para$sparse_X) {
       if (is.data.frame(data$x)) {
         data$x <- as.matrix(data$x)
       }
@@ -896,11 +892,7 @@ compute_gram_matrix.pca <- function(para,data){
     }
     
     if (para$sparse_X) {
-      if (para$cor) {
-        para$gram_x <- sparse.cov(data$x, cor = TRUE)
-      } else {
-        para$gram_x <- sparse.cov(data$x)
-      }
+      para$gram_x <- sparse.cov(data$x, cor = para$cor)
       data$x <- map_dgCMatrix2entry(data$x)
       para$sparse_matrix <- TRUE
     } else {
@@ -956,11 +948,13 @@ model_type.glm <- function(para){
 x_y_matching <- function(para,data) UseMethod("x_y_matching")
 
 x_y_matching.glm <- function(para,data){
-  if (nrow(data$x) != nrow(data$y)) {
+  if (para$nobs != nrow(data$y)) {
     stop("Rows of x must be the same as rows of y!")
   }
-  
-  para
+  if (para$sparse_X) {
+    data$x <- map_dgCMatrix2entry(data$x)
+  }
+  list(para=para,data=data)
 }
 
 
@@ -1072,7 +1066,6 @@ newton_type.glm <- function(para){
 initializate <- function(para,data) UseMethod("initializate")
 
 initializate.glm <- function(para,data){
-  para <- x_y_matching(para,data)
   para <- lambda(para)
   para <- number_of_thread(para)
   para <- early_stop(para)
@@ -1086,6 +1079,9 @@ initializate.glm <- function(para,data){
   data <- model$data
   para <- weight(para)
   model <- y_matrix(para,data)
+  para <- model$para
+  data <- model$data
+  model <- x_y_matching(para,data)
   para <- model$para
   data <- model$data
   para <- strategy_for_tuning(para)
