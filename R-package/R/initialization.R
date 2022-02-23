@@ -278,10 +278,9 @@ warm_start.Initialization <- function(para){
 splicing_type <- function(para) UseMethod("splicing_type")
 
 splicing_type.Initialization <- function(para){
-  
   stopifnot(length(para$splicing.type) == 1)
   stopifnot(para$splicing.type %in% c(1, 2))
-  para$splicing_type <- as.integer(para$splicing.type)
+  para$splicing_type <- 2 - as.integer(para$splicing.type) # adapt requirements of cpp
   
   para
 }
