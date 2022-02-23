@@ -1906,4 +1906,339 @@ class abessGamma : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4
     }
 };
 
+template <class T4>
+class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4> {
+   public:
+    abessOrdinal(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10,
+                 double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5,
+                 Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
+        : Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::Algorithm(
+              algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start,
+              exchange_num, always_select, splicing_type, sub_search){};
+    ~abessOrdinal(){};
+    // We only use beta.col(0) and coef0.head(k) which k = coef0.size() - 1 rather than the whole beta and coef0.
+    bool gradient(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXd &g) {
+        const int n = X.rows();
+        const int p = X.cols();
+        const int k = coef0.size() - 1;
+        if (g.size() != p && g.size() != p + k) {
+            return false;
+        }
+
+        Eigen::VectorXd coef(p + k);
+        coef.head(k) = coef0.head(k);
+        coef.tail(p) = beta.col(0);
+
+        Eigen::MatrixXd logit(n, k);
+        Eigen::MatrixXd P(n, k + 1);
+        Eigen::MatrixXd grad_L(n, k);
+        Eigen::VectorXd xbeta = X * coef.tail(p);
+
+        // compute logit
+        for (int i1 = 0; i1 < n; i1++) {
+            for (int i2 = 0; i2 < k; i2++) {
+                logit(i1, i2) = 1.0 / (1 + exp(-xbeta(i1) - coef(i2)));
+            }
+        }
+        // compute P
+        for (int i1 = 0; i1 < n; i1++) {
+            for (int i2 = 0; i2 < k + 1; i2++) {
+                if (i2 == 0) {
+                    P(i1, 0) = logit(i1, 0);
+                } else if (i2 == k) {
+                    P(i1, k) = 1 - logit(i1, k - 1);
+                } else {
+                    P(i1, i2) = logit(i1, i2) - logit(i1, i2 - 1);
+                }
+                if (P(i1, i2) < 1e-10) P(i1, i2) = 1e-10;
+            }
+        }
+        // compute gradient
+
+        for (int i1 = 0; i1 < n; i1++) {
+            for (int i2 = 0; i2 < k; i2++) {
+                grad_L(i1, i2) =
+                    (y(i1, i2) / P(i1, i2) - y(i1, i2 + 1) / P(i1, i2 + 1)) * logit(i1, i2) * (1.0 - logit(i1, i2));
+            }
+        }
+
+        if (g.size() == p + k) {
+            g.head(k) = grad_L.colwise().sum();
+        }
+        g.tail(p) = grad_L.rowwise().sum().transpose() * X - 2 * this->lambda_level * coef.tail(p).eval();
+
+        return true;
+    }
+
+    bool hessianCore(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0,
+                     Eigen::VectorXd &h_intercept, Eigen::VectorXd &W) {
+        const int n = X.rows();
+        const int p = X.cols();
+        const int k = coef0.size() - 1;
+        if (h_intercept.size() != k || W.size() != n) {
+            return false;
+        }
+
+        Eigen::VectorXd coef(p + k);
+        coef.head(k) = coef0.head(k);
+        coef.tail(p) = beta.col(0);
+
+        Eigen::MatrixXd logit(n, k);
+        Eigen::MatrixXd P(n, k + 1);
+        Eigen::VectorXd xbeta = X * coef.tail(p);
+
+        // compute logit
+        for (int i1 = 0; i1 < n; i1++) {
+            for (int i2 = 0; i2 < k; i2++) {
+                logit(i1, i2) = 1.0 / (1 + exp(-xbeta(i1) - coef(i2)));
+            }
+        }
+        // compute P
+        for (int i1 = 0; i1 < n; i1++) {
+            for (int i2 = 0; i2 < k + 1; i2++) {
+                if (i2 == 0) {
+                    P(i1, 0) = logit(i1, 0);
+                } else if (i2 == k) {
+                    P(i1, k) = 1 - logit(i1, k - 1);
+                } else {
+                    P(i1, i2) = logit(i1, i2) - logit(i1, i2 - 1);
+                }
+                if (P(i1, i2) < 1e-10) P(i1, i2) = 1e-10;
+            }
+        }
+
+        for (int i2 = 0; i2 < k; i2++) {
+            for (int i1 = 0; i1 < n; i1++) {
+                h_intercept(i2) += (1.0 / P(i1, i2) + 1.0 / P(i1, i2 + 1)) * logit(i1, i2) * logit(i1, i2) *
+                                   (1.0 - logit(i1, i2)) * (1.0 - logit(i1, i2));
+            }
+        }
+
+        W = Eigen::VectorXd::Zero(n);
+        for (int i = 0; i < n; i++) {
+            for (int i1 = 0; i1 < k; i1++) {
+                W(i) += (1.0 / P(i, i1) + 1.0 / P(i, i1 + 1)) * logit(i, i1) * logit(i, i1) * (1.0 - logit(i, i1)) *
+                        (1.0 - logit(i, i1));
+            }
+            for (int i1 = 0; i1 < k - 1; i1++) {
+                W(i) -= 1.0 / P(i, i1 + 1) * logit(i, i1) * logit(i, i1 + 1) * (1.0 - logit(i, i1)) *
+                        (1.0 - logit(i, i1 + 1));
+            }
+        }
+
+        return true;
+    }
+
+    bool primary_model_fit(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta,
+                           Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX,
+                           Eigen::VectorXi &g_size) {
+        int i;
+        int n = X.rows();
+        int p = X.cols();
+        int k = coef0.size() - 1;
+        // make sure that coef0 is increasing
+        for (int i = 1; i < k; i++) {
+            if (coef0(i) <= coef0(i - 1)) {
+                coef0(i) = coef0(i - 1) + 1;
+            }
+        }
+
+        double step = 1;
+        double loglik_new, loglik;
+        Eigen::VectorXd g(p + k);
+        Eigen::VectorXd coef_new;
+        Eigen::VectorXd h_intercept = Eigen::VectorXd::Zero(k);
+        Eigen::VectorXd h_diag = Eigen::VectorXd::Zero(k + p);
+        Eigen::VectorXd W(n);
+        Eigen::VectorXd desend_direction;  // coef_new = coef + step * desend_direction
+        Eigen::VectorXd coef = Eigen::VectorXd::Zero(p + k);
+        coef.head(k) = coef0.head(k);
+        coef.tail(p) = beta.col(0);
+        loglik = -loss_function(X, y, weights, beta, coef0, A, g_indeX, g_size, this->lambda_level);
+
+        for (int j = 0; j < this->primary_model_fit_max_iter; j++) {
+            if (!gradient(X, y, beta, coef0, g) || !hessianCore(X, y, beta, coef0, h_intercept, W)) {
+                return false;
+            }
+
+            for (int i = 0; i < k; i++) {
+                if (h_intercept(i) < 1e-7 && h_intercept(i) >= 0)
+                    h_diag(i) = 1e7;
+                else if (h_intercept(i) > -1e-7 && h_intercept(i) < 0)
+                    h_diag(i) = -1e7;
+                else
+                    h_diag(i) = 1.0 / h_intercept(i);
+            }
+
+            for (int i = 0; i < p; i++) {
+                h_diag(i + k) = X.col(i).cwiseProduct(W).dot(X.col(i)) + 2 * this->lambda_level;
+                if (h_diag(i + k) < 1e-7 && h_diag(i + k) >= 0)
+                    h_diag(i + k) = 1e7;
+                else if (h_diag(i + k) > -1e-7 && h_diag(i + k) < 0)
+                    h_diag(i + k) = -1e7;
+                else
+                    h_diag(i + k) = 1.0 / h_diag(i + k);
+            }
+
+            desend_direction = g.cwiseProduct(h_diag);
+            coef_new = coef + step * desend_direction;  // ApproXimate Newton method
+
+            i = 1;
+            while (i < k) {
+                for (i = 1; i < k; i++) {
+                    if (coef_new(i) <= coef_new(i - 1)) {
+                        step = step / 2;
+                        coef_new = coef + step * desend_direction;
+                        break;
+                    }
+                }
+            }
+
+            beta.col(0) = coef_new.tail(p);
+            coef0.head(k) = coef_new.head(k);
+            loglik_new = -loss_function(X, y, weights, beta, coef0, A, g_indeX, g_size, this->lambda_level);
+            while (loglik_new < loglik && step > this->primary_model_fit_epsilon) {
+                step = step / 2;
+                coef_new = coef + step * desend_direction;
+                i = 1;
+                while (i < k) {
+                    for (i = 1; i < k; i++) {
+                        if (coef_new(i) <= coef_new(i - 1)) {
+                            step = step / 2;
+                            coef_new = coef + step * desend_direction;
+                            break;
+                        }
+                    }
+                }
+                beta.col(0) = coef_new.tail(p);
+                coef0.head(k) = coef_new.head(k);
+                loglik_new = -loss_function(X, y, weights, beta, coef0, A, g_indeX, g_size, this->lambda_level);
+            }
+
+            bool condition1 = step < this->primary_model_fit_epsilon;
+            bool condition2 =
+                -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau > loss0;
+
+            if (condition1 || condition2) {
+                break;
+            }
+
+            beta.col(0) = coef_new.tail(p);
+            coef0.head(k) = coef_new.head(k);
+            coef = coef_new;
+            loglik = loglik_new;
+        }
+
+        for (int i = 0; i < beta.cols(); i++) {
+            beta.col(i) = coef.tail(p).eval();
+        }
+        coef0.head(k) = coef.head(k);
+        return true;
+    }
+
+    double loss_function(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta,
+                         Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size,
+                         double lambda) {
+        int n = X.rows();
+        int p = X.cols();
+        int k = coef0.size() - 1;
+
+        Eigen::VectorXd xbeta = X * beta.col(0);
+        double loss = lambda * beta.col(0).cwiseAbs2().sum();
+
+        double pro = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < k + 1; j++) {
+                if (y(i, j) == 1) {
+                    if (j == 0) {
+                        loss += log(1 + exp(-xbeta(i) - coef0(0)));
+                    } else if (j == k) {
+                        loss -= log(1 - 1.0 / (1 + exp(-xbeta(i) - coef0(k - 1))));
+                    } else {
+                        pro = 1.0 / (1 + exp(-xbeta(i) - coef0(j))) - 1.0 / (1 + exp(-xbeta(i) - coef0(j - 1)));
+                        if (pro < 1e-20) pro = 1e-20;
+                        loss -= log(pro);
+                    }
+                    break;
+                }
+            }
+        }
+
+        return loss;
+    }
+
+    void sacrifice(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A,
+                   Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights,
+                   Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind,
+                   Eigen::VectorXd &bd, Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num) {
+        int n = X.rows();
+        int p = X.cols();
+        int k = coef0.size() - 1;
+
+        Eigen::VectorXd W = Eigen::VectorXd::Zero(n);
+        Eigen::VectorXd d(p);
+        Eigen::VectorXd h_intercept = Eigen::VectorXd::Zero(k);
+
+        gradient(X, y, beta, coef0, d);
+        hessianCore(X, y, beta, coef0, h_intercept, W);
+
+        Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
+        Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
+        // we only need N diagonal sub-matriX of hessian of Loss, X^T %*% diag(EY^2) %*% X is OK, but waste.
+        for (int i = 0; i < N; i++) {
+            T4 XG = X.middleCols(g_indeX(i), g_size(i));
+            T4 XG_new = XG;
+            for (int j = 0; j < g_size(i); j++) {
+                XG_new.col(j) = XG.col(j).cwiseProduct(W);
+            }
+            // hessianG is the ith group diagonal sub-matriX of hessian matriX of Loss.
+            Eigen::MatrixXd hessianG =
+                XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
+            Eigen::MatrixXd phiG;
+            hessianG.sqrt().evalTo(phiG);
+            Eigen::MatrixXd invphiG = phiG.ldlt().solve(
+                Eigen::MatrixXd::Identity(g_size(i), g_size(i)));  // this is a way to inverse a matriX.
+            betabar.segment(g_indeX(i), g_size(i)) = phiG * beta.col(0).segment(g_indeX(i), g_size(i));
+            dbar.segment(g_indeX(i), g_size(i)) = invphiG * d.segment(g_indeX(i), g_size(i));
+        }
+        int A_size = A.size();
+        int I_size = I.size();
+        for (int i = 0; i < A_size; i++) {
+            bd(A[i]) = betabar.segment(g_indeX(A[i]), g_size(A[i])).squaredNorm() / g_size(A[i]);
+        }
+        for (int i = 0; i < I_size; i++) {
+            bd(I[i]) = dbar.segment(g_indeX(I[i]), g_size(I[i])).squaredNorm() / g_size(I[i]);
+        }
+    }
+
+    double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::MatrixXd &y, Eigen::VectorXd &weights,
+                                         Eigen::MatrixXd &beta, Eigen::MatrixXd &beta_A, Eigen::VectorXd &coef0) {
+        if (this->lambda_level == 0.) return XA.cols();
+
+        if (XA.cols() == 0) return 0.;
+
+        int n = X.rows();
+        int p = X.cols();
+        int k = coef0.size() - 1;
+
+        Eigen::VectorXd h_intercept = Eigen::VectorXd::Zero(k);
+        Eigen::VectorXd W = Eigen::VectorXd::Zero(n);
+
+        hessianCore(X, y, beta, coef0, h_intercept, W);
+
+        T4 XA_new = XA;
+        for (int j = 0; j < XA.cols(); j++) {
+            XA_new.col(j) = XA.col(j).cwiseProduct(W);
+        }
+        Eigen::MatrixXd XGbar = XA_new.transpose() * XA;
+
+        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> adjoint_eigen_solver(XGbar);
+        double enp = 0.;
+        for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++) {
+            enp += adjoint_eigen_solver.eigenvalues()(i) / (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
+        }
+        return enp;
+    }
+};
+
 #endif  // SRC_ALGORITHMGLM_H
