@@ -6,7 +6,7 @@ Specific Models
 ##########################################
 # Introduction
 # ^^^^^^^^^^^^
-# From the algorithm preseneted in “ABESS algorithm: details”,
+# From the algorithm preseneted in “`ABESS algorithm: details <https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_a2_abess_algorithm_details.html>`__”,
 # one of the bottleneck in algorithm is the computation of forward and backward sacrifices,
 # which requires conducting iterative algorithms or frequently visiting :math:`p` variables.
 # To improve computational efficiency,
@@ -17,12 +17,55 @@ Specific Models
 #
 # Covariance update
 # ^^^^^^^^^^^^^^^^^
-# Under linear model, the core bottleneck is computing backward sacrifices, i.e.,
+# Under linear model, the core bottleneck is computing sacrifices, e.g. the foreward sacrifices,
 #
+# .. math:: \zeta_{j}=\mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}^{\mathcal{A}}}\right)-\mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}}^{\mathcal{A}}+\hat{t}^{\{j\}}\right)=\frac{X_{j}^{\top} X_{j}}{2 n}\left(\frac{\hat{\boldsymbol d}_{j}}{X_{j}^{\top} X_{j} / n}\right)^{2}.
 #
+# where
+# :math:`\hat{t}=\arg \min _{t} \mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}}^{\mathcal{A}}+t^{\{j\}}\right), \hat{\boldsymbol d}_{j}=X_{j}^{\top}(y-X \hat{\boldsymbol{\beta}}) / n`.
+# Intuitively, for :math:`j \in \mathcal{A}` (or
+# :math:`j \in \mathcal{I}` ), a large :math:`\xi_{j}` (or
+# :math:`\zeta_{j}`) implies the :math:`j` th variable is potentially
+# important.
+#
+# It would take a lot of time on calculating :math:`X^T_jy`, :math:`X^T_jX_j` and its inverse.
+# To speed up, it is actually no need to recompute these items at each splicing process.
+# Instead, they can be stored when first calculated, which is what we call
+# "covariance update".
+#
+# However, it will cause higher memory usage, expecially when :math:`p` is large.
+# But if possible, we recommend to enable it for fast computation.
+#
+# It is easy to enable this feature with an additional argument
+# ``covariance_update=True`` for linear model, for example:
+
+import numpy as np
+from time import time
+from abess.linear import LinearRegression
+from abess.datasets import make_glm_data
+
+np.random.seed(1)
+data = make_glm_data(n=10000, p=100, k=10, family='gaussian')
+model1 = LinearRegression()
+model2 = LinearRegression(covariance_update=True)
+
+t1 = time()
+model1.fit(data.x, data.y)
+t1 = time() - t1
+
+t2 = time()
+model2.fit(data.x, data.y)
+t2 = time() - t2
+
+print(f"No covariance update: {t1}")
+print(f"Covariance update: {t2}")
+print(f"Same answer? {(model1.coef_==model2.coef_).all()}")
+
+# %%
 # Quasi Newton iteration
 # ^^^^^^^^^^^^^^^^^^^^^^
-# In the fourth step in Algorithm 2, we need to solve a convex optimization problem:
+# In the third step in `Algorithm 2 <https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_a2_abess_algorithm_details.html#algorithm-2-splicing-left-boldsymbol-beta-d-mathcal-a-mathcal-i-k-max-tau-s-right>`__
+# , we need to solve a convex optimization problem:
 #
 # .. math::
 #     \tilde{\beta} = \arg\min_{\text{supp}(\beta) = \tilde{\mathcal{A}} }  l_n(\beta ).
@@ -61,8 +104,36 @@ Specific Models
 # This heuristic strategy is motivated by the convergence rate of Netwon method is linear at least.
 # |image0|
 #
-#
-#
+# To enable this feature, you can simply give an additional argument ``approximate_Newton=True``.
+# The :math:`\epsilon` and :math:`k` we mentioned before, can be set with ``primary_model_fit_epsilon``
+# and ``primary_model_fit_max_iter``, respectively. For example:
+
+import numpy as np
+from time import time
+from abess.linear import LogisticRegression
+from abess.datasets import make_glm_data
+
+np.random.seed(1)
+data = make_glm_data(n=1000, p=100, k=10, family='binomial')
+model1 = LogisticRegression()
+model2 = LogisticRegression(approximate_Newton=True,
+                            primary_model_fit_epsilon=1e-6,
+                            primary_model_fit_max_iter=10)
+
+t1 = time()
+model1.fit(data.x, data.y)
+t1 = time() - t1
+
+t2 = time()
+model2.fit(data.x, data.y)
+t2 = time() - t2
+
+print(f"No newton: {t1}")
+print(f"Newton: {t2}")
+print(f"Same answer? {(np.nonzero(model1.coef_)[0]==np.nonzero(model2.coef_)[0]).all()}")
+
+# %%
+# 
 # The ``abess`` R package also supports covariance update and quasi Newton iteration.
 # For R tutorial, please view https://abess-team.github.io/abess/articles/v09-fasterSetting.html
 #

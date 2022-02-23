@@ -175,10 +175,10 @@ ABESS Algorithm: Details
 #
 #    End for
 #
-# 3. If :math:`L_{0}-L<\tau_{s}`, then
+# 4. If :math:`L_{0}-L<\tau_{s}`, then
 #    :math:`(\hat{\boldsymbol\beta}, \hat{d}, \hat{A}, \hat{I})=(\boldsymbol\beta, d, \mathcal{A}, \mathcal{I}).`
 #
-# 2. Output
+# 5. Output
 #    :math:`(\hat{\boldsymbol{\beta}}, \hat{\boldsymbol{d}}, \hat{\mathcal{A}}, \hat{\mathcal{I}})`.
 #
 # Determining the Best Support Size with SIC
