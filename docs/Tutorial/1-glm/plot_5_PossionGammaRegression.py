@@ -18,7 +18,7 @@ Positive responses: Poisson & Gamma regressions
 #
 #
 # Simulated Data Example
-# """"""""""""""""""""""
+# ~~~~~~~~~~~~~~~~~~~~~~
 #
 # We generate some artificial data using this logic.
 # Consider a dataset containing ``n=100`` observations with ``p=6`` variables.
