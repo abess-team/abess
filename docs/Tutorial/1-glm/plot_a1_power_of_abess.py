@@ -1,11 +1,9 @@
 """
-============================
+==========================
 Power of **abess** Library
-============================
+==========================
 
 """
-
-# sphinx_gallery_thumbnail_path = '_static/timings.png'
 
 ######################################
 # Introduction
@@ -25,7 +23,7 @@ Power of **abess** Library
 
 ######################################
 # Simulation
-# ^^^^^^^^^^^^
+# ^^^^^^^^^^
 # Setting
 # ~~~~~~~
 # Both packages are compared in three aspects including the prediction
@@ -41,10 +39,10 @@ Power of **abess** Library
 #    correctly identified) and the false positive rate (FPR, which is the
 #    proportion of the varibales in the inactive set that are falsely
 #    identified as a signal).
-#
 # -  Timings of the CPU execution are recorded in seconds and all the
 #    performances are averaged over 20 replications on a sequence of 100
 #    regularization parameters.
+#
 # The simulated data are made by ``abess.datasets.make_glm_data()``. The
 # number of predictors is :math:`p=8000` and the size of data is
 # :math:`n=500`. The true coefficient contains :math:`k=10` nonzero
@@ -74,6 +72,7 @@ Power of **abess** Library
 # The results are presented in the following pictures. The first column is
 # the result of linear regression and the second one is of logistic
 # regression.
+#
 # -  Firstly, among all of the methods implemented in different packages,
 #    the estimator obtained by the abess package shows both the best
 #    prediction performance and the best coefficient error.
@@ -84,6 +83,7 @@ Power of **abess** Library
 #
 # -  Furthermore, our abess package is highly efficient compared with
 #    other packages, especially in the linear regression.
+#
 # |image0|
 # |image1|
 #
@@ -92,3 +92,5 @@ Power of **abess** Library
 #
 # .. |image0| image:: ../../Tutorial/figure/perform.png
 # .. |image1| image:: ../../Tutorial/figure/timings.png
+
+# sphinx_gallery_thumbnail_path = '_static/timings.png'

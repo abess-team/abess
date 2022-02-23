@@ -5,15 +5,15 @@ ABESS Algorithm: Details
 """
 
 ###########################################################
-# Introduction 
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# Introduction
+# ^^^^^^^^^^^^
 # With the ``abess`` library, users can use the ABESS algorithm to efficiently solve many best subset selection problems.
-# The aim of this page is providing a complete and coherent documentation for ABESS algorithm under linear model 
-# such that users can easily understand the ABESS algorithm, 
+# The aim of this page is providing a complete and coherent documentation for ABESS algorithm under linear model
+# such that users can easily understand the ABESS algorithm,
 # thereby facilitating the usage of ``abess`` software.
 #
-# linear regression 
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# linear regression
+# ^^^^^^^^^^^^^^^^^
 #
 # .. _sacrifices-1:
 #
@@ -66,7 +66,7 @@ ABESS Algorithm: Details
 # .. _best-subset-selection-with-a-given-support-size-1:
 #
 # Best-Subset Selection with a Given Support Size
-# """""""""""""""""""""""""""""""""""""""""""""""""""
+# """""""""""""""""""""""""""""""""""""""""""""""
 #
 # Unfortunately, it is noteworthy that these two sacrifices are
 # incomparable because they have different sizes of support set. However,
@@ -91,7 +91,7 @@ ABESS Algorithm: Details
 #   Let
 #   :math:`\tilde{\mathcal{I}}=\tilde{\mathcal{A}}^{c}, \tilde{\boldsymbol{\beta}}=\arg \min _{\boldsymbol{\beta}_{\overline{\mathcal{I}}=0}} \mathcal{L}_{n}(\boldsymbol{\beta})`,
 #   and :math:`\tau_{s}>0` be a threshold. If :math:`\tau_{s}<\mathcal{L}_{n}(\hat{\boldsymbol\beta})-\mathcal{L}_{n}(\tilde{\boldsymbol\beta})`,
-#   then :math:`\tilde{A}` is preferable to :math:`\mathcal{A} .` 
+#   then :math:`\tilde{A}` is preferable to :math:`\mathcal{A} .`
 # | The
 #   active set can be updated
 #   iteratively until the loss function cannot be improved by splicing.
@@ -109,11 +109,11 @@ ABESS Algorithm: Details
 # 1. Input: :math:`X, y`, a positive integer :math:`k_{\max }`, and a
 #    threshold :math:`\tau_{s}`.
 #
-# 2. Initialize: 
-#   
+# 2. Initialize:
+#
 # .. math::
 #          \mathcal{A}^{0}=\left\{j: \sum_{i=1}^{p} \mathrm{I}\left(\left|\frac{X_{j}^{\top} y}{\sqrt{X_{j}^{\top} X_{j}}}\right| \leq \left| \frac{X_{i}^{\top} y}{\sqrt{X_{i}^{\top} X_{i}}}\right| \leq \mathrm{s}\right\}, \mathcal{I}^{0}=\left(\mathcal{A}^{0}\right)^{c}\right.
-#   
+#
 # and :math:`\left(\boldsymbol\beta^{0}, d^{0}\right):`
 #
 # .. math::
@@ -143,7 +143,7 @@ ABESS Algorithm: Details
 #    :math:`\boldsymbol{\beta}, \boldsymbol{d}, \mathcal{A}, \mathcal{I}, k_{\max }`,
 #    and :math:`\tau_{\mathrm{s}} .`
 #
-# 2. Initialize: 
+# 2. Initialize:
 #    :math:`L_{0}=L=\frac{1}{2 n}\|y-X \beta\|_{2}^{2}`, and set
 #
 #    .. math:: \xi_{j}=\frac{X_{j}^{\top} X_{j}}{2 n}\left(\beta_{j}\right)^{2}, \zeta_{j}=\frac{X_{j}^{\top} X_{j}}{2 n}\left(\frac{d_{j}}{X_{j}^{\top} X_{j} / n}\right)^{2}, j=1, \ldots, p.
@@ -175,14 +175,14 @@ ABESS Algorithm: Details
 #
 #    End for
 #
-# 3. If :math:`L_{0}-L<\tau_{s}`, then
+# 4. If :math:`L_{0}-L<\tau_{s}`, then
 #    :math:`(\hat{\boldsymbol\beta}, \hat{d}, \hat{A}, \hat{I})=(\boldsymbol\beta, d, \mathcal{A}, \mathcal{I}).`
 #
-# 2. Output
+# 5. Output
 #    :math:`(\hat{\boldsymbol{\beta}}, \hat{\boldsymbol{d}}, \hat{\mathcal{A}}, \hat{\mathcal{I}})`.
 #
 # Determining the Best Support Size with SIC
-# """""""""""""""""""""""""""""""""""""""""""""""""""
+# """"""""""""""""""""""""""""""""""""""""""
 #
 # In practice, the support size is usually unknown. We use a datadriven
 # procedure to determine s. For any active set :math:`\mathcal{A}`, define
@@ -222,7 +222,8 @@ ABESS Algorithm: Details
 #
 # 4. Output
 #    :math:`\left(\hat{\boldsymbol{\beta}}_{s_{\min}}, \hat{\boldsymbol{d}}_{s_{\min }}, \hat{A}_{s_{\min }}, \hat{\mathcal{I}}_{s_{\min }}\right) .`
-# 
+#
 # Now, enjoy the data analysis with ``abess`` library:
 import abess
+
 # sphinx_gallery_thumbnail_path = '_static/icon_noborder.png'
