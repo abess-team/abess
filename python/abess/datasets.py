@@ -275,7 +275,7 @@ class make_glm_data:
             y = np.random.gamma(shape=shape_para, scale=1 /
                                 shape_para / eta, size=n)
         elif family == "ordinal":
-            m = 125 * np.sqrt(2 * np.log(p) / n)
+            M = 125 * np.sqrt(2 * np.log(p) / n)
             if coef_ is None:
                 Tbeta[nonzero] = np.random.uniform(-M, M, k)
             else:
