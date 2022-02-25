@@ -938,6 +938,7 @@ class GammaRegression(bess_base):
         dev_null = deviance(y, y_mean)
         return 1 - dev / dev_null
 
+
 @ fix_docs
 class OrdinalRegression(bess_base):
     r"""
@@ -956,6 +957,39 @@ class OrdinalRegression(bess_base):
 
     Examples
     --------
+    >>> ### Sparsity known
+    >>>
+    >>> from abess.linear import OrdinalRegression
+    >>> from abess.datasets import make_glm_data
+    >>> import numpy as np
+    >>> np.random.seed(12345)
+    >>> data = make_glm_data(n = 1000, p = 50, k = 10, family = 'ordinal', class_num=3)
+    >>> print((np.nonzero(data.coef_)[0]))
+    [ 0  4 10 14 26 29 34 38 47 48]
+    >>> model = OrdinalRegression(support_size = 10)
+    >>> model.fit(data.x, data.y)
+    classes: [0. 1. 2.]
+    OrdinalRegression(support_size=10)
+    >>> print((np.nonzero(model.coef_)[0]))
+    [ 0  4 10 14 26 29 38 40 47 48]
+
+    >>> ### Sparsity unknown
+    >>>
+    >>> # path_type="seq"
+    >>> model = OrdinalRegression(path_type = "seq")
+    >>> model.fit(data.x, data.y)
+    classes: [0. 1. 2.]
+    OrdinalRegression()
+    >>> print((np.nonzero(model.coef_)[0]))
+    [ 0  4  8 10 14 26 29 38 40 47 48]
+    >>>
+    >>> # path_type="gs"
+    >>> model = OrdinalRegression(path_type="gs")
+    >>> model.fit(data.x, data.y)
+    classes: [0. 1. 2.]
+    OrdinalRegression(path_type='gs')
+    >>> print((np.nonzero(model.coef_)[0]))
+    [ 0  4 10 14 26 29 38 47 48]
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
@@ -973,6 +1007,7 @@ class OrdinalRegression(bess_base):
                  important_search=128
                  ):
         super().__init__(
+            # TODO: normalize_type = ?
             algorithm_type="abess", model_type="Ordinal", normalize_type=2,
             path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size,
@@ -989,55 +1024,46 @@ class OrdinalRegression(bess_base):
             important_search=important_search
         )
 
-    def predict(self, X):
-        r"""
-        Return the most possible class for given data.
+    # def predict(self, X):
+    #     r"""
+    #     Return the most possible class for given data.
 
-        Parameters
-        ----------
-        X : array-like, shape(n_samples, p_features)
-            Sample matrix to be predicted.
+    #     Parameters
+    #     ----------
+    #     X : array-like, shape(n_samples, p_features)
+    #         Sample matrix to be predicted.
 
-        Returns
-        -------
-        y : array-like, shape(n_samples, M_responses)
-            Predict class labels for samples in X.
-            Each row contains only one "1", and its column index is the
-            predicted class for related sample.
-        """
-        X = new_data_check(self, X)
+    #     Returns
+    #     -------
+    #     y : array-like, shape(n_samples, M_responses)
+    #         Predict class labels for samples in X.
+    #         Each row contains only one "1", and its column index is the
+    #         predicted class for related sample.
+    #     """
+    #     X = new_data_check(self, X)
+    #     return ???
 
-        intercept_ = np.repeat(
-            self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
-        xbeta = X.dot(self.coef_) + intercept_
-        max_item = np.argmax(xbeta, axis=1)
-        y_pred = np.zeros_like(xbeta)
-        for i in range(X.shape[0]):
-            y_pred[i, max_item[i]] = 1
-        return y_pred
+    # def score(self, X, y):
+    #     """
+    #     Give new data, and it returns the entropy function.
 
-    def score(self, X, y):
-        """
-        Give new data, and it returns the entropy function.
+    #     Parameters
+    #     ----------
+    #     X : array-like, shape(n_samples, p_features)
+    #         Test data.
+    #     y : array-like, shape(n_samples, M_responses)
+    #         Test response (dummy variables of real class).
 
-        Parameters
-        ----------
-        X : array-like, shape(n_samples, p_features)
-            Test data.
-        y : array-like, shape(n_samples, M_responses)
-            Test response (dummy variables of real class).
+    #     Returns
+    #     -------
+    #     score : float
+    #         entropy function
+    #     """
+    #     X, y = new_data_check(self, X, y)
+    #     if len(y.shape) == 1:
+    #         y = categorical_to_dummy(y)
 
-        Returns
-        -------
-        score : float
-            entropy function
-        """
-        X, y = new_data_check(self, X, y)
-        if len(y.shape) == 1:
-            y = categorical_to_dummy(y)
-
-        pr = self.predict_proba(X)
-        return np.sum(y * np.log(pr))
+    #     return ???
 
 
 class abessLogistic(LogisticRegression):
