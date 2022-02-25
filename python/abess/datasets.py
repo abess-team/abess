@@ -78,6 +78,9 @@ class make_glm_data:
     snr: float, optional, default=None
         A numerical value controlling the signal-to-noise ratio (SNR)
         in gaussian data.
+    class_num: int, optional, default=3
+        The number of possible classes in oridinal dataset, i.e.
+        :math:`y \in \{0, 1, 2, ..., \text{class_num}-1\}`
 
     Attributes
     ----------
@@ -149,6 +152,19 @@ class make_glm_data:
               where :math:`m = 5\sqrt{2\log p/n}`;
             * the scale of survival time :math:`\text{scal} = 10`;
             * censoring is enabled, and max censoring time :math:`c=1`.
+
+    * Ordinal Regression
+
+        * Usage: ``family='ordinal'[, class_num=...]``
+        * Model: :math:`y\in \{0, 1, \dots, n_{class}\}`,
+          :math:`\mathbb{P}(y\leq i) = \dfrac{1}{1+\exp(-x^T\beta - \varepsilon_i)}`,
+          where :math:`i\in \{0, 1, \dots, n_{class}\}` and
+          :math:`\forall i<j, \varepsilon_i < \varepsilon_j`.
+
+            * the coefficient :math:`\beta\sim U[-M, M]`,
+              where :math:`M = 125\sqrt{2\log p/n}`;
+            * the intercept: :math:`\forall i,\varepsilon_i\sim U[-M, M]`;
+            * the number of classes :math:`n_{class}=3`.
 
     """
 
@@ -259,13 +275,12 @@ class make_glm_data:
             y = np.random.gamma(shape=shape_para, scale=1 /
                                 shape_para / eta, size=n)
         elif family == "ordinal":
-            m = 2.5 * np.sqrt(2 * np.log(p) / n)
-            M = 50 * m
+            m = 125 * np.sqrt(2 * np.log(p) / n)
             if coef_ is None:
                 Tbeta[nonzero] = np.random.uniform(-M, M, k)
             else:
                 Tbeta = coef_
-            intercept = np.sort(np.random.uniform(-M, M, class_num -1))
+            intercept = np.sort(np.random.uniform(-M, M, class_num - 1))
             eta = x @ Tbeta[:, np.newaxis] + intercept
             logit = 1 / (1 + np.exp(-eta))
             # prob
