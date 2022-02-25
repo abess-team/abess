@@ -221,8 +221,8 @@ class bess_base(BaseEstimator):
                 y = y[:, 1].reshape(-1)
 
             # Dummy y for Multinomial
-            if (self.model_type == "Multinomial" or self.model_type ==
-                    "Ordinal") and len(y.shape) == 1:
+            if self.model_type in (
+                    "Multinomial", "Ordinal") and len(y.shape) == 1:
                 y = categorical_to_dummy(y)
 
             # Init

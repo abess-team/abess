@@ -963,7 +963,7 @@ class OrdinalRegression(bess_base):
     >>> from abess.datasets import make_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> data = make_glm_data(n = 1000, p = 50, k = 10, family = 'ordinal', class_num=3)
+    >>> data = make_glm_data(n = 1000, p = 50, k = 10, family = 'ordinal')
     >>> print((np.nonzero(data.coef_)[0]))
     [ 0  4 10 14 26 29 34 38 47 48]
     >>> model = OrdinalRegression(support_size = 10)

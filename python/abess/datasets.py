@@ -157,7 +157,8 @@ class make_glm_data:
 
         * Usage: ``family='ordinal'[, class_num=...]``
         * Model: :math:`y\in \{0, 1, \dots, n_{class}\}`,
-          :math:`\mathbb{P}(y\leq i) = \dfrac{1}{1+\exp(-x^T\beta - \varepsilon_i)}`,
+          :math:`\mathbb{P}(y\leq i) = \dfrac{1}
+          {1+\exp(-x^T\beta - \varepsilon_i)}`,
           where :math:`i\in \{0, 1, \dots, n_{class}\}` and
           :math:`\forall i<j, \varepsilon_i < \varepsilon_j`.
 

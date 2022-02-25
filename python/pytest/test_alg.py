@@ -1,7 +1,7 @@
 import sys
 import warnings
 import abess
-from abess.datasets import make_glm_data, make_multivariate_glm_data
+from abess.datasets import make_glm_data
 import numpy as np
 import pandas as pd
 from scipy.sparse import coo_matrix
