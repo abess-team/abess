@@ -17,7 +17,8 @@ from .linear import (
     PoissonRegression,
     MultiTaskRegression,
     MultinomialRegression,
-    GammaRegression
+    GammaRegression,
+    OrdinalRegression
 )
 from .decomposition import (SparsePCA, RobustPCA)
 from .datasets import (make_glm_data, make_multivariate_glm_data)

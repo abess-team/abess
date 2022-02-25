@@ -221,7 +221,8 @@ class bess_base(BaseEstimator):
                 y = y[:, 1].reshape(-1)
 
             # Dummy y for Multinomial
-            if self.model_type == "Multinomial" and len(y.shape) == 1:
+            if (self.model_type == "Multinomial" or self.model_type ==
+                    "Ordinal") and len(y.shape) == 1:
                 y = categorical_to_dummy(y)
 
             # Init
@@ -259,6 +260,8 @@ class bess_base(BaseEstimator):
             model_type_int = 6
         elif self.model_type == 'Gamma':
             model_type_int = 8
+        elif self.model_type == 'Ordinal':
+            model_type_int = 9
         else:
             raise ValueError("model_type should not be " +
                              str(self.model_type))
@@ -509,9 +512,11 @@ class bess_base(BaseEstimator):
         else:
             self.coef_ = result[0]
         self.intercept_ = result[1]
-
         self.train_loss_ = result[2]
         self.test_loss_ = result[3]
         self.ic_ = result[4]
+
+        if self.model_type == "Ordinal":
+            self.coef_ = self.coef_[:, 0]
 
         return self

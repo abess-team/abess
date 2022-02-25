@@ -153,7 +153,7 @@ class make_glm_data:
     """
 
     def __init__(self, n, p, k, family, rho=0, sigma=1, coef_=None,
-                 censoring=True, c=1, scal=10, snr=None):
+                 censoring=True, c=1, scal=10, snr=None, class_num=3):
         self.n = n
         self.p = p
         self.k = k
@@ -258,10 +258,30 @@ class make_glm_data:
             shape_para = 100 * np.random.uniform(0, 1, n) + 0.1
             y = np.random.gamma(shape=shape_para, scale=1 /
                                 shape_para / eta, size=n)
+        elif family == "ordinal":
+            m = 2.5 * np.sqrt(2 * np.log(p) / n)
+            M = 50 * m
+            if coef_ is None:
+                Tbeta[nonzero] = np.random.uniform(-M, M, k)
+            else:
+                Tbeta = coef_
+            intercept = np.sort(np.random.uniform(-M, M, class_num -1))
+            eta = x @ Tbeta[:, np.newaxis] + intercept
+            logit = 1 / (1 + np.exp(-eta))
+            # prob
+            prob = np.zeros((n, class_num))
+            prob[:, 0] = logit[:, 0]
+            prob[:, 1:class_num - 1] = (logit[:, 1:class_num - 1] -
+                                        logit[:, 0:class_num - 2])
+            prob[:, class_num - 1] = 1 - logit[:, class_num - 2]
+            # y
+            y = np.zeros(n)
+            for i in range(n):
+                y[i] = np.random.choice(np.arange(class_num), 1, p=prob[i, :])
         else:
             raise ValueError(
                 "Family should be \'gaussian\', \'binomial\', "
-                "\'poisson\', \'gamma\', or \'cox\'.")
+                "\'poisson\', \'gamma\', \'cox\', or \'ordinal\'.")
         self.x = x
         self.y = y
         self.coef_ = Tbeta

@@ -938,6 +938,107 @@ class GammaRegression(bess_base):
         dev_null = deviance(y, y_mean)
         return 1 - dev / dev_null
 
+@ fix_docs
+class OrdinalRegression(bess_base):
+    r"""
+    Adaptive Best-Subset Selection(ABESS) algorithm for
+    ordinal regression problem.
+
+    Parameters
+    ----------
+    splicing_type: {0, 1}, optional, default=0
+        The type of splicing:
+        "0" for decreasing by half, "1" for decresing by one.
+    important_search : int, optional, default=128
+        The size of inactive set during updating active set when splicing.
+        It should be a non-positive integer and if important_search=0,
+        it would be set as the size of whole inactive set.
+
+    Examples
+    --------
+    """
+
+    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
+                 is_warm_start=True, support_size=None,
+                 alpha=None, s_min=None, s_max=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1,
+                 screening_size=-1,
+                 always_select=None,
+                 primary_model_fit_max_iter=10,
+                 primary_model_fit_epsilon=1e-8,
+                 approximate_Newton=False,
+                 thread=1,
+                 sparse_matrix=False,
+                 splicing_type=0,
+                 important_search=128
+                 ):
+        super().__init__(
+            algorithm_type="abess", model_type="Ordinal", normalize_type=2,
+            path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
+            is_warm_start=is_warm_start, support_size=support_size,
+            alpha=alpha, s_min=s_min, s_max=s_max,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
+            screening_size=screening_size,
+            always_select=always_select,
+            primary_model_fit_max_iter=primary_model_fit_max_iter,
+            primary_model_fit_epsilon=primary_model_fit_epsilon,
+            approximate_Newton=approximate_Newton,
+            thread=thread,
+            sparse_matrix=sparse_matrix,
+            splicing_type=splicing_type,
+            important_search=important_search
+        )
+
+    def predict(self, X):
+        r"""
+        Return the most possible class for given data.
+
+        Parameters
+        ----------
+        X : array-like, shape(n_samples, p_features)
+            Sample matrix to be predicted.
+
+        Returns
+        -------
+        y : array-like, shape(n_samples, M_responses)
+            Predict class labels for samples in X.
+            Each row contains only one "1", and its column index is the
+            predicted class for related sample.
+        """
+        X = new_data_check(self, X)
+
+        intercept_ = np.repeat(
+            self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
+        xbeta = X.dot(self.coef_) + intercept_
+        max_item = np.argmax(xbeta, axis=1)
+        y_pred = np.zeros_like(xbeta)
+        for i in range(X.shape[0]):
+            y_pred[i, max_item[i]] = 1
+        return y_pred
+
+    def score(self, X, y):
+        """
+        Give new data, and it returns the entropy function.
+
+        Parameters
+        ----------
+        X : array-like, shape(n_samples, p_features)
+            Test data.
+        y : array-like, shape(n_samples, M_responses)
+            Test response (dummy variables of real class).
+
+        Returns
+        -------
+        score : float
+            entropy function
+        """
+        X, y = new_data_check(self, X, y)
+        if len(y.shape) == 1:
+            y = categorical_to_dummy(y)
+
+        pr = self.predict_proba(X)
+        return np.sum(y * np.log(pr))
+
 
 class abessLogistic(LogisticRegression):
     warning_msg = ("Class ``abessLogistic`` has been renamed to "
