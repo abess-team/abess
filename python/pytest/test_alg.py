@@ -1,7 +1,6 @@
 import sys
 import warnings
 import abess
-from abess.datasets import make_glm_data
 import numpy as np
 import pandas as pd
 from scipy.sparse import coo_matrix
@@ -370,7 +369,7 @@ class TestAlgorithm:
     @staticmethod
     def test_gamma():
         np.random.seed(1)
-        data = make_glm_data(n=100, p=10, k=3, family="gamma")
+        data = abess.make_glm_data(n=100, p=10, k=3, family="gamma")
 
         # null
         # check_estimator(abess.GammaRegression())
@@ -428,7 +427,7 @@ class TestAlgorithm:
     @staticmethod
     def test_ordinal():
         np.random.seed(0)
-        data = make_glm_data(n=100, p=20, k=5, family="ordinal")
+        data = abess.make_glm_data(n=100, p=20, k=5, family="ordinal")
 
         # null
         model1 = abess.OrdinalRegression()

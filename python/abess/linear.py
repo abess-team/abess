@@ -1007,7 +1007,6 @@ class OrdinalRegression(bess_base):
                  important_search=128
                  ):
         super().__init__(
-            # TODO: normalize_type = ?
             algorithm_type="abess", model_type="Ordinal", normalize_type=2,
             path_type=path_type, max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size,
