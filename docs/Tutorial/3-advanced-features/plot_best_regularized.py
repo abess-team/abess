@@ -68,3 +68,5 @@ print("The average predition error under regularized best-subset selection:",
 # The ``abess`` R package also supports regularized best-subset selection.
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v07-advancedFeatures.html.
+
+# sphinx_gallery_thumbnail_path = '_static/regularized_cover.png'
