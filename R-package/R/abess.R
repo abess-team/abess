@@ -21,8 +21,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' by the \code{survival} package (recommended) or
 #' a two-column matrix with columns named \code{"time"} and \code{"status"}.
 #' For \code{family = "mgaussian"}, \code{y} should be a matrix of quantitative responses.
-#' For \code{family = "multinomial"}, \code{y} should be a factor of at least three levels.
-#' Note that, for either \code{"binomial"} or \code{"multinomial"},
+#' For \code{family = "multinomial"} or \code{"ordinal"}, \code{y} should be a factor of at least three levels.
+#' Note that, for either \code{"binomial"}, \code{"ordinal"} or \code{"multinomial"},
 #' if y is presented as a numerical vector, it will be coerced into a factor.
 #' @param family One of the following models:
 #' \code{"gaussian"} (continuous response),
@@ -31,6 +31,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' \code{"cox"} (left-censored response),
 #' \code{"mgaussian"} (multivariate continuous response),
 #' \code{"multinomial"} (multi-class response),
+#' \code{"ordinal"} (multi-class ordinal response),
 #' \code{"gamma"} (positive continuous response).
 #' Depending on the response. Any unambiguous substring can be given.
 #' @param tune.path The method to be used to select the optimal support size. For
@@ -252,6 +253,20 @@ abess <- function(x, ...) UseMethod("abess")
 #'   support.size = c(3, 4), type = "response"
 #' )
 #'
+#' ################ Ordinal model (multi-classification for ordinal response) ################
+#' dataset <- generate.data(n, p, support.size, family = "ordinal", class.num = 4)
+#' abess_fit <- abess(dataset[["x"]], dataset[["y"]],
+#'   family = "ordinal", tune.type = "cv"
+#' )
+#' coef <- coef(abess_fit, support.size = abess_fit[["best.size"]])[[1]]
+#' intercept <- as.vector(coef[1,])
+#' beta <- as.vector(coef[-1,1])
+#' activation.set.index <- as.vector(which(beta != 0))
+#' predict(abess_fit,
+#'   newx = dataset[["x"]][1:10, ],
+#'   support.size = c(3, 4), type = "response"
+#' )
+#'
 #' ########## Best group subset selection #############
 #' dataset <- generate.data(n, p, support.size)
 #' group_index <- rep(1:10, each = 2)
@@ -398,7 +413,7 @@ abess.default <- function(x,
   multi_y <- para$multi_y
   early_stop <- para$early_stop
   
-  t1 <- proc.time()
+  # t1 <- proc.time()
   result <- abessGLM_API(
     x = x,
     y = y,
@@ -437,7 +452,7 @@ abess.default <- function(x,
     cv_fold_id = cv_fold_id, 
     A_init = as.integer(init.active.set)
   )
-  t2 <- proc.time()
+  # t2 <- proc.time()
   # print(t2 - t1)
 
   ## process result
