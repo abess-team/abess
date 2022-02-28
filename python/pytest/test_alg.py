@@ -272,10 +272,10 @@ class TestAlgorithm:
         score = model1.score(data.x, data.y)
         assert not np.isnan(score)
 
-        # approximate Newton
-        model2 = abess.MultinomialRegression(approximate_Newton=True)
-        model2.fit(data.x, data.y)
-        assert_fit(model1.coef_, model2.coef_)
+        # # approximate Newton
+        # model2 = abess.MultinomialRegression(approximate_Newton=True)
+        # model2.fit(data.x, data.y)
+        # assert_fit(model1.coef_, model2.coef_)
 
         # categorical y
         cate_y = np.repeat(np.arange(n / 10), 10)
@@ -306,58 +306,61 @@ class TestAlgorithm:
         model1.fit(X)
         assert np.count_nonzero(model1.coef_) == s
 
+        assert False
         # ratio & transform
-        model1.ratio(X)
-        model1.transform(X)
-        model1.fit_transform(X)
+        # model1.ratio(X)
+        # model1.transform(X)
+        # model1.fit_transform(X)
 
-        # sparse
-        model2 = abess.SparsePCA(support_size=s, sparse_matrix=True)
-        model2.fit(coo_matrix(X))
-        assert_value(model1.coef_, model2.coef_)
+        # # sparse
+        # model2 = abess.SparsePCA(support_size=s, sparse_matrix=True)
+        # model2.fit(coo_matrix(X))
+        # print("coef1: ", np.unique(np.nonzero(model1.coef_)[0]))
+        # print("coef2: ", np.unique(np.nonzero(model2.coef_)[0]))
+        # assert_value(model1.coef_, model2.coef_)
 
-        model2 = abess.SparsePCA(support_size=s, sparse_matrix=True)
-        model2.fit(X)
-        assert_value(model1.coef_, model2.coef_)
+        # model2 = abess.SparsePCA(support_size=s, sparse_matrix=True)
+        # model2.fit(X)
+        # assert_value(model1.coef_, model2.coef_)
 
         # sigma input
-        model3 = abess.SparsePCA(support_size=support_size)
-        model3.fit(Sigma=X.T.dot(X))
-        model3.fit(Sigma=X.T.dot(X) / n, n=n)
-        assert_fit(model1.coef_, model3.coef_)
+        # model3 = abess.SparsePCA(support_size=support_size)
+        # model3.fit(Sigma=X.T.dot(X))
+        # model3.fit(Sigma=X.T.dot(X) / n, n=n)
+        # assert_fit(model1.coef_, model3.coef_)
 
-        # KPCA
-        support_size_m = np.hstack((support_size, support_size, support_size))
-        model4 = abess.SparsePCA(support_size=support_size_m)
-        model4.fit(X, number=3)
-        assert model4.coef_.shape[1] == 3
+        # # KPCA
+        # support_size_m = np.hstack((support_size, support_size, support_size))
+        # model4 = abess.SparsePCA(support_size=support_size_m)
+        # model4.fit(X, number=3)
+        # assert model4.coef_.shape[1] == 3
 
-        for i in range(3):
-            coef = np.nonzero(model4.coef_[:, i])[0]
-            assert len(coef) == s
+        # for i in range(3):
+        #     coef = np.nonzero(model4.coef_[:, i])[0]
+        #     assert len(coef) == s
 
-        model4.ratio(X)
+        # model4.ratio(X)
 
-        # group
-        support_size_g = np.zeros((4, 1))
-        support_size_g[1, 0] = 1
-        group = np.repeat([0, 1, 2, 3], [5, 5, 5, 5])
-        model5 = abess.SparsePCA(support_size=support_size_g)
-        model5.fit(X, group=group)
-        coef = g_index[np.nonzero(model5.coef_)[0]]
+        # # group
+        # support_size_g = np.zeros((4, 1))
+        # support_size_g[1, 0] = 1
+        # group = np.repeat([0, 1, 2, 3], [5, 5, 5, 5])
+        # model5 = abess.SparsePCA(support_size=support_size_g)
+        # model5.fit(X, group=group)
+        # coef = g_index[np.nonzero(model5.coef_)[0]]
 
-        assert len(coef) == 10
-        assert len(np.unique(coef)) == 2
+        # assert len(coef) == 10
+        # assert len(np.unique(coef)) == 2
 
-        # screening
-        model6 = abess.SparsePCA(support_size=support_size, screening_size=20)
-        model6.fit(X)
-        assert_nan(model6.coef_)
+        # # screening
+        # model6 = abess.SparsePCA(support_size=support_size, screening_size=20)
+        # model6.fit(X)
+        # assert_nan(model6.coef_)
 
-        # ic
-        for ic in ['aic', 'bic', 'ebic', 'gic']:
-            model4 = abess.SparsePCA(support_size=support_size, ic_type=ic)
-            model4.fit(X, is_normal=False)
+        # # ic
+        # for ic in ['aic', 'bic', 'ebic', 'gic']:
+        #     model4 = abess.SparsePCA(support_size=support_size, ic_type=ic)
+        #     model4.fit(X, is_normal=False)
 
     @staticmethod
     def test_gamma():
