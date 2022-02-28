@@ -70,7 +70,8 @@ abess <- function(x, ...) UseMethod("abess")
 #' it would greatly reduce runtimes. Default: \code{important.search = 128}.
 #' @param normalize Options for normalization. \code{normalize = 0} for no normalization.
 #' \code{normalize = 1} for subtracting the mean of columns of \code{x}.
-#' \code{normalize = 2} for scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
+#' \code{normalize = 2} for subtracting the mean of columns of \code{x} and 
+#' scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
 #' \code{normalize = 3} for subtracting the means of the columns of \code{x} and \code{y}, and also
 #' normalizing the columns of \code{x} to have \eqn{\sqrt n} norm.
 #' If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gaussian"},

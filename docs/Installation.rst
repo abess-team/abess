@@ -165,7 +165,7 @@ packages should be installed:
    testing with Python.
    
    - `lifelines <https://pypi.org/project/lifelines/>`__: support testing 
-   for survival analysis.
+     for survival analysis.
 -  `Sphinx <https://pypi.org/project/Sphinx/>`__: develop the Python
    documentation.
 
