@@ -37,7 +37,12 @@ np.random.seed(0)
 n = 100
 p = 20
 k = 5
-data = make_glm_data(n=n, p=p, k=k, family='gaussian')
+coef1 = 0.5*np.ones(5)
+coef2 = np.zeros(5)
+coef3 = 0.5*np.ones(5)
+coef4 = np.zeros(5)
+coef = np.hstack((coef1, coef2, coef3, coef4))
+data = make_glm_data(n=n, p=p, k=k, family='gaussian', coef_ = coef)
 print('real coefficients:\n', data.coef_, '\n')
 
 # %%
@@ -51,14 +56,25 @@ print('group index:\n', group)
 # `support_size` here indicates the number of groups, instead of the
 # number of variables.
 
-model = LinearRegression(support_size=range(0, 3))
-model.fit(data.x, data.y, group=group)
-print('coefficients:\n', model.coef_)
+model1 = LinearRegression(support_size=range(0, 3))
+model1.fit(data.x, data.y, group=group)
+print('coefficients:\n', model1.coef_)
+
 
 # %%
-# The fitted result suggest that only two groups are selected (since ``support_size`` is from 0 to 2) and the selected variables are shown before.
+# The fitted result suggest that only two groups are selected (since ``support_size`` is from 0 to 2) and the selected variables are shown above.
 #
+# Next, we want to compare the result of a given group structure with that without a given group structure.
+#
+model2 = LinearRegression()
+model2.fit(data.x, data.y)
+print('coefficients:\n', model2.coef_)
+
+# %%
+# The result from a model without a given group structure omits two predictors 
+# belonging to the active set.
 # The ``abess`` R package also supports best group subset selection.
+#
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v07-advancedFeatures.html.
 
