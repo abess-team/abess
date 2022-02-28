@@ -90,226 +90,58 @@ abessrpca <- function(x,
                       num.threads = 0,
                       seed = 1,
                       ...) {
-  ## strategy for tuning
   tune.path <- match.arg(tune.path)
-  if (tune.path == "gsection") {
-    path_type <- 2
-  } else if (tune.path == "sequence") {
-    path_type <- 1
-  }
-
-  ## check rank:
-  stopifnot(!missing(rank))
-  stopifnot(!anyNA(rank))
-  stopifnot(all(rank >= 0))
-
-  ## check number of thread:
-  stopifnot(is.numeric(num.threads) & num.threads >= 0)
-  num_threads <- as.integer(num.threads)
-
-  ## check parameters for sub-optimization:
-  # 1:
-  if (!is.null(max.newton.iter)) {
-    stopifnot(is.numeric(max.newton.iter) & max.newton.iter >= 1)
-    max_newton_iter <- as.integer(max.newton.iter)
-  } else {
-    max_newton_iter <- 100
-  }
-  # 2:
-  stopifnot(is.numeric(newton.thresh) & newton.thresh > 0)
-  newton_thresh <- as.double(newton.thresh)
-
-  ## check lambda:
-  lambda <- 0
-  stopifnot(!anyNA(lambda))
-  stopifnot(all(lambda >= 0))
-
-  ## check warm start:
-  stopifnot(is.logical(warm.start))
-
-  ## check splicing type
-  stopifnot(length(splicing.type) == 1)
-  stopifnot(splicing.type %in% c(1, 2))
-  splicing_type <- as.integer(splicing.type)
-
-  ## check max splicing iteration
-  stopifnot(is.numeric(max.splicing.iter) & max.splicing.iter >= 1)
-  max_splicing_iter <- as.integer(max.splicing.iter)
-
-  stopifnot(class(x)[1] %in% c("matrix", "data.frame", "dgCMatrix"))
-  nvars <- ncol(x)
-  nobs <- nrow(x)
-  sparse_X <- ifelse(class(x)[1] %in% c("matrix", "data.frame"), FALSE, TRUE)
-  if (sparse_X) {
-
-  } else {
-    if (is.data.frame(x)) {
-      x <- as.matrix(x)
-    }
-    if (!is.numeric(x)) {
-      stop("x must be a *numeric* matrix/data.frame!")
-    }
-    if (anyNA(x) || any(is.infinite(x))) {
-      stop("x has missing value or infinite value!")
-    }
-    if (nvars == 1) {
-      ### some special handling
-    }
-  }
-  vn <- colnames(x)
-  if (is.null(vn)) {
-    vn <- paste0("x", 1:nvars)
-  }
-
-  screening_num <- nobs * nvars
-
-  ## group variable:
-  group_select <- FALSE
-  if (is.null(group.index)) {
-    g_index <- 1:(nobs * nvars) - 1
-    ngroup <- 1
-    max_group_size <- 1
-    # g_df <- rep(1, nvars)
-  } else {
-    stopifnot(all(!is.na(group.index)))
-    stopifnot(all(is.finite(group.index)))
-    stopifnot(diff(group.index) >= 0)
-    check_integer(group.index, "group.index must be a vector with integer value.")
-    group_select <- TRUE
-    gi <- unique(group.index)
-    g_index <- match(gi, group.index) - 1
-    g_df <- c(diff(g_index), nvars - max(g_index))
-    ngroup <- length(g_index)
-    max_group_size <- max(g_df)
-  }
-
-  # sparse level list (sequence):
-  max_rank <- max(c(nvars, nobs))
-  if (is.null(support.size)) {
-    if (group_select) {
-      s_list <- 0:min(c(ngroup, round(nobs / max_group_size / log(ngroup))))
-    } else {
-      min_support_set <- max(c(3 * rank, max_rank / 2))
-      s_list <- min_support_set:round(1.5 * max(max_rank))
-    }
-  } else {
-    stopifnot(any(is.numeric(support.size) & support.size >= 0))
-    check_integer(support.size, "support.size must be a vector with integer value.")
-    if (group_select) {
-      stopifnot(max(support.size) <= ngroup)
-    }
-    stopifnot(max(support.size) <= nvars * nobs)
-    support.size <- sort(support.size)
-    support.size <- unique(support.size)
-    s_list <- support.size
-  }
-
-  ## check C-max:
-  s_list_max <- max(unlist(s_list))
-  if (is.null(c.max)) {
-    c_max <- max(c(2, round(s_list_max / 2)))
-  } else {
-    stopifnot(is.numeric(c.max) & c.max >= 1)
-    check_integer_warning(
-      c.max,
-      "c.max should be an integer. It is coerced to as.integer(c.max)."
-    )
-    c_max <- as.integer(c.max)
-  }
-
-  # tune support size method:
   tune.type <- match.arg(tune.type)
-  ic_type <- map_tunetype2numeric(tune.type)
-  is_cv <- FALSE
-  cv_fold_id <- integer(0)
-
-  ## information criterion
-  stopifnot(is.numeric(ic.scale))
-  stopifnot(ic.scale >= 0)
-  ic_scale <- as.integer(ic.scale)
-
-  # check important searching:
-  if (is.null(important.search)) {
-    important_search <- min(c(nvars, 128))
-    important_search <- as.integer(important_search)
-  } else {
-    stopifnot(is.numeric(important.search))
-    stopifnot(important.search >= 0)
-    check_integer_warning(important.search)
-    important_search <- as.integer(important.search)
-  }
-
-  # sparse range (golden-section):
-  if (is.null(gs.range)) {
-    s_min <- 1
-    if (group_select) {
-      s_max <- min(c(ngroup, round(nobs / max_group_size / log(ngroup))))
-    } else {
-      s_max <- min(c(nvars, round(nobs / log(log(nobs)) / log(nvars))))
-    }
-  } else {
-    stopifnot(length(gs.range) == 2)
-    stopifnot(all(is.numeric(gs.range)))
-    stopifnot(all(gs.range > 0))
-    check_integer_warning(
-      gs.range,
-      "gs.range should be a vector with integer.
-                          It is coerced to as.integer(gs.range)."
-    )
-    gs.range <- as.integer(gs.range)
-    stopifnot(as.integer(gs.range)[1] != as.integer(gs.range)[2])
-    if (group_select) {
-      stopifnot(max(gs.range) < ngroup)
-    } else {
-      stopifnot(max(gs.range) < nvars)
-    }
-    gs.range <- as.integer(gs.range)
-    s_min <- min(gs.range)
-    s_max <- max(gs.range)
-  }
-
-  # check always included variables:
-  if (is.null(always.include)) {
-    always_include <- numeric(0)
-  } else {
-    if (anyNA(always.include) || any(is.infinite(always.include))) {
-      stop("always.include has missing values or infinite values.")
-    }
-    stopifnot(always.include %in% 1:nvars)
-    stopifnot(always.include > 0)
-    check_integer(always.include, "always.include must be a vector with integer value.")
-    always.include <- as.integer(always.include) - 1
-    always_include_num <- length(always.include)
-    if (always_include_num > screening_num) {
-      stop("The number of variables in always.include must not exceed the screening.num")
-    }
-    if (path_type == 1) {
-      if (always_include_num > max(s_list)) {
-        stop("always.include containing too many variables.
-           The length of it must not exceed the maximum in support.size.")
-      }
-      if (always_include_num > min(s_list)) {
-        if (is.null(support.size)) {
-          s_list <- s_list[s_list >= always_include_num]
-        } else {
-          stop(sprintf("always.include containing %s variables. The min(support.size) must be equal or greater than this.", always_include_num))
-        }
-      }
-    } else {
-      if (always_include_num > s_max) {
-        stop("always.include containing too many variables. The length of it must not exceed the max(gs.range).")
-      }
-      if (always_include_num > s_min) {
-        if (is.null(support.size)) {
-          s_min <- always_include_num
-        } else {
-          stop(sprintf("always.include containing %s variables. The min(gs.range) must be equal or greater than this.", always_include_num))
-        }
-      }
-    }
-    always_include <- always.include
-  }
-
+  
+  
+  
+  data <- list(x=x)
+  para <- Initialization_RPCA(
+    rank = rank,
+    support.size = support.size,
+    tune.path = tune.path,
+    gs.range = gs.range,
+    tune.type = tune.type,
+    ic.scale = ic.scale,
+    lambda = 0,
+    always.include = always.include,
+    group.index = group.index,
+    c.max = c.max,
+    splicing.type = splicing.type,
+    max.splicing.iter = max.splicing.iter,
+    warm.start = warm.start,
+    important.search = important.search,
+    max.newton.iter = max.newton.iter,
+    newton.thresh = newton.thresh,
+    num.threads = num.threads
+  )
+  
+  model <- initializate(para,data)
+  para <- model$para
+  data <- model$data
+  
+  x <- data$x
+  rank <- para$rank
+  tune.type <- para$tune.type
+  warm.start <- para$warm.start
+  num.threads <- para$num.threads
+  splicing_type  <- para$splicing_type 
+  max_splicing_iter <- para$max_splicing_iter
+  nobs <- para$nobs
+  nvars <- para$nvars
+  sparse_X <- para$sparse_X
+  g_index <- para$g_index
+  s_list <- para$s_list
+  c_max <- para$c_max
+  important_search <- para$important_search
+  always_include <- para$always_include
+  path_type  <- para$path_type 
+  max_newton_iter <- para$max_newton_iter
+  newton_thresh <- para$newton_thresh
+  s_min <- para$s_min
+  s_max <- para$s_max
+  
+  
   result_cpp <- abessRPCA_API(
     x = x,
     n = nobs,
@@ -339,7 +171,7 @@ abessrpca <- function(x,
     sub_search = important_search, 
     A_init = as.integer(c())
   )
-
+  
   result_R <- list()
   S <- lapply(result_cpp[["beta_all"]], function(x) {
     non_zero_index <- which(x != 0)
@@ -366,7 +198,7 @@ abessrpca <- function(x,
   result_R[["tune.value"]] <- as.vector(result_cpp[["ic_all"]])
   result_R[["support.size"]] <- s_list
   result_R[["tune.type"]] <- tune.type
-
+  
   result_R[["call"]] <- match.call()
   class(result_R) <- "abessrpca"
   result_R

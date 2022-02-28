@@ -109,7 +109,7 @@ test_batch <- function(n, p, support_size, family, formula) {
 
   ## support size
   screening_vars <- abess_fit[["screening.vars"]]
-  if (family %in% c("mgaussian", "multinomial")) {
+  if (family %in% c("mgaussian", "multinomial", "ordinal")) {
     true_index <- which(apply(dataset[["beta"]], 1, function(x) {
       all(x != 0)
     }))

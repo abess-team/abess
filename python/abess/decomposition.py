@@ -4,6 +4,7 @@ from scipy.sparse import coo_matrix
 from sklearn.utils.validation import check_array
 from pybind_cabess import pywrap_PCA, pywrap_RPCA
 from .bess_base import bess_base
+from .utilities import new_data_check
 
 
 def fix_docs(cls):
@@ -18,15 +19,15 @@ def fix_docs(cls):
 
 @fix_docs
 class SparsePCA(bess_base):
-    """
-    Adaptive Best-Subset Selection(ABESS) algorithm for principal component analysis.
+    r"""
+    Adaptive Best-Subset Selection(ABESS) algorithm for
+    principal component analysis.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h).
+    splicing_type: {0, 1}, optional, default=1
+        The type of splicing.
         "0" for decreasing by half, "1" for decresing by one.
-        Default: splicing_type = 1.
 
     Examples
     --------
@@ -41,112 +42,24 @@ class SparsePCA(bess_base):
     >>> X = np.random.randn(100, 50)
     >>> model.fit(X)
     SparsePCA(always_select=[], support_size=10)
-    >>> print(model.coef_)
-    [[ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [-0.26348747]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [-0.25116457]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.246006  ]
-     [ 0.        ]
-     [ 0.33525413]
-     [ 0.        ]
-     [ 0.29103013]
-     [-0.40993835]
-     [ 0.        ]
-     [-0.35352296]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [-0.41322479]
-     [ 0.26514089]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.2753099 ]]
+    >>> # print(model.coef_)
+    >>> print(model.coef_[1:6,])
+    [[6.36598737e-314]
+     [1.06099790e-313]
+     [1.48539705e-313]
+     [1.90979621e-313]
+     [2.33419537e-313]]
     >>>
     >>> ### X unknown, but Sigma known
     >>> model.fit(Sigma = np.cov(X.T))
     SparsePCA(always_select=[], support_size=10)
-    >>> print(model.coef_)
-    [[ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [-0.26348747]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [-0.25116457]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.246006  ]
-     [ 0.        ]
-     [ 0.33525413]
-     [ 0.        ]
-     [ 0.29103013]
-     [-0.40993835]
-     [ 0.        ]
-     [-0.35352296]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [-0.41322479]
-     [ 0.26514089]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.        ]
-     [ 0.2753099 ]]
+    >>> # print(model.coef_)
+    >>> print(model.coef_[1:6,])
+    [[6.36598737e-314]
+     [1.06099790e-313]
+     [1.48539705e-313]
+     [1.90979621e-313]
+     [2.33419537e-313]]
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
@@ -182,7 +95,7 @@ class SparsePCA(bess_base):
             Sample matrix to be transformed.
 
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
 
         return X.dot(self.coef_)
 
@@ -195,7 +108,7 @@ class SparsePCA(bess_base):
         X : array-like, shape (n_samples, n_features)
             Sample matrix.
         """
-        X = self.new_data_check(X)
+        X = new_data_check(self, X)
         s = np.cov(X.T)
         if len(self.coef_.shape) == 1:
             explain = self.coef_.T.dot(s).dot(self.coef_)
@@ -465,15 +378,15 @@ class SparsePCA(bess_base):
 
 @fix_docs
 class RobustPCA(bess_base):
-    """
-    Adaptive Best-Subset Selection(ABESS) algorithm for robust principal component analysis.
+    r"""
+    Adaptive Best-Subset Selection(ABESS) algorithm for
+    robust principal component analysis.
 
     Parameters
     ----------
-    splicing_type: {0, 1}, optional
-        The type of splicing in `fit()` (in Algorithm.h).
+    splicing_type: {0, 1}, optional, default=1
+        The type of splicing.
         "0" for decreasing by half, "1" for decresing by one.
-        Default: splicing_type = 1.
 
     Examples
     --------
@@ -496,6 +409,7 @@ class RobustPCA(bess_base):
      [0.         0.         0.         ... 0.         0.         0.        ]
      [0.         0.         0.         ... 0.         0.         0.        ]
      [0.         0.         0.         ... 0.         0.         0.        ]]
+
     """
 
     def __init__(self, max_iter=20, exchange_num=5, is_warm_start=True,

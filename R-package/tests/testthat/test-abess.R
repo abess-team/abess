@@ -541,6 +541,32 @@ test_that("abess (gamma) works", {
   test_batch(abess_fit, dataset, Gamma)
 })
 
+test_that("abess (ordinal) works", {
+  skip_on_ci()
+  n <- 2000
+  p <- 1000
+  support.size <- 10
+  dataset <- generate.data(n, p, support.size,
+                            family = "ordinal",class.num = 3, seed = 1)
+   
+  abess_fit <- abess(
+    dataset[["x"]],
+    dataset[["y"]],
+    family = "ordinal",
+    tune.type = "cv", 
+    support.size = support.size,
+    #always.include = which(dataset$beta != 0),
+    max.splicing.iter = 1
+  )
+  beta.idx.true <- which(dataset[["beta"]]!=0)
+  
+  coef <- coef(abess_fit, support.size = abess_fit[["best.size"]])[[1]]
+  beta.idx.fit <- unique(coef@i)[-1]
+  
+  expect_equal(length(beta.idx.true),length(beta.idx.fit))
+  #expect_equal(beta.idx.true,beta.idx.fit)
+})
+
 test_that("abess (one variable input) works", {
   n <- 100
   p <- 1
