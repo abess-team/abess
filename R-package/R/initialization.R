@@ -1008,8 +1008,6 @@ normalize_strategy.glm <- function(para){
     )
   } else {
     stopifnot(para$normalize %in% 0:3)
-    if(para$normalize != 0)
-      para$normalize <- 4 - para$normalize # fit cpp interface
   }
   
   para

@@ -68,14 +68,15 @@ abess <- function(x, ...) UseMethod("abess")
 #' important variables to be splicing.
 #' When \code{important.search} \eqn{\ll} \code{p} variables,
 #' it would greatly reduce runtimes. Default: \code{important.search = 128}.
-#' @param normalize Options for normalization. \code{normalize = 0} for no normalization.
-#' \code{normalize = 1} for subtracting the mean of columns of \code{x}.
+#' @param normalize Options for normalization. 
+#' \code{normalize = 0} for no normalization.
+#' \code{normalize = 1} for subtracting the means of the columns of \code{x} and \code{y}, and also
+#' normalizing the columns of \code{x} to have \eqn{\sqrt n} norm.
 #' \code{normalize = 2} for subtracting the mean of columns of \code{x} and 
 #' scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
-#' \code{normalize = 3} for subtracting the means of the columns of \code{x} and \code{y}, and also
-#' normalizing the columns of \code{x} to have \eqn{\sqrt n} norm.
-#' If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gaussian"},
-#' \code{2} for \code{"binomial"}. Default is \code{normalize = NULL}.
+#' \code{normalize = 3} for scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
+#' If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gaussian"} and \code{"mgaussian"},
+#' \code{3} for \code{"cox"}. Default is \code{normalize = NULL}.
 #' @param c.max an integer splicing size. Default is: \code{c.max = 2}.
 #' @param weight Observation weights. When \code{weight = NULL},
 #' we set \code{weight = 1} for each observation as default.
