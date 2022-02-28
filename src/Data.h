@@ -69,7 +69,7 @@ class Data {
         } else if (this->normalize_type == 2) {
             Normalize3(this->x, this->weight, this->x_mean, this->x_norm);
         } else {
-            Normalize4(this->x, this->weight, this->x_norm);
+            Normalize4(this->x, this->weight, this->x_mean);
         }
     };
 
