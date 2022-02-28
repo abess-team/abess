@@ -89,7 +89,7 @@ predict.abess <- function(object, newx,
   } else if (object[["family"]] == "multinomial") {
     if (type == "link") {
     } else if (type == "response") {
-      for (i in 1:length(supp_size_index)) {
+      for (i in seq_len(length(supp_size_index))) {
         y_exp <- exp(cbind(y[[i]], 0))
         total_exp <- rowSums(y_exp)
         y[[i]] <- sweep(y_exp, MARGIN = 1, total_exp, FUN = "/")
@@ -100,7 +100,7 @@ predict.abess <- function(object, newx,
     } else if (type == "response") {
       y <- lapply(y,function(x) 1 / (exp(-x) + 1))
       n <- nrow(y[[1]])
-      for (i in 1:length(supp_size_index)) {
+      for (i in seq_len(length(supp_size_index))) {
         y[[i]] <- cbind(y[[i]],rep(1,n)) - cbind(rep(0,n),y[[i]])
       }
     }
