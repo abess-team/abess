@@ -5,7 +5,7 @@
 #' @param type \code{type = "link"} gives the linear predictors for \code{"binomial"},
 #' \code{"poisson"} or \code{"cox"} models; for \code{"gaussian"} models it gives the
 #' fitted values. \code{type = "response"} gives the fitted probabilities for
-#' \code{"binomial"}, fitted mean for \code{"poisson"} and the fitted relative-risk for
+#' \code{"binomial"} and \code{"ordinal"}, fitted mean for \code{"poisson"} and the fitted relative-risk for
 #' \code{"cox"}; for \code{"gaussian"}, \code{type = "response"} is equivalent to \code{type = "link"}.
 #' @param ... Additional arguments affecting the predictions produced.
 #'
@@ -89,10 +89,19 @@ predict.abess <- function(object, newx,
   } else if (object[["family"]] == "multinomial") {
     if (type == "link") {
     } else if (type == "response") {
-      for (i in 1:length(supp_size_index)) {
+      for (i in seq_len(length(supp_size_index))) {
         y_exp <- exp(cbind(y[[i]], 0))
         total_exp <- rowSums(y_exp)
         y[[i]] <- sweep(y_exp, MARGIN = 1, total_exp, FUN = "/")
+      }
+    }
+  } else if (object[["family"]] == "ordinal") {
+    if (type == "link") {
+    } else if (type == "response") {
+      y <- lapply(y,function(x) 1 / (exp(-x) + 1))
+      n <- nrow(y[[1]])
+      for (i in seq_len(length(supp_size_index))) {
+        y[[i]] <- cbind(y[[i]],rep(1,n)) - cbind(rep(0,n),y[[i]])
       }
     }
   }

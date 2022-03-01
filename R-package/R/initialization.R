@@ -1008,14 +1008,6 @@ normalize_strategy.glm <- function(para){
     )
   } else {
     stopifnot(para$normalize %in% 0:3)
-  
-    if (para$normalize == 1) {
-      para$normalize <- 2
-    } else if (para$normalize == 2) {
-      para$normalize <- 3
-    } else if (para$normalize == 3) {
-      para$normalize <- 1
-    }
   }
   
   para
