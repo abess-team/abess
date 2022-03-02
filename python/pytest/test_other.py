@@ -14,7 +14,7 @@ class TestOther:
 
     @staticmethod
     def test_datasets():
-        np.random.seed(0)
+        np.random.seed(123)
         n = 100
         p = 20
         k = 5
