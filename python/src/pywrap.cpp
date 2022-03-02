@@ -77,8 +77,10 @@ std::tuple<Eigen::MatrixXd, double, double, double, double> pywrap_PCA(Eigen::Ma
     Eigen::MatrixXd beta;
     if (pca_num == 1)
     {
+        Eigen::VectorXd beta_temp;
+        mylist.get_value_by_name("beta", beta_temp);
         beta.resize(p, 1);
-        mylist.get_value_by_name("beta", beta);
+        beta = beta_temp;
     }
     else
     {

@@ -132,8 +132,6 @@ class SparsePCA(bess_base):
             Training data.
         is_normal : bool, optional, default=False
             whether normalize the variables array before fitting the algorithm.
-        is_normal : bool, optional, default=True
-            whether normalize the variables array before fitting the algorithm.
         weight : array-like, shape(n_samples,), optional, default=np.ones(n)
             Individual weights for each sample. Only used for is_weight=True.
         group : int, optional, default=np.ones(p)
@@ -370,9 +368,9 @@ class SparsePCA(bess_base):
         self.coef_ = result[0].reshape(p, number)
         return self
 
-    def fit_transform(self, X=None, is_normal=True,
-                      group=None, Sigma=None, number=1):
-        self.fit(X, is_normal, group, Sigma, number)
+    def fit_transform(self, X=None, is_normal=False,
+                      group=None, Sigma=None, number=1, n=None, A_init=None):
+        self.fit(X, is_normal, group, Sigma, number, n, A_init)
         return X.dot(self.coef_)
 
 
