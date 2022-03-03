@@ -178,7 +178,32 @@ print(cindex[0])
 
 # %%
 # On this dataset, the C-index is about 0.68.
+# 
+# We can also perform prediction in terms of survival or cumulative hazard function. 
+# Here we choose the 9th predictor and we want to see how positive or 
+# negative status would affect the survival function for each patient.
+#
+surv_fns = model.predict_survival_function(train[:, 2:])
+time_points = np.quantile(train[:,0], np.linspace(0, 0.6, 100))
+legend_handles = []
+legend_labels = []
+_, ax = plt.subplots(figsize=(9, 6))
+for fn, label in zip(surv_fns, train[:, 8].astype(int)):
+    line, = ax.step(time_points, fn(time_points), where="post",
+                   color="C{:d}".format(label), alpha=0.5)
+    if len(legend_handles) <= label:
+        name = "positive" if label == 1 else "negative"
+        legend_labels.append(name)
+        legend_handles.append(line)
 
+ax.legend(legend_handles, legend_labels)
+ax.set_xlabel("time")
+ax.set_ylabel("Survival probability")
+ax.grid(True)
+
+# %%
+# The graph above shows that patients with positive status on the 9th predictor
+# tend to have better prognosis.
 ###############################################################################
 # The ``abess`` R package also supports CoxPH regression.
 # For R tutorial, please view

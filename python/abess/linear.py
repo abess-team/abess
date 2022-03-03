@@ -2,8 +2,9 @@ import warnings
 import numpy as np
 from .metrics import concordance_index_censored
 from .bess_base import bess_base
-from .utilities import (new_data_check, categorical_to_dummy)
-
+from .utilities import (new_data_check, categorical_to_dummy, _compute_counts)
+from .functions import StepFunction
+# from .nonparametric import _compute_counts
 
 def fix_docs(cls):
     # This function is to inherit the docstring from base class
@@ -90,6 +91,7 @@ class LogisticRegression(bess_base):
             splicing_type=splicing_type,
             important_search=important_search
         )
+        self._baseline_model = BreslowEstimator()
 
     def predict_proba(self, X):
         r"""
@@ -279,7 +281,95 @@ class LinearRegression(bess_base):
 
 
 @ fix_docs
-class CoxPHSurvivalAnalysis(bess_base):
+class BreslowEstimator:
+    """Breslow's estimator of the cumulative hazard function.
+    Attributes
+    ----------
+    cum_baseline_hazard_ : :class:`sksurv.functions.StepFunction`
+        Cumulative baseline hazard function.
+    baseline_survival_ : :class:`sksurv.functions.StepFunction`
+        Baseline survival function.
+    """
+
+    def fit(self, linear_predictor, event, time):
+        """Compute baseline cumulative hazard function.
+        Parameters
+        ----------
+        linear_predictor : array-like, shape = (n_samples,)
+            Linear predictor of risk: `X @ coef`.
+        event : array-like, shape = (n_samples,)
+            Contains binary event indicators.
+        time : array-like, shape = (n_samples,)
+            Contains event/censoring times.
+        Returns
+        -------
+        self
+        """
+        risk_score = np.exp(linear_predictor)
+        order = np.argsort(time, kind="mergesort")
+        risk_score = risk_score[order]
+        uniq_times, n_events, n_at_risk, _ = _compute_counts(event, time, order)
+
+        divisor =np.empty(n_at_risk.shape, dtype=float)
+        value = np.sum(risk_score)
+        divisor[0] = value
+        k = 0
+        for i in range(1, len(n_at_risk)):
+            d = n_at_risk[i - 1] - n_at_risk[i]
+            value -= risk_score[k:(k + d)].sum()
+            k += d
+            divisor[i] = value
+
+        assert k == n_at_risk[0] - n_at_risk[-1]
+
+        y = np.cumsum(n_events / divisor)
+        self.cum_baseline_hazard_ = StepFunction(uniq_times, y)
+        self.baseline_survival_ = StepFunction(self.cum_baseline_hazard_.x,
+                                               np.exp(- self.cum_baseline_hazard_.y))
+        return self
+
+    def get_cumulative_hazard_function(self, linear_predictor):
+        """Predict cumulative hazard function.
+        Parameters
+        ----------
+        linear_predictor : array-like, shape = (n_samples,)
+            Linear predictor of risk: `X @ coef`.
+        Returns
+        -------
+        cum_hazard : ndarray, shape = (n_samples,)
+            Predicted cumulative hazard functions.
+        """
+        risk_score = np.exp(linear_predictor)
+        n_samples = risk_score.shape[0]
+        funcs = np.empty(n_samples, dtype=object)
+        for i in range(n_samples):
+            funcs[i] = StepFunction(x=self.cum_baseline_hazard_.x,
+                                    y=self.cum_baseline_hazard_.y,
+                                    a=risk_score[i])
+        return funcs
+
+    def get_survival_function(self, linear_predictor):
+        """Predict survival function.
+        Parameters
+        ----------
+        linear_predictor : array-like, shape = (n_samples,)
+            Linear predictor of risk: `X @ coef`.
+        Returns
+        -------
+        survival : ndarray, shape = (n_samples,)
+            Predicted survival functions.
+        """
+        risk_score = np.exp(linear_predictor)
+        n_samples = risk_score.shape[0]
+        funcs = np.empty(n_samples, dtype=object)
+        for i in range(n_samples):
+            funcs[i] = StepFunction(x=self.baseline_survival_.x,
+                                    y=np.power(self.baseline_survival_.y, risk_score[i]))
+        return funcs
+
+
+@ fix_docs
+class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
     r"""
     Adaptive Best-Subset Selection(ABESS) algorithm for
     COX proportional hazards model.
@@ -355,6 +445,7 @@ class CoxPHSurvivalAnalysis(bess_base):
             splicing_type=splicing_type,
             important_search=important_search
         )
+        self._baseline_model = BreslowEstimator()
 
     def predict(self, X):
         r"""
@@ -398,6 +489,42 @@ class CoxPHSurvivalAnalysis(bess_base):
             np.array(y[:, 1], np.bool_), y[:, 0], risk_score)
         return result[0]
 
+    def predict_survival_function(self, X):
+        """Predict survival function.
+        The survival function for an individual
+        with feature vector :math:`x` is defined as
+        .. math::
+            S(t \\mid x) = S_0(t)^{\\exp(x^\\top \\beta)} ,
+        where :math:`S_0(t)` is the baseline survival function,
+        estimated by Breslow's estimator.
+        Parameters
+        ----------
+        X : array-like, shape = (n_samples, n_features)
+            Data matrix.
+        Returns
+        -------
+        survival : ndarray of :class:`sksurv.functions.StepFunction`, shape = (n_samples,)
+            Predicted survival functions.
+        Examples
+        --------
+        >>> import matplotlib.pyplot as plt
+        >>> from sksurv.datasets import load_whas500
+        >>> from sksurv.linear_model import CoxPHSurvivalAnalysis
+        Load the data.
+        >>> X, y = load_whas500()
+        >>> X = X.astype(float)
+        Fit the model.
+        >>> estimator = CoxPHSurvivalAnalysis().fit(X, y)
+        Estimate the survival function for the first 10 samples.
+        >>> surv_funcs = estimator.predict_survival_function(X.iloc[:10])
+        Plot the estimated survival functions.
+        >>> for fn in surv_funcs:
+        ...     plt.step(fn.x, fn(fn.x), where="post")
+        ...
+        >>> plt.ylim(0, 1)
+        >>> plt.show()
+        """
+        return self._baseline_model.get_survival_function(np.log(self.predict(X)))
 
 @ fix_docs
 class PoissonRegression(bess_base):
