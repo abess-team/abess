@@ -10,10 +10,14 @@ from sklearn.linear_model import (
     LogisticRegression,
     PoissonRegressor)
 from lifelines import CoxPHFitter
-from utilities import (assert_nan, assert_value, assert_fit)
+from utilities import (
+    assert_nan,
+    assert_value,
+    assert_fit,
+    save_data,
+    load_data)
 
 warnings.filterwarnings("ignore")
-
 
 class TestAlgorithm:
     """
@@ -259,6 +263,9 @@ class TestAlgorithm:
         data = abess.make_multivariate_glm_data(
             family=family, n=n, p=p, k=k, rho=rho, M=M)
 
+        # save_data(data, 'mulnomial_seed5_rho0.5')
+        data = load_data('mulnomial_seed5_rho0.5')
+
         # null
         model1 = abess.MultinomialRegression()
         model1.fit(data.x, data.y)
@@ -300,6 +307,9 @@ class TestAlgorithm:
         X = X - X.mean(axis=0)
         g_index = np.arange(group_num)
         g_index = g_index.repeat(group_size)
+
+        # save_data(X, 'PCA_seed1')
+        X = load_data('PCA_seed1')
 
         # null
         model1 = abess.SparsePCA(support_size=support_size)

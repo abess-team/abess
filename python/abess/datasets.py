@@ -395,6 +395,7 @@ class make_multivariate_glm_data:
                 # y2[i] = j
 
         elif family == "poisson":
+            X = X / 16
             eta = np.matmul(X, Tbeta)
             eta[eta > 30] = 30
             eta[eta < -30] = -30
