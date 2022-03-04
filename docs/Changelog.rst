@@ -8,13 +8,19 @@ Unreleased
 
    -  [TODO] Support user-specified initial active set.
 
+- Python package
+
+   -  The interface between python and cpp changes from `swig <http://www.swig.org/>`__ to `pybind11 <https://pybind11.readthedocs.io/en/stable/>`__.
+   -  Using `cibuildwheel <https://cibuildwheel.readthedocs.io/en/stable/>`__ and github action to build and test `wheel` files automatically
+   -  Fix bugs in sparse principal component analysis
+
 -  Project development
 
    -  Documentation
 
       -  [TODO] Add instruction for Gamma regression.
       -  [TODO] Update the usage of ``support_size`` in PCA.
-      -  [TODO] Use Sphinx-Gallery for website layout.
+      -  Use Sphinx-Gallery for website layout, and update the layout of the ``Tutorial`` section.
 
 Version 0.4.0
 -------------
