@@ -1023,24 +1023,27 @@ class OrdinalRegression(bess_base):
             important_search=important_search
         )
 
-    # def predict(self, X):
-    #     r"""
-    #     Return the most possible class for given data.
+    def predict(self, X):
+        r"""
+        Return the most possible class for given data.
 
-    #     Parameters
-    #     ----------
-    #     X : array-like, shape(n_samples, p_features)
-    #         Sample matrix to be predicted.
+        Parameters
+        ----------
+        X : array-like, shape(n_samples, p_features)
+            Sample matrix to be predicted.
 
-    #     Returns
-    #     -------
-    #     y : array-like, shape(n_samples, M_responses)
-    #         Predict class labels for samples in X.
-    #         Each row contains only one "1", and its column index is the
-    #         predicted class for related sample.
-    #     """
-    #     X = new_data_check(self, X)
-    #     return ???
+        Returns
+        -------
+        y : array-like, shape(n_samples, M_responses)
+            Predict class labels for samples in X.
+            Each row contains only one "1", and its column index is the
+            predicted class for related sample.
+        """
+        X = new_data_check(self, X)
+        prob = (X @ self.coef_)[:, np.newaxis] + self.intercept_
+        prob = 1 / (1 + np.exp(-prob))
+        # print(prob)
+        return prob
 
     # def score(self, X, y):
     #     """

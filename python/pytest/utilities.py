@@ -1,7 +1,7 @@
+import os
+import pickle
 import numpy as np
 from pytest import approx
-import pickle
-import os
 
 CURRENT = os.path.dirname(os.path.abspath(__file__))
 
