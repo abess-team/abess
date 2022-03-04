@@ -371,8 +371,8 @@ class BreslowEstimator:
 @ fix_docs
 class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
     r"""
-    Adaptive Best-Subset Selection(ABESS) algorithm for
-    COX proportional hazards model.
+    Adaptive Best-Subset Selection (ABESS) algorithm for
+    Cox proportional hazards model.
 
     Parameters
     ----------
@@ -490,39 +490,24 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
         return result[0]
 
     def predict_survival_function(self, X):
-        """Predict survival function.
+        r"""
+        Predict survival function.
         The survival function for an individual
         with feature vector :math:`x` is defined as
         .. math::
             S(t \\mid x) = S_0(t)^{\\exp(x^\\top \\beta)} ,
         where :math:`S_0(t)` is the baseline survival function,
         estimated by Breslow's estimator.
+
         Parameters
         ----------
         X : array-like, shape = (n_samples, n_features)
             Data matrix.
+        
         Returns
         -------
         survival : ndarray of :class:`sksurv.functions.StepFunction`, shape = (n_samples,)
             Predicted survival functions.
-        Examples
-        --------
-        >>> import matplotlib.pyplot as plt
-        >>> from sksurv.datasets import load_whas500
-        >>> from sksurv.linear_model import CoxPHSurvivalAnalysis
-        Load the data.
-        >>> X, y = load_whas500()
-        >>> X = X.astype(float)
-        Fit the model.
-        >>> estimator = CoxPHSurvivalAnalysis().fit(X, y)
-        Estimate the survival function for the first 10 samples.
-        >>> surv_funcs = estimator.predict_survival_function(X.iloc[:10])
-        Plot the estimated survival functions.
-        >>> for fn in surv_funcs:
-        ...     plt.step(fn.x, fn(fn.x), where="post")
-        ...
-        >>> plt.ylim(0, 1)
-        >>> plt.show()
         """
         return self._baseline_model.get_survival_function(np.log(self.predict(X)))
 
