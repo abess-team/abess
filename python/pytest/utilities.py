@@ -1,5 +1,9 @@
 import numpy as np
 from pytest import approx
+import pickle
+import os
+
+CURRENT = os.path.dirname(os.path.abspath(__file__))
 
 
 def assert_nan(coef):
@@ -28,3 +32,24 @@ def assert_shape(x, y, n, p, M):
     assert y.shape[0] == n
     if M > 1:
         assert y.shape[1] == M
+
+
+def save_data(data, name):
+    r"""
+    Save dataset for reproducibility.
+    The data will be stored in "pytest/data/xxxx.pkl".
+    """
+    file = CURRENT + '/data/' + name + '.pkl'
+    with open(file, 'wb') as output:
+        pickle.dump(data, output, 4)
+    print("Data saved in " + file)
+
+
+def load_data(name):
+    r"""
+    Load dataset for reproducibility.
+    """
+    file = CURRENT + '/data/' + name + '.pkl'
+    with open(file, 'rb') as input:
+        data = pickle.load(input)
+    return data

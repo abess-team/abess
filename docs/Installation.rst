@@ -166,16 +166,17 @@ packages should be installed:
    
    - `lifelines <https://pypi.org/project/lifelines/>`__: support testing 
      for survival analysis.
+
 -  `Sphinx <https://pypi.org/project/Sphinx/>`__: develop the Python
    documentation.
 
-   -  `nbsphinx <https://pypi.org/project/nbsphinx/>`__: support jupyter
-      notebook for Sphinx.
-   -  `myst-parser <https://pypi.org/project/myst-parser/>`__: support
-      markdown for Sphinx.
    -  `sphinx-rtd-theme <https://pypi.org/project/sphinx-rtd-theme/>`__:
       “Read the Docs” theme for Sphinx.
--  `sphinix-gallery <https://pypi.org/project/sphinx-gallery/>`__: develop the gallery of Python examples.
+   -  `sphinix-gallery <https://pypi.org/project/sphinx-gallery/>`__: develop the gallery of Python examples.
+
+-  `pandas <https://pypi.org/project/pandas/>`__: 
+   support data reading and preprocessing in examples.
+      
 
 .. _r-2:
 
