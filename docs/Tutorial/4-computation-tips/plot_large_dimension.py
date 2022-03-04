@@ -1,6 +1,6 @@
 """
 ===========================
-Ultra-high dimensional data
+Ultra-High dimensional data
 ===========================
 
 """
@@ -168,3 +168,5 @@ print(
 # The ``abess`` R package also supports feature screening and important searching.
 # For R tutorial, please view https://abess-team.github.io/abess/articles/v07-advancedFeatures.html and
 # https://abess-team.github.io/abess/articles/v09-fasterSetting.html.
+
+# sphinx_gallery_thumbnail_path = '_static/highdim_cover.png'

@@ -1,8 +1,8 @@
 """
 Large-Sample Data
 =================
-
-Golden-section searching: avoid support size enumeration
+A large sample size leads to a large range of possible support sizes which adds to the computational burdon.
+The computional tip here is to use the golden-section searching to avoid support size enumeration.
 """
 # %%
 # A motivated observation
@@ -96,3 +96,5 @@ print("golden-section time: ", time() - t2)
 # The ``abess`` R package also supports golden-section.
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v09-fasterSetting.html.
+
+# sphinx_gallery_thumbnail_path = '_static/largesample_cover.png'

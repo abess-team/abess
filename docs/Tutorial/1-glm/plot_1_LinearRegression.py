@@ -8,8 +8,6 @@ in linear regression with both simulated data and real data.
 """
 
 ###############################################################################
-# Linear Regression
-# ^^^^^^^^^^^^^^^^^
 #
 # Our package ``abess`` implements a polynomial algorithm in the following best-subset selection problem:
 #
@@ -23,9 +21,9 @@ in linear regression with both simulated data and real data.
 # Next, we present an example to show how to use the ``abess`` package to solve a simple problem.
 #
 # Simulated Data Example
-# ~~~~~~~~~~~~~~~~~~~~~~
+# ^^^^^^^^^^^^^^^^^^^^^^
 # Fixed Support Size Best Subset Selection
-# """"""""""""""""""""""""""""""""""""""""
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 # We generate a design matrix :math:`X` containing 300 observations and each observation has 1000 predictors.
 # The response variable :math:`y` is linearly related to the first, second, and fifth predictors in :math:`X`:
@@ -72,7 +70,7 @@ print("predicted coef: ", model.coef_[ind])
 # Besides, the predicted coefficients of them are quite close to the real ones.
 #
 # Adaptive Best Subset Selection
-# """"""""""""""""""""""""""""""
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # However, we may not know the true sparsity level in real world data,
 # and thus we need to determine the most proper one from a large range.
 # Suppose that we believe the real sparsity level is between 0 and 30 (so

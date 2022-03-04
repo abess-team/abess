@@ -18,7 +18,7 @@
 #' @return No return value, called for side effects.
 #'
 #' @note
-#' If \code{family = "mgaussian"} or \code{family = "multinomial"},
+#' If \code{family = "mgaussian"}, \code{family = "ordinal"} or \code{family = "multinomial"},
 #' a coefficient plot is produced for
 #' each dimension of multivariate response.
 #'

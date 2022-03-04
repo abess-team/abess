@@ -50,3 +50,5 @@ print('fitted coefficients\' indexes:\n', np.nonzero(model.coef_)[0])
 # The ``abess`` R package also supports nuisance regression.
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v07-advancedFeatures.html.
+
+# sphinx_gallery_thumbnail_path = '_static/nuisance_cover.png'
