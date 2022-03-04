@@ -263,8 +263,8 @@ class TestAlgorithm:
         data = abess.make_multivariate_glm_data(
             family=family, n=n, p=p, k=k, rho=rho, M=M)
 
-        # save_data(data, 'mulnomial_1')
-        data = load_data('mulnomial_1')
+        # save_data(data, 'mulnomial_seed5_rho0.5')
+        data = load_data('mulnomial_seed5_rho0.5')
 
         # null
         model1 = abess.MultinomialRegression()
@@ -308,8 +308,8 @@ class TestAlgorithm:
         g_index = np.arange(group_num)
         g_index = g_index.repeat(group_size)
 
-        # save_data(X, 'PCA_1')
-        X = load_data('PCA_1')
+        # save_data(X, 'PCA_seed1')
+        X = load_data('PCA_seed1')
 
         # null
         model1 = abess.SparsePCA(support_size=support_size)
