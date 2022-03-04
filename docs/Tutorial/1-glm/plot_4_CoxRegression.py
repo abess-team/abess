@@ -202,9 +202,9 @@ ax.set_ylabel("Survival probability")
 ax.grid(True)
 
 # %%
-# The graph above shows that patients with positive status on the 9th predictor
-# tend to have better prognosis.
-###############################################################################
+# 
+# The graph above shows that patients with positive status on the 9th predictor tend to have better prognosis.
+#
 # The ``abess`` R package also supports CoxPH regression.
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v05-coxreg.html.
