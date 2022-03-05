@@ -1022,10 +1022,11 @@ class OrdinalRegression(bess_base):
             splicing_type=splicing_type,
             important_search=important_search
         )
-
-    def predict(self, X):
+    
+    def predict_proba(self, X):
         r"""
-        Return the most possible class for given data.
+        Give the probabilities of new sample
+        being assigned to different classes.
 
         Parameters
         ----------
@@ -1034,16 +1035,37 @@ class OrdinalRegression(bess_base):
 
         Returns
         -------
-        y : array-like, shape(n_samples, M_responses)
-            Predict class labels for samples in X.
-            Each row contains only one "1", and its column index is the
-            predicted class for related sample.
+        proba : array-like, shape(n_samples, M_classes)
+            Returns the probabilities for each class
+            on given X.
         """
         X = new_data_check(self, X)
-        prob = (X @ self.coef_)[:, np.newaxis] + self.intercept_
-        prob = 1 / (1 + np.exp(-prob))
-        # print(prob)
-        return prob
+        M = len(self.intercept_)
+        cdf = (X @ self.coef_)[:, np.newaxis] + self.intercept_
+        cdf = 1 / (1 + np.exp(-cdf))
+        proba = np.zeros_like(cdf)
+        proba[:, 0] = cdf[:, 0]
+        proba[:, 1:(M-1)] = cdf[:, 1:(M-1)] - cdf[:, 0:(M-2)]
+        proba[:, M-1] = 1 - cdf[:, M-1]
+        return proba
+
+    def predict(self, X):
+        r"""
+        Return the most possible class label (start from 0) for given data.
+
+        Parameters
+        ----------
+        X : array-like, shape(n_samples, p_features)
+            Sample matrix to be predicted.
+
+        Returns
+        -------
+        y : array-like, shape(n_samples,)
+            Predict class labels for samples in X.
+        """
+        proba = self.predict_proba(X)
+        return np.argmax(proba, axis = 1)
+        
 
     # def score(self, X, y):
     #     """

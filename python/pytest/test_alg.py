@@ -434,6 +434,10 @@ class TestAlgorithm:
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
 
+        pred = model1.predict(data.x)
+        print((pred != data.y).sum())
+        # assert (pred == data.y)
+
     @staticmethod
     def test_gaussian_sklearn():
         np.random.seed(7)
