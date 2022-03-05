@@ -1022,7 +1022,7 @@ class OrdinalRegression(bess_base):
             splicing_type=splicing_type,
             important_search=important_search
         )
-    
+
     def predict_proba(self, X):
         r"""
         Give the probabilities of new sample
@@ -1045,8 +1045,8 @@ class OrdinalRegression(bess_base):
         cdf = 1 / (1 + np.exp(-cdf))
         proba = np.zeros_like(cdf)
         proba[:, 0] = cdf[:, 0]
-        proba[:, 1:(M-1)] = cdf[:, 1:(M-1)] - cdf[:, 0:(M-2)]
-        proba[:, M-1] = 1 - cdf[:, M-1]
+        proba[:, 1:(M - 1)] = cdf[:, 1:(M - 1)] - cdf[:, 0:(M - 2)]
+        proba[:, M - 1] = 1 - cdf[:, M - 1]
         return proba
 
     def predict(self, X):
@@ -1064,8 +1064,7 @@ class OrdinalRegression(bess_base):
             Predict class labels for samples in X.
         """
         proba = self.predict_proba(X)
-        return np.argmax(proba, axis = 1)
-        
+        return np.argmax(proba, axis=1)
 
     # def score(self, X, y):
     #     """
