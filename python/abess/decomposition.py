@@ -208,7 +208,8 @@ class SparsePCA(bess_base):
             ic_type_int = 4
         else:
             raise ValueError(
-                "ic_type should be \"loss\", \"aic\", \"bic\", \"ebic\" or \"gic\"")
+                "ic_type should be \"loss\", \"aic\", "
+                "\"bic\", \"ebic\" or \"gic\"")
 
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
