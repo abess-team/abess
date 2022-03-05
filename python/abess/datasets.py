@@ -78,6 +78,9 @@ class make_glm_data:
     snr: float, optional, default=None
         A numerical value controlling the signal-to-noise ratio (SNR)
         in gaussian data.
+    class_num: int, optional, default=3
+        The number of possible classes in oridinal dataset, i.e.
+        :math:`y \in \{0, 1, 2, ..., \text{class_num}-1\}`
 
     Attributes
     ----------
@@ -150,10 +153,24 @@ class make_glm_data:
             * the scale of survival time :math:`\text{scal} = 10`;
             * censoring is enabled, and max censoring time :math:`c=1`.
 
+    * Ordinal Regression
+
+        * Usage: ``family='ordinal'[, class_num=...]``
+        * Model: :math:`y\in \{0, 1, \dots, n_{class}\}`,
+          :math:`\mathbb{P}(y\leq i) = \dfrac{1}
+          {1+\exp(-x^T\beta - \varepsilon_i)}`,
+          where :math:`i\in \{0, 1, \dots, n_{class}\}` and
+          :math:`\forall i<j, \varepsilon_i < \varepsilon_j`.
+
+            * the coefficient :math:`\beta\sim U[-M, M]`,
+              where :math:`M = 125\sqrt{2\log p/n}`;
+            * the intercept: :math:`\forall i,\varepsilon_i\sim U[-M, M]`;
+            * the number of classes :math:`n_{class}=3`.
+
     """
 
     def __init__(self, n, p, k, family, rho=0, sigma=1, coef_=None,
-                 censoring=True, c=1, scal=10, snr=None):
+                 censoring=True, c=1, scal=10, snr=None, class_num=3):
         self.n = n
         self.p = p
         self.k = k
@@ -258,10 +275,29 @@ class make_glm_data:
             shape_para = 100 * np.random.uniform(0, 1, n) + 0.1
             y = np.random.gamma(shape=shape_para, scale=1 /
                                 shape_para / eta, size=n)
+        elif family == "ordinal":
+            M = 125 * np.sqrt(2 * np.log(p) / n)
+            if coef_ is None:
+                Tbeta[nonzero] = np.random.uniform(-M, M, k)
+            else:
+                Tbeta = coef_
+            intercept = np.sort(np.random.uniform(-M, M, class_num - 1))
+            eta = x @ Tbeta[:, np.newaxis] + intercept
+            logit = 1 / (1 + np.exp(-eta))
+            # prob
+            prob = np.zeros((n, class_num))
+            prob[:, 0] = logit[:, 0]
+            prob[:, 1:class_num - 1] = (logit[:, 1:class_num - 1] -
+                                        logit[:, 0:class_num - 2])
+            prob[:, class_num - 1] = 1 - logit[:, class_num - 2]
+            # y
+            y = np.zeros(n)
+            for i in range(n):
+                y[i] = np.random.choice(np.arange(class_num), 1, p=prob[i, :])
         else:
             raise ValueError(
                 "Family should be \'gaussian\', \'binomial\', "
-                "\'poisson\', \'gamma\', or \'cox\'.")
+                "\'poisson\', \'gamma\', \'cox\', or \'ordinal\'.")
         self.x = x
         self.y = y
         self.coef_ = Tbeta

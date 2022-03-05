@@ -1,7 +1,7 @@
 import sys
 import warnings
-import numpy as np
 import abess
+import numpy as np
 import pandas as pd
 from scipy.sparse import coo_matrix
 from sklearn.model_selection import KFold, GridSearchCV
@@ -9,6 +9,7 @@ from sklearn.linear_model import (
     LinearRegression,
     LogisticRegression,
     PoissonRegressor)
+from sklearn.utils.estimator_checks import check_estimator
 from lifelines import CoxPHFitter
 from utilities import (assert_nan, assert_value, assert_fit)
 
@@ -41,6 +42,7 @@ class TestAlgorithm:
             assert_value(coef[nonzero], reg.coef_)
 
         # null
+        check_estimator(abess.LinearRegression())
         model1 = abess.LinearRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
@@ -100,6 +102,7 @@ class TestAlgorithm:
             assert_value(coef[nonzero], reg.coef_)
 
         # null
+        # check_estimator(abess.LogisticRegression())
         model1 = abess.LogisticRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
@@ -148,6 +151,7 @@ class TestAlgorithm:
             assert_value(coef[nonzero], cph.params_.values, rel=5e-1, abs=5e-1)
 
         # null
+        # check_estimator(abess.CoxPHSurvivalAnalysis())
         model1 = abess.CoxPHSurvivalAnalysis()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
@@ -190,6 +194,7 @@ class TestAlgorithm:
             assert_value(coef[nonzero], reg.coef_)
 
         # null
+        # check_estimator(abess.PoissonRegression())
         model1 = abess.PoissonRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
@@ -216,6 +221,7 @@ class TestAlgorithm:
             family=family, n=n, p=p, k=k, rho=rho, M=M)
 
         # null
+        # check_estimator(abess.MultiTaskRegression())
         model1 = abess.MultiTaskRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
@@ -260,6 +266,7 @@ class TestAlgorithm:
             family=family, n=n, p=p, k=k, rho=rho, M=M)
 
         # null
+        # check_estimator(abess.MultinomialRegression())
         model1 = abess.MultinomialRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
@@ -361,21 +368,21 @@ class TestAlgorithm:
 
     @staticmethod
     def test_gamma():
-
-        x = np.array([[1, 2], [2, 3], [3, 4], [4, 3]])
-        y = np.array([19, 26, 33, 30])
+        np.random.seed(1)
+        data = abess.make_glm_data(n=100, p=10, k=3, family="gamma")
 
         # null
+        # check_estimator(abess.GammaRegression())
         model1 = abess.GammaRegression()
-        model1.fit(x, y)
+        model1.fit(data.x, data.y)
         assert_nan(model1.coef_)
 
         # predict
-        model1.predict(x)
+        model1.predict(data.x)
 
         # score
-        score = model1.score(x, y)
-        score = model1.score(x, y, [1, 1, 1, 1])
+        score = model1.score(data.x, data.y)
+        score = model1.score(data.x, data.y, np.ones(data.x.shape[0]))
         assert not np.isnan(score)
 
     @staticmethod
@@ -416,6 +423,20 @@ class TestAlgorithm:
         for ic in ['aic', 'bic', 'ebic', 'gic']:
             model4 = abess.RobustPCA(support_size=s, ic_type=ic)
             model4.fit(X, r=r)
+
+    @staticmethod
+    def test_ordinal():
+        np.random.seed(0)
+        data = abess.make_glm_data(n=100, p=20, k=5, family="ordinal")
+
+        # null
+        model1 = abess.OrdinalRegression()
+        model1.fit(data.x, data.y)
+        assert_fit(model1.coef_, data.coef_)
+
+        pred = model1.predict(data.x)
+        print((pred != data.y).sum())
+        # assert (pred == data.y)
 
     @staticmethod
     def test_gaussian_sklearn():

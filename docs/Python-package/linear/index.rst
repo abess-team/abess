@@ -12,3 +12,4 @@ It is used for GLM problem.
     Multigaussian
     Multinomial
     Gamma
+    Ordinal
