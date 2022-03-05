@@ -65,7 +65,7 @@ class SparsePCA(bess_base):
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
                  is_warm_start=True, support_size=None,
                  s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 ic_type="loss", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  thread=1,
                  sparse_matrix=False,
@@ -196,7 +196,9 @@ class SparsePCA(bess_base):
         path_type_int = 1
 
         # Ic_type
-        if self.ic_type == "aic":
+        if self.ic_type == "loss":
+            ic_type_int = 0
+        elif self.ic_type == "aic":
             ic_type_int = 1
         elif self.ic_type == "bic":
             ic_type_int = 2
@@ -206,7 +208,7 @@ class SparsePCA(bess_base):
             ic_type_int = 4
         else:
             raise ValueError(
-                "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
+                "ic_type should be \"loss\", \"aic\", \"bic\", \"ebic\" or \"gic\"")
 
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):

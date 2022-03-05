@@ -108,13 +108,14 @@ void pywrap_PCA(double *x, int x_row, int x_col, double *weight, int weight_len,
                                gindex_Vec, always_select_Vec, early_stop, thread, sparse_matrix, splicing_type,
                                sub_search, cv_fold_id_Vec, pca_num, A_init_Vec);
 
-    Eigen::MatrixXd beta;
     if (pca_num == 1) {
-        beta.resize(p, 1);
+        Eigen::VectorXd beta;
+        // beta.resize(p, 1);
         mylist.get_value_by_name("beta", beta);
         VectorXd2Pointer(beta, beta_out);
     } else {
-        beta.resize(p, pca_num);
+        Eigen::MatrixXd beta;
+        // beta.resize(p, pca_num);
         mylist.get_value_by_name("beta", beta);
         MatrixXd2Pointer(beta, beta_out);
     }
