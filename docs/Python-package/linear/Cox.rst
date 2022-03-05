@@ -10,4 +10,4 @@ CoxPHSurvivalAnalysis
     Please note that it will be deprecated in version 0.6.0. 
 
 .. autoclass:: abess.linear.CoxPHSurvivalAnalysis
-    :members: fit, predict, score
+    :members: fit, predict, score, predict_survival_function

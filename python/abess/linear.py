@@ -282,7 +282,7 @@ class LinearRegression(bess_base):
 
 @ fix_docs
 class BreslowEstimator:
-    """Breslow's estimator of the cumulative hazard function.
+    r"""Breslow's estimator of the cumulative hazard function.
     Attributes
     ----------
     cum_baseline_hazard_ : :class:`sksurv.functions.StepFunction`
@@ -292,7 +292,7 @@ class BreslowEstimator:
     """
 
     def fit(self, linear_predictor, event, time):
-        """Compute baseline cumulative hazard function.
+        r"""Compute baseline cumulative hazard function.
         Parameters
         ----------
         linear_predictor : array-like, shape = (n_samples,)
@@ -329,7 +329,7 @@ class BreslowEstimator:
         return self
 
     def get_cumulative_hazard_function(self, linear_predictor):
-        """Predict cumulative hazard function.
+        r"""Predict cumulative hazard function.
         Parameters
         ----------
         linear_predictor : array-like, shape = (n_samples,)
@@ -349,7 +349,7 @@ class BreslowEstimator:
         return funcs
 
     def get_survival_function(self, linear_predictor):
-        """Predict survival function.
+        r"""Predict survival function.
         Parameters
         ----------
         linear_predictor : array-like, shape = (n_samples,)
