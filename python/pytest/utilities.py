@@ -7,6 +7,7 @@ from pytest import approx
 
 CURRENT = os.path.dirname(os.path.abspath(__file__))
 
+
 def assert_nan(coef):
     assert not np.isnan(np.sum(coef))
 
