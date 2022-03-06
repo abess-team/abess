@@ -213,7 +213,7 @@ class TestAlgorithm:
         assert not np.isnan(score)
 
     @staticmethod
-    def test_mulgaussian():
+    def test_multigaussian():
         np.random.seed(1)
         n = 100
         p = 20
@@ -257,7 +257,7 @@ class TestAlgorithm:
         assert_fit(model4.coef_, data.coef_)
 
     @staticmethod
-    def test_mulnomial():
+    def test_multinomial():
         np.random.seed(5)
         n = 100
         p = 20
@@ -269,8 +269,8 @@ class TestAlgorithm:
         data = abess.make_multivariate_glm_data(
             family=family, n=n, p=p, k=k, rho=rho, M=M)
 
-        # save_data(data, 'mulnomial_seed5_rho0.5')
-        data = load_data('mulnomial_seed5_rho0.5')
+        # save_data(data, 'multinomial_seed5_rho0.5')
+        data = load_data('multinomial_seed5_rho0.5')
 
         # null
         # check_estimator(abess.MultinomialRegression())

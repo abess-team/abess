@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-     - develop_pybind11
+     - master
   release:
     types:
       - published    
@@ -67,22 +67,23 @@ jobs:
         with:
           path: wheelhouse/*.whl
 
-  # upload_all:
-  #   name: Upload if release
-  #   needs: [build_wheels, build_sdist]
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name == 'release' && github.event.action == 'published'
+  upload_all:
+    name: Upload if release
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
 
-  #   steps:
-  #   - uses: actions/setup-python@v2
+    steps:
+    - uses: actions/setup-python@v2
 
-  #   - uses: actions/download-artifact@v2
-  #     with:
-  #       name: artifact
-  #       path: dist
+    - uses: actions/download-artifact@v2
+      with:
+        name: artifact
+        path: dist
 
-  #   - uses: pypa/gh-action-pypi-publish@v1.4.2
-  #     with:
-  #       user: __token__
-  #       password: ${{ secrets.pypi_password }}
+    - uses: pypa/gh-action-pypi-publish@v1.4.2
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_PASSWORD }}
+        packages_dir: python/wheelhouse/
 
