@@ -10,7 +10,7 @@ generate.data(
   support.size = NULL,
   rho = 0,
   family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial",
-    "gamma"),
+    "gamma", "ordinal"),
   beta = NULL,
   cortype = 1,
   snr = 10,

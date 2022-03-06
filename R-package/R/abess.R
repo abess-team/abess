@@ -255,15 +255,12 @@ abess <- function(x, ...) UseMethod("abess")
 #'   support.size = c(3, 4), type = "response"
 #' )
 #'
-#' ################ Ordinal model (multi-classification for ordinal response) ################
+#' ################ Ordinal regression  ################
 #' dataset <- generate.data(n, p, support.size, family = "ordinal", class.num = 4)
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]],
 #'   family = "ordinal", tune.type = "cv"
 #' )
 #' coef <- coef(abess_fit, support.size = abess_fit[["best.size"]])[[1]]
-#' intercept <- as.vector(coef[1,])
-#' beta <- as.vector(coef[-1,1])
-#' activation.set.index <- as.vector(which(beta != 0))
 #' predict(abess_fit,
 #'   newx = dataset[["x"]][1:10, ],
 #'   support.size = c(3, 4), type = "response"

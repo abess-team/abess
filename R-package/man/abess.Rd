@@ -10,7 +10,7 @@
   x,
   y,
   family = c("gaussian", "binomial", "poisson", "cox", "mgaussian", "multinomial",
-    "gamma"),
+    "gamma", "ordinal"),
   tune.path = c("sequence", "gsection"),
   tune.type = c("gic", "ebic", "bic", "aic", "cv"),
   weight = NULL,
@@ -54,8 +54,8 @@ For \code{family = "cox"}, \code{y} should be a \code{Surv} object returned
 by the \code{survival} package (recommended) or
 a two-column matrix with columns named \code{"time"} and \code{"status"}.
 For \code{family = "mgaussian"}, \code{y} should be a matrix of quantitative responses.
-For \code{family = "multinomial"}, \code{y} should be a factor of at least three levels.
-Note that, for either \code{"binomial"} or \code{"multinomial"},
+For \code{family = "multinomial"} or \code{"ordinal"}, \code{y} should be a factor of at least three levels.
+Note that, for either \code{"binomial"}, \code{"ordinal"} or \code{"multinomial"},
 if y is presented as a numerical vector, it will be coerced into a factor.}
 
 \item{family}{One of the following models:
@@ -65,6 +65,7 @@ if y is presented as a numerical vector, it will be coerced into a factor.}
 \code{"cox"} (left-censored response),
 \code{"mgaussian"} (multivariate continuous response),
 \code{"multinomial"} (multi-class response),
+\code{"ordinal"} (multi-class ordinal response),
 \code{"gamma"} (positive continuous response).
 Depending on the response. Any unambiguous substring can be given.}
 
@@ -80,13 +81,15 @@ Default is \code{"gic"}.}
 \item{weight}{Observation weights. When \code{weight = NULL},
 we set \code{weight = 1} for each observation as default.}
 
-\item{normalize}{Options for normalization. \code{normalize = 0} for no normalization.
-\code{normalize = 1} for subtracting the mean of columns of \code{x}.
-\code{normalize = 2} for scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
-\code{normalize = 3} for subtracting the means of the columns of \code{x} and \code{y}, and also
+\item{normalize}{Options for normalization.
+\code{normalize = 0} for no normalization.
+\code{normalize = 1} for subtracting the means of the columns of \code{x} and \code{y}, and also
 normalizing the columns of \code{x} to have \eqn{\sqrt n} norm.
-If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gaussian"},
-\code{2} for \code{"binomial"}. Default is \code{normalize = NULL}.}
+\code{normalize = 2} for subtracting the mean of columns of \code{x} and
+scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
+\code{normalize = 3} for scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
+If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gaussian"} and \code{"mgaussian"},
+\code{3} for \code{"cox"}. Default is \code{normalize = NULL}.}
 
 \item{c.max}{an integer splicing size. Default is: \code{c.max = 2}.}
 
@@ -307,6 +310,17 @@ dataset <- generate.data(n, p, support.size, family = "multinomial")
 abess_fit <- abess(dataset[["x"]], dataset[["y"]],
   family = "multinomial", tune.type = "cv"
 )
+predict(abess_fit,
+  newx = dataset[["x"]][1:10, ],
+  support.size = c(3, 4), type = "response"
+)
+
+################ Ordinal regression  ################
+dataset <- generate.data(n, p, support.size, family = "ordinal", class.num = 4)
+abess_fit <- abess(dataset[["x"]], dataset[["y"]],
+  family = "ordinal", tune.type = "cv"
+)
+coef <- coef(abess_fit, support.size = abess_fit[["best.size"]])[[1]]
 predict(abess_fit,
   newx = dataset[["x"]][1:10, ],
   support.size = c(3, 4), type = "response"
