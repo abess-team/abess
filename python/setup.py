@@ -37,7 +37,7 @@ if sys.platform.startswith('win32'):
     temp = python_path.split("\\")
     version = str(sys.version_info.major) + str(sys.version_info.minor)
     path1 = "-I" + python_path + "\\include"
-    path2 = "-L" + python_path + "\\libs"
+    # path2 = "-L" + python_path + "\\libs"
     # os.system('bash "{}/pre.sh" '.format(CURRENT_DIR) +
     #           python_path + ' ' + version)
 
@@ -50,16 +50,18 @@ if sys.platform.startswith('win32'):
             CURRENT_DIR + '/src/normalize.cpp',
             CURRENT_DIR + '/src/pywrap.cpp'],
         extra_compile_args=[
-            "-DNDEBUG", "-fopenmp",
-            "-O2", "-Wall",
-            "-mavx", "-mfma",
-            "-march=native",
-            "-std=c++11",
-            "-mtune=generic",
+            # "-DNDEBUG",
+            "/openmp",
+            "/O2", "/W4",
+            # "-mavx", "-mfma",
+            # "-march=native",
+            # "-std=c++11",
+            # "-mtune=generic",
             # "-D%s" % os_type,
-            path1, path2
+            path1
+            # path2
         ],
-        extra_link_args=['-lgomp'],
+        # extra_link_args=['-lgomp'],
         # libraries=["vcruntime140"],
         include_dirs=[
             # np.get_include(),
