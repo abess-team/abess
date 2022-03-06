@@ -20,6 +20,7 @@ from utilities import (
 
 warnings.filterwarnings("ignore")
 
+
 class TestAlgorithm:
     """
     Test for each algorithm.
@@ -223,6 +224,9 @@ class TestAlgorithm:
         M = 3
         data = abess.make_multivariate_glm_data(
             family=family, n=n, p=p, k=k, rho=rho, M=M)
+
+        # save_data(data, "multigaussian_seed1_rho0.5")
+        data = load_data("multigaussian_seed1_rho0.5")
 
         # null
         # check_estimator(abess.MultiTaskRegression())

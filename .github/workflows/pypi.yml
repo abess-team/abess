@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches:
-     - master
+      - master
   release:
     types:
-      - published    
+      - published
 
 jobs:
   build_sdist:
@@ -16,15 +16,15 @@ jobs:
     defaults:
       run:
         working-directory: python
-    steps:        
+    steps:
       - uses: actions/checkout@v2
 
       - name: Build SDist
-        run: | 
+        run: |
           pipx run build --sdist
 
       - name: Check metadata
-        run: | 
+        run: |
           pipx run twine check dist/*
 
       - uses: actions/upload-artifact@v2
@@ -50,14 +50,14 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.3.1
-        with: 
-          package-dir: ./python  ## trigger cibuildwheel in sub-directory 
+        with:
+          package-dir: ./python ## trigger cibuildwheel in sub-directory
         env:
           # configure cibuildwheel to build native archs ('auto'), and some
           # emulated ones
           CIBW_SKIP: pp*
           CIBW_ARCHS_LINUX: auto aarch64 ppc64le s390x
-          CIBW_ARCHS_MACOS: x86_64 arm64 universal2   # the latest MacOS support the Rosetta
+          CIBW_ARCHS_MACOS: x86_64 arm64 universal2 # the latest MacOS support the Rosetta
 
       - name: Verify clean directory
         run: git diff --exit-code
@@ -75,16 +75,15 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'published'
 
     steps:
-    - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v2
 
-    - uses: actions/download-artifact@v2
-      with:
-        name: artifact
-        path: dist
+      - uses: actions/download-artifact@v2
+        with:
+          name: artifact
+          path: dist
 
-    - uses: pypa/gh-action-pypi-publish@v1.4.2
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_PASSWORD }}
-        packages_dir: python/wheelhouse/
-
+      - uses: pypa/gh-action-pypi-publish@v1.4.2
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_PASSWORD }}
+          packages_dir: python/wheelhouse/
