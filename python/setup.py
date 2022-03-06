@@ -1,8 +1,7 @@
 import os
 import sys
 import platform
-# import numpy as np
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages
 from pybind11.setup_helpers import Pybind11Extension
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
