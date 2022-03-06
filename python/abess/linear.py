@@ -714,7 +714,7 @@ class MultinomialRegression(bess_base):
                  always_select=None,
                  primary_model_fit_max_iter=10,
                  primary_model_fit_epsilon=1e-8,
-                #  approximate_Newton=False,
+                 #  approximate_Newton=False,
                  thread=1,
                  sparse_matrix=False,
                  splicing_type=0,
