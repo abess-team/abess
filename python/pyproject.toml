@@ -1,0 +1,15 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "pybind11>=2.8.0",
+    "numpy"
+]
+
+build-backend = "setuptools.build_meta"
+
+[tool.cibuildwheel]
+test-requires = "pytest"
+before-test = "pip install lifelines pandas"
+test-command = "pytest {package}"
+test-skip = "*-macosx_arm64 *-macosx_universal2:arm64"

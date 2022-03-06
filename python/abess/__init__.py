@@ -8,6 +8,7 @@
 __version__ = "0.4.0"
 __author__ = ("Jin Zhu, Kangkang Jiang, "
               "Junhao Huang, Yanhang Zhang, "
+              "Yanhang Zhang, Shiyun Lin, "
               "Junxian Zhu, Xueqin Wang")
 
 from .linear import (
