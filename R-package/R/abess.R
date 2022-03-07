@@ -526,10 +526,11 @@ abess.default <- function(x,
   }
   result[["tune.value"]] <- result[["tune.value"]][, 1]
 
+  ############ restore intercept ############
   result[["best.size"]] <- s_list[which.min(result[["tune.value"]])]
   names(result)[which(names(result) == "coef0_all")] <- "intercept"
   if (family %in% MULTIVARIATE_RESPONSE) {
-    if (family %in% c("multinomial","ordinal")) {
+    if (family %in% c("multinomial", "ordinal")) {
       result[["intercept"]] <- lapply(result[["intercept"]], function(x) {
         x <- x[-y_dim]
       })
@@ -538,10 +539,10 @@ abess.default <- function(x,
     result[["intercept"]] <- as.vector(result[["intercept"]])
   }
 
+  ############ restore intercept ############
   names(result)[which(names(result) == "beta_all")] <- "beta"
   # names(result)[which(names(result) == 'screening_A')] <- "screening.index"
   # result[["screening.index"]] <- result[["screening.index"]] + 1
-
   if (multi_y) {
     if (screening) {
       for (i in 1:length(result[["beta"]])) {
@@ -555,7 +556,7 @@ abess.default <- function(x,
       result[["beta"]] <- lapply(result[["beta"]], Matrix::Matrix,
         sparse = TRUE, dimnames = list(vn, y_vn)
       )
-    } else {
+    } else if (family %in% c("multinomial", "ordinal")) {
       result[["beta"]] <- lapply(result[["beta"]], function(x) {
         Matrix::Matrix(x[, -y_dim], sparse = TRUE, dimnames = list(vn, y_vn[-1]))
       })
