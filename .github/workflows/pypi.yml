@@ -5,6 +5,11 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'python/**'
+      - 'src/**'
+      - '.github/workflows/pypi.yml'
+      - '!python/.gitignore'
   release:
     types:
       - published
