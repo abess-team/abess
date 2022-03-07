@@ -132,7 +132,8 @@ low-rank matrix and sparse matrix via the best subset selection approach</p>
 <dd><p>A positive integer value specify the rank of the low-rank matrix.</p></dd>
 <dt>support.size</dt>
 <dd><p>An integer vector representing the alternative support sizes. 
-Only used for tune.path = "sequence". Strongly suggest its minimum value larger than <code>min(dim(x))</code>.</p></dd>
+Only used for <code>tune.path = "sequence"</code>. 
+Strongly suggest its minimum value larger than <code>min(dim(x))</code>.</p></dd>
 <dt>tune.path</dt>
 <dd><p>The method to be used to select the optimal support size. For
 <code>tune.path = "sequence"</code>, we solve the best subset selection problem for each size in <code>support.size</code>.
@@ -144,7 +145,8 @@ The first element is the minimum model size considered by golden-section,
 the later one is the maximum one. Default is <code>gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))</code>.
 Not available now.</p></dd>
 <dt>tune.type</dt>
-<dd><p>The type of criterion for choosing the support size. Available options are "gic", "ebic", "bic" and "aic". 
+<dd><p>The type of criterion for choosing the support size. 
+Available options are "gic", "ebic", "bic" and "aic". 
 Default is "gic".</p></dd>
 <dt>ic.scale</dt>
 <dd><p>A non-negative value used for multiplying the penalty term

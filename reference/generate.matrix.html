@@ -127,10 +127,12 @@ model. Can be omitted if <code>beta</code> is supplied.</p></dd>
 <dd><p>The coefficient values in the underlying regression model.
 If it is supplied, <code>support.size</code> would be omitted.</p></dd>
 <dt>snr</dt>
-<dd><p>A numerical value controlling the signal-to-noise ratio (SNR).
-A larger SNR implies the identification of sparse matrix is much easier.</p></dd>
+<dd><p>A positive value controlling the signal-to-noise ratio (SNR).
+A larger SNR implies the identification of sparse matrix is much easier.
+Default <code>snr = Inf</code> enforces no noise exists.</p></dd>
 <dt>sigma</dt>
-<dd><p>A numerical value supplied the variance of the gaussian noise. Default <code>sigma = NULL</code> implies it is determined by <code>snr</code>.</p></dd>
+<dd><p>A numerical value supplied the variance of the gaussian noise. 
+Default <code>sigma = NULL</code> implies it is determined by <code>snr</code>.</p></dd>
 <dt>seed</dt>
 <dd><p>random seed. Default: <code>seed = 1</code>.</p></dd>
 </dl></div>

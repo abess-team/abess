@@ -104,7 +104,7 @@
   sparse.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fpc"</span>, <span class="st">"kpc"</span><span class="op">)</span>,
   cor <span class="op">=</span> <span class="cn">FALSE</span>,
   support.size <span class="op">=</span> <span class="cn">NULL</span>,
-  kpc.num <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">sparse.type</span> <span class="op">==</span> <span class="st">"fpc"</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,
+  kpc.num <span class="op">=</span> <span class="cn">NULL</span>,
   tune.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gic"</span>, <span class="st">"aic"</span>, <span class="st">"bic"</span>, <span class="st">"ebic"</span>, <span class="st">"cv"</span><span class="op">)</span>,
   nfolds <span class="op">=</span> <span class="fl">5</span>,
   foldid <span class="op">=</span> <span class="cn">NULL</span>,
@@ -322,10 +322,10 @@ because the meaning of these parameters are very similar.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> abesspca(x = rob_cov, type = "gram")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   PC support.size       ev       pev</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1            1 6515.015 0.9627318</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1            2 6547.268 0.9674980</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  1            3 6577.429 0.9719548</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1            4 6588.893 0.9736488</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1            1 6327.283 0.9585485</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1            2 6374.029 0.9656303</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  1            3 6416.803 0.9721103</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1            4 6428.470 0.9738777</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## K-component principal component analysis</span></span>
 <span class="r-in"><span class="va">pca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">USArrests</span>,</span>

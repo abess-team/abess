@@ -120,8 +120,9 @@ sparse linear combination of its columns.</p>
 <dt>support.size</dt>
 <dd><p>A integer specify the number of non-zero entries in the first column of loading matrix.</p></dd>
 <dt>snr</dt>
-<dd><p>A numerical value controlling the signal-to-noise ratio (SNR).
-A larger SNR implies the identification of sparse matrix is much easier.</p></dd>
+<dd><p>A positive value controlling the signal-to-noise ratio (SNR).
+A larger SNR implies the identification of sparse matrix is much easier.
+Default <code>snr = Inf</code> enforces no noise exists.</p></dd>
 <dt>sigma</dt>
 <dd><p>A numerical vector with length <code>p</code> specify the standard deviation of each columns.
 Default <code>sigma = NULL</code> implies it is determined by <code>snr</code>. 

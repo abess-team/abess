@@ -107,7 +107,7 @@ positive response, multi-response modeling in polynomial times.</p>
   <span class="va">x</span>,
   <span class="va">y</span>,
   family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gaussian"</span>, <span class="st">"binomial"</span>, <span class="st">"poisson"</span>, <span class="st">"cox"</span>, <span class="st">"mgaussian"</span>, <span class="st">"multinomial"</span>,
-    <span class="st">"gamma"</span><span class="op">)</span>,
+    <span class="st">"gamma"</span>, <span class="st">"ordinal"</span><span class="op">)</span>,
   tune.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sequence"</span>, <span class="st">"gsection"</span><span class="op">)</span>,
   tune.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gic"</span>, <span class="st">"ebic"</span>, <span class="st">"bic"</span>, <span class="st">"aic"</span>, <span class="st">"cv"</span><span class="op">)</span>,
   weight <span class="op">=</span> <span class="cn">NULL</span>,
@@ -155,8 +155,8 @@ For <code>family = "cox"</code>, <code>y</code> should be a <code>Surv</code> ob
 by the <code>survival</code> package (recommended) or
 a two-column matrix with columns named <code>"time"</code> and <code>"status"</code>.
 For <code>family = "mgaussian"</code>, <code>y</code> should be a matrix of quantitative responses.
-For <code>family = "multinomial"</code>, <code>y</code> should be a factor of at least three levels.
-Note that, for either <code>"binomial"</code> or <code>"multinomial"</code>,
+For <code>family = "multinomial"</code> or <code>"ordinal"</code>, <code>y</code> should be a factor of at least three levels.
+Note that, for either <code>"binomial"</code>, <code>"ordinal"</code> or <code>"multinomial"</code>,
 if y is presented as a numerical vector, it will be coerced into a factor.</p></dd>
 <dt>family</dt>
 <dd><p>One of the following models:
@@ -166,6 +166,7 @@ if y is presented as a numerical vector, it will be coerced into a factor.</p></
 <code>"cox"</code> (left-censored response),
 <code>"mgaussian"</code> (multivariate continuous response),
 <code>"multinomial"</code> (multi-class response),
+<code>"ordinal"</code> (multi-class ordinal response),
 <code>"gamma"</code> (positive continuous response).
 Depending on the response. Any unambiguous substring can be given.</p></dd>
 <dt>tune.path</dt>
@@ -181,13 +182,15 @@ Default is <code>"gic"</code>.</p></dd>
 <dd><p>Observation weights. When <code>weight = NULL</code>,
 we set <code>weight = 1</code> for each observation as default.</p></dd>
 <dt>normalize</dt>
-<dd><p>Options for normalization. <code>normalize = 0</code> for no normalization.
-<code>normalize = 1</code> for subtracting the mean of columns of <code>x</code>.
-<code>normalize = 2</code> for scaling the columns of <code>x</code> to have \(\sqrt n\) norm.
-<code>normalize = 3</code> for subtracting the means of the columns of <code>x</code> and <code>y</code>, and also
+<dd><p>Options for normalization.
+<code>normalize = 0</code> for no normalization.
+<code>normalize = 1</code> for subtracting the means of the columns of <code>x</code> and <code>y</code>, and also
 normalizing the columns of <code>x</code> to have \(\sqrt n\) norm.
-If <code>normalize = NULL</code>, <code>normalize</code> will be set <code>1</code> for <code>"gaussian"</code>,
-<code>2</code> for <code>"binomial"</code>. Default is <code>normalize = NULL</code>.</p></dd>
+<code>normalize = 2</code> for subtracting the mean of columns of <code>x</code> and
+scaling the columns of <code>x</code> to have \(\sqrt n\) norm.
+<code>normalize = 3</code> for scaling the columns of <code>x</code> to have \(\sqrt n\) norm.
+If <code>normalize = NULL</code>, <code>normalize</code> will be set <code>1</code> for <code>"gaussian"</code> and <code>"mgaussian"</code>,
+<code>3</code> for <code>"cox"</code>. Default is <code>normalize = NULL</code>.</p></dd>
 <dt>c.max</dt>
 <dd><p>an integer splicing size. Default is: <code>c.max = 2</code>.</p></dd>
 <dt>support.size</dt>
@@ -599,6 +602,43 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 9.683075e-07 9.846617e-01 1.533729e-02</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 2.219998e-04 7.084179e-01 2.913601e-01</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 2.934310e-03 1.071389e-07 9.970656e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">################ Ordinal regression  ################</span></span>
+<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"ordinal"</span>, class.num <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span class="r-in">  family <span class="op">=</span> <span class="st">"ordinal"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span>
+<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span class="va">coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="va">abess_fit</span><span class="op">[[</span><span class="st">"best.size"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>,</span>
+<span class="r-in">  newx <span class="op">=</span> <span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span>,</span>
+<span class="r-in">  support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"response"</span></span>
+<span class="r-in"><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`3`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  1            2            3             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 1.407801e-03 8.107198e-02 8.651273e-01 5.239288e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 7.071985e-01 2.863502e-01 6.418956e-03 3.227119e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 7.335159e-04 4.398018e-02 8.592931e-01 9.599321e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 3.984005e-07 2.500476e-05 5.059806e-03 9.949148e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 9.998081e-01 1.889092e-04 2.995426e-06 1.496234e-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 9.765122e-01 2.311070e-02 3.751948e-04 1.874823e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 1.219072e-06 7.650844e-05 1.532129e-02 9.846010e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 7.059497e-05 4.410999e-03 4.707901e-01 5.247283e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 7.803523e-01 2.152528e-01 4.372913e-03 2.193933e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 8.524138e-02 7.707051e-01 1.432178e-01 8.357762e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`4`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  1            2            3             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 1.450737e-06 3.509109e-03 9.943658e-01 2.123666e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] 8.970047e-01 1.029481e-01 4.728081e-05 3.545044e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] 1.180996e-06 2.858512e-03 9.945329e-01 2.607451e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] 1.736064e-13 4.214063e-10 5.622626e-05 9.999438e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] 1.000000e+00 2.403180e-08 9.900303e-12 0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] 9.967921e-01 3.206571e-03 1.325250e-06 9.936052e-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] 5.062323e-13 1.228811e-09 1.639368e-04 9.998361e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 8.718559e-09 2.116269e-05 7.384642e-01 2.615147e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 8.384669e-01 1.614538e-01 7.932748e-05 5.948046e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 8.159489e-03 9.441698e-01 4.767036e-02 3.752991e-07</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">########## Best group subset selection #############</span></span>
