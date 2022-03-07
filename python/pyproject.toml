@@ -3,7 +3,12 @@ requires = [
     "setuptools>=42",
     "wheel",
     "pybind11>=2.8.0",
-    "numpy"
+
+    # use oldest-supported-numpy which provides the oldest numpy version with
+    # wheels on PyPI (it is a similar operation used in scikit-learn)
+    #
+    # see: https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
+    "oldest-supported-numpy"
 ]
 
 build-backend = "setuptools.build_meta"
