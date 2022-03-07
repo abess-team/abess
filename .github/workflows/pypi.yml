@@ -5,6 +5,11 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'python/**'
+      - 'src/**'
+      - '.github/workflows/pypi.yml'
+      - '!python/.gitignore'
   release:
     types:
       - published
@@ -53,8 +58,8 @@ jobs:
         with:
           package-dir: ./python ## trigger cibuildwheel in sub-directory
         env:
-          # configure cibuildwheel to build native archs ('auto'), and some
-          # emulated ones
+          CIBW_SKIP: pp*
+          # configure cibuildwheel to build native archs ('auto'), and some emulated ones
           CIBW_ARCHS_LINUX: auto aarch64 ppc64le s390x
           CIBW_ARCHS_MACOS: x86_64 arm64 universal2 # the latest MacOS support the Rosetta
 

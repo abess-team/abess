@@ -255,15 +255,12 @@ abess <- function(x, ...) UseMethod("abess")
 #'   support.size = c(3, 4), type = "response"
 #' )
 #'
-#' ################ Ordinal model (multi-classification for ordinal response) ################
+#' ################ Ordinal regression  ################
 #' dataset <- generate.data(n, p, support.size, family = "ordinal", class.num = 4)
 #' abess_fit <- abess(dataset[["x"]], dataset[["y"]],
 #'   family = "ordinal", tune.type = "cv"
 #' )
 #' coef <- coef(abess_fit, support.size = abess_fit[["best.size"]])[[1]]
-#' intercept <- as.vector(coef[1,])
-#' beta <- as.vector(coef[-1,1])
-#' activation.set.index <- as.vector(which(beta != 0))
 #' predict(abess_fit,
 #'   newx = dataset[["x"]][1:10, ],
 #'   support.size = c(3, 4), type = "response"
@@ -415,7 +412,6 @@ abess.default <- function(x,
   multi_y <- para$multi_y
   early_stop <- para$early_stop
   
-  # t1 <- proc.time()
   result <- abessGLM_API(
     x = x,
     y = y,
@@ -454,22 +450,8 @@ abess.default <- function(x,
     cv_fold_id = cv_fold_id, 
     A_init = as.integer(init.active.set)
   )
-  # t2 <- proc.time()
-  # print(t2 - t1)
 
   ## process result
-
-  ### process best model (abandon):
-  # support.index <- which(result[["beta"]] != 0.0)
-  # names(result[["beta"]]) <- vn
-  # best_model <- list("beta" = result[["beta"]],
-  #                    "coef0" = result[["coef0"]],
-  #                    "support.index" = support.index,
-  #                    "support.size" = sum(result[["beta"]] != 0.0),
-  #                    "dev" = result[["train_loss"]],
-  #                    "tune.value" = result[["ic"]])
-  # result[["best.model"]] <- best_model
-
   result[["beta"]] <- NULL
   result[["coef0"]] <- NULL
   result[["train_loss"]] <- NULL
@@ -480,7 +462,6 @@ abess.default <- function(x,
   result[["nvars"]] <- nvars
   result[["family"]] <- family
   result[["tune.path"]] <- tune.path
-  # result[["support.df"]] <- g_df
   result[["tune.type"]] <- ifelse(is_cv == TRUE, "cv",
     c("AIC", "BIC", "GIC", "EBIC")[ic_type]
   )
@@ -529,10 +510,11 @@ abess.default <- function(x,
   }
   result[["tune.value"]] <- result[["tune.value"]][, 1]
 
+  ############ restore intercept ############
   result[["best.size"]] <- s_list[which.min(result[["tune.value"]])]
   names(result)[which(names(result) == "coef0_all")] <- "intercept"
   if (family %in% MULTIVARIATE_RESPONSE) {
-    if (family %in% c("multinomial","ordinal")) {
+    if (family %in% c("multinomial", "ordinal")) {
       result[["intercept"]] <- lapply(result[["intercept"]], function(x) {
         x <- x[-y_dim]
       })
@@ -541,10 +523,8 @@ abess.default <- function(x,
     result[["intercept"]] <- as.vector(result[["intercept"]])
   }
 
+  ############ restore intercept ############
   names(result)[which(names(result) == "beta_all")] <- "beta"
-  # names(result)[which(names(result) == 'screening_A')] <- "screening.index"
-  # result[["screening.index"]] <- result[["screening.index"]] + 1
-
   if (multi_y) {
     if (screening) {
       for (i in 1:length(result[["beta"]])) {
@@ -558,7 +538,7 @@ abess.default <- function(x,
       result[["beta"]] <- lapply(result[["beta"]], Matrix::Matrix,
         sparse = TRUE, dimnames = list(vn, y_vn)
       )
-    } else {
+    } else if (family %in% c("multinomial", "ordinal")) {
       result[["beta"]] <- lapply(result[["beta"]], function(x) {
         Matrix::Matrix(x[, -y_dim], sparse = TRUE, dimnames = list(vn, y_vn[-1]))
       })
@@ -581,25 +561,6 @@ abess.default <- function(x,
 
   result[["screening.vars"]] <- vn[result[["screening_A"]] + 1]
   result[["screening_A"]] <- NULL
-
-  # if (s_list[0] == 0) {
-  #   nulldev <- result[["dev"]][1]
-  # } else {
-  #   f <- switch(
-  #     family,
-  #     "gaussian" = gaussian(),
-  #     "binomial" = binomial(),
-  #     "poisson" = poisson()
-  #   )
-  #   if (family != "cox") {
-  #     nulldev <- deviance(glm(y ~ .,
-  #                             data = cbind.data.frame(y, 1),
-  #                             family = f))
-  #   } else {
-  #     nulldev <- 0
-  #   }
-  # }
-  # result[["nulldev"]] <- 0
 
   result[["call"]] <- match.call()
   class(result) <- "abess"

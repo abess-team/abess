@@ -409,6 +409,14 @@ check_integer_warning <- function(x, message) {
   }
 }
 
+check_integer_warning_variable <- function(x, var_name) {
+  if (any(x %% 1 != 0)) {
+    message <- sprintf("%s should be an integer. It is coerced to as.integer(%s).", 
+                       var_name, var_name)
+    warning(message)
+  }
+}
+
 abess_model_matrix <- function(object, data = environment(object),
                                contrasts.arg = NULL,
                                xlev = NULL, ...) {

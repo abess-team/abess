@@ -8,8 +8,10 @@
 #' @param x A matrix object. 
 #' @param rank A positive integer value specify the rank of the low-rank matrix. 
 #' @param support.size An integer vector representing the alternative support sizes. 
-#' Only used for tune.path = "sequence". Strongly suggest its minimum value larger than \code{min(dim(x))}.  
-#' @param tune.type The type of criterion for choosing the support size. Available options are "gic", "ebic", "bic" and "aic". 
+#' Only used for \code{tune.path = "sequence"}. 
+#' Strongly suggest its minimum value larger than \code{min(dim(x))}.  
+#' @param tune.type The type of criterion for choosing the support size. 
+#' Available options are "gic", "ebic", "bic" and "aic". 
 #' Default is "gic".
 #' 
 #' @note 
