@@ -2,13 +2,8 @@ include README.rst
 include LICENSE
 recursive-include include *
 recursive-include src *
-include pre.sh
-include cygwinccompiler.py
-include distutils.cfg
 recursive-include abess *
 
 exclude src/test_*.cpp
 exclude src/*.o
 exclude src/*.def
-exclude src/pywrap_wrap.cpp
-exclude src/cabess.py
