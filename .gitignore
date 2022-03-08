@@ -18,7 +18,7 @@ abess_0.1.0.zip
 R-package/X.txt
 reference
 R-package/vignettes/abess-guide.pdf
-python/.coverage
+**/.coverage.*
 python/abess/__pycache__/*
 python/pytest/__pycache__/test_all.cpython-37-pytest-6.2.2.pyc
 python/.gitignore
