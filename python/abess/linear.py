@@ -299,7 +299,7 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
 
     Examples
     --------
-    >>> ### Sparsity knowmodel = n
+    >>> ### Sparsity known
     >>>
     >>> from abess.linear import CoxPHSurvivalAnalysis
     >>> from abess.datasets import make_glm_data
