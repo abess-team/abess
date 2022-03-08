@@ -61,13 +61,13 @@ class StepFunction:
         y : float|array-like, shape=(n_values,)
             Values of step function at `x`.
         """
-        x = numpy.atleast_1d(x)
-        if not numpy.isfinite(x).all():
+        x = np.atleast_1d(x)
+        if not np.isfinite(x).all():
             raise ValueError("x must be finite")
-        if numpy.min(x) < self.x[0] or numpy.max(x) > self.x[-1]:
+        if np.min(x) < self.x[0] or np.max(x) > self.x[-1]:
             raise ValueError(
                 "x must be within [%f; %f]" % (self.x[0], self.x[-1]))
-        i = numpy.searchsorted(self.x, x, side='left')
+        i = np.searchsorted(self.x, x, side='left')
         not_exact = self.x[i] != x
         i[not_exact] -= 1
         value = self.a * self.y[i] + self.b

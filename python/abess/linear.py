@@ -407,8 +407,10 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
         Predict survival function.
         The survival function for an individual
         with feature vector :math:`x` is defined as
+
         .. math::
             S(t \\mid x) = S_0(t)^{\\exp(x^\\top \\beta)} ,
+
         where :math:`S_0(t)` is the baseline survival function,
         estimated by Breslow's estimator.
 
