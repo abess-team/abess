@@ -18,7 +18,7 @@ class TestOther:
         n = 100
         p = 20
         k = 5
-        M = 3
+        # M = 3
         rho = 0.
         sigma = 1.
 
