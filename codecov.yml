@@ -1,8 +1,6 @@
 ignore:
   - "python/include/"
-  - "python/src/abess_wrap.cpp"
-  - "python/abess/cabess"
   - "R-package/inst/include"
   - "src"
   - "include"
-
+  - "docs"
