@@ -13,7 +13,7 @@ class abessPCA(SparsePCA):
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
                  is_warm_start=True, support_size=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 ic_type="loss", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  thread=1,
                  sparse_matrix=False,
