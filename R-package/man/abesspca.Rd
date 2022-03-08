@@ -10,7 +10,7 @@ abesspca(
   sparse.type = c("fpc", "kpc"),
   cor = FALSE,
   support.size = NULL,
-  kpc.num = ifelse(sparse.type == "fpc", 1, 2),
+  kpc.num = NULL,
   tune.type = c("gic", "aic", "bic", "ebic", "cv"),
   nfolds = 5,
   foldid = NULL,

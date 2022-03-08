@@ -1,0 +1,21 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "pybind11>=2.8.0",
+
+    # use oldest-supported-numpy which provides the oldest numpy version with
+    # wheels on PyPI (it is a similar operation used in scikit-learn)
+    #
+    # see: https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
+    "oldest-supported-numpy"
+]
+
+build-backend = "setuptools.build_meta"
+
+[tool.cibuildwheel]
+test-requires = "pytest"
+before-test = "pip install lifelines pandas"
+test-command = "pytest {package}"
+# skip cp310-win32 because scipy.whl file not exists in pypi: 
+test-skip = "*-macosx_arm64 *-macosx_universal2:arm64 cp310-win32"

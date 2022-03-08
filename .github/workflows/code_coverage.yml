@@ -3,26 +3,26 @@ name: Code Coverage
 on:
   push:
     paths:
-    - 'python/**'
-    - 'R-package/**'
-    - 'src/**'
-    - '.github/workflows/code_coverage.yml'
-    - '!R-package/.gitignore'
-    - '!R-package/cran-comments.md'
-    - '!R-package/pre-release.R'
-    - '!R-package/data-raw/**'
-    - '!python/.gitignore'
+      - "python/**"
+      - "R-package/**"
+      - "src/**"
+      - ".github/workflows/code_coverage.yml"
+      - "!R-package/.gitignore"
+      - "!R-package/cran-comments.md"
+      - "!R-package/pre-release.R"
+      - "!R-package/data-raw/**"
+      - "!python/.gitignore"
   pull_request:
     paths:
-    - 'python/**'
-    - 'R-package/**'
-    - 'src/**'
-    - '.github/workflows/code_coverage.yml'
-    - '!R-package/.gitignore'
-    - '!R-package/cran-comments.md'
-    - '!R-package/pre-release.R'
-    - '!R-package/data-raw/**'
-    - '!python/.gitignore'
+      - "python/**"
+      - "R-package/**"
+      - "src/**"
+      - ".github/workflows/code_coverage.yml"
+      - "!R-package/.gitignore"
+      - "!R-package/cran-comments.md"
+      - "!R-package/pre-release.R"
+      - "!R-package/data-raw/**"
+      - "!python/.gitignore"
   workflow_dispatch:
 
 jobs:
@@ -30,73 +30,80 @@ jobs:
     name: Codecov workflow for Python-package
     runs-on: ubuntu-latest
     env:
-      PYTHON: '3.9.6'
+      PYTHON: "3.9"
     steps:
       - uses: actions/checkout@master
       - name: Setup Python
         uses: actions/setup-python@master
         with:
-          python-version: 3.9.6
+          python-version: 3.9
       - name: Install abess & dependencies
         run: |
-          pip install pytest
-          pip install pytest-cov
-          pip install lifelines
           pip install pandas
-          pip install codecov
+          pip install lifelines
+          # pip install codecov
           # pip install gcovr
           # export CFLAGS="--coverage"
           cd python
-          pip install . --user
-          ls *
+          pip install .
+          ls * -al
       - name: Generate coverage report
         run: |
-          cd python/pytest
-          pytest -v --cov=abess --cov-report=xml
+          pip install pytest
+          pip install pytest-cov
+          cd ./python/pytest
+          pytest --cov=abess -v --cov-report=xml
           # gcovr ./python/src/ --xml
-          ls *
-          codecov -F Python
+          ls * -al
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./python/pytest/coverage.xml
+          fail_ci_if_error: true
+          flags: Python
+          verbose: true
 
-#   codecovR:
-#     name: Codecov for R-package
-#     runs-on: ubuntu-18.04
-#     steps:
-#       - uses: actions/checkout@v2
+  codecovR:
+    name: Codecov for R-package
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
 
-#       - uses: r-lib/actions/setup-r@v1
+      - uses: r-lib/actions/setup-r@v1
 
-#       - uses: r-lib/actions/setup-pandoc@v1
+      - uses: r-lib/actions/setup-pandoc@v1
 
-#       - name: Ubuntu dependencies
-#         run: |
-#           sudo apt-get install libomp5
-#           sudo apt-get install libomp-dev
-#           sudo apt-get install libxml2-dev
-#           sudo apt-get install libcurl4-openssl-dev
-#           sudo apt-get install python3
-#           sudo apt-get install python3-pip
-#       - name: Query dependencies
-#         run: |
-#           install.packages('remotes')
-#           saveRDS(remotes::dev_package_deps("R-package", dependencies = TRUE), ".github/depends.Rds", version = 2)
-#           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
-#         shell: Rscript {0}
+      - name: Ubuntu dependencies
+        run: |
+          sudo apt-get install libomp5
+          sudo apt-get install libomp-dev
+          sudo apt-get install libxml2-dev
+          sudo apt-get install libcurl4-openssl-dev
+          sudo apt-get install python3
+          sudo apt-get install python3-pip
+      - name: Query dependencies
+        run: |
+          install.packages('remotes')
+          saveRDS(remotes::dev_package_deps("R-package", dependencies = TRUE), ".github/depends.Rds", version = 2)
+          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
+        shell: Rscript {0}
 
-#       - name: Install dependencies
-#         run: |
-#           remotes::install_deps("R-package", dependencies = TRUE)
-#           install.packages("covr")
-#           install.packages("xml2")
-#         shell: Rscript {0}
+      - name: Install dependencies
+        run: |
+          remotes::install_deps("R-package", dependencies = TRUE)
+          install.packages("covr")
+          install.packages("xml2")
+        shell: Rscript {0}
 
-#       - name: Install package
-#         run: R CMD INSTALL R-package
+      - name: Install package
+        run: R CMD INSTALL R-package
 
-#       - name: Generate coverage report
-#         run: |
-#           Rscript -e 'library(covr); x <- package_coverage(path = "./R-package", quiet = FALSE, type = c("vignettes", "examples", "tests"), function_exclusions = "\\.onUnload"); to_cobertura(x, "rpackage.xml")'
-#       - name: Upload coverage report
-#         run: |
-#           pip install --upgrade pip
-#           pip3 install --user codecov
-#           codecov -F rpackage -f rpackage.xml
+      - name: Generate coverage report
+        run: |
+          Rscript -e 'library(covr); x <- package_coverage(path = "./R-package", quiet = FALSE, type = c("tests"), function_exclusions = "\\.onUnload"); to_cobertura(x, "rpackage.xml")'
+      - name: Upload coverage report
+        run: |
+          pip install --upgrade pip
+          pip3 install --user codecov
+          codecov -F rpackage -f rpackage.xml

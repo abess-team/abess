@@ -219,7 +219,9 @@ class Metric {
             loss = 2 * (algorithm->get_train_loss() - algorithm->lambda_level * algorithm->beta.cwiseAbs2().sum());
         }
 
-        if (ic_type == 1) {
+        if (ic_type == 0) {
+            return loss;
+        } else if (ic_type == 1) {
             return loss + 2.0 * algorithm->get_effective_number();
         } else if (ic_type == 2) {
             return loss + this->ic_coef * log(double(train_n)) * algorithm->get_effective_number();
