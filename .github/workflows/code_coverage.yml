@@ -52,17 +52,16 @@ jobs:
           pip install pytest
           pip install pytest-cov
           cd ./python/pytest
-          pytest -v --cov=./ --cov-report=xml
+          pytest -v --cov=abess --cov-report=xml
           # gcovr ./python/src/ --xml
           ls * -al
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./python/pytest/coverage/reports/
+          files: ./python/pytest/coverage.xml
           fail_ci_if_error: true
           flags: Python
-          path_to_write_report: ./python/pytest/coverage/codecov_report.txt
           verbose: true
 
   codecovR:
