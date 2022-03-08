@@ -13,9 +13,6 @@
 
 import numpy as np
 from sklearn.utils import check_consistent_length
-from .utilities import _compute_counts
-
-__all__ = ['StepFunction']
 
 
 class StepFunction:
@@ -107,7 +104,7 @@ class BreslowEstimator:
         risk_score = np.exp(linear_predictor)
         order = np.argsort(time, kind="mergesort")
         risk_score = risk_score[order]
-        uniq_times, n_events, n_at_risk, _ = _compute_counts(
+        uniq_times, n_events, n_at_risk, _ = self._compute_counts(
             event, time, order)
 
         divisor = np.empty(n_at_risk.shape, dtype=float)
@@ -166,3 +163,75 @@ class BreslowEstimator:
             funcs[i] = StepFunction(x=self.baseline_survival_.x,
                                     y=np.power(self.baseline_survival_.y, risk_score[i]))
         return funcs
+
+    def _compute_counts(self ,event, time, order=None):
+        """Count right censored and uncensored samples at each unique time point.
+
+        Parameters
+        ----------
+        event : array
+            Boolean event indicator.
+
+        time : array
+            Survival time or time of censoring.
+
+        order : array or None
+            Indices to order time in ascending order.
+            If None, order will be computed.
+
+        Returns
+        -------
+        times : array
+            Unique time points.
+
+        n_events : array
+            Number of events at each time point.
+
+        n_at_risk : array
+            Number of samples that have not been censored or have not had an event at each time point.
+
+        n_censored : array
+            Number of censored samples at each time point.
+        """
+        n_samples = event.shape[0]
+
+        if order is None:
+            order = np.argsort(time, kind="mergesort")
+
+        uniq_times = np.empty(n_samples, dtype=time.dtype)
+        uniq_events = np.empty(n_samples, dtype=int)
+        uniq_counts = np.empty(n_samples, dtype=int)
+
+        i = 0
+        prev_val = time[order[0]]
+        j = 0
+        while True:
+            count_event = 0
+            count = 0
+            while i < n_samples and prev_val == time[order[i]]:
+                if event[order[i]]:
+                    count_event += 1
+
+                count += 1
+                i += 1
+
+            uniq_times[j] = prev_val
+            uniq_events[j] = count_event
+            uniq_counts[j] = count
+            j += 1
+
+            if i == n_samples:
+                break
+
+            prev_val = time[order[i]]
+
+        times = np.resize(uniq_times, j)
+        n_events = np.resize(uniq_events, j)
+        total_count = np.resize(uniq_counts, j)
+        n_censored = total_count - n_events
+
+        # offset cumulative sum by one
+        total_count = np.r_[0, total_count]
+        n_at_risk = n_samples - np.cumsum(total_count)
+
+        return times, n_events, n_at_risk[:-1], n_censored
