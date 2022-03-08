@@ -34,11 +34,11 @@ jobs:
       - name: Install dependencies for ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: |
-          sudo apt-get install -y swig bash mingw-w64
+          sudo apt-get install -y bash
       - name: Install dependencies for macOS
         if: matrix.os == 'macos-latest'
         run: |
-          brew install swig mingw-w64 bash
+          brew install bash
       - name: Install dependencies for windows
         if: matrix.os == 'windows-latest'
         run: |
@@ -47,4 +47,9 @@ jobs:
         run: |
           python --version
           cd ./python
-          python setup.py install
+          # python setup.py install
+          pip install .
+      - name: A simple test
+        run: |
+          echo "import abess;print(abess.__version__);" > ./test.py
+          python ./test.py

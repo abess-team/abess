@@ -10,9 +10,11 @@
 #' model. Can be omitted if \code{beta} is supplied.
 #' @param beta The coefficient values in the underlying regression model.
 #' If it is supplied, \code{support.size} would be omitted.
-#' @param snr A numerical value controlling the signal-to-noise ratio (SNR).
+#' @param snr A positive value controlling the signal-to-noise ratio (SNR).
 #' A larger SNR implies the identification of sparse matrix is much easier.
-#' @param sigma A numerical value supplied the variance of the gaussian noise. Default \code{sigma = NULL} implies it is determined by \code{snr}.
+#' Default \code{snr = Inf} enforces no noise exists. 
+#' @param sigma A numerical value supplied the variance of the gaussian noise. 
+#' Default \code{sigma = NULL} implies it is determined by \code{snr}.
 #' @param seed random seed. Default: \code{seed = 1}.
 #'
 #'
@@ -74,18 +76,19 @@ generate.matrix <- function(n,
 
   stopifnot(length(n) == 1)
   stopifnot(is.numeric(n))
-  check_integer_warning(n, "TODO")
+  check_integer_warning_variable(n, "n")
   n <- as.integer(n)
 
   stopifnot(length(p) == 1)
   stopifnot(is.numeric(p))
-  check_integer_warning(p, "TODO")
+  check_integer_warning_variable(p, "p")
   p <- as.integer(p)
 
   if (is.null(rank)) {
     L_rank <- round(0.05 * n)
   } else {
-    check_integer_warning(rank, "TODO")
+    stopifnot(rank <= min(n, p))
+    check_integer_warning_variable(rank, "rank")
     L_rank <- as.integer(rank)
   }
   x <- matrix(rnorm(n * L_rank, sd = 1 / sqrt(n)), nrow = n)
@@ -95,7 +98,7 @@ generate.matrix <- function(n,
   if (is.null(support.size)) {
     k <- round(0.05 * n * p)
   } else {
-    check_integer_warning(support.size, "TODO")
+    check_integer_warning_variable(support.size, "support.size")
     k <- as.integer(support.size)
   }
   index <- sample(0:(n * p - 1), size = k, replace = FALSE)

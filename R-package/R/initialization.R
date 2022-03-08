@@ -1,63 +1,59 @@
-Initialization <- function(
-  c.max,
-  support.size,
-  always.include,
-  group.index,
-  splicing.type,
-  max.splicing.iter,
-  warm.start,
-  ic.scale,
-  num.threads,
-  tune.type,
-  important.search
-)
+Initialization <- function(c.max,
+                           support.size,
+                           always.include,
+                           group.index,
+                           splicing.type,
+                           max.splicing.iter,
+                           warm.start,
+                           ic.scale,
+                           num.threads,
+                           tune.type,
+                           important.search)
 {
   para <- list(
-    c.max=c.max,
-    support.size=support.size,
-    always.include=always.include,
-    group.index=group.index,
-    splicing.type=splicing.type,
-    max.splicing.iter=max.splicing.iter,
-    warm.start=warm.start,
-    ic.scale=ic.scale,
-    num.threads=num.threads,
-    tune.type=tune.type,
-    important.search=important.search
+    c.max = c.max,
+    support.size = support.size,
+    always.include = always.include,
+    group.index = group.index,
+    splicing.type = splicing.type,
+    max.splicing.iter = max.splicing.iter,
+    warm.start = warm.start,
+    ic.scale = ic.scale,
+    num.threads = num.threads,
+    tune.type = tune.type,
+    important.search = important.search
   )
   
-  class(para) <- append("Initialization",class(para))
+  class(para) <- append("Initialization", class(para))
   return(para)
 }
 
-Initialization_GLM <- function(
-  c.max,
-  support.size,
-  always.include,
-  group.index,
-  splicing.type,
-  max.splicing.iter,
-  warm.start,
-  ic.scale,
-  num.threads,
-  tune.type,
-  important.search,
-  newton.thresh,
-  tune.path,
-  max.newton.iter,
-  lambda,
-  family,
-  screening.num,
-  gs.range,
-  early.stop,
-  weight,
-  cov.update,
-  normalize,
-  init.active.set,
-  newton,
-  foldid,
-  nfolds
-)
+Initialization_GLM <- function(c.max,
+                               support.size,
+                               always.include,
+                               group.index,
+                               splicing.type,
+                               max.splicing.iter,
+                               warm.start,
+                               ic.scale,
+                               num.threads,
+                               tune.type,
+                               important.search,
+                               newton.thresh,
+                               tune.path,
+                               max.newton.iter,
+                               lambda,
+                               family,
+                               screening.num,
+                               gs.range,
+                               early.stop,
+                               weight,
+                               cov.update,
+                               normalize,
+                               init.active.set,
+                               newton,
+                               foldid,
+                               nfolds)
 {
   para <- Initialization(
     c.max = c.max,
@@ -88,30 +84,28 @@ Initialization_GLM <- function(
   para$foldid <- foldid
   para$nfolds <- nfolds
   
-  class(para) <- append("glm",class(para))
+  class(para) <- append("glm", class(para))
   return(para)
 }
 
-Initialization_PCA <- function(
-  c.max,
-  support.size,
-  always.include,
-  group.index,
-  splicing.type,
-  max.splicing.iter,
-  warm.start,
-  ic.scale,
-  num.threads,
-  tune.type,
-  kpc.num,
-  cor,
-  type,
-  support.num,
-  important.search,
-  sparse.type,
-  nfolds,
-  foldid
-)
+Initialization_PCA <- function(c.max,
+                               support.size,
+                               always.include,
+                               group.index,
+                               splicing.type,
+                               max.splicing.iter,
+                               warm.start,
+                               ic.scale,
+                               num.threads,
+                               tune.type,
+                               kpc.num,
+                               cor,
+                               type,
+                               support.num,
+                               important.search,
+                               sparse.type,
+                               nfolds,
+                               foldid)
 {
   para <- Initialization(
     c.max = c.max,
@@ -134,29 +128,27 @@ Initialization_PCA <- function(
   para$nfolds <- nfolds
   para$foldid <- foldid
   
-  class(para) <- append("pca",class(para))
+  class(para) <- append("pca", class(para))
   return(para)
 }
 
-Initialization_RPCA <- function(
-  rank,
-  support.size,
-  tune.path,
-  gs.range,
-  tune.type,
-  ic.scale,
-  lambda,
-  always.include,
-  group.index,
-  c.max,
-  splicing.type,
-  max.splicing.iter,
-  warm.start,
-  important.search,
-  max.newton.iter,
-  newton.thresh,
-  num.threads
-)
+Initialization_RPCA <- function(rank,
+                                support.size,
+                                tune.path,
+                                gs.range,
+                                tune.type,
+                                ic.scale,
+                                lambda,
+                                always.include,
+                                group.index,
+                                c.max,
+                                splicing.type,
+                                max.splicing.iter,
+                                warm.start,
+                                important.search,
+                                max.newton.iter,
+                                newton.thresh,
+                                num.threads)
 {
   para <- Initialization(
     c.max = c.max,
@@ -178,13 +170,15 @@ Initialization_RPCA <- function(
   para$newton.thresh <- newton.thresh
   para$lambda <- lambda
   
-  class(para) <- append("rpca",class(para))
+  class(para) <- append("rpca", class(para))
   return(para)
 }
 
-strategy_for_tuning <- function(para) UseMethod("strategy_for_tuning")
+strategy_for_tuning <-
+  function(para)
+    UseMethod("strategy_for_tuning")
 
-strategy_for_tuning_private <- function(para){
+strategy_for_tuning_private <- function(para) {
   if (para$tune.path == "gsection") {
     para$path_type <- 2
   } else if (para$tune.path == "sequence") {
@@ -197,27 +191,30 @@ strategy_for_tuning.rpca <- strategy_for_tuning_private
 
 strategy_for_tuning.glm <- strategy_for_tuning_private
 
-rank <- function(para) UseMethod("rank")
+rank <- function(para)
+  UseMethod("rank")
 
-rank.rpca <- function(para){
+rank.rpca <- function(para) {
   stopifnot(!anyNA(para$rank))
   stopifnot(all(para$rank >= 0))
   para
 }
 
 
-number_of_thread <- function(para) UseMethod("number_of_thread")
+number_of_thread <- function(para)
+  UseMethod("number_of_thread")
 
-number_of_thread.Initialization <- function(para){
+number_of_thread.Initialization <- function(para) {
   stopifnot(is.numeric(para$num.threads) & para$num.threads >= 0)
   para$num_threads <- as.integer(para$num.threads)
   para
 }
 
 
-newton_thresh <- function(para) UseMethod("newton_thresh")
+newton_thresh <- function(para)
+  UseMethod("newton_thresh")
 
-newton_thresh_private <- function(para){
+newton_thresh_private <- function(para) {
   stopifnot(is.numeric(para$newton.thresh) & para$newton.thresh > 0)
   para$newton_thresh <- as.double(para$newton.thresh)
   para
@@ -228,12 +225,14 @@ newton_thresh.glm <- newton_thresh_private
 newton_thresh.rpca <- newton_thresh_private
 
 
-max_newton_iter <- function(para) UseMethod("max_newton_iter")
+max_newton_iter <- function(para)
+  UseMethod("max_newton_iter")
 
-max_newton_iter_private <- function(default){
-  function(para){
+max_newton_iter_private <- function(default) {
+  function(para) {
     if (!is.null(para$max.newton.iter)) {
-      stopifnot(is.numeric(para$max.newton.iter) & para$max.newton.iter >= 1)
+      stopifnot(is.numeric(para$max.newton.iter) &
+                  para$max.newton.iter >= 1)
       para$max_newton_iter <- as.integer(para$max.newton.iter)
     } else {
       para$max_newton_iter <- ifelse(para$newton_type == 0, 10, default)
@@ -243,7 +242,7 @@ max_newton_iter_private <- function(default){
     }
     para
   }
- 
+  
 }
 
 max_newton_iter.rpca <- max_newton_iter_private(100)
@@ -251,9 +250,10 @@ max_newton_iter.rpca <- max_newton_iter_private(100)
 max_newton_iter.glm <- max_newton_iter_private(60)
 
 
-lambda <- function(para) UseMethod("lambda")
+lambda <- function(para)
+  UseMethod("lambda")
 
-lambda_private <- function(para){
+lambda_private <- function(para) {
   stopifnot(length(para$lambda) == 1)
   stopifnot(!anyNA(para$lambda))
   stopifnot(all(para$lambda >= 0))
@@ -266,30 +266,35 @@ lambda.rpca <- lambda_private
 lambda.glm <- lambda_private
 
 
-warm_start <- function(para) UseMethod("warm_start")
+warm_start <- function(para)
+  UseMethod("warm_start")
 
-warm_start.Initialization <- function(para){
+warm_start.Initialization <- function(para) {
   stopifnot(is.logical(para$warm.start))
   
   para
 }
 
 
-splicing_type <- function(para) UseMethod("splicing_type")
+splicing_type <- function(para)
+  UseMethod("splicing_type")
 
-splicing_type.Initialization <- function(para){
+splicing_type.Initialization <- function(para) {
   stopifnot(length(para$splicing.type) == 1)
   stopifnot(para$splicing.type %in% c(1, 2))
-  para$splicing_type <- 2 - as.integer(para$splicing.type) # adapt requirements of cpp
+  para$splicing_type <-
+    2 - as.integer(para$splicing.type) # adapt requirements of cpp
   
   para
 }
 
 
-max_splicing_iter <- function(para) UseMethod("max_splicing_iter")
+max_splicing_iter <- function(para)
+  UseMethod("max_splicing_iter")
 
-max_splicing_iter.Initialization <- function(para){
-  stopifnot(is.numeric(para$max.splicing.iter) & para$max.splicing.iter >= 1)
+max_splicing_iter.Initialization <- function(para) {
+  stopifnot(is.numeric(para$max.splicing.iter) &
+              para$max.splicing.iter >= 1)
   check_integer_warning(
     para$max.splicing.iter,
     "max.splicing.iter should be an integer value.
@@ -301,14 +306,15 @@ max_splicing_iter.Initialization <- function(para){
 }
 
 
-x_matrix_info <- function(para,data) UseMethod("x_matrix_info")
+x_matrix_info <- function(para, data)
+  UseMethod("x_matrix_info")
 
-x_matrix_info.Initialization <- function(para,data){
-  
+x_matrix_info.Initialization <- function(para, data) {
   stopifnot(class(data$x)[1] %in% c("data.frame", "matrix", "dgCMatrix"))
   para$nvars <- ncol(data$x)
   para$nobs <- nrow(data$x)
-  para$vn <- colnames(data$x) # if x is not a matrix type object, it will return NULL.
+  # if x is not a matrix type object, it will return NULL:
+  para$vn <- colnames(data$x)
   if (is.null(para$vn)) {
     para$vn <- paste0("x", 1:para$nvars)
   }
@@ -317,10 +323,12 @@ x_matrix_info.Initialization <- function(para,data){
 }
 
 
-x_matrix_content <- function(para,data) UseMethod("x_matrix_content")
+x_matrix_content <-
+  function(para, data)
+    UseMethod("x_matrix_content")
 
-x_matrix_content_private <- function(least_col){
-  function(para,data){
+x_matrix_content_private <- function(least_col) {
+  function(para, data) {
     if (ncol(data$x) < least_col) {
       stop("x should have at least two columns!")
     }
@@ -330,15 +338,17 @@ x_matrix_content_private <- function(least_col){
         data$x <- as.matrix(data$x)
       }
       if (!is.numeric(data$x)) {
-        warning("x should be a *numeric* matrix/data.frame! 
-              The factor value are coerced to as.numeric(x).")
+        warning(
+          "x should be a *numeric* matrix/data.frame!
+              The factor value are coerced to as.numeric(x)."
+        )
         data$x <- apply(data$x, 2, as.numeric)
       }
     }
     if (anyNA(data$x) || any(is.infinite(data$x))) {
       stop("x has missing value or infinite value!")
     }
-    list(para=para,data=data)
+    list(para = para, data = data)
   }
 }
 
@@ -348,9 +358,10 @@ x_matrix_content.pca <- x_matrix_content_private(2)
 
 x_matrix_content.glm <- x_matrix_content_private(0)
 
-y_matrix <- function(para,data) UseMethod("y_matrix")
+y_matrix <- function(para, data)
+  UseMethod("y_matrix")
 
-y_matrix.glm <- function(para,data){
+y_matrix.glm <- function(para, data) {
   if (anyNA(data$y)) {
     stop("y has missing value!")
   }
@@ -364,24 +375,35 @@ y_matrix.glm <- function(para,data){
       }
     }
   }
-  if (para$family %in% c("binomial","multinomial","ordinal")) {
-    if (length(unique(data$y)) == 2 && para$family %in% c("multinomial","ordinal")) {
-      warning("y is a binary variable and is not match to family = 'multinomial' or 'ordinal'.
-              We change to family = 'binomial'")
+  if (para$family %in% c("binomial", "multinomial", "ordinal")) {
+    if (length(unique(data$y)) == 2 &&
+        para$family %in% c("multinomial", "ordinal")) {
+      warning(
+        "y is a binary variable and is not match to family = 'multinomial' or 'ordinal'.
+              We change to family = 'binomial'"
+      )
       para$model_type <- 2
       para$family <- "binomial"
     }
     if (length(unique(data$y)) > 2 && para$family == "binomial") {
-      stop("Input binary y when family = 'binomial'; otherwise,
-           change the option for family to 'multinomial'. ")
+      stop(
+        "Input binary y when family = 'binomial'; otherwise,
+           change the option for family to 'multinomial'. "
+      )
     }
-    if (length(unique(data$y)) == para$nobs && para$family %in% c("multinomial","ordinal")) {
-      stop("All of y value are distinct.
-           Please input categorial y when family = 'multinomial' or 'ordinal'.")
+    if (length(unique(data$y)) == para$nobs &&
+        para$family %in% c("multinomial", "ordinal")) {
+      stop(
+        "All of y value are distinct.
+           Please input categorial y when family = 'multinomial' or 'ordinal'."
+      )
     }
-    if ((para$nobs / length(unique(data$y))) < 5 && para$family %in% c("multinomial","ordinal")) {
-      warning("The number of the category of y is relative large compare to nvars.
-              The numerical result might be unstable.")
+    if ((para$nobs / length(unique(data$y))) < 5 &&
+        para$family %in% c("multinomial", "ordinal")) {
+      warning(
+        "The number of the category of y is relative large compare to nvars.
+              The numerical result might be unstable."
+      )
     }
     if (!is.factor(data$y)) {
       data$y <- as.factor(data$y)
@@ -392,8 +414,8 @@ y_matrix.glm <- function(para,data){
     if (para$family == "binomial") {
       data$y <- as.numeric(data$y) - 1
     }
-    if (para$family %in% c("multinomial","ordinal")) {
-      data$y <- model.matrix(~ factor(as.numeric(data$y) - 1) + 0)
+    if (para$family %in% c("multinomial", "ordinal")) {
+      data$y <- model.matrix( ~ factor(as.numeric(data$y) - 1) + 0)
       colnames(data$y) <- NULL
     }
   }
@@ -417,8 +439,8 @@ y_matrix.glm <- function(para,data){
     stopifnot(length(unique(data$y[, 2])) == 2)
     # pre-process data for cox para
     sort_y <- order(data$y[, 1])
-    data$y <- data$y[sort_y, ]
-    data$x <- data$x[sort_y, ]
+    data$y <- data$y[sort_y,]
+    data$x <- data$x[sort_y,]
     data$y <- data$y[, 2]
   }
   if (para$family == "mgaussian") {
@@ -434,19 +456,19 @@ y_matrix.glm <- function(para,data){
   para$y_dim <- ncol(data$y)
   para$multi_y <- para$family %in% MULTIVARIATE_RESPONSE
   
-  list(para=para,data=data)
+  list(para = para, data = data)
 }
 
-screening_num <- function(para) UseMethod("screening_num")
+screening_num <- function(para)
+  UseMethod("screening_num")
 
-screening_num.rpca <- function(para){
-  
+screening_num.rpca <- function(para) {
   para$screening_num <- para$nobs * para$nvars
   
   para
 }
 
-screening_num.glm <- function(para){
+screening_num.glm <- function(para) {
   if (is.null(para$screening.num)) {
     para$screening <- FALSE
     para$screening_num <- para$nvars
@@ -455,8 +477,7 @@ screening_num.glm <- function(para){
     stopifnot(para$screening.num >= 1)
     check_integer_warning(
       para$screening.num,
-      "screening.num should be a integer.
-                          It is coerced to as.integer(screening.num)."
+      "screening.num should be a integer. It is coerced to as.integer(screening.num)."
     )
     para$screening.num <- as.integer(para$screening.num)
     if (para$screening.num > para$nvars) {
@@ -464,11 +485,15 @@ screening_num.glm <- function(para){
     }
     if (para$path_type == 1) {
       if (para$screening.num < max(para$s_list)) {
-        stop("The number of screening features must be equal or greater than the maximum one in support.size!")
+        stop(
+          "The number of screening features must be equal or greater than the maximum one in support.size!"
+        )
       }
     } else {
       if (para$screening.num < para$s_max) {
-        stop("The number of screening features must be equal or greater than the max(gs.range)!")
+        stop(
+          "The number of screening features must be equal or greater than the max(gs.range)!"
+        )
       }
     }
     para$screening <- TRUE
@@ -480,9 +505,10 @@ screening_num.glm <- function(para){
 }
 
 
-group_variable <- function(para) UseMethod("group_variable")
+group_variable <- function(para)
+  UseMethod("group_variable")
 
-group_variable_private <- function(para,screening_num){
+group_variable_private <- function(para, screening_num) {
   if (is.null(para$group.index)) {
     para$group_select <- FALSE
     para$g_index <- 1:screening_num - 1
@@ -492,7 +518,8 @@ group_variable_private <- function(para,screening_num){
     stopifnot(all(!is.na(para$group.index)))
     stopifnot(all(is.finite(para$group.index)))
     stopifnot(diff(para$group.index) >= 0)
-    check_integer(para$group.index, "group.index must be a vector with integer value.")
+    check_integer(para$group.index,
+                  "group.index must be a vector with integer value.")
     para$group_select <- TRUE
     gi <- unique(para$group.index)
     para$g_index <- match(gi, para$group.index) - 1
@@ -503,32 +530,39 @@ group_variable_private <- function(para,screening_num){
   para
 }
 
-group_variable.glm <- function(para){
-  group_variable_private(para,para$nvars)
+group_variable.glm <- function(para) {
+  group_variable_private(para, para$nvars)
 }
 
-group_variable.pca <- function(para){
-  group_variable_private(para,para$nvars)
+group_variable.pca <- function(para) {
+  group_variable_private(para, para$nvars)
 }
 
-group_variable.rpca <- function(para){
-  group_variable_private(para,para$nvars*para$nobs)
+group_variable.rpca <- function(para) {
+  group_variable_private(para, para$nvars * para$nobs)
 }
 
-sparse_level_list <- function(para) UseMethod("sparse_level_list")
+sparse_level_list <- function(para)
+  UseMethod("sparse_level_list")
 
-sparse_level_list.rpca <- function(para){
+sparse_level_list.rpca <- function(para) {
   max_rank <- max(c(para$nvars, para$nobs))
   if (is.null(para$support.size)) {
     if (para$group_select) {
-      para$s_list <- 0:min(c(para$ngroup, round(para$nobs / para$max_group_size / log(para$ngroup))))
+      para$s_list <-
+        0:min(c(
+          para$ngroup,
+          round(para$nobs / para$max_group_size / log(para$ngroup))
+        ))
     } else {
       min_support_set <- max(c(3 * para$rank, max_rank / 2))
       para$s_list <- min_support_set:round(1.5 * max(max_rank))
     }
   } else {
-    stopifnot(any(is.numeric(para$support.size) & para$support.size >= 0))
-    check_integer(para$support.size, "support.size must be a vector with integer value.")
+    stopifnot(any(is.numeric(para$support.size) &
+                    para$support.size >= 0))
+    check_integer(para$support.size,
+                  "support.size must be a vector with integer value.")
     if (para$group_select) {
       stopifnot(max(para$support.size) <= para$ngroup)
     }
@@ -541,7 +575,7 @@ sparse_level_list.rpca <- function(para){
   para
 }
 
-sparse_level_list.pca <- function(para){
+sparse_level_list.pca <- function(para) {
   if (para$group_select) {
     para$s_max <- para$ngroup
   } else {
@@ -556,7 +590,12 @@ sparse_level_list.pca <- function(para){
           s_num <- min(para$nvars, 100)
         }
       }
-      para$s_list <- round(seq.int(from = 1, to = para$s_max, length.out = s_num))
+      para$s_list <-
+        round(seq.int(
+          from = 1,
+          to = para$s_max,
+          length.out = s_num
+        ))
       para$s_list <- unique(para$s_list)
     } else {
       if (para$group_select) {
@@ -567,7 +606,8 @@ sparse_level_list.pca <- function(para){
       para$s_list <- as.list(rep(s_num, para$kpc.num))
     }
   } else {
-    stopifnot(any(is.numeric(para$support.size) & para$support.size >= 0))
+    stopifnot(any(is.numeric(para$support.size) &
+                    para$support.size >= 0))
     if (para$group_select) {
       stopifnot(max(para$support.size) <= para$ngroup)
     } else {
@@ -580,39 +620,52 @@ sparse_level_list.pca <- function(para){
         stopifnot(length(para$support.size) == para$kpc.num)
         para$support.size <- lapply(support.size, unique)
       } else if (is.vector(para$support.size)) {
-        para$support.size <- rep(list(unique(sort(para$support.size))), para$kpc.num)
+        para$support.size <-
+          rep(list(unique(sort(
+            para$support.size
+          ))), para$kpc.num)
       } else {
         stop("support.size must be vector or list.")
       }
     }
     para$s_list <- para$support.size
   }
-  s_list_bool_nrow <- ifelse(para$group_select, para$ngroup, para$nvars)
+  s_list_bool_nrow <-
+    ifelse(para$group_select, para$ngroup, para$nvars)
   if (class(para$s_list) == "list") {
-    para$s_list_bool <- matrix(0, nrow = s_list_bool_nrow, ncol = para$kpc.num)
+    para$s_list_bool <-
+      matrix(0, nrow = s_list_bool_nrow, ncol = para$kpc.num)
     for (i in 1:para$kpc.num) {
-      para$s_list_bool[para$s_list[[i]], ] <- 1
+      para$s_list_bool[para$s_list[[i]],] <- 1
     }
   } else {
     para$s_list_bool <- matrix(0, nrow = s_list_bool_nrow, ncol = 1)
-    para$s_list_bool[para$s_list, ] <- 1
+    para$s_list_bool[para$s_list,] <- 1
   }
   
   
   para
 }
 
-sparse_level_list.glm <- function(para){
-  
+sparse_level_list.glm <- function(para) {
   if (is.null(para$support.size)) {
     if (para$group_select) {
-      para$s_list <- 0:min(c(para$ngroup, round(para$nobs / para$max_group_size / log(para$ngroup))))
+      para$s_list <-
+        0:min(c(
+          para$ngroup,
+          round(para$nobs / para$max_group_size / log(para$ngroup))
+        ))
     } else {
-      para$s_list <- 0:min(c(para$nvars, round(para$nobs / log(log(para$nobs)) / log(para$nvars))))
+      para$s_list <-
+        0:min(c(para$nvars, round(
+          para$nobs / log(log(para$nobs)) / log(para$nvars)
+        )))
     }
   } else {
-    stopifnot(any(is.numeric(para$support.size) & para$support.size >= 0))
-    check_integer(para$support.size, "support.size must be a vector with integer value.")
+    stopifnot(any(is.numeric(para$support.size) &
+                    para$support.size >= 0))
+    check_integer(para$support.size,
+                  "support.size must be a vector with integer value.")
     if (para$group_select) {
       stopifnot(max(para$support.size) <= para$ngroup)
     } else {
@@ -629,39 +682,40 @@ sparse_level_list.glm <- function(para){
 }
 
 
-C_max <- function(para) UseMethod("C_max")
+C_max <- function(para)
+  UseMethod("C_max")
 
-C_max_private <- function(default){
-  function(para){
+C_max_private <- function(default) {
+  function(para) {
     if (is.null(para$c.max)) {
       para$c_max <- max(c(2, default))
     } else {
       stopifnot(is.numeric(para$c.max))
       stopifnot(para$c.max >= 1)
-      check_integer_warning(
-        para$c.max,
-        "c.max should be an integer. It is coerced to as.integer(c.max)."
-      )
+      check_integer_warning(para$c.max,
+                            "c.max should be an integer. It is coerced to as.integer(c.max).")
       para$c_max <- as.integer(para$c.max)
     }
     para
   }
-
+  
 }
-C_max.pca <- function(para){
+C_max.pca <- function(para) {
   C_max_private(round(max(unlist(para$s_list)) / 2))(para)
 }
 
-C_max.rpca <- function(para){
+C_max.rpca <- function(para) {
   C_max_private(round(max(unlist(para$s_list)) / 2))(para)
 }
 
 C_max.glm <- C_max_private(2)
 
 
-tune_support_size_method <- function(para) UseMethod("tune_support_size_method")
+tune_support_size_method <-
+  function(para)
+    UseMethod("tune_support_size_method")
 
-tune_support_size_method_private <- function(para){
+tune_support_size_method_private <- function(para) {
   para$ic_type <- map_tunetype2numeric(para$tune.type)
   para$is_cv <- para$tune.type == "cv"
   if (para$is_cv) {
@@ -681,7 +735,7 @@ tune_support_size_method_private <- function(para){
 
 tune_support_size_method.glm <- tune_support_size_method_private
 
-tune_support_size_method.pca <- function(para){
+tune_support_size_method.pca <- function(para) {
   para$tune_type <- para$tune.type
   if (para$cov_type == "gram" && para$tune_type == "cv") {
     warnings("Cross validation is not allow when input a gram matrix.
@@ -692,18 +746,20 @@ tune_support_size_method.pca <- function(para){
   tune_support_size_method.glm(para)
 }
 
-tune_support_size_method.rpca <- function(para){
+tune_support_size_method.rpca <- function(para) {
   para$ic_type <- map_tunetype2numeric(para$tune.type)
   para$is_cv <- FALSE
   para$cv_fold_id <- integer(0)
- 
+  
   para
 }
 
 
-information_criterion <- function(para) UseMethod("information_criterion")
+information_criterion <-
+  function(para)
+    UseMethod("information_criterion")
 
-information_criterion.Initialization <- function(para){
+information_criterion.Initialization <- function(para) {
   stopifnot(is.numeric(para$ic.scale))
   stopifnot(para$ic.scale >= 0)
   para$ic_scale <- as.integer(para$ic.scale)
@@ -712,10 +768,12 @@ information_criterion.Initialization <- function(para){
 }
 
 
-important_searching <- function(para) UseMethod("important_searching")
+important_searching <-
+  function(para)
+    UseMethod("important_searching")
 
-important_searching_private <- function(default){
-  function(para){
+important_searching_private <- function(default) {
+  function(para) {
     if (is.null(para$important.search)) {
       para$important_search <- as.integer(min(c(para$nvars, default)))
     } else {
@@ -724,25 +782,34 @@ important_searching_private <- function(default){
       check_integer_warning(para$important.search)
       para$important_search <- as.integer(para$important.search)
     }
-
+    
     para
   }
 }
 
-important_searching.Initialization <- important_searching_private(128)
+important_searching.Initialization <-
+  important_searching_private(128)
 
 important_searching.pca <- important_searching_private(0)
 
 
-sparse_range <- function(para) UseMethod("sparse_range")
+sparse_range <- function(para)
+  UseMethod("sparse_range")
 
-sparse_range.Initialization <- function(para){
+sparse_range.Initialization <- function(para) {
   if (is.null(para$gs.range)) {
     para$s_min <- 1
     if (para$group_select) {
-      para$s_max <- min(c(para$ngroup, round(para$nobs / para$max_group_size / log(para$ngroup))))
+      para$s_max <-
+        min(c(
+          para$ngroup,
+          round(para$nobs / para$max_group_size / log(para$ngroup))
+        ))
     } else {
-      para$s_max <- min(c(para$nvars, round(para$nobs / log(log(para$nobs)) / log(para$nvars))))
+      para$s_max <-
+        min(c(para$nvars, round(
+          para$nobs / log(log(para$nobs)) / log(para$nvars)
+        )))
     }
   } else {
     stopifnot(length(para$gs.range) == 2)
@@ -767,33 +834,39 @@ sparse_range.Initialization <- function(para){
   para
 }
 
-sparse_type <- function(para) UseMethod("sparse_type")
+sparse_type <- function(para)
+  UseMethod("sparse_type")
 
-sparse_type.pca <- function(para){
-  if(is.null(para$kpc.num)){
+sparse_type.pca <- function(para) {
+  if (is.null(para$kpc.num)) {
     para$kpc.num <- ifelse(para$sparse.type == "fpc", 1, 2)
   }
   else{
     stopifnot(para$kpc.num >= 1)
-    check_integer_warning(para$kpc.num, "kpc.num should be an integer. It is coerced to as.integer(kpc.num).")
+    check_integer_warning(para$kpc.num,
+                          "kpc.num should be an integer. It is coerced to as.integer(kpc.num).")
     para$kpc.num <- as.integer(para$kpc.num)
     para$sparse.type <- ifelse(para$kpc.num == 1, "fpc", "kpc")
   }
   para
 }
 
-always_included_variables <- function(para) UseMethod("always_included_variables")
+always_included_variables <-
+  function(para)
+    UseMethod("always_included_variables")
 
-always_included_variables.Initialization <- function(para){
+always_included_variables.Initialization <- function(para) {
   if (is.null(para$always.include)) {
     para$always_include <- numeric(0)
   } else {
-    if (anyNA(para$always.include) || any(is.infinite(para$always.include))) {
+    if (anyNA(para$always.include) ||
+        any(is.infinite(para$always.include))) {
       stop("always.include has missing values or infinite values.")
     }
     stopifnot(para$always.include %in% 1:para$nvars)
     stopifnot(para$always.include > 0)
-    check_integer(para$always.include, "always.include must be a vector with integer value.")
+    check_integer(para$always.include,
+                  "always.include must be a vector with integer value.")
     para$always.include <- as.integer(para$always.include) - 1
     always_include_num <- length(para$always.include)
     if (always_include_num > para$screening_num) {
@@ -801,25 +874,39 @@ always_included_variables.Initialization <- function(para){
     }
     if (para$path_type == 1) {
       if (always_include_num > max(para$s_list)) {
-        stop("always.include containing too many variables.
-           The length of it must not exceed the maximum in support.size.")
+        stop(
+          "always.include containing too many variables.
+           The length of it must not exceed the maximum in support.size."
+        )
       }
       if (always_include_num > min(para$s_list)) {
         if (is.null(para$support.size)) {
           para$s_list <- para$s_list[para$s_list >= always_include_num]
         } else {
-          stop(sprintf("always.include containing %s variables. The min(support.size) must be equal or greater than this.", always_include_num))
+          stop(
+            sprintf(
+              "always.include containing %s variables. The min(support.size) must be equal or greater than this.",
+              always_include_num
+            )
+          )
         }
       }
     } else {
       if (always_include_num > para$s_max) {
-        stop("always.include containing too many variables. The length of it must not exceed the max(gs.range).")
+        stop(
+          "always.include containing too many variables. The length of it must not exceed the max(gs.range)."
+        )
       }
       if (always_include_num > para$s_min) {
         if (is.null(para$support.size)) {
           para$s_min <- always_include_num
         } else {
-          stop(sprintf("always.include containing %s variables. The min(gs.range) must be equal or greater than this.", always_include_num))
+          stop(
+            sprintf(
+              "always.include containing %s variables. The min(gs.range) must be equal or greater than this.",
+              always_include_num
+            )
+          )
         }
       }
     }
@@ -829,7 +916,7 @@ always_included_variables.Initialization <- function(para){
   para
 }
 
-always_included_variables.pca <- function(para){
+always_included_variables.pca <- function(para) {
   if (is.null(para$always.include)) {
     para$always_include <- numeric(0)
   } else {
@@ -837,12 +924,16 @@ always_included_variables.pca <- function(para){
       stop("always.include has missing values.")
     }
     if (any(para$always.include <= 0)) {
-      stop("always.include should be an vector containing variable indexes which is positive.")
+      stop(
+        "always.include should be an vector containing variable indexes which is positive."
+      )
     }
     para$always.include <- as.integer(para$always.include) - 1
     if (length(para$always.include) > max(unlist(para$s_list))) {
-      stop("always.include containing too many variables.
-             The length of it should not exceed the maximum in support.size.")
+      stop(
+        "always.include containing too many variables.
+             The length of it should not exceed the maximum in support.size."
+      )
     }
     
     para$always_include <- para$always.include
@@ -856,7 +947,8 @@ always_included_variables.pca <- function(para){
 sparse.cov <- function(x, cor = FALSE) {
   n <- nrow(x)
   cMeans <- colMeans(x)
-  covmat <- (as.matrix(crossprod(x)) - n * tcrossprod(cMeans)) / (n - 1)
+  covmat <-
+    (as.matrix(crossprod(x)) - n * tcrossprod(cMeans)) / (n - 1)
   
   if (cor) {
     sdvec <- sqrt(diag(covmat))
@@ -866,9 +958,11 @@ sparse.cov <- function(x, cor = FALSE) {
   as.matrix(covmat)
 }
 
-compute_gram_matrix <- function(para,data) UseMethod("compute_gram_matrix")
+compute_gram_matrix <-
+  function(para, data)
+    UseMethod("compute_gram_matrix")
 
-compute_gram_matrix.pca <- function(para,data){
+compute_gram_matrix.pca <- function(para, data) {
   para$cov_type <- para$type
   para$sparse_matrix <- FALSE
   if (para$cov_type == "gram") {
@@ -884,10 +978,16 @@ compute_gram_matrix.pca <- function(para,data){
     stopifnot(is.logical(para$cor))
     # eigen values:
     if (!para$cor) {
-      singular_value <- (svd(scale(data$x, center = TRUE, scale = FALSE))[["d"]])^2 # improve runtimes
+      singular_value <-
+        (svd(scale(
+          data$x, center = TRUE, scale = FALSE
+        ))[["d"]]) ^ 2 # improve runtimes
       eigen_value <- singular_value / para$nobs
     } else {
-      singular_value <- (svd(scale(data$x, center = TRUE, scale = TRUE))[["d"]])^2 # improve runtimes
+      singular_value <-
+        (svd(scale(
+          data$x, center = TRUE, scale = TRUE
+        ))[["d"]]) ^ 2 # improve runtimes
       eigen_value <- singular_value / (para$nobs - 1)
     }
     
@@ -914,55 +1014,60 @@ compute_gram_matrix.pca <- function(para,data){
   para$pc_variance <- eigen_value
   para$total_variance <- sum(eigen_value)
   
-  list(para=para,data=data)
+  list(para = para, data = data)
 }
 
 
-early_stop <- function(para) UseMethod("early_stop")
+early_stop <- function(para)
+  UseMethod("early_stop")
 
-early_stop.glm <- function(para){
+early_stop.glm <- function(para) {
   stopifnot(is.logical(para$early.stop))
   para$early_stop <- para$early.stop
-
+  
   para
 }
 
 
-model_type <- function(para) UseMethod("model_type")
+model_type <- function(para)
+  UseMethod("model_type")
 
-model_type.glm <- function(para){
-  para$model_type <- switch(para$family,
-                            "gaussian" = 1,
-                            "binomial" = 2,
-                            "poisson" = 3,
-                            "cox" = 4,
-                            "mgaussian" = 5,
-                            "multinomial" = 6,
-                            "gamma" = 8,
-                            "ordinal" = 9
-                            
+model_type.glm <- function(para) {
+  para$model_type <- switch(
+    para$family,
+    "gaussian" = 1,
+    "binomial" = 2,
+    "poisson" = 3,
+    "cox" = 4,
+    "mgaussian" = 5,
+    "multinomial" = 6,
+    "gamma" = 8,
+    "ordinal" = 9
+    
   )
-
+  
   para
 }
 
 
-x_y_matching <- function(para,data) UseMethod("x_y_matching")
+x_y_matching <- function(para, data)
+  UseMethod("x_y_matching")
 
-x_y_matching.glm <- function(para,data){
+x_y_matching.glm <- function(para, data) {
   if (para$nobs != nrow(data$y)) {
     stop("Rows of x must be the same as rows of y!")
   }
   if (para$sparse_X) {
     data$x <- map_dgCMatrix2entry(data$x)
   }
-  list(para=para,data=data)
+  list(para = para, data = data)
 }
 
 
-weight <- function(para) UseMethod("weight")
+weight <- function(para)
+  UseMethod("weight")
 
-weight.glm <- function(para){
+weight.glm <- function(para) {
   if (is.null(para$weight)) {
     para$weight <- rep(1, para$nobs)
   }
@@ -978,9 +1083,10 @@ weight.glm <- function(para){
 }
 
 
-covariance_update <- function(para) UseMethod("covariance_update")
+covariance_update <- function(para)
+  UseMethod("covariance_update")
 
-covariance_update.glm <- function(para){
+covariance_update.glm <- function(para) {
   stopifnot(is.logical(para$cov.update))
   if (para$model_type == 1) {
     para$covariance_update <- para$cov.update
@@ -992,19 +1098,21 @@ covariance_update.glm <- function(para){
 }
 
 
-normalize_strategy <- function(para) UseMethod("normalize_strategy")
+normalize_strategy <- function(para)
+  UseMethod("normalize_strategy")
 
-normalize_strategy.glm <- function(para){
+normalize_strategy.glm <- function(para) {
   if (is.null(para$normalize)) {
-    para$normalize <- switch(para$family,
-                             "gaussian" = 1,
-                             "binomial" = 2,
-                             "poisson" = 2,
-                             "cox" = 3,
-                             "mgaussian" = 1,
-                             "multinomial" = 2,
-                             "gamma" = 2,
-                             "ordinal" = 2
+    para$normalize <- switch(
+      para$family,
+      "gaussian" = 1,
+      "binomial" = 2,
+      "poisson" = 2,
+      "cox" = 3,
+      "mgaussian" = 1,
+      "multinomial" = 2,
+      "gamma" = 2,
+      "ordinal" = 2
     )
   } else {
     stopifnot(para$normalize %in% 0:3)
@@ -1014,25 +1122,30 @@ normalize_strategy.glm <- function(para){
 }
 
 
-init_active_set <- function(para) UseMethod("init_active_set")
+init_active_set <- function(para)
+  UseMethod("init_active_set")
 
-init_active_set.glm <- function(para){
+init_active_set.glm <- function(para) {
   if (!is.null(para$init.active.set)) {
     stopifnot(para$init.active.set >= 1)
     stopifnot(all(para$init.active.set <= para$nvars))
-    check_integer_warning(para$init.active.set, "init.active.set should be a vector with integer.
-                          It is coerced to as.integer(init.active.set).")
+    check_integer_warning(
+      para$init.active.set,
+      "init.active.set should be a vector with integer.
+                          It is coerced to as.integer(init.active.set)."
+    )
     para$init.active.set <- as.integer(para$init.active.set)
     para$init.active.set <- sort(unique(para$model_type)) - 1
   }
-
+  
   para
 }
 
 
-newton_type <- function(para) UseMethod("newton_type")
+newton_type <- function(para)
+  UseMethod("newton_type")
 
-newton_type.glm <- function(para){
+newton_type.glm <- function(para) {
   if (length(para$newton) == 2) {
     if (para$family %in% c("binomial", "cox", "multinomial", "gamma", "poisson")) {
       para$newton <- "approx"
@@ -1047,10 +1160,11 @@ newton_type.glm <- function(para){
   if (para$family %in% c("gaussian", "mgaussian")) {
     para$newton <- "exact"
   }
-  para$newton_type <- switch(para$newton,
-                             "exact" = 0,
-                             "approx" = 1,
-                             "auto" = 2
+  para$newton_type <- switch(
+    para$newton,
+    "exact" = 0,
+    "approx" = 1,
+    "auto" = 2
   )
   para$approximate_newton <- para$newton_type == 1
   
@@ -1058,9 +1172,10 @@ newton_type.glm <- function(para){
 }
 
 
-initializate <- function(para,data) UseMethod("initializate")
+initializate <- function(para, data)
+  UseMethod("initializate")
 
-initializate.glm <- function(para,data){
+initializate.glm <- function(para, data) {
   para <- lambda(para)
   para <- number_of_thread(para)
   para <- early_stop(para)
@@ -1068,15 +1183,15 @@ initializate.glm <- function(para,data){
   para <- splicing_type(para)
   para <- max_splicing_iter(para)
   para <- model_type(para)
-  para <- x_matrix_info(para,data)
-  model <- x_matrix_content(para,data)
+  para <- x_matrix_info(para, data)
+  model <- x_matrix_content(para, data)
   para <- model$para
   data <- model$data
   para <- weight(para)
-  model <- y_matrix(para,data)
+  model <- y_matrix(para, data)
   para <- model$para
   data <- model$data
-  model <- x_y_matching(para,data)
+  model <- x_y_matching(para, data)
   para <- model$para
   data <- model$data
   para <- strategy_for_tuning(para)
@@ -1096,21 +1211,21 @@ initializate.glm <- function(para,data){
   para <- always_included_variables(para)
   para <- init_active_set(para)
   
-  list(para=para,data=data)
+  list(para = para, data = data)
 }
 
-initializate.pca <- function(para,data){
+initializate.pca <- function(para, data) {
   para <- information_criterion(para)
   para <- number_of_thread(para)
   para <- warm_start(para)
   para <- splicing_type(para)
   para <- max_splicing_iter(para)
-  para <- x_matrix_info(para,data)
-  model <- x_matrix_content(para,data)
+  para <- x_matrix_info(para, data)
+  model <- x_matrix_content(para, data)
   para <- model$para
   data <- model$data
   para <- sparse_type(para)
-  model <- compute_gram_matrix(para,data)
+  model <- compute_gram_matrix(para, data)
   para <- model$para
   data <- model$data
   para <- group_variable(para)
@@ -1120,10 +1235,10 @@ initializate.pca <- function(para,data){
   para <- important_searching(para)
   para <- tune_support_size_method(para)
   
-  list(para=para,data=data)
+  list(para = para, data = data)
 }
 
-initializate.rpca <- function(para,data){
+initializate.rpca <- function(para, data) {
   para <- strategy_for_tuning(para)
   para <- rank(para)
   para <- number_of_thread(para)
@@ -1133,8 +1248,8 @@ initializate.rpca <- function(para,data){
   para <- warm_start(para)
   para <- splicing_type(para)
   para <- max_splicing_iter(para)
-  para <- x_matrix_info(para,data)
-  model <- x_matrix_content(para,data)
+  para <- x_matrix_info(para, data)
+  model <- x_matrix_content(para, data)
   para <- model$para
   data <- model$data
   para <- screening_num(para)
@@ -1147,5 +1262,5 @@ initializate.rpca <- function(para,data){
   para <- sparse_range(para)
   para <- always_included_variables(para)
   
-  list(para=para,data=data)
+  list(para = para, data = data)
 }

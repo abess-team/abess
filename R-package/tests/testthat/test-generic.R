@@ -1,7 +1,7 @@
 library(abess)
 library(testthat)
 
-test_that("generic (univariate) works", {
+test_that("generic (glm-univariate) works", {
   n <- 60
   p <- 60
   support_size <- 3
@@ -64,8 +64,7 @@ test_that("generic (univariate) works", {
   expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
 })
 
-
-test_that("generic (multivariate) works", {
+test_that("generic (glm-multivariate) works", {
   n <- 60
   p <- 60
   support_size <- 3
@@ -118,8 +117,7 @@ test_that("generic (multivariate) works", {
   expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
 })
 
-
-test_that("generic (abesspca) works", {
+test_that("generic (spca) works", {
   n <- 60
   p <- 60
   support_size <- 3
@@ -153,6 +151,23 @@ test_that("generic (abesspca) works", {
   expect_visible(coef(abess_fit))
   expect_visible(coef(abess_fit, kpc = 2))
   expect_visible(coef(abess_fit, sparse = FALSE))
+})
+
+test_that("generic (rpca) works", {
+  n <- 30
+  p <- 30
+  true_S_size <- 60
+  true_L_rank <- 2
+  dataset <- generate.matrix(n, p, support.size = true_S_size, rank = true_L_rank)
+  abess_fit <- abessrpca(dataset[["x"]], rank = true_L_rank, support.size = 50:70)
+  
+  expect_visible(coef(abess_fit))
+  expect_visible(coef(abess_fit, support.size = 60))
+  expect_visible(coef(abess_fit, sparse = FALSE))
+  
+  expect_invisible(plot(abess_fit, type = "tune"))
+  expect_invisible(plot(abess_fit, type = "loss"))
+  expect_invisible(plot(abess_fit))
 })
 
 ### As a by-production, testing data.generator:

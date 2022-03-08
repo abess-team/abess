@@ -14,7 +14,7 @@
 \item{type}{\code{type = "link"} gives the linear predictors for \code{"binomial"},
 \code{"poisson"} or \code{"cox"} models; for \code{"gaussian"} models it gives the
 fitted values. \code{type = "response"} gives the fitted probabilities for
-\code{"binomial"}, fitted mean for \code{"poisson"} and the fitted relative-risk for
+\code{"binomial"} and \code{"ordinal"}, fitted mean for \code{"poisson"} and the fitted relative-risk for
 \code{"cox"}; for \code{"gaussian"}, \code{type = "response"} is equivalent to \code{type = "link"}.}
 
 \item{support.size}{An integer value specifies

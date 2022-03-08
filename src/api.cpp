@@ -287,7 +287,7 @@ List abessPCA_API(Eigen::MatrixXd x, int n, int p, int normalize_type, Eigen::Ve
 #endif
     List out_result_next;
     int num = 0;
-
+    
     if (!sparse_matrix) {
         while (num++ < pca_num) {
             int pca_support_size_num = sequence.col(num - 1).sum();

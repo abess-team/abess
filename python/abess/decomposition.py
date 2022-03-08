@@ -2,7 +2,7 @@ import numbers
 import numpy as np
 from scipy.sparse import coo_matrix
 from sklearn.utils.validation import check_array
-from .cabess import pywrap_PCA, pywrap_RPCA
+from pybind_cabess import pywrap_PCA, pywrap_RPCA
 from .bess_base import bess_base
 from .utilities import new_data_check
 
@@ -65,7 +65,7 @@ class SparsePCA(bess_base):
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
                  is_warm_start=True, support_size=None,
                  s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
+                 ic_type="loss", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  thread=1,
                  sparse_matrix=False,
@@ -132,8 +132,6 @@ class SparsePCA(bess_base):
             Training data.
         is_normal : bool, optional, default=False
             whether normalize the variables array before fitting the algorithm.
-        is_normal : bool, optional, default=True
-            whether normalize the variables array before fitting the algorithm.
         weight : array-like, shape(n_samples,), optional, default=np.ones(n)
             Individual weights for each sample. Only used for is_weight=True.
         group : int, optional, default=np.ones(p)
@@ -196,7 +194,9 @@ class SparsePCA(bess_base):
         path_type_int = 1
 
         # Ic_type
-        if self.ic_type == "aic":
+        if self.ic_type == "loss":
+            ic_type_int = 0
+        elif self.ic_type == "aic":
             ic_type_int = 1
         elif self.ic_type == "bic":
             ic_type_int = 2
@@ -206,7 +206,7 @@ class SparsePCA(bess_base):
             ic_type_int = 4
         else:
             raise ValueError(
-                "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
+                "ic_type should be \"loss\", \"aic\", \"bic\", \"ebic\" or \"gic\"")
 
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
@@ -364,17 +364,15 @@ class SparsePCA(bess_base):
             self.splicing_type,
             self.important_search,
             number,
-            A_init,
-            p * number, 1,
-            1, 1, 1
+            A_init
         )
 
-        self.coef_ = result[0].reshape(p, number)
+        self.coef_ = result[0]
         return self
 
-    def fit_transform(self, X=None, is_normal=True,
-                      group=None, Sigma=None, number=1):
-        self.fit(X, is_normal, group, Sigma, number)
+    def fit_transform(self, X=None, is_normal=False,
+                      group=None, Sigma=None, number=1, n=None, A_init=None):
+        self.fit(X, is_normal, group, Sigma, number, n, A_init)
         return X.dot(self.coef_)
 
 
@@ -621,9 +619,7 @@ class RobustPCA(bess_base):
             self.sparse_matrix,
             self.splicing_type,
             self.important_search,
-            A_init,
-            n * p, 1,
-            1, 1, 1
+            A_init
         )
 
         self.coef_ = result[0].reshape(p, n).T

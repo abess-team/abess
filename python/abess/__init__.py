@@ -5,9 +5,10 @@
 # @Site    :
 # @File    : __init__.py
 
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 __author__ = ("Jin Zhu, Kangkang Jiang, "
               "Junhao Huang, Yanhang Zhang, "
+              "Yanhang Zhang, Shiyun Lin, "
               "Junxian Zhu, Xueqin Wang")
 
 from .linear import (
@@ -17,7 +18,8 @@ from .linear import (
     PoissonRegression,
     MultiTaskRegression,
     MultinomialRegression,
-    GammaRegression
+    GammaRegression,
+    OrdinalRegression
 )
 from .decomposition import (SparsePCA, RobustPCA)
 from .datasets import (make_glm_data, make_multivariate_glm_data)

@@ -33,7 +33,8 @@ abessrpca(
 \item{rank}{A positive integer value specify the rank of the low-rank matrix.}
 
 \item{support.size}{An integer vector representing the alternative support sizes. 
-Only used for tune.path = "sequence". Strongly suggest its minimum value larger than \code{min(dim(x))}.}
+Only used for \code{tune.path = "sequence"}. 
+Strongly suggest its minimum value larger than \code{min(dim(x))}.}
 
 \item{tune.path}{The method to be used to select the optimal support size. For
 \code{tune.path = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
@@ -45,7 +46,8 @@ The first element is the minimum model size considered by golden-section,
 the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
 Not available now.}
 
-\item{tune.type}{The type of criterion for choosing the support size. Available options are "gic", "ebic", "bic" and "aic". 
+\item{tune.type}{The type of criterion for choosing the support size. 
+Available options are "gic", "ebic", "bic" and "aic". 
 Default is "gic".}
 
 \item{ic.scale}{A non-negative value used for multiplying the penalty term

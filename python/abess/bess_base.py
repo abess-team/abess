@@ -2,8 +2,8 @@ import numbers
 import numpy as np
 from scipy.sparse import coo_matrix
 from sklearn.base import BaseEstimator
+from pybind_cabess import pywrap_GLM
 from sklearn.utils.validation import check_X_y
-from .cabess import pywrap_GLM
 from .utilities import categorical_to_dummy
 
 
@@ -62,7 +62,7 @@ class bess_base(BaseEstimator):
 
         - If screening_size=-1, screening will not be used.
         - If screening_size=0, screening_size will be set as
-          :math:`\min(p, int(n / (\log(\log(n))\log(p))))`.
+          :math:`\\min(p, int(n / (\\log(\\log(n))\\log(p))))`.
 
     always_select : array-like, optional, default=[]
         An array contains the indexes of variables
@@ -222,7 +222,8 @@ class bess_base(BaseEstimator):
                 y = y[:, 1].reshape(-1)
 
             # Dummy y for Multinomial
-            if self.model_type == "Multinomial" and len(y.shape) == 1:
+            if self.model_type in (
+                    "Multinomial", "Ordinal") and len(y.shape) == 1:
                 y = categorical_to_dummy(y)
 
             # Init
@@ -260,6 +261,8 @@ class bess_base(BaseEstimator):
             model_type_int = 6
         elif self.model_type == 'Gamma':
             model_type_int = 8
+        elif self.model_type == 'Ordinal':
+            model_type_int = 9
         else:
             raise ValueError("model_type should not be " +
                              str(self.model_type))
@@ -500,22 +503,20 @@ class bess_base(BaseEstimator):
             self.primary_model_fit_epsilon, early_stop,
             self.approximate_Newton, self.thread, self.covariance_update,
             self.sparse_matrix, self.splicing_type, self.important_search,
-            A_init, p * M, 1 * M, 1, 1, 1)
+            A_init)
 
         # print("linear fit end")
         # print(len(result))
         # print(result)
-        if M != 1:
-            self.coef_ = result[0].reshape(p, M)
-        else:
-            self.coef_ = result[0]
-        self.intercept_ = result[1]
-
+        self.coef_ = result[0].squeeze()
+        self.intercept_ = result[1].squeeze()
         self.train_loss_ = result[2]
         self.test_loss_ = result[3]
         self.ic_ = result[4]
 
         if self.model_type == "Cox":
             self._baseline_model.fit(np.dot(X, self.coef_), y, time)
+        if self.model_type == "Ordinal":
+            self.coef_ = self.coef_[:, 0]
 
         return self

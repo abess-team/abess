@@ -67,6 +67,4 @@ jobs:
 
       - name: Deploy package
         run: |
-          git config --local user.email "zhuj37@mail2.sysu.edu.cn"
-          git config --local user.name "Mamba413"
           Rscript -e 'pkgdown::deploy_to_branch("./R-package", new_process = FALSE, clean = TRUE)'
