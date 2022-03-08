@@ -41,7 +41,7 @@ jobs:
         run: |
           pip install pandas
           pip install lifelines
-          pip install codecov
+          # pip install codecov
           # pip install gcovr
           # export CFLAGS="--coverage"
           cd python
@@ -52,7 +52,7 @@ jobs:
           pip install pytest
           pip install pytest-cov
           cd ./python/pytest
-          pytest -v --cov=abess --cov-report=xml
+          pytest --cov=abess -v --cov-report=xml
           # gcovr ./python/src/ --xml
           ls * -al
       - name: Upload coverage to Codecov
