@@ -19,19 +19,34 @@ class TestWorkflow:
         n = 100
         p = 20
         k = 5
+
+        # glm
         data = abess.make_glm_data(n=n, p=p, k=k, family='gaussian')
 
         model1 = abess.LinearRegression(sparse_matrix=False)
         model1.fit(data.x, data.y)
         model2 = abess.LinearRegression(sparse_matrix=True)
         model2.fit(coo_matrix(data.x), data.y)
-        assert_fit(model1.coef_, model2.coef_)
+        assert_value(model1.coef_, model2.coef_)
         assert_value(model1.intercept_, model2.intercept_)
 
         model3 = abess.LinearRegression(sparse_matrix=True)
         model3.fit(data.x, data.y)
-        assert_fit(model1.coef_, model3.coef_)
+        assert_value(model1.coef_, model3.coef_)
         assert_value(model1.intercept_, model2.intercept_)
+
+        # pca
+        data_pca = np.random.randn(n, p)
+
+        model1 = abess.SparsePCA(sparse_matrix=False)
+        model1.fit(data_pca)
+        model2 = abess.SparsePCA(sparse_matrix=True)
+        model2.fit(coo_matrix(data_pca))
+        assert_value(model1.coef_, model2.coef_)
+
+        model3 = abess.SparsePCA(sparse_matrix=True)
+        model3.fit(data_pca)
+        assert_value(model1.coef_, model3.coef_)
 
     @staticmethod
     def test_path():
@@ -112,7 +127,7 @@ class TestWorkflow:
         assert_value(model1.coef_, model2.coef_, 0, 0)
 
     @staticmethod
-    def test_other():
+    def test_possible_input():
         np.random.seed(2)
         n = 100
         p = 20
@@ -132,6 +147,12 @@ class TestWorkflow:
         model = abess.LinearRegression(
             support_size=range(s_max),
             screening_size=screen)
+        model.fit(data.x, data.y)
+        assert_nan(model.coef_)
+
+        model = abess.LinearRegression(
+            support_size=range(s_max),
+            screening_size=0)
         model.fit(data.x, data.y)
         assert_nan(model.coef_)
 
@@ -166,3 +187,7 @@ class TestWorkflow:
         for ic in ['aic', 'bic', 'ebic', 'gic']:
             model = abess.LinearRegression(ic_type=ic)
             model.fit(data.x, data.y)
+
+        # A_init
+        model = abess.LinearRegression()
+        model.fit(data.x, data.y, A_init=[0, 1, 2])

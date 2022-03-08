@@ -13,12 +13,12 @@ class TestOther:
     """
 
     @staticmethod
-    def test_datasets():
+    def test_glm():
         np.random.seed(123)
         n = 100
         p = 20
         k = 5
-        M = 3
+        # M = 3
         rho = 0.
         sigma = 1.
 
@@ -65,6 +65,16 @@ class TestOther:
                 sigma=sigma,
                 coef_=data1.coef_)
             assert (data1.coef_ == data2.coef_).all()
+
+    @staticmethod
+    def test_multi_glm():
+        np.random.seed(123)
+        n = 100
+        p = 20
+        k = 5
+        M = 3
+        rho = 0.
+        # sigma = 1.
 
         for family in ['multigaussian', 'multinomial']:
             data1 = abess.make_multivariate_glm_data(

@@ -3,26 +3,26 @@ name: Code Coverage
 on:
   push:
     paths:
-    - 'python/**'
-    - 'R-package/**'
-    - 'src/**'
-    - '.github/workflows/code_coverage.yml'
-    - '!R-package/.gitignore'
-    - '!R-package/cran-comments.md'
-    - '!R-package/pre-release.R'
-    - '!R-package/data-raw/**'
-    - '!python/.gitignore'
+      - "python/**"
+      - "R-package/**"
+      - "src/**"
+      - ".github/workflows/code_coverage.yml"
+      - "!R-package/.gitignore"
+      - "!R-package/cran-comments.md"
+      - "!R-package/pre-release.R"
+      - "!R-package/data-raw/**"
+      - "!python/.gitignore"
   pull_request:
     paths:
-    - 'python/**'
-    - 'R-package/**'
-    - 'src/**'
-    - '.github/workflows/code_coverage.yml'
-    - '!R-package/.gitignore'
-    - '!R-package/cran-comments.md'
-    - '!R-package/pre-release.R'
-    - '!R-package/data-raw/**'
-    - '!python/.gitignore'
+      - "python/**"
+      - "R-package/**"
+      - "src/**"
+      - ".github/workflows/code_coverage.yml"
+      - "!R-package/.gitignore"
+      - "!R-package/cran-comments.md"
+      - "!R-package/pre-release.R"
+      - "!R-package/data-raw/**"
+      - "!python/.gitignore"
   workflow_dispatch:
 
 jobs:
@@ -30,32 +30,39 @@ jobs:
     name: Codecov workflow for Python-package
     runs-on: ubuntu-latest
     env:
-      PYTHON: '3.9.6'
+      PYTHON: "3.9"
     steps:
       - uses: actions/checkout@master
       - name: Setup Python
         uses: actions/setup-python@master
         with:
-          python-version: 3.9.6
+          python-version: 3.9
       - name: Install abess & dependencies
         run: |
-          pip install pytest
-          pip install pytest-cov
-          pip install lifelines
           pip install pandas
-          pip install codecov
+          pip install lifelines
+          # pip install codecov
           # pip install gcovr
           # export CFLAGS="--coverage"
           cd python
-          pip install . --user
-          ls *
+          pip install .
+          ls * -al
       - name: Generate coverage report
         run: |
-          cd python/pytest
-          pytest -v --cov=abess --cov-report=xml
+          pip install pytest
+          pip install pytest-cov
+          cd ./python/pytest
+          pytest --cov=abess -v --cov-report=xml
           # gcovr ./python/src/ --xml
-          ls *
-          codecov -F Python
+          ls * -al
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./python/pytest/coverage.xml
+          fail_ci_if_error: true
+          flags: Python
+          verbose: true
 
   codecovR:
     name: Codecov for R-package
