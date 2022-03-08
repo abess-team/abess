@@ -421,7 +421,7 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
 
         Returns
         -------
-        survival : ndarray of :class:`sksurv.functions.StepFunction`, shape = (n_samples,)
+        survival : ndarray of :class:`StepFunction`, shape = (n_samples,)
             Predicted survival functions.
         """
         return self._baseline_model.get_survival_function(

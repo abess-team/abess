@@ -36,11 +36,11 @@ def assert_shape(x, y, n, p, M):
         assert y.shape[1] == M
 
 
-def save_data(data, name):
-    file = CURRENT + '/data/' + name + '.pkl'
-    with open(file, 'wb') as output:
-        pickle.dump(data, output, 4)
-    print("Data saved in " + file)
+# def save_data(data, name):
+#     file = CURRENT + '/data/' + name + '.pkl'
+#     with open(file, 'wb') as output:
+#         pickle.dump(data, output, 4)
+#     print("Data saved in " + file)
 
 
 def load_data(name):
