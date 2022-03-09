@@ -17,7 +17,8 @@
 #'
 #' @export
 #'
-predict.abess <- function(object, newx,
+predict.abess <- function(object,
+                          newx,
                           type = c("link", "response"),
                           support.size = NULL,
                           ...) {
@@ -26,7 +27,7 @@ predict.abess <- function(object, newx,
   }
   newx <- as.matrix(newx)
   multi_y <- object[["family"]] %in% MULTIVARIATE_RESPONSE
-
+  
   if (!is.null(colnames(newx))) {
     if (multi_y) {
       vn <- rownames(object[["beta"]][[1]])
@@ -39,55 +40,58 @@ predict.abess <- function(object, newx,
     newx <- newx[, vn]
   }
   type <- match.arg(type)
-
+  
   if (is.null(support.size)) {
     supp_size_index <- which.min(object[["tune.value"]])
   } else {
     supp_size_index <- match_support_size(object, support.size)
   }
-
+  
   if (multi_y) {
     y <- list()
     i <- 1
     for (index in supp_size_index) {
       y_tmp <- newx %*% object[["beta"]][[index]]
       y[[i]] <- sweep(as.matrix(y_tmp), 2,
-        FUN = "+",
-        STATS = object[["intercept"]][[index]]
-      )
+                      FUN = "+",
+                      STATS = object[["intercept"]][[index]])
       i <- i + 1
     }
     names(y) <- support.size
   } else {
     y <- newx %*% object[["beta"]][, supp_size_index, drop = FALSE]
     y <- sweep(as.matrix(y), 2,
-      FUN = "+",
-      STATS = object[["intercept"]][supp_size_index]
-    )
+               FUN = "+",
+               STATS = object[["intercept"]][supp_size_index])
   }
-
+  
   if (object[["family"]] %in% c("gaussian", "mgaussian")) {
+    
   } else if (object[["family"]] == "binomial") {
     if (type == "link") {
+      
     } else if (type == "response") {
       bi <- stats::binomial()
       y <- bi[["linkinv"]](y)
     } else if (type == "class") {
-
+      
     }
   } else if (object[["family"]] == "poisson") {
     if (type == "link") {
+      
     } else {
       poi <- stats::poisson()
       y <- poi[["linkinv"]](y)
     }
   } else if (object[["family"]] == "cox") {
     if (type == "link") {
+      
     } else {
       y <- exp(y)
     }
   } else if (object[["family"]] == "multinomial") {
     if (type == "link") {
+      
     } else if (type == "response") {
       for (i in seq_len(length(supp_size_index))) {
         y_exp <- exp(cbind(y[[i]], 0))
@@ -97,14 +101,16 @@ predict.abess <- function(object, newx,
     }
   } else if (object[["family"]] == "ordinal") {
     if (type == "link") {
+      
     } else if (type == "response") {
-      y <- lapply(y,function(x) 1 / (exp(-x) + 1))
+      y <- lapply(y, function(x)
+        1 / (exp(-x) + 1))
       n <- nrow(y[[1]])
       for (i in seq_len(length(supp_size_index))) {
-        y[[i]] <- cbind(y[[i]],rep(1,n)) - cbind(rep(0,n),y[[i]])
+        y[[i]] <- cbind(y[[i]], rep(1, n)) - cbind(rep(0, n), y[[i]])
       }
     }
   }
-
+  
   y
 }
