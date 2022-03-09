@@ -1,6 +1,8 @@
 import os
 import pickle
 import numpy as np
+import pickle
+import os
 from pytest import approx
 
 CURRENT = os.path.dirname(os.path.abspath(__file__))
@@ -35,10 +37,6 @@ def assert_shape(x, y, n, p, M):
 
 
 def save_data(data, name):
-    r"""
-    Save dataset for reproducibility.
-    The data will be stored in "pytest/data/xxxx.pkl".
-    """
     file = CURRENT + '/data/' + name + '.pkl'
     with open(file, 'wb') as output:
         pickle.dump(data, output, 4)
@@ -46,9 +44,6 @@ def save_data(data, name):
 
 
 def load_data(name):
-    r"""
-    Load dataset for reproducibility.
-    """
     file = CURRENT + '/data/' + name + '.pkl'
     with open(file, 'rb') as input:
         data = pickle.load(input)

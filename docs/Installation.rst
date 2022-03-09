@@ -7,7 +7,7 @@ Stable release
 Python
 ~~~~~~
 
-To install abess on Python, you can simply get the stable version with:
+To install ``abess`` on Python, you can simply get the stable version with:
 
 .. code:: bash
 
@@ -16,8 +16,7 @@ To install abess on Python, you can simply get the stable version with:
 If you don’t have `pip <https://pip.pypa.io>`__ installed, this `Python
 installation
 guide <http://docs.python-guide.org/en/latest/starting/installation/>`__
-can guide you through the process. Linux and MacOS users also need to
-install `swig <http://www.swig.org/>`__.
+can guide you through the process.
 
 R
 ~
@@ -31,7 +30,7 @@ To install stable version into R environment, run the command:
 Latest version
 --------------
 
-This page gives instructions on how to build and install abess from the
+This page gives instructions on how to build and install ``abess`` from the
 source code. If the instructions do not help for you, please feel free
 to ask questions by opening an
 `issue <https://github.com/abess-team/abess/issues>`__.
@@ -52,19 +51,21 @@ langulage you prefer.
 Python
 ~~~~~~
 
-Before installing abess itself, some dependencies should be installed
-first: ``swig``, ``bash``, ``mingw``, which may be a little different in
+Before installing abess itself, some dependent libraries should be installed
+first, which may be a little different in
 different platforms:
 
--  **Linux**: ``$ sudo apt install swig bash mingw-w64`` (for Ubuntu,
+-  **Linux**: ``$ sudo apt install bash`` (for Ubuntu,
    but other Linux systems are similar);
--  **Windows**: ``$ choco install swig mingw git`` (using
+-  **Windows**: ``$ choco install git`` (using
    `Chocolatey <https://community.chocolatey.org/packages>`__), or
    manually install the software and add them into PATH;
--  **MacOS**: ``$ brew install swig mingw-w64 bash`` (using
+   Windows user will need to install Microsoft Visual Studio.
+-  **MacOS**: ``$ brew install bash`` (using
    `Homebrew <https://brew.sh/>`__).
 
-After that, you can manually install abess by conducting command:
+Then, you need to install ``pybind11`` via ``pip install pybind11`` (or `other methods <https://pybind11.readthedocs.io/en/stable/installing.html#>`__). 
+After that, we can manually install ``abess`` by conducting command:
 
 .. code:: bash
 
@@ -151,6 +152,7 @@ are required for abess. Actually, they can be found on
 ``abess/python/setup.py`` and automatically installed during the
 installation.
 
+-  `pybind11 <https://pybind11.readthedocs.io/en/stable/>`__: seamless operability between C++11 and Python
 -  `numpy <https://pypi.org/project/numpy/>`__: the fundamental package
    for array computing with Python.
 -  `scipy <https://pypi.org/project/scipy/>`__: work with NumPy arrays,

@@ -28,10 +28,12 @@ model. Can be omitted if \code{beta} is supplied.}
 \item{beta}{The coefficient values in the underlying regression model.
 If it is supplied, \code{support.size} would be omitted.}
 
-\item{snr}{A numerical value controlling the signal-to-noise ratio (SNR).
-A larger SNR implies the identification of sparse matrix is much easier.}
+\item{snr}{A positive value controlling the signal-to-noise ratio (SNR).
+A larger SNR implies the identification of sparse matrix is much easier.
+Default \code{snr = Inf} enforces no noise exists.}
 
-\item{sigma}{A numerical value supplied the variance of the gaussian noise. Default \code{sigma = NULL} implies it is determined by \code{snr}.}
+\item{sigma}{A numerical value supplied the variance of the gaussian noise. 
+Default \code{sigma = NULL} implies it is determined by \code{snr}.}
 
 \item{seed}{random seed. Default: \code{seed = 1}.}
 }

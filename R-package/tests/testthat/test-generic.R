@@ -1,7 +1,7 @@
 library(abess)
 library(testthat)
 
-test_that("generic (univariate) works", {
+test_that("generic (glm-univariate) works", {
   n <- 60
   p <- 60
   support_size <- 3
@@ -26,9 +26,16 @@ test_that("generic (univariate) works", {
   predict_support_size <- c(3, 4)
   abess_predict <- predict(abess_fit, newx = dataset[["x"]][predict_idx, ], support.size = predict_support_size)
   expect_equal(dim(abess_predict), c(length(predict_idx), length(predict_support_size)))
+  expect_error(predict(abess_fit), "You need to supply a value for newx")
+  tmp <- dataset[["x"]][predict_idx, ]
+  colnames(tmp) <- paste0("a", colnames(tmp))
+  expect_error(predict(abess_fit, newx = tmp), 
+               "names of newx don't match training data!")
   
   expect_visible(extract(abess_fit))
   expect_visible(extract(abess_fit, support.size = 4))
+  expect_error(extract(abess_fit, support.size = 200), 
+               "Arugments support.size comprises support sizes that are not in the abess object.")
 
   expect_visible(deviance(abess_fit))
   expect_visible(deviance(abess_fit, type = "gic"))
@@ -62,14 +69,29 @@ test_that("generic (univariate) works", {
   abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "cox")
   expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
   expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
+  
+  # gamma
+  dataset <-
+    generate.data(n, p, support_size, seed = 1, family = "gamma")
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "gamma")
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
+  
+  ## ordinal
+  dataset <-
+    generate.data(n, p, support_size, seed = 1, family = "ordinal")
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], family = "ordinal")
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ]))
+  expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
+  
 })
 
-
-test_that("generic (multivariate) works", {
+test_that("generic (glm-multivariate) works", {
   n <- 60
   p <- 60
   support_size <- 3
 
+  ## multi-gaussian
   dataset <-
     generate.data(n, p, support_size, seed = 1, family = "mgaussian")
   abess_fit <- abess(dataset[["x"]], dataset[["y"]],
@@ -118,8 +140,7 @@ test_that("generic (multivariate) works", {
   expect_visible(predict(abess_fit, newx = dataset[["x"]][1:10, ], type = "response"))
 })
 
-
-test_that("generic (abesspca) works", {
+test_that("generic (spca) works", {
   n <- 60
   p <- 60
   support_size <- 3
@@ -153,6 +174,25 @@ test_that("generic (abesspca) works", {
   expect_visible(coef(abess_fit))
   expect_visible(coef(abess_fit, kpc = 2))
   expect_visible(coef(abess_fit, sparse = FALSE))
+})
+
+test_that("generic (rpca) works", {
+  n <- 30
+  p <- 30
+  true_S_size <- 60
+  true_L_rank <- 2
+  dataset <- generate.matrix(n, p, support.size = true_S_size, rank = true_L_rank)
+  abess_fit <- abessrpca(dataset[["x"]], rank = true_L_rank, support.size = 50:70)
+  
+  expect_invisible(print(abess_fit))
+  
+  expect_visible(coef(abess_fit))
+  expect_visible(coef(abess_fit, support.size = 60))
+  expect_visible(coef(abess_fit, sparse = FALSE))
+  
+  expect_invisible(plot(abess_fit, type = "tune"))
+  expect_invisible(plot(abess_fit, type = "loss"))
+  expect_invisible(plot(abess_fit))
 })
 
 ### As a by-production, testing data.generator:

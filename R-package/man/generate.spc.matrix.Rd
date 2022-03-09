@@ -21,8 +21,9 @@ generate.spc.matrix(
 
 \item{support.size}{A integer specify the number of non-zero entries in the first column of loading matrix.}
 
-\item{snr}{A numerical value controlling the signal-to-noise ratio (SNR).
-A larger SNR implies the identification of sparse matrix is much easier.}
+\item{snr}{A positive value controlling the signal-to-noise ratio (SNR).
+A larger SNR implies the identification of sparse matrix is much easier.
+Default \code{snr = Inf} enforces no noise exists.}
 
 \item{sigma}{A numerical vector with length \code{p} specify the standard deviation of each columns.
 Default \code{sigma = NULL} implies it is determined by \code{snr}. 
