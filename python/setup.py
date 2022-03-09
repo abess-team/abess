@@ -76,12 +76,12 @@ elif sys.platform.startswith('darwin'):
         "-Wall", "-std=c++11",
         "-Wno-int-in-bool-context"
     ]
-    m1chip_unable_extra_compile_args=[
-        ## Enable the "-mavx", "-mfma", "-march=native" would improve the computational efficiency. 
-        ## "-mavx" and "-mfma" do not supported by github-action environment when arch = x86_64
-        # "-mavx", 
+    m1chip_unable_extra_compile_args = [
+        # Enable the "-mavx", "-mfma", "-march=native" would improve the computational efficiency.
+        # "-mavx" and "-mfma" do not supported by github-action environment when arch = x86_64
+        # "-mavx",
         # "-mfma"
-        ## "-mavx" and "-mfma" do not supported by github-action when building arm64 (because it the default is not arm64)
+        # "-mavx" and "-mfma" do not supported by github-action when building arm64 (because it the default is not arm64)
         # "-march=native"
     ]
     if platform.processor() not in ('arm', 'arm64'):
@@ -102,15 +102,7 @@ elif sys.platform.startswith('darwin'):
     )
 else:
     eigen_path = CURRENT_DIR + "/include"
-    extra_compile_args = [
-        "-DNDEBUG", "-fopenmp",
-        "-O2", "-Wall",
-        "-std=c++11", "-mavx",
-        "-mfma", "-march=native",
-        # "-Wno-unused-variable",
-        # "-Wno-unused-but-set-variable",
-        "-Wno-int-in-bool-context"  # avoid warnings from Eigen
-    ],
+    # Pybind11Extension inherits Extension
     pybind_cabess_module = Pybind11Extension(
         name='pybind_cabess',
         sources=[CURRENT_DIR + '/src/api.cpp',
@@ -118,7 +110,15 @@ else:
                  CURRENT_DIR + '/src/utilities.cpp',
                  CURRENT_DIR + '/src/normalize.cpp',
                  CURRENT_DIR + '/src/pywrap.cpp'],
-        extra_compile_args=extra_compile_args,
+        extra_compile_args=[
+            "-DNDEBUG", "-fopenmp",
+            "-O2", "-Wall",
+            "-std=c++11", "-mavx",
+            "-mfma", "-march=native",
+            # "-Wno-unused-variable",
+            # "-Wno-unused-but-set-variable",
+            "-Wno-int-in-bool-context"  # avoid warnings from Eigen
+        ],
         extra_link_args=['-lgomp'],
         include_dirs=[
             eigen_path
