@@ -102,23 +102,23 @@ elif sys.platform.startswith('darwin'):
     )
 else:
     eigen_path = CURRENT_DIR + "/include"
-    ## Pybind11Extension inherits Extension 
+    extra_compile_args = [
+        "-DNDEBUG", "-O2",
+        "-Wall", "-std=c++11",
+        "-Wno-int-in-bool-context"
+    ]
+    x64_extra_compile_args=[
+        "-mavx", 
+        "-mfma", 
+        "-march=native"
+    ]
+    if platform.processor() in ('x86_64'):
+        extra_compile_args.extend(x64_extra_compile_args)
+        pass
     pybind_cabess_module = Pybind11Extension(
         name='pybind_cabess',
-        sources=[CURRENT_DIR + '/src/api.cpp',
-                 CURRENT_DIR + '/src/List.cpp',
-                 CURRENT_DIR + '/src/utilities.cpp',
-                 CURRENT_DIR + '/src/normalize.cpp',
-                 CURRENT_DIR + '/src/pywrap.cpp'],
-        extra_compile_args=[
-            "-DNDEBUG", "-fopenmp",
-            "-O2", "-Wall",
-            "-std=c++11", "-mavx",
-            "-mfma", "-march=native",
-            # "-Wno-unused-variable",
-            # "-Wno-unused-but-set-variable",
-            "-Wno-int-in-bool-context"  # avoid warnings from Eigen
-        ],
+        sources=[CURRENT_DIR + '/src/pywrap.cpp'],
+        extra_compile_args=extra_compile_args,
         extra_link_args=['-lgomp'],
         include_dirs=[
             eigen_path
