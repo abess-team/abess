@@ -90,7 +90,7 @@ generalized linear model and Cox proportional hazard model."><meta property="og:
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Generate simulated data</h1>
-    <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/R/utility.R" class="external-link"><code>R/utility.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/R/generate.data.R" class="external-link"><code>R/generate.data.R</code></a></small>
     <div class="hidden name"><code>generate.data.Rd</code></div>
     </div>
 
@@ -136,7 +136,8 @@ predictors. Default is <code>0</code>.</p></dd>
 univariate quantitative response, <code>"binomial"</code> for binary classification response,
 <code>"poisson"</code> for counting response, <code>"cox"</code> for left-censored response,
 <code>"mgaussian"</code> for multivariate quantitative response,
-<code>"mgaussian"</code> for multi-classification response.</p></dd>
+<code>"mgaussian"</code> for multi-classification response, 
+<code>"ordinal"</code> for ordinal response.</p></dd>
 <dt>beta</dt>
 <dd><p>The coefficient values in the underlying regression model.
 If it is supplied, <code>support.size</code> would be omitted.</p></dd>
@@ -200,6 +201,14 @@ an exponential distribution:
 $$Y = Exp(\exp(X \beta + \epsilon)).$$
 The underlying regression coefficient \(\beta\) has
 uniform distribution [2m, 10m] and \(m = \sqrt{2log(p)/n}/3.\)</p>
+<p>For <code>family = "gamma"</code>, the data is modeled to have
+a gamma distribution:
+$$Y = Gamma(X \beta + \epsilon + 10, shape),$$
+where \(shape\) is shape parameter in a gamma distribution.
+The underlying regression coefficient \(\beta\) has
+uniform distribution [2m, 100m] and \(m = \sqrt{2log(p)/n}.\)</p>
+<p>For <code>family = "ordinal"</code>, the data is modeled to have
+an ordinal distribution.</p>
 <p>For <code>family = "cox"</code>, the model for failure time \(T\) is
 $$T = (-\log(U / \exp(X \beta)))^{1/weibull.shape},$$
 where \(U\) is a uniform random variable with range [0, 1].
