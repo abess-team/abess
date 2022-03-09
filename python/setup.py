@@ -105,16 +105,16 @@ else:
     extra_compile_args = [
         "-DNDEBUG", "-O2",
         "-Wall", "-std=c++11",
-        "-Wno-int-in-bool-context"
-    ]
-    x64_extra_compile_args=[
+        "-Wno-int-in-bool-context",
         "-mavx", 
         "-mfma", 
         "-march=native"
     ]
-    if platform.processor() in ('x86_64'):
-        extra_compile_args.extend(x64_extra_compile_args)
-        pass
+    # x64_extra_compile_args=[
+    # ]
+    # if platform.processor() in ('x86_64'):
+    #     extra_compile_args.extend(x64_extra_compile_args)
+    #     pass
     pybind_cabess_module = Pybind11Extension(
         name='pybind_cabess',
         sources=[CURRENT_DIR + '/src/pywrap.cpp'],
