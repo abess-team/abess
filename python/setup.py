@@ -27,8 +27,8 @@ package_info = get_info()
 # copy src
 os.system('bash "{}/copy_src.sh" "{}"'.format(CURRENT_DIR, CURRENT_DIR))
 
-print("sys.platform output: {}".format(sys.platform))
-print("platform.processor() output: {}".format(platform.processor()))
+# print("sys.platform output: {}".format(sys.platform))
+# print("platform.processor() output: {}".format(platform.processor()))
 
 if sys.platform.startswith('win32'):
     # os_type = 'MS_WIN64'
@@ -36,9 +36,6 @@ if sys.platform.startswith('win32'):
     temp = python_path.split("\\")
     version = str(sys.version_info.major) + str(sys.version_info.minor)
     path1 = "-I" + python_path + "\\include"
-    # path2 = "-L" + python_path + "\\libs"
-    # os.system('bash "{}/pre.sh" '.format(CURRENT_DIR) +
-    #           python_path + ' ' + version)
 
     pybind_cabess_module = Pybind11Extension(
         name='pybind_cabess',
@@ -60,10 +57,7 @@ if sys.platform.startswith('win32'):
             path1
             # path2
         ],
-        # extra_link_args=['-lgomp'],
-        # libraries=["vcruntime140"],
         include_dirs=[
-            # np.get_include(),
             CURRENT_DIR + '/include'
         ]
     )
@@ -76,12 +70,12 @@ elif sys.platform.startswith('darwin'):
         "-Wall", "-std=c++11",
         "-Wno-int-in-bool-context"
     ]
-    m1chip_unable_extra_compile_args=[
-        ## Enable the "-mavx", "-mfma", "-march=native" would improve the computational efficiency. 
-        ## "-mavx" and "-mfma" do not supported by github-action environment when arch = x86_64
-        # "-mavx", 
+    m1chip_unable_extra_compile_args = [
+        # Enable the "-mavx", "-mfma", "-march=native" would improve the computational efficiency.
+        # "-mavx" and "-mfma" do not supported by github-action environment when arch = x86_64
+        # "-mavx",
         # "-mfma"
-        ## "-mavx" and "-mfma" do not supported by github-action when building arm64 (because it the default is not arm64)
+        # "-mavx" and "-mfma" do not supported by github-action when building arm64 (because it the default is not arm64)
         # "-march=native"
     ]
     if platform.processor() not in ('arm', 'arm64'):
@@ -102,7 +96,6 @@ elif sys.platform.startswith('darwin'):
     )
 else:
     eigen_path = CURRENT_DIR + "/include"
-    ## Pybind11Extension inherits Extension 
     pybind_cabess_module = Pybind11Extension(
         name='pybind_cabess',
         sources=[CURRENT_DIR + '/src/api.cpp',
@@ -155,6 +148,17 @@ setup(
         "Source Code": "https://github.com/abess-team/abess",
     },
     classifiers=[
+        "Intended Audience :: Science/Research",
+        "Intended Audience :: Developers",
+        "Programming Language :: C++",
+        "Programming Language :: Python",
+        "Topic :: Software Development",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence", 
+        "Topic :: Scientific/Engineering :: Mathematics", 
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: Linux",
+        "Operating System :: MacOS",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
