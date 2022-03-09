@@ -28,7 +28,7 @@ test_that("generic (glm-univariate) works", {
   expect_equal(dim(abess_predict), c(length(predict_idx), length(predict_support_size)))
   expect_error(predict(abess_fit), "You need to supply a value for newx")
   tmp <- dataset[["x"]][predict_idx, ]
-  names(tmp) <- paste0("a", colnames(tmp))
+  colnames(tmp) <- paste0("a", colnames(tmp))
   expect_error(predict(abess_fit, newx = tmp), 
                "names of newx don't match training data!")
   
