@@ -13,9 +13,6 @@ requires = [
 
 build-backend = "setuptools.build_meta"
 
-[tool.cibuildwheel]
-skip = "*-manylinux_aarch64"
-
 test-requires = "pytest"
 before-test = "pip install lifelines pandas"
 test-command = "pytest {package}"
