@@ -85,8 +85,10 @@ jobs:
 
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          user: __token__
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
+          verbose: true
 
   upload_PyPI:
     name: Upload to PyPI if release
@@ -106,4 +108,3 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
-          # packages_dir: wheelhouse
