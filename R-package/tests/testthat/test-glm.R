@@ -615,3 +615,30 @@ test_that("abess (init.active.set) works", {
   )
   test_batch(abess_fit, dataset, gaussian)
 })
+
+test_that("abess (foldid) works", {
+  n <- 100
+  p <- 20
+  nfold <- 5
+  support.size <- 3
+  dataset <- generate.data(n, p, support.size, seed = 1)
+  
+  fold_id <- rep(1:5, each = (n / nfold))
+  abess_fit1 <- abess(
+    dataset[["x"]],
+    dataset[["y"]],
+    tune.type = "cv",
+    support.size = 0:support.size, 
+    foldid = fold_id
+  )
+  
+  fold_id <- rep(5:1, each = (n / nfold))
+  abess_fit2 <- abess(
+    dataset[["x"]],
+    dataset[["y"]],
+    tune.type = "cv",
+    support.size = 0:support.size, 
+    foldid = fold_id
+  )
+  all.equal(abess_fit1, abess_fit2)
+})
