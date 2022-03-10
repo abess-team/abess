@@ -3,6 +3,8 @@ import numpy as np
 from .metrics import concordance_index_censored
 from .bess_base import bess_base
 from .utilities import (new_data_check, categorical_to_dummy)
+from .functions import (BreslowEstimator)
+# from .nonparametric import _compute_counts
 
 
 def fix_docs(cls):
@@ -90,6 +92,7 @@ class LogisticRegression(bess_base):
             splicing_type=splicing_type,
             important_search=important_search
         )
+        self._baseline_model = BreslowEstimator()
 
     def predict_proba(self, X):
         r"""
@@ -279,10 +282,10 @@ class LinearRegression(bess_base):
 
 
 @ fix_docs
-class CoxPHSurvivalAnalysis(bess_base):
+class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
     r"""
-    Adaptive Best-Subset Selection(ABESS) algorithm for
-    COX proportional hazards model.
+    Adaptive Best-Subset Selection (ABESS) algorithm for
+    Cox proportional hazards model.
 
     Parameters
     ----------
@@ -355,6 +358,7 @@ class CoxPHSurvivalAnalysis(bess_base):
             splicing_type=splicing_type,
             important_search=important_search
         )
+        self._baseline_model = BreslowEstimator()
 
     def predict(self, X):
         r"""
@@ -397,6 +401,31 @@ class CoxPHSurvivalAnalysis(bess_base):
         result = concordance_index_censored(
             np.array(y[:, 1], np.bool_), y[:, 0], risk_score)
         return result[0]
+
+    def predict_survival_function(self, X):
+        r"""
+        Predict survival function.
+        The survival function for an individual
+        with feature vector :math:`x` is defined as
+
+        .. math::
+            S(t \\mid x) = S_0(t)^{\\exp(x^\\top \\beta)} ,
+
+        where :math:`S_0(t)` is the baseline survival function,
+        estimated by Breslow's estimator.
+
+        Parameters
+        ----------
+        X : array-like, shape = (n_samples, n_features)
+            Data matrix.
+
+        Returns
+        -------
+        survival : ndarray of :class:`StepFunction`, shape = (n_samples,)
+            Predicted survival functions.
+        """
+        return self._baseline_model.get_survival_function(
+            np.log(self.predict(X)))
 
 
 @ fix_docs
