@@ -42,7 +42,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest]
+        # os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -58,7 +59,8 @@ jobs:
         with:
           package-dir: ./python ## trigger cibuildwheel in sub-directory
         env:
-          CIBW_SKIP: pp*
+          CIBW_BUILD: cp39*
+          # CIBW_SKIP: pp*
           # configure cibuildwheel to build native archs ('auto'), and some emulated ones
           CIBW_ARCHS_LINUX: auto aarch64 ppc64le s390x
           CIBW_ARCHS_MACOS: x86_64 arm64 universal2 # the latest MacOS support the Rosetta
@@ -68,12 +70,28 @@ jobs:
         shell: bash
 
       - name: Upload wheels to the project's github page
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: wheelhouse/*.whl
+  
+  upload_TestPyPI:
+    name: Upload alpha version to TestPyPI
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
 
-  upload_all:
-    name: Upload if release
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
+  upload_PyPI:
+    name: Upload to PyPI if release
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
@@ -86,8 +104,8 @@ jobs:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.4.2
+      - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
-          packages_dir: python/wheelhouse/
+          packages_dir: dist
