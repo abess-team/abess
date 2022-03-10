@@ -218,6 +218,7 @@ class bess_base(BaseEstimator):
             if self.model_type == "Cox":
                 X = X[y[:, 0].argsort()]
                 y = y[y[:, 0].argsort()]
+                time = y[:, 0].reshape(-1)
                 y = y[:, 1].reshape(-1)
 
             # Dummy y for Multinomial
@@ -513,6 +514,8 @@ class bess_base(BaseEstimator):
         self.test_loss_ = result[3]
         self.ic_ = result[4]
 
+        if self.model_type == "Cox":
+            self._baseline_model.fit(np.dot(X, self.coef_), y, time)
         if self.model_type == "Ordinal":
             self.coef_ = self.coef_[:, 0]
 
