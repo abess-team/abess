@@ -6,10 +6,10 @@ on:
     branches:
       - master
     paths:
-      - 'python/**'
-      - 'src/**'
-      - '.github/workflows/pypi.yml'
-      - '!python/.gitignore'
+      - "python/**"
+      - "src/**"
+      - ".github/workflows/pypi.yml"
+      - "!python/.gitignore"
   release:
     types:
       - published
@@ -42,8 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest]
-        # os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -59,8 +58,7 @@ jobs:
         with:
           package-dir: ./python ## trigger cibuildwheel in sub-directory
         env:
-          CIBW_BUILD: cp39*
-          # CIBW_SKIP: pp*
+          CIBW_SKIP: pp*
           # configure cibuildwheel to build native archs ('auto'), and some emulated ones
           CIBW_ARCHS_LINUX: auto aarch64 ppc64le s390x
           CIBW_ARCHS_MACOS: x86_64 arm64 universal2 # the latest MacOS support the Rosetta
@@ -73,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: wheelhouse/*.whl
-  
+
   upload_TestPyPI:
     name: Upload alpha version to TestPyPI
     needs: [build_wheels, build_sdist]
@@ -97,9 +95,9 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'published'
 
     steps:
-      - uses: actions/setup-python@v2
+      # - uses: actions/setup-python@v2
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
@@ -108,4 +106,4 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
-          packages_dir: dist
+          # packages_dir: wheelhouse
