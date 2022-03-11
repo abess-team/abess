@@ -35,7 +35,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          path: dist/*
+          path: python/dist/*
 
   build_wheels:
     name: Wheels on ${{ matrix.os }}
