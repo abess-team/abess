@@ -69,9 +69,9 @@ def categorical_to_dummy(x, classes=None):
     for i, x_i in enumerate(x):
         if x_i in classes:
             dummy_x[i, index[x_i]] = 1
-        else:
-            print(
-                "Data {} (index {}) is not in classes.".format(
-                    x_i,
-                    i))
+        # else:
+        #     print(
+        #         "Data {} (index {}) is not in classes.".format(
+        #             x_i,
+        #             i))
     return dummy_x

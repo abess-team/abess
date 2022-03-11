@@ -272,8 +272,19 @@ class TestCheck:
         else:
             assert False
 
+        try:
+            data = abess.make_glm_data(n=100, p=10, k=3, family='gaussian')
+            model = abess.LinearRegression()
+            model.fit(data.x, data.y)
+            model.score(data.x[:, 1:], data.y)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
         # lack of necessary parameter
         try:
+            model = abess.LinearRegression()
             model.fit(X=[[1]])
         except ValueError as e:
             print(e)
@@ -281,6 +292,7 @@ class TestCheck:
             assert False
 
         try:
+            model = abess.LinearRegression()
             model.fit(y=[1])
         except ValueError as e:
             print(e)
@@ -361,12 +373,28 @@ class TestCheck:
         else:
             assert False
 
+        try:
+            model = abess.SparsePCA(screening_size=np.ones((100, 1)))
+            model.fit(data)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
         # screening_size
         model = abess.SparsePCA(screening_size=0)
         model.fit(data)
 
         try:
             model = abess.SparsePCA(screening_size=100)
+            model.fit(data)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model = abess.SparsePCA(screening_size=1, support_size=2)
             model.fit(data)
         except ValueError as e:
             print(e)
@@ -444,6 +472,38 @@ class TestCheck:
         else:
             assert False
 
+        try:
+            model1 = abess.SparsePCA(exchange_num=-1)
+            model1.fit([[1]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model1 = abess.SparsePCA(thread=-1)
+            model1.fit([[1]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model1 = abess.SparsePCA()
+            model.fit([[1]], A_init=[[0, 1, 2]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model1 = abess.SparsePCA()
+            model.fit([[1]], A_init=[-1])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
     @staticmethod
     def test_rpca():
         model = abess.RobustPCA()
@@ -502,6 +562,46 @@ class TestCheck:
         # invalid arg
         try:
             model1 = abess.RobustPCA(ic_type='other')
+            model1.fit([[1]], r=1)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model1 = abess.RobustPCA(support_size=[100])
+            model1.fit([[1]], r=1)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model1 = abess.RobustPCA()
+            model1.fit([[1]], r=0.1)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model1 = abess.RobustPCA(exchange_num=-1)
+            model1.fit([[1]], r=1)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model1 = abess.RobustPCA(splicing_type=-1)
+            model1.fit([[1]], r=1)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model1 = abess.RobustPCA(thread=-1)
             model1.fit([[1]], r=1)
         except ValueError as e:
             print(e)

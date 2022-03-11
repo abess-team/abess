@@ -31,10 +31,11 @@ jobs:
       - name: Check metadata
         run: |
           pipx run twine check dist/*
+          realpath dist/*
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
-          path: dist/*.tar.gz
+          path: python/dist/*
 
   build_wheels:
     name: Wheels on ${{ matrix.os }}
