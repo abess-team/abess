@@ -110,14 +110,14 @@ class SparsePCA(bess_base):
         """
         X = new_data_check(self, X)
         s = np.cov(X.T)
-        if len(self.coef_.shape) == 1:
-            explain = self.coef_.T.dot(s).dot(self.coef_)
-        else:
-            explain = np.sum(np.diag(self.coef_.T.dot(s).dot(self.coef_)))
-        if isinstance(s, (int, float)):
-            full = s
-        else:
-            full = np.sum(np.diag(s))
+        # if len(self.coef_.shape) == 1:
+        #     explain = self.coef_.T.dot(s).dot(self.coef_)
+        # else:
+        explain = np.sum(np.diag(self.coef_.T.dot(s).dot(self.coef_)))
+        # if isinstance(s, (int, float)):
+        #     full = s
+        # else:
+        full = np.sum(np.diag(s))
         return explain / full
 
     def fit(self, X=None, is_normal=False,
@@ -261,7 +261,7 @@ class SparsePCA(bess_base):
             elif self.screening_size > p:
                 raise ValueError(
                     "screening size should be smaller than X.shape[1].")
-            elif self.screening_size < max(support_sizes):
+            elif self.screening_size < np.nonzero(support_sizes)[0].max() + 1:
                 raise ValueError(
                     "screening size should be more than max(support_size).")
 
@@ -290,11 +290,11 @@ class SparsePCA(bess_base):
                 "number should be an positive integer and"
                 " not bigger than X.shape[1].")
 
-        # Important_search
-        if (not isinstance(self.important_search, int)
-                or self.important_search < 0):
-            raise ValueError(
-                "important_search should be a non-negative number.")
+        # # Important_search
+        # if (not isinstance(self.important_search, int)
+        #         or self.important_search < 0):
+        #     raise ValueError(
+        #         "important_search should be a non-negative number.")
 
         # A_init
         if A_init is None:
@@ -547,11 +547,11 @@ class RobustPCA(bess_base):
         if self.splicing_type not in (0, 1):
             raise ValueError("splicing type should be 0 or 1.")
 
-        # Important_search
-        if (not isinstance(self.important_search, int)
-                or self.important_search < 0):
-            raise ValueError(
-                "important_search should be a non-negative number.")
+        # # Important_search
+        # if (not isinstance(self.important_search, int)
+        #         or self.important_search < 0):
+        #     raise ValueError(
+        #         "important_search should be a non-negative number.")
 
         # A_init
         if A_init is None:

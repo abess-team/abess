@@ -181,7 +181,6 @@ class TestAlgorithm:
         time_points = np.quantile(data.y[:, 0], np.linspace(0, 0.6, 100))
         surv[0](time_points)
 
-
     @staticmethod
     def test_poisson():
         np.random.seed(9)
@@ -385,8 +384,12 @@ class TestAlgorithm:
 
         # ic
         for ic in ['aic', 'bic', 'ebic', 'gic']:
-            model4 = abess.SparsePCA(support_size=support_size, ic_type=ic)
-            model4.fit(X, is_normal=False)
+            model = abess.SparsePCA(support_size=support_size, ic_type=ic)
+            model.fit(X, is_normal=False)
+
+        # A_init
+        model = abess.SparsePCA(support_size=support_size)
+        model.fit(X, A_init=[0, 1, 2])
 
     @staticmethod
     def test_gamma():
@@ -445,6 +448,10 @@ class TestAlgorithm:
         for ic in ['aic', 'bic', 'ebic', 'gic']:
             model4 = abess.RobustPCA(support_size=s, ic_type=ic)
             model4.fit(X, r=r)
+
+        # always select
+        model5 = abess.RobustPCA(support_size=s, always_select=[1])
+        model5.fit(X, r=r)
 
     @staticmethod
     def test_ordinal():
