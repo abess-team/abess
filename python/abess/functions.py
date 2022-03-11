@@ -72,9 +72,9 @@ class StepFunction:
             return value[0]
         return value
 
-    def __repr__(self):
-        return "StepFunction(x=%r, y=%r, a=%r, b=%r)" % (
-            self.x, self.y, self.a, self.b)
+    # def __repr__(self):
+    #     return "StepFunction(x=%r, y=%r, a=%r, b=%r)" % (
+    #         self.x, self.y, self.a, self.b)
 
 
 class BreslowEstimator:
@@ -125,25 +125,25 @@ class BreslowEstimator:
                                                np.exp(- self.cum_baseline_hazard_.y))
         return self
 
-    def get_cumulative_hazard_function(self, linear_predictor):
-        r"""Predict cumulative hazard function.
-        Parameters
-        ----------
-        linear_predictor : array-like, shape = (n_samples,)
-            Linear predictor of risk: `X @ coef`.
-        Returns
-        -------
-        cum_hazard : ndarray, shape = (n_samples,)
-            Predicted cumulative hazard functions.
-        """
-        risk_score = np.exp(linear_predictor)
-        n_samples = risk_score.shape[0]
-        funcs = np.empty(n_samples, dtype=object)
-        for i in range(n_samples):
-            funcs[i] = StepFunction(x=self.cum_baseline_hazard_.x,
-                                    y=self.cum_baseline_hazard_.y,
-                                    a=risk_score[i])
-        return funcs
+    # def get_cumulative_hazard_function(self, linear_predictor):
+    #     r"""Predict cumulative hazard function.
+    #     Parameters
+    #     ----------
+    #     linear_predictor : array-like, shape = (n_samples,)
+    #         Linear predictor of risk: `X @ coef`.
+    #     Returns
+    #     -------
+    #     cum_hazard : ndarray, shape = (n_samples,)
+    #         Predicted cumulative hazard functions.
+    #     """
+    #     risk_score = np.exp(linear_predictor)
+    #     n_samples = risk_score.shape[0]
+    #     funcs = np.empty(n_samples, dtype=object)
+    #     for i in range(n_samples):
+    #         funcs[i] = StepFunction(x=self.cum_baseline_hazard_.x,
+    #                                 y=self.cum_baseline_hazard_.y,
+    #                                 a=risk_score[i])
+    #     return funcs
 
     def get_survival_function(self, linear_predictor):
         r"""Predict survival function.
@@ -164,7 +164,8 @@ class BreslowEstimator:
                                     y=np.power(self.baseline_survival_.y, risk_score[i]))
         return funcs
 
-    def _compute_counts(self ,event, time, order=None):
+    @staticmethod
+    def _compute_counts(event, time, order=None):
         """Count right censored and uncensored samples at each unique time point.
 
         Parameters

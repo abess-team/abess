@@ -176,6 +176,12 @@ class TestAlgorithm:
         # assert_fit(model1.coef_, model2.coef_)    # TODO
         assert_reg(model2.coef_)
 
+        # survival function
+        surv = model1.predict_survival_function(data.x)
+        time_points = np.quantile(data.y[:, 0], np.linspace(0, 0.6, 100))
+        surv[0](time_points)
+
+
     @staticmethod
     def test_poisson():
         np.random.seed(9)
