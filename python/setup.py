@@ -40,11 +40,11 @@ if sys.platform.startswith('win32'):
     pybind_cabess_module = Pybind11Extension(
         name='pybind_cabess',
         sources=[
-            CURRENT_DIR + '/src/api.cpp',
-            CURRENT_DIR + '/src/List.cpp',
-            CURRENT_DIR + '/src/utilities.cpp',
-            CURRENT_DIR + '/src/normalize.cpp',
-            CURRENT_DIR + '/src/pywrap.cpp'],
+            'src/api.cpp',
+            'src/List.cpp',
+            'src/utilities.cpp',
+            'src/normalize.cpp',
+            'src/pywrap.cpp'],
         extra_compile_args=[
             # "-DNDEBUG",
             "/openmp",
@@ -58,11 +58,11 @@ if sys.platform.startswith('win32'):
             # path2
         ],
         include_dirs=[
-            CURRENT_DIR + '/include'
+            'include'
         ]
     )
 elif sys.platform.startswith('darwin'):
-    eigen_path = CURRENT_DIR + "/include"
+    eigen_path = "include"
 
     # compatible compile args with M1 chip:
     extra_compile_args = [
@@ -84,25 +84,25 @@ elif sys.platform.startswith('darwin'):
 
     pybind_cabess_module = Pybind11Extension(
         name='pybind_cabess',
-        sources=[CURRENT_DIR + '/src/api.cpp',
-                 CURRENT_DIR + '/src/List.cpp',
-                 CURRENT_DIR + '/src/utilities.cpp',
-                 CURRENT_DIR + '/src/normalize.cpp',
-                 CURRENT_DIR + '/src/pywrap.cpp'],
+        sources=['src/api.cpp',
+                 'src/List.cpp',
+                 'src/utilities.cpp',
+                 'src/normalize.cpp',
+                 'src/pywrap.cpp'],
         extra_compile_args=extra_compile_args,
         include_dirs=[
             eigen_path
         ]
     )
 else:
-    eigen_path = CURRENT_DIR + "/include"
+    eigen_path = "include"
     pybind_cabess_module = Pybind11Extension(
         name='pybind_cabess',
-        sources=[CURRENT_DIR + '/src/api.cpp',
-                 CURRENT_DIR + '/src/List.cpp',
-                 CURRENT_DIR + '/src/utilities.cpp',
-                 CURRENT_DIR + '/src/normalize.cpp',
-                 CURRENT_DIR + '/src/pywrap.cpp'],
+        sources=['src/api.cpp',
+                 'src/List.cpp',
+                 'src/utilities.cpp',
+                 'src/normalize.cpp',
+                 'src/pywrap.cpp'],
         extra_compile_args=[
             "-DNDEBUG", "-fopenmp",
             "-O2", "-Wall",
