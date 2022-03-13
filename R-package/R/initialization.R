@@ -98,6 +98,8 @@ Initialization_PCA <- function(c.max,
                                ic.scale,
                                num.threads,
                                tune.type,
+                               tune.path, 
+                               gs.range, 
                                kpc.num,
                                cor,
                                type,
@@ -120,6 +122,8 @@ Initialization_PCA <- function(c.max,
     tune.type = tune.type,
     important.search = important.search
   )
+  para$tune.path <- tune.path
+  para$gs.range <- gs.range
   para$kpc.num <- kpc.num
   para$support.num <- support.num
   para$cor <- cor
@@ -188,6 +192,8 @@ strategy_for_tuning_private <- function(para) {
 }
 
 strategy_for_tuning.rpca <- strategy_for_tuning_private
+
+strategy_for_tuning.pca <- strategy_for_tuning_private
 
 strategy_for_tuning.glm <- strategy_for_tuning_private
 
@@ -738,9 +744,8 @@ tune_support_size_method.glm <- tune_support_size_method_private
 tune_support_size_method.pca <- function(para) {
   para$tune_type <- para$tune.type
   if (para$cov_type == "gram" && para$tune_type == "cv") {
-    warnings("Cross validation is not allow when input a gram matrix.
-             Coerce into tune.type = 'gic'.")
-    para$tune_type <- "gic"
+    warning("Cross validation is not allow when input a gram matrix. Coerce into tune.type = 'gic'.")
+    para$tune.type <- "gic"
   }
   
   tune_support_size_method.glm(para)
@@ -875,8 +880,7 @@ always_included_variables.Initialization <- function(para) {
     if (para$path_type == 1) {
       if (always_include_num > max(para$s_list)) {
         stop(
-          "always.include containing too many variables.
-           The length of it must not exceed the maximum in support.size."
+          "length(always.include) must not exceed max(support.size)."
         )
       }
       if (always_include_num > min(para$s_list)) {
@@ -884,17 +888,14 @@ always_included_variables.Initialization <- function(para) {
           para$s_list <- para$s_list[para$s_list >= always_include_num]
         } else {
           stop(
-            sprintf(
-              "always.include containing %s variables. The min(support.size) must be equal or greater than this.",
-              always_include_num
-            )
+            "length(always.include) must be equal or less than min(support.size)."
           )
         }
       }
     } else {
       if (always_include_num > para$s_max) {
         stop(
-          "always.include containing too many variables. The length of it must not exceed the max(gs.range)."
+          "length(always.include) must not exceed max(gs.range)."
         )
       }
       if (always_include_num > para$s_min) {
@@ -902,10 +903,7 @@ always_included_variables.Initialization <- function(para) {
           para$s_min <- always_include_num
         } else {
           stop(
-            sprintf(
-              "always.include containing %s variables. The min(gs.range) must be equal or greater than this.",
-              always_include_num
-            )
+            "length(always.include) must be equal or less than min(gs.range)."
           )
         }
       }
@@ -915,34 +913,6 @@ always_included_variables.Initialization <- function(para) {
   
   para
 }
-
-always_included_variables.pca <- function(para) {
-  if (is.null(para$always.include)) {
-    para$always_include <- numeric(0)
-  } else {
-    if (anyNA(para$always.include)) {
-      stop("always.include has missing values.")
-    }
-    if (any(para$always.include <= 0)) {
-      stop(
-        "always.include should be an vector containing variable indexes which is positive."
-      )
-    }
-    para$always.include <- as.integer(para$always.include) - 1
-    if (length(para$always.include) > max(unlist(para$s_list))) {
-      stop(
-        "always.include containing too many variables.
-             The length of it should not exceed the maximum in support.size."
-      )
-    }
-    
-    para$always_include <- para$always.include
-  }
-  
-  
-  para
-}
-
 
 sparse.cov <- function(x, cor = FALSE) {
   n <- nrow(x)
@@ -1228,8 +1198,10 @@ initializate.pca <- function(para, data) {
   model <- compute_gram_matrix(para, data)
   para <- model$para
   data <- model$data
+  para <- strategy_for_tuning(para)
   para <- group_variable(para)
   para <- sparse_level_list(para)
+  para <- sparse_range(para)
   para <- C_max(para)
   para <- always_included_variables(para)
   para <- important_searching(para)
