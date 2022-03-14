@@ -134,8 +134,10 @@ abesspca <- function(x,
                      type = c("predictor", "gram"),
                      sparse.type = c("fpc", "kpc"),
                      cor = FALSE,
-                     support.size = NULL,
                      kpc.num = NULL,
+                     support.size = NULL,
+                     gs.range = NULL,
+                     tune.path = c("sequence", "gsection"),
                      tune.type = c("gic", "aic", "bic", "ebic", "cv"),
                      nfolds = 5,
                      foldid = NULL,
@@ -143,6 +145,7 @@ abesspca <- function(x,
                      c.max = NULL,
                      always.include = NULL,
                      group.index = NULL,
+                     screening.num = NULL, 
                      splicing.type = 1,
                      max.splicing.iter = 20,
                      warm.start = TRUE,
@@ -151,6 +154,7 @@ abesspca <- function(x,
   
   sparse.type <- match.arg(sparse.type)
   tune.type <- match.arg(tune.type)
+  tune.path <- match.arg(tune.path)
   type <- match.arg(type)
 
   data <- list(x=x)
@@ -161,6 +165,8 @@ abesspca <- function(x,
     cor = cor,
     support.size = support.size,
     kpc.num = kpc.num,
+    tune.path = tune.path, 
+    gs.range = gs.range, 
     tune.type = tune.type,
     nfolds = nfolds,
     foldid = foldid,
@@ -170,18 +176,20 @@ abesspca <- function(x,
     group.index = group.index,
     splicing.type = splicing.type,
     max.splicing.iter = max.splicing.iter,
+    screening.num = screening.num,
     warm.start = warm.start,
     num.threads = num.threads,
     support.num = NULL,
     important.search = NULL
   )
 
-  model <- initializate(para,data)
+  model <- initializate(para, data)
   para <- model$para
   data <- model$data
   
   x <- data$x
-
+  tune.path <- para$tune.path
+  gs.range <- para$gs.range
   kpc.num <- para$kpc.num
   warm.start <- para$warm.start
   num_threads  <- para$num_threads 
@@ -207,6 +215,8 @@ abesspca <- function(x,
   gram_x <- para$gram_x
   pc_variance <- para$pc_variance
   total_variance  <- para$total_variance 
+  screening_num <- para$screening_num
+  screening <- para$screening
 
   ## Cpp interface:
   result <- abessPCA_API(
@@ -227,7 +237,7 @@ abesspca <- function(x,
     sequence = s_list_bool,
     s_min = 0,
     s_max = 10,
-    screening_size = -1,
+    screening_size = ifelse(screening_num >= nvars, -1, screening_num),
     g_index = g_index,
     always_select = always_include,
     early_stop = FALSE,
@@ -335,6 +345,8 @@ abesspca <- function(x,
   result[["sparse.type"]] <- sparse.type
   result[["support.size"]] <- s_list
   result[["tune.type"]] <- tune_type
+  result[["tune.path"]] <- tune.path
+  result[["gs.range"]] <- gs.range
 
   result[["call"]] <- match.call()
   class(result) <- "abesspca"

@@ -95,8 +95,6 @@ abessrpca <- function(x,
   tune.path <- match.arg(tune.path)
   tune.type <- match.arg(tune.type)
   
-  
-  
   data <- list(x=x)
   para <- Initialization_RPCA(
     rank = rank,
