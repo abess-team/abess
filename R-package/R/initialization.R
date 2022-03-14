@@ -105,6 +105,7 @@ Initialization_PCA <- function(c.max,
                                type,
                                support.num,
                                important.search,
+                               screening.num, 
                                sparse.type,
                                nfolds,
                                foldid)
@@ -126,6 +127,7 @@ Initialization_PCA <- function(c.max,
   para$gs.range <- gs.range
   para$kpc.num <- kpc.num
   para$support.num <- support.num
+  para$screening.num <- screening.num
   para$cor <- cor
   para$type <- type
   para$sparse.type <- sparse.type
@@ -510,6 +512,7 @@ screening_num.glm <- function(para) {
   para
 }
 
+screening_num.pca <- screening_num.glm
 
 group_variable <- function(para)
   UseMethod("group_variable")
@@ -1204,6 +1207,7 @@ initializate.pca <- function(para, data) {
   para <- sparse_range(para)
   para <- C_max(para)
   para <- always_included_variables(para)
+  para <- screening_num(para)
   para <- important_searching(para)
   para <- tune_support_size_method(para)
   

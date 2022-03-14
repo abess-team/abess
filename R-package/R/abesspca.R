@@ -145,6 +145,7 @@ abesspca <- function(x,
                      c.max = NULL,
                      always.include = NULL,
                      group.index = NULL,
+                     screening.num = NULL, 
                      splicing.type = 1,
                      max.splicing.iter = 20,
                      warm.start = TRUE,
@@ -175,6 +176,7 @@ abesspca <- function(x,
     group.index = group.index,
     splicing.type = splicing.type,
     max.splicing.iter = max.splicing.iter,
+    screening.num = screening.num,
     warm.start = warm.start,
     num.threads = num.threads,
     support.num = NULL,
@@ -213,6 +215,8 @@ abesspca <- function(x,
   gram_x <- para$gram_x
   pc_variance <- para$pc_variance
   total_variance  <- para$total_variance 
+  screening_num <- para$screening_num
+  screening <- para$screening
 
   ## Cpp interface:
   result <- abessPCA_API(
@@ -233,7 +237,7 @@ abesspca <- function(x,
     sequence = s_list_bool,
     s_min = 0,
     s_max = 10,
-    screening_size = -1,
+    screening_size = ifelse(screening_num >= nvars, -1, screening_num),
     g_index = g_index,
     always_select = always_include,
     early_stop = FALSE,
