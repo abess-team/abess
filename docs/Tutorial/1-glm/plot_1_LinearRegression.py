@@ -69,12 +69,13 @@ print("predicted coef: ", model.coef_[ind])
 # From the result, we know that ``abess`` found which 3 predictors are useful among all 1000 variables.
 # Besides, the predicted coefficients of them are quite close to the real ones.
 #
-# Adaptive Best Subset Selection
+# Adaptive Best Subset Selection - Demonstration of the Optimality
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # However, we may not know the true sparsity level in real world data,
 # and thus we need to determine the most proper one from a large range.
 # Suppose that we believe the real sparsity level is between 0 and 30 (so
-# that ``range(0, 31)``):
+# that ``range(0, 31)``), the following code shows that this approach can 
+# successfully recover the true active set ([0, 1, 4]):
 
 
 model = LinearRegression(support_size=range(31))
