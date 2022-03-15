@@ -208,3 +208,4 @@ ax.grid(True)
 # The ``abess`` R package also supports CoxPH regression.
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v05-coxreg.html.
+# sphinx_gallery_thumbnail_number = 3
