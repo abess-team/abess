@@ -13,13 +13,13 @@ To install ``abess`` on Python, you can simply get the stable version with:
 
    $ pip install abess
 
-If you don’t have `pip <https://pip.pypa.io>`__ installed, this `Python
+If you don't have `pip <https://pip.pypa.io>`__ installed, this `Python
 installation
 guide <http://docs.python-guide.org/en/latest/starting/installation/>`__
 can guide you through the process.
 
 R
-~
+~~~~~~
 
 To install stable version into R environment, run the command:
 
@@ -74,6 +74,14 @@ After that, we can manually install ``abess`` by conducting command:
 
 If it finishes with ``Finished processing dependencies for abess``, the
 installation is successful.
+
+Alternatively, if you would like to develop ``abess``, install ``abess`` in `editable mode <https://peps.python.org/pep-0660/>` 
+(it is very convenient for development): 
+
+.. code:: bash
+
+   $ cd ./python
+   $ pip install -e .
 
 .. _r-1:
 
