@@ -60,7 +60,8 @@ different platforms:
 -  **Windows**: ``$ choco install git`` (using
    `Chocolatey <https://community.chocolatey.org/packages>`__), or
    manually install the software and add them into PATH;
-   Windows user will need to install Microsoft Visual Studio.
+   Windows user will also need to download `Microsoft C++ Build Tools <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`__,
+   and then install the "Desktop development with C++" module inside.
 -  **MacOS**: ``$ brew install bash`` (using
    `Homebrew <https://brew.sh/>`__).
 
