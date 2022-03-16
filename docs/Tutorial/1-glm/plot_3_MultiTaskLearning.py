@@ -123,7 +123,7 @@ for i in range(20):
 plt.xlabel('support_size')
 plt.title('the L2 norm of the coef')
 
-plt.subplots_adjust(wspace=0.6,hspace=1 )
+plt.subplots_adjust(wspace=0.6,hspace=1)
 plt.show()
 ###############################################################################
 # The ``abess`` R package also supports MRLR.
