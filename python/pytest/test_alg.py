@@ -25,6 +25,7 @@ from utilities import (
     save_data,
     load_data)
 
+
 @pytest.mark.filterwarnings("ignore")
 class TestAlgorithm:
     """
@@ -148,8 +149,9 @@ class TestAlgorithm:
 
         def assert_reg(coef):
             if miss_dep:
-                pytest.skip("Skip because modules 'pandas' or 'lifelines' have not been installed.")
-                
+                pytest.skip(
+                    "Skip because modules 'pandas' or 'lifelines' have not been installed.")
+
             if sys.version_info[0] + 0.1 * sys.version_info[1] < 3.6:
                 pytest.skip("Skip because requiring python3.6 or higher.")
 
@@ -464,8 +466,11 @@ class TestAlgorithm:
 
     @staticmethod
     def test_ordinal():
-        np.random.seed(0)
+        np.random.seed(2)
         data = abess.make_glm_data(n=100, p=20, k=5, family="ordinal")
+
+        # save_data(data, 'ordinal_seed2')
+        data = load_data('ordinal_seed2')
 
         # null
         model1 = abess.OrdinalRegression()
