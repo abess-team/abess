@@ -251,7 +251,11 @@ abesspca <- function(x,
     pca_num = kpc.num, 
     A_init = as.integer(c())
   )
-
+  
+  print(s_list)
+  if(path_type == 2){
+    s_list <- result[["sequence"]]
+  }
   # result[["beta"]] <- NULL
   # result[["coef0"]] <- NULL
   # result[["train_loss"]] <- NULL
@@ -259,7 +263,7 @@ abesspca <- function(x,
   # result[["coef0_all"]] <- NULL
   # result[["ic_all"]] <- NULL
   # result[["test_loss_all"]] <- NULL
-
+  
   if (sparse.type == "fpc") {
     names(result)[which(names(result) == "beta_all")] <- "coef"
     # result[["coef"]] <- result[["beta_all"]]
