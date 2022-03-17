@@ -470,7 +470,7 @@ abess.default <- function(x,
   ## preprocessing result in "gsection"
   if (tune.path == "gsection") {
     ## change the order:
-    reserve_order <- length(result[["sequence"]]):1
+    reserve_order <- rev(seq_len(length(result[["sequence"]])))
     result[["beta_all"]] <- result[["beta_all"]][reserve_order]
     if (is.matrix(result[["coef0_all"]])) {
       result[["coef0_all"]] <- result[["coef0_all"]][reserve_order, , drop = FALSE]
@@ -527,7 +527,7 @@ abess.default <- function(x,
   names(result)[which(names(result) == "beta_all")] <- "beta"
   if (multi_y) {
     if (screening) {
-      for (i in 1:length(result[["beta"]])) {
+      for (i in seq_len(length(result[["beta"]]))) {
         beta_all <- matrix(0, nrow = nvars, ncol = y_dim)
         beta_all[result[["screening_A"]] + 1, ] <- result[["beta"]][[i]]
         result[["beta"]][[i]] <- beta_all

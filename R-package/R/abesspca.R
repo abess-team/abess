@@ -205,6 +205,7 @@ abesspca <- function(x,
   important_search <- para$important_search
   always_include <- para$always_include
   s_max <- para$s_max
+  s_min <- para$s_min
   s_list_bool <- para$s_list_bool
   tune_type <- para$tune_type
   ic_type <- para$ic_type
@@ -217,6 +218,7 @@ abesspca <- function(x,
   total_variance  <- para$total_variance 
   screening_num <- para$screening_num
   screening <- para$screening
+  path_type <- para$path_type
 
   ## Cpp interface:
   result <- abessPCA_API(
@@ -229,14 +231,14 @@ abesspca <- function(x,
     # algorithm_type = 6,
     max_iter = max_splicing_iter,
     exchange_num = c_max,
-    path_type = 1,
+    path_type = path_type,
     is_warm_start = warm.start,
     ic_type = 1,
     ic_coef = ic_scale,
     Kfold = nfolds,
     sequence = s_list_bool,
-    s_min = 0,
-    s_max = 10,
+    s_min = s_min,
+    s_max = s_max,
     screening_size = ifelse(screening_num >= nvars, -1, screening_num),
     g_index = g_index,
     always_select = always_include,
