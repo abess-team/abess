@@ -1,6 +1,7 @@
 import os
 import sys
 import platform
+import distutils
 from setuptools import setup, find_packages
 from pybind11.setup_helpers import Pybind11Extension
 
@@ -24,18 +25,29 @@ def get_info():
 
 package_info = get_info()
 
-# copy src
-os.system('bash "{}/copy_src.sh" "{}"'.format(CURRENT_DIR, CURRENT_DIR))
+# copy files from parent dir
+NEED_CLEAN_TREE = set()
+try:
+    target_dir = CURRENT_DIR
+    src_dir = os.path.join(CURRENT_DIR, os.path.pardir)
+    
+    dst = os.path.join(target_dir, 'src')
+    src = os.path.join(src_dir, 'src')
+    distutils.dir_util.copy_tree(src, dst)
+    NEED_CLEAN_TREE.add(os.path.abspath(dst))
+
+    dst = os.path.join(target_dir, 'include')
+    src = os.path.join(src_dir, 'include')
+    distutils.dir_util.copy_tree(src, dst)
+    NEED_CLEAN_TREE.add(os.path.abspath(dst))
+except:
+    pass
 
 # print("sys.platform output: {}".format(sys.platform))
 # print("platform.processor() output: {}".format(platform.processor()))
 
 if sys.platform.startswith('win32'):
     # os_type = 'MS_WIN64'
-    python_path = sys.base_prefix
-    temp = python_path.split("\\")
-    version = str(sys.version_info.major) + str(sys.version_info.minor)
-    path1 = "-I" + python_path + "\\include"
 
     pybind_cabess_module = Pybind11Extension(
         name='pybind_cabess',
@@ -46,24 +58,15 @@ if sys.platform.startswith('win32'):
             'src/normalize.cpp',
             'src/pywrap.cpp'],
         extra_compile_args=[
-            # "-DNDEBUG",
             "/openmp",
             "/O2", "/W4",
-            # "-mavx", "-mfma",
-            # "-march=native",
-            # "-std=c++11",
-            # "-mtune=generic",
-            # "-D%s" % os_type,
-            path1
-            # path2
+            "/arch:AVX2"
         ],
         include_dirs=[
             'include'
         ]
     )
 elif sys.platform.startswith('darwin'):
-    eigen_path = "include"
-
     # compatible compile args with M1 chip:
     extra_compile_args = [
         "-DNDEBUG", "-O2",
@@ -91,11 +94,10 @@ elif sys.platform.startswith('darwin'):
                  'src/pywrap.cpp'],
         extra_compile_args=extra_compile_args,
         include_dirs=[
-            eigen_path
+            'include'
         ]
     )
 else:
-    eigen_path = "include"
     pybind_cabess_module = Pybind11Extension(
         name='pybind_cabess',
         sources=['src/api.cpp',
@@ -114,7 +116,7 @@ else:
         ],
         extra_link_args=['-lgomp'],
         include_dirs=[
-            eigen_path
+            'include'
         ]
     )
     pass
