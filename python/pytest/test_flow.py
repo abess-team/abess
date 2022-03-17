@@ -1,5 +1,5 @@
-import pytest
 from time import time
+import pytest
 import numpy as np
 from utilities import (assert_nan, assert_value, assert_fit)
 from scipy.sparse import coo_matrix

@@ -33,13 +33,18 @@ using namespace Eigen;
  */
 template <class T2, class T3>
 struct Result {
-    Eigen::Matrix<T2, Eigen::Dynamic, Eigen::Dynamic> beta_matrix;            /*!< Each value is the beta corrsponding a parameter combination */
-    Eigen::Matrix<T3, Eigen::Dynamic, Eigen::Dynamic> coef0_matrix;           /*!< Each value is the coef0 corrsponding a parameter combination  */
-    Eigen::MatrixXd ic_matrix;                                                /*!< Each value is the information criterion value corrsponding a parameter combination  */
-    Eigen::MatrixXd test_loss_matrix;                                         /*!< Each value is the test loss corrsponding a parameter combination  */
-    Eigen::MatrixXd train_loss_matrix;                                        /*!< Each value is the train loss corrsponding a parameter combination  */
-    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> bd_matrix; /*!< Each value is the sacrfice corrsponding a parameter combination  */
-    Eigen::MatrixXd effective_number_matrix;                                  /*!< Each value is the effective number corrsponding a parameter combination  */
+    Eigen::Matrix<T2, Eigen::Dynamic, Eigen::Dynamic>
+        beta_matrix; /*!< Each value is the beta corrsponding a parameter combination */
+    Eigen::Matrix<T3, Eigen::Dynamic, Eigen::Dynamic>
+        coef0_matrix; /*!< Each value is the coef0 corrsponding a parameter combination  */
+    Eigen::MatrixXd
+        ic_matrix; /*!< Each value is the information criterion value corrsponding a parameter combination  */
+    Eigen::MatrixXd test_loss_matrix;  /*!< Each value is the test loss corrsponding a parameter combination  */
+    Eigen::MatrixXd train_loss_matrix; /*!< Each value is the train loss corrsponding a parameter combination  */
+    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic>
+        bd_matrix; /*!< Each value is the sacrfice corrsponding a parameter combination  */
+    Eigen::MatrixXd
+        effective_number_matrix; /*!< Each value is the effective number corrsponding a parameter combination  */
 };
 
 template <class T2, class T3>

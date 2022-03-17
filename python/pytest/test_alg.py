@@ -150,7 +150,8 @@ class TestAlgorithm:
         def assert_reg(coef):
             if miss_dep:
                 pytest.skip(
-                    "Skip because modules 'pandas' or 'lifelines' have not been installed.")
+                    "Skip because modules 'pandas' or 'lifelines'"
+                    " have not been installed.")
 
             if sys.version_info[0] + 0.1 * sys.version_info[1] < 3.6:
                 pytest.skip("Skip because requiring python3.6 or higher.")
