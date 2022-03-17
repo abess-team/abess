@@ -4,7 +4,7 @@
 #include <tuple>
 
 #include "api.h"
-#include "utilities.h"
+#include "List.h"
 
 std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_GLM(
     Eigen::MatrixXd x_Mat, Eigen::MatrixXd y_Mat, Eigen::VectorXd weight_Vec, int n, int p, int normalize_type,
@@ -90,38 +90,6 @@ std::tuple<Eigen::MatrixXd, double, double, double, double> pywrap_PCA(
     mylist.get_value_by_name("ic", ic);
 
     return std::make_tuple(beta, coef0, train_loss, test_loss, ic);
-    // if (pca_num == 1)
-    // {
-    // 	Eigen::VectorXd beta;
-    // 	double coef0 = 0;
-    // 	double train_loss = 0;
-    // 	double ic = 0;
-    // 	mylist.get_value_by_name("beta", beta);
-    // 	mylist.get_value_by_name("coef0", coef0);
-    // 	mylist.get_value_by_name("train_loss", train_loss);
-    // 	mylist.get_value_by_name("ic", ic);
-
-    // 	VectorXd2Pointer(beta, beta_out);
-    // 	*coef0_out = coef0;
-    // 	*train_loss_out = train_loss;
-    // 	*ic_out = ic;
-    // }
-    // else
-    // {
-    // 	Eigen::MatrixXd beta;
-    // 	double coef0;
-    // 	double train_loss = 0;
-    // 	double ic = 0;
-    // 	mylist.get_value_by_name("beta", beta);
-    // 	mylist.get_value_by_name("coef0", coef0);
-    // 	mylist.get_value_by_name("train_loss", train_loss);
-    // 	mylist.get_value_by_name("ic", ic);
-
-    // 	MatrixXd2Pointer(beta, beta_out);
-    // 	*coef0_out = coef0;
-    // 	train_loss_out = train_loss;
-    // 	ic_out = ic;
-    // }
 }
 
 std::tuple<Eigen::VectorXd, double, double, double, double> pywrap_RPCA(
