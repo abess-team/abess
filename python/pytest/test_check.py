@@ -1,10 +1,8 @@
-import warnings
 import abess
 import numpy as np
+import pytest
 
-warnings.filterwarnings("ignore")
-
-
+@pytest.mark.filterwarnings("ignore")
 class TestCheck:
     """
     Test for argument error, which should be recognized before the algorithm.

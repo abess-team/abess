@@ -20,96 +20,7 @@
 using namespace std;
 using namespace Eigen;
 
-#ifndef R_BUILD
-Eigen::MatrixXd Pointer2MatrixXd(double *x, int x_row, int x_col) {
-    Eigen::MatrixXd x_matrix(x_row, x_col);
-    int i, j;
-    for (i = 0; i < x_row; i++) {
-        for (j = 0; j < x_col; j++) {
-            x_matrix(i, j) = x[i * x_col + j];
-        }
-    }
-    return x_matrix;
-}
-
-Eigen::MatrixXi Pointer2MatrixXi(int *x, int x_row, int x_col) {
-    Eigen::MatrixXi x_matrix(x_row, x_col);
-    int i, j;
-    for (i = 0; i < x_row; i++) {
-        for (j = 0; j < x_col; j++) {
-            x_matrix(i, j) = x[i * x_col + j];
-        }
-    }
-    return x_matrix;
-}
-
-Eigen::VectorXd Pointer2VectorXd(double *x, int x_len) {
-    Eigen::VectorXd x_vector(x_len);
-    int i;
-    for (i = 0; i < x_len; i++) {
-        x_vector[i] = x[i];
-    }
-    return x_vector;
-}
-
-Eigen::VectorXi Pointer2VectorXi(int *x, int x_len) {
-    Eigen::VectorXi x_vector(x_len);
-    int i;
-    for (i = 0; i < x_len; i++) {
-        x_vector[i] = x[i];
-    }
-    return x_vector;
-}
-
-void MatrixXd2Pointer(Eigen::MatrixXd x_matrix, double *x) {
-    int x_matrix_row, x_matrix_col, i, j;
-    x_matrix_row = x_matrix.rows();
-    x_matrix_col = x_matrix.cols();
-    for (i = 0; i < x_matrix_row; i++) {
-        for (j = 0; j < x_matrix_col; j++) {
-            x[i * x_matrix_col + j] = x_matrix(i, j);
-        }
-    }
-    return;
-}
-
-// void MatrixXi2Pointer(Eigen::MatrixXi x_matrix, int *x)
-// {
-//     int x_matrix_row, x_matrix_col, i, j;
-//     x_matrix_row = x_matrix.rows();
-//     x_matrix_col = x_matrix.cols();
-//     for (i = 0; i < x_matrix_row; i++)
-//     {
-//         for (j = 0; j < x_matrix_col; j++)
-//         {
-//             x[i * x_matrix_col + j] = x_matrix(i, j);
-//         }
-//     }
-// }
-
-void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x) {
-    int x_matrix_len, i;
-    x_matrix_len = x_vector.size();
-
-    for (i = 0; i < x_matrix_len; i++) {
-        x[i] = x_vector[i];
-    }
-    return;
-}
-
-// void VectorXi2Pointer(Eigen::VectorXi x_vector, int *x)
-// {
-//     int x_matrix_len, i;
-//     x_matrix_len = x_vector.size();
-
-//     for (i = 0; i < x_matrix_len; i++)
-//     {
-//         x[i] = x_vector[i];
-//     }
-// }
-#endif
-
-Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int beta_size, int N) {
+Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &gindex, Eigen::VectorXi &gsize, int beta_size, int N) {
     if (L.size() == N) {
         return Eigen::VectorXi::LinSpaced(beta_size, 0, beta_size - 1);
     } else {
@@ -118,7 +29,7 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
 
         for (int i = 0; i < L.size(); i++) {
             ind.segment(mark, gsize(L(i))) =
-                Eigen::VectorXi::LinSpaced(gsize(L(i)), index(L(i)), index(L(i)) + gsize(L(i)) - 1);
+                Eigen::VectorXi::LinSpaced(gsize(L(i)), gindex(L(i)), gindex(L(i)) + gsize(L(i)) - 1);
             mark = mark + gsize(L(i));
         }
         return ind.head(mark).eval();
@@ -276,8 +187,8 @@ Eigen::VectorXi max_k(Eigen::VectorXd &vec, int k, bool sort_by_value) {
 //     return ind.head(k).eval();
 // }
 
-// Ac
-Eigen::VectorXi Ac(Eigen::VectorXi &A, int N) {
+// complement
+Eigen::VectorXi complement(Eigen::VectorXi &A, int N) {
     int A_size = A.size();
     if (A_size == 0) {
         return Eigen::VectorXi::LinSpaced(N, 0, N - 1);

@@ -1,3 +1,10 @@
+/**
+ * @file workflow.h
+ * @brief The main workflow for abess.
+ * @details It receives all inputs from API, runs the whole abess process
+ * and then return the results as a list.
+ */
+
 #ifndef SRC_WORKFLOW_H
 #define SRC_WORKFLOW_H
 
@@ -32,14 +39,39 @@ typedef Eigen::Triplet<double> triplet;
 using namespace Eigen;
 using namespace std;
 
-//  T1 for y, XTy, XTone
-//  T2 for beta
-//  T3 for coef0
-//  T4 for X
-//  <Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> for Univariate Dense
-//  <Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double> > for Univariate Sparse
-//  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd> for Multivariable Dense
-//  <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double> > for Multivariable Sparse
+// <Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>                          for Univariate Dense
+// <Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double> >             for Univariate Sparse
+// <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd>                 for Multivariable Dense
+// <Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double> >    for Multivariable Sparse
+
+/**
+ * @brief The main workflow for abess.
+ * @tparam T1 for y, XTy, XTone
+ * @tparam T2 for beta
+ * @tparam T3 for coef0
+ * @tparam T4 for X
+ * @param x sample matrix
+ * @param y response matrix
+ * @param n sample size
+ * @param p number of variables
+ * @param normalize_type type of normalize
+ * @param weight weight of each sample
+ * @param algorithm_type type of algorithm
+ * @param path_type type of path: 1 for sequencial search and 2 for golden section search
+ * @param is_warm_start whether enable warm-start
+ * @param ic_type type of information criterion, used for not CV
+ * @param Kfold number of folds, used for CV
+ * @param parameters parameters to be selected, including `support_size`, `lambda`
+ * @param screening_size size of screening
+ * @param g_index the first position of each group
+ * @param early_stop whether enable early-stop
+ * @param thread number of threads used for parallel computing
+ * @param sparse_matrix whether sample matrix `x` is sparse matrix
+ * @param cv_fold_id user-specified cross validation division
+ * @param A_init initial active set
+ * @param algorithm_list the algorithm pointer
+ * @return the result of abess, including the best model parameters
+ */
 template <class T1, class T2, class T3, class T4>
 List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::VectorXd weight, int algorithm_type,
                    int path_type, bool is_warm_start, int ic_type, double ic_coef, int Kfold, Parameters parameters,
@@ -51,25 +83,34 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
 #endif
 
     int algorithm_list_size = algorithm_list.size();
-    int beta_size = algorithm_list[0]->get_beta_size(n, p);  // number of candidate param
 
-    // data packing
+    // Size of the candidate set:
+    //     usually it is equal to `p`, the number of variable,
+    //     but it could be different in e.g. RPCA.
+    int beta_size = algorithm_list[0]->get_beta_size(n, p);
+
+    // Data packing & normalize:
+    //     pack & initial all information of data,
+    //     including normalize.
     Data<T1, T2, T3, T4> data(x, y, normalize_type, weight, g_index, sparse_matrix, beta_size);
     if (algorithm_list[0]->model_type == 1 || algorithm_list[0]->model_type == 5) {
         add_weight(data.x, data.y, data.weight);
     }
 
-    // screening
+    // Screening:
+    //     if there are too many noise variables,
+    //     screening can choose the `screening_size` most important variables
+    //     and then focus on them later.
     Eigen::VectorXi screening_A;
     if (screening_size >= 0) {
         screening_A = screening<T1, T2, T3, T4>(data, algorithm_list, screening_size, beta_size,
                                                 parameters.lambda_list(0), A_init);
     }
 
-    // For CV:
-    // 1:mask
-    // 2:warm start save
-    // 3:group_XTX
+    // Prepare for CV:
+    //     if CV is enable,
+    //     specify train and test data,
+    //     and initialize the fitting argument inside each fold.
     Metric<T1, T2, T3, T4> *metric = new Metric<T1, T2, T3, T4>(ic_type, ic_coef, Kfold);
     if (Kfold > 1) {
         metric->set_cv_train_test_mask(data, data.n, cv_fold_id);
@@ -81,9 +122,13 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
         //   metric->cal_cv_group_XTX(data);
     }
 
-    // calculate loss for each parameter parameter combination
+    // Fitting and loss:
+    //     follow the search path,
+    //     fit on each parameter combination,
+    //     and calculate ic/loss.
     vector<Result<T2, T3>> result_list(Kfold);
     if (path_type == 1) {
+        // sequentical search
 #pragma omp parallel for
         for (int i = 0; i < Kfold; i++) {
             sequential_path_cv<T1, T2, T3, T4>(data, algorithm_list[i], metric, parameters, early_stop, i, A_init,
@@ -98,6 +143,8 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
         //     result = pgs_path(data, algorithm, metric, s_min, s_max, log_lambda_min, log_lambda_max, powell_path,
         //     nlambda);
         // }
+
+        // golden section search
         gs_path<T1, T2, T3, T4>(data, algorithm_list, metric, parameters, A_init, result_list);
     }
 
@@ -105,7 +152,9 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
         algorithm_list[k]->clear_setting();
     }
 
-    // Get bestmodel index && fit bestmodel
+    // Get bestmodel && fit bestmodel:
+    //     choose the best model with lowest ic/loss
+    //     and if CV, refit on full data.
     int min_loss_index = 0;
     int sequence_size = (parameters.sequence).size();
     Eigen::Matrix<T2, Dynamic, 1> beta_matrix(sequence_size, 1);
@@ -117,6 +166,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     Eigen::MatrixXd effective_number_matrix(sequence_size, 1);
 
     if (Kfold == 1) {
+        // not CV: choose lowest ic
         beta_matrix = result_list[0].beta_matrix;
         coef0_matrix = result_list[0].coef0_matrix;
         ic_matrix = result_list[0].ic_matrix;
@@ -124,6 +174,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
         effective_number_matrix = result_list[0].effective_number_matrix;
         ic_matrix.col(0).minCoeff(&min_loss_index);
     } else {
+        // CV: choose lowest test loss
         for (int i = 0; i < Kfold; i++) {
             test_loss_sum += result_list[i].test_loss_matrix;
         }
@@ -143,7 +194,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
 
             T2 beta_init;
             T3 coef0_init;
-            Eigen::VectorXi A_init;  // clear A_init
+            Eigen::VectorXi A_init;  // start from a clear A_init (not from the given one)
             coef_set_zero(beta_size, data.M, beta_init, coef0_init);
             Eigen::VectorXd bd_init = Eigen::VectorXd::Zero(data.g_num);
 
@@ -154,6 +205,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
                 bd_init = bd_init + result_list[j].bd_matrix(ind) / Kfold;
             }
 
+            // fitting
             algorithm_list[algorithm_index]->update_sparsity_level(support_size);
             algorithm_list[algorithm_index]->update_lambda_level(lambda);
             algorithm_list[algorithm_index]->update_beta_init(beta_init);
@@ -163,6 +215,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
             algorithm_list[algorithm_index]->fit(data.x, data.y, data.weight, data.g_index, data.g_size, data.n, data.p,
                                                  data.g_num);
 
+            // update results
             beta_matrix(ind) = algorithm_list[algorithm_index]->get_beta();
             coef0_matrix(ind) = algorithm_list[algorithm_index]->get_coef0();
             train_loss_matrix(ind) = algorithm_list[algorithm_index]->get_train_loss();
@@ -177,7 +230,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
         }
     }
 
-    // best_fit_result (output)
+    // Best result
     double best_support_size = parameters.sequence(min_loss_index).support_size;
     double best_lambda = parameters.sequence(min_loss_index).lambda;
 
@@ -191,11 +244,12 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     best_ic = ic_matrix(min_loss_index);
     best_test_loss = test_loss_sum(min_loss_index);
 
-    // Restore best_fit_result for normal
+    // Restore for normal:
+    //    restore the changes if normalization is used.
     restore_for_normal<T2, T3>(best_beta, best_coef0, beta_matrix, coef0_matrix, sparse_matrix, data.normalize_type,
                                data.n, data.x_mean, data.y_mean, data.x_norm);
 
-    // List result;
+    // Store in a list for output
     List out_result;
 #ifdef R_BUILD
     out_result = List::create(
@@ -220,7 +274,8 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     // out_result.add("test_loss_all", test_loss_sum);
 #endif
 
-    // Restore best_fit_result for screening
+    // Restore for screening
+    //    restore the changes if screening is used.
     if (screening_size >= 0) {
         T2 beta_screening_A;
         T2 beta;
@@ -242,6 +297,8 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     }
 
     delete metric;
+
+    // Return the results
     return out_result;
 }
 
