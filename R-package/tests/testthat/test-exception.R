@@ -187,9 +187,9 @@ test_that("abesspca exception handling works", {
   expect_warning(abesspca(dataset[["x"]]), regexp = "x should")
   
   dataset[["x"]] <- matrix(as.numeric(dataset[["x"]]), nrow = n)
-  dataset[["x"]] <- dataset[["x"]][, 1, drop = FALSE]
-  expect_error(abesspca(dataset[["x"]]), regexp = "x should")
-  
+  x <- dataset[["x"]][, 1, drop = FALSE]
+  expect_error(abesspca(x), regexp = "x should")
+
   expect_warning(abesspca(cov(dataset[["x"]]), 
                           type = "gram", tune.type = "cv"),
                  regrep = "tune.type")

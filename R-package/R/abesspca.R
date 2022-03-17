@@ -219,7 +219,7 @@ abesspca <- function(x,
   screening_num <- para$screening_num
   screening <- para$screening
   path_type <- para$path_type
-
+  
   ## Cpp interface:
   result <- abessPCA_API(
     x = x,
