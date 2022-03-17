@@ -1,4 +1,4 @@
-Code Format
+After Code Developing
 ===========
 
 CodeFactor
@@ -8,26 +8,14 @@ We check the C++, R and Python format by
 `CodeFactor <https://www.codefactor.io/repository/github/abess-team/abess>`__.
 More specifically, the formatters and rules are:
 
-+----------+----------------------------+----------------------------+
-| Language | Formatter                  | Rules                      |
-+==========+============================+============================+
-| C++      | `CppLint <https://gi       | ```abess/                  |
-|          | thub.com/google/styleguide | CPPLINT.cfg`` <https://git |
-|          | /tree/gh-pages/cpplint>`__ | hub.com/abess-team/abess/b |
-|          |                            | lob/master/CPPLINT.cfg>`__ |
-+----------+----------------------------+----------------------------+
-| Python   | `Pylint <h                 | ```ab                      |
-|          | ttps://www.pylint.org/>`__ | ess/.pylintrc`` <https://g |
-|          |                            | ithub.com/abess-team/abess |
-|          |                            | /blob/master/.pylintrc>`__ |
-+----------+----------------------------+----------------------------+
-| R        | `Lintr <https://           | ```abess/.lintr`` <https:  |
-|          | github.com/r-lib/lintr>`__ | //github.com/abess-team/ab |
-|          |                            | ess/blob/master/.lintr>`__ |
-+----------+----------------------------+----------------------------+
+- C++: `CppLint <https://github.com/google/styleguide/tree/gh-pages/cpplint>`__ with `CPPLINT.cfg <https://github.com/abess-team/abess/blob/master/CPPLINT.cfg>`__
 
-Each pull request will be checked, and some recommendations will be
-given if not passed. But don’t be worry about those complex rules, most
+- Python: `Pylint <https://www.pylint.org/>`__ with `.pylintrc <https://github.com/abess-team/abess/blob/master/.pylintrc>`__
+
+- R: `Lintr <https://github.com/r-lib/lintr>`__ with `.lintr <https://github.com/abess-team/abess/blob/master/.lintr>`__
+
+Each pull request will be checked, and some recommendations will be given if not passed. 
+But don't be worry about those complex rules, most
 of them can be formatted automatically by some tools.
 
    Note that there may be few problems that the auto-fix tools can NOT
