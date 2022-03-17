@@ -484,7 +484,8 @@ test_that("abess (always-include) works", {
   p <- 20
   support_size <- 3
   dataset <- generate.data(n, p, support_size)
-  abess_fit <- abess(dataset[["x"]], dataset[["y"]], always.include = c(1))
+  abess_fit <- abess(dataset[["x"]], dataset[["y"]], 
+                     always.include = c(1))
   expect_true(all((abess_fit[["beta"]][1, , drop = TRUE][-1] != 0)))
 })
 
@@ -640,5 +641,24 @@ test_that("abess (foldid) works", {
     support.size = 0:support.size, 
     foldid = fold_id
   )
-  all.equal(abess_fit1, abess_fit2)
+  expect_true(all.equal(abess_fit1, abess_fit2))
+})
+
+test_that("abess (important-searching) works", {
+  n <- 100
+  p <- 20
+  nfold <- 5
+  support.size <- 3
+  dataset <- generate.data(n, p, support.size, seed = 1)
+  
+  ## support user-defined important-searching
+  expect_invisible(
+    abess_fit1 <- abess(
+      dataset[["x"]],
+      dataset[["y"]],
+      tune.type = "cv",
+      support.size = 0:support.size,
+      important.search = 10
+    )
+  )
 })

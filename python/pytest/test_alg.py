@@ -1,8 +1,8 @@
 import sys
 import warnings
 import abess
+import pytest
 import numpy as np
-import pandas as pd
 from scipy.sparse import coo_matrix
 from sklearn.model_selection import KFold, GridSearchCV
 from sklearn.linear_model import (
@@ -10,7 +10,15 @@ from sklearn.linear_model import (
     LogisticRegression,
     PoissonRegressor)
 from sklearn.utils.estimator_checks import check_estimator
-from lifelines import CoxPHFitter
+
+try:
+    import pandas as pd
+    from lifelines import CoxPHFitter
+    miss_dep = False
+except ImportError:
+    miss_dep = True
+    pass
+
 from utilities import (
     assert_nan,
     assert_value,
@@ -142,8 +150,12 @@ class TestAlgorithm:
             n, p, family=family, k=k, rho=rho, sigma=sigma)
 
         def assert_reg(coef):
+            if miss_dep:
+                pytest.skip("Skip because modules 'pandas' or 'lifelines' have not been installed.")
+                
             if sys.version_info[0] + 0.1 * sys.version_info[1] < 3.6:
-                return
+                pytest.skip("Skip because requiring python3.6 or higher.")
+
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
             survival = pd.DataFrame()
