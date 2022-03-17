@@ -1,6 +1,8 @@
 import abess
+import pytest
 
 
+@pytest.mark.filterwarnings("ignore")
 class TestDeprecated:
     """
     Test for (future) deprecated modules in abess package.

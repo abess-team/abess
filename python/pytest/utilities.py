@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import pickle
 import os
-from pytest import approx
+import pytest
 
 CURRENT = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,7 +16,7 @@ def assert_value(coef1, coef2, rel=1e-2, abs=1e-2):
     coef1 = coef1.reshape(-1)
     coef2 = coef2.reshape(-1)
     assert coef1.shape == coef2.shape
-    assert coef1 == approx(coef2, rel=rel, abs=abs)
+    assert coef1 == pytest.approx(coef2, rel=rel, abs=abs)
 
 
 def assert_fit(coef1, coef2):

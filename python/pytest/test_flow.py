@@ -1,13 +1,11 @@
-import warnings
+import pytest
 from time import time
 import numpy as np
 from utilities import (assert_nan, assert_value, assert_fit)
 from scipy.sparse import coo_matrix
 import abess
 
-warnings.filterwarnings("ignore")
-
-
+@pytest.mark.filterwarnings("ignore")
 class TestWorkflow:
     """
     Test for abess workflow in cpp. (Take `LinearRegression` as an example.)

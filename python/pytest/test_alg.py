@@ -1,5 +1,4 @@
 import sys
-import warnings
 import abess
 import pytest
 import numpy as np
@@ -26,9 +25,7 @@ from utilities import (
     save_data,
     load_data)
 
-warnings.filterwarnings("ignore")
-
-
+@pytest.mark.filterwarnings("ignore")
 class TestAlgorithm:
     """
     Test for each algorithm.
