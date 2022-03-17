@@ -25,8 +25,9 @@ errors, please try to update the complier first.
 
 Besides, in Windows, you may receive an error said “*error: Microsoft
 Visual C++ \*version\* is required*”. To fix it, you need to check if
-MinGW is installed and enabled correctly. For more details, please view
-`here <https://wiki.python.org/moin/WindowsCompilers#GCC_-_MinGW-w64_.28x86.2C_x64.29>`_.
+MSVC is installed and enabled correctly. That is, to download 
+`Microsoft C++ Build Tools <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`__
+and install (or re-install) the "Desktop development with C++" module inside.
 
 Permission
 ^^^^^^^^^^

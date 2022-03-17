@@ -98,30 +98,33 @@ for s in range(21):
     for y in range(3):
         coef[y, s, :] = model.coef_[:, y]
 
-
+plt.subplot(2,2,1)
 for i in range(20):
     plt.plot(coef[0, :, i])
 plt.xlabel('support_size')
-plt.ylabel('value')
-plt.title('the 1st response\\`s coefficients')
-plt.show()
+plt.title('the 1st response`s coef')
 
-
+plt.subplot(2,2,2)
 for i in range(20):
     plt.plot(coef[1, :, i])
 plt.xlabel('support_size')
-plt.ylabel('value')
-plt.title('the 2nd response\\`s coefficients')
-plt.show()
+plt.title('the 2nd response`s coef')
 
-
+plt.subplot(2,2,3)
 for i in range(20):
     plt.plot(coef[2, :, i])
 plt.xlabel('support_size')
-plt.ylabel('value')
-plt.title('the 3rd response\\`s coefficients')
-plt.show()
+plt.title('the 3rd response`s coef')
 
+plt.subplot(2,2,4)
+coef_norm =np.sum(coef**2, axis = 0)**0.5
+for i in range(20):
+    plt.plot(coef_norm[:, i])
+plt.xlabel('support_size')
+plt.title('the L2 norm of the coef')
+
+plt.subplots_adjust(wspace=0.6,hspace=1)
+plt.show()
 ###############################################################################
 # The ``abess`` R package also supports MRLR.
 # For R tutorial, please view https://abess-team.github.io/abess/articles/v06-MultiTaskLearning.html.
