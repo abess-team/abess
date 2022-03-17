@@ -185,7 +185,7 @@ packages should be installed:
    -  `sphinix-gallery <https://pypi.org/project/sphinx-gallery/>`__: develop the gallery of Python examples.
 
 -  `pandas <https://pypi.org/project/pandas/>`__: 
-   support data reading and preprocessing in examples.
+   support data manipulation in Tutorials and Testing.
       
 
 .. _r-2:
@@ -211,6 +211,6 @@ to additionally install:
 -  `knitr <https://cran.r-project.org/web/packages/knitr/index.html>`__
    and
    `rmarkdown <https://cran.r-project.org/web/packages/rmarkdown/index.html>`__:
-   write tutorials.
+   write tutorials for R package.
 -  `pkgdown <https://cran.r-project.org/web/packages/pkgdown/index.html>`__:
    build website for the ``abess`` R package.
