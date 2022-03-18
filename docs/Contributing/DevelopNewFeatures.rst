@@ -16,27 +16,27 @@ We have endeavor to make developing new features easily. Before developing the c
 Core C++
 --------
 
-The main files related to the core are in ``abess/python/src``, which
+The main files related to the core are in ``src``, which
 are written in C++. Among them, some important files:
 
--  ``api.cpp/api.h`` contain the API’s, which are the entrance for both
+-  ``api.cpp/api.h`` contain the API's, which are the entrance for both
    R & Python.
 -  ``AlgorithmXXX.h`` records the implement of each concrete algorithm;
 
 If you want to add a new algorithm, all of them should be noticed.
 
 Besides, we have implemented ABESS algorithms for generalized linear model on
-``abess/python/src/AlgorithmGLM.h`` `[code temp] <https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h>`__
-and principal component analysis (PCA) on ``abess/python/src/AlgorithmPCA.h`` 
+``src/AlgorithmGLM.h`` `[code temp] <https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h>`__
+and principal component analysis (PCA) on ``src/AlgorithmPCA.h`` 
 `[code temp] <https://github.com/abess-team/abess/blob/master/python/src/AlgorithmPCA.h>`__.
 You can check them to help your own developing.
 
 Write an API
 ~~~~~~~~~~~~
 
-API’s are all defined in the ``abess/python/src/api.cpp``\ `[code
+API’s are all defined in the ``src/api.cpp``\ `[code
 temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp>`__
-and the related header file ``abess/python/src/api.h``\ `[code
+and the related header file ``src/api.h``\ `[code
 temp] <https://github.com/abess-team/abess/blob/master/python/src/api.h>`__.
 We have written some API functions (e.g. ``abessGLM_API()``), so you
 can either add a new function for the new algorithm or simply add
@@ -103,7 +103,7 @@ Implement your Algorithm
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 The implemented algorithms are stored in
-``abess/python/src/AlgorithmXXX.h``. We have implemented some
+``src/AlgorithmXXX.h``. We have implemented some
 algorithms (e.g. ``AlgorithmGLM.h``), so you can either create a new
 file containing new algorithm or simply add into existing one.
 
@@ -194,7 +194,7 @@ sacrifices” and record them in ``bd``.
    likely it will come into use.
 
 If you create a new file to store the algorithm, remember to include
-it inside ``abess/python/src/api.cpp``. `[code
+it inside ``src/api.cpp``. `[code
 temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=%23include%20%22AlgorithmGLM.h%22>`__
 
 Now your new method has been connected to the whole frame. In the next
@@ -235,13 +235,8 @@ It may take a few minutes to install:
 -  if the installation runs without errors, it will finish with message
    like “*Finished processing dependencies for abess*”.
 
-Now a file named ``cabess.py`` will be appeared in the directory
-``abess/python/src``, which help to link Python and C++. You need to
-move it into directory ``abess/python/abess`` and replace the duplicated
-file there.
-
-Then create a new python file in ``abess/python/abess`` or open an
-existed file, such as ``abess/python/abess/linear.py``, to add a python
+Then create a new python file in ``python/abess`` or open an
+existed file, such as ``python/abess/linear.py``, to add a python
 API for your new method.
 
 A simple new method can be added like: `[code temp] <https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=class%20abessPCA(bess_base)%3A>`__.
@@ -281,7 +276,7 @@ function, you would find somewhere like:
        model_type_int = 123    # same number in C++
 
 Finally, don’t forget to import the new algorithm in
-``abess/python/abess/__init__.py``.
+``python/abess/__init__.py``.
 
 Now run ``$ python setup.py install`` again and this time the
 installation would be finished quickly. Congratulation! Your work can
@@ -427,7 +422,7 @@ code into it (or create a new test file) under the test folder:
    ``abess/R-package/tests/testthat``.
 -  `Python test
    folder <https://github.com/abess-team/abess/tree/master/python/pytest>`__:
-   ``abess/python/pytest``.
+   ``python/pytest``.
 
 A good test code should contain:
 

@@ -108,5 +108,4 @@ print("golden-section time: ", time() - t2)
 # The ``abess`` R package also supports golden-section.
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v09-fasterSetting.html.
-
-# sphinx_gallery_thumbnail_path = '_static/largesample_cover.png'
+# 

@@ -1,7 +1,9 @@
-Appendix: Architecture of abess
+Appendix: Architecture of **abess**
 ========================
 
-In this page, we briefly introduce our core code of ``abess``.
+In this page, we briefly introduce our core code of ``abess``, which is summarized in the Figure below. 
+
+.. image:: figure/architecture.png 
 
 The core code of ``abess`` is built with C++ and the figure above shows the
 software architecture of ``abess`` and each building block will be described
