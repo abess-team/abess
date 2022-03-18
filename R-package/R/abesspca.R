@@ -252,9 +252,15 @@ abesspca <- function(x,
     A_init = as.integer(c())
   )
   
-  print(s_list)
-  if(path_type == 2){
-    s_list <- result[["sequence"]]
+  if(tune.path == "gsection"){
+    if(sparse.type == "fpc"){
+      s_list <- result[["sequence"]]
+    } else{
+      s_list <- list()
+      for(i in seq_len(kpc.num)){
+        s_list[[i]] <- result[[i]][["sequence"]]
+      }
+    }
   }
   # result[["beta"]] <- NULL
   # result[["coef0"]] <- NULL
@@ -313,7 +319,7 @@ abesspca <- function(x,
         j <- j + 1
       }
       tmp2 <- coef_list[[j]]
-      for (k in 1:ncol(tmp2)) {
+      for (k in seq_len(ncol(tmp2))) {
         ev_vec <- c(ev_vec, sum(adjusted_variance_explained(gram_x, cbind(tmp, tmp2[, k]))))
       }
       ev_list[[i]] <- ev_vec
