@@ -53,12 +53,12 @@ Default: \code{cor = FALSE}.}
 It represents the support sizes to be considered for each principal component.
 If it is a \code{list} object containing \code{kpc.num} number of integer vectors,
 the i-th principal component consider the support size specified in the i-th element in the \code{list}.
+Only used for \code{tune.path = "sequence"}.
 The default is \code{support.size = NULL}, and some rules in details section are used to specify \code{support.size}.}
 
 \item{gs.range}{A integer vector with two elements.
 The first element is the minimum model size considered by golden-section,
-the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
-Not available now.}
+the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.}
 
 \item{tune.path}{The method to be used to select the optimal support size. For
 \code{tune.path = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
@@ -118,18 +118,19 @@ where each row is a variable and each column is a support size;}
 \item{nvars}{The number of variables.}
 \item{sparse.type}{The same as input.}
 \item{support.size}{The actual support.size values used. Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.}
-\item{ev}{A vector with size \code{length(support.size)}. It records the explained variance at each support size.}
+\item{ev}{A vector with size \code{length(support.size)}. It records the cumulative sums of explained variance at each support size.}
 \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
 \item{kpc.num}{The number of principal component being considered.}
 \item{var.pc}{The variance of principal components obtained by performing standard PCA.}
 \item{cum.var.pc}{Cumulative sums of \code{var.pc}.}
 \item{var.all}{If \code{sparse.type = "fpc"},
 it is the total standard deviations of all principal components.}
-\item{cum.ev}{Cumulative sums of explained variance.}
 \item{pev}{A vector with the same length as \code{ev}. It records the percent of explained variance (compared to \code{var.all}) at each support size.}
 \item{pev.pc}{It records the percent of explained variance (compared to \code{var.pc}) at each support size.}
+\item{tune.type}{The criterion type for tuning parameters.}
+\item{tune.path}{The strategy for tuning parameters.}
 \item{call}{The original call to \code{abess}.}
-It is worthy to note that, if \code{sparse.type == "kpc"}, the \code{ev}, \code{tune.value}, \code{pev} and \code{pev.pc} in list are \code{list} objects.
+It is worthy to note that, if \code{sparse.type == "kpc"}, the \code{coef}, \code{support.size}, \code{ev}, \code{tune.value}, \code{pev} and \code{pev.pc} in list are \code{list} objects.
 }
 \description{
 Adaptive best subset selection for principal component analysis

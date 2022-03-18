@@ -43,8 +43,7 @@ where the specific support size to be considered is determined by golden section
 
 \item{gs.range}{A integer vector with two elements.
 The first element is the minimum model size considered by golden-section,
-the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
-Not available now.}
+the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.}
 
 \item{tune.type}{The type of criterion for choosing the support size. 
 Available options are "gic", "ebic", "bic" and "aic". 

@@ -46,7 +46,6 @@ abess <- function(x, ...) UseMethod("abess")
 #' @param gs.range A integer vector with two elements.
 #' The first element is the minimum model size considered by golden-section,
 #' the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
-#' Not available now.
 #' @param lambda A single lambda value for regularized best subset selection. Default is 0.
 #' @param always.include An integer vector containing the indexes of variables that should always be included in the model.
 #' @param group.index A vector of integers indicating the which group each variable is in.
