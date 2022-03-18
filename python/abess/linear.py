@@ -117,7 +117,7 @@ class LogisticRegression(bess_base):
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = X.dot(self.coef_) + intercept_
         proba = np.exp(xbeta) / (1 + np.exp(xbeta))
-        return proba
+        return np.vstack((proba, np.ones(X.shape[0]) - proba)).T
 
     def predict(self, X):
         r"""
