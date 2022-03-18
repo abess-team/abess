@@ -130,8 +130,8 @@ print(f'X shape: {X.shape}')
 # print(f'outlier: \n{outlier}')
 
 # %%
-# In order to use our program, users should call `RobustPCA()` and give
-# the outlier number to `support_size`. Note that it can be a specific
+# In order to use our program, users should call ``RobustPCA()`` and give
+# the outlier number to ``support_size``. Note that it can be a specific
 # integer or an integer interval. For the latter case, a support size will
 # be chosen by information criterion (e.g. GIC) adaptively.
 
@@ -140,14 +140,14 @@ print(f'X shape: {X.shape}')
 model = RobustPCA(support_size=s)
 
 # %%
-# It is quite easy to fit this model, with `RobustPCA.fit` function. Given
+# It is quite easy to fit this model, with ``RobustPCA.fit`` function. Given
 # the original sample matrix :math:`X` and :math:`rank(L)` we want, the
 # program will give a result quickly.
 
 model.fit(X, r=r)  # r=rank(L)
 
 # %%
-# Now the estimated outlier matrix is stored in `model.coef_`.
+# Now the estimated outlier matrix is stored in ``model.coef_``.
 
 
 S_est = model.coef_
@@ -193,12 +193,10 @@ for seed in range(M):
 print(f'[TPR  FPR] = {res/M}')
 
 # %%
-# Under all of these situations, `RobustPCA` has a good performance.
+# Under all of these situations, ``RobustPCA`` has a good performance.
 
 ###############################################################################
 # R tutorial
 # ----------
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v08-sPCA.html.
-
-# sphinx_gallery_thumbnail_path = '_static/rpca.png'

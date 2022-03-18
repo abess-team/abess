@@ -4,11 +4,16 @@ Nuisance Regression
 """
 
 # %%
+# 
+# .. image:: ../../Tutorial/figure/nuisance_cover.png 
+# 
+
+# %%
 # Introduction
 # ------------
 # Nuisance regression refers to best subset selection with some prior information that some variables are required to stay in the active set.
 # For example, if we are interested in a certain gene and want to find out what other genes are associated with the response when this particular gene shows effect.
-#
+# 
 # Using: nuisance regression
 # --------------------------
 # In the ``LinearRegression()`` (or other methods), the argument ``always_select`` is designed to realize this goal.

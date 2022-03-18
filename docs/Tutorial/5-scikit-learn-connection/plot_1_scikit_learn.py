@@ -1,20 +1,20 @@
 """
 Work with scikit-learn
 ======================
-``abess`` is very easy to work with the famous package ``scikit-learn``, and here is an example.
-We going to illustrate the integration of the ``abess`` with ``scikit-learn``’s pre-processing and model selection modules to
-build a non-linear model for diagnosing malignant tumors.
 """
 
-# It is start with importing necessary dependencies:
+# %%
+# ``abess`` is very easy to work with the famous package ``scikit-learn``, and here is an example.
+# We going to illustrate the integration of the ``abess`` with ``scikit-learn``’s pre-processing and model selection modules to
+# build a non-linear model for diagnosing malignant tumors.
+# Let start with importing necessary dependencies:
 
 from abess.linear import LogisticRegression
 from sklearn.datasets import load_breast_cancer
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import roc_auc_score, make_scorer, roc_curve
+from sklearn.metrics import roc_auc_score, make_scorer, roc_curve, auc
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.model_selection import GridSearchCV
-import matplotlib.pyplot as plt
 
 ###############################################################################
 # Establish the process
@@ -77,7 +77,9 @@ print([grid_search.best_score_, grid_search.best_params_])
 
 # %%
 # The output of the code reports the information of the polynomial features for the selected model among candidates,
-# and its corresponding area under the curve (AUC), which is 0.966, indicating the selected model would have an admirable contribution in practice.
+# and its corresponding area under the curve (AUC), which is 0.99, 
+# indicating the selected model would have an admirable contribution in practice.
+# 
 # Moreover, the best choice of parameter combination is shown above: 2 degree with "self-combination",
 # implying the inclusion of the pairwise interactions between any two
 # features can lead to a better model generalization.
@@ -85,10 +87,20 @@ print([grid_search.best_score_, grid_search.best_params_])
 # %%
 # Here is its ROC curve:
 
+import matplotlib.pyplot as plt
 proba = grid_search.predict_proba(X)
 fpr, tpr, _ = roc_curve(y, proba)
 plt.plot(fpr, tpr)
-plt.plot([0, 1], [0, 1], 'k--')
+plt.plot([0, 1], [0, 1], 'k--', label="ROC curve (area = %0.2f)" % auc(fpr, tpr))
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title("Receiver operating characteristic (ROC) curve")
+plt.legend(loc="lower right")
 plt.show()
 
+# %%
+# 
+# 
+# 
 # sphinx_gallery_thumbnail_path = '_static/scikit_learn.png'
+# 

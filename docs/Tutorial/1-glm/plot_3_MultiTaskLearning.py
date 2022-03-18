@@ -22,7 +22,7 @@ Multi-Response Linear Regression
 #
 # where :math:`\epsilon` is an :math:`m`-dimensional random noise variable with zero mean.
 #
-# Due to the Occam`s razor principle or the high-dimensionality of predictors,
+# Due to the Occam's razor principle or the high-dimensionality of predictors,
 # it is meaningful to use a small amount of predictors to conduct multi-task learning.
 # For example, understanding the relationship between gene expression and symptoms of a disease
 # has significant importance in identifying potential markers. Many diseases usually
@@ -46,9 +46,6 @@ Multi-Response Linear Regression
 # The synthetic data have 100 observations with 3-dimensional responses and 20-dimensional predictors.
 # Note that there are three predictors having an impact on the responses.
 
-
-import matplotlib.pyplot as plt
-from abess import MultiTaskRegression
 from abess.datasets import make_multivariate_glm_data
 import numpy as np
 np.random.seed(0)
@@ -70,6 +67,7 @@ print("non-zero: ", set(np.nonzero(data.coef_)[0]))
 # To carry out sparse mutli-task learning, we can call the
 # ``MultiTaskRegression`` like:
 
+from abess import MultiTaskRegression
 
 model = MultiTaskRegression()
 model.fit(data.x, data.y)
@@ -89,6 +87,7 @@ print("non-zero: ", set(np.nonzero(model.coef_)[0]))
 # Since there are three responses, we have three solution paths, which correspond to three responses, respectively.
 # To plot the figure, we can fix the ``support_size`` at different levels:
 
+import matplotlib.pyplot as plt
 
 coef = np.zeros((3, 21, 20))
 for s in range(21):
@@ -102,25 +101,29 @@ plt.subplot(2,2,1)
 for i in range(20):
     plt.plot(coef[0, :, i])
 plt.xlabel('support_size')
-plt.title('the 1st response`s coef')
+plt.ylabel('coefficient')
+plt.title('the 1st response\'s coef')
 
 plt.subplot(2,2,2)
 for i in range(20):
     plt.plot(coef[1, :, i])
 plt.xlabel('support_size')
-plt.title('the 2nd response`s coef')
+plt.ylabel('coefficient')
+plt.title('the 2nd response\'s coef')
 
 plt.subplot(2,2,3)
 for i in range(20):
     plt.plot(coef[2, :, i])
 plt.xlabel('support_size')
-plt.title('the 3rd response`s coef')
+plt.ylabel('coefficient')
+plt.title('the 3rd response\'s coef')
 
 plt.subplot(2,2,4)
 coef_norm =np.sum(coef**2, axis = 0)**0.5
 for i in range(20):
     plt.plot(coef_norm[:, i])
 plt.xlabel('support_size')
+plt.ylabel('L2 norm of coefficient')
 plt.title('the L2 norm of the coef')
 
 plt.subplots_adjust(wspace=0.6,hspace=1)

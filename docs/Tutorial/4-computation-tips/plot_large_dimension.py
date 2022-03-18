@@ -9,11 +9,14 @@ Ultra-High dimensional data
 # Introduction
 # ^^^^^^^^^^^^
 # Recent technological advances have made it possible to collect ultra-high dimensional data.
-# A common feature of these data is that the number of variables :math:`p` is generally much larger than sample sizes :math:`n`.
+# A common feature of these data is that the number of variables :math:`p` is generally much larger than sample sizes :math:`n`. 
 # For instance, the number of gene expression profiles is in the order of tens of thousands while
 # the number of patient samples is in the order of tens or hundreds.
-# Ultra-high dimensional predictors increase computational cost but reduce estimation accuracy for any statistical procedure.
+# Ultra-high dimensional predictors increase computational cost but reduce estimation accuracy for any statistical procedure. 
+# We visualize linear regression analysis in the context of ultra-high dimensionality in the following: 
 #
+# .. image:: ../../Tutorial/figure/highDimension.png
+# 
 # ``abess`` library implements severals features to efficiently analyze the ultra-high dimensional data with a fast speed.
 # In this tutorial, we going to brief describe these helpful features,
 # including: feature screening and importance searching.

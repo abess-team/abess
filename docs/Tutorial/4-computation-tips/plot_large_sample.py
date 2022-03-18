@@ -37,6 +37,7 @@ print("lowest point: ", np.argmin(ic))
 plt.plot(ic, 'o-')
 plt.xlabel('support size')
 plt.ylabel('EBIC')
+plt.title('Model Selection via EBIC')
 plt.show()
 
 # %%
@@ -46,6 +47,9 @@ plt.show()
 #
 # Motivated by this observation, we consider a golden-section search technique to determine the optimal support size
 # associated with the minimum EBIC.
+#
+# .. image:: ../../Tutorial/figure/goldenSection.png
+# 
 # Compare to the sequential searching, the golden section is much faster because it skip some support sizes which are likely to be a non-optimal one.
 # Precisely, searching the optimal support size one by one from a candidate set with :math:`O(s_{max})` complexity,
 # **golden-section** reduce the time complexity to :math:`O(\ln(s_{max}))`, giving a significant computational improvement.

@@ -64,8 +64,6 @@ This notebook introduces what is adaptive best subset selection principal compon
 #
 # Firstly, we read the data and pick up those variables we are interested in.
 
-
-import matplotlib.pyplot as plt
 import numpy as np
 from abess.decomposition import SparsePCA
 
@@ -182,10 +180,12 @@ print('90%+ : ', sparsity[explain > 0.9 * explain[num - 1]])
 # curve indicates that at least 31 variables can reach 80% (blue dashed
 # line) and 41 variables can reach 90% (red dashed line).
 
+import matplotlib.pyplot as plt
 
 plt.plot(sparsity, explain)
 plt.xlabel('Sparsity')
 plt.ylabel('Explained variance')
+plt.ylabel('Sparsity versus Explained Variance')
 
 ind = np.where(explain > 0.8 * explain[num - 1])[0][0]
 plt.plot([0, sparsity[ind]], [explain[ind], explain[ind]], 'b--')
