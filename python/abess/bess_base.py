@@ -127,7 +127,8 @@ class bess_base(BaseEstimator):
         splicing_type=0,
         important_search=0,
         # lambda_min=None, lambda_max=None,
-        # early_stop=False, n_lambda=100
+        # early_stop=False, n_lambda=100,
+        baseline_model=None
     ):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
@@ -158,6 +159,7 @@ class bess_base(BaseEstimator):
         self.sparse_matrix = sparse_matrix
         self.splicing_type = splicing_type
         self.important_search = important_search
+        self.baseline_model = baseline_model
 
     def fit(self,
             X=None,
@@ -479,7 +481,11 @@ class bess_base(BaseEstimator):
         # normalize
         normalize = 0
         if is_normal:
-            normalize = self.normalize_type
+            if n > 1:
+                normalize = self.normalize_type
+            else:
+                print("Note: There is only one sample, "
+                      "so normalization is disabled.")
 
         # always_select
         if self.always_select is None:

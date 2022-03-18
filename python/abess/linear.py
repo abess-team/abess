@@ -90,9 +90,9 @@ class LogisticRegression(bess_base):
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
-            important_search=important_search
+            important_search=important_search,
+            baseline_model = BreslowEstimator()
         )
-        self._baseline_model = BreslowEstimator()
 
     def predict_proba(self, X):
         r"""
@@ -356,9 +356,9 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
-            important_search=important_search
+            important_search=important_search,
+            baseline_model = BreslowEstimator()
         )
-        self._baseline_model = BreslowEstimator()
 
     def predict(self, X):
         r"""
@@ -424,7 +424,7 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
         survival : ndarray of :class:`StepFunction`, shape = (n_samples,)
             Predicted survival functions.
         """
-        return self._baseline_model.get_survival_function(
+        return self.baseline_model.get_survival_function(
             np.log(self.predict(X)))
 
 
