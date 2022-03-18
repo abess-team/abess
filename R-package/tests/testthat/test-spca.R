@@ -122,6 +122,42 @@ test_that("abesspca (KPC) works", {
   expect_true(all(unlist(spca_fit1[["pev"]]) <= 1))
 })
 
+test_that("abesspca (KPC and golden-section) works", {
+  data(USArrests)
+
+  ## Input 1:
+  nvars <- ncol(USArrests)
+  spca_fit <- abesspca(USArrests,
+    support.size = c(1),
+    kpc.num = nvars,
+    tune.path = "gsection"
+  )
+
+  ## Reasonablity of abesspca
+  skip_on_os("linux")
+  ev <- unlist(spca_fit[["ev"]])
+  ev_len <- length(ev)
+  # expect_true(all(ev[1:(ev_len - 1)] <= ev[2:ev_len]))
+  expect_true(all(unlist(spca_fit[["pev"]]) <= 1))
+
+  ## Input 2:
+  spca_fit1 <- abesspca(USArrests,
+    sparse.type = "kpc",
+    support.size = 4, kpc.num = nvars,
+    tune.path = "gsection"
+  )
+  expect_true(all(unlist(spca_fit1[["pev"]]) <= 1))
+  expect_equal(
+    expected = 1, object = max(unlist(spca_fit1[["pev"]])),
+    tolerance = 1e-3
+  )
+
+  ## Input 3 (default input):
+  spca_fit1 <- abesspca(USArrests, sparse.type = "kpc",
+    tune.path = "gsection")
+  expect_true(all(unlist(spca_fit1[["pev"]]) <= 1))
+})
+
 test_that("abesspca (group) works", {
   data(USArrests)
 
