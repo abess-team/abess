@@ -1,6 +1,6 @@
 import numbers
 import numpy as np
-from scipy.sparse import coo_matrix
+from scipy.sparse import coo_matrix, csr_matrix
 from sklearn.base import BaseEstimator
 from pybind_cabess import pywrap_GLM
 from sklearn.utils.validation import check_X_y
@@ -127,7 +127,8 @@ class bess_base(BaseEstimator):
         splicing_type=0,
         important_search=0,
         # lambda_min=None, lambda_max=None,
-        # early_stop=False, n_lambda=100
+        # early_stop=False, n_lambda=100,
+        baseline_model=None
     ):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
@@ -158,6 +159,7 @@ class bess_base(BaseEstimator):
         self.sparse_matrix = sparse_matrix
         self.splicing_type = splicing_type
         self.important_search = important_search
+        self.baseline_model = baseline_model
 
     def fit(self,
             X=None,
@@ -202,8 +204,9 @@ class bess_base(BaseEstimator):
         # print("fit enter.")#///
 
         # Input check & init:
-        if isinstance(X, (list, np.ndarray, np.matrix, coo_matrix)):
-            if isinstance(X, coo_matrix):
+        if isinstance(X, (list, np.ndarray, np.matrix,
+                      coo_matrix, csr_matrix)):
+            if isinstance(X, (coo_matrix, csr_matrix)):
                 self.sparse_matrix = True
 
             # Check that X and y have correct shape
@@ -456,7 +459,7 @@ class bess_base(BaseEstimator):
 
         # Sparse X
         if self.sparse_matrix:
-            if not isinstance(X, type(coo_matrix((1, 1)))):
+            if not isinstance(X, (coo_matrix)):
                 # print("sparse matrix 1")
                 nonzero = 0
                 tmp = np.zeros([X.shape[0] * X.shape[1], 3])
@@ -479,7 +482,11 @@ class bess_base(BaseEstimator):
         # normalize
         normalize = 0
         if is_normal:
-            normalize = self.normalize_type
+            if n > 1:
+                normalize = self.normalize_type
+            else:
+                print("Note: There is only one sample, "
+                      "so normalization is disabled.")
 
         # always_select
         if self.always_select is None:
@@ -515,7 +522,7 @@ class bess_base(BaseEstimator):
         self.ic_ = result[4]
 
         if self.model_type == "Cox":
-            self._baseline_model.fit(np.dot(X, self.coef_), y, time)
+            self.baseline_model.fit(np.dot(X, self.coef_), y, time)
         if self.model_type == "Ordinal":
             self.coef_ = self.coef_[:, 0]
 

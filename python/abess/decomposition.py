@@ -1,6 +1,6 @@
 import numbers
 import numpy as np
-from scipy.sparse import coo_matrix
+from scipy.sparse import coo_matrix, csr_matrix
 from sklearn.utils.validation import check_array
 from pybind_cabess import pywrap_PCA, pywrap_RPCA
 from .bess_base import bess_base
@@ -151,8 +151,9 @@ class SparsePCA(bess_base):
         """
 
         # Input check
-        if isinstance(X, (list, np.ndarray, np.matrix, coo_matrix)):
-            if isinstance(X, coo_matrix):
+        if isinstance(X, (list, np.ndarray, np.matrix,
+                      coo_matrix, csr_matrix)):
+            if isinstance(X, (coo_matrix, csr_matrix)):
                 self.sparse_matrix = True
             X = check_array(X, accept_sparse=True)
 
@@ -311,7 +312,7 @@ class SparsePCA(bess_base):
 
         # Sparse X
         if self.sparse_matrix:
-            if not isinstance(X, type(coo_matrix((1, 1)))):
+            if not isinstance(X, (coo_matrix)):
                 # print("sparse matrix 1")
                 nonzero = 0
                 tmp = np.zeros([X.shape[0] * X.shape[1], 3])
@@ -451,8 +452,9 @@ class RobustPCA(bess_base):
         """
 
         # Input check
-        if isinstance(X, (list, np.ndarray, np.matrix, coo_matrix)):
-            if isinstance(X, coo_matrix):
+        if isinstance(X, (list, np.ndarray, np.matrix,
+                      coo_matrix, csr_matrix)):
+            if isinstance(X, (coo_matrix, csr_matrix)):
                 self.sparse_matrix = True
             X = check_array(X, accept_sparse=True)
 
@@ -568,7 +570,7 @@ class RobustPCA(bess_base):
 
         # Sparse X
         if self.sparse_matrix:
-            if not isinstance(X, type(coo_matrix((1, 1)))):
+            if not isinstance(X, (coo_matrix)):
                 # print("sparse matrix 1")
                 nonzero = 0
                 tmp = np.zeros([X.shape[0] * X.shape[1], 3])
