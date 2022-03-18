@@ -2,7 +2,7 @@ import abess
 import pytest
 
 
-@pytest.mark.filterwarnings("error::FutureWarning")
+@pytest.mark.filterwarnings("ignore")
 class TestDeprecated:
     """
     Test for (future) deprecated modules in abess package.
@@ -10,6 +10,26 @@ class TestDeprecated:
 
     @staticmethod
     def test_linear():
+        abess.abessLm()
+        abess.abessLogistic()
+        abess.abessPoisson()
+        abess.abessCox()
+        abess.abessGamma()
+        abess.abessMultigaussian()
+        abess.abessMultinomial()
+
+    @staticmethod
+    def test_pca():
+        abess.abessPCA()
+        abess.abessRPCA()
+
+@pytest.mark.filterwarnings("error::FutureWarning")
+class TestDeprecatedWarning:
+    """
+    Test for (future) deprecated modules warngins in abess package.
+    """
+    @staticmethod
+    def test_warning():
         try:
             abess.abessLm()
         except FutureWarning as e:
@@ -59,8 +79,6 @@ class TestDeprecated:
         else:
             assert False
 
-    @staticmethod
-    def test_pca():
         try:
             abess.abessPCA()
         except FutureWarning as e:
