@@ -135,3 +135,4 @@ R-package/src/.vscode/settings.json
 python/abess/*.so
 python/*.so
 /.history
+*.pptx
