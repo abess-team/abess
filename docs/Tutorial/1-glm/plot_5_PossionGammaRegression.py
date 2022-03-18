@@ -1,6 +1,6 @@
 """
 ===============================================
-Positive responses: Poisson & Gamma regressions
+Positive Responses: Poisson & Gamma Regressions
 ===============================================
 """
 ###############################################################################
@@ -26,9 +26,6 @@ Positive responses: Poisson & Gamma regressions
 # By specifying ``k = 3``, we set only 3 of the 6 variables to have effect on the expectation of the response.
 #
 
-from abess.linear import GammaRegression
-import matplotlib.pyplot as plt
-from abess.linear import PoissonRegression
 import numpy as np
 from abess.datasets import make_glm_data
 np.random.seed(0)
@@ -37,10 +34,18 @@ n = 100
 p = 6
 k = 3
 data = make_glm_data(n=n, p=p, k=k, family="poisson")
+print("the first 5 x observation:\n", data.x[0:5, ])
+print("the first 5 y observation:\n", data.y[0:5])
+
+
+# %%
+# Notice that, the response have non-negative integer value.
+# 
+# The effective predictors and real coefficients are:
+# 
+
 print("non-zero:\n", np.nonzero(data.coef_))
 print("real coef:\n", data.coef_)
-print("the first 5 x:\n", data.x[0:5, ])
-print("the first 5 y:\n", data.y[0:5])
 
 ###############################################################################
 # Model Fitting
@@ -49,6 +54,7 @@ print("the first 5 y:\n", data.y[0:5])
 # best subset selection in a highly efficient way.
 # We can call the function using formula like:
 
+from abess.linear import PoissonRegression
 
 model = PoissonRegression(support_size=range(7))
 model.fit(data.x, data.y)
@@ -70,6 +76,7 @@ print(model.coef_)
 # This can be computed by fixing the ``support_size`` as one number from 0
 # to 6 each time:
 
+import matplotlib.pyplot as plt
 
 coef = np.zeros((7, 6))
 ic = np.zeros(7)
@@ -84,6 +91,7 @@ for i in range(6):
 
 plt.xlabel('support_size')
 plt.ylabel('coefficients')
+plt.title('ABESS path for Poisson regression')
 plt.legend()
 plt.show()
 
@@ -93,6 +101,7 @@ plt.show()
 plt.plot(ic, 'o-')
 plt.xlabel('support_size')
 plt.ylabel('EBIC')
+plt.title('Model selection via EBIC')
 plt.show()
 
 # %%
@@ -130,21 +139,28 @@ n = 100
 p = 6
 k = 3
 data = make_glm_data(n=n, p=p, k=k, family="gamma")
-print("non-zero:\n", np.nonzero(data.coef_))
-print("real coef:\n", data.coef_)
 print("the first 5 x:\n", data.x[0:5, ])
 print("the first 5 y:\n", data.y[0:5])
+
+# %%
+# Notice that the response `y` is positive **continuous** value, which is different from the Poisson regression for integer value. 
+# 
+# The effective predictors and their effects are presented below:
+
+nnz_ind = np.nonzero(data.coef_)
+print("non-zero:\n", nnz_ind)
+print("non-zero coef:\n", data.coef_[nnz_ind])
 
 ###############################################################################
 # Model Fitting
 # ~~~~~~~~~~~~~
 # We apply the above procedure for gamma regression simply by using ``GammaRegression()`` in ``abess.linear``.
 # It has similar member functions for fitting.
+# We use five fold cross validation (CV) for selecting the model size:
 
+from abess.linear import GammaRegression
 
-model = GammaRegression(
-    support_size=range(7),
-    cv=5)  # use CV (fold = 5) for fitting
+model = GammaRegression(support_size=range(7), cv=5) 
 model.fit(data.x, data.y)
 
 # %%
@@ -172,6 +188,7 @@ for i in range(6):
 
 plt.xlabel('support_size')
 plt.ylabel('coefficients')
+plt.title('ABESS path for gamma regression')
 plt.legend()
 plt.show()
 

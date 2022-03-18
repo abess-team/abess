@@ -1,6 +1,6 @@
 """
 ==============
-Cox Regression
+Survival Analysis: Cox Regression
 ==============
 """
 ###############################################################################
@@ -48,7 +48,7 @@ Cox Regression
 #
 # which is independent of time.
 #
-# Real Data Example (Lung Cancer Dataset)
+# Lung Cancer Dataset Analysis
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # We are going to apply best subset selection to the NCCTG Lung Cancer Dataset from https://www.kaggle.com/ukveteran/ncctg-lung-cancer-data.
 # This dataset consists of survival information of patients with advanced lung cancer from the North Central Cancer Treatment Group.
@@ -57,10 +57,6 @@ Cox Regression
 #
 # First, we load the data.
 
-from abess.metrics import concordance_index_censored
-import matplotlib.pyplot as plt
-from abess import CoxPHSurvivalAnalysis
-import numpy as np
 import pandas as pd
 
 data = pd.read_csv('cancer.csv')
@@ -87,6 +83,8 @@ print(data.head())
 # The model is going to be built on the training set and later we will
 # test the model performance on the test set.
 
+import numpy as np
+
 np.random.seed(0)
 
 ind = np.linspace(1, 168, 168) <= round(168 * 2 / 3)
@@ -107,6 +105,7 @@ print('test size:', test.shape[0])
 # The available tuning criteria now are ``"gic"``, ``"aic"``, ``"bic"``,
 # ``"ebic"``. Here we give an example.
 
+from abess import CoxPHSurvivalAnalysis
 
 model = CoxPHSurvivalAnalysis(ic_type='gic')
 model.fit(train[:, 2:], train[:, :2])
@@ -131,6 +130,7 @@ print(model.coef_)
 # Simply fix the ``support_size`` in different levels, we can plot a path
 # of coefficients like:
 
+import matplotlib.pyplot as plt
 
 coef = np.zeros((10, 9))
 ic = np.zeros(10)
@@ -145,6 +145,7 @@ for i in range(9):
 
 plt.xlabel('support_size')
 plt.ylabel('coefficients')
+plt.title('ABESS Path')
 plt.legend()
 plt.show()
 
@@ -154,6 +155,7 @@ plt.show()
 plt.plot(ic, 'o-')
 plt.xlabel('support_size')
 plt.ylabel('GIC')
+plt.title('Model selection via GIC')
 plt.show()
 
 # %%
@@ -172,6 +174,8 @@ print(pred)
 # for a pair of randomly chosen comparable samples,
 # the sample with the higher risk prediction will experience an event
 # before the other sample or belong to a higher binary class.
+
+from abess.metrics import concordance_index_censored
 
 cindex = concordance_index_censored(test[:, 1] == 2, test[:, 0], pred)
 print(cindex[0])
@@ -199,6 +203,7 @@ for fn, label in zip(surv_fns, train[:, 8].astype(int)):
 ax.legend(legend_handles, legend_labels)
 ax.set_xlabel("time")
 ax.set_ylabel("Survival probability")
+ax.set_title("Survival curve plot")
 ax.grid(True)
 
 # %%

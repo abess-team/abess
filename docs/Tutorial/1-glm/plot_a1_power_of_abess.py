@@ -1,7 +1,7 @@
 """
-==========================
-Power of **abess** Library
-==========================
+====================================================
+Power of **abess** Library: Empirical Comparison
+====================================================
 
 """
 
@@ -12,49 +12,51 @@ Power of **abess** Library
 # using simulated data. We compare the abess package with popular Python
 # packages:
 # `scikit-learn <https://scikit-learn.org/stable/supervised_learning.html#supervised-learning>`__
-# for linear and logistic regressions in the following section. Actually,
+# for linear and logistic regressions in the following section. (Actually,
 # we also compare with
 # `python-glmnet <https://github.com/civisanalytics/python-glmnet>`__,
 # `statsmodels <https://github.com/statsmodels/statsmodels>`__ and
-# `L0bnb <https://github.com/alisaab/l0bnb>`__, but the python-glmnet
-# presents a poor prediction error, the statsmodels runs slow and the
-# L0bnb cannot adaptively choose sparsity level. So their results are not
-# showed here.
+# `L0bnb <https://github.com/alisaab/l0bnb>`__, but the ``python-glmnet``
+# presents a poor prediction error, the ``statsmodels`` runs slow and the
+# ``L0bnb`` cannot adaptively choose sparsity level. So their results are not
+# showed here.)
+# 
 
 ######################################
-# Simulation
+# Simulation Setting
 # ^^^^^^^^^^
-# Setting
-# ~~~~~~~
+# 
 # Both packages are compared in three aspects including the prediction
 # performance, the variable selection performance, and the computation
 # efficiency.
 #
 # -  The prediction performance of the linear model is measured by
 #    :math:`||y−\hat{y}||_2` on a test set and for logistic regression
-#    this is measured by the area under the ROC Curve (AUC).
-# -  For the variable selection performance, we compute the coefficient
-#    error :math:`||\beta - \hat{\beta}||_2`, true positive rate (TPR,
-#    which is the proportion of varibales in the active set that are
+#    this is measured by the area under the ROC curve (AUC).
+# -  The coefficient estimation performance are measured by the coefficient error :math:`||\beta - \hat{\beta}||_2`.
+# -  For the variable selection performance, we compute true positive rate (TPR,
+#    which is the proportion of variables in the active set that are
 #    correctly identified) and the false positive rate (FPR, which is the
-#    proportion of the varibales in the inactive set that are falsely
+#    proportion of the variables in the inactive set that are falsely
 #    identified as a signal).
-# -  Timings of the CPU execution are recorded in seconds and all the
-#    performances are averaged over 20 replications on a sequence of 100
-#    regularization parameters.
+# -  Timings of the CPU execution are recorded in seconds, and all of methods select the best model among 100 models
+#    under different regularization strength or support size.
 #
 # The simulated data are made by ``abess.datasets.make_glm_data()``. The
 # number of predictors is :math:`p=8000` and the size of data is
 # :math:`n=500`. The true coefficient contains :math:`k=10` nonzero
-# entries uniformly distributed in :math:`[b,B]`. For linear (gaussian)
-# data, we set :math:`b = 5\sqrt{2\ln p / n}` and :math:`B = 100b`. For
-# logistic (binomial) data, we set :math:`b = 10\sqrt{2\ln p / n}` and
-# :math:`B = 5b`. In each regression, we test for both low
+# entries uniformly distributed in :math:`[b,B]`:
+# 
+# -  For linear regression (``family = "gaussian"``), we set :math:`b = 5\sqrt{2\ln p / n}` and :math:`B = 100b`. 
+# -  For logistic regression (``family = "binomial"``), we set :math:`b = 10\sqrt{2\ln p / n}` and :math:`B = 5b`. 
+# 
+# In each regression, we test for both low
 # (:math:`\rho=0.1`) and high correlation (:math:`\rho=0.7`) scenarios.
 # What’s more, a random noise generated from a standard Gaussian
-# distribution is added to the linear predictor :math:`x′β` for linear
+# distribution is added to the linear predictor :math:`x^{\top} \beta` for linear
 # regression.
 #
+# All the performances are averaged over 20 replications.
 # All experiments are evaluated on a Ubuntu platform with Intel(R)
 # Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM.
 #
@@ -63,8 +65,8 @@ Power of **abess** Library
 #    $ python abess/docs/simulation/Python/perform.py
 
 ##############################################################
-# Results
-# ~~~~~~~
+# Numerical Results
+# ^^^^^^^^^^^^^^^^^^^^
 #
 # For linear regression, we compare three methods in the two packages:
 # Lasso, OMP and abess. For logistic regression, we compare two
@@ -92,5 +94,5 @@ Power of **abess** Library
 #
 # .. |image0| image:: ../../Tutorial/figure/perform.png
 # .. |image1| image:: ../../Tutorial/figure/timings.png
-
-# sphinx_gallery_thumbnail_path = '_static/timings.png'
+# 
+# sphinx_gallery_thumbnail_number = 2

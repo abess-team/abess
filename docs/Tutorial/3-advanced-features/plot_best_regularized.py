@@ -2,6 +2,12 @@
 Regularized Best Subset Selection
 =================================
 """
+
+# %%
+# 
+# .. image:: ../../Tutorial/figure/regularized_cover.png 
+# 
+
 # %%
 # In some cases, especially under low signal-to-noise ratio (SNR) setting or predictors are highly correlated,
 # the vallina type of :math:`L_0` constrained model may not be satisfying and a more sophisticated trade-off between bias and variance is needed.
@@ -28,15 +34,7 @@ loss = np.zeros((2, 100))
 coef = np.repeat([1, 0], [5, 25])
 for i in range(100):
     np.random.seed(i)
-    data = make_glm_data(
-        n=200,
-        p=30,
-        k=5,
-        family='gaussian',
-        coef_=coef,
-        snr=0.5,
-        sigma=2,
-        rho=0.5)
+    data = make_glm_data(n=200, p=30, k=5, family='gaussian', coef_=coef, snr=0.5, rho=0.5)
     train_x, test_x, train_y, test_y = train_test_split(
         data.x, data.y, test_size=0.5, random_state=i)
 
@@ -49,18 +47,8 @@ for i in range(100):
     model.fit(train_x, train_y)
     loss[1, i] = np.linalg.norm(model.predict(test_x) - test_y)
 
-print("The average predition error under best-subset selection:",
-      np.mean(loss[0, :]))
-print("The average predition error under regularized best-subset selection:",
-      np.mean(loss[1, :]))
-
-# # The regularized model has a lower test loss. And we can also make a boxplot:
-
-# import matplotlib.pyplot as plt
-# plt.boxplot([loss[0,:], loss[1,:]], labels = ['ABESS', 'RABESS'])
-# plt.show()
-
-# # We see that the regularized best subset select ("RABESS" in figure)  indeed reduces the prediction error.
+print("The average predition error under best-subset selection:", np.mean(loss[0, :]))
+print("The average predition error under regularized best-subset selection:", np.mean(loss[1, :]))
 
 # %%
 # We see that the regularized best subset select ("RABESS") indeed reduces the prediction error.
@@ -68,5 +56,6 @@ print("The average predition error under regularized best-subset selection:",
 # The ``abess`` R package also supports regularized best-subset selection.
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v07-advancedFeatures.html.
-
-# sphinx_gallery_thumbnail_path = '_static/regularized_cover.png'
+# 
+# sphinx_gallery_thumbnail_number = 1
+# 

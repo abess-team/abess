@@ -29,7 +29,7 @@ We compare the abess package with popular R libraries: `glmnet`, `ncvreg` for li
 All these packages are compared in three aspects including the prediction performance, the variable selection performance, and the computation efficiency.
 The prediction performance of the linear model is measured by $\|y - \hat{y}\|_2$ on a test set and for logistic regression this is measured by the area under the ROC Curve.
 For the variable selection performance, we compute the true positive rate (TPR, which is the proportion of variables in the active set that are correctly identified) 
-and the false positive rate (FPR, which is the proportion of the varibales in the inactive set that are falsely identified as a signal). 
+and the false positive rate (FPR, which is the proportion of the variables in the inactive set that are falsely identified as a signal). 
 Timings of the CPU execution are recorded in seconds and all the performances are averaged over 100 replications on a sequence
 of 100 regularization parameters.
 
