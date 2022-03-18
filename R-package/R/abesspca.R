@@ -25,6 +25,7 @@
 #' It represents the support sizes to be considered for each principal component.
 #' If it is a \code{list} object containing \code{kpc.num} number of integer vectors,
 #' the i-th principal component consider the support size specified in the i-th element in the \code{list}.
+#' Only used for \code{tune.path = "sequence"}.
 #' The default is \code{support.size = NULL}, and some rules in details section are used to specify \code{support.size}.
 #' @param splicing.type Optional type for splicing.
 #' If \code{splicing.type = 1}, the number of variables to be spliced is
@@ -63,18 +64,19 @@
 #' \item{nvars}{The number of variables.}
 #' \item{sparse.type}{The same as input.}
 #' \item{support.size}{The actual support.size values used. Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.}
-#' \item{ev}{A vector with size \code{length(support.size)}. It records the explained variance at each support size.}
+#' \item{ev}{A vector with size \code{length(support.size)}. It records the cumulative sums of explained variance at each support size.}
 #' \item{tune.value}{A value of tuning criterion of length \code{length(support.size)}.}
 #' \item{kpc.num}{The number of principal component being considered.}
 #' \item{var.pc}{The variance of principal components obtained by performing standard PCA.}
 #' \item{cum.var.pc}{Cumulative sums of \code{var.pc}.}
 #' \item{var.all}{If \code{sparse.type = "fpc"},
 #' it is the total standard deviations of all principal components.}
-#' \item{cum.ev}{Cumulative sums of explained variance.}
 #' \item{pev}{A vector with the same length as \code{ev}. It records the percent of explained variance (compared to \code{var.all}) at each support size.}
 #' \item{pev.pc}{It records the percent of explained variance (compared to \code{var.pc}) at each support size.}
+#' \item{tune.type}{The criterion type for tuning parameters.}
+#' \item{tune.path}{The strategy for tuning parameters.}
 #' \item{call}{The original call to \code{abess}.}
-#' It is worthy to note that, if \code{sparse.type == "kpc"}, the \code{ev}, \code{tune.value}, \code{pev} and \code{pev.pc} in list are \code{list} objects.
+#' It is worthy to note that, if \code{sparse.type == "kpc"}, the \code{coef}, \code{support.size}, \code{ev}, \code{tune.value}, \code{pev} and \code{pev.pc} in list are \code{list} objects.
 #'
 #' @author Jin Zhu, Junxian Zhu, Ruihuang Liu, Junhao Huang, Xueqin Wang
 #' 
@@ -254,13 +256,27 @@ abesspca <- function(x,
   
   if(tune.path == "gsection"){
     if(sparse.type == "fpc"){
-      s_list <- result[["sequence"]]
+      # sort and delete duplicate things in result
+      gs_unique_index <- match(sort(unique(result[["sequence"]])), result[["sequence"]])
+
+      s_list <- result[["sequence"]][gs_unique_index]
+      result[["beta_all"]] <- result[["beta_all"]][gs_unique_index]
+      result[["train_loss_all"]] <- result[["train_loss_all"]][gs_unique_index]
+      result[["ic_all"]] <- result[["ic_all"]][gs_unique_index]
+      result[["test_loss_all"]] <- result[["test_loss_all"]][gs_unique_index]
     } else{
       s_list <- list()
       for(i in seq_len(kpc.num)){
-        s_list[[i]] <- result[[i]][["sequence"]]
+        # sort and delete duplicate things in result
+        gs_unique_index <- match(sort(unique(result[[i]][["sequence"]])), result[[i]][["sequence"]])
+        s_list[[i]] <- result[[i]][["sequence"]][gs_unique_index]
+        result[[i]][["beta_all"]] <- result[[i]][["beta_all"]][gs_unique_index]
+        result[[i]][["train_loss_all"]] <- result[[i]][["train_loss_all"]][gs_unique_index]
+        result[[i]][["ic_all"]] <- result[[i]][["ic_all"]][gs_unique_index]
+        result[[i]][["test_loss_all"]] <- result[[i]][["test_loss_all"]][gs_unique_index]
       }
     }
+    result[["sequence"]] <- NULL
   }
   # result[["beta"]] <- NULL
   # result[["coef0"]] <- NULL
@@ -273,7 +289,7 @@ abesspca <- function(x,
   if (sparse.type == "fpc") {
     names(result)[which(names(result) == "beta_all")] <- "coef"
     # result[["coef"]] <- result[["beta_all"]]
-    result[["ev"]] <- -result[["train_loss_all"]][, 1]
+    result[["ev"]] <- -result[["train_loss_all"]]
     # names(result)[which(names(result) == "train_loss_all")] <- "ev"
     # result[["ev"]] <- - result[["ev"]][, 1]
     result[["coef"]] <- do.call("cbind", result[["coef"]])
@@ -307,7 +323,7 @@ abesspca <- function(x,
         dimnames = list(vn, as.character(s_list[[i]]))
       )
     }
-    ev_list <- list(-result[[1]][["train_loss_all"]][, 1])
+    ev_list <- list(-result[[1]][["train_loss_all"]])
     for (i in 2:kpc.num) {
       ev_vec <- c()
       tmp <- coef_list[[1]]
@@ -358,8 +374,9 @@ abesspca <- function(x,
   result[["support.size"]] <- s_list
   result[["tune.type"]] <- tune_type
   result[["tune.path"]] <- tune.path
-  result[["gs.range"]] <- gs.range
-
+  if(tune.path == "gsection"){
+    result[["gs.range"]] <- c(s_min,s_max)
+  }
   result[["call"]] <- match.call()
   class(result) <- "abesspca"
   result
