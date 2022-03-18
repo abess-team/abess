@@ -1,6 +1,6 @@
 import numbers
 import numpy as np
-from scipy.sparse import coo_matrix
+from scipy.sparse import coo_matrix, csr_matrix
 from sklearn.base import BaseEstimator
 from pybind_cabess import pywrap_GLM
 from sklearn.utils.validation import check_X_y
@@ -204,8 +204,9 @@ class bess_base(BaseEstimator):
         # print("fit enter.")#///
 
         # Input check & init:
-        if isinstance(X, (list, np.ndarray, np.matrix, coo_matrix)):
-            if isinstance(X, coo_matrix):
+        if isinstance(X, (list, np.ndarray, np.matrix,
+                      coo_matrix, csr_matrix)):
+            if isinstance(X, (coo_matrix, csr_matrix)):
                 self.sparse_matrix = True
 
             # Check that X and y have correct shape
@@ -458,7 +459,7 @@ class bess_base(BaseEstimator):
 
         # Sparse X
         if self.sparse_matrix:
-            if not isinstance(X, type(coo_matrix((1, 1)))):
+            if not isinstance(X, (coo_matrix)):
                 # print("sparse matrix 1")
                 nonzero = 0
                 tmp = np.zeros([X.shape[0] * X.shape[1], 3])
@@ -521,7 +522,7 @@ class bess_base(BaseEstimator):
         self.ic_ = result[4]
 
         if self.model_type == "Cox":
-            self._baseline_model.fit(np.dot(X, self.coef_), y, time)
+            self.baseline_model.fit(np.dot(X, self.coef_), y, time)
         if self.model_type == "Ordinal":
             self.coef_ = self.coef_[:, 0]
 

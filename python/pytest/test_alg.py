@@ -216,7 +216,7 @@ class TestAlgorithm:
             assert_value(coef[nonzero], reg.coef_)
 
         # null
-        # check_estimator(abess.PoissonRegression())
+        check_estimator(abess.PoissonRegression())
         model1 = abess.PoissonRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
@@ -409,7 +409,7 @@ class TestAlgorithm:
         data = abess.make_glm_data(n=100, p=10, k=3, family="gamma")
 
         # null
-        # check_estimator(abess.GammaRegression())
+        check_estimator(abess.GammaRegression())
         model1 = abess.GammaRegression()
         model1.fit(data.x, data.y)
         assert_nan(model1.coef_)
