@@ -98,8 +98,7 @@ Only used for \code{tune.path = "sequence"}. Default is \code{0:min(n, round(n/(
 
 \item{gs.range}{A integer vector with two elements.
 The first element is the minimum model size considered by golden-section,
-the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
-Not available now.}
+the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.}
 
 \item{lambda}{A single lambda value for regularized best subset selection. Default is 0.}
 

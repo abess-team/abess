@@ -245,7 +245,6 @@ List abessPCA_API(Eigen::MatrixXd x, int n, int p, int normalize_type, Eigen::Ve
     int primary_model_fit_max_iter = 1;
     double primary_model_fit_epsilon = 1e-3;
     int pca_n = -1;
-    screening_size = -1;
     sub_search = 0;
     if (!sparse_matrix && n != x.rows()) {
         pca_n = n;

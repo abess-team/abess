@@ -74,6 +74,53 @@ test_that("abesspca (FPC) works", {
   expect_true(all.equal(spca_fit1, spca_fit2))
 })
 
+test_that("abesspca (FPC and golden-section) works", {
+  data(USArrests)
+
+  spca_fit <- abesspca(USArrests, tune.path = "gsection")
+
+  ## Reasonablity of abesspca
+  ev <- spca_fit[["ev"]]
+  ev_len <- length(ev)
+  expect_true(all(ev[1:(ev_len - 1)] < ev[2:ev_len]))
+
+  ev_diff <- as.vector(diff(ev))
+  ev_diff_len <- ev_len - 1
+  expect_true(all(ev_diff[1:(ev_diff_len - 1)] > ev_diff[2:ev_diff_len]))
+
+  expect_true(all(spca_fit[["pev"]] <= 1))
+
+  ## oracle estimation by svd function:
+  pca_var <- sum(princomp(USArrests)[["sdev"]]^2)
+  expect_equal(spca_fit[["var.all"]], pca_var)
+
+  ## check identity:
+  spca_fit1 <- abesspca(USArrests, tune.path = "gsection")
+  spca_fit2 <- abesspca(cov(USArrests) * (nrow(USArrests) - 1) / nrow(USArrests),
+    type = "gram", tune.path = "gsection"
+  )
+  spca_fit1[["call"]] <- NULL
+  spca_fit2[["call"]] <- NULL
+  expect_true(all.equal(spca_fit1, spca_fit2))
+
+  ## check identity:
+  spca_fit1 <- abesspca(USArrests, cor = TRUE, tune.path = "gsection")
+  spca_fit2 <- abesspca(cor(USArrests), type = "gram", tune.path = "gsection")
+  spca_fit1[["call"]] <- NULL
+  spca_fit2[["call"]] <- NULL
+  expect_true(all.equal(spca_fit1, spca_fit2))
+
+  tmp <- sweep(USArrests, 2, STATS = colMeans(USArrests), FUN = "-")
+  tmp <- sweep(tmp, 2, STATS = sqrt(colSums(tmp^2)), FUN = "/")
+
+  ## check identity:
+  spca_fit1 <- abesspca(USArrests, tune.path = "gsection")
+  spca_fit2 <- abesspca(USArrests, support.size = 1:4, tune.path = "gsection")
+  spca_fit1[["call"]] <- NULL
+  spca_fit2[["call"]] <- NULL
+  expect_true(all.equal(spca_fit1, spca_fit2))
+})
+
 test_that("abesspca (FPC-CV) works", {
   set.seed(1)
   n <- 500
@@ -119,6 +166,79 @@ test_that("abesspca (KPC) works", {
 
   ## Input 3 (default input):
   spca_fit1 <- abesspca(USArrests, sparse.type = "kpc")
+  expect_true(all(unlist(spca_fit1[["pev"]]) <= 1))
+})
+
+test_that("abesspca (support.size) works", {
+  data(USArrests)
+  support.size <- list()
+
+  ## Input 1:
+  nvars <- ncol(USArrests)
+  for(i in 1:nvars){
+    support.size[[i]] <- 1
+  }
+  
+  spca_fit <- abesspca(USArrests,
+    support.size = support.size,
+    kpc.num = nvars
+  )
+
+  ## Reasonablity of abesspca
+  skip_on_os("linux")
+  ev <- unlist(spca_fit[["ev"]])
+  ev_len <- length(ev)
+  expect_true(all(ev[1:(ev_len - 1)] <= ev[2:ev_len]))
+  expect_true(all(unlist(spca_fit[["pev"]]) <= 1))
+
+  ## Input 2:
+  for(i in 1:nvars){
+    support.size[[i]] <- 4
+  }
+  spca_fit1 <- abesspca(USArrests,
+    sparse.type = "kpc",
+    support.size = support.size, kpc.num = nvars
+  )
+  expect_true(all(unlist(spca_fit1[["pev"]]) <= 1))
+  expect_equal(
+    expected = 1, object = max(unlist(spca_fit1[["pev"]])),
+    tolerance = 1e-7
+  )
+})
+
+test_that("abesspca (KPC and golden-section) works", {
+  data(USArrests)
+
+  ## Input 1:
+  nvars <- ncol(USArrests)
+  spca_fit <- abesspca(USArrests,
+    gs.range = c(1,3),
+    kpc.num = nvars,
+    tune.path = "gsection"
+  )
+
+  ## Reasonablity of abesspca
+  skip_on_os("linux")
+  ev <- unlist(spca_fit[["ev"]])
+  ev_len <- length(ev)
+  expect_true(all(ev[1:(ev_len - 1)] <= ev[2:ev_len]))
+  expect_true(all(unlist(spca_fit[["pev"]]) <= 1))
+
+  ## Input 2:
+  spca_fit1 <- abesspca(USArrests,
+    sparse.type = "kpc",
+    gs.range = c(2,4), kpc.num = nvars,
+    tune.path = "gsection"
+  )
+  expect_true(all(unlist(spca_fit1[["pev"]]) <= 1))
+  expect_equal(
+    expected = 1, object = max(unlist(spca_fit1[["pev"]])),
+    tolerance = 1e-3
+  )
+
+  ## Input 3 (default input):
+  spca_fit1 <- abesspca(USArrests, sparse.type = "kpc",
+    tune.path = "gsection")
   expect_true(all(unlist(spca_fit1[["pev"]]) <= 1))
 })
 
