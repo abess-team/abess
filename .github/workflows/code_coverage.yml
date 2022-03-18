@@ -8,10 +8,14 @@ on:
       - "src/**"
       - ".github/workflows/code_coverage.yml"
       - "!R-package/.gitignore"
+      - "!R-package/README.md"
+      - "!R-package/LICENSE"
       - "!R-package/cran-comments.md"
       - "!R-package/pre-release.R"
       - "!R-package/data-raw/**"
       - "!python/.gitignore"
+      - "!python/README.rst"
+      - "!python/LICENSE"
   pull_request:
     paths:
       - "python/**"
@@ -19,10 +23,14 @@ on:
       - "src/**"
       - ".github/workflows/code_coverage.yml"
       - "!R-package/.gitignore"
+      - "!R-package/README.md"
+      - "!R-package/LICENSE"
       - "!R-package/cran-comments.md"
       - "!R-package/pre-release.R"
       - "!R-package/data-raw/**"
       - "!python/.gitignore"
+      - "!python/README.rst"
+      - "!python/LICENSE"
   workflow_dispatch:
 
 jobs:

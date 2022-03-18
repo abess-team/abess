@@ -1,9 +1,17 @@
 """
 Large-Sample Data
 =================
-A large sample size leads to a large range of possible support sizes which adds to the computational burdon.
-The computional tip here is to use the golden-section searching to avoid support size enumeration.
 """
+
+# %%
+# Introduction
+# ^^^^^^^^^^^^^^^^^^^^^^^
+# 
+# .. image:: ../../Tutorial/figure/large-sample.png
+#
+# A large sample size leads to a large range of possible support sizes which adds to the computational burdon.
+# The computational tip here is to use the golden-section searching to avoid support size enumeration.
+
 # %%
 # A motivated observation
 # ^^^^^^^^^^^^^^^^^^^^^^^
