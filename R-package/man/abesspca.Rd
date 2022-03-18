@@ -9,8 +9,10 @@ abesspca(
   type = c("predictor", "gram"),
   sparse.type = c("fpc", "kpc"),
   cor = FALSE,
-  support.size = NULL,
   kpc.num = NULL,
+  support.size = NULL,
+  gs.range = NULL,
+  tune.path = c("sequence", "gsection"),
   tune.type = c("gic", "aic", "bic", "ebic", "cv"),
   nfolds = 5,
   foldid = NULL,
@@ -18,6 +20,7 @@ abesspca(
   c.max = NULL,
   always.include = NULL,
   group.index = NULL,
+  screening.num = NULL,
   splicing.type = 1,
   max.splicing.iter = 20,
   warm.start = TRUE,
@@ -44,13 +47,23 @@ otherwise, the covariance matrix.
 This option is available only if \code{type = "predictor"}.
 Default: \code{cor = FALSE}.}
 
+\item{kpc.num}{A integer decide the number of principal components to be sequentially considered.}
+
 \item{support.size}{It is a flexible input. If it is an integer vector.
 It represents the support sizes to be considered for each principal component.
 If it is a \code{list} object containing \code{kpc.num} number of integer vectors,
 the i-th principal component consider the support size specified in the i-th element in the \code{list}.
 The default is \code{support.size = NULL}, and some rules in details section are used to specify \code{support.size}.}
 
-\item{kpc.num}{A integer decide the number of principal components to be sequentially considered.}
+\item{gs.range}{A integer vector with two elements.
+The first element is the minimum model size considered by golden-section,
+the later one is the maximum one. Default is \code{gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))}.
+Not available now.}
+
+\item{tune.path}{The method to be used to select the optimal support size. For
+\code{tune.path = "sequence"}, we solve the best subset selection problem for each size in \code{support.size}.
+For \code{tune.path = "gsection"}, we solve the best subset selection problem with support size ranged in \code{gs.range},
+where the specific support size to be considered is determined by golden section.}
 
 \item{tune.type}{The type of criterion for choosing the support size.
 Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
@@ -75,6 +88,9 @@ and their corresponding index in \code{group.index} should be the same.
 Denote the first group as \code{1}, the second \code{2}, etc.
 If you do not fit a model with a group structure,
 please set \code{group.index = NULL} (the default).}
+
+\item{screening.num}{An integer number. Preserve \code{screening.num} number of predictors with the largest
+marginal maximum likelihood estimator before running algorithm.}
 
 \item{splicing.type}{Optional type for splicing.
 If \code{splicing.type = 1}, the number of variables to be spliced is

@@ -205,6 +205,7 @@ abesspca <- function(x,
   important_search <- para$important_search
   always_include <- para$always_include
   s_max <- para$s_max
+  s_min <- para$s_min
   s_list_bool <- para$s_list_bool
   tune_type <- para$tune_type
   ic_type <- para$ic_type
@@ -217,7 +218,8 @@ abesspca <- function(x,
   total_variance  <- para$total_variance 
   screening_num <- para$screening_num
   screening <- para$screening
-
+  path_type <- para$path_type
+  
   ## Cpp interface:
   result <- abessPCA_API(
     x = x,
@@ -229,14 +231,14 @@ abesspca <- function(x,
     # algorithm_type = 6,
     max_iter = max_splicing_iter,
     exchange_num = c_max,
-    path_type = 1,
+    path_type = path_type,
     is_warm_start = warm.start,
     ic_type = 1,
     ic_coef = ic_scale,
     Kfold = nfolds,
     sequence = s_list_bool,
-    s_min = 0,
-    s_max = 10,
+    s_min = s_min,
+    s_max = s_max,
     screening_size = ifelse(screening_num >= nvars, -1, screening_num),
     g_index = g_index,
     always_select = always_include,
@@ -249,7 +251,17 @@ abesspca <- function(x,
     pca_num = kpc.num, 
     A_init = as.integer(c())
   )
-
+  
+  if(tune.path == "gsection"){
+    if(sparse.type == "fpc"){
+      s_list <- result[["sequence"]]
+    } else{
+      s_list <- list()
+      for(i in seq_len(kpc.num)){
+        s_list[[i]] <- result[[i]][["sequence"]]
+      }
+    }
+  }
   # result[["beta"]] <- NULL
   # result[["coef0"]] <- NULL
   # result[["train_loss"]] <- NULL
@@ -257,7 +269,7 @@ abesspca <- function(x,
   # result[["coef0_all"]] <- NULL
   # result[["ic_all"]] <- NULL
   # result[["test_loss_all"]] <- NULL
-
+  
   if (sparse.type == "fpc") {
     names(result)[which(names(result) == "beta_all")] <- "coef"
     # result[["coef"]] <- result[["beta_all"]]
@@ -307,7 +319,7 @@ abesspca <- function(x,
         j <- j + 1
       }
       tmp2 <- coef_list[[j]]
-      for (k in 1:ncol(tmp2)) {
+      for (k in seq_len(ncol(tmp2))) {
         ev_vec <- c(ev_vec, sum(adjusted_variance_explained(gram_x, cbind(tmp, tmp2[, k]))))
       }
       ev_list[[i]] <- ev_vec
