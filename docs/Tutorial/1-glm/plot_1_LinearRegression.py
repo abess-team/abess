@@ -17,15 +17,16 @@ in linear regression with both simulated data and real data.
 #
 # where :math:`\| \cdot \|_2` is the :math:`\ell_2` norm, :math:`\|\beta\|_0=\sum_{i=1}^pI( \beta_i\neq 0)`
 # is the :math:`\ell_0` norm of :math:`\beta`, and the sparsity level :math:`s`
-# is usually an unknown non-negative integer.
-# Next, we present an example to show how to use the ``abess`` package to solve a simple problem.
+# is an unknown non-negative integer to be determined.
+# Next, we present an example to show the ``abess`` package can get an optimal estimation.
 #
-# Simulated Data Example
+# Toward optimality: adaptive best-subset selection
 # ^^^^^^^^^^^^^^^^^^^^^^
-# Fixed Support Size Best Subset Selection
+# 
+# Synthetic dataset
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-# We generate a design matrix :math:`X` containing 300 observations and each observation has 1000 predictors.
+# We generate a design matrix :math:`X` containing :math:`n = 300` observations and each observation has :math:`p = 1000` predictors.
 # The response variable :math:`y` is linearly related to the first, second, and fifth predictors in :math:`X`:
 #
 # .. math::
@@ -33,62 +34,75 @@ in linear regression with both simulated data and real data.
 #
 # where :math:`\epsilon` is a standard normal random variable.
 
-
-import matplotlib.pyplot as plt
-import os
-import pandas as pd
-from abess import LinearRegression
 import numpy as np
 from abess.datasets import make_glm_data
 np.random.seed(0)
 
 n = 300
 p = 1000
-k = 3
+true_support_set=[0, 1, 4]
+true_coef = np.array([3, 1.5, 2])
 real_coef = np.zeros(p)
-real_coef[[0, 1, 4]] = 3, 1.5, 2
-data1 = make_glm_data(n=n, p=p, k=k, family="gaussian", coef_=real_coef)
+real_coef[true_support_set] = true_coef
+data1 = make_glm_data(n=n, p=p, k=len(true_coef), family="gaussian", coef_=real_coef)
 
 print(data1.x.shape)
 print(data1.y.shape)
 # %%
-# Use ``LinearRegression`` to fit the data, with a fixed support size:
+# This dataset is high-dimensional and brings large challenge for subset selection. 
+# As a typical data examples, it mimics data appeared in real-world for modern scientific researches and data mining, 
+# and serves a good quick example for demonstrating the power of the ``abess`` library.
+# 
+# Optimality
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+# The optimality of subset selection means:      
+#    
+# - ``true_support_set`` (i.e. ``[0, 1, 4]``) can be exactly identified; 
+# - the estimated coefficients is `ordinary least squares (OLS) estimator <https://en.wikipedia.org/wiki/Ordinary_least_squares>`__ under the true subset such that is very closed to ``true_coef = np.array([3, 1.5, 2])``. 
+# 
+# To understand the second criterion, we take a look on the estimation given by ``scikit-learn`` library:
 
-model = LinearRegression(support_size=3)
-model.fit(data1.x, data1.y)
+from sklearn.linear_model import LinearRegression as SKLLinearRegression
+sklearn_lr = SKLLinearRegression()
+sklearn_lr.fit(data1.x[:, [0, 1, 4]], data1.y)
+print("OLS estimator: ", sklearn_lr.coef_)
+# %%
+# The fitted coefficients ``sklearn_lr.coef_`` is OLS estimator 
+# when the true support set is known. 
+# It is very closed to the ``true_coef``, and is hard to be improve under finite sample size.
 
 # %%
-# After fitting, the predicted coefficients are stored in ``model.coef_``:
-
-print("shape:", model.coef_.shape)
-ind = np.nonzero(model.coef_)
-print("predicted non-zero: ", ind)
-print("predicted coef: ", model.coef_[ind])
-
-# %%
-# From the result, we know that ``abess`` found which 3 predictors are useful among all 1000 variables.
-# Besides, the predicted coefficients of them are quite close to the real ones.
-#
-# Adaptive Best Subset Selection - Demonstration of the Optimality
+# Adaptive Best Subset Selection
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# However, we may not know the true sparsity level in real world data,
-# and thus we need to determine the most proper one from a large range.
-# Suppose that we believe the real sparsity level is between 0 and 30 (so
-# that ``range(0, 31)``), the following code shows that this approach can 
-# successfully recover the true active set ([0, 1, 4]):
+# The adaptive best subset selection (ABESS) algorithm is a very powerful for the selection of the best subset. 
+# We will illustrate its power by showing it can reach to the optimality.
+# 
+# The following code shows the simple syntax for using ABESS algorithm via ``abess`` library. 
 
-
-model = LinearRegression(support_size=range(31))
+from abess import LinearRegression
+model = LinearRegression()
 model.fit(data1.x, data1.y)
 
+# %%
+# ``LinearRegression`` functions in ``abess`` is designed for selecting the best subset under the linear model, 
+# which can be imported by: ``from abess import LinearRegression``. 
+# Following similar syntax like ``scikit-learn``, we can fit the data via ABESS algorithm.
+# 
+# Next, we going to see that the above approach can successfully recover the true set ``np.array([0, 1, 4])``.
+# The fitted coefficients are stored in ``model.coef_``. 
+# We use ``np.nonzero`` function to find the selected subset of ``abess``, 
+# and we can extract the non-zero entries in ``model.coef_`` which is the coefficients estimation for the selected predictors.
+# 
+
 ind = np.nonzero(model.coef_)
-print("predicted non-zero: ", ind)
-print("predicted coef: ", model.coef_[ind])
+print("estimated non-zero: ", ind)
+print("estimated coef: ", model.coef_[ind])
 
 # %%
-# The program can adaptively choose the sparsity level that best fits the
-# data. It is not surprising that it chooses 3 variables, the same as the
-# last section.
+# From the result, we know that ``abess`` exactly found the true set ``np.array([0, 1, 4])`` among all 1000 predictors. 
+# Besides, the estimated coefficients of them are quite close to the real ones, 
+# and is exactly the same as the estimation ``sklearn_lr.coef_`` given by ``scikit-learn``.
 
 ###############################################################################
 # Real data example
@@ -96,13 +110,15 @@ print("predicted coef: ", model.coef_[ind])
 #
 # Hitters Dataset
 # ~~~~~~~~~~~~~~~
-# Now we focus on real data on the `Hitters` dataset: https://www.kaggle.com/floser/hitters.
+# Now we focus on real data on the `Hitters dataset <https://www.kaggle.com/floser/hitters>`__.
 # We hope to use several predictors related to the performance of
 # the baseball athletes last year to predict their salary.
 #
 # First, let's have a look at this dataset. There are 19 variables except
 # `Salary` and 322 observations.
 
+import os
+import pandas as pd
 
 data2 = pd.read_csv(os.path.join(os.getcwd(), 'Hitters.csv'))
 print(data2.shape)
@@ -155,7 +171,7 @@ print("coef:\n", model.coef_)
 # ~~~~~~~~~~~~~~~~~~~
 # We can also plot the path of abess process:
 
-
+import matplotlib.pyplot as plt
 coef = np.zeros((20, 19))
 ic = np.zeros(20)
 for s in range(20):
@@ -169,7 +185,7 @@ for i in range(19):
 
 plt.xlabel('support_size')
 plt.ylabel('coefficients')
-# plt.legend() # too long to plot
+plt.title('ABESS Path')
 plt.show()
 
 # %%
@@ -179,11 +195,12 @@ plt.show()
 plt.plot(ic, 'o-')
 plt.xlabel('support_size')
 plt.ylabel('EBIC')
+plt.title('Model selection via EBIC')
 plt.show()
 
 # %%
-# In EBIC criterion, a subset with the support size 4 has the lowest value,
-# so the process adaptively chooses 4 variables.
+# In EBIC criterion, a subset with the support size 3 has the lowest value,
+# so the process adaptively chooses 3 variables.
 # Note that under other information criteria, the result may be different.
 
 ###############################################################################

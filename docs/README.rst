@@ -73,7 +73,7 @@ for more details, please view: `Installation`_.
 Python package
 --------------
 
-Install the stable `abess` Python package from Pypi: 
+Install the stable `abess` Python package from `PyPI <https://pypi.org/project/abess/>`_: 
 
 .. code-block:: shell
 
@@ -95,7 +95,7 @@ See more examples analyzed with Python in the `Python tutorials <https://abess.r
 R package
 -----------
 
-Install `abess` from R CRAN by running the following command in R: 
+Install `abess` from `R CRAN <https://cran.r-project.org/web/packages/abess>`_ by running the following command in R: 
 
 .. code-block:: r
 

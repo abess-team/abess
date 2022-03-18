@@ -33,9 +33,6 @@ Specific Models
 # Instead, they can be stored when first calculated, which is what we call
 # "covariance update".
 #
-# However, it will cause higher memory usage, expecially when :math:`p` is large.
-# But if possible, we recommend to enable it for fast computation.
-#
 # It is easy to enable this feature with an additional argument
 # ``covariance_update=True`` for linear model, for example:
 
@@ -57,9 +54,18 @@ t2 = time()
 model2.fit(data.x, data.y)
 t2 = time() - t2
 
-print(f"No covariance update: {t1}")
-print(f"Covariance update: {t2}")
-print(f"Same answer? {(model1.coef_==model2.coef_).all()}")
+print("No covariance update: {t1}")
+print("Covariance update: {t2}")
+print("Same answer? {(model1.coef_==model2.coef_).all()}")
+
+# %%
+# We can see that covariance update improve computation 
+# when sample size :math:`n` is much larger than dimension :math:`p`.
+# 
+# However, we have to point out that covariance update will cause higher memory usage, especially when :math:`p` is large.
+# So, we recommend to enable covariance update for fast computation when sample size is much larger than dimension 
+# and dimension is moderate (:math:`p \leq 2000`).
+
 
 # %%
 # Quasi Newton iteration

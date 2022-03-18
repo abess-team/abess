@@ -2,6 +2,11 @@
 // Created by jiangkangkang on 2020/3/9.
 //
 
+/**
+ * @file utilities.h
+ * @brief some utilities for abess package.
+ */
+
 #ifndef SRC_UTILITIES_H
 #define SRC_UTILITIES_H
 
@@ -19,18 +24,27 @@
 using namespace std;
 using namespace Eigen;
 
-/** Result struct
+/**
  * @brief Save the sequential fitting result along the parameter searching.
+ * @details All matrix stored here have only one column, and each row correspond to a
+ * parameter combination in class Parameters.
+ * @tparam T2 for beta
+ * @tparam T3 for coef0
  */
 template <class T2, class T3>
 struct Result {
-    Eigen::Matrix<T2, Eigen::Dynamic, Eigen::Dynamic> beta_matrix;            /*!<  */
-    Eigen::Matrix<T3, Eigen::Dynamic, Eigen::Dynamic> coef0_matrix;           /*!<  */
-    Eigen::MatrixXd ic_matrix;                                                /*!<  */
-    Eigen::MatrixXd test_loss_matrix;                                         /*!<  */
-    Eigen::MatrixXd train_loss_matrix;                                        /*!<  */
-    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic> bd_matrix; /*!<  */
-    Eigen::MatrixXd effective_number_matrix;                                  /*!<  */
+    Eigen::Matrix<T2, Eigen::Dynamic, Eigen::Dynamic>
+        beta_matrix; /*!< Each value is the beta corrsponding a parameter combination */
+    Eigen::Matrix<T3, Eigen::Dynamic, Eigen::Dynamic>
+        coef0_matrix; /*!< Each value is the coef0 corrsponding a parameter combination  */
+    Eigen::MatrixXd
+        ic_matrix; /*!< Each value is the information criterion value corrsponding a parameter combination  */
+    Eigen::MatrixXd test_loss_matrix;  /*!< Each value is the test loss corrsponding a parameter combination  */
+    Eigen::MatrixXd train_loss_matrix; /*!< Each value is the train loss corrsponding a parameter combination  */
+    Eigen::Matrix<Eigen::VectorXd, Eigen::Dynamic, Eigen::Dynamic>
+        bd_matrix; /*!< Each value is the sacrfice corrsponding a parameter combination  */
+    Eigen::MatrixXd
+        effective_number_matrix; /*!< Each value is the effective number corrsponding a parameter combination  */
 };
 
 template <class T2, class T3>
@@ -65,6 +79,11 @@ struct single_parameter {
     };
 };
 
+/**
+ * @brief Parameter list
+ * @details Store all parameters (e.g. `support_size`, `lambda`), and make a list of their combination.
+ * So that the algorithm can extract them one by one.
+ */
 class Parameters {
    public:
     Eigen::VectorXi support_size_list;
@@ -85,6 +104,9 @@ class Parameters {
         }
     }
 
+    /**
+     * @brief build sequence with all combinations of parameters.
+     */
     void build_sequence() {
         // suppose each input vector has size >= 1
         int ind = 0;
@@ -113,19 +135,14 @@ class Parameters {
     // }
 };
 
-#ifndef R_BUILD
-Eigen::MatrixXd Pointer2MatrixXd(double *x, int x_row, int x_col);
-Eigen::MatrixXi Pointer2MatrixXi(int *x, int x_row, int x_col);
-Eigen::VectorXd Pointer2VectorXd(double *x, int x_len);
-Eigen::VectorXi Pointer2VectorXi(int *x, int x_len);
-void MatrixXd2Pointer(Eigen::MatrixXd x_matrix, double *x);
-// void MatrixXi2Pointer(Eigen::MatrixXi x_matrix, int *x);
-void VectorXd2Pointer(Eigen::VectorXd x_vector, double *x);
-// void VectorXi2Pointer(Eigen::VectorXi x_vector, int *x);
-#endif
-
+/**
+ * @brief return the indexes of all variables in groups in `L`.
+ */
 Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::VectorXi &gsize, int beta_size, int N);
 
+/**
+ * @brief return part of X, which only contains columns in `ind`.
+ */
 template <class T4>
 T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type) {
     if (ind.size() == X.cols() || model_type == 10 || model_type == 7) {
@@ -188,43 +205,82 @@ Eigen::VectorXi vector_slice(Eigen::VectorXi &nums, Eigen::VectorXi &ind);
 // Eigen::MatrixXd matrix_slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, int axis);
 
 // Eigen::MatrixXd X_seg(Eigen::MatrixXd &X, int n, Eigen::VectorXi &ind);
-Eigen::VectorXi Ac(Eigen::VectorXi &A, int N);
+/**
+ * @brief complement of A, the whole set is {0..N-1}
+ */
+Eigen::VectorXi complement(Eigen::VectorXi &A, int N);
 // Eigen::VectorXi Ac(Eigen::VectorXi &A, Eigen::VectorXi &U);
+/**
+ * @brief replace `B` by `C` in `A`
+ */
 Eigen::VectorXi diff_union(Eigen::VectorXi A, Eigen::VectorXi &B, Eigen::VectorXi &C);
+/**
+ * @brief return the indexes of min `k` values in `nums`.
+ */
 Eigen::VectorXi min_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
+/**
+ * @brief return the indexes of max `k` values in `nums`.
+ */
 Eigen::VectorXi max_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
-
 // Eigen::VectorXi max_k_2(Eigen::VectorXd &vec, int k);
 
-// to do
+/**
+ * @brief Extract `nums` at `ind` position, and store in `A`.
+ */
 void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int axis = 0);
 void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int axis = 0);
 void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::SparseMatrix<double> &A, int axis = 0);
-
+/**
+ * @brief The inverse action of function slice.
+ */
 void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nums, int axis = 0);
 void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nums, int axis = 0);
 
 void coef_set_zero(int p, int M, Eigen::VectorXd &beta, double &coef0);
 void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0);
 
+/**
+ * @brief element-wise product: A.array() * B.array().
+ */
 Eigen::VectorXd array_product(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis = 0);
+/**
+ * @brief product by specific axis.
+ */
 Eigen::MatrixXd array_product(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis = 0);
 // Eigen::SparseMatrix<double> array_product(Eigen::SparseMatrix<double> &A, Eigen::VectorXd &B, int axis = 0);
 
+/**
+ * @brief element-wise division: A.array() / B.array().
+ */
 void array_quotient(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis = 0);
+/**
+ * @brief division by specific axis.
+ */
 void array_quotient(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis = 0);
 
+/**
+ * @brief A.dot(B)
+ */
 double matrix_dot(Eigen::VectorXd &A, Eigen::VectorXd &B);
+/**
+ * @brief A.transpose() * B
+ */
 Eigen::VectorXd matrix_dot(Eigen::MatrixXd &A, Eigen::VectorXd &B);
 
-void matrix_sqrt(Eigen::MatrixXd &A, Eigen::MatrixXd &B);
-void matrix_sqrt(Eigen::SparseMatrix<double> &A, Eigen::MatrixXd &B);
+// void matrix_sqrt(Eigen::MatrixXd &A, Eigen::MatrixXd &B);
+// void matrix_sqrt(Eigen::SparseMatrix<double> &A, Eigen::MatrixXd &B);
 
+/**
+ * @brief Add an all-ones column as the first column in X.
+ */
 void add_constant_column(Eigen::MatrixXd &X);
+/**
+ * @brief Add an all-ones column as the first column in X.
+ */
 void add_constant_column(Eigen::SparseMatrix<double> &X);
 
-void set_nonzeros(Eigen::MatrixXd &X, Eigen::MatrixXd &x);
-void set_nonzeros(Eigen::SparseMatrix<double> &X, Eigen::SparseMatrix<double> &x);
+// void set_nonzeros(Eigen::MatrixXd &X, Eigen::MatrixXd &x);
+// void set_nonzeros(Eigen::SparseMatrix<double> &X, Eigen::SparseMatrix<double> &x);
 
 // void overload_ldlt(Eigen::SparseMatrix<double> &X_new, Eigen::SparseMatrix<double> &X, Eigen::VectorXd &Z,
 // Eigen::VectorXd &beta); void overload_ldlt(Eigen::MatrixXd &X_new, Eigen::MatrixXd &X, Eigen::VectorXd &Z,
@@ -236,6 +292,9 @@ void set_nonzeros(Eigen::SparseMatrix<double> &X, Eigen::SparseMatrix<double> &x
 
 // bool check_ill_condition(Eigen::MatrixXd &M);
 
+/**
+ * @brief If enable normalization, restore coefficients after fitting.
+ */
 template <class T2, class T3>
 void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, 1> &beta_matrix,
                         Eigen::Matrix<T3, Dynamic, 1> &coef0_matrix, bool sparse_matrix, int normalize_type, int n,
@@ -339,12 +398,21 @@ void pi(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &coef, Eigen::MatrixXd &pr) {
     // return pi;
 };
 
+/**
+ * @brief Add weights information into data.
+ */
 void add_weight(Eigen::MatrixXd &x, Eigen::VectorXd &y, Eigen::VectorXd weights);
-
+/**
+ * @brief Add weights information into data.
+ */
 void add_weight(Eigen::MatrixXd &x, Eigen::MatrixXd &y, Eigen::VectorXd weights);
-
+/**
+ * @brief Add weights information into data.
+ */
 void add_weight(Eigen::SparseMatrix<double> &x, Eigen::VectorXd &y, Eigen::VectorXd weights);
-
+/**
+ * @brief Add weights information into data.
+ */
 void add_weight(Eigen::SparseMatrix<double> &x, Eigen::MatrixXd &y, Eigen::VectorXd weights);
 
 #endif  // SRC_UTILITIES_H

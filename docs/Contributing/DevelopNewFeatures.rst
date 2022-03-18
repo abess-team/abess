@@ -1,12 +1,17 @@
-Code Developing
+Develop New Features
 ===============
 
-In this tutorial, we will show you how to develop a new algorithm with
-abess procedure.
+In this tutorial, we will show you how to develop a new algorithm for specific best-subset problem with ``abess``'s procedure. 
 
-Before developing the code, please make sure: - following the
-`Installation <../Installation.md>`__, the code in github works on your
-device; - read the `Architecture <Before.md>`__ of abess library.
+Preliminaries
+-------------
+
+We have endeavor to make developing new features easily. Before developing the code, please make sure you have:    
+
+- understood the `ABESS algorithm <https://www.pnas.org/doi/10.1073/pnas.2014241117#sec-21>`__;
+- installed ``abess`` via the code in github by following `Installation <../Installation.rst>`__ instruction;
+- read the `Appendix: Architecture of abess <AppendixArchitecture.rst>`__ of ``abess`` library;
+- some experience on writing R or Python code.
 
 Core C++
 --------
@@ -20,23 +25,22 @@ are written in C++. Among them, some important files:
 
 If you want to add a new algorithm, all of them should be noticed.
 
-Besides, we have implemented some GLM algorithms on
-``abess/python/src/AlgorithmGLM.h``\ `[code
-temp] <https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h>`__
-and PCA algorithm on ``abess/python/src/AlgorithmPCA.h``\ `[code
-temp] <https://github.com/abess-team/abess/blob/master/python/src/AlgorithmPCA.h>`__.
+Besides, we have implemented ABESS algorithms for generalized linear model on
+``abess/python/src/AlgorithmGLM.h`` `[code temp] <https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h>`__
+and principal component analysis (PCA) on ``abess/python/src/AlgorithmPCA.h`` 
+`[code temp] <https://github.com/abess-team/abess/blob/master/python/src/AlgorithmPCA.h>`__.
 You can check them to help your own developing.
 
 Write an API
 ~~~~~~~~~~~~
 
-   API’s are all defined in the ``abess/python/src/api.cpp``\ `[code
-   temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp>`__
-   and the related header file ``abess/python/src/api.h``\ `[code
-   temp] <https://github.com/abess-team/abess/blob/master/python/src/api.h>`__.
-   We have written some API functions (e.g. ``abessGLM_API()``), so you
-   can either add a new function for the new algorithm or simply add
-   into existing one.
+API’s are all defined in the ``abess/python/src/api.cpp``\ `[code
+temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp>`__
+and the related header file ``abess/python/src/api.h``\ `[code
+temp] <https://github.com/abess-team/abess/blob/master/python/src/api.h>`__.
+We have written some API functions (e.g. ``abessGLM_API()``), so you
+can either add a new function for the new algorithm or simply add
+into existing one.
 
 First of all, the algorithm name and its number should be determined.
 
@@ -44,8 +48,8 @@ The format of a new algorithm’s name is “**abess+your_algorithm**”,
 which means that using abess to solve the problem, and its number should
 be an integer unused by others.
 
-   In the following part, we suppose to create an algorthm named
-   ``abess_new_algorithm`` with number 123.
+In the following part, we suppose to create an algorithm named
+``abess_new_algorithm`` with number 123.
 
 Next, four important data type should be determined:
 
@@ -54,31 +58,28 @@ Next, four important data type should be determined:
 -  T3 : type of intercept
 -  T4 : type of X
 
-The algorithm variable are based on them: `[code
-temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=vector%3CAlgorithm%3C>`__
+The algorithm variable are based on them: `[code link] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp>`__
 
 .. code:: cpp
 
    vector<Algorithm<{T1}, {T2}, {T3}, {T4}>*> algorithm_list(algorithm_list_size);
 
-..
 
-   Take ``abessLm`` (the linear regression on abess) as an example,
+Take ``LinearRegression`` (the linear regression on abess) as an example,
 
-   -  Y: dense vector
-   -  Coefficients: dense vector
-   -  Intercept: numeric
-   -  X: dense/sparse matrix
+-  Y: dense vector
+-  Coefficients: dense vector
+-  Intercept: numeric
+-  X: dense/sparse matrix
 
-   so that we define:
+so that we define:
 
-   .. code:: cpp
+.. code:: cpp
 
-      vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(algorithm_list_size);
-      vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *> algorithm_list_uni_sparse(algorithm_list_size);
+   vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(algorithm_list_size);
+   vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *> algorithm_list_uni_sparse(algorithm_list_size);
 
-After that, request memory to initial the algorithm: `[code
-temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=%7B-,if%20(model_type%20%3D%3D%201),%7B,-abessLm%3CEigen%3A%3AMatrixXd>`__
+After that, request memory to initial the algorithm: `[code link] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=%7B-,if%20(model_type%20%3D%3D%201),%7B,-abessLm%3CEigen%3A%3AMatrixXd>`__
 
 .. code:: cpp
 
@@ -91,8 +92,7 @@ temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:tex
    }
 
 Finally, call ``abessWorkflow()``, which would compute the result:
-`[code
-temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=Eigen%3A%3AVectorXd%20y_vec%20%3D%20y.col(0).eval()%3B-,out_result%20%3D%20abessWorkflow,-%3CEigen%3A%3AVectorXd%2C%20Eigen%3A%3AVectorXd%2C%20double%2C%20Eigen%3A%3AMatrixXd>`__
+`[code link] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=Eigen%3A%3AVectorXd%20y_vec%20%3D%20y.col(0).eval()%3B-,out_result%20%3D%20abessWorkflow,-%3CEigen%3A%3AVectorXd%2C%20Eigen%3A%3AVectorXd%2C%20double%2C%20Eigen%3A%3AMatrixXd>`__
 
 .. code:: cpp
 
@@ -102,12 +102,12 @@ temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:tex
 Implement your Algorithm
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-   The implemented algorithms are stored in
-   ``abess/python/src/AlgorithmXXX.h``. We have implemented some
-   algorithms (e.g. ``AlgorithmGLM.h``), so you can either create a new
-   file containing new algorithm or simply add into existing one.
+The implemented algorithms are stored in
+``abess/python/src/AlgorithmXXX.h``. We have implemented some
+algorithms (e.g. ``AlgorithmGLM.h``), so you can either create a new
+file containing new algorithm or simply add into existing one.
 
-The new algorithm should inheritate a base class, called *Algorithm*,
+The new algorithm should inherit a base class, called *Algorithm*,
 which defined in ``Algorithm.h``. And then rewrite some virtual function
 interfaces to fit specify problem. The implementation is modularized
 such that you can easily extend the package.
@@ -145,12 +145,13 @@ such that you can easily extend the package.
    }
    ```
 
-   The abess process can automatically use the loss and its derivatives to complete algorithm. However, it should be noted that if you want to achieve higher efficiency, a FULL concrete algorithm can be: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessLogistic,-%3A%20public%20Algorithm%3CEigen)
+   The abess process can automatically use the loss and its derivatives to complete algorithm. 
+   However, it should be noted that if you want to achieve higher efficiency, 
+   a FULL concrete algorithm can be: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessLogistic,-%3A%20public%20Algorithm%3CEigen)
 
    -->
 
-A concrete algorithm is like: `[code
-temp] <https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessLogistic,-%3A%20public%20Algorithm%3CEigen>`__
+A concrete algorithm is like: `[code link] <https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessLogistic,-%3A%20public%20Algorithm%3CEigen>`__
 
 .. code:: cpp
 
@@ -192,11 +193,9 @@ sacrifices” and record them in ``bd``.
 -  For inactive variable, the higher (forward) sacrifice is, the more
    likely it will come into use.
 
-..
-
-   If you create a new file to store the algorithm, remember to include
-   it inside ``abess/python/src/api.cpp``. `[code
-   temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=%23include%20%22AlgorithmGLM.h%22>`__
+If you create a new file to store the algorithm, remember to include
+it inside ``abess/python/src/api.cpp``. `[code
+temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=%23include%20%22AlgorithmGLM.h%22>`__
 
 Now your new method has been connected to the whole frame. In the next
 section, we focus on how to build R or Python package based on the core
@@ -227,8 +226,7 @@ Python Package
 
 First of all, you should ensure the C++ code available for Python,
 ``cd`` into directory ``abess/python`` and run
-``$ python setup.py install``. (Same steps in
-`Installation <https://abess.readthedocs.io/en/latest/Installation.html#latest-release>`__)
+``$ python setup.py install``. (Same steps in `Installation <https://abess.readthedocs.io/en/latest/Installation.html#latest-release>`__)
 
 It may take a few minutes to install:
 
@@ -246,12 +244,11 @@ Then create a new python file in ``abess/python/abess`` or open an
 existed file, such as ``abess/python/abess/linear.py``, to add a python
 API for your new method.
 
-A simple new method can be added like: `[code
-temp] <https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=class%20abessPCA(bess_base)%3A>`__.
+A simple new method can be added like: `[code temp] <https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=class%20abessPCA(bess_base)%3A>`__.
 
 .. code:: python
 
-   # all algorithms should inheritate the base class `bess_base`
+   # all algorithms should inherit the base class `bess_base`
    from .bess_base import bess_base
 
    class new_algorithm(bess_base): 
@@ -272,8 +269,7 @@ temp] <https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:te
 
 The base class implements a ``fit`` function, which plays a role on
 checking input and calling C++ API to compute results. You may want to
-override it for custom features. `[code
-temp] <https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=def%20fit(self%2C%20X%3DNone%2C%20is_normal%3DFalse%2C%20group%3DNone%2C%20Sigma%3DNone%2C%20number%3D1%2C%20n%3DNone)%3A>`__.
+override it for custom features. `[code temp] <https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=def%20fit(self%2C%20X%3DNone%2C%20is_normal%3DFalse%2C%20group%3DNone%2C%20Sigma%3DNone%2C%20number%3D1%2C%20n%3DNone)%3A>`__.
 
 Then, the final step is to link this Python class with the model type
 number (it has been defined in Section **Core C++**). In the ``fit``
@@ -394,26 +390,27 @@ checking is demonstrated below:
 
 In this example, the estimated support set is the same as the true.
 
--  Check ``effective_number_of_parameter``
+.. -  Check ``effective_number_of_parameter``
 
-Finally,
+.. Finally,
 
-Miscellaneous
--------------
+.. Miscellaneous
+.. -------------
 
-Code style
-~~~~~~~~~~
+.. Code style
+.. ~~~~~~~~~~
 
-New R code should follow the tidyverse `style
-guide <https://style.tidyverse.org/>`__. You can use the
-```styler`` <https://styler.r-lib.org>`__ R package to apply this style
-by conducting R command: ``style_file("path-to-newfile.R")`` New Python
-code should follow the PEP8 `style
-guide <https://www.python.org/dev/peps/pep-0008/>`__ Please don’t
-restyle code that has nothing to do with your code.
+.. New R code should follow the `tidyverse style guide <https://style.tidyverse.org/>`__. You can use the
+.. `styler <https://styler.r-lib.org>`__ R package to apply this style
+.. by conducting R command: ``style_file("path-to-newfile.R")`` New Python
+.. code should follow the `PEP8 style guide <https://www.python.org/dev/peps/pep-0008/>`__ Please don’t
+.. restyle code that has nothing to do with your code.
 
-Test cases
-~~~~~~~~~~
+.. Test cases
+.. ~~~~~~~~~~
+
+Write test cases
+-----------------
 
 It is always a good habit to do some test for the changed package.
 Contributions with test cases included are easier to accept.

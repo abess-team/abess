@@ -1,11 +1,10 @@
-import warnings
+import pytest
 import numpy as np
 import abess
 from utilities import assert_shape
 
-warnings.filterwarnings("ignore")
 
-
+@pytest.mark.filterwarnings("ignore")
 class TestOther:
     """
     Test for other modules in abess package.

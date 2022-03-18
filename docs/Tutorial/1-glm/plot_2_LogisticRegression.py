@@ -16,13 +16,6 @@ We would like to use an example to show how the best subset selection for logist
 # class of service, the sex, the age, etc.
 
 
-from abess.linear import MultinomialRegression
-from abess.datasets import make_multivariate_glm_data
-import matplotlib.pyplot as plt
-from sklearn.metrics import roc_curve, auc
-from abess.linear import LogisticRegression
-from sklearn.model_selection import train_test_split
-import numpy as np
 import pandas as pd
 
 dt = pd.read_csv("train.csv")
@@ -55,6 +48,8 @@ print(dt1.head(5))
 # %%
 # Now we split `dt1` into training set and testing set:
 
+from sklearn.model_selection import train_test_split
+import numpy as np
 
 X = np.array(dt1.drop('Survived', axis=1))
 Y = np.array(dt1.Survived)
@@ -90,6 +85,7 @@ print('train_y:\n', train_y[0:5])
 # For example, in the Titanic sample, if you want to look for a best subset with no more than 5 variables
 # on the logistic model, you can call:
 
+from abess import LogisticRegression
 
 s = 5   # max target sparsity
 model = LogisticRegression(support_size=range(0, s + 1))
@@ -155,15 +151,19 @@ print(fitted_p)
 
 # %%
 # We can also generate an ROC curve and calculate tha AUC value. On this dataset,
-# the AUC is 0.817, which is quite close to 1.
+# the AUC is 0.83, which is rather desirable.
 
+from sklearn.metrics import roc_curve, auc
+import matplotlib.pyplot as plt
 
 fpr, tpr, _ = roc_curve(test_y, fitted_p)
 plt.plot(fpr, tpr)
-plt.plot([0, 1], [0, 1], 'k--')
+plt.plot([0, 1], [0, 1], 'k--', label="ROC curve (area = %0.2f)" % auc(fpr, tpr))
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title("Receiver operating characteristic (ROC) curve")
+plt.legend(loc="lower right")
 plt.show()
-
-print('AUC: ', auc(fpr, tpr))
 
 ###############################################################################
 # Extension: Multi-class Classification
@@ -181,9 +181,9 @@ print('AUC: ', auc(fpr, tpr))
 # This would proceed as follows, if class :math:`K` (the last outcome) is chosen as the pivot:
 #
 # .. math::
-#     \ln (\mathbb{P}(y=1)/\mathbb{P}(y=K)) = x^T\beta^{(1)},\\
-#     \dots\ \dots\\
-#     \ln (\mathbb{P}(y=K-1)/\mathbb{P}(y=K)) = x^T\beta^{(K-1)}.
+#      \ln (\mathbb{P}(y=1)/\mathbb{P}(y=K)) &= x^T\beta^{(1)},\\
+#       & \cdots\\
+#      \ln (\mathbb{P}(y=K-1)/\mathbb{P}(y=K)) &= x^T\beta^{(K-1)}.
 #
 #
 # Then, the probability to choose the :math:`j`-th class can be easily derived to be:
@@ -196,7 +196,10 @@ print('AUC: ', auc(fpr, tpr))
 # the :math:`j^*=\arg\max_j \mathbb{P}(y=j)`. Notice that, for :math:`K` possible classes case,
 # there are :math:`p\times(K−1)` unknown parameters: :math:`\beta^{(1)},\dots,\beta^{(K−1)}` to be estimated.
 # Because the number of parameters increases as :math:`K`, it is even more urgent to constrain the model complexity.
-# And the best subset selection for multinomial logistic regression aims to maximize the log-likelihood function and control the model complexity by restricting :math:`B=(\beta^{(1)},\dots,\beta^{(K−1)})` with :math:`||B||_{0,2}\leq s` where :math:`||B||_{0,2}=\sum_{i=1}^p I(B_{i\cdot}=0)`, :math:`B_{i\cdot}` is the :math:`i`-th row of coefficient matrix :math:`B` and :math:`0\in R^{K-1}` is an all zero vector. In other words, each row of :math:`B` would be either all zero or all non-zero.
+# And the best subset selection for multinomial logistic regression aims to maximize the log-likelihood function and 
+# control the model complexity by restricting :math:`B=(\beta^{(1)},\dots,\beta^{(K−1)})` with :math:`||B||_{0,2}\leq s` where :math:`||B||_{0,2}=\sum_{i=1}^p I(B_{i\cdot}=0)`, 
+# :math:`B_{i\cdot}` is the :math:`i`-th row of coefficient matrix :math:`B` and :math:`0\in \mathbb{R}^{K-1}` is an all zero vector. 
+# In other words, each row of :math:`B` would be either all zero or all non-zero.
 #
 # Simulated Data Example
 # ~~~~~~~~~~~~~~~~~~~~~~
@@ -207,6 +210,7 @@ print('AUC: ', auc(fpr, tpr))
 # The artificial dataset contains 100 observations and 20 predictors but only five predictors
 # have influence on the three possible classes.
 
+from abess.datasets import make_multivariate_glm_data
 
 n = 100  # sample size
 p = 20  # all predictors
@@ -222,6 +226,7 @@ print('real variables\' index:\n', set(np.nonzero(dt.coef_)[0]))
 # To carry out best subset selection for multinomial logistic regression,
 # we can call the ``MultinomialRegression()``. Here is an example.
 
+from abess import MultinomialRegression
 
 s = 5
 model = MultinomialRegression(support_size=range(0, s + 1))
