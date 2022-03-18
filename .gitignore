@@ -134,4 +134,5 @@ R-package/src/.vscode/settings.json
 **/.vscode
 python/abess/*.so
 python/*.so
+/.history
 *.pptx

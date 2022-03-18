@@ -184,7 +184,7 @@ strategy_for_tuning <-
   function(para)
     UseMethod("strategy_for_tuning")
 
-strategy_for_tuning_private <- function(para) {
+strategy_for_tuning.Initialization <- function(para) {
   if (para$tune.path == "gsection") {
     para$path_type <- 2
   } else if (para$tune.path == "sequence") {
@@ -193,11 +193,6 @@ strategy_for_tuning_private <- function(para) {
   para
 }
 
-strategy_for_tuning.rpca <- strategy_for_tuning_private
-
-strategy_for_tuning.pca <- strategy_for_tuning_private
-
-strategy_for_tuning.glm <- strategy_for_tuning_private
 
 rank <- function(para)
   UseMethod("rank")
@@ -554,6 +549,39 @@ group_variable.rpca <- function(para) {
 sparse_level_list <- function(para)
   UseMethod("sparse_level_list")
 
+sparse_level_list.glm <- function(para) {
+  if (is.null(para$support.size)) {
+    if (para$group_select) {
+      para$s_list <-
+        0:min(c(
+          para$ngroup,
+          round(para$nobs / para$max_group_size / log(para$ngroup))
+        ))
+    } else {
+      para$s_list <-
+        0:min(c(para$nvars, round(
+          para$nobs / log(log(para$nobs)) / log(para$nvars)
+        )))
+    }
+  } else {
+    stopifnot(any(is.numeric(para$support.size) &
+                    para$support.size >= 0))
+    check_integer(para$support.size,
+                  "support.size must be a vector with integer value.")
+    if (para$group_select) {
+      stopifnot(max(para$support.size) <= para$ngroup)
+    } else {
+      stopifnot(max(para$support.size) <= para$nvars)
+    }
+    stopifnot(max(para$support.size) < para$nobs) # special for glm
+    para$support.size <- sort(para$support.size)
+    para$support.size <- unique(para$support.size)
+    para$s_list <- para$support.size
+  }
+  
+  para
+}
+
 sparse_level_list.rpca <- function(para) {
   max_rank <- max(c(para$nvars, para$nobs))
   if (is.null(para$support.size)) {
@@ -585,110 +613,54 @@ sparse_level_list.rpca <- function(para) {
 }
 
 sparse_level_list.pca <- function(para) {
-  if (para$group_select) {
-    para$s_max <- para$ngroup
-  } else {
-    para$s_max <- para$nvars
-  }
+  para$s_max <- ifelse(para$group_select, para$ngroup, para$nvars)
+
   if (is.null(para$support.size)) {
-    if (para$kpc.num == 1) {
-      if (is.null(para$support.num)) {
-        if (para$group_select) {
-          s_num <- min(para$ngroup, 100)
-        } else {
-          s_num <- min(para$nvars, 100)
-        }
-      }
-      para$s_list <-
-        round(seq.int(
+    s_num <- min(para$s_max, 100)
+    para$s_list <- list()
+    for(i in seq_len(para$kpc.num)){
+      para$s_list[[i]] <- unique(round(seq.int(
           from = 1,
           to = para$s_max,
           length.out = s_num
-        ))
-      para$s_list <- unique(para$s_list)
-    } else {
-      if (para$group_select) {
-        s_num <- min(para$ngroup, 100)
-      } else {
-        s_num <- min(para$nvars, 100)
-      }
-      para$s_list <- as.list(rep(s_num, para$kpc.num))
-    }
+        )))
+    }  
   } else {
-    stopifnot(any(is.numeric(para$support.size) &
-                    para$support.size >= 0))
-    if (para$group_select) {
-      stopifnot(max(para$support.size) <= para$ngroup)
+    if (class(para$support.size) == "list") {
+      stopifnot(length(para$support.size) == para$kpc.num)
+      para$s_list <- lapply(para$support.size, function(x){
+        stopifnot(any(is.numeric(x) & x >= 0))
+        stopifnot(max(x) <= para$s_max)
+        sort(unique(x))
+      })
+    } else if (is.vector(para$support.size)) {
+      stopifnot(any(is.numeric(para$support.size) &
+                      para$support.size >= 0))
+      stopifnot(max(para$support.size) <= para$s_max)
+      para$s_list <- list()
+      for(i in 1:para$kpc.num){
+        para$s_list[[i]] <- sort(unique(para$support.size)) 
+      }      
     } else {
-      stopifnot(max(para$support.size) <= para$nvars)
-    }
-    if (para$kpc.num == 1) {
-      para$support.size <- unique(sort(para$support.size))
-    } else {
-      if (class(para$support.size) == "list") {
-        stopifnot(length(para$support.size) == para$kpc.num)
-        para$support.size <- lapply(support.size, unique)
-      } else if (is.vector(para$support.size)) {
-        para$support.size <-
-          rep(list(unique(sort(
-            para$support.size
-          ))), para$kpc.num)
-      } else {
         stop("support.size must be vector or list.")
-      }
-    }
-    para$s_list <- para$support.size
+    } 
   }
-  s_list_bool_nrow <-
-    ifelse(para$group_select, para$ngroup, para$nvars)
-  if (class(para$s_list) == "list") {
-    para$s_list_bool <-
-      matrix(0, nrow = s_list_bool_nrow, ncol = para$kpc.num)
-    for (i in 1:para$kpc.num) {
-      para$s_list_bool[para$s_list[[i]],] <- 1
-    }
-  } else {
-    para$s_list_bool <- matrix(0, nrow = s_list_bool_nrow, ncol = 1)
-    para$s_list_bool[para$s_list,] <- 1
+
+  stopifnot(class(para$s_list) == "list") 
+  para$s_list_bool <-
+    matrix(0, nrow = para$s_max, ncol = para$kpc.num)
+  for (i in 1:para$kpc.num) {
+    para$s_list_bool[para$s_list[[i]],i] <- 1
   }
-  
+
+  if(length(para$s_list) == 1){
+    para$s_list <- para$s_list[[1]]
+  }
   
   para
 }
 
-sparse_level_list.glm <- function(para) {
-  if (is.null(para$support.size)) {
-    if (para$group_select) {
-      para$s_list <-
-        0:min(c(
-          para$ngroup,
-          round(para$nobs / para$max_group_size / log(para$ngroup))
-        ))
-    } else {
-      para$s_list <-
-        0:min(c(para$nvars, round(
-          para$nobs / log(log(para$nobs)) / log(para$nvars)
-        )))
-    }
-  } else {
-    stopifnot(any(is.numeric(para$support.size) &
-                    para$support.size >= 0))
-    check_integer(para$support.size,
-                  "support.size must be a vector with integer value.")
-    if (para$group_select) {
-      stopifnot(max(para$support.size) <= para$ngroup)
-    } else {
-      stopifnot(max(para$support.size) <= para$nvars)
-    }
-    stopifnot(max(para$support.size) < para$nobs)
-    para$support.size <- sort(para$support.size)
-    para$support.size <- unique(para$support.size)
-    para$s_list <- para$support.size
-  }
-  
-  
-  para
-}
+
 
 
 C_max <- function(para)
@@ -832,7 +804,7 @@ sparse_range.Initialization <- function(para) {
     if (para$group_select) {
       stopifnot(max(para$gs.range) < para$ngroup)
     } else {
-      stopifnot(max(para$gs.range) < para$nvars)
+      stopifnot(max(para$gs.range) <= para$nvars)
     }
     para$gs.range <- as.integer(para$gs.range)
     para$s_min <- min(para$gs.range)
@@ -1206,8 +1178,8 @@ initializate.pca <- function(para, data) {
   para <- sparse_level_list(para)
   para <- sparse_range(para)
   para <- C_max(para)
-  para <- always_included_variables(para)
   para <- screening_num(para)
+  para <- always_included_variables(para)
   para <- important_searching(para)
   para <- tune_support_size_method(para)
   
