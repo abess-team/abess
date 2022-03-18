@@ -92,7 +92,9 @@ class LogisticRegression(bess_base):
             splicing_type=splicing_type,
             important_search=important_search
         )
-        self._baseline_model = BreslowEstimator()
+
+    def _more_tags(self):
+        return {'binary_only': True}
 
     def predict_proba(self, X):
         r"""
@@ -115,7 +117,7 @@ class LogisticRegression(bess_base):
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = X.dot(self.coef_) + intercept_
         proba = np.exp(xbeta) / (1 + np.exp(xbeta))
-        return proba
+        return np.vstack((proba, np.ones(X.shape[0]) - proba)).T
 
     def predict(self, X):
         r"""
@@ -356,9 +358,9 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
-            important_search=important_search
+            important_search=important_search,
+            baseline_model=BreslowEstimator()
         )
-        self._baseline_model = BreslowEstimator()
 
     def predict(self, X):
         r"""
@@ -424,7 +426,7 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
         survival : ndarray of :class:`StepFunction`, shape = (n_samples,)
             Predicted survival functions.
         """
-        return self._baseline_model.get_survival_function(
+        return self.baseline_model.get_survival_function(
             np.log(self.predict(X)))
 
 
@@ -565,15 +567,15 @@ class MultiTaskRegression(bess_base):
     --------
     >>> ### Sparsity known
     >>>
-    >>> from abess.linear import MultipleLinearRegression
+    >>> from abess.linear import MultiTaskRegression
     >>> from abess.datasets import make_multivariate_glm_data
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_multivariate_glm_data(
     >>>     n = 100, p = 50, k = 10, M = 3, family = 'multigaussian')
-    >>> model = MultipleLinearRegression(support_size = 10)
+    >>> model = MultiTaskRegression(support_size = 10)
     >>> model.fit(data.x, data.y)
-    MultinomialRegression(always_select=[], support_size=10)
+    MultiTaskRegression(always_select=[], support_size=10)
     >>> model.predict(data.x)[1:5, ]
     array([[1., 0., 0.],
        [0., 0., 1.],
@@ -584,9 +586,9 @@ class MultiTaskRegression(bess_base):
     >>> ### Sparsity unknown
     >>>
     >>> # path_type="seq"
-    >>> model = MultipleLinearRegression(path_type = "seq")
+    >>> model = MultiTaskRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
-    MultinomialRegression(always_select=[])
+    MultiTaskRegression(always_select=[])
     >>> model.predict(data.x)[1:5, ]
     array([[1., 0., 0.],
        [0., 0., 1.],
@@ -595,9 +597,9 @@ class MultiTaskRegression(bess_base):
        [0., 0., 1.]])
     >>>
     >>> # path_type="gs"
-    >>> model = MultipleLinearRegression(path_type="gs")
+    >>> model = MultiTaskRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
-    MultinomialRegression(always_select=[], path_type='gs')
+    MultiTaskRegression(always_select=[], path_type='gs')
     >>> model.predict(data.x)[1:5, ]
     array([[1., 0., 0.],
        [0., 0., 1.],
