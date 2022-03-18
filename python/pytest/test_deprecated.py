@@ -16,42 +16,42 @@ class TestDeprecated:
             print(e)
         else:
             assert False
-        
+
         try:
             abess.abessLogistic()
         except FutureWarning as e:
             print(e)
         else:
             assert False
-        
+
         try:
             abess.abessPoisson()
         except FutureWarning as e:
             print(e)
         else:
             assert False
-        
+
         try:
             abess.abessCox()
         except FutureWarning as e:
             print(e)
         else:
             assert False
-        
+
         try:
             abess.abessGamma()
         except FutureWarning as e:
             print(e)
         else:
             assert False
-        
+
         try:
             abess.abessMultigaussian()
         except FutureWarning as e:
             print(e)
         else:
             assert False
-        
+
         try:
             abess.abessMultinomial()
         except FutureWarning as e:
@@ -67,11 +67,10 @@ class TestDeprecated:
             print(e)
         else:
             assert False
-            
+
         try:
             abess.abessRPCA()
         except FutureWarning as e:
             print(e)
         else:
             assert False
-        

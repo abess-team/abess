@@ -632,7 +632,7 @@ class MultiTaskRegression(bess_base):
             splicing_type=splicing_type,
             important_search=important_search
         )
-        
+
     def predict(self, X):
         r"""
         Prediction of the mean of each response on given data.
