@@ -165,7 +165,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
     List out_result;
     if (!sparse_matrix) {
-        if (y.cols() == 1) {
+        if (y.cols() == 1 && model_type != 5 && model_type != 6) {
             Eigen::VectorXd y_vec = y.col(0).eval();
 
             out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(
@@ -195,7 +195,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
         }
         sparse_x.makeCompressed();
 
-        if (y.cols() == 1) {
+        if (y.cols() == 1 && model_type != 5 && model_type != 6) {
             Eigen::VectorXd y_vec = y.col(0).eval();
 
             out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(

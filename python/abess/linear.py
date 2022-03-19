@@ -656,7 +656,7 @@ class MultiTaskRegression(bess_base):
 
         intercept_ = np.repeat(
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
-        return X.dot(self.coef_) + intercept_
+        return (X.dot(self.coef_) + intercept_)[:, np.newaxis]
 
     def score(self, X, y):
         r"""

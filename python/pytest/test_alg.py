@@ -246,7 +246,7 @@ class TestAlgorithm:
         data = load_data("multigaussian_seed1_rho0.5")
 
         # null
-        # check_estimator(abess.MultiTaskRegression())
+        check_estimator(abess.MultiTaskRegression())
         model1 = abess.MultiTaskRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
