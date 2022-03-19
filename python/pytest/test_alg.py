@@ -340,6 +340,7 @@ class TestAlgorithm:
         X = load_data('PCA_seed1')
 
         # null
+        check_estimator(abess.SparsePCA())
         model1 = abess.SparsePCA(support_size=support_size)
         model1.fit(X)
         assert np.count_nonzero(model1.coef_) == s

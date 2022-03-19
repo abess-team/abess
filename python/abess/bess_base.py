@@ -140,6 +140,7 @@ class bess_base(BaseEstimator):
         self.support_size = support_size
         self.alpha = alpha
         self.n_features_in_: int
+        self.n_iter_: int
         self.s_min = s_min
         self.s_max = s_max
         # self.lambda_min = None
@@ -501,10 +502,10 @@ class bess_base(BaseEstimator):
             result = [np.zeros((p, M)), np.zeros(M), 0, 0, 0]
         else:
             result = pywrap_GLM(
-                X, y, weight, n, p, normalize, algorithm_type_int, 
+                X, y, weight, n, p, normalize, algorithm_type_int,
                 model_type_int,
                 self.max_iter, self.exchange_num, path_type_int,
-                self.is_warm_start, ic_type_int, self.ic_coef, self.cv, 
+                self.is_warm_start, ic_type_int, self.ic_coef, self.cv,
                 g_index,
                 support_sizes, alphas, cv_fold_id, new_s_min, new_s_max,
                 new_lambda_min, new_lambda_max, n_lambda, self.screening_size,
