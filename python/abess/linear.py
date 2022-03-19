@@ -108,8 +108,8 @@ class LogisticRegression(bess_base):
 
         Returns
         -------
-        proba : array-like, shape(n_samples,)
-            Returns the probabilities for class "1"
+        proba : array-like, shape(n_samples, 2)
+            Returns the probabilities for class "0" and "1"
             on given X.
         """
         X = new_data_check(self, X)
@@ -117,7 +117,7 @@ class LogisticRegression(bess_base):
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = X.dot(self.coef_) + intercept_
         proba = np.exp(xbeta) / (1 + np.exp(xbeta))
-        return np.vstack((proba, np.ones(X.shape[0]) - proba)).T
+        return np.vstack((np.ones(X.shape[0]) - proba, proba)).T
 
     def predict(self, X):
         r"""
@@ -633,6 +633,10 @@ class MultiTaskRegression(bess_base):
             important_search=important_search
         )
 
+    def _more_tags(self):
+        return {'multioutput': True,
+                'multioutput_only': True}
+
     def predict(self, X):
         r"""
         Prediction of the mean of each response on given data.
@@ -652,7 +656,7 @@ class MultiTaskRegression(bess_base):
 
         intercept_ = np.repeat(
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
-        return X.dot(self.coef_) + intercept_
+        return (X.dot(self.coef_) + intercept_)[:, np.newaxis]
 
     def score(self, X, y):
         r"""
@@ -768,6 +772,10 @@ class MultinomialRegression(bess_base):
             important_search=important_search
         )
 
+    def _more_tags(self):
+        return {'multilabel': True,
+                'multioutput_only': True}
+
     def predict_proba(self, X):
         r"""
         Give the probabilities of new data being assigned to different classes.
@@ -789,8 +797,9 @@ class MultinomialRegression(bess_base):
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
         xbeta = X.dot(self.coef_) + intercept_
         eta = np.exp(xbeta)
+        pr = np.zeros_like(xbeta)
         for i in range(X.shape[0]):
-            pr = eta[i, :] / np.sum(eta[i, :])
+            pr[i, :] = eta[i, :] / np.sum(eta[i, :])
         return pr
 
     def predict(self, X):
@@ -815,10 +824,10 @@ class MultinomialRegression(bess_base):
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
         xbeta = X.dot(self.coef_) + intercept_
         max_item = np.argmax(xbeta, axis=1)
-        y_pred = np.zeros_like(xbeta)
-        for i in range(X.shape[0]):
-            y_pred[i, max_item[i]] = 1
-        return y_pred
+        # y_pred = np.zeros_like(xbeta)
+        # for i in range(X.shape[0]):
+        #     y_pred[i, max_item[i]] = 1
+        return max_item[:, np.newaxis]
 
     def score(self, X, y):
         """
