@@ -340,6 +340,7 @@ class TestAlgorithm:
         X = load_data('PCA_seed1')
 
         # null
+        check_estimator(abess.SparsePCA())
         model1 = abess.SparsePCA(support_size=support_size)
         model1.fit(X)
         assert np.count_nonzero(model1.coef_) == s
@@ -439,6 +440,7 @@ class TestAlgorithm:
 
         # null
         model1 = abess.RobustPCA(support_size=s)
+        model1.fit(X)
         model1.fit(X, r=r)
         # assert_fit(model1.coef_, S)
 
@@ -474,6 +476,7 @@ class TestAlgorithm:
         data = load_data('ordinal_seed2')
 
         # null
+        check_estimator(abess.OrdinalRegression())
         model1 = abess.OrdinalRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)

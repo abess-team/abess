@@ -2,6 +2,7 @@ import abess
 import numpy as np
 import pytest
 
+
 @pytest.mark.filterwarnings("ignore")
 class TestCheck:
     """
@@ -605,3 +606,6 @@ class TestCheck:
             print(e)
         else:
             assert False
+
+        model1 = abess.RobustPCA()
+        model1.fit([[1]])
