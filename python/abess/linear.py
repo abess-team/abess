@@ -632,7 +632,7 @@ class MultiTaskRegression(bess_base):
             splicing_type=splicing_type,
             important_search=important_search
         )
-    
+
     def _more_tags(self):
         return {'multioutput': True,
                 'multioutput_only': True}
@@ -771,7 +771,7 @@ class MultinomialRegression(bess_base):
             splicing_type=splicing_type,
             important_search=important_search
         )
-    
+
     def _more_tags(self):
         return {'multilabel': True,
                 'multioutput_only': True}
