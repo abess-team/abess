@@ -474,6 +474,7 @@ class TestAlgorithm:
         data = load_data('ordinal_seed2')
 
         # null
+        check_estimator(abess.OrdinalRegression())
         model1 = abess.OrdinalRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)

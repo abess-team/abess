@@ -525,7 +525,7 @@ class bess_base(BaseEstimator):
 
         if self.model_type == "Cox":
             self.baseline_model.fit(np.dot(X, self.coef_), y, time)
-        if self.model_type == "Ordinal":
+        if self.model_type == "Ordinal" and self.coef_.ndim > 1:
             self.coef_ = self.coef_[:, 0]
 
         return self
