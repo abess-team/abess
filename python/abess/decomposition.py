@@ -444,7 +444,10 @@ class RobustPCA(bess_base):
             splicing_type=splicing_type
         )
 
-    def fit(self, X, r, group=None, A_init=None):
+    def _more_tags(self):
+        return {'requires_y': False}
+
+    def fit(self, X, y=None, r=None, group=None, A_init=None):
         r"""
         The fit function is used to transfer the information of
         data and return the fit result.
@@ -453,6 +456,8 @@ class RobustPCA(bess_base):
         ----------
         X : array-like, shape(n_samples, p_features)
             Training data.
+        y : ignore
+            Ignore.
         r : int
             Rank of the (recovered) information matrix L.
             It should be smaller than rank of X
@@ -462,15 +467,17 @@ class RobustPCA(bess_base):
         """
 
         # Input check
-        if isinstance(X, (list, np.ndarray, np.matrix,
-                      coo_matrix, csr_matrix)):
-            if isinstance(X, (coo_matrix, csr_matrix)):
+        if X is not None:
+            if issparse(X):
                 self.sparse_matrix = True
             X = check_array(X, accept_sparse=True)
 
             n = X.shape[0]
             p = X.shape[1]
             self.n_features_in_ = p
+
+            if r is None:
+                r = min(n, p) - 1
         else:
             raise ValueError("X should be an array.")
 
@@ -614,27 +621,29 @@ class RobustPCA(bess_base):
         early_stop = False
 
         # wrap with cpp
-        result = pywrap_RPCA(
-            X, n, p, normalize,
-            self.max_iter, self.exchange_num,
-            path_type_int, self.is_warm_start,
-            ic_type_int, self.ic_coef,
-            g_index,
-            support_sizes,
-            alphas,
-            new_s_min, new_s_max,
-            new_lambda_min, new_lambda_max, n_lambda,
-            self.screening_size,
-            always_select_list,
-            self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
-            early_stop,
-            self.thread,
-            self.sparse_matrix,
-            self.splicing_type,
-            self.important_search,
-            A_init
-        )
+        if (r < 1):
+            result = [X]
+        else:
+            result = pywrap_RPCA(
+                X, n, p, normalize,
+                self.max_iter, self.exchange_num,
+                path_type_int, self.is_warm_start,
+                ic_type_int, self.ic_coef,
+                g_index,
+                support_sizes,
+                alphas,
+                new_s_min, new_s_max,
+                new_lambda_min, new_lambda_max, n_lambda,
+                self.screening_size,
+                always_select_list,
+                self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
+                early_stop,
+                self.thread,
+                self.sparse_matrix,
+                self.splicing_type,
+                self.important_search,
+                A_init
+            )
 
         self.coef_ = result[0].reshape(p, n).T
-        self.train_loss_ = result[2]
         return self

@@ -479,13 +479,17 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
 
     for (int i = 0; i < algorithm_list_size; i++) {
         if (!sparse_matrix) {
-            algorithm_list_uni_dense[i] = new abessRPCA<Eigen::MatrixXd>(
+            abessRPCA<Eigen::MatrixXd> *temp = new abessRPCA<Eigen::MatrixXd>(
                 algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon,
                 is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+            temp->r = lambda_seq(0);
+            algorithm_list_uni_dense[i] = temp;
         } else {
-            algorithm_list_uni_sparse[i] = new abessRPCA<Eigen::SparseMatrix<double>>(
+            abessRPCA<Eigen::SparseMatrix<double>> *temp = new abessRPCA<Eigen::SparseMatrix<double>>(
                 algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon,
                 is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+            temp->r = lambda_seq(0);
+            algorithm_list_uni_sparse[i] = temp;
         }
     }
 
