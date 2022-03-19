@@ -26,7 +26,7 @@ class TestDeprecated:
 @pytest.mark.filterwarnings("error::FutureWarning")
 class TestDeprecatedWarning:
     """
-    Test for (future) deprecated modules warngins in abess package.
+    Test for (future) deprecated modules' warnings in abess package.
     """
     @staticmethod
     def test_warning():

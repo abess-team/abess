@@ -89,7 +89,7 @@ print([grid_search.best_score_, grid_search.best_params_])
 
 import matplotlib.pyplot as plt
 proba = grid_search.predict_proba(X)
-fpr, tpr, _ = roc_curve(y, proba)
+fpr, tpr, _ = roc_curve(y, proba[:, 1])
 plt.plot(fpr, tpr)
 plt.plot([0, 1], [0, 1], 'k--', label="ROC curve (area = %0.2f)" % auc(fpr, tpr))
 plt.xlabel('False Positive Rate')
