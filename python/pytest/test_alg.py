@@ -440,6 +440,7 @@ class TestAlgorithm:
 
         # null
         model1 = abess.RobustPCA(support_size=s)
+        model1.fit(X)
         model1.fit(X, r=r)
         # assert_fit(model1.coef_, S)
 

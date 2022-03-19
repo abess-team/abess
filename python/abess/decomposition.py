@@ -1,6 +1,6 @@
 import numbers
 import numpy as np
-from scipy.sparse import coo_matrix, csr_matrix, issparse
+from scipy.sparse import coo_matrix, issparse
 from sklearn.utils.validation import check_array
 from pybind_cabess import pywrap_PCA, pywrap_RPCA
 from .bess_base import bess_base
@@ -444,8 +444,8 @@ class RobustPCA(bess_base):
             splicing_type=splicing_type
         )
 
-    def _more_tags(self):
-        return {'requires_y': False}
+    # def _more_tags(self):
+    #     return {'requires_y': False}
 
     def fit(self, X, y=None, r=None, group=None, A_init=None):
         r"""
@@ -621,7 +621,7 @@ class RobustPCA(bess_base):
         early_stop = False
 
         # wrap with cpp
-        if (r < 1):
+        if r < 1:
             result = [X]
         else:
             result = pywrap_RPCA(
@@ -636,7 +636,8 @@ class RobustPCA(bess_base):
                 new_lambda_min, new_lambda_max, n_lambda,
                 self.screening_size,
                 always_select_list,
-                self.primary_model_fit_max_iter, self.primary_model_fit_epsilon,
+                self.primary_model_fit_max_iter,
+                self.primary_model_fit_epsilon,
                 early_stop,
                 self.thread,
                 self.sparse_matrix,
