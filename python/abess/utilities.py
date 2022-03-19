@@ -62,6 +62,8 @@ def categorical_to_dummy(x, classes=None):
     if not classes:
         classes = np.unique(x)
     print("classes: {}".format(classes))
+    if x.shape == ():
+        x = np.array([x])
     n = len(x)
     M = len(classes)
     index = dict(zip(classes, np.arange(M)))

@@ -22,7 +22,7 @@ from utilities import (
     assert_nan,
     assert_value,
     assert_fit,
-    save_data,
+    # save_data,
     load_data)
 
 
@@ -246,7 +246,7 @@ class TestAlgorithm:
         data = load_data("multigaussian_seed1_rho0.5")
 
         # null
-        # check_estimator(abess.MultiTaskRegression())
+        check_estimator(abess.MultiTaskRegression())
         model1 = abess.MultiTaskRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
@@ -294,7 +294,7 @@ class TestAlgorithm:
         data = load_data('multinomial_seed5_rho0.5')
 
         # null
-        # check_estimator(abess.MultinomialRegression())
+        check_estimator(abess.MultinomialRegression())
         model1 = abess.MultinomialRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)

@@ -3,8 +3,8 @@
 
 #include <tuple>
 
-#include "api.h"
 #include "List.h"
+#include "api.h"
 
 std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_GLM(
     Eigen::MatrixXd x_Mat, Eigen::MatrixXd y_Mat, Eigen::VectorXd weight_Vec, int n, int p, int normalize_type,
@@ -24,7 +24,7 @@ std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_GLM(
 
     std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> output;
     int y_col = y_Mat.cols();
-    if (y_col == 1) {
+    if (y_col == 1 && model_type != 5 && model_type != 6) {
         Eigen::VectorXd beta;
         double coef0 = 0;
         double train_loss = 0;

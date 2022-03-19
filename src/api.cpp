@@ -165,7 +165,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
     List out_result;
     if (!sparse_matrix) {
-        if (y.cols() == 1) {
+        if (y.cols() == 1 && model_type != 5 && model_type != 6) {
             Eigen::VectorXd y_vec = y.col(0).eval();
 
             out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(
@@ -195,7 +195,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
         }
         sparse_x.makeCompressed();
 
-        if (y.cols() == 1) {
+        if (y.cols() == 1 && model_type != 5 && model_type != 6) {
             Eigen::VectorXd y_vec = y.col(0).eval();
 
             out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(
@@ -286,7 +286,7 @@ List abessPCA_API(Eigen::MatrixXd x, int n, int p, int normalize_type, Eigen::Ve
 #endif
     List out_result_next;
     int num = 0;
-    
+
     if (!sparse_matrix) {
         while (num++ < pca_num) {
             int pca_support_size_num = sequence.col(num - 1).sum();

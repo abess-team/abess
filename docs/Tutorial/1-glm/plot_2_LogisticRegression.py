@@ -141,9 +141,10 @@ fitted_y = model.predict(test_x)
 print(fitted_y)
 
 # %%
-# Besides, we can also call for the survival probability of each observation by ``model.predict_proba()``.
-# Actually, those people with a probability greater than 0.5 are
-# classified as "1" (survived).
+# Besides, we can also call for the survival probability of each observation by ``model.predict_proba()``,
+# which returns a matrix with two columns. The first column corresponds to probability for class "0", and
+# the second is for class "1" (survived).
+# Then, we tend to classify the observation into more likely class.
 
 
 fitted_p = model.predict_proba(test_x)
@@ -156,7 +157,7 @@ print(fitted_p)
 from sklearn.metrics import roc_curve, auc
 import matplotlib.pyplot as plt
 
-fpr, tpr, _ = roc_curve(test_y, fitted_p)
+fpr, tpr, _ = roc_curve(test_y, fitted_p[:, 1])
 plt.plot(fpr, tpr)
 plt.plot([0, 1], [0, 1], 'k--', label="ROC curve (area = %0.2f)" % auc(fpr, tpr))
 plt.xlabel('False Positive Rate')
