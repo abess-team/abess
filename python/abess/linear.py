@@ -108,8 +108,8 @@ class LogisticRegression(bess_base):
 
         Returns
         -------
-        proba : array-like, shape(n_samples,)
-            Returns the probabilities for class "1"
+        proba : array-like, shape(n_samples, 2)
+            Returns the probabilities for class "0" and "1"
             on given X.
         """
         X = new_data_check(self, X)
@@ -117,7 +117,7 @@ class LogisticRegression(bess_base):
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = X.dot(self.coef_) + intercept_
         proba = np.exp(xbeta) / (1 + np.exp(xbeta))
-        return np.vstack((proba, np.ones(X.shape[0]) - proba)).T
+        return np.vstack((np.ones(X.shape[0]) - proba, proba)).T
 
     def predict(self, X):
         r"""
