@@ -168,7 +168,7 @@ class TestAlgorithm:
             assert_value(coef[nonzero], cph.params_.values, rel=5e-1, abs=5e-1)
 
         # null
-        # check_estimator(abess.CoxPHSurvivalAnalysis())
+        check_estimator(abess.CoxPHSurvivalAnalysis())
         model1 = abess.CoxPHSurvivalAnalysis()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
@@ -439,6 +439,7 @@ class TestAlgorithm:
         X = L + S
 
         # null
+        check_estimator(abess.RobustPCA())
         model1 = abess.RobustPCA(support_size=s)
         model1.fit(X)
         model1.fit(X, r=r)
