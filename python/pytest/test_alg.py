@@ -294,7 +294,7 @@ class TestAlgorithm:
         data = load_data('multinomial_seed5_rho0.5')
 
         # null
-        # check_estimator(abess.MultinomialRegression())
+        check_estimator(abess.MultinomialRegression())
         model1 = abess.MultinomialRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)

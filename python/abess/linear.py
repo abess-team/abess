@@ -632,6 +632,10 @@ class MultiTaskRegression(bess_base):
             splicing_type=splicing_type,
             important_search=important_search
         )
+    
+    def _more_tags(self):
+        return {'multioutput': True,
+                'multioutput_only': True}
 
     def predict(self, X):
         r"""
@@ -767,6 +771,10 @@ class MultinomialRegression(bess_base):
             splicing_type=splicing_type,
             important_search=important_search
         )
+    
+    def _more_tags(self):
+        return {'multilabel': True,
+                'multioutput_only': True}
 
     def predict_proba(self, X):
         r"""
@@ -789,8 +797,9 @@ class MultinomialRegression(bess_base):
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
         xbeta = X.dot(self.coef_) + intercept_
         eta = np.exp(xbeta)
+        pr = np.zeros_like(xbeta)
         for i in range(X.shape[0]):
-            pr = eta[i, :] / np.sum(eta[i, :])
+            pr[i, :] = eta[i, :] / np.sum(eta[i, :])
         return pr
 
     def predict(self, X):
@@ -815,10 +824,10 @@ class MultinomialRegression(bess_base):
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
         xbeta = X.dot(self.coef_) + intercept_
         max_item = np.argmax(xbeta, axis=1)
-        y_pred = np.zeros_like(xbeta)
-        for i in range(X.shape[0]):
-            y_pred[i, max_item[i]] = 1
-        return y_pred
+        # y_pred = np.zeros_like(xbeta)
+        # for i in range(X.shape[0]):
+        #     y_pred[i, max_item[i]] = 1
+        return max_item[:, np.newaxis]
 
     def score(self, X, y):
         """

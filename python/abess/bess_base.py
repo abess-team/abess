@@ -226,8 +226,8 @@ class bess_base(BaseEstimator):
 
             # Dummy y for Multinomial
             if self.model_type in (
-                    "Multinomial", "Ordinal") and len(y.shape) == 1:
-                y = categorical_to_dummy(y)
+                    "Multinomial", "Ordinal") and (len(y.shape) == 1 or y.shape[1] == 1):
+                y = categorical_to_dummy(y.squeeze())
 
             # Init
             n = X.shape[0]
@@ -482,11 +482,7 @@ class bess_base(BaseEstimator):
         # normalize
         normalize = 0
         if is_normal:
-            if n > 1:
-                normalize = self.normalize_type
-            else:
-                print("Note: There is only one sample, "
-                      "so normalization is disabled.")
+            normalize = self.normalize_type
 
         # always_select
         if self.always_select is None:
@@ -500,17 +496,21 @@ class bess_base(BaseEstimator):
 
         # wrap with cpp
         # print("wrap enter.")#///
-        result = pywrap_GLM(
-            X, y, weight, n, p, normalize, algorithm_type_int, model_type_int,
-            self.max_iter, self.exchange_num, path_type_int,
-            self.is_warm_start, ic_type_int, self.ic_coef, self.cv, g_index,
-            support_sizes, alphas, cv_fold_id, new_s_min, new_s_max,
-            new_lambda_min, new_lambda_max, n_lambda, self.screening_size,
-            always_select_list, self.primary_model_fit_max_iter,
-            self.primary_model_fit_epsilon, early_stop,
-            self.approximate_Newton, self.thread, self.covariance_update,
-            self.sparse_matrix, self.splicing_type, self.important_search,
-            A_init)
+        if n == 1:
+            # with only one sample, nothing to be estimated
+            result = [np.zeros((p, M)), np.zeros(M), 0, 0, 0]
+        else:
+            result = pywrap_GLM(
+                X, y, weight, n, p, normalize, algorithm_type_int, model_type_int,
+                self.max_iter, self.exchange_num, path_type_int,
+                self.is_warm_start, ic_type_int, self.ic_coef, self.cv, g_index,
+                support_sizes, alphas, cv_fold_id, new_s_min, new_s_max,
+                new_lambda_min, new_lambda_max, n_lambda, self.screening_size,
+                always_select_list, self.primary_model_fit_max_iter,
+                self.primary_model_fit_epsilon, early_stop,
+                self.approximate_Newton, self.thread, self.covariance_update,
+                self.sparse_matrix, self.splicing_type, self.important_search,
+                A_init)
 
         # print("linear fit end")
         # print(len(result))
