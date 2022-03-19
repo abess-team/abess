@@ -225,8 +225,8 @@ class bess_base(BaseEstimator):
                 y = y[:, 1].reshape(-1)
 
             # Dummy y for Multinomial
-            if self.model_type in (
-                    "Multinomial", "Ordinal") and (len(y.shape) == 1 or y.shape[1] == 1):
+            if (self.model_type in ("Multinomial", "Ordinal")
+                    and (len(y.shape) == 1 or y.shape[1] == 1)):
                 y = categorical_to_dummy(y.squeeze())
 
             # Init
@@ -501,9 +501,11 @@ class bess_base(BaseEstimator):
             result = [np.zeros((p, M)), np.zeros(M), 0, 0, 0]
         else:
             result = pywrap_GLM(
-                X, y, weight, n, p, normalize, algorithm_type_int, model_type_int,
+                X, y, weight, n, p, normalize, algorithm_type_int, 
+                model_type_int,
                 self.max_iter, self.exchange_num, path_type_int,
-                self.is_warm_start, ic_type_int, self.ic_coef, self.cv, g_index,
+                self.is_warm_start, ic_type_int, self.ic_coef, self.cv, 
+                g_index,
                 support_sizes, alphas, cv_fold_id, new_s_min, new_s_max,
                 new_lambda_min, new_lambda_max, n_lambda, self.screening_size,
                 always_select_list, self.primary_model_fit_max_iter,
