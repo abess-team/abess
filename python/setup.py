@@ -30,7 +30,7 @@ NEED_CLEAN_TREE = set()
 try:
     target_dir = CURRENT_DIR
     src_dir = os.path.join(CURRENT_DIR, os.path.pardir)
-    
+
     dst = os.path.join(target_dir, 'src')
     src = os.path.join(src_dir, 'src')
     distutils.dir_util.copy_tree(src, dst)
@@ -40,7 +40,7 @@ try:
     src = os.path.join(src_dir, 'include')
     distutils.dir_util.copy_tree(src, dst)
     NEED_CLEAN_TREE.add(os.path.abspath(dst))
-except:
+except BaseException:
     pass
 
 # print("sys.platform output: {}".format(sys.platform))
@@ -74,12 +74,17 @@ elif sys.platform.startswith('darwin'):
         "-Wno-int-in-bool-context"
     ]
     m1chip_unable_extra_compile_args = [
-        # Enable the "-mavx", "-mfma", "-march=native" would improve the computational efficiency.
-        # "-mavx" and "-mfma" do not supported by github-action environment when arch = x86_64
         # "-mavx",
         # "-mfma"
-        # "-mavx" and "-mfma" do not supported by github-action when building arm64 (because it the default is not arm64)
         # "-march=native"
+
+        # Enable the "-mavx", "-mfma", "-march=native"
+        # would improve the computational efficiency.
+        # "-mavx" and "-mfma" do not supported
+        # by github-action environment when arch = x86_64
+        # "-mavx" and "-mfma" do not supported
+        # by github-action when building arm64
+        # (because it the default is not arm64)
     ]
     if platform.processor() not in ('arm', 'arm64'):
         extra_compile_args.extend(m1chip_unable_extra_compile_args)

@@ -5,6 +5,7 @@ from utilities import (assert_nan, assert_value, assert_fit)
 from scipy.sparse import coo_matrix
 import abess
 
+
 @pytest.mark.filterwarnings("ignore")
 class TestWorkflow:
     """
