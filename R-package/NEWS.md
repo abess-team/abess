@@ -1,3 +1,10 @@
+# abess 0.4.5
+
+* Support generalized linear model for ordinal response, also named as rank learning in machine learning community. 
+* Support robust principal analysis
+* Modify R package structure to make many internal components are reusable.
+* Update README.md
+
 # abess 0.4.0
 
 * Support generalized linear model when the link function is Gamma distribution. 
