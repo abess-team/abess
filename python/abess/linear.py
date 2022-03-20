@@ -362,6 +362,12 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
             baseline_model=BreslowEstimator()
         )
 
+    def _more_tags(self):
+        # Note: We ignore estimator's check here because it would pass
+        # an 1-column `y` for testing, but for `CoxPHSurvivalAnalysis()`,
+        # 2-column `y` should be given (one for time, another for censoring).
+        return {'_skip_test': True}
+
     def predict(self, X):
         r"""
         Returns the time-independent part of hazard function,

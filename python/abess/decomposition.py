@@ -444,8 +444,12 @@ class RobustPCA(bess_base):
             splicing_type=splicing_type
         )
 
-    # def _more_tags(self):
-    #     return {'requires_y': False}
+    def _more_tags(self):
+        # Note: We ignore estimator's check here because `RobustPCA()`
+        # is not an standard "estimator".
+        # There is no "coefficient", not even "model" to test.
+        # (It just returns the transformation of `X`.)
+        return {'_skip_test': True}
 
     def fit(self, X, y=None, r=None, group=None, A_init=None):
         r"""

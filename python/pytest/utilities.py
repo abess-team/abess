@@ -1,8 +1,6 @@
 import os
 import pickle
 import numpy as np
-import pickle
-import os
 import pytest
 
 CURRENT = os.path.dirname(os.path.abspath(__file__))
