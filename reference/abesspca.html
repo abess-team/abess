@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.5</span>
       </span>
     </div>
 
@@ -259,7 +259,7 @@ By exploiting the warm-start initialization, the non-convex optimization
 problem at different support size (specified by <code>support.size</code>)
 can be efficiently solved.</p>
 <p>The abessPCA can be conduct sequentially for each component.
-Please see the multiple principal components Section on the <a href="https://abess-team.github.io/abess/articles/v08-sPCA.html">webite</a>
+Please see the multiple principal components Section on the <a href="https://abess-team.github.io/abess/articles/v08-sPCA.html">website</a>
 for more details about this function.
 For <code>abesspca</code> function, the arguments <code>kpc.num</code> control the number of components to be consider.</p>
 <p>When <code>sparse.type = "fpc"</code> but <code>support.size</code> is not supplied,
@@ -340,10 +340,10 @@ because the meaning of these parameters are very similar.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> abesspca(x = rob_cov, type = "gram")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   PC support.size       ev       pev</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1            1 6309.053 0.9554788</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1            2 6362.517 0.9635758</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  1            3 6410.151 0.9707898</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1            4 6420.050 0.9722889</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1            1 6364.229 0.9581344</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1            2 6419.685 0.9664834</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  1            3 6454.595 0.9717390</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1            4 6464.738 0.9732660</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## K-component principal component analysis</span></span>
 <span class="r-in"><span class="va">pca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">USArrests</span>,</span>
