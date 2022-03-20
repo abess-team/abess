@@ -14,8 +14,8 @@
    :target: https://github.com/abess-team/abess/actions/workflows/python_test.yml
 .. |R build status| image:: https://github.com/abess-team/abess/actions/workflows/r_test.yml/badge.svg?branch=master
    :target: https://github.com/abess-team/abess/actions/workflows/r_test.yml
-.. |codecov| image:: https://app.codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00
-   :target: https://app.codecov.io/gh/abess-team/abess
+.. |codecov| image:: https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00
+   :target: https://codecov.io/gh/abess-team/abess
 .. |docs| image:: https://readthedocs.org/projects/abess/badge/?version=latest
    :target: https://abess.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status

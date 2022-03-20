@@ -48,7 +48,7 @@ Version 0.4.1
 - Python package
 
    -  The API name shifts from ``abessXXX`` to ``xxxRegression`` and from ``abessXXX`` to ``SparsePCA``
-   -  Improve the PEP8 criteria and scikit-learn criterion
+   -  Improve the PEP8 criteria and ``scikit-learn`` criterion
    -  The interface between python and cpp changes from `swig <http://www.swig.org/>`__ to `pybind11 <https://pybind11.readthedocs.io/en/stable/>`__.
    -  The recommended C++ compiler for ``abess`` package installation shifts from Mingw to Microsoft Visual Studio because it is suggested that `MinGW works with all Python versions up to 3.4 <https://wiki.python.org/moin/WindowsCompilers#GCC_-_MinGW-w64_.28x86.2C_x64.29>`__.
    -  Using `cibuildwheel <https://cibuildwheel.readthedocs.io/en/stable/>`__ and github action to build and test `wheel` files automatically

@@ -21,8 +21,8 @@ Welcome to abess's documentation!
    :target: https://github.com/abess-team/abess/actions/workflows/python_test.yml
 .. |R build status| image:: https://github.com/abess-team/abess/actions/workflows/r_test.yml/badge.svg?branch=master
    :target: https://github.com/abess-team/abess/actions/workflows/r_test.yml
-.. |codecov| image:: https://app.codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00
-   :target: https://app.codecov.io/gh/abess-team/abess
+.. |codecov| image:: https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00
+   :target: https://codecov.io/gh/abess-team/abess
 .. |docs| image:: https://readthedocs.org/projects/abess/badge/?version=latest
    :target: https://abess.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
@@ -176,16 +176,14 @@ the other best subset selection problems.
 What's new
 ===========
 
-New features:
+Version 0.4.5:
 
-- Support user-specified cross-validation division.
-- Support user-specified initial active set.
-- Support flexible support size for sequentially best subset selection for principal component analysis (PCA). 
+- Easier installation for Python users
+- ``abess`` R package is is highlighted as one of the core packages in `CRAN Task View: Machine Learning & Statistical Learning <https://cran.r-project.org/web/views/MachineLearning.html>`__.
 
 New best subset selection tasks: 
 
-- Generalized linear model when the link function is gamma distribution.
-- Robust principal component analysis (RPCA).
+- Generalized linear model for ordinal regression (a.k.a rank learning in some machine learning literature).
 
 Citation         
 ==========
