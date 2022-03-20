@@ -23,6 +23,7 @@ class TestDeprecated:
         abess.abessPCA()
         abess.abessRPCA()
 
+
 @pytest.mark.filterwarnings("error::FutureWarning")
 class TestDeprecatedWarning:
     """

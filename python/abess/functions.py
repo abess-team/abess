@@ -121,8 +121,9 @@ class BreslowEstimator:
 
         y = np.cumsum(n_events / divisor)
         self.cum_baseline_hazard_ = StepFunction(uniq_times, y)
-        self.baseline_survival_ = StepFunction(self.cum_baseline_hazard_.x,
-                                               np.exp(- self.cum_baseline_hazard_.y))
+        self.baseline_survival_ = StepFunction(
+            self.cum_baseline_hazard_.x,
+            np.exp(- self.cum_baseline_hazard_.y))
         return self
 
     # def get_cumulative_hazard_function(self, linear_predictor):
@@ -160,13 +161,15 @@ class BreslowEstimator:
         n_samples = risk_score.shape[0]
         funcs = np.empty(n_samples, dtype=object)
         for i in range(n_samples):
-            funcs[i] = StepFunction(x=self.baseline_survival_.x,
-                                    y=np.power(self.baseline_survival_.y, risk_score[i]))
+            funcs[i] = StepFunction(
+                x=self.baseline_survival_.x,
+                y=np.power(self.baseline_survival_.y, risk_score[i]))
         return funcs
 
     @staticmethod
     def _compute_counts(event, time, order=None):
-        """Count right censored and uncensored samples at each unique time point.
+        """
+        Count right censored and uncensored samples at each unique time point.
 
         Parameters
         ----------
@@ -189,7 +192,8 @@ class BreslowEstimator:
             Number of events at each time point.
 
         n_at_risk : array
-            Number of samples that have not been censored or have not had an event at each time point.
+            Number of samples that have not been censored or
+            have not had an event at each time point.
 
         n_censored : array
             Number of censored samples at each time point.
