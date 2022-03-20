@@ -14,6 +14,17 @@ using namespace Rcpp;
 
 using namespace std;
 
+void constant_warning_ith_variable(int i)
+{
+#ifdef R_BUILD
+    Rcout << "Warning: the variable " << i + 1 << " is constant. ";
+    Rcout << "It may cause NAN in the result. Please drop this variable or disable the normalization.\n";
+#else
+    cout << "Warning: the variable " << i << " is constant. ";
+    cout << "It may cause NAN in the result. Please drop this variable or disable the normalization.\n";
+#endif
+}
+
 void Normalize(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &meanx, double &meany,
                Eigen::VectorXd &normx) {
     int n = X.rows();
@@ -33,12 +44,7 @@ void Normalize(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &weights,
         tmp = tmp.array().square();
         normx(i) = sqrt(weights.dot(tmp));
         if (normx(i) == 0) {
-#ifdef R_BUILD
-            cout << "Warning: the variable " << i + 1 << " is constant. ";
-#else
-            cout << "Warning: the variable " << i << " is constant. ";
-#endif
-            cout << "It may cause NAN in the result. Please drop this variable or disable the normalization.\n";
+            constant_warning_ith_variable(i);
         }
     }
     for (int i = 0; i < p; i++) {
@@ -69,12 +75,7 @@ void Normalize(Eigen::MatrixXd &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights,
         tmp = tmp.array().square();
         normx(i) = sqrt(weights.dot(tmp));
         if (normx(i) == 0) {
-#ifdef R_BUILD
-            cout << "Warning: the variable " << i + 1 << " is constant. ";
-#else
-            cout << "Warning: the variable " << i << " is constant. ";
-#endif
-            cout << "It may cause NAN in the result. Please drop this variable or disable the normalization.\n";
+            constant_warning_ith_variable(i);
         }
     }
     for (int i = 0; i < p; i++) {
@@ -97,12 +98,7 @@ void Normalize3(Eigen::MatrixXd &X, Eigen::VectorXd &weights, Eigen::VectorXd &m
         tmp = tmp.array().square();
         normx(i) = sqrt(weights.dot(tmp));
         if (normx(i) == 0) {
-#ifdef R_BUILD
-            cout << "Warning: the variable " << i + 1 << " is constant. ";
-#else
-            cout << "Warning: the variable " << i << " is constant. ";
-#endif
-            cout << "It may cause NAN in the result. Please drop this variable or disable the normalization.\n";
+            constant_warning_ith_variable(i);
         }
     }
     for (int i = 0; i < p; i++) {
@@ -119,12 +115,7 @@ void Normalize4(Eigen::MatrixXd &X, Eigen::VectorXd &weights, Eigen::VectorXd &n
         tmp = tmp.array().square();
         normx(i) = sqrt(weights.dot(tmp));
         if (normx(i) == 0) {
-#ifdef R_BUILD
-            cout << "Warning: the variable " << i + 1 << " keeps zero. ";
-#else
-            cout << "Warning: the variable " << i << " keeps zero. ";
-#endif
-            cout << "It may cause NAN in the result. Please drop this variable or disable the normalization.\n";
+            constant_warning_ith_variable(i);
         }
     }
     for (int i = 0; i < p; i++) {

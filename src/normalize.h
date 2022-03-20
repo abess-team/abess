@@ -11,6 +11,8 @@
 #include <Eigen/Eigen>
 #endif
 
+void constant_warning_ith_variable(int i);
+
 void Normalize(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &meanx, double &meany,
                Eigen::VectorXd &normx);
 void Normalize(Eigen::MatrixXd &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &meanx,
