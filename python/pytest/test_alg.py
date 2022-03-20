@@ -16,7 +16,6 @@ try:
     miss_dep = False
 except ImportError:
     miss_dep = True
-    pass
 
 from utilities import (
     assert_nan,
