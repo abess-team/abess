@@ -71,18 +71,38 @@ After that, we can manually install ``abess`` by conducting command:
 .. code:: bash
 
    $ cd ./python
+   $ pip install .
+
+or
+
+.. code:: bash
+
+   $ cd ./python
    $ python setup.py install --user
 
 If it finishes with ``Finished processing dependencies for abess``, the
 installation is successful.
 
-Alternatively, if you would like to develop ``abess``, install ``abess`` in `editable mode <https://peps.python.org/pep-0660/>` 
+Alternatively, if you would like to develop ``abess``, install ``abess`` in `editable mode <https://peps.python.org/pep-0660/>`__ 
 (it is very convenient for development): 
 
 .. code:: bash
 
    $ cd ./python
    $ pip install -e .
+
+or
+
+.. code:: bash
+
+   $ cd ./python
+   $ python setup.py develop --user
+
+Note that some may meet "Permission denied" problem like `this issue <https://github.com/pypa/pip/issues/7953>`__
+when installing with ``pip install -e .``. There are three solutions: 
+1. run the command as administrator;
+2. feel free to use ``python setup.py develop --user`` instead;
+3. try to edit ``setup.py`` like `here <https://github.com/pypa/pip/issues/7953#issuecomment-645133255>`__ (not recommend).
 
 .. _r-1:
 
