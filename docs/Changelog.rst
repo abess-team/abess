@@ -25,6 +25,7 @@ Versions 0.4.2 -- 0.4.5
 
    -  Fix bugs in sparse principal component analysis
    -  Support ordinal regression
+   -  Support predicting survival function in ``CoxPHSurvivalAnalysis()``
    -  Modify python package to adapt to the criteria of `conda-forge <http://conda-forge.org>`__ and ``abess`` is going to appear on conda-forge. 
    -  Spectra library is no long appear in ``python/include`` directory
    -  Improve pytest by suppress unnecessary come from ``scikit-learn`` and the warning about API-name change.
