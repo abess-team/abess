@@ -10,33 +10,41 @@ Unreleased
 
 - Python package
 
-   -  Improve pytest by suppress unnecessary come from ``scikit-learn`` and the warning about API-name change. Moreover, some test will be skipped if some dependencies are missing. 
-   -  Refine the configuration in ``setup.py`` to facilitate the source code installation
-   -  Spectra library is no long appear in ``python/include`` directory
 
 
-Versions 0.4.2 -- 0.4.4
+Versions 0.4.2 -- 0.4.5
 ----------
 
 -  R package
 
-   -  Change the structure of R package such that the parameter check can be reused by different methods. As a by-production, code coverage for R package is impressively improved. 
-   -   Support ordinal regression
+   -  Change the structure of R package such that the parameter check can be reused by different methods.
+      As a by-production, code coverage for R package is impressively improved. 
+   -  Support ordinal regression
 
 - Python package
 
    -  Fix bugs in sparse principal component analysis
    -  Support ordinal regression
+   -  Support predicting survival function in ``CoxPHSurvivalAnalysis()``
    -  Modify python package to adapt to the criteria of `conda-forge <http://conda-forge.org>`__ and ``abess`` is going to appear on conda-forge. 
+   -  Spectra library is no long appear in ``python/include`` directory
+   -  Improve pytest by suppress unnecessary come from ``scikit-learn`` and the warning about API-name change.
+      Moreover, some test will be skipped if some dependencies are missing. 
+   -  Add `estimator check <https://scikit-learn.org/stable/modules/generated/sklearn.utils.estimator_checks.check_estimator.html>`__
+      from ``scikit-learn`` into pytest
+   -  Refine the configuration in ``setup.py`` to facilitate the source code installation
 
 - C++
 
-   -   Support ordinal regression
+   -  Support ordinal regression
+   -  Fix bugs for multiple-regressors' API
+   -  Add more comments to improve readability, mainly in ``Algorithm.h``, ``utilities.h``, and ``workflow.h``
 
 -  Project development
 
    -  Test the package automatic submission. (It explains why the version number is quickly shifted.)
-   -  Python maintainer changes from `Kangkang Jiang <https://github.com/Jiang-Kangkang>` to `Junhao Huang <https://github.com/oooo26>`!
+   -  Python maintainer changes from `Kangkang Jiang <https://github.com/Jiang-Kangkang>`__ to
+      `Junhao Huang <https://github.com/oooo26>`__!
 
 Version 0.4.1
 ----------
