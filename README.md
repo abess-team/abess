@@ -23,14 +23,14 @@ For example, clinicians want to know whether a patient is healthy or not based o
 
 This library implements a generic algorithm framework to find the optimal solution in an extremely fast way.
 This framework now supports the detection of best subset under: 
-[linear regression](https://abess.readthedocs.io/en/latest/Tutorial/LinearRegression.html),
-[classification (binary or multi-class)](https://abess.readthedocs.io/en/latest/Tutorial/logi_and_multiclass.html),
-[counting-response modeling](https://abess.readthedocs.io/en/latest/Tutorial/PoissonRegression.html),
-[censored-response modeling](https://abess.readthedocs.io/en/latest/Tutorial/CoxRegression.html),
-[multi-response modeling (multi-tasks learning)](https://abess.readthedocs.io/en/latest/Tutorial/MultiTaskLearning.html), etc.
+[linear regression](https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_1_LinearRegression.html),
+[classification (binary or multi-class)](https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_2_LogisticRegression.html),
+[counting-response modeling](https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_5_PossionGammaRegression.html),
+[censored-response modeling](https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_4_CoxRegression.html#sphx-glr-auto-gallery-1-glm-plot-4-coxregression-py),
+[multi-response modeling (multi-tasks learning)](https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_3_MultiTaskLearning.html), etc.
 It also supports the variants of best subset selection like 
-[group best subset selection](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Best-group-subset-selection),
-[nuisance penalized regression](https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Nuisance-Regression),
+[group best subset selection](https://abess.readthedocs.io/en/latest/auto_gallery/3-advanced-features/plot_best_group.html),
+[nuisance penalized regression](https://abess.readthedocs.io/en/latest/auto_gallery/3-advanced-features/plot_best_nuisance.html),
 Especially, the time complexity of (group) best subset selection for linear regression is certifiably polynomial.
 
 ## Quick start

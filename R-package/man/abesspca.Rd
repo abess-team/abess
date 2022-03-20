@@ -149,7 +149,7 @@ problem at different support size (specified by \code{support.size})
 can be efficiently solved.
 
 The abessPCA can be conduct sequentially for each component.
-Please see the multiple principal components Section on the \href{https://abess-team.github.io/abess/articles/v08-sPCA.html}{webite}
+Please see the multiple principal components Section on the \href{https://abess-team.github.io/abess/articles/v08-sPCA.html}{website}
 for more details about this function.
 For \code{abesspca} function, the arguments \code{kpc.num} control the number of components to be consider.
 

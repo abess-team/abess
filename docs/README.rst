@@ -1,4 +1,4 @@
-Welcome to abess's documentation!
+Welcome to ``abess``'s documentation!
 ==========================================================================
 
 .. raw:: html
@@ -40,7 +40,7 @@ Welcome to abess's documentation!
 Overview
 ============
 
-`abess` (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
+``abess`` (Adaptive BEst Subset Selection) library aims to solve general best subset selection, i.e., 
 find a small subset of predictors such that the resulting model is expected to have the highest accuracy. 
 The selection for best subset shows great value in scientific researches and practical applications. 
 For example, clinicians want to know whether a patient is healthy or not  
@@ -54,18 +54,18 @@ It also supports the variants of best subset selection like
 `group best subset selection`_ [#2gbes]_ and `nuisance best subset selection`_ [#3nbes]_. 
 Especially, the time complexity of (group) best subset selection for linear regression is certifiably polynomial [#1abess]_ [#2gbes]_.
 
-.. _linear regression: https://abess.readthedocs.io/en/latest/Tutorial/LinearRegression.html
-.. _(multi-class) classification: https://abess.readthedocs.io/en/latest/Tutorial/logi_and_multiclass.html
-.. _counting-response modeling: https://abess.readthedocs.io/en/latest/Tutorial/PoissonRegression.html
-.. _censored-response modeling: https://abess.readthedocs.io/en/latest/Tutorial/CoxRegression.html
-.. _multi-response modeling (a.k.a. multi-tasks learning): https://abess.readthedocs.io/en/latest/Tutorial/MultiTaskLearning.html
-.. _group best subset selection: https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Best-group-subset-selection
-.. _nuisance best subset selection: https://abess.readthedocs.io/en/latest/Tutorial/advanced_features.html#Nuisance-Regression
+.. _linear regression: https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_1_LinearRegression.html
+.. _(multi-class) classification: https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_2_LogisticRegression.html
+.. _counting-response modeling: https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_5_PossionGammaRegression.html
+.. _censored-response modeling: https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_4_CoxRegression.html#sphx-glr-auto-gallery-1-glm-plot-4-coxregression-py
+.. _multi-response modeling (a.k.a. multi-tasks learning): https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_3_MultiTaskLearning.html
+.. _group best subset selection: https://abess.readthedocs.io/en/latest/auto_gallery/3-advanced-features/plot_best_group.html
+.. _nuisance best subset selection: https://abess.readthedocs.io/en/latest/auto_gallery/3-advanced-features/plot_best_nuisance.html
 
 Quick start
 ============
 
-The `abess` software has both Python and R's interfaces. Here a quick start will be given and
+The ``abess`` software has both Python and R's interfaces. Here a quick start will be given and
 for more details, please view: `Installation`_.
 
 .. _Installation: https://abess.readthedocs.io/en/latest/Installation.html
@@ -73,7 +73,7 @@ for more details, please view: `Installation`_.
 Python package
 --------------
 
-Install the stable `abess` Python package from `PyPI <https://pypi.org/project/abess/>`_: 
+Install the stable ``abess`` Python package from `PyPI <https://pypi.org/project/abess/>`_: 
 
 .. code-block:: shell
 
@@ -89,13 +89,13 @@ Best subset selection for linear regression on a simulated dataset in Python:
    model = abessLm()
    model.fit(sim_dat.x, sim_dat.y)
 
-See more examples analyzed with Python in the `Python tutorials <https://abess.readthedocs.io/en/latest/Tutorial/index.html>`_.
+See more examples analyzed with Python in the `Python tutorials <https://abess.readthedocs.io/en/latest/auto_gallery/index.html>`_.
 
 
 R package
 -----------
 
-Install `abess` from `R CRAN <https://cran.r-project.org/web/packages/abess>`_ by running the following command in R: 
+Install ``abess`` from `R CRAN <https://cran.r-project.org/web/packages/abess>`_ by running the following command in R: 
 
 .. code-block:: r
 
@@ -115,7 +115,7 @@ See more examples analyzed with R in the `R tutorials <https://abess-team.github
 Runtime Performance
 ===================
 
-To show the power of `abess` in computation, 
+To show the power of ``abess`` in computation, 
 we assess its timings of the CPU execution (seconds) on synthetic datasets, and compare them to 
 state-of-the-art variable selection methods. 
 The variable selection and estimation results as well as the details of settings are deferred to `Python performance`_  
@@ -127,14 +127,14 @@ and `R performance`_. All computations are conducted on a Ubuntu platform with I
 Python package   
 ---------------
 
-We compare `abess` Python package with scikit-learn on linear regression and logistic regression.
+We compare ``abess`` Python package with scikit-learn on linear regression and logistic regression.
 Results are presented in the below figure:
 |pic1| 
 
 .. |pic1| image:: ./image/timings.png
    :width: 100%
 
-It can be seen that `abess` uses the least runtime to find the solution. The results can be reproduced by running the commands in shell:
+It can be seen that ``abess`` uses the least runtime to find the solution. The results can be reproduced by running the commands in shell:
 
 .. code-block:: shell
 
@@ -144,7 +144,7 @@ It can be seen that `abess` uses the least runtime to find the solution. The res
 R package    
 -----------
 
-We compare `abess` R package with three widely used R packages: `glmnet`, `ncvreg`, and `L0Learn`. 
+We compare ``abess`` R package with three widely used R packages: `glmnet`, `ncvreg`, and `L0Learn`. 
 We get the runtime comparison result:
 
 |Rpic1|
@@ -153,7 +153,7 @@ We get the runtime comparison result:
    :width: 100%
 
 Compared with the other packages, 
-`abess` shows competitive computational efficiency, and achieves the best computational power when variables have a large correlation.
+``abess`` shows competitive computational efficiency, and achieves the best computational power when variables have a large correlation.
 
 Conducting the following commands in shell can reproduce the above results: 
 
@@ -164,10 +164,10 @@ Conducting the following commands in shell can reproduce the above results:
 Open source software     
 ====================
 
-`abess` is a free software and its source code is publicly available in `Github`_.  
+``abess`` is a free software and its source code is publicly available in `Github`_.  
 The core framework is programmed in C++, and user-friendly R and Python interfaces are offered.
 You can redistribute it and/or modify it under the terms of the `GPL-v3 License`_. 
-We welcome contributions for `abess`, especially stretching `abess` to 
+We welcome contributions for ``abess``, especially stretching ``abess`` to 
 the other best subset selection problems. 
 
 .. _github: https://github.com/abess-team/abess
@@ -176,21 +176,19 @@ the other best subset selection problems.
 What's new
 ===========
 
-New features:
+Version 0.4.5:
 
-- Support user-specified cross-validation division.
-- Support user-specified initial active set.
-- Support flexible support size for sequentially best subset selection for principal component analysis (PCA). 
+- Easier installation for Python users
+- ``abess`` R package is is highlighted as one of the core packages in `CRAN Task View: Machine Learning & Statistical Learning <https://cran.r-project.org/web/views/MachineLearning.html>`__.
 
 New best subset selection tasks: 
 
-- Generalized linear model when the link function is gamma distribution.
-- Robust principal component analysis (RPCA).
+- Generalized linear model for ordinal regression (a.k.a rank learning in some machine learning literature).
 
 Citation         
 ==========
 
-If you use `abess` or reference our tutorials in a presentation or publication, we would appreciate citations of our library [#5abesslib]_.
+If you use ``abess`` or reference our tutorials in a presentation or publication, we would appreciate citations of our library [#5abesslib]_.
 
 | Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). “abess: A Fast Best Subset Selection Library in Python and R.” arXiv:2110.09697.
 

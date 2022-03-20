@@ -1,6 +1,4 @@
 # _*_ mode: Makefile; _*_
-ENABLE_STD_THREAD=1
-
 CXX_STD = CXX11
 
 ABESS_RFLAGS = -DR_BUILD

@@ -1,8 +1,8 @@
 Package: abess
 Type: Package
 Title: Fast Best Subset Selection
-Version: 0.4.0
-Date: 2021-12-08
+Version: 0.4.5
+Date: 2022-03-20
 Authors@R: c(
   person(given = "Jin", family = "Zhu", email = "zhuj37@mail2.sysu.edu.cn", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8550-5822")),
   person(given = "Liyuan", family = "Hu", email = "huly5@mail2.sysu.edu.cn", role = c("aut")),
@@ -19,7 +19,7 @@ Authors@R: c(
   person("spectra contributors", role = c("cph"), comment = "Spectra implementation")
   )
 Maintainer: Jin Zhu <zhuj37@mail2.sysu.edu.cn>
-Description: Extremely efficient toolkit for solving the best subset selection problem <arXiv:2110.09697>. This package is its R interface. The package implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times for linear model. It also supports best subset selection for logistic regression, Poisson regression, Cox proportional hazard model, Gamma regression, multiple-response regression, multinomial logistic regression, (sequential) principal component analysis, and robust principal component analysis. The other valuable features such as the best subset of group selection <arXiv:2104.12576> and sure independence screening <doi:10.1111/j.1467-9868.2008.00674.x> are also provided.  
+Description: Extremely efficient toolkit for solving the best subset selection problem <arXiv:2110.09697>. This package is its R interface. The package implements and generalizes algorithms designed in <doi:10.1073/pnas.2014241117> that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times for linear model. It also supports best subset selection for logistic regression, Poisson regression, Cox proportional hazard model, Gamma regression, multiple-response regression, multinomial logistic regression, ordinal regression, (sequential) principal component analysis, and robust principal component analysis. The other valuable features such as the best subset of group selection <arXiv:2104.12576> and sure independence screening <doi:10.1111/j.1467-9868.2008.00674.x> are also provided.  
 License: GPL (>= 3) | file LICENSE
 Encoding: UTF-8
 LazyData: true

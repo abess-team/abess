@@ -46,7 +46,7 @@
 #' can be efficiently solved.
 #' 
 #' The abessPCA can be conduct sequentially for each component. 
-#' Please see the multiple principal components Section on the [webite](https://abess-team.github.io/abess/articles/v08-sPCA.html) 
+#' Please see the multiple principal components Section on the [website](https://abess-team.github.io/abess/articles/v08-sPCA.html) 
 #' for more details about this function. 
 #' For \code{abesspca} function, the arguments \code{kpc.num} control the number of components to be consider. 
 #'
