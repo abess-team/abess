@@ -6,7 +6,7 @@ Unreleased
 
 -  R package
 
-   -  Change the structure of R package such that the parameter check can be reused by different methods. As a by-production, code coverage for R package is impressively improved. 
+   -  Update README.md to synchronize with the layout change of abess official website. 
 
 - Python package
 
@@ -21,7 +21,7 @@ Versions 0.4.2 -- 0.4.4
 -  R package
 
    -  Change the structure of R package such that the parameter check can be reused by different methods. As a by-production, code coverage for R package is impressively improved. 
-   -   Support ordinal regression
+   -  Support ordinal regression
 
 - Python package
 

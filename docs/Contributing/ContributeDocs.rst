@@ -110,7 +110,7 @@ A tutorial is a long-form guide to some essential functions in the
 -  give more details about the potential advanced usage.
 
 A typical online vignette example is present
-`[here] <https://abess.readthedocs.io/en/latest/Tutorial/LinearRegression.html>`__.
+`[here] <https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_1_LinearRegression.html>`__.
 
 The development of the tutorial relies on `sphinix-gallery <https://pypi.org/project/sphinx-gallery/>`__.
 
