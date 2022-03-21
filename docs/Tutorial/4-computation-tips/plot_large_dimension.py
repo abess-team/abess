@@ -172,3 +172,5 @@ print(
 # For R tutorial, please view https://abess-team.github.io/abess/articles/v07-advancedFeatures.html and
 # https://abess-team.github.io/abess/articles/v09-fasterSetting.html.
 # 
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/highDimension.png'
+# 

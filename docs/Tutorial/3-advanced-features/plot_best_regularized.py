@@ -57,3 +57,5 @@ print("The average predition error under regularized best-subset selection:", np
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v07-advancedFeatures.html.
 # 
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/regularized_cover.png'
+# 

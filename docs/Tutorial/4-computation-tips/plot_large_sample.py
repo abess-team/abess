@@ -109,3 +109,5 @@ print("golden-section time: ", time() - t2)
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v09-fasterSetting.html.
 # 
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/large-sample.png'
+# 

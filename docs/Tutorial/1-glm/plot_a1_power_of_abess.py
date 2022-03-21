@@ -95,4 +95,5 @@ Power of **abess** Library: Empirical Comparison
 # .. |image0| image:: ../../Tutorial/figure/perform.png
 # .. |image1| image:: ../../Tutorial/figure/timings.png
 # 
-# sphinx_gallery_thumbnail_number = 2
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/timings.png'
+# 
