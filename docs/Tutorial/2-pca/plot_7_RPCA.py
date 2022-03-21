@@ -200,3 +200,6 @@ print(f'[TPR  FPR] = {res/M}')
 # ----------
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v08-sPCA.html.
+# 
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/rpca_shadow.png'
+# 

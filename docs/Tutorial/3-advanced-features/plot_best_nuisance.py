@@ -64,3 +64,6 @@ print('Estimated subset:', np.nonzero(model.coef_))
 # The ``abess`` R package also supports nuisance regression.
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v07-advancedFeatures.html.
+# 
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/nuisance_cover.png'
+# 

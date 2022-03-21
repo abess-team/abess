@@ -81,3 +81,6 @@ print('coefficients:\n', model2.coef_)
 #
 # For R tutorial, please view
 # https://abess-team.github.io/abess/articles/v07-advancedFeatures.html.
+# 
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/best-subset-group-selection.png'
+# 

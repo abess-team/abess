@@ -102,5 +102,5 @@ plt.show()
 # 
 # 
 # 
-# sphinx_gallery_thumbnail_path = '_static/scikit_learn.png'
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/scikit_learn.png'
 # 

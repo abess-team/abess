@@ -226,4 +226,4 @@ ABESS Algorithm: Details
 # Now, enjoy the data analysis with ``abess`` library:
 import abess
 
-# sphinx_gallery_thumbnail_path = '_static/icon_noborder.png'
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/icon_noborder.png'
