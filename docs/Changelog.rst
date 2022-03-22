@@ -12,7 +12,7 @@ Unreleased
 
 
 
-Versions 0.4.2 -- 0.4.5
+Versions 0.4.2 -- 0.4.4
 ----------
 
 -  R package
