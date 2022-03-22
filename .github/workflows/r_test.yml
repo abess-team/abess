@@ -50,15 +50,22 @@ jobs:
           remotes::install_deps("R-package", dependencies = TRUE)
         shell: Rscript {0}
 
-      - name: Install package
+      - name: Install package on MacOS
+        if: matrix.os == 'macos-latest'
         run: R CMD INSTALL R-package
+      - name: Install package on Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: R CMD INSTALL R-package
+      # - name: Install package on Windows
+      #   if: matrix.os == 'windows-latest'
+      #   run: R CMD INSTALL R-package
 
       - name: Install dependencies for checking
         run: |
-          install.packages("testthat", type = "binary")
-          install.packages("knitr", type = "binary")
-          install.packages("rmarkdown", type = "binary")
-          install.packages("devtools", type = "binary")
+          install.packages("testthat")
+          install.packages("knitr")
+          install.packages("rmarkdown")
+          install.packages("devtools")
         shell: Rscript {0}
 
       - name: Check package
