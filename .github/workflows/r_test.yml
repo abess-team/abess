@@ -38,6 +38,19 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
 
+      - name: Install dependencies for ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get install -y bash
+      - name: Install dependencies for macOS
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install bash
+      - name: Install dependencies for windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          choco install git
+
       - name: Query dependencies
         run: |
           install.packages('remotes')
