@@ -53,11 +53,10 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
       - name: Install dependencies
+        working-directory: R-package
         run: |
-          setwd("R-package")
           remotes::install_deps(dependencies = TRUE)
           devtools::install(upgrade = "never")
-          setwd("..")
         shell: Rscript {0}
       
       - name: Install dependencies for checking
