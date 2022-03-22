@@ -72,5 +72,6 @@ jobs:
 
       - name: Check package
         run: |
+          install.packages('devtools')
           devtools::check(pkg = "R-package/")
         shell: Rscript {0}
