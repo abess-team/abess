@@ -38,18 +38,17 @@ jobs:
       - name: Query dependencies
         run: |
           install.packages('remotes')
-          install.packages('devtools')
           saveRDS(remotes::dev_package_deps("R-package", dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
 
       - name: Install dependencies
-        working-directory: ./R-package
         run: |
-          print(getwd())
-          remotes::install_deps(".", dependencies = TRUE)
-          devtools::install(".", upgrade = "never")
+          remotes::install_deps("R-package", dependencies = TRUE)
         shell: Rscript {0}
+
+      - name: Install package
+        run: R CMD INSTALL R-package
 
       - name: Install dependencies for checking
         run: |
