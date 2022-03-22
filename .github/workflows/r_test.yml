@@ -44,9 +44,10 @@ jobs:
         shell: Rscript {0}
 
       - name: Install dependencies
+        working-directory: R-package
         run: |
-          remotes::install_deps("R-package", dependencies = TRUE)
-          devtools::install("R-package", upgrade = "never")
+          remotes::install_deps(".", dependencies = TRUE)
+          devtools::install(".", upgrade = "never")
         shell: Rscript {0}
 
       - name: Install dependencies for checking
