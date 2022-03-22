@@ -1,6 +1,6 @@
 <img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/image/icon_long.png' align="center"/></a>     
 
-# abess: Fast Best-Subset Selection in Python and R
+# abess: Fast Best-Subset Selection in R
 
 <!-- badges: start -->
 [![Python Build](https://github.com/abess-team/abess/actions/workflows/python_test.yml/badge.svg)](https://github.com/abess-team/abess/actions/workflows/python_test.yml)
@@ -59,17 +59,11 @@ Conducting the following command in shell can reproduce the above results in R:
 $ Rscript abess/docs/simulation/R/timings.R
 ```
 
-
-## Open source software     
-
-`abess` is a free software and its source code are publicly available in [Github](https://github.com/abess-team/abess). The core framework is programmed in C++.
-You can redistribute it and/or modify it under the terms of the [GPL-v3 License](https://www.gnu.org/licenses/gpl-3.0.html). We welcome contributions for `abess`, especially stretching `abess` to the other best subset selection problems. 
-
 ## What's news?
 
 New features supported by the latest version (0.4.5):
 
-* Support generalized linear model for ordinal response (setting`family = "ordinal"`), 
+* Support generalized linear model for ordinal response (setting `family = "ordinal"`), 
 also named as rank learning in machine learning community. 
 
 * Support robust principal analysis
@@ -79,13 +73,14 @@ also named as rank learning in machine learning community.
 ## Citation         
 
 If you use `abess` or refer to our tutorials in a presentation or publication, we would appreciate citations of our library.
-< Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). “abess: A Fast Best Subset Selection Library in Python and R.” arXiv:2110.09697.>
+
+Jin Zhu, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu (2021). “abess: A Fast Best Subset Selection Library in Python and R.” arXiv:2110.09697.
 
 The corresponding BibteX entry:
 
 ```
 @article{zhu-abess-arxiv,
-  author    = {Jin Zhu and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu and Xueqin Wang},
+  author    = {Jin Zhu and Xueqin Wang and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu},
   title     = {abess: A Fast Best Subset Selection Library in Python and R},
   journal   = {arXiv:2110.09697},
   year      = {2021},
