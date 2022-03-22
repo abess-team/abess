@@ -38,19 +38,6 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
 
-      - name: Install dependencies for ubuntu
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get install -y bash
-      - name: Install dependencies for macOS
-        if: matrix.os == 'macos-latest'
-        run: |
-          brew install bash
-      - name: Install dependencies for windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          choco install git
-
       - name: Query dependencies
         run: |
           install.packages('remotes')
@@ -68,12 +55,9 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps("R-package", dependencies = TRUE)
+          devtools::install("R-package/", upgrade = "never")
         shell: Rscript {0}
-
-      - name: Install package
-        run: |
-          devtools::install("../R-package/", upgrade = "never")
-
+      
       - name: Install dependencies for checking
         run: |
           install.packages("testthat", type = "binary")
