@@ -27,7 +27,7 @@ on:
 jobs:
   Install-Test:
     name: Installation test for R-package
-    runs-on: macos-latest
+    runs-on: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v2
 
