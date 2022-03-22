@@ -47,6 +47,7 @@ jobs:
         working-directory: R-package
         run: |
           remotes::install_deps(".", dependencies = TRUE)
+          print(getwd())
           devtools::install(".", upgrade = "never")
         shell: Rscript {0}
 
