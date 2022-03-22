@@ -54,8 +54,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          remotes::install_deps("R-package", dependencies = TRUE)
           setwd("R-package")
+          remotes::install_deps(dependencies = TRUE)
           devtools::install(upgrade = "never")
           setwd("..")
         shell: Rscript {0}
