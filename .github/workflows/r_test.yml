@@ -27,7 +27,10 @@ on:
 jobs:
   Install-Test:
     name: Installation test for R-package
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v2
 
