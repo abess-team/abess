@@ -71,7 +71,8 @@ jobs:
         shell: Rscript {0}
 
       - name: Install package
-        shell: R CMD INSTALL ./R-package
+        run: |
+          devtools::install(pkg = "R-package/")
 
       - name: Install dependencies for checking
         run: |
