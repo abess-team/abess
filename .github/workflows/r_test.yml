@@ -30,7 +30,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v2
 
@@ -41,6 +41,7 @@ jobs:
       - name: Query dependencies
         run: |
           install.packages('remotes')
+          install.packages('devtools')
           saveRDS(remotes::dev_package_deps("R-package", dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
@@ -56,9 +57,10 @@ jobs:
       - name: Install package on Ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: R CMD INSTALL R-package
-      # - name: Install package on Windows
-      #   if: matrix.os == 'windows-latest'
-      #   run: R CMD INSTALL R-package
+      - name: Install package on Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          devtools::install("R-package/")
 
       - name: Install dependencies for checking
         run: |
