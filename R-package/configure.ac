@@ -1,13 +1,27 @@
-AC_INIT([abess], m4_esyscmd_s([awk '/^Version:/ {print $2}' DESCRIPTION]))
+## abess configure.ac
+##
+## Copyright (C) Jin Zhu <zhuj37@mail2.sysu.edu.cn>
+
+# require at least autoconf 2.61
+AC_PREREQ(2.61)
+
+# Process this file with autoconf to produce a configure script.
+# Here, we haven't used command "AC_INIT([RProtoBuf], m4_esyscmd_s([awk -e '/^Version:/ {print $2}' DESCRIPTION]))" because it doesn't work sometimes.
+AC_INIT([abess], [0.4.5])
 
 # Find the compiler and compiler flags used by R.
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
-  echo "could not determine R_HOME"
-  exit 1
+  AC_MSG_ERROR([Could not determine R_HOME.])
 fi
+CXX=`"${R_HOME}/bin/R" CMD config CXX`
+CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+AC_LANG(C++)
+AC_REQUIRE_CPP
+AC_PROG_CPP
 
-# copy necessary compiler code into R-package
+# copy necessary dependence code into R-package
 echo '*****************************************************************************************'
 ## Spectra library
 if test -d inst/include/Spectra/
@@ -19,7 +33,7 @@ else
 fi
 echo '*****************************************************************************************'
 
-## core code for abess
+## copy core code into R-package/src
 cd src
 echo '*****************************************************************************************'
 if test -f workflow.h 
@@ -31,12 +45,6 @@ else
 fi
 echo '*****************************************************************************************'
 cd ..
-
-CXX=`"${R_HOME}/bin/R" CMD config CXX`
-CXXFLAGS=`"${R_HOME}/bin/R" CMD config CXXFLAGS`
-CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
-AC_LANG(C++)
-AC_PROG_CPP
 
 "${R_HOME}/bin/Rscript" -e "Rcpp::compileAttributes()"
 

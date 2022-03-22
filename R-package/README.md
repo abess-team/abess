@@ -5,7 +5,7 @@
 <!-- badges: start -->
 [![Python Build](https://github.com/abess-team/abess/actions/workflows/python_test.yml/badge.svg)](https://github.com/abess-team/abess/actions/workflows/python_test.yml)
 [![R Build](https://github.com/abess-team/abess/actions/workflows/r_test.yml/badge.svg)](https://github.com/abess-team/abess/actions/workflows/r_test.yml)
-[![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://codecov.io/gh/abess-team/abess)
+[![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://app.codecov.io/gh/abess-team/abess)
 [![docs](https://readthedocs.org/projects/abess/badge/?version=latest)](https://abess.readthedocs.io/en/latest/?badge=latest)
 [![R docs](https://github.com/abess-team/abess/actions/workflows/r_website.yml/badge.svg)](https://abess-team.github.io/abess/)
 [![cran](https://img.shields.io/cran/v/abess?logo=R)](https://cran.r-project.org/package=abess)
@@ -41,16 +41,11 @@ To install the `abess` R package from CRAN, just run:
 install.packages("abess")
 ```
 
-Alternative, you can install the newest version of abess from [github](https://github.com/) with:
-
-``` r
-library(devtools)
-install_github(repo = "abess-team/abess", subdir = "R-package")
-```
+Alternative, you can install the newest version of `abess` by following [this instruction](https://abess.readthedocs.io/en/latest/Installation.html#r-1).
 
 ## Runtime Performance
 
-To show the power of abess in computation, we assess its timings of the CPU execution (seconds) on synthetic datasets, and compare to state-of-the-art variable selection methods. The variable selection and estimation results are deferred to [performance](https://abess-team.github.io/abess/articles/v11-power-of-abess.html). All computations are conducted on a Ubuntu platform with Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM. We compare `abess` R package with three widely used R packages: `glmnet`, `ncvreg`, and `L0Learn`. We get the runtime comparison results:
+To show the power of `abess` in computation, we assess its timings of the CPU execution (seconds) on synthetic datasets, and compare to state-of-the-art variable selection methods. The variable selection and estimation results are deferred to [performance](https://abess-team.github.io/abess/articles/v11-power-of-abess.html). All computations are conducted on a Ubuntu platform with Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM. We compare `abess` R package with three widely used R packages: `glmnet`, `ncvreg`, and `L0Learn`. We get the runtime comparison results:
 
 <img src='https://raw.githubusercontent.com/abess-team/abess/master/docs/image/r_runtime.png'/></a>
 
@@ -72,18 +67,14 @@ You can redistribute it and/or modify it under the terms of the [GPL-v3 License]
 
 ## What's news?
 
-New features supported by the latest version (0.4.0) in R CRAN:
+New features supported by the latest version (0.4.5):
 
-* Support generalized linear model when the link function is Gamma distribution. 
-By setting `family = "gamma"` in `abess` function, users can analyze the dataset with a positive valued and skewed response. 
+* Support generalized linear model for ordinal response (setting`family = "ordinal"`), 
+also named as rank learning in machine learning community. 
 
-* Support flexible support size for sequential principal component analysis (PCA), accompanied with several helpful generic function like `plot`. 
+* Support robust principal analysis
 
-* Support user-specified cross validation division for `abess` and `abesspca` function by additional argument `foldid`. 
-
-* Support robust principal component analysis now. A new R function `abessrpca` can access it.
-
-* Improve the R package document by: adding more details and giving more links related to core functions.  
+* Modify R package structure to make many internal components are reusable.
 
 ## Citation         
 

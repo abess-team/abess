@@ -55,7 +55,7 @@ plot.abess <- function(x,
   } else {
     y_value <- x[["beta"]]
     if (type == "l2norm") {
-      if (class(y_value) == "list") {
+      if (inherits(y_value, "list")) {
         for (i in 1:length(y_value)) {
           y_value[[i]] <- Matrix::rowSums(y_value[[i]]^2)
         }

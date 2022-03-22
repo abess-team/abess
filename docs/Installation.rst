@@ -109,18 +109,26 @@ when installing with ``pip install -e .``. There are three solutions:
 R
 ~
 
-To install the development version, run the following code in R console:
+To install the development version, some dependencies need to be installed. 
+Before installing abess itself, some dependencies should be installed
+first, which may be a little different in different platforms:
+
+-  **Linux**: ``$ sudo apt install autoconf`` (for Ubuntu,
+   other Linux systems are similar);
+-  **Windows**: install `Rtools <https://cran.r-project.org/bin/windows/Rtools/>`__.
+-  **MacOS**: ``$ brew install autoconf``.
+
+Then, you need to install R library dependencies ``Rcpp`` and ``RcppEigen`` via conducting ``install.packages(c("Rcpp", "RcppEigen"))`` in R console. 
+
+After installing dependencies, run the following code in terminal/bash:
 
 .. code:: bash
-
-   R CMD INSTALL R-package
+   cd R-package
+   autoreconf
+   R CMD INSTALL .
 
 If it finishes with ``* DONE (abess)``, the installation is successful.
 
-Windows user will need to install
-`Rtools <https://cran.r-project.org/bin/windows/Rtools/>`__ first.
-
-Dependencies
 ------------
 
 C++

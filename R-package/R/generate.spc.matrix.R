@@ -58,7 +58,7 @@ generate.spc.matrix <- function(n, p, support.size = 3, snr = 20, sigma = NULL, 
     sparse.loading <- qr.Q(qr(sparse.loading))
     sparse.loading <- methods::as(sparse.loading, "dgCMatrix")
   } else {
-    stopifnot(class(sparse.loading) == "dgCMatrix")
+    stopifnot(inherits(sparse.loading, "dgCMatrix"))
     stopifnot(ncol(sparse.loading) == p)
   }
   support.size <- Matrix::colSums(sparse.loading != 0)

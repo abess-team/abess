@@ -313,7 +313,7 @@ x_matrix_info <- function(para, data)
   UseMethod("x_matrix_info")
 
 x_matrix_info.Initialization <- function(para, data) {
-  stopifnot(class(data$x)[1] %in% c("data.frame", "matrix", "dgCMatrix"))
+  stopifnot(inherits(data$x, "data.frame") || inherits(data$x, "matrix") || inherits(data$x, "dgCMatrix"))
   para$nvars <- ncol(data$x)
   para$nobs <- nrow(data$x)
   # if x is not a matrix type object, it will return NULL:
@@ -335,7 +335,7 @@ x_matrix_content_private <- function(least_col) {
     if (ncol(data$x) < least_col) {
       stop("x should have at least two columns!")
     }
-    para$sparse_X <- class(data$x)[1] == "dgCMatrix"
+    para$sparse_X <- inherits(data$x, "dgCMatrix")
     if (!para$sparse_X) {
       if (is.data.frame(data$x)) {
         data$x <- as.matrix(data$x)
@@ -626,7 +626,7 @@ sparse_level_list.pca <- function(para) {
         )))
     }  
   } else {
-    if (class(para$support.size) == "list") {
+    if (inherits(para$support.size, "list")) {
       stopifnot(length(para$support.size) == para$kpc.num)
       para$s_list <- lapply(para$support.size, function(x){
         stopifnot(any(is.numeric(x) & x >= 0))
@@ -646,7 +646,7 @@ sparse_level_list.pca <- function(para) {
     } 
   }
 
-  stopifnot(class(para$s_list) == "list") 
+  stopifnot(inherits(para$s_list, "list"))
   para$s_list_bool <-
     matrix(0, nrow = para$s_max, ncol = para$kpc.num)
   for (i in 1:para$kpc.num) {
