@@ -72,7 +72,7 @@ jobs:
 
       - name: Install package
         run: |
-          devtools::install(pkg = "R-package/")
+          devtools::install("../R-package/", upgrade = "never")
 
       - name: Install dependencies for checking
         run: |
