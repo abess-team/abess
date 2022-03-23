@@ -51,7 +51,7 @@ langulage you prefer.
 Python
 ~~~~~~
 
-Before installing abess itself, some dependent libraries should be installed
+Before installing ``abess``, some dependent libraries should be installed
 first, which may be a little different in
 different platforms:
 
@@ -110,7 +110,7 @@ R
 ~
 
 To install the development version, some dependencies need to be installed. 
-Before installing abess itself, some dependencies should be installed
+Before installing ``abess``, some dependencies should be installed
 first, which may be a little different in different platforms:
 
 -  **Linux**: ``$ sudo apt install autoconf`` (for Ubuntu,
@@ -129,13 +129,13 @@ After installing dependencies, run the following code in terminal/bash:
 
 If it finishes with ``* DONE (abess)``, the installation is successful.
 
-------------
+Dependency
+--------------
 
 C++
 ~~~
 
-Our core C++ code is based on some dependencies, which can be found in
-`abess/python/include <https://github.com/abess-team/abess/tree/master/python/include>`__:
+Our core C++ code is based on some dependencies:
 
 -  `Eigen <https://gitlab.com/libeigen/eigen/-/releases/3.3.4>`__
    (version 3.3.4): a C++ template library for linear algebra: matrices,
@@ -144,7 +144,7 @@ Our core C++ code is based on some dependencies, which can be found in
    (version 1.0.0): a header-only C++ library for large scale eigenvalue
    problems.
 
-They would be automatically included while installing the abess
+They would be automatically included while installing the ``abess``
 packages.
 
 OpenMP
@@ -185,7 +185,7 @@ Python
 
 Some `basic Python
 packages <https://github.com/abess-team/abess/blob/master/python/setup.py#:~:text=install_requires%3D%5B,%5D%2C>`__
-are required for abess. Actually, they can be found on
+are required for ``abess``. Actually, they can be found on
 ``abess/python/setup.py`` and automatically installed during the
 installation.
 
@@ -222,7 +222,7 @@ packages should be installed:
 R
 ~
 
-The R version should be 3.1.0 and newer in order to support C++11. abess
+The R version should be 3.1.0 and newer in order to support C++11. ``abess``
 R package relies on limited R packages dependencies:
 
 -  `Rcpp <https://cran.r-project.org/web/packages/Rcpp/index.html>`__:
