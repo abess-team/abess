@@ -62,7 +62,7 @@ jobs:
       - name: Install package on Windows
         if: matrix.os == 'windows-latest'
         working-directory: R-package
-        run: Rscript -e "system('R CMD INSTALL .')"
+        run: Rscript -e "system('R CMD INSTALL .')"  # we have tried 'run: R CMD INSTALL .' but it fails
 
       - name: Install dependencies for checking
         run: |
