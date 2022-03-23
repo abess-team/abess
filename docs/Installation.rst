@@ -129,7 +129,7 @@ After installing dependencies, run the following code in terminal/bash:
 
 If it finishes with ``* DONE (abess)``, the installation is successful.
 
-Dependency
+Dependencies
 --------------
 
 C++
