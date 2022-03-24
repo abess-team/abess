@@ -561,7 +561,7 @@ List abessUniversal_API(std::function<double(const Eigen::VectorXd& model_parame
 
     List out_result;
 
-    out_result = abessWorkflow<int, Eigen::VectorXd, int, int>(
+    out_result = abessWorkflow<int, Eigen::VectorXd, int, void*>(
         x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, ic_type, ic_coef, Kfold,
         parameters, screening_size, g_index, early_stop, thread, sparse_matrix, cv_fold_id, A_init,
         algorithm_list);
