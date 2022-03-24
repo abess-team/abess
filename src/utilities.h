@@ -24,6 +24,8 @@
 using namespace std;
 using namespace Eigen;
 
+#define UNIVERSAL_MODEL 0
+
 /**
  * @brief Save the sequential fitting result along the parameter searching.
  * @details All matrix stored here have only one column, and each row correspond to a
@@ -145,7 +147,7 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
  */
 template <class T4>
 T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type) {
-    if (ind.size() == X.cols() || model_type == 10 || model_type == 7) {
+    if (ind.size() == X.cols() || model_type == 10 || model_type == 7 || model_type == UNIVERSAL_MODEL) {
         return X;
     } else {
         T4 X_new(n, ind.size());

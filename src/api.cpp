@@ -539,6 +539,7 @@ List abessUniversal_API(std::function<double(const Eigen::VectorXd& model_parame
                         Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
                         Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
                         double primary_model_fit_epsilon, bool early_stop, int thread, int splicing_type, int sub_search, Eigen::VectorXi A_init) {
+    int screening_size = -1; // screen is not available now
 #ifdef _OPENMP
     // Eigen::initParallel();
     int max_thread = omp_get_max_threads();
