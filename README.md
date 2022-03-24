@@ -120,16 +120,14 @@ $ Rscript abess/docs/simulation/R/timings.R
 
 New features:
 
-- Modify python package to adapt to the criteria of [conda-forge](http://conda-forge.org) and `abess` is going to appear on conda-forge!
-- Rename estimators in Python. Please check [here](https://abess.readthedocs.io/en/latest/Python-package/index.html).
-- Support ["editable" install](https://pip.pypa.io/en/stable/cli/pip_install/#editable-installs).
-- Support predicting survival function in `abess.linear.CoxPHSurvivalAnalysis`.
+- `abess` R package is is highlighted as one of the core packages in [CRAN Task View: Machine Learning & Statistical Learning](https://cran.r-project.org/web/views/MachineLearning.html).
 - On Windows, the recommended C++ compiler shifts from Mingw to Microsoft Visual Studio.
+- Support predicting survival function in `abess.linear.CoxPHSurvivalAnalysis`.
+- Rename estimators in Python. Please check [here](https://abess.readthedocs.io/en/latest/Python-package/index.html).
 
 New best subset selection tasks: 
 
-- Support ordinal regression with `abess.linear.OrdinalRegresion`
-
+- Generalized linear model for ordinal regression (a.k.a rank learning in some machine learning literature).
 
 ## Citation         
 
