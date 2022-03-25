@@ -533,7 +533,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
 
     return out_result;
 }
-
+/*
 List abessUniversal_API(std::function<double(const Eigen::VectorXd& model_parameter, const void* data, Eigen::VectorXd* grad, Eigen::MatrixXd* hessian)>,
                         void* data, int model_parameter_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
                         Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
@@ -573,4 +573,4 @@ List abessUniversal_API(std::function<double(const Eigen::VectorXd& model_parame
 
     return out_result;
 }
-
+*/

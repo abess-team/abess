@@ -292,7 +292,7 @@ class Algorithm {
 
         this->update_tau(train_n, N);
         this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size,
-                    N, this->tau, this->train_loss, train_n);
+                    N, this->tau, this->train_loss);
 
         // Final fitting on `A`:
         //     For higher accuracy, fit again on chosen active set
@@ -310,7 +310,7 @@ class Algorithm {
 
     void get_A(T4 &X, T1 &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, T2 &beta, T3 &coef0,
                Eigen::VectorXd &bd, int T0, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size,
-               int N, double tau, double &train_loss, int n) {
+               int N, double tau, double &train_loss) {
         // Universal set:
         //     We only consider splicing on a set `U`,
         //     which may not contain all groups, but we hope all "useful" groups are included.
@@ -335,7 +335,7 @@ class Algorithm {
         }
 
         // int p = X.cols();
-        // int n = X.rows();
+        int n = X.rows();
         int C = C_max;
 
         // The outer iteration:
@@ -415,7 +415,7 @@ class Algorithm {
                 //     If new loss is smaller, accept it and return TRUE.
                 double l0 = train_loss;
                 bool exchange = this->splicing(*X_U, y, A_U, I_U, C_max, beta_U, coef0, bd_U, weights, g_index_U,
-                                               g_size_U, this->U_size, tau, l0, n);
+                                               g_size_U, this->U_size, tau, l0);
 
                 if (exchange)
                     train_loss = l0;
@@ -472,12 +472,12 @@ class Algorithm {
 
     bool splicing(T4 &X, T1 &y, Eigen::VectorXi &A, Eigen::VectorXi &I, int &C_max, T2 &beta, T3 &coef0,
                   Eigen::VectorXd &bd, Eigen::VectorXd &weights, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size,
-                  int N, double tau, double &train_loss, int n) {
+                  int N, double tau, double &train_loss) {
         if (C_max <= 0) return false;
 
         // init
         // int p = X.cols();
-        // int n = X.rows();
+        int n = X.rows();
 
         int A_size = A.size();
         int I_size = I.size();
@@ -628,7 +628,7 @@ class Algorithm {
     };
 };
 
-
+/*
 class abessUniversal : public Algorithm<int, Eigen::VectorXd, int, void*> {
 public:
     abessUniversal(int max_iter = 30, int primary_model_fit_max_iter = 10,
@@ -641,4 +641,5 @@ public:
     ~abessUniversal() {};
 
 };
+*/
 #endif  // SRC_ALGORITHM_H

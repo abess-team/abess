@@ -135,9 +135,11 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
  * @param data                          A pointer to struct consisting of data that the statistic model need. // correspond to  x,y
  * @param model_parameter_size          The number of the statistic model's parameters. // correspond to n,p
 */
+/*
 List abessUniversal_API(std::function<double(const Eigen::VectorXd& model_parameter, const void* data, Eigen::VectorXd* grad, Eigen::MatrixXd* hessian)>,
                         void* data, int model_parameter_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
                         Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
                         Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
                         double primary_model_fit_epsilon, bool early_stop, int thread, int splicing_type, int sub_search, Eigen::VectorXi A_init);
+*/
 #endif  // SRC_API_H
