@@ -30,25 +30,7 @@ void UniversalData::get_compute_para(const Eigen::VectorXd& effective_para, Eige
         }
     }
 }
-/*
-Eigen::VectorXd UniversalData::get_complete_para(const Eigen::VectorXd& effective_para) const 
-{
-    // assert(this->effective_dim == effective_para.size());
-    Eigen::VectorXd complete_para = Eigen::VectorXd::Zero(this->dim);
-    for (int i = 0; i < this->effective_dim; i++) {
-        complete_para[this->effective_para_index[i]] = effective_para[i];
-    }
-    return complete_para;
-}
 
-void get_effective_para(const Eigen::VectorXd& complete_para, Eigen::VectorXd& effective_para) const
-{
-    effective_para = Eigen::VectorXd(this->effective_dim());
-    for (int i = 0; i < this->effective_dim(); i++) {
-        effective_para[i] = complete_para[this->effective_para_index[i]];
-    }
-}
-*/
 optim_function UniversalData::get_optim_function() const
 {
     auto _func = [this](const Eigen::VectorXd& effective_para, Eigen::VectorXd* gradient, void* data) {
