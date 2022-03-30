@@ -628,18 +628,4 @@ class Algorithm {
     };
 };
 
-/*
-class abessUniversal : public Algorithm<int, Eigen::VectorXd, int, void*> {
-public:
-    abessUniversal(int max_iter = 30, int primary_model_fit_max_iter = 10,
-        double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5,
-        Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
-        : Algorithm<int, Eigen::VectorXd, int, void*>::Algorithm(
-            6, UNIVERSAL_MODEL, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start,
-            exchange_num, always_select, splicing_type, sub_search) {};
-
-    ~abessUniversal() {};
-
-};
-*/
 #endif  // SRC_ALGORITHM_H
