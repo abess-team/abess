@@ -33,18 +33,26 @@ void UniversalData::get_compute_para(const VectorXd& effective_para, VectorXd& c
     }
 }
 
-optim_function UniversalData::get_optim_function() const
+optim_function UniversalData::get_optim_function(double lambda) const
 {
-    auto _func = [this](const VectorXd& effective_para, VectorXd* gradient, void* data) {
-        return ((universal_function)this->function)(effective_para, *this, gradient, NULL);
+    auto _func = [this,lambda](const VectorXd& effective_para, VectorXd* gradient, void* data) {
+        double value = ((universal_function)this->function)(effective_para, *this, gradient, NULL) + lambda * effective_para.cwiseAbs2().sum();
+        *gradient = *gradient + 2 * lambda * effective_para;
+        return value;
     };
     return _func;
 }
 
+double UniversalData::loss(const VectorXd& effective_para, double lambda)
+{
+    return ((universal_function)this->function)(effective_para, *this, NULL, NULL) + lambda * effective_para.cwiseAbs2().sum();
+}
 
-void UniversalData::gradient(const VectorXd& effective_para, VectorXd& gradient)
+
+void UniversalData::gradient(const VectorXd& effective_para, VectorXd& gradient, double lambda)
 {
     ((universal_function)this->function)(effective_para, *this, &gradient, NULL);
+    gradient = gradient + 2 * lambda * effective_para;
 }
 
 int UniversalData::cols() const
@@ -57,15 +65,17 @@ int UniversalData::rows() const
     return sample_size;
 }
 
-void UniversalData::hessian(const VectorXd& effective_para, MatrixXd& hessian)
+void UniversalData::hessian(const VectorXd& effective_para, MatrixXd& hessian, double lambda)
 {
     ((universal_function)this->function)(effective_para, *this, NULL, &hessian);
+    hessian = hessian + 2 * lambda * MatrixXd::Identity(hessian.rows(), hessian.cols());
 }
 
-void UniversalData::hessian(const VectorXd& effective_para, VectorXd& gradient, MatrixXd& hessian, int index, int size)
+void UniversalData::hessian(const VectorXd& effective_para, VectorXd& gradient, MatrixXd& hessian, int index, int size, double lambda)
 {
     this->compute_para_index = this->effective_para_index.segment(index, size);
     ((universal_function)this->function)(effective_para, *this, &gradient, &hessian);
+    hessian = hessian + 2 * lambda * MatrixXd::Identity(hessian.rows(), hessian.cols());
     VectorXi a;
     this->compute_para_index = a;
 }
