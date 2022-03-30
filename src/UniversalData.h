@@ -15,12 +15,12 @@
 class UniversalData{  
 protected:
     const int dim; // length of complete_para
-    universal_function function;
+    void* function;
     void* data;
     Eigen::VectorXi effective_para_index; //  complete_para[effective_para_index[i]] = effective_para[i], ohter location of complete_para is 0
     Eigen::VectorXi compute_para_index; //  when its size is zero, compute_para equals to effective_para
 public:
-    UniversalData(int dim, universal_function function, void* data);
+    UniversalData(int dim, void* function, void* data);
     UniversalData(const UniversalData& original, const Eigen::VectorXi& target_para_index); // update effective_para accroding to target_para_index
     void get_compute_para(const Eigen::VectorXd& effective_para, Eigen::VectorXd& compute_para) const; // extract compute_para from effective_para
     optim_function get_optim_function() const; // create a function which can be optimized by OptimLib
@@ -30,7 +30,7 @@ public:
  
 };
 
-typedef std::function<double(const Eigen::VectorXd& effective_para, const UniversalData& universal_data, Eigen::VectorXd* gradient, Eigen::MatrixXd* hessian)> universal_function;
-typedef std::function<double(const Eigen::VectorXd& effective_para, Eigen::VectorXd* gradient, void* data)> optim_function;
+typedef double(*universal_function)(const Eigen::VectorXd& effective_para, const UniversalData& universal_data, Eigen::VectorXd* gradient, Eigen::MatrixXd* hessian);
+typedef std::function<double(const Eigen::VectorXd& , Eigen::VectorXd* , void* )> optim_function;
 
 #endif
