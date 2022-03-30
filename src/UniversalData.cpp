@@ -2,7 +2,7 @@
 
 using namespace Eigen;
 
-UniversalData::UniversalData(int dim, void* function, void* data) :dim(dim),function(function),data(data)
+UniversalData::UniversalData(int dim, void* function, void* data, int sample_size = 1) :dim(dim),function(function),data(data),sample_size(sample_size)
 {
     this->effective_para_index = VectorXi::LinSpaced(dim, 0, dim - 1);
 }
@@ -45,6 +45,16 @@ optim_function UniversalData::get_optim_function() const
 void UniversalData::gradient(const VectorXd& effective_para, VectorXd& gradient)
 {
     ((universal_function)this->function)(effective_para, *this, &gradient, NULL);
+}
+
+int UniversalData::cols() const
+{
+    return effective_para_index.size();
+}
+
+int UniversalData::rows() const
+{
+    return sample_size;
 }
 
 void UniversalData::hessian(const VectorXd& effective_para, MatrixXd& hessian)

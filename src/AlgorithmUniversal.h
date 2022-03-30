@@ -5,26 +5,13 @@
 #include"UniversalData.h"
 
 class abessUniversal : public Algorithm<int, Eigen::VectorXd, int, UniversalData> {
-    int sample_size;
-    int model_size;
 public:
     abessUniversal(int sample_size, int model_size, int max_iter = 30, int primary_model_fit_max_iter = 10,
         double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5,
         Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
         : Algorithm<int, Eigen::VectorXd, int, UniversalData>::Algorithm(
             6, UNIVERSAL_MODEL, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start,
-            exchange_num, always_select, splicing_type, sub_search) {
-        this->sample_size = sample_size;
-        this->model_size = model_size;
-    };
-
-    int get_beta_size(int n, int p) {
-        return model_size;
-    };
-
-    Eigen::VectorXi inital_screening(UniversalData& X, int& y, Eigen::VectorXd& beta, int& coef0, Eigen::VectorXi& A, Eigen::VectorXi& I,
-        Eigen::VectorXd& bd, Eigen::VectorXd& weights, Eigen::VectorXi& g_index,
-        Eigen::VectorXi& g_size, int& N);
+            exchange_num, always_select, splicing_type, sub_search) {};
 
     double loss_function(UniversalData& X, int& y, Eigen::VectorXd& weights, Eigen::VectorXd& beta, int& coef0, Eigen::VectorXi& A,
         Eigen::VectorXi& g_index, Eigen::VectorXi& g_size, double lambda);
