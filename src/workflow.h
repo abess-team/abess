@@ -93,7 +93,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     //     pack & initial all information of data,
     //     including normalize.
     Data<T1, T2, T3, T4> data(x, y, normalize_type, weight, g_index, sparse_matrix, beta_size);
-    if (algorithm_list[0]->model_type == 1 || algorithm_list[0]->model_type == 5) {
+    if (algorithm_list[0]->model_type == LM_MODEL || algorithm_list[0]->model_type == MUL_LM_MODEL) {
         add_weight(data.x, data.y, data.weight);
     }
 

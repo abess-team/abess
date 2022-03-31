@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include "utilities.h"
 
 using namespace std;
 using namespace Eigen;
@@ -306,6 +307,14 @@ void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::Spars
         }
     }
     return;
+}
+
+void slice(UniversalData& nums, Eigen::VectorXi& ind, UniversalData& A, int axis = 1)
+{
+    if (axis != 1) {
+        cout << "UniversalData can't be sliced by axis != 1"; //TODO
+    }
+    A = UniversalData(nums, ind);
 }
 
 void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nums, int axis) {

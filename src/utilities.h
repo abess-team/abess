@@ -21,10 +21,21 @@
 
 #include <cfloat>
 #include <iostream>
+#include "UniversalData.h"
 using namespace std;
 using namespace Eigen;
 
-#define UNIVERSAL_MODEL 0
+constexpr int UNIVERSAL_MODEL = 0;
+constexpr int LM_MODEL = 1;
+constexpr int LOGISTIC_MODEL = 2;
+constexpr int POISSON_MODEL = 3;
+constexpr int COX_MODEL = 4;
+constexpr int MUL_LM_MODEL = 5;
+constexpr int MUL_NOMIAL_MODEL = 6;
+constexpr int PCA_MODEL = 7;
+constexpr int GAMMA_MODEL = 8;
+constexpr int ORDINAL_MODEL = 9;
+constexpr int RPCA_MODEL = 10;
 
 /**
  * @brief Save the sequential fitting result along the parameter searching.
@@ -150,7 +161,7 @@ T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type) {
     if (model_type == UNIVERSAL_MODEL) {
         return T4(X, ind);
     }
-    else if (ind.size() == X.cols() || model_type == 10 || model_type == 7) {
+    else if (ind.size() == X.cols() || model_type == PCA_MODEL || model_type == RPCA_MODEL) {
         return X;
     } else {
         T4 X_new(n, ind.size());
@@ -235,6 +246,7 @@ Eigen::VectorXi max_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
 void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int axis = 0);
 void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int axis = 0);
 void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::SparseMatrix<double> &A, int axis = 0);
+void slice(UniversalData& nums, Eigen::VectorXi& ind, UniversalData& A, int axis = 1);
 /**
  * @brief The inverse action of function slice.
  */

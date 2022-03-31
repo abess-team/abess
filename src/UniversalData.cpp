@@ -1,10 +1,20 @@
 #include"UniversalData.h"
 
 using namespace Eigen;
+using namespace std;
 
-UniversalData::UniversalData(int dim, void* function, void* data, int sample_size = 1) :dim(dim),function(function),data(data),sample_size(sample_size)
+UniversalData::UniversalData(int model_size, int sample_size, void* function, void* data) :model_size(model_size), sample_size(sample_size), function(function),data(data)
 {
-    this->effective_para_index = VectorXi::LinSpaced(dim, 0, dim - 1);
+    if (this->sample_size < 1) {
+        this->sample_size = 1;
+    }
+    if (this->model_size < 1) {
+        this->model_size = 1;
+    }
+    this->effective_para_index = VectorXi::LinSpaced(model_size, 0, model_size - 1);
+    // check data and function
+    VectorXd zero = VectorXd::Zero(model_size);
+    ((universal_function)function)(zero, *this, NULL, NULL);
 }
 
 UniversalData::UniversalData(const UniversalData& original, const VectorXi& target_para_index) : UniversalData(original)
@@ -22,7 +32,7 @@ void UniversalData::get_compute_para(const VectorXd& effective_para, VectorXd& c
     }
     else {
         // assert(effective_para.size() == this->effective_para_index.size());
-        VectorXd complete_para = VectorXd::Zero(this->dim);
+        VectorXd complete_para = VectorXd::Zero(this->model_size);
         for (int i = 0; i < this->effective_para_index.size(); i++) {
             complete_para[this->effective_para_index[i]] = effective_para[i];
         }
