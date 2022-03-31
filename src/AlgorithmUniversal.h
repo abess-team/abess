@@ -4,14 +4,14 @@
 #include "Algorithm.h"
 #include"UniversalData.h"
 
-class abessUniversal : public Algorithm<Eigen::Matrix<int,1,1>, Eigen::VectorXd, double, UniversalData> {
+class abessUniversal : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, UniversalData> {
 private:
     double enough_small = 1e-9;
 public:
     abessUniversal(int max_iter = 30, int primary_model_fit_max_iter = 10,
         double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5,
         Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
-        : Algorithm<Eigen::Matrix<int, 1, 1>, Eigen::VectorXd, double, UniversalData>::Algorithm(
+        : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, UniversalData>::Algorithm(
             6, UNIVERSAL_MODEL, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start,
             exchange_num, always_select, splicing_type, sub_search) {};
     ~abessUniversal() {};

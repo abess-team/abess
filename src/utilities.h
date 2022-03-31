@@ -158,10 +158,7 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
  */
 template <class T4>
 T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type) {
-    if (model_type == UNIVERSAL_MODEL) {
-        return T4(X, ind);
-    }
-    else if (ind.size() == X.cols() || model_type == PCA_MODEL || model_type == RPCA_MODEL) {
+    if (ind.size() == X.cols() || model_type == PCA_MODEL || model_type == RPCA_MODEL) {
         return X;
     } else {
         T4 X_new(n, ind.size());
@@ -171,6 +168,10 @@ T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type) {
         return X_new;
     }
 };
+
+// The non-template function will be preferred.
+UniversalData X_seg(UniversalData& X, int n, Eigen::VectorXi& ind, int model_type); 
+
 
 // template <class T4>
 // void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
@@ -246,7 +247,7 @@ Eigen::VectorXi max_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
 void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int axis = 0);
 void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int axis = 0);
 void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::SparseMatrix<double> &A, int axis = 0);
-void slice(UniversalData& nums, Eigen::VectorXi& ind, UniversalData& A, int axis = 1);
+void slice(UniversalData& nums, Eigen::VectorXi& ind, UniversalData& A, int axis = 0);
 /**
  * @brief The inverse action of function slice.
  */
@@ -431,5 +432,7 @@ void add_weight(Eigen::SparseMatrix<double> &x, Eigen::VectorXd &y, Eigen::Vecto
  * @brief Add weights information into data.
  */
 void add_weight(Eigen::SparseMatrix<double> &x, Eigen::MatrixXd &y, Eigen::VectorXd weights);
-
+// Invalid function to cope with compiler check
+template <class T1,class T2, class T3>
+void add_weight(T1& x, T2& y, T3& weights) {};
 #endif  // SRC_UTILITIES_H

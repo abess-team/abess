@@ -42,7 +42,7 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, 
 
     for (int i = 0; i < g_num; i++) {
         int p_tmp = g_size(i);
-        Eigen::VectorXi index = Eigen::VectorXi::LinSpaced(p_tmp£¬g_index(i)£¬g_index(i) + p_tmp - 1);
+        Eigen::VectorXi index = Eigen::VectorXi::LinSpaced(p_tmp, g_index(i), g_index(i) + p_tmp - 1);
         T4 x_tmp = X_seg(data.x, n, index, algorithm_list[0]->model_type);
         Eigen::VectorXi g_index_tmp = Eigen::VectorXi::LinSpaced(p_tmp, 0, p_tmp - 1);
         Eigen::VectorXi g_size_tmp = Eigen::VectorXi::Ones(p_tmp);

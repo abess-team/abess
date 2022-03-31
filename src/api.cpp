@@ -551,14 +551,14 @@ List abessUniversal_API(void* function, void* data, int model_size, int sample_s
     omp_set_num_threads(thread);
 #endif
     UniversalData x(model_size, sample_size, function, data); // UniversalData is just like a matrix.
-    Matrix<int, 1, 1> y{ 0 }; // Invalid variable, create it just for interface compatibility
+    VectorXd y; // Invalid variable, create it just for interface compatibility
     int normalize_type = 0; // offer normalized data if need
     VectorXd weight;  // only can be implemented inside the model
     int Kfold = 1;    // cv is not available now
     VectorXi cv_fold_id; // cv is not available now
 
     int algorithm_list_size = max(thread, Kfold); 
-    vector<Algorithm<Matrix<int, 1, 1>, VectorXd, double, UniversalData>*> algorithm_list(algorithm_list_size);
+    vector<Algorithm<VectorXd, VectorXd, double, UniversalData>*> algorithm_list(algorithm_list_size);
     for (int i = 0; i < algorithm_list_size; i++) {
         algorithm_list[i] = new abessUniversal(max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon,
             is_warm_start, exchange_num, always_select, splicing_type, sub_search);
@@ -567,7 +567,7 @@ List abessUniversal_API(void* function, void* data, int model_size, int sample_s
     Parameters parameters(sequence, lambda_seq, s_min, s_max);
 
     List out_result;
-    out_result = abessWorkflow<Matrix<int, 1, 1>, VectorXd, double, UniversalData>(x, y, sample_size, model_size, normalize_type, weight, 6, path_type, is_warm_start, ic_type, ic_coef, Kfold,
+    out_result = abessWorkflow<VectorXd, VectorXd, double, UniversalData>(x, y, sample_size, model_size, normalize_type, weight, 6, path_type, is_warm_start, ic_type, ic_coef, Kfold,
         parameters, screening_size, g_index, early_stop, thread, true, cv_fold_id, A_init, algorithm_list);
     
     for (int i = 0; i < algorithm_list_size; i++) {

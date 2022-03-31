@@ -43,14 +43,13 @@ void UniversalData::get_compute_para(const VectorXd& effective_para, VectorXd& c
     }
 }
 
-optim_function UniversalData::get_optim_function(double lambda) const
+optim_function UniversalData::get_optim_function(double lambda)
 {
-    auto _func = [this,lambda](const VectorXd& effective_para, VectorXd* gradient, void* data) {
+    return [this,lambda](const VectorXd& effective_para, VectorXd* gradient, void* data) {
         double value = ((universal_function)this->function)(effective_para, *this, gradient, NULL) + lambda * effective_para.cwiseAbs2().sum();
         *gradient = *gradient + 2 * lambda * effective_para;
         return value;
     };
-    return _func;
 }
 
 double UniversalData::loss(const VectorXd& effective_para, double lambda)

@@ -28,4 +28,11 @@ void Normalize3(Eigen::SparseMatrix<double> &X, Eigen::VectorXd &weights, Eigen:
                 Eigen::VectorXd &normx);
 void Normalize4(Eigen::SparseMatrix<double> &X, Eigen::VectorXd &weights, Eigen::VectorXd &normx);
 
+// Invalid function to cope with compiler check
+template <class T1, class T2, class T3, class T4, class T5, class T6>
+void Normalize(T1& X,T2& y, T3& weights, T4& meanx,T5& meany, T6& normx) {};
+template <class T1, class T2, class T3, class T4>
+void Normalize3(T1& X, T2& y, T3& weights, T4& meanx) {};
+template <class T1, class T2, class T3>
+void Normalize4(T1& X, T2& y, T3& weights) {};
 #endif  // SRC_NORMALIZE_H

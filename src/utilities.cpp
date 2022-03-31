@@ -37,6 +37,10 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &gindex, Eigen::Vec
     }
 }
 
+UniversalData X_seg(UniversalData& X, int n, Eigen::VectorXi& ind, int model_type) {
+    return UniversalData(X, ind);
+}
+
 Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &Phi, int N) {
     Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(N, 1);
     int row;
@@ -309,7 +313,7 @@ void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::Spars
     return;
 }
 
-void slice(UniversalData& nums, Eigen::VectorXi& ind, UniversalData& A, int axis = 1)
+void slice(UniversalData& nums, Eigen::VectorXi& ind, UniversalData& A, int axis)
 {
     if (axis != 1) {
         cout << "UniversalData can't be sliced by axis != 1"; //TODO
@@ -545,3 +549,5 @@ void add_weight(Eigen::SparseMatrix<double> &x, Eigen::MatrixXd &y, Eigen::Vecto
     Eigen::VectorXd sqrt_weight = weights.array().sqrt();
     array_product(y, sqrt_weight, 1);
 };
+
+

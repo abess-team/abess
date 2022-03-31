@@ -9,8 +9,8 @@
 #endif
 
 #include<functional>
-// #include<assert.h>
 
+typedef std::function<double(const Eigen::VectorXd&, Eigen::VectorXd*, void*)> optim_function;
 
 // UniversalData includes everything about the statistic model like samples, loss.
 // In abess project, UniversalData will be an instantiation of T4 in template class algorithm, other instantiation of T4 often is matrix.
@@ -29,7 +29,7 @@ public:
     UniversalData(int model_size, int sample_size, void* function, void* data);
     UniversalData(const UniversalData& original, const Eigen::VectorXi& target_para_index); // update effective_para accroding to target_para_index
     void get_compute_para(const Eigen::VectorXd& effective_para, Eigen::VectorXd& compute_para) const; // extract compute_para from effective_para
-    optim_function get_optim_function(double lambda) const; // create a function which can be optimized by OptimLib
+    optim_function get_optim_function(double lambda); // create a function which can be optimized by OptimLib
     double loss(const Eigen::VectorXd& effective_para, double lambda); // compute the loss with effective_para
     void gradient(const Eigen::VectorXd& effective_para, Eigen::VectorXd& gradient, double lambda); // compute the gradient of effective_para
     void hessian(const Eigen::VectorXd& effective_para, Eigen::MatrixXd& hessian, double lambda); // compute the hessian of effective_para
@@ -39,6 +39,6 @@ public:
 };
 
 typedef double(*universal_function)(const Eigen::VectorXd& effective_para, const UniversalData& universal_data, Eigen::VectorXd* gradient, Eigen::MatrixXd* hessian);
-typedef std::function<double(const Eigen::VectorXd& , Eigen::VectorXd* , void* )> optim_function;
+
 
 #endif
