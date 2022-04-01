@@ -31,7 +31,8 @@ Imports:
     Matrix
 LinkingTo: 
     Rcpp,
-    RcppEigen
+    RcppEigen,
+    nloptr
 RoxygenNote: 7.1.2
 SystemRequirements: C++11
 Suggests: 

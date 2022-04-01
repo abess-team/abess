@@ -14,7 +14,7 @@ UniversalData::UniversalData(int model_size, int sample_size, void* function, vo
     this->effective_para_index = VectorXi::LinSpaced(model_size, 0, model_size - 1);
     // check data and function
     VectorXd zero = VectorXd::Zero(model_size);
-    ((universal_function)function)(zero, *this, NULL, NULL);
+    static_cast<universal_function>(this->function)(zero, *this, NULL, NULL);
 }
 
 UniversalData::UniversalData(const UniversalData& original, const VectorXi& target_para_index) : UniversalData(original)
@@ -27,7 +27,7 @@ UniversalData::UniversalData(const UniversalData& original, const VectorXi& targ
 }
 void UniversalData::get_compute_para(const VectorXd& effective_para, VectorXd& compute_para) const
 {
-    if (this->compute_para_index.size() == 0) {
+    if (this->compute_para_index_ptr == NULL) {
         compute_para = effective_para;
     }
     else {
@@ -36,9 +36,9 @@ void UniversalData::get_compute_para(const VectorXd& effective_para, VectorXd& c
         for (int i = 0; i < this->effective_para_index.size(); i++) {
             complete_para[this->effective_para_index[i]] = effective_para[i];
         }
-        compute_para = VectorXd(this->compute_para_index.size());
+        compute_para = VectorXd(this->compute_para_index_ptr->size());
         for (int i = 0; i < compute_para.size(); i++) {
-            compute_para[i] = complete_para[this->compute_para_index[i]];
+            compute_para[i] = complete_para[(* this->compute_para_index_ptr)[i]];
         }
     }
 }
@@ -46,21 +46,55 @@ void UniversalData::get_compute_para(const VectorXd& effective_para, VectorXd& c
 optim_function UniversalData::get_optim_function(double lambda)
 {
     return [this,lambda](const VectorXd& effective_para, VectorXd* gradient, void* data) {
-        double value = ((universal_function)this->function)(effective_para, *this, gradient, NULL) + lambda * effective_para.cwiseAbs2().sum();
-        *gradient = *gradient + 2 * lambda * effective_para;
+        double value = static_cast<universal_function>(this->function)(effective_para, *this, gradient, NULL) + lambda * effective_para.cwiseAbs2().sum();
+        if (gradient) {
+            *gradient = *gradient + 2 * lambda * effective_para;
+        }
         return value;
     };
 }
 
+nlopt_function UniversalData::get_nlopt_function(double lambda) {
+    if (lambda == 0.) { // optimize for frequent degradation situations
+        return [](unsigned n, const double* x, double* grad, void* f_data) {
+            Map<VectorXd const> effective_para(x, n);
+            VectorXd* gradient = NULL;
+            if (grad) { // not use operator new
+                Map<VectorXd> grad_tem(grad, n);
+                gradient = (VectorXd*)&grad_tem;
+            }
+            return static_cast<universal_function>(static_cast<UniversalData*>(f_data)->function)(effective_para, *static_cast<UniversalData*>(f_data), gradient, NULL);
+        };
+    }
+    else {
+        this->lambda = lambda;
+        return [](unsigned n, const double* x, double* grad, void* f_data) {
+            UniversalData* data = static_cast<UniversalData*>(f_data);
+            Map<VectorXd const> effective_para(x, n);
+            VectorXd* gradient = NULL;
+            if (grad) { // not use operator new
+                Map<VectorXd> grad_tem(grad, n);
+                gradient = (VectorXd*)&grad_tem;
+            }
+            double value = static_cast<universal_function>(data->function)(effective_para, *data, gradient, NULL) + data->lambda * effective_para.cwiseAbs2().sum();
+            if (gradient) {
+                *gradient = *gradient + 2 * data->lambda * effective_para;
+            }
+            return value;
+        };
+    }
+   
+}
+
 double UniversalData::loss(const VectorXd& effective_para, double lambda)
 {
-    return ((universal_function)this->function)(effective_para, *this, NULL, NULL) + lambda * effective_para.cwiseAbs2().sum();
+    return static_cast<universal_function>(this->function)(effective_para, *this, NULL, NULL) + lambda * effective_para.cwiseAbs2().sum();
 }
 
 
 void UniversalData::gradient(const VectorXd& effective_para, VectorXd& gradient, double lambda)
 {
-    ((universal_function)this->function)(effective_para, *this, &gradient, NULL);
+    static_cast<universal_function>(this->function)(effective_para, *this, &gradient, NULL);
     gradient = gradient + 2 * lambda * effective_para;
 }
 
@@ -76,15 +110,20 @@ int UniversalData::rows() const
 
 void UniversalData::hessian(const VectorXd& effective_para, MatrixXd& hessian, double lambda)
 {
-    ((universal_function)this->function)(effective_para, *this, NULL, &hessian);
+    static_cast<universal_function>(this->function)(effective_para, *this, NULL, &hessian);
     hessian = hessian + 2 * lambda * MatrixXd::Identity(hessian.rows(), hessian.cols());
 }
 
 void UniversalData::hessian(const VectorXd& effective_para, VectorXd& gradient, MatrixXd& hessian, int index, int size, double lambda)
 {
-    this->compute_para_index = this->effective_para_index.segment(index, size);
-    ((universal_function)this->function)(effective_para, *this, &gradient, &hessian);
-    hessian = hessian + 2 * lambda * MatrixXd::Identity(hessian.rows(), hessian.cols());
-    VectorXi a;
-    this->compute_para_index = a;
+    VectorXi tem = this->effective_para_index.segment(index, size);
+    this->compute_para_index_ptr = &tem;
+    static_cast<universal_function>(this->function)(effective_para, *this, &gradient, &hessian);
+    if (size == 1) {
+        hessian[0, 0] += 2 * lambda;
+    }
+    else {
+        hessian = hessian + 2 * lambda * MatrixXd::Identity(hessian.rows(), hessian.cols());
+    }
+    this->compute_para_index_ptr = NULL;
 }
