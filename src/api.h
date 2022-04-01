@@ -141,9 +141,11 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
  * @param sample_size                   The number of the samples. 
  *                                      This parameter corresponds to n of abessGLM.
  */
-List abessUniversal_API(void* function, void* data, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
-                        Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
-                        Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
-                        double primary_model_fit_epsilon, bool early_stop, int thread, int splicing_type, int sub_search, Eigen::VectorXi A_init);
+
+List abessUniversal_API(SEXP function, SEXP data, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
+    Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
+    Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
+    double primary_model_fit_epsilon, bool early_stop, int thread, int splicing_type, int sub_search, Eigen::VectorXi A_init);
+
 
 #endif  // SRC_API_H

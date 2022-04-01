@@ -1,12 +1,8 @@
 #ifndef SRC_UNIVERSALDATA_H
 #define SRC_UNIVERSALDATA_H
 
-#ifdef R_BUILD
 #include <RcppEigen.h>
 // [[Rcpp::depends(RcppEigen)]]
-#else
-#include <Eigen/Eigen>
-#endif
 
 #include<functional>
 
@@ -30,7 +26,23 @@ protected:
     UniversalData() = default;
     UniversalData(int model_size, int sample_size, function_ptr function, void* data);
     UniversalData(const UniversalData& original, const Eigen::VectorXi& target_para_index); // update effective_para accroding to target_para_index
-    void get_compute_para(const Eigen::VectorXd& effective_para, Eigen::VectorXd& compute_para) const; // extract compute_para from effective_para
+    void get_compute_para(const Eigen::VectorXd& effective_para, Eigen::VectorXd& compute_para) const // extract compute_para from effective_para
+    {
+        if (this->compute_para_index_ptr == NULL) {
+            compute_para = effective_para;
+        }
+        else {
+            // assert(effective_para.size() == this->effective_para_index.size());
+            Eigen::VectorXd complete_para = Eigen::VectorXd::Zero(this->model_size);
+            for (int i = 0; i < this->effective_para_index.size(); i++) {
+                complete_para[this->effective_para_index[i]] = effective_para[i];
+            }
+            compute_para = Eigen::VectorXd(this->compute_para_index_ptr->size());
+            for (int i = 0; i < compute_para.size(); i++) {
+                compute_para[i] = complete_para[(*this->compute_para_index_ptr)[i]];
+            }
+        }
+    }
     optim_function get_optim_function(double lambda); // create a function which can be optimized by OptimLib 
     nlopt_function get_nlopt_function(double lambda); // create a function which can be optimized by nlopt
     double loss(const Eigen::VectorXd& effective_para, double lambda); // compute the loss with effective_para

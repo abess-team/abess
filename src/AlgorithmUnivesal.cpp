@@ -5,7 +5,7 @@
 #include <nloptrAPI.h>
 // [[Rcpp::depends(nloptr)]]
 #else
-// #include"nlopt/nlopt.h" // TODO: need to rewrite into python version
+#include"nlopt/nlopt.h" // TODO: need to rewrite into python version
 #endif
 
 using namespace std;
@@ -55,7 +55,7 @@ void abessUniversal::sacrifice(UniversalData& data, UniversalData& XA, int& y, V
             // Optimize for degradation situations, it often happens
             if (hessian_group(0, 0) < this->enough_small) {
                 cout << "hessian is not positive definite!"; 
-                sacrifice(I[i]) = gradient_group(0, 0)* gradient_group(0, 0) / this->enough_small;
+                sacrifice(I[i]) = gradient_group(0, 0) * gradient_group(0, 0) / this->enough_small;
             }
             else {
                 sacrifice(I[i]) = gradient_group(0, 0) * gradient_group(0, 0) / hessian_group(0, 0);

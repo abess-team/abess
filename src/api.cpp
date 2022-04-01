@@ -535,7 +535,8 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
     return out_result;
 }
 
-List abessUniversal_API(void* function, void* data, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
+// [[Rcpp::export]]
+List abessUniversal_API(SEXP s_function, SEXP s_data, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
     Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
     Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
     double primary_model_fit_epsilon, bool early_stop, int thread, int splicing_type, int sub_search, Eigen::VectorXi A_init)
@@ -550,6 +551,12 @@ List abessUniversal_API(void* function, void* data, int model_size, int sample_s
     Eigen::setNbThreads(thread);
     omp_set_num_threads(thread);
 #endif
+#ifdef R_BUILD
+    Rcpp::XPtr<function_ptr> xptr_func(s_function);
+    function_ptr function = *xptr_func;
+    Rcpp::XPtr<void*> xptr_data(s_data);
+    void* data = *xptr_data;
+#endif // R_BUILD
     UniversalData x(model_size, sample_size, function, data); // UniversalData is just like a matrix.
     VectorXd y; // Invalid variable, create it just for interface compatibility
     int normalize_type = 0; // offer normalized data if need
