@@ -2,7 +2,8 @@
 #' @export
 abessUniversal <- function(
                           f,
-                          d,
+                          model_size,
+                          sample_size,
                           x,
                           y,
                           family = c(
@@ -123,9 +124,8 @@ abessUniversal <- function(
   
   result <- abessUniversal_API(
     s_function = f,
-    s_data = d,
-    model_size = nvars,
-    sample_size = nobs,
+    model_size = model_size,
+    sample_size = sample_size,
     max_iter = max_splicing_iter,
     exchange_num = c_max,
     path_type = path_type,

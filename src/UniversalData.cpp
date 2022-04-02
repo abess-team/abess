@@ -3,7 +3,8 @@
 using namespace Eigen;
 using namespace std;
 
-UniversalData::UniversalData(int model_size, int sample_size, function_ptr function, void* data) :model_size(model_size), sample_size(sample_size), function(function),data(data)
+UniversalData::UniversalData(int model_size, int sample_size, function_ptr function) 
+    :model_size(model_size), sample_size(sample_size), function(function)
 {
     if (this->sample_size < 1) {
         this->sample_size = 1;
@@ -23,23 +24,6 @@ UniversalData::UniversalData(const UniversalData& original, const VectorXi& targ
     this->effective_para_index = VectorXi(target_para_index.size());
     for (int i = 0; i < target_para_index.size(); i++) {
         this->effective_para_index[i] = original.effective_para_index[target_para_index[i]];
-    }
-}
-void UniversalData::get_compute_para(const VectorXd& effective_para, VectorXd& compute_para) const
-{
-    if (this->compute_para_index_ptr == NULL) {
-        compute_para = effective_para;
-    }
-    else {
-        // assert(effective_para.size() == this->effective_para_index.size());
-        VectorXd complete_para = VectorXd::Zero(this->model_size);
-        for (int i = 0; i < this->effective_para_index.size(); i++) {
-            complete_para[this->effective_para_index[i]] = effective_para[i];
-        }
-        compute_para = VectorXd(this->compute_para_index_ptr->size());
-        for (int i = 0; i < compute_para.size(); i++) {
-            compute_para[i] = complete_para[(* this->compute_para_index_ptr)[i]];
-        }
     }
 }
 
