@@ -13,6 +13,8 @@
 typedef std::function<double(const Eigen::VectorXd&, Eigen::VectorXd*, void*)> optim_function;
 typedef double (*nlopt_function)(unsigned n, const double* x, double* grad, void* f_data);
 typedef void (*function_ptr)(void);
+typedef double(*UniversalFunction)(const Eigen::VectorXd& effective_para, Eigen::VectorXd* gradient, Eigen::MatrixXd* hessian,
+    const int model_size, const Eigen::VectorXi& effective_para_index, const Eigen::VectorXi* compute_para_index_ptr);
 // UniversalData includes everything about the statistic model like samples, loss.
 // In abess project, UniversalData will be an instantiation of T4 in template class algorithm, other instantiation of T4 often is matrix.
 // So in algorithm, UniversalData is just like a matrix, and its instance is often denoted as 'x'.
@@ -20,14 +22,13 @@ typedef void (*function_ptr)(void);
 class UniversalData{  
 protected:
     int model_size; // length of complete_para
-    int sample_size = 1;
-    function_ptr function;
+    int sample_size;
+    UniversalFunction function;
     double lambda = 0.;
     Eigen::VectorXi effective_para_index; //  complete_para[effective_para_index[i]] = effective_para[i], ohter location of complete_para is 0
-    Eigen::VectorXi* compute_para_index_ptr = NULL; //  when it's NULL, compute_para equals to effective_para
  public:
     UniversalData() = default;
-    UniversalData(int model_size, int sample_size, function_ptr function);
+    UniversalData(int model_size, int sample_size, UniversalFunction function);
     UniversalData(const UniversalData& original, const Eigen::VectorXi& target_para_index); // update effective_para accroding to target_para_index
     optim_function get_optim_function(double lambda); // create a function which can be optimized by OptimLib 
     nlopt_function get_nlopt_function(double lambda); // create a function which can be optimized by nlopt
@@ -38,8 +39,4 @@ protected:
     int rows() const; // return sample_size
     int cols() const; // return length of effective_para
 };
-
-typedef double(*universal_function)(const Eigen::VectorXd& effective_para, const UniversalData& universal_data, Eigen::VectorXd* gradient, Eigen::MatrixXd* hessian);
-
-
 #endif

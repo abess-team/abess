@@ -552,8 +552,8 @@ List abessUniversal_API(SEXP s_function, int model_size, int sample_size, int ma
     omp_set_num_threads(thread);
 #endif
 #ifdef R_BUILD
-    Rcpp::XPtr<function_ptr> xptr_func(s_function);
-    function_ptr function = *xptr_func;
+    Rcpp::XPtr<UniversalFunction> xptr_func(s_function);
+    UniversalFunction function = *xptr_func;
 #endif // R_BUILD
     UniversalData x(model_size, sample_size, function); // UniversalData is just like a matrix.
     VectorXd y; // Invalid variable, create it just for interface compatibility
