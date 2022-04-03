@@ -11,7 +11,7 @@ Welcome to ``abess``'s documentation!
 .. |logopic| image:: ./image/icon_long.png    
 
 
-|Python build status| |R build status| |codecov| |docs| |cran| |pypi| |pyversions| |License| |Codacy|
+|Python build status| |R build status| |codecov| |docs| |cran| |pypi| |conda-forge| |pyversions| |License| |Codacy|
 
 .. |Codacy| image:: https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76 
    :target: https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abess-team/abess&amp;utm_campaign=Badge_Grade
