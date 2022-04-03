@@ -136,3 +136,5 @@ python/abess/*.so
 python/*.so
 /.history
 *.pptx
+.vs/
+*.pyproj
