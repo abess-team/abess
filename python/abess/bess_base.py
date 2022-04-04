@@ -1,9 +1,12 @@
 import numbers
+import warnings
 import numpy as np
+import pandas as pd
 from scipy.sparse import coo_matrix, csr_matrix
 from sklearn.base import BaseEstimator
 from pybind_cabess import pywrap_GLM
 from sklearn.utils.validation import check_X_y
+from sklearn.exceptions import DataConversionWarning
 from .utilities import categorical_to_dummy
 
 
@@ -128,7 +131,8 @@ class bess_base(BaseEstimator):
         important_search=0,
         # lambda_min=None, lambda_max=None,
         # early_stop=False, n_lambda=100,
-        baseline_model=None
+        baseline_model=None,
+        _estimator_type=None
     ):
         self.algorithm_type = algorithm_type
         self.model_type = model_type
@@ -161,6 +165,8 @@ class bess_base(BaseEstimator):
         self.splicing_type = splicing_type
         self.important_search = important_search
         self.baseline_model = baseline_model
+        self._estimator_type = _estimator_type
+        self.classes_: np.ndarray
 
     def fit(self,
             X=None,
@@ -202,21 +208,19 @@ class bess_base(BaseEstimator):
             Samples in the same fold should be given the same number.
         """
 
-        # print("fit enter.")#///
+        # Check that X and y have correct shape
+        X, y = check_X_y(X,
+                         y,
+                         accept_sparse=True,
+                         multi_output=True,
+                         #  y_numeric=True,
+                         dtype='numeric')
 
         # Input check & init:
-        if isinstance(X, (list, np.ndarray, np.matrix,
+        if isinstance(X, (list, np.ndarray, np.matrix, pd.DataFrame,
                       coo_matrix, csr_matrix)):
             if isinstance(X, (coo_matrix, csr_matrix)):
                 self.sparse_matrix = True
-
-            # Check that X and y have correct shape
-            X, y = check_X_y(X,
-                             y,
-                             accept_sparse=True,
-                             multi_output=True,
-                             y_numeric=True,
-                             dtype='numeric')
 
             # Sort for Cox
             if self.model_type == "Cox":
@@ -225,10 +229,30 @@ class bess_base(BaseEstimator):
                 time = y[:, 0].reshape(-1)
                 y = y[:, 1].reshape(-1)
 
-            # Dummy y for Multinomial
-            if (self.model_type in ("Multinomial", "Ordinal")
+            # Dummy y & classes
+            if self.model_type == "Logistic":
+                y, self.classes_ = categorical_to_dummy(y.squeeze())
+                if self.classes_.size > 2:
+                    raise ValueError("Up to 2 classes can be given in y.")
+                elif self.classes_.size == 1:
+                    y = np.zeros(X.shape[0])
+                else:
+                    y = y[:, 1]
+            elif (self.model_type in ("Multinomial", "Ordinal")
                     and (len(y.shape) == 1 or y.shape[1] == 1)):
-                y = categorical_to_dummy(y.squeeze())
+                y, self.classes_ = categorical_to_dummy(y.squeeze())
+                if self.classes_.size == 1:
+                    y = y[:, np.newaxis]
+
+            # multi_output warning
+            if self.model_type in (
+                    'Lm', 'Logistic', 'Poisson', 'Gamma'):
+                if len(y.shape) > 1:
+                    warnings.warn(
+                        "A column-vector y was passed "
+                        "when a 1d array was expected",
+                        DataConversionWarning)
+                    y = y.reshape(-1)
 
             # Init
             n = X.shape[0]
@@ -494,6 +518,7 @@ class bess_base(BaseEstimator):
         # unused
         n_lambda = 100
         early_stop = False
+        self.n_iter_ = self.max_iter
 
         # wrap with cpp
         # print("wrap enter.")#///

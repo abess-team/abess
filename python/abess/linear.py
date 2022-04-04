@@ -90,11 +90,13 @@ class LogisticRegression(bess_base):
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
-            important_search=important_search
+            important_search=important_search,
+            _estimator_type='classifier'
         )
 
     def _more_tags(self):
-        return {'binary_only': True}
+        return {'binary_only': True,
+                'no_validation': True}
 
     def predict_proba(self, X):
         r"""
@@ -137,8 +139,9 @@ class LogisticRegression(bess_base):
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = X.dot(self.coef_) + intercept_
-        y = np.zeros(xbeta.size)
-        y[xbeta > 0] = 1
+        y = np.repeat(self.classes_[0], xbeta.size)
+        if self.classes_.size == 2:
+            y[xbeta > 0] = self.classes_[1]
         return y
 
     def score(self, X, y):
@@ -240,8 +243,13 @@ class LinearRegression(bess_base):
             thread=thread, covariance_update=covariance_update,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
-            important_search=important_search
+            important_search=important_search,
+            _estimator_type='regressor'
         )
+
+    def _more_tags(self):
+        return {'multioutput': False,
+                'poor_score': True}
 
     def predict(self, X):
         r"""
@@ -507,8 +515,12 @@ class PoissonRegression(bess_base):
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
-            important_search=important_search
+            important_search=important_search,
+            _estimator_type='regressor'
         )
+
+    def _more_tags(self):
+        return {"poor_score": True}
 
     def predict(self, X):
         r"""
@@ -636,12 +648,14 @@ class MultiTaskRegression(bess_base):
             thread=thread, covariance_update=covariance_update,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
-            important_search=important_search
+            important_search=important_search,
+            _estimator_type='regressor'
         )
 
     def _more_tags(self):
         return {'multioutput': True,
-                'multioutput_only': True}
+                'multioutput_only': True,
+                'poor_score': True}
 
     def predict(self, X):
         r"""
@@ -662,7 +676,10 @@ class MultiTaskRegression(bess_base):
 
         intercept_ = np.repeat(
             self.intercept_[np.newaxis, ...], X.shape[0], axis=0)
-        return (X.dot(self.coef_) + intercept_)[:, np.newaxis]
+        y_pred = X.dot(self.coef_) + intercept_
+        if len(y_pred.shape) == 1:
+            y_pred = y_pred[:, np.newaxis]
+        return y_pred
 
     def score(self, X, y):
         r"""
@@ -775,12 +792,14 @@ class MultinomialRegression(bess_base):
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
-            important_search=important_search
+            important_search=important_search,
+            # _estimator_type='classifier'
         )
 
     def _more_tags(self):
         return {'multilabel': True,
-                'multioutput_only': True}
+                'multioutput_only': True,
+                'no_validation': True}
 
     def predict_proba(self, X):
         r"""
@@ -852,8 +871,8 @@ class MultinomialRegression(bess_base):
             entropy function
         """
         X, y = new_data_check(self, X, y)
-        if len(y.shape) == 1:
-            y = categorical_to_dummy(y)
+        if (len(y.shape) == 1 or y.shape[1] == 1):
+            y, _ = categorical_to_dummy(y.squeeze())
 
         pr = self.predict_proba(X)
         return np.sum(y * np.log(pr))
@@ -930,8 +949,12 @@ class GammaRegression(bess_base):
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
-            important_search=important_search
+            important_search=important_search,
+            _estimator_type='regressor'
         )
+    
+    def _more_tags(self):
+        return {'poor_score': True}
 
     def predict(self, X):
         r"""
