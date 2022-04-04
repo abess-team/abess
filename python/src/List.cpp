@@ -1,11 +1,13 @@
 #ifdef R_BUILD
-// program need not this file in R
+#include <Rcpp.h>
+#include <RcppEigen.h>
 #else
+
 #include <Eigen/Eigen>
 
 #include "List.h"
 
-
+#endif
 
 #include <iostream>
 #include <typeinfo>
@@ -221,5 +223,3 @@ void List::get_value_by_name(string name, VectorXd &value) {
 //         }
 //     }
 // }
-
-#endif //R_BUILD
