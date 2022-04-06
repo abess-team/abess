@@ -23,6 +23,7 @@ using namespace Rcpp;
 #include "AlgorithmUniversal.h"
 #include "utilities.h"
 #include "workflow.h"
+#include "api.h"
 
 typedef Eigen::Triplet<double> triplet;
 
@@ -536,7 +537,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
 }
 
 // [[Rcpp::export]]
-List abessUniversal_API(SEXP s_function, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
+List abessUniversal_API(function_container extern_function, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
     Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
     Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
     double primary_model_fit_epsilon, bool early_stop, int thread, int splicing_type, int sub_search, Eigen::VectorXi A_init)
@@ -552,8 +553,28 @@ List abessUniversal_API(SEXP s_function, int model_size, int sample_size, int ma
     omp_set_num_threads(thread);
 #endif
 #ifdef R_BUILD
-    Rcpp::XPtr<UniversalFunction> xptr_func(s_function);
+    Rcpp::XPtr<UniversalFunction> xptr_func(extern_function);
     UniversalFunction function = *xptr_func;
+#else
+    // UniversalFunction function = extern_function.cast<UniversalFunction>();
+    UniversalFunction function = [](const Eigen::VectorXd& effective_para, Eigen::VectorXd* gradient, 
+        Eigen::MatrixXd* hessian, const int model_size, const Eigen::VectorXi& effective_para_index,
+        const Eigen::VectorXi* compute_para_index_ptr) {
+            int size = 0;
+            if (compute_para_index_ptr == NULL) {
+                size = effective_para.size();
+            }
+            else {
+                size = compute_para_index_ptr->size();
+            }
+            if (hessian) {
+                *hessian = MatrixXd::Constant(size, size, 2.0);
+            }
+            if (gradient) {
+                *gradient = 2 * effective_para;
+            }
+            return effective_para.cwiseAbs2().sum();
+    };
 #endif // R_BUILD
     UniversalData x(model_size, sample_size, function); // UniversalData is just like a matrix.
     VectorXd y; // Invalid variable, create it just for interface compatibility

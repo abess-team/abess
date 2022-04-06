@@ -5,20 +5,20 @@
 #include <nloptrAPI.h>
 // [[Rcpp::depends(nloptr)]]
 #else
-#include"nlopt/nlopt.h" // TODO: need to rewrite into python version
+#include <nlopt.h> // TODO: need to rewrite into python version
 #endif
 
 using namespace std;
 using namespace Eigen;
 // using namespace optim;
 
-double abessUniversal::loss_function(UniversalData& active_data, int& y, Eigen::VectorXd& weights, Eigen::VectorXd& active_para, int& coef0, Eigen::VectorXi& A,
-    Eigen::VectorXi& g_index, Eigen::VectorXi& g_size, double lambda) 
+double abessUniversal::loss_function(UniversalData& active_data, VectorXd& y, VectorXd& weights, VectorXd& active_para, double& coef0, VectorXi& A,
+    VectorXi& g_index, VectorXi& g_size, double lambda) 
 {
     return active_data.loss(active_para, lambda);
 }
 
-bool abessUniversal::primary_model_fit(UniversalData& active_data, int& y, VectorXd& weights, VectorXd& active_para, int& coef0, double loss0,
+bool abessUniversal::primary_model_fit(UniversalData& active_data, VectorXd& y, VectorXd& weights, VectorXd& active_para, double& coef0, double loss0,
     VectorXi& A, VectorXi& g_index, VectorXi& g_size) 
 {
     unsigned active_para_size = active_para.size();
@@ -29,11 +29,11 @@ bool abessUniversal::primary_model_fit(UniversalData& active_data, int& y, Vecto
     nlopt_set_min_objective(opt, f, &active_data);
     bool result = nlopt_optimize(opt, active_para.data(), &value) > 0; // positive return values means success
     nlopt_destroy(opt);
-
+    cout << "nlopt: " << result << endl;
     return result;
 }
 
-void abessUniversal::sacrifice(UniversalData& data, UniversalData& XA, int& y, VectorXd& para, VectorXd& beta_A, int& coef0, VectorXi& A, VectorXi& I, VectorXd& weights, VectorXi& g_index, VectorXi& g_size, int g_num, VectorXi& A_ind, VectorXd& sacrifice, VectorXi& U, VectorXi& U_ind, int num) 
+void abessUniversal::sacrifice(UniversalData& data, UniversalData& XA, VectorXd& y, VectorXd& para, VectorXd& beta_A, double& coef0, VectorXi& A, VectorXi& I, VectorXd& weights, VectorXi& g_index, VectorXi& g_size, int g_num, VectorXi& A_ind, VectorXd& sacrifice, VectorXi& U, VectorXi& U_ind, int num)
 {
     for (int i = 0; i < A.size(); i++) {
         VectorXd gradient_group(g_size(A[i]));
@@ -69,7 +69,7 @@ void abessUniversal::sacrifice(UniversalData& data, UniversalData& XA, int& y, V
     }
 }
 
-double abessUniversal::effective_number_of_parameter(UniversalData& X, UniversalData& active_data, int& y, VectorXd& weights, VectorXd& beta, VectorXd& active_para, int& coef0)
+double abessUniversal::effective_number_of_parameter(UniversalData& X, UniversalData& active_data, VectorXd& y, VectorXd& weights, VectorXd& beta, VectorXd& active_para, double& coef0)
 {
     if (this->lambda_level == 0.) return active_data.cols();
 

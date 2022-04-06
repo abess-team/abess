@@ -48,7 +48,7 @@ except BaseException:
 
 if sys.platform.startswith('win32'):
     # os_type = 'MS_WIN64'
-
+    print(123123123123)
     pybind_cabess_module = Pybind11Extension(
         name='pybind_cabess',
         sources=[
@@ -56,14 +56,24 @@ if sys.platform.startswith('win32'):
             'src/List.cpp',
             'src/utilities.cpp',
             'src/normalize.cpp',
-            'src/pywrap.cpp'],
+            'src/pywrap.cpp',
+            'src/AlgorithmUniversal.cpp',
+            'src/UniversalData.cpp'
+        ],
         extra_compile_args=[
             "/openmp",
             "/O2", "/W4",
             "/arch:AVX2"
         ],
         include_dirs=[
-            'include'
+            'include',
+            r'D:\usr\src\vcpkg\vcpkg\installed\x64-windows\include'
+        ],
+        library_dirs=[
+            r'D:\usr\src\vcpkg\vcpkg\installed\x64-windows\lib'
+        ],
+        libraries=[
+            'nlopt'
         ]
     )
 elif sys.platform.startswith('darwin'):
@@ -96,10 +106,15 @@ elif sys.platform.startswith('darwin'):
                  'src/List.cpp',
                  'src/utilities.cpp',
                  'src/normalize.cpp',
-                 'src/pywrap.cpp'],
+                 'src/pywrap.cpp',
+                 'src/AlgorithmUniversal.cpp',
+                 'src/UniversalData.cpp'],
         extra_compile_args=extra_compile_args,
         include_dirs=[
             'include'
+        ],
+        libraries=[
+            'nlopt'
         ]
     )
 else:
@@ -109,7 +124,9 @@ else:
                  'src/List.cpp',
                  'src/utilities.cpp',
                  'src/normalize.cpp',
-                 'src/pywrap.cpp'],
+                 'src/pywrap.cpp',
+                 'src/AlgorithmUniversal.cpp',
+                 'src/UniversalData.cpp'],
         extra_compile_args=[
             "-DNDEBUG", "-fopenmp",
             "-O2", "-Wall",
@@ -122,6 +139,9 @@ else:
         extra_link_args=['-lgomp'],
         include_dirs=[
             'include'
+        ],
+        libraries=[
+            'nlopt'
         ]
     )
     pass

@@ -24,8 +24,8 @@ public:
       * 
       * @return a double value indicating the loss
       */
-    double loss_function(UniversalData& active_data, int& y, Eigen::VectorXd& weights, Eigen::VectorXd& active_para, int& coef0, Eigen::VectorXi& A,
-        Eigen::VectorXi& g_index, Eigen::VectorXi& g_size, double lambda);
+    double loss_function(UniversalData& active_data, Eigen::VectorXd& y, Eigen::VectorXd& weights, Eigen::VectorXd& active_para, double& coef0, Eigen::VectorXi& A,
+        Eigen::VectorXi& g_index, Eigen::VectorXi& g_size, double lambda) override;
 
     /**
       * optimize the loss of active_data with L2 penalty  
@@ -35,8 +35,8 @@ public:
       *
       * @return a boolean value indicating successful completion of the optimization algorithm.
       */
-    bool primary_model_fit(UniversalData& active_data, int& y, Eigen::VectorXd& weights, Eigen::VectorXd& active_para, int& coef0, double loss0,
-        Eigen::VectorXi& A, Eigen::VectorXi& g_index, Eigen::VectorXi& g_size);
+    bool primary_model_fit(UniversalData& active_data, Eigen::VectorXd& y, Eigen::VectorXd& weights, Eigen::VectorXd& active_para, double& coef0, double loss0,
+        Eigen::VectorXi& A, Eigen::VectorXi& g_index, Eigen::VectorXi& g_size) override;
 
     /**
       * compute the sacrifice of data
@@ -49,10 +49,10 @@ public:
       * @param g_size                                               the length of all groups
       * @param sacrifice                                            a column vector which will be replaced by results
       */
-    void sacrifice(UniversalData& data, UniversalData& XA, int& y, Eigen::VectorXd& para, Eigen::VectorXd& beta_A, int& coef0, Eigen::VectorXi& A,
+    void sacrifice(UniversalData& data, UniversalData& XA, Eigen::VectorXd& y, Eigen::VectorXd& para, Eigen::VectorXd& beta_A, double& coef0, Eigen::VectorXi& A,
         Eigen::VectorXi& I, Eigen::VectorXd& weights, Eigen::VectorXi& g_index,
         Eigen::VectorXi& g_size, int g_num, Eigen::VectorXi& A_ind, Eigen::VectorXd& sacrifice,
-        Eigen::VectorXi& U, Eigen::VectorXi& U_ind, int num);
+        Eigen::VectorXi& U, Eigen::VectorXi& U_ind, int num) override;
     /**
       * compute the effective number of parameters which will be used to compute information criterion
       * Only these two paras will be used.
@@ -61,8 +61,8 @@ public:
       *
       * @return a double value indicating the effective number of parameters
       */
-    double effective_number_of_parameter(UniversalData& X, UniversalData& active_data, int& y, Eigen::VectorXd& weights, Eigen::VectorXd& beta, Eigen::VectorXd& active_para,
-        int& coef0);
+    double effective_number_of_parameter(UniversalData& X, UniversalData& active_data, Eigen::VectorXd& y, Eigen::VectorXd& weights, Eigen::VectorXd& beta, Eigen::VectorXd& active_para,
+        double& coef0) override;
 };
 
 #endif

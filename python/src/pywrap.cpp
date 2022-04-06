@@ -15,12 +15,11 @@ std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_GLM(
     int primary_model_fit_max_iter, double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton,
     int thread, bool covariance_update, bool sparse_matrix, int splicing_type, int sub_search,
     Eigen::VectorXi A_init_Vec) {
-    List mylist =
-        abessGLM_API(x_Mat, y_Mat, n, p, normalize_type, weight_Vec, algorithm_type, model_type, max_iter, exchange_num,
-                     path_type, is_warm_start, ic_type, ic_coef, Kfold, sequence_Vec, lambda_sequence_Vec, s_min, s_max,
-                     lambda_min, lambda_max, n_lambda, screening_size, gindex_Vec, always_select_Vec,
-                     primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, approximate_Newton, thread,
-                     covariance_update, sparse_matrix, splicing_type, sub_search, cv_fold_id_Vec, A_init_Vec);
+    List mylist = abessUniversal_API(1,p, n, max_iter, exchange_num,
+            path_type, is_warm_start, ic_type, ic_coef, sequence_Vec, lambda_sequence_Vec, s_min, s_max,
+            screening_size, gindex_Vec, always_select_Vec,
+            primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, thread,
+            splicing_type, sub_search, A_init_Vec);
 
     std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> output;
     int y_col = y_Mat.cols();
