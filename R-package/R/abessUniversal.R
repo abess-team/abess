@@ -123,7 +123,7 @@ abessUniversal <- function(
   early_stop <- para$early_stop
   
   result <- abessUniversal_API(
-    s_function = f,
+    extern_function = f,
     model_size = model_size,
     sample_size = sample_size,
     max_iter = max_splicing_iter,

@@ -46,15 +46,13 @@
 #include <RcppEigen.h>
 // [[Rcpp::depends(RcppEigen)]]
 using namespace Rcpp;
-using function_container = SEXP;
+
 #else
 #include <Eigen/Eigen>
 #include "List.h"
 //#include <pybind11/eigen.h>
 //#include <pybind11/pybind11.h>
 //#include <pybind11/functional.h>
-// using function_container = pybind11::cpp_function;
-using function_container = int;
 #endif
 
 #include <iostream>
@@ -147,11 +145,16 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
  * @param sample_size                   The number of the samples. 
  *                                      This parameter corresponds to n of abessGLM.
  */
-
-List abessUniversal_API(function_container extern_function, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
+#ifdef R_BUILD
+// [[Rcpp::export]]
+List abessUniversal_API(SEXP extern_function, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
     Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
     Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
     double primary_model_fit_epsilon, bool early_stop, int thread, int splicing_type, int sub_search, Eigen::VectorXi A_init);
-
-
+#else
+List abessUniversal_API(int extern_function, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
+    Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
+    Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
+    double primary_model_fit_epsilon, bool early_stop, int thread, int splicing_type, int sub_search, Eigen::VectorXi A_init);
+#endif
 #endif  // SRC_API_H

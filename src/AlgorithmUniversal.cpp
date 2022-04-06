@@ -2,12 +2,12 @@
 
 // #include "OptimLib/optim.hpp"
 #ifdef R_BUILD
-#include <nloptrAPI.h>
 // [[Rcpp::depends(nloptr)]]
+#include <nloptrAPI.h>
 #else
 #include <nlopt.h> // TODO: need to rewrite into python version
 #endif
-
+#include <stdio.h>
 using namespace std;
 using namespace Eigen;
 // using namespace optim;
@@ -23,13 +23,13 @@ bool abessUniversal::primary_model_fit(UniversalData& active_data, VectorXd& y, 
 {
     unsigned active_para_size = active_para.size();
     double value = 0.;
-
+    printf("nlopt_init: %d\n", active_data.loss(active_para, this->lambda_level));
     nlopt_opt opt = nlopt_create(NLOPT_LD_LBFGS, active_para_size);
     nlopt_function f = active_data.get_nlopt_function(this->lambda_level);
     nlopt_set_min_objective(opt, f, &active_data);
     bool result = nlopt_optimize(opt, active_para.data(), &value) > 0; // positive return values means success
     nlopt_destroy(opt);
-    cout << "nlopt: " << result << endl;
+    printf("nlopt_result: %d\n", active_data.loss(active_para, this->lambda_level));
     return result;
 }
 
