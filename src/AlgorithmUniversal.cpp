@@ -31,6 +31,9 @@ bool abessUniversal::primary_model_fit(UniversalData& active_data, VectorXd& y, 
     nlopt_destroy(opt);
     printf("nlopt_result: %d\n", active_data.loss(active_para, this->lambda_level));
     return result;
+    
+    //return true;
+
 }
 
 void abessUniversal::sacrifice(UniversalData& data, UniversalData& XA, VectorXd& y, VectorXd& para, VectorXd& beta_A, double& coef0, VectorXi& A, VectorXi& I, VectorXd& weights, VectorXi& g_index, VectorXi& g_size, int g_num, VectorXi& A_ind, VectorXd& sacrifice, VectorXi& U, VectorXi& U_ind, int num)

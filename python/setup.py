@@ -48,7 +48,6 @@ except BaseException:
 
 if sys.platform.startswith('win32'):
     # os_type = 'MS_WIN64'
-    print(123123123123)
     pybind_cabess_module = Pybind11Extension(
         name='pybind_cabess',
         sources=[
@@ -66,14 +65,7 @@ if sys.platform.startswith('win32'):
             "/arch:AVX2"
         ],
         include_dirs=[
-            'include',
-            r'D:\usr\src\vcpkg\vcpkg\installed\x64-windows\include'
-        ],
-        library_dirs=[
-            r'D:\usr\src\vcpkg\vcpkg\installed\x64-windows\lib'
-        ],
-        libraries=[
-            'nlopt'
+            'include'
         ]
     )
 elif sys.platform.startswith('darwin'):

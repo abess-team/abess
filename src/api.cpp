@@ -563,7 +563,7 @@ List abessUniversal_API(int extern_function, int model_size, int sample_size, in
     UniversalFunction function = *xptr_func;
 #else
     // UniversalFunction function = extern_function.cast<UniversalFunction>();
-    UniversalFunction function = [](const Eigen::VectorXd& effective_para, Eigen::VectorXd* gradient, 
+    UniversalFunction function = [](const Eigen::VectorXd& effective_para, Eigen::VectorXd* gradient,
         Eigen::MatrixXd* hessian, const int model_size, const Eigen::VectorXi& effective_para_index,
         const Eigen::VectorXi* compute_para_index_ptr) {
             int size = 0;
@@ -577,9 +577,9 @@ List abessUniversal_API(int extern_function, int model_size, int sample_size, in
                 *hessian = MatrixXd::Constant(size, size, 2.0);
             }
             if (gradient) {
-                *gradient = 2 * effective_para;
+                *gradient = 2 * (effective_para - VectorXd::Ones(effective_para.size()));
             }
-            return effective_para.cwiseAbs2().sum();
+            return (effective_para - VectorXd::Ones(effective_para.size())).cwiseAbs2().sum();
     };
 #endif // R_BUILD
     UniversalData x(model_size, sample_size, function); // UniversalData is just like a matrix.
