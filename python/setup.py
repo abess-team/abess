@@ -66,7 +66,11 @@ if sys.platform.startswith('win32'):
         ],
         include_dirs=[
             'include'
-        ]
+        ],
+        libraries=[
+            'nlopt'
+        ],
+        library_dirs=['lib']
     )
 elif sys.platform.startswith('darwin'):
     # compatible compile args with M1 chip:
@@ -156,7 +160,8 @@ setup(
     install_requires=[
         "numpy",
         "scipy",
-        "scikit-learn>=0.24"
+        "scikit-learn>=0.24",
+        "nlopt"
     ],
     license="GPL-3",
     url="https://abess.readthedocs.io",

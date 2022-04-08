@@ -20,16 +20,21 @@ double abessUniversal::loss_function(UniversalData& active_data, VectorXd& y, Ve
 
 bool abessUniversal::primary_model_fit(UniversalData& active_data, VectorXd& y, VectorXd& weights, VectorXd& active_para, double& coef0, double loss0,
     VectorXi& A, VectorXi& g_index, VectorXi& g_size) 
-{
+{    
+    static int nlopt_run_times = 1;
     unsigned active_para_size = active_para.size();
     double value = 0.;
-    printf("nlopt_init: %d\n", active_data.loss(active_para, this->lambda_level));
-    nlopt_opt opt = nlopt_create(NLOPT_LD_LBFGS, active_para_size);
     nlopt_function f = active_data.get_nlopt_function(this->lambda_level);
+
+    nlopt_opt opt = nlopt_create(NLOPT_LD_LBFGS, active_para_size);
     nlopt_set_min_objective(opt, f, &active_data);
-    bool result = nlopt_optimize(opt, active_para.data(), &value) > 0; // positive return values means success
+    int result = nlopt_optimize(opt, active_para.data(), &value); // positive return values means success
+    if (nlopt_run_times == 1) { // just for debug
+        printf("nlopt's algorithm is %s\n", nlopt_algorithm_name(nlopt_get_algorithm(opt)));
+    }
     nlopt_destroy(opt);
-    printf("nlopt_result: %d\n", active_data.loss(active_para, this->lambda_level));
+
+    printf("nlopt has run %d times\n", nlopt_run_times++);
     return result;
     
     //return true;
