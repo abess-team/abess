@@ -11,7 +11,6 @@ __author__ = ("Jin Zhu, Kangkang Jiang, "
               "Yanhang Zhang, Shiyun Lin, "
               "Junxian Zhu, Xueqin Wang")
               
-import _nlopt
 from .linear import (
     LinearRegression,
     LogisticRegression,
