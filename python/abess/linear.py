@@ -732,12 +732,9 @@ class MultinomialRegression(bess_base):
     >>> model = MultinomialRegression(support_size = 10)
     >>> model.fit(data.x, data.y)
     MultinomialRegression(always_select=[], support_size=10)
-    >>> model.predict(data.x)[1:5, ]
-    array([[1., 0., 0.],
-       [1., 0., 0.],
-       [1., 0., 0.],
-       [1., 0., 0.],
-       [0., 1., 0.]])
+    >>> model.predict(data.x)[0:10, ]
+    array([1, 0, 0, 0, 1, 1, 1, 2, 1, 2])
+
 
     >>> ### Sparsity unknown
     >>>
@@ -745,23 +742,17 @@ class MultinomialRegression(bess_base):
     >>> model = MultinomialRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
     MultinomialRegression(always_select=[])
-    >>> model.predict(data.x)[1:5, ]
-    array([[1., 0., 0.],
-       [1., 0., 0.],
-       [1., 0., 0.],
-       [1., 0., 0.],
-       [0., 1., 0.]])
+    >>> model.predict(data.x)[0:10, ]
+    array([1, 2, 0, 0, 1, 1, 1, 2, 1, 2])
+
     >>>
     >>> # path_type="gs"
     >>> model = MultinomialRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     MultinomialRegression(always_select=[], path_type='gs')
-    >>> model.predict(data.x)[1:5, ]
-    array([[1., 0., 0.],
-       [1., 0., 0.],
-       [1., 0., 0.],
-       [1., 0., 0.],
-       [0., 1., 0.]])
+    >>> model.predict(data.x)[0:10, ]
+    array([1, 2, 0, 0, 1, 1, 1, 2, 1, 2])
+
     """
 
     def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
