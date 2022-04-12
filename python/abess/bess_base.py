@@ -242,7 +242,9 @@ class bess_base(BaseEstimator):
                     and (len(y.shape) == 1 or y.shape[1] == 1)):
                 y, self.classes_ = categorical_to_dummy(y.squeeze())
                 if self.classes_.size == 1:
+                    # add a useless label
                     y = np.hstack((np.zeros((X.shape[0], 1)), y))
+                    self.classes_ = np.insert(self.classes_, 0, 0)
 
             # multi_output warning
             if self.model_type in (

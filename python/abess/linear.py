@@ -793,13 +793,14 @@ class MultinomialRegression(bess_base):
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
             important_search=important_search,
-            # _estimator_type='classifier'
+            _estimator_type='classifier'
         )
 
     def _more_tags(self):
-        return {'multilabel': True,
-                'multioutput_only': True,
-                'no_validation': True}
+        return {'multilabel': False,
+                # 'multioutput_only': True,
+                'no_validation': True,
+                'poor_score': True}
 
     def predict_proba(self, X):
         r"""
@@ -852,7 +853,8 @@ class MultinomialRegression(bess_base):
         # y_pred = np.zeros_like(xbeta)
         # for i in range(X.shape[0]):
         #     y_pred[i, max_item[i]] = 1
-        return max_item[:, np.newaxis]
+        cl = getattr(self, "classes_", np.arange(self.coef_.shape[1]))
+        return cl[max_item]
 
     def score(self, X, y):
         """
