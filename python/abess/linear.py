@@ -952,7 +952,7 @@ class GammaRegression(bess_base):
             important_search=important_search,
             _estimator_type='regressor'
         )
-    
+
     def _more_tags(self):
         return {'poor_score': True}
 
@@ -1089,7 +1089,8 @@ class OrdinalRegression(bess_base):
             thread=thread,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
-            important_search=important_search
+            important_search=important_search,
+            # _estimator_type="regressor"
         )
 
     def predict_proba(self, X):
