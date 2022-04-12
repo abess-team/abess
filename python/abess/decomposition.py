@@ -2,7 +2,7 @@ import numbers
 import numpy as np
 from scipy.sparse import coo_matrix, issparse
 from sklearn.utils.validation import check_array
-from pybind_cabess import pywrap_PCA, pywrap_RPCA
+from .pybind_cabess import pywrap_PCA, pywrap_RPCA
 from .bess_base import bess_base
 from .utilities import new_data_check
 

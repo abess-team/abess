@@ -4,9 +4,9 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import coo_matrix, csr_matrix
 from sklearn.base import BaseEstimator
-from pybind_cabess import pywrap_GLM
 from sklearn.utils.validation import check_X_y
 from sklearn.exceptions import DataConversionWarning
+from .pybind_cabess import pywrap_GLM
 from .utilities import categorical_to_dummy
 
 
