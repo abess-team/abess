@@ -234,7 +234,7 @@ class bess_base(BaseEstimator):
                 y, self.classes_ = categorical_to_dummy(y.squeeze())
                 if self.classes_.size > 2:
                     raise ValueError("Up to 2 classes can be given in y.")
-                elif self.classes_.size == 1:
+                if self.classes_.size == 1:
                     y = np.zeros(X.shape[0])
                 else:
                     y = y[:, 1]
