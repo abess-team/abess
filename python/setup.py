@@ -62,7 +62,7 @@ if sys.platform.startswith('win32'):
         extra_compile_args=[
             "/openmp",
             "/O2", "/W4",
-            "/arch:AVX2"
+            "/arch:AVX2","/std:c++17"
         ],
         include_dirs=[
             'include'
@@ -78,7 +78,7 @@ elif sys.platform.startswith('darwin'):
     # compatible compile args with M1 chip:
     extra_compile_args = [
         "-DNDEBUG", "-O2",
-        "-Wall", "-std=c++11",
+        "-Wall", "-std=c++17",
         "-Wno-int-in-bool-context"
     ]
     m1chip_unable_extra_compile_args = [
@@ -131,7 +131,7 @@ else:
         extra_compile_args=[
             "-DNDEBUG", "-fopenmp",
             "-O2", "-Wall",
-            "-std=c++11", "-mavx",
+            "-std=c++17", "-mavx",
             "-mfma", "-march=native",
             # "-Wno-unused-variable",
             # "-Wno-unused-but-set-variable",

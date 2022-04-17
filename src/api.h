@@ -50,12 +50,10 @@ using namespace Rcpp;
 #else
 #include <Eigen/Eigen>
 #include "List.h"
-//#include <pybind11/eigen.h>
-//#include <pybind11/pybind11.h>
-//#include <pybind11/functional.h>
 #endif
 
 #include <iostream>
+#include "UniversalData.h"
 
 /**
  * @brief The main function of abess fremework
@@ -135,8 +133,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
 
 /**
  * @brief The main function of universal-abess fremework
- * @param function                      A pointer to function which denfined loss, gradient and hessian of the statistic model. 
- *                                      The typename is universal_function, and its definition is in "UniversalData.h".
+ * @param model                         Its definition is in "UniversalData.h".
  *                                      This parameter corresponds to model_type of abessGLM.
  * @param data                          A pointer to struct consisting of data that the statistic model need. 
  *                                      This parameter corresponds to x,y of abessGLM.
@@ -146,15 +143,11 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
  *                                      This parameter corresponds to n of abessGLM.
  */
 #ifdef R_BUILD
-// [[Rcpp::export]]
-List abessUniversal_API(SEXP extern_function, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
-    Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
-    Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
-    double primary_model_fit_epsilon, bool early_stop, int thread, int splicing_type, int sub_search, Eigen::VectorXi A_init);
+
 #else
-List abessUniversal_API(int extern_function, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
-    Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
-    Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
-    double primary_model_fit_epsilon, bool early_stop, int thread, int splicing_type, int sub_search, Eigen::VectorXi A_init);
+List abessUniversal_API(ExternData data, UniversalModel model, int model_size, int sample_size, int max_iter, int exchange_num, int path_type,
+    bool is_warm_start, int ic_type, double ic_coef, int Kfold, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max,
+    int screening_size, Eigen::VectorXi g_index, Eigen::VectorXi always_select, bool early_stop, int thread, int splicing_type, int sub_search,
+    Eigen::VectorXi cv_fold_id, Eigen::VectorXi A_init);
 #endif
 #endif  // SRC_API_H

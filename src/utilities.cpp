@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by jiangkangkang on 2020/3/9.
 //
 
@@ -37,8 +37,8 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &gindex, Eigen::Vec
     }
 }
 
-UniversalData X_seg(UniversalData& X, int n, Eigen::VectorXi& ind, int model_type) {
-    return UniversalData(X, ind);
+UniversalData X_seg(UniversalData& X, int n, Eigen::VectorXi& ind, int model_type){
+    return X.slice_by_para(ind);
 }
 
 Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &Phi, int N) {
@@ -315,10 +315,12 @@ void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::Spars
 
 void slice(UniversalData& nums, Eigen::VectorXi& ind, UniversalData& A, int axis)
 {
-    if (axis != 1) {
-        cout << "UniversalData can't be sliced by axis != 1"; //TODO
+    if (axis == 0) {
+        A = nums.slice_by_sample(ind);
     }
-    A = UniversalData(nums, ind);
+    else {
+        A = nums.slice_by_para(ind);
+    }
 }
 
 void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nums, int axis) {

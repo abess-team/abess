@@ -103,7 +103,7 @@ Eigen::VectorXi screening(Data<T1, T2, T3, T4> &data, std::vector<Algorithm<T1, 
             while (always_select(i) != screening_A(j)) j++;
             new_always_select(i) = j;
         }
-        int algorithm_list_size = algorithm_list.size();
+        int algorithm_list_size = static_cast<int>(algorithm_list.size());
         for (int i = 0; i < algorithm_list_size; i++) {
             algorithm_list[i]->always_select = new_always_select;
         }

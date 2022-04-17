@@ -172,7 +172,6 @@ T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type) {
 // The non-template function will be preferred.
 UniversalData X_seg(UniversalData& X, int n, Eigen::VectorXi& ind, int model_type); 
 
-
 // template <class T4>
 // void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
 // {

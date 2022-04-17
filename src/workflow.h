@@ -82,7 +82,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     std::srand(123);
 #endif
 
-    int algorithm_list_size = algorithm_list.size();
+    int algorithm_list_size = static_cast<int>(algorithm_list.size());
 
     // Size of the candidate set:
     //     usually it is equal to `p`, the number of variable,

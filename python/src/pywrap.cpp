@@ -2,7 +2,7 @@
 #include <pybind11/pybind11.h>
 
 #include <tuple>
-
+#include "UniversalData.h"
 #include "List.h"
 #include "api.h"
 
@@ -129,11 +129,10 @@ std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_Univ
     int primary_model_fit_max_iter, double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton,
     int thread, bool covariance_update, bool sparse_matrix, int splicing_type, int sub_search,
     Eigen::VectorXi A_init_Vec) {
-    List mylist = abessUniversal_API(1,p, n, max_iter, exchange_num,
-            path_type, is_warm_start, ic_type, ic_coef, sequence_Vec, lambda_sequence_Vec, s_min, s_max,
-            screening_size, gindex_Vec, always_select_Vec,
-            primary_model_fit_max_iter, primary_model_fit_epsilon, early_stop, thread,
-            splicing_type, sub_search, A_init_Vec);
+    List mylist = abessUniversal_API(ExternData(), UniversalModel(), p, n, max_iter, exchange_num,
+            path_type, is_warm_start, ic_type, ic_coef, Kfold, sequence_Vec, lambda_sequence_Vec, s_min, s_max,
+            screening_size, gindex_Vec, always_select_Vec, early_stop, thread,
+            splicing_type, sub_search, cv_fold_id_Vec, A_init_Vec);
 
     std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> output;
     int y_col = y_Mat.cols();
@@ -172,6 +171,16 @@ std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_Univ
 }
 
 PYBIND11_MODULE(pybind_cabess, m) {
+    pybind11::class_<UniversalModel>(m, "UniversalModel")
+        .def("set_loss_of_model", &UniversalModel::set_loss_of_model)
+        .def("set_gradient_autodiff", &UniversalModel::set_gradient_autodiff)
+        .def("set_hessian_autodiff", &UniversalModel::set_hessian_autodiff)
+        .def("set_gradient_user_defined", &UniversalModel::set_gradient_user_defined)
+        .def("set_hessian_user_defined", &UniversalModel::set_hessian_user_defined)
+        .def("set_slice_by_sample", &UniversalModel::set_slice_by_sample)
+        .def("set_slice_by_para", &UniversalModel::set_slice_by_para)
+        .def("unset_slice_by_sample", &UniversalModel::unset_slice_by_sample)
+        .def("unset_slice_by_para", &UniversalModel::unset_slice_by_para);
     m.def("pywrap_GLM", &pywrap_GLM);
     m.def("pywrap_PCA", &pywrap_PCA);
     m.def("pywrap_RPCA", &pywrap_RPCA);

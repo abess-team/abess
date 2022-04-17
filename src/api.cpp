@@ -243,7 +243,7 @@ List abessPCA_API(Eigen::MatrixXd x, int n, int p, int normalize_type, Eigen::Ve
 #endif
     int model_type = 7, algorithm_type = 6;
     Eigen::VectorXd lambda_seq = Eigen::VectorXd::Zero(1);
-    int lambda_min = 0, lambda_max = 0, nlambda = 100;
+    // int lambda_min = 0, lambda_max = 0, nlambda = 100;
     int primary_model_fit_max_iter = 1;
     double primary_model_fit_epsilon = 1e-3;
     int pca_n = -1;
@@ -537,15 +537,12 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
 }
 
 #ifdef R_BUILD
-List abessUniversal_API(SEXP extern_function, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
-    Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
-    Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
-    double primary_model_fit_epsilon, bool early_stop, int thread, int splicing_type, int sub_search, Eigen::VectorXi A_init)
+
 #else
-List abessUniversal_API(int extern_function, int model_size, int sample_size, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
-    Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size,
-    Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
-    double primary_model_fit_epsilon, bool early_stop, int thread, int splicing_type, int sub_search, Eigen::VectorXi A_init)
+List abessUniversal_API(ExternData data, UniversalModel model, int model_size, int sample_size, int max_iter, int exchange_num, int path_type,
+    bool is_warm_start, int ic_type, double ic_coef, int Kfold, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max,
+    int screening_size, Eigen::VectorXi g_index, Eigen::VectorXi always_select, bool early_stop, int thread, int splicing_type, int sub_search,
+    Eigen::VectorXi cv_fold_id, Eigen::VectorXi A_init)
 #endif
 {
 #ifdef _OPENMP
@@ -562,43 +559,21 @@ List abessUniversal_API(int extern_function, int model_size, int sample_size, in
     Rcpp::XPtr<UniversalFunction> xptr_func(extern_function);
     UniversalFunction function = *xptr_func;
 #else
-    // UniversalFunction function = extern_function.cast<UniversalFunction>();
-    UniversalFunction function = [](const Eigen::VectorXd& effective_para, Eigen::VectorXd* gradient,
-        Eigen::MatrixXd* hessian, const int model_size, const Eigen::VectorXi& effective_para_index,
-        const Eigen::VectorXi* compute_para_index_ptr) {
-            int size = 0;
-            if (compute_para_index_ptr == NULL) {
-                size = effective_para.size();
-            }
-            else {
-                size = compute_para_index_ptr->size();
-            }
-            if (hessian) {
-                *hessian = MatrixXd::Constant(size, size, 2.0);
-            }
-            if (gradient) {
-                *gradient = 2 * (effective_para - VectorXd::Ones(effective_para.size()));
-            }
-            return (effective_para - VectorXd::Ones(effective_para.size())).cwiseAbs2().sum();
-    };
+
 #endif // R_BUILD
-    UniversalData x(model_size, sample_size, function); // UniversalData is just like a matrix.
-    VectorXd y; // Invalid variable, create it just for interface compatibility
+    UniversalData x(model_size, sample_size, data, &model); // UniversalData is just like a matrix.
+    VectorXd y = VectorXd::Zero(sample_size); // Invalid variable, create it just for interface compatibility
     int normalize_type = 0; // offer normalized data if need
-    VectorXd weight;  // only can be implemented inside the model
-    int Kfold = 1;    // cv is not available now
-    VectorXi cv_fold_id; // cv is not available now
+    VectorXd weight = VectorXd::Ones(sample_size);  // only can be implemented inside the model
+    Parameters parameters(sequence, lambda_seq, s_min, s_max);
+    List out_result;
 
     int algorithm_list_size = max(thread, Kfold); 
     vector<Algorithm<VectorXd, VectorXd, double, UniversalData>*> algorithm_list(algorithm_list_size);
     for (int i = 0; i < algorithm_list_size; i++) {
-        algorithm_list[i] = new abessUniversal(max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon,
-            is_warm_start, exchange_num, always_select, splicing_type, sub_search);
+        algorithm_list[i] = new abessUniversal(max_iter, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
     }
 
-    Parameters parameters(sequence, lambda_seq, s_min, s_max);
-
-    List out_result;
     out_result = abessWorkflow<VectorXd, VectorXd, double, UniversalData>(x, y, sample_size, model_size, normalize_type, weight, 6, path_type, is_warm_start, ic_type, ic_coef, Kfold,
         parameters, screening_size, g_index, early_stop, thread, true, cv_fold_id, A_init, algorithm_list);
     

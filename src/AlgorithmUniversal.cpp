@@ -22,23 +22,15 @@ bool abessUniversal::primary_model_fit(UniversalData& active_data, VectorXd& y, 
     VectorXi& A, VectorXi& g_index, VectorXi& g_size) 
 {    
     static int nlopt_run_times = 1;
+    printf("nlopt has run %d times\n", nlopt_run_times++);
     unsigned active_para_size = active_para.size();
     double value = 0.;
     nlopt_function f = active_data.get_nlopt_function(this->lambda_level);
-
     nlopt_opt opt = nlopt_create(NLOPT_LD_LBFGS, active_para_size);
     nlopt_set_min_objective(opt, f, &active_data);
     int result = nlopt_optimize(opt, active_para.data(), &value); // positive return values means success
-    if (nlopt_run_times == 1) { // just for debug
-        printf("nlopt's algorithm is %s\n", nlopt_algorithm_name(nlopt_get_algorithm(opt)));
-    }
     nlopt_destroy(opt);
-
-    printf("nlopt has run %d times\n", nlopt_run_times++);
-    return result;
-    
-    //return true;
-
+    return result > 0;
 }
 
 void abessUniversal::sacrifice(UniversalData& data, UniversalData& XA, VectorXd& y, VectorXd& para, VectorXd& beta_A, double& coef0, VectorXi& A, VectorXi& I, VectorXd& weights, VectorXi& g_index, VectorXi& g_size, int g_num, VectorXi& A_ind, VectorXd& sacrifice, VectorXi& U, VectorXi& U_ind, int num)
@@ -47,12 +39,12 @@ void abessUniversal::sacrifice(UniversalData& data, UniversalData& XA, VectorXd&
         VectorXd gradient_group(g_size(A[i]));
         MatrixXd hessian_group(g_size(A[i]), g_size(A[i]));
         data.hessian(para, gradient_group, hessian_group, g_index(A[i]), g_size(A[i]), this->lambda_level);
-        if (g_size(A[i]) == 1) {
-            // optimize for frequent degradation situations
-            sacrifice(A[i]) = beta(g_index(A[i])) * beta(g_index(A[i])) * hessian_group(0, 0);
+        if (g_size(A[i]) == 1) { // optimize for frequent degradation situations
+            sacrifice(A[i]) = para(g_index(A[i])) * para(g_index(A[i])) * hessian_group(0, 0);
         }
         else {
-            sacrifice(A[i]) = (para.segment(g_index(A[i]), g_size(A[i])).transpose() * hessian_group * para.segment(g_index(A[i]), g_size(A[i])) / g_size(A[i])).eval()(0,0);
+            sacrifice(A[i]) = para.segment(g_index(A[i]), g_size(A[i])).transpose() * hessian_group * para.segment(g_index(A[i]), g_size(A[i]));
+            sacrifice(A[i]) /= g_size(A[i]);
         }
     }
     for (int i = 0; i < I.size(); i++) {
@@ -72,7 +64,8 @@ void abessUniversal::sacrifice(UniversalData& data, UniversalData& XA, VectorXd&
         else {
             //? TODO: hessian may be not positive definite
             MatrixXd inv_hessian_group = hessian_group.ldlt().solve(MatrixXd::Identity(g_size(i), g_size(i)));
-            sacrifice(I[i]) = (gradient_group.transpose() * inv_hessian_group * gradient_group / g_size(A[i])).eval()(0, 0);
+            sacrifice(I[i]) = gradient_group.transpose() * inv_hessian_group * gradient_group;
+            sacrifice(I[i]) /= g_size(A[i]);
         }
     }
 }
@@ -84,7 +77,8 @@ double abessUniversal::effective_number_of_parameter(UniversalData& X, Universal
     if (active_data.cols() == 0) return 0.;
 
     MatrixXd hessian(active_data.cols(), active_data.cols());
-    active_data.hessian(active_para, hessian, this->lambda_level); //? TODO: need lambda or not?
+    VectorXd g;
+    active_data.hessian(active_para, g, hessian, 0, active_data.cols(), this->lambda_level);
     SelfAdjointEigenSolver<MatrixXd> adjoint_eigen_solver(hessian);
     double enp = 0.;
     for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++) {
