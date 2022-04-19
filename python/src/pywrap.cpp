@@ -1,4 +1,4 @@
-#include <pybind11/eigen.h>
+#include <Eigen/Eigen>
 #include <pybind11/pybind11.h>
 
 #include <tuple>
