@@ -87,18 +87,26 @@ class CMakeBuild(build_ext):
         if not os.path.exists(build_temp):
             os.makedirs(build_temp)
 
-        # arguments for "cmake" and "cmake --build"
-        cmake_args = [f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}"]
-        build_args = [f"-j8"]
+        # config: debug or release
+        cfg = "DEBUG" if self.debug else "RELEASE"
 
-        # if "CMAKE_ARGS" in os.environ:
-        #     cmake_args += [
-        #         item for item in os.environ["CMAKE_ARGS"].split(" ") if item]
+        # arguments for "cmake" and "cmake --build"
+        cmake_args = [
+            f"-DCMAKE_BUILD_TYPE={cfg}",
+            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}"
+        ]
+        build_args = [
+            "-j4",
+            f"--config {cfg}"
+        ]
 
         # Windows (MSVC)
         if self.compiler.compiler_type == "msvc":
-            cmake_args += [f"-DMSVC=ON"]
-            cmake_args += ["-A", PLAT_TO_CMAKE[self.plat_name]]
+            cmake_args += [
+                f"-DMSVC=ON",
+                f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg}={extdir}",
+                f"-A{PLAT_TO_CMAKE[self.plat_name]}"
+            ]
 
         # MacOS
         if sys.platform.startswith("darwin"):
