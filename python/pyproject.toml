@@ -3,6 +3,7 @@ requires = [
     "setuptools>=42",
     "wheel",
     "pybind11[global]",
+    "cmake>=3.12",
 
     # use oldest-supported-numpy which provides the oldest numpy version with
     # wheels on PyPI (it is a similar operation used in scikit-learn)

@@ -27,15 +27,15 @@ jobs:
         # os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [3.8]
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - name: Setup Python
-        uses: actions/setup-python@master
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies for ubuntu
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get install -y bash
+      # - name: Install dependencies for ubuntu
+      #   if: matrix.os == 'ubuntu-latest'
+      #   run: |
+      #     sudo apt-get install -y bash
       - name: Install dependencies for macOS
         if: matrix.os == 'macos-latest'
         run: |
@@ -43,14 +43,14 @@ jobs:
       - name: Install dependencies for windows
         if: matrix.os == 'windows-latest'
         run: |
-          choco install mingw git
+          choco install git
       - name: Install abess
         run: |
           python --version
-          pip install pybind11[global]
-          python -m pip install --upgrade wheel setuptools
           cd ./python
           # python setup.py install
+          pip install -U pip
+          pip install -U setuptools wheel pybind11[global]
           pip install . -v
       - name: A simple test
         run: |
