@@ -23,8 +23,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        # os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [3.8]
     steps:
       - uses: actions/checkout@v2
@@ -49,8 +48,7 @@ jobs:
           python --version
           cd ./python
           # python setup.py install
-          pip install -U pip
-          pip install -U setuptools wheel pybind11[global]
+          pip install pybind11[global]
           pip install . -v
       - name: A simple test
         run: |
