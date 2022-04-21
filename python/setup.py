@@ -43,30 +43,6 @@ try:
 except BaseException:
     pass
 
-#     pybind_cabess_module = Pybind11Extension(
-#         name='abess.pybind_cabess',
-#         sources=['src/api.cpp',
-#                  'src/List.cpp',
-#                  'src/utilities.cpp',
-#                  'src/normalize.cpp',
-#                  'src/pywrap.cpp'],
-#         extra_compile_args=[
-#             "-DNDEBUG", "-fopenmp",
-#             "-O2", "-Wall",
-#             "-std=c++11", "-mavx",
-#             "-mfma", "-march=native",
-#             # "-Wno-unused-variable",
-#             # "-Wno-unused-but-set-variable",
-#             "-Wno-int-in-bool-context"  # avoid warnings from Eigen
-#         ],
-#         extra_link_args=['-lgomp'],
-#         include_dirs=[
-#             'include'
-#         ]
-#     )
-#     pass
-
-
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=""):
         Extension.__init__(self, name, sources=[])

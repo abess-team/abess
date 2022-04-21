@@ -23,7 +23,6 @@ find_package(OpenMP)
 # sources
 set(SOURCES src/pywrap.cpp src/utilities.cpp src/List.cpp src/normalize.cpp src/api.cpp)
 Python_add_library(pybind_cabess ${SOURCES})
-# pybind11_add_module(pybind_cabess ${SOURCES})
 
 # links
 target_link_libraries(pybind_cabess PRIVATE pybind11::module 
