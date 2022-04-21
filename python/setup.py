@@ -66,29 +66,47 @@ class CMakeBuild(build_ext):
         # config: debug or release
         cfg = "DEBUG" if self.debug else "RELEASE"
 
+        # CMake lets you override the generator - we need to check this.
+        # Can be set with Conda-Build, for example.
+        cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
+
         # arguments for "cmake" and "cmake --build"
         cmake_args = [
             f"-DCMAKE_BUILD_TYPE={cfg}",
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}"
         ]
         build_args = [
-            "-j4",
-            f"--config {cfg}"
+            "-j4"
         ]
+        if "CMAKE_ARGS" in os.environ:
+            cmake_args += [item for item in os.environ["CMAKE_ARGS"].split(" ") if item]
 
         # Windows (MSVC)
         if self.compiler.compiler_type == "msvc":
-            cmake_args += [
-                f"-DMSVC=ON",
-                f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg}={extdir}",
-                f"-A{PLAT_TO_CMAKE[self.plat_name]}"
-            ]
+            cmake_args += ["-DMSVC=ON"]
+
+            # Single config generators are handled "normally"
+            single_config = any(x in cmake_generator for x in {"NMake", "Ninja"})
+
+            # CMake allows an arch-in-generator style for backward compatibility
+            contains_arch = any(x in cmake_generator for x in {"ARM", "Win64"})
+
+            # Specify the arch if using MSVC generator, but only if it doesn't
+            # contain a backward-compatibility arch spec already in the
+            # generator name.
+            if not single_config and not contains_arch:
+                cmake_args += ["-A", PLAT_TO_CMAKE[self.plat_name]]
+
+            # Multi-config generators have a different way to specify configs
+            if not single_config:
+                cmake_args += [
+                    f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}"
+                ]
+                build_args += ["--config", cfg]
 
         # MacOS
         if sys.platform.startswith("darwin"):
-            # cmake_args += [
-            #     f"-DDARWIN=ON"
-            # ]
+            # cmake_args += ["-DDARWIN=ON"]
 
             # Cross-compile support for macOS - respect ARCHFLAGS if set
             archs = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
