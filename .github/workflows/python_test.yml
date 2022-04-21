@@ -23,7 +23,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
         # os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [3.8]
     steps:
@@ -47,9 +47,10 @@ jobs:
       - name: Install abess
         run: |
           python --version
+          pip install pybind11[global]
+          python -m pip install --upgrade wheel setuptools
           cd ./python
           # python setup.py install
-          pip install pybind11[global]
           pip install . -v
       - name: A simple test
         run: |
