@@ -86,6 +86,9 @@ class CMakeBuild(build_ext):
 
         # MacOS
         if sys.platform.startswith("darwin"):
+            cmake_args += [
+                f"-DDARWIN=ON"
+            ]
             # Cross-compile support for macOS - respect ARCHFLAGS if set
             archs = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
             if archs:

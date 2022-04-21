@@ -14,11 +14,15 @@ else()
 endif()
 
 # dependencies
-include_directories("include")
-include_directories("src")
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 find_package(OpenMP)
+include_directories("include")
+include_directories("src")
+if(DARWIN)
+    find_package(llvm CONFIG REQUIRED)
+    include_directories(${LLVM_INCLUDE_DIRS})
+endif()
 
 # sources
 set(SOURCES src/pywrap.cpp src/utilities.cpp src/List.cpp src/normalize.cpp src/api.cpp)
