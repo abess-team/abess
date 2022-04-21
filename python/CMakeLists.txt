@@ -6,10 +6,10 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 if(MSVC)
-    SET(CMAKE_CXX_FLAGS "/EHsc /openmp /arch:AVX2")
+    SET(CMAKE_CXX_FLAGS "/EHsc /arch:AVX2")
     SET(CMAKE_CXX_FLAGS_DEBUG "/W4")
 else()
-    SET(CMAKE_CXX_FLAGS "-fopenmp -march=native")
+    SET(CMAKE_CXX_FLAGS "-march=native")
     SET(CMAKE_CXX_FLAGS_DEBUG "-Wall")
 endif()
 
@@ -19,10 +19,6 @@ find_package(pybind11 CONFIG REQUIRED)
 find_package(OpenMP)
 include_directories("include")
 include_directories("src")
-if(DARWIN)
-    find_package(llvm CONFIG REQUIRED)
-    include_directories(${LLVM_INCLUDE_DIRS})
-endif()
 
 # sources
 set(SOURCES src/pywrap.cpp src/utilities.cpp src/List.cpp src/normalize.cpp src/api.cpp)
