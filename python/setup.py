@@ -47,42 +47,49 @@ class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=""):
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
+        self.parallel = 4
 
 class CMakeBuild(build_ext):
     def build_extension(self, ext):
-        # extension dir
-        extdir = os.path.abspath(
-            os.path.dirname(
-                self.get_ext_fullpath(
-                    ext.name)))
+        extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
+
+        # required for auto-detection & inclusion of auxiliary "native" libs
         if not extdir.endswith(os.path.sep):
             extdir += os.path.sep
 
-        # cmake build dir
-        build_temp = os.path.join(self.build_temp, ext.name)
-        if not os.path.exists(build_temp):
-            os.makedirs(build_temp)
-
-        # config: debug or release
-        cfg = "DEBUG" if self.debug else "RELEASE"
+        debug = int(os.environ.get("DEBUG", 0)) if self.debug is None else self.debug
+        cfg = "Debug" if debug else "Release"
 
         # CMake lets you override the generator - we need to check this.
         # Can be set with Conda-Build, for example.
         cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
 
-        # arguments for "cmake" and "cmake --build"
         cmake_args = [
-            f"-DCMAKE_BUILD_TYPE={cfg}",
-            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}"
+            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
+            f"-DPYTHON_EXECUTABLE={sys.executable}",
+            f"-DCMAKE_BUILD_TYPE={cfg}"
         ]
-        build_args = [
-            "-j4"
-        ]
+        build_args = []
+        # Adding CMake arguments set as environment variable
+        # (needed e.g. to build for ARM OSx on conda-forge)
         if "CMAKE_ARGS" in os.environ:
             cmake_args += [item for item in os.environ["CMAKE_ARGS"].split(" ") if item]
 
-        # Windows (MSVC)
-        if self.compiler.compiler_type == "msvc":
+        if self.compiler.compiler_type != "msvc":
+            # Using Ninja-build since it a) is available as a wheel and b)
+            # multithreads automatically. MSVC would require all variables be
+            # exported for Ninja to pick it up, which is a little tricky to do.
+            # Users can override the generator with CMAKE_GENERATOR in CMake
+            # 3.15+.
+            if not cmake_generator:
+                try:
+                    import ninja  # noqa: F401
+
+                    cmake_args += ["-GNinja"]
+                except ImportError:
+                    pass
+
+        else:
             cmake_args += ["-DMSVC=ON"]
 
             # Single config generators are handled "normally"
@@ -104,20 +111,27 @@ class CMakeBuild(build_ext):
                 ]
                 build_args += ["--config", cfg]
 
-        # MacOS
         if sys.platform.startswith("darwin"):
-            # cmake_args += ["-DDARWIN=ON"]
-
             # Cross-compile support for macOS - respect ARCHFLAGS if set
             archs = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
             if archs:
-                cmake_args += [
-                    "-DCMAKE_OSX_ARCHITECTURES={}".format(";".join(archs))]
+                cmake_args += ["-DCMAKE_OSX_ARCHITECTURES={}".format(";".join(archs))]
 
-        subprocess.check_call(["cmake", ext.sourcedir]
-                              + cmake_args, cwd=build_temp)
-        subprocess.check_call(["cmake", "--build", "."]
-                              + build_args, cwd=build_temp)
+        # Set CMAKE_BUILD_PARALLEL_LEVEL to control the parallel build level
+        # across all generators.
+        if "CMAKE_BUILD_PARALLEL_LEVEL" not in os.environ:
+            # self.parallel is a Python 3 only way to set parallel jobs by hand
+            # using -j in the build_ext call, not supported by pip or PyPA-build.
+            if hasattr(self, "parallel") and self.parallel:
+                # CMake 3.12+ only.
+                build_args += [f"-j{self.parallel}"]
+
+        build_temp = os.path.join(self.build_temp, ext.name)
+        if not os.path.exists(build_temp):
+            os.makedirs(build_temp)
+
+        subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=build_temp)
+        subprocess.check_call(["cmake", "--build", "."] + build_args, cwd=build_temp)
 
 
 with open(os.path.join(CURRENT_DIR, 'README.rst'), encoding='utf-8') as f:

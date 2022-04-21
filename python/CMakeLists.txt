@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(cmake_example)
+project(pybind_cabess LANGUAGES CXX)
 
 # environment variables
 set(CMAKE_CXX_STANDARD 11)
@@ -14,8 +14,7 @@ else()
 endif()
 
 # dependencies
-find_package(Python COMPONENTS Interpreter Development REQUIRED)
-find_package(pybind11 CONFIG REQUIRED)
+find_package(pybind11)
 find_package(OpenMP)
 
 # sources
@@ -26,15 +25,22 @@ set(SOURCES
     src/normalize.cpp
     src/api.cpp
 )
-Python_add_library(pybind_cabess ${SOURCES})
+add_library(pybind_cabess MODULE ${SOURCES})
 
 # links
-target_include_directories(pybind_cabess PUBLIC include
-                                                src)
+target_include_directories(pybind_cabess PRIVATE include
+                                                 src)
 target_link_libraries(pybind_cabess PRIVATE pybind11::module 
                                             pybind11::opt_size 
                                             pybind11::lto
                                             pybind11::windows_extras)
 if(OpenMP_CXX_FOUND)
-    target_link_libraries(pybind_cabess PUBLIC OpenMP::OpenMP_CXX)
+    target_link_libraries(pybind_cabess PRIVATE OpenMP::OpenMP_CXX)
 endif()
+
+# build extension
+pybind11_extension(pybind_cabess)
+pybind11_strip(pybind_cabess)
+
+set_target_properties(pybind_cabess PROPERTIES CXX_VISIBILITY_PRESET "hidden"
+                                               CUDA_VISIBILITY_PRESET "hidden")
