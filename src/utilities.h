@@ -19,6 +19,7 @@
 #include <RcppEigen.h>
 #endif
 
+#include <type_traits>
 #include <cfloat>
 #include <iostream>
 #include "UniversalData.h"
@@ -255,7 +256,7 @@ void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nu
 
 void coef_set_zero(int p, int M, Eigen::VectorXd &beta, double &coef0);
 void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0);
-
+void coef_set_zero(int p, int M, Eigen::VectorXd& beta, Eigen::VectorXd& coef0);
 /**
  * @brief element-wise product: A.array() * B.array().
  */
@@ -312,7 +313,7 @@ void add_constant_column(Eigen::SparseMatrix<double> &X);
 /**
  * @brief If enable normalization, restore coefficients after fitting.
  */
-template <class T2, class T3>
+template <class T2, class T3, class T4, std::enable_if_t<!std::is_same_v<T4,UniversalData>,bool> = true>
 void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, 1> &beta_matrix,
                         Eigen::Matrix<T3, Dynamic, 1> &coef0_matrix, bool sparse_matrix, int normalize_type, int n,
                         Eigen::VectorXd x_mean, T3 y_mean, Eigen::VectorXd x_norm) {
@@ -350,6 +351,11 @@ void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, 1> &beta
     }
     return;
 }
+
+template <class T2, class T3, class T4, std::enable_if_t<std::is_same_v<T4, UniversalData>, bool> = true>
+void restore_for_normal(T2& beta, T3& coef0, Eigen::Matrix<T2, Dynamic, 1>& beta_matrix,
+    Eigen::Matrix<T3, Dynamic, 1>& coef0_matrix, bool sparse_matrix, int normalize_type, int n,
+    Eigen::VectorXd x_mean, T3 y_mean, Eigen::VectorXd x_norm){}
 
 template <class T4>
 Eigen::VectorXd pi(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &coef) {

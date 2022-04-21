@@ -360,6 +360,12 @@ void coef_set_zero(int p, int M, Eigen::VectorXd &beta, double &coef0) {
     return;
 }
 
+void coef_set_zero(int p, int M, Eigen::VectorXd& beta, Eigen::VectorXd& coef0) {
+    beta = Eigen::VectorXd::Zero(p);
+    coef0 = Eigen::VectorXd::Zero(M);
+    return;
+}
+
 void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0) {
     beta = Eigen::MatrixXd::Zero(p, M);
     coef0 = Eigen::VectorXd::Zero(M);

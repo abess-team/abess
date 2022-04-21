@@ -246,7 +246,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
 
     // Restore for normal:
     //    restore the changes if normalization is used.
-    restore_for_normal<T2, T3>(best_beta, best_coef0, beta_matrix, coef0_matrix, sparse_matrix, data.normalize_type,
+    restore_for_normal<T2, T3, T4>(best_beta, best_coef0, beta_matrix, coef0_matrix, sparse_matrix, data.normalize_type,
                                data.n, data.x_mean, data.y_mean, data.x_norm);
 
     // Store in a list for output

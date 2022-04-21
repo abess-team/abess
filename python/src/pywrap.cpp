@@ -5,6 +5,7 @@
 #include "UniversalData.h"
 #include "List.h"
 #include "api.h"
+#include "universal_model_just_for_debug.h"
 
 std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_GLM(
     Eigen::MatrixXd x_Mat, Eigen::MatrixXd y_Mat, Eigen::VectorXd weight_Vec, int n, int p, int normalize_type,
@@ -128,12 +129,20 @@ std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_Univ
     double lambda_max, int n_lambda, int screening_size, Eigen::VectorXi always_select_Vec,
     int primary_model_fit_max_iter, double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton,
     int thread, bool covariance_update, bool sparse_matrix, int splicing_type, int sub_search,
-    Eigen::VectorXi A_init_Vec) {
-    List mylist = abessUniversal_API(ExternData(), UniversalModel(), p, n, max_iter, exchange_num,
+    Eigen::VectorXi A_init_Vec) 
+{
+    Data* data = new Data;
+    data->x = x_Mat;
+    data->y = y_Mat;
+    pybind11::object d = pybind11::cast(data);
+    UniversalModel model;
+    get_model(model);
+
+    List mylist = abessUniversal_API(d, model, p, n, 1, max_iter, exchange_num,
             path_type, is_warm_start, ic_type, ic_coef, Kfold, sequence_Vec, lambda_sequence_Vec, s_min, s_max,
             screening_size, gindex_Vec, always_select_Vec, early_stop, thread,
             splicing_type, sub_search, cv_fold_id_Vec, A_init_Vec);
-
+    delete data;
     std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> output;
     int y_col = y_Mat.cols();
     if (y_col == 1 && model_type != 5 && model_type != 6) {
@@ -171,6 +180,7 @@ std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_Univ
 }
 
 PYBIND11_MODULE(pybind_cabess, m) {
+    pybind11::class_<Data>(m, "Data");
     pybind11::class_<UniversalModel>(m, "UniversalModel")
         .def("set_loss_of_model", &UniversalModel::set_loss_of_model)
         .def("set_gradient_autodiff", &UniversalModel::set_gradient_autodiff)

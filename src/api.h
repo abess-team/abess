@@ -145,7 +145,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
 #ifdef R_BUILD
 
 #else
-List abessUniversal_API(ExternData data, UniversalModel model, int model_size, int sample_size, int max_iter, int exchange_num, int path_type,
+List abessUniversal_API(ExternData data, UniversalModel model, int model_size, int sample_size, int intercept_size, int max_iter, int exchange_num, int path_type,
     bool is_warm_start, int ic_type, double ic_coef, int Kfold, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max,
     int screening_size, Eigen::VectorXi g_index, Eigen::VectorXi always_select, bool early_stop, int thread, int splicing_type, int sub_search,
     Eigen::VectorXi cv_fold_id, Eigen::VectorXi A_init);
