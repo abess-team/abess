@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies for macOS
         if: matrix.os == 'macos-latest'
         run: |
-          brew install bash
+          brew install bash libomp
       - name: Install dependencies for windows
         if: matrix.os == 'windows-latest'
         run: |
@@ -48,7 +48,8 @@ jobs:
           python --version
           cd ./python
           # python setup.py install
-          pip install .
+          pip install pybind11[global]
+          pip install . -v
       - name: A simple test
         run: |
           echo "import abess; print(abess.__version__);" > ./test.py
