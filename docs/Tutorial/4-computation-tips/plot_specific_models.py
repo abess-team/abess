@@ -54,9 +54,9 @@ t2 = time()
 model2.fit(data.x, data.y)
 t2 = time() - t2
 
-print("No covariance update: {t1}")
-print("Covariance update: {t2}")
-print("Same answer? {(model1.coef_==model2.coef_).all()}")
+print(f"No covariance update: {t1}")
+print(f"Covariance update: {t2}")
+print(f"Same answer? {(model1.coef_==model2.coef_).all()}")
 
 # %%
 # We can see that covariance update improve computation 
