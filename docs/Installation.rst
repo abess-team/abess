@@ -196,6 +196,8 @@ installation.
    and provides many user-friendly and efficient numerical routines.
 -  `scikit-learn <https://pypi.org/project/scikit-learn/>`__: a Python
    module for machine learning built on top of SciPy.
+-  `pandas <https://pypi.org/project/pandas/>`__: 
+   support data manipulation and input.
 
 Furthermore, if you want to develop the Python packages, some additional
 packages should be installed:
@@ -213,8 +215,8 @@ packages should be installed:
       “Read the Docs” theme for Sphinx.
    -  `sphinix-gallery <https://pypi.org/project/sphinx-gallery/>`__: develop the gallery of Python examples.
 
--  `pandas <https://pypi.org/project/pandas/>`__: 
-   support data manipulation in Tutorials and Testing.
+.. -  `pandas <https://pypi.org/project/pandas/>`__: 
+..    support data manipulation in Tutorials and Testing.
       
 
 .. _r-2:
