@@ -541,7 +541,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
 #else
 List abessUniversal_API(ExternData data, UniversalModel model, int model_size, int sample_size, int intercept_size, int max_iter, int exchange_num, int path_type,
     bool is_warm_start, int ic_type, double ic_coef, int Kfold, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max,
-    int screening_size, Eigen::VectorXi g_index, Eigen::VectorXi always_select, bool early_stop, int thread, int splicing_type, int sub_search,
+    int screening_size, Eigen::VectorXi g_index, Eigen::VectorXi always_select, int thread, int splicing_type, int sub_search,
     Eigen::VectorXi cv_fold_id, Eigen::VectorXi A_init)
 #endif
 {
@@ -574,8 +574,9 @@ List abessUniversal_API(ExternData data, UniversalModel model, int model_size, i
         algorithm_list[i] = new abessUniversal(max_iter, is_warm_start, exchange_num, always_select, splicing_type, sub_search);
     }
 
+    bool early_stop = true, sparse_matrix = true;
     out_result = abessWorkflow<MatrixXd, VectorXd, VectorXd, UniversalData>(x, y, sample_size, model_size, normalize_type, weight, 6, path_type, is_warm_start, ic_type, ic_coef, Kfold,
-        parameters, screening_size, g_index, early_stop, thread, true, cv_fold_id, A_init, algorithm_list);
+        parameters, screening_size, g_index, early_stop, thread, sparse_matrix, cv_fold_id, A_init, algorithm_list);
     
     for (int i = 0; i < algorithm_list_size; i++) {
         delete algorithm_list[i];
