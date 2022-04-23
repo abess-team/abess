@@ -180,7 +180,7 @@ std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_Univ
     return output;
 }
 
-std::tuple<Eigen::VectorXd, Eigen::VectorXd, double, double, double, double>
+std::tuple<Eigen::VectorXd, Eigen::VectorXd, double, double, double>
 pywrap_Universal_true(ExternData data, UniversalModel model, int model_size, int sample_size,int intercept_size, int max_iter,
     int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef, int Kfold, Eigen::VectorXi sequence, 
     Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size, Eigen::VectorXi g_index, Eigen::VectorXi always_select, 
@@ -194,18 +194,16 @@ pywrap_Universal_true(ExternData data, UniversalModel model, int model_size, int
     double train_loss = 0;
     double test_loss = 0;
     double ic = 0;
-    double lambda = 0;
     mylist.get_value_by_name("beta", beta);
     mylist.get_value_by_name("coef0", intercept);
     mylist.get_value_by_name("train_loss", train_loss);
     mylist.get_value_by_name("test_loss", test_loss);
     mylist.get_value_by_name("ic", ic);
-    mylist.get_value_by_name("lambda", lambda);
-    return std::make_tuple(beta, intercept, train_loss, test_loss, ic, lambda);
+    return std::make_tuple(beta, intercept, train_loss, test_loss, ic);
 }
 
 PYBIND11_MODULE(pybind_cabess, m) {
-    pybind11::class_<Data>(m, "Data");
+    pybind11::class_<Data>(m, "Data"); // just for debug
     pybind11::class_<UniversalModel>(m, "UniversalModel").def(pybind11::init<>())
         .def("set_loss_of_model", &UniversalModel::set_loss_of_model)
         .def("set_gradient_autodiff", &UniversalModel::set_gradient_autodiff)

@@ -1,4 +1,5 @@
 from modulefinder import Module
+from types import DynamicClassAttribute
 from pybind_cabess import pywrap_Universal
 from .bess_base import bess_base
 import numbers
@@ -6,7 +7,7 @@ import numpy as np
 from scipy.sparse import coo_matrix, csr_matrix
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_X_y
-from .utilities import categorical_to_dummy
+from .utilities import categorical_to_dummy, check_not_greater_than
 
 # just for debug
 class abessUniversal(bess_base):
@@ -373,8 +374,10 @@ class abessUniversal(bess_base):
         return self
 
 from sklearn.base import BaseEstimator
+import numpy as np
 from pybind_cabess import pywrap_Universal
 from pybind_cabess import UniversalModel as Model_cpp
+from .utilities import check_positive_integer, check_non_negative_integer
 class UniversalModel(BaseEstimator): 
     r"""
     Adaptive Best-Subset Selection(ABESS) algorithm for
@@ -410,13 +413,13 @@ class UniversalModel(BaseEstimator):
           specific support size to be considered is
           determined by golden section.
     support_size : array-like, optional
-        default=range(min(n, int(n/(log(log(n))log(p))))) or range(p) if n==1
+        default=range(min(n, int(n/(log(log(n))log(p))))) 
         An integer vector representing the alternative support sizes.
         Used only when path_type = "seq".
     gs_lower_bound : int, optional, default=0
         The lower bound of golden-section-search for sparsity searching.
         Used only when path_type = "gs".
-    gs_higher_bound : int, optional, default=min(n, int(n/(log(log(n))log(p)))) or p if n==1
+    gs_higher_bound : int, optional, default=min(n, int(n/(log(log(n))log(p)))) 
         The higher bound of golden-section-search for sparsity searching.
         Used only when path_type = "gs".
     cv : int, optional, default=1
@@ -435,7 +438,7 @@ class UniversalModel(BaseEstimator):
     ic_coef : float, optional, default=1.0
         The coefficient of information criterion.
         Used only when cv = 1.
-    regular_coef : array-like, optional, default=[0.0]
+    regular_coef : float, optional, default=0.0
         L2 regularization coefficient for computational stability.
     always_select : array-like, optional, default=[]
         An array contains the indexes of variables which must be selected.
@@ -450,8 +453,12 @@ class UniversalModel(BaseEstimator):
         The number of important variables which need be splicing.
         If it's too large, it would greatly increase runtime.
     group : array-like, optional, default=range(p)
-        The group index for each variable, and it must be an incremental integer array.
-        A total group is seen as a variable.
+        The group index for each variable, and it must be an incremental integer array starting from 0 without gap.
+        Here are wrong examples: [0,2,1,2](not incremental), [1,2,3,3](not start from 0), [0,2,2,3](there is a gap).
+        The variables in the same group must be adjacent, and they will be selected together or not.
+        Before use group, it's worth mentioning that the concept "a variable" means "a group of variables" in fact.
+        For example, "support_size=[3]" means there will be 3 groups of variables selected rather than 3 variables, 
+        and "always_include=[0,3]" means the 0-th and 3-th groups must be selected.
     init_active_set : array-like, optional, default=[]
         The index of the variable in initial active set.
     is_warm_start : bool, optional, default=True
@@ -494,7 +501,6 @@ class UniversalModel(BaseEstimator):
     ic_ = 0
     train_loss_ = 0
     test_loss_ = 0
-    regularization_ = 0
 
     def __init__(self, model_size, intercept_size=0, sample_size=1,
                 max_iter=20, max_exchange_num=5, splicing_type="halve", 
@@ -536,19 +542,175 @@ class UniversalModel(BaseEstimator):
             Any class which is match to model which is also user-defined before fit, denoted as ExternData.  
             It cantains all data that model should be known, like samples, responses, weight.
         """
-        
-        result = pywrap_Universal(data, self.model, self.model_size, self.sample_size, self.intercept_size,
-            self.max_iter, self.max_exchange_num, self.path_type, self.is_warm_start, self.ic_type, 
-            self.ic_coef, self.cv, self.support_size, self.regular_coef, self.gs_lower_bound, self.gs_higher_bound,
-            self.screening_size, self.group, self.always_select, self.thread, self.splicing_type, 
-            self.important_search, self.cv_fold_id, self.init_active_set)
+        # model_size
+        p = self.model_size
+        check_positive_integer(p, "model_size")
+
+        # sample_size
+        n = self.sample_size
+        check_positive_integer(n, "sample_size")   
+
+        # intercept_size
+        m = self.intercept_size
+        check_non_negative_integer(m, "intercept_size")
+
+        # max_iter
+        check_non_negative_integer(self.max_iter, "max_iter")
+
+        # max_exchange_num
+        check_positive_integer(self.max_exchange_num, "max_exchange_num")
+
+        # path_type 
+        if self.path_type == "seq":
+            path_type = 1
+        elif self.path_type == "gs":
+            path_type = 2
+        else:
+            raise ValueError("path_type should be \'seq\' or \'gs\'")
+
+        # ic_type
+        if self.ic_type == "aic":
+            ic_type = 1
+        elif self.ic_type == "bic":
+            ic_type = 2
+        elif self.ic_type == "gic":
+            ic_type = 3
+        elif self.ic_type == "ebic":
+            ic_type = 4
+        else:
+            raise ValueError(
+                "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")        
+
+        # cv
+        check_positive_integer(self.cv, "cv")
+        check_not_greater_than(self.cv, "cv", n, "sample_size")
+
+        # group
+        if self.group is None:
+            group = np.array(range(p), dtype="int32")
+            group_num = p #len(np.unique(group))
+        else:
+            group = np.array(self.group)
+            if group.ndim > 1:
+                raise ValueError("Group should be an 1D array of integers.")
+            if group.size != p:
+                raise ValueError("The length of group should be equal to model_size.")
+            group_num = len(np.unique(group))
+            if group[0] != 0:
+                raise ValueError("Group should start from 0.")
+            if any(group[1:] - group[:-1] < 0):
+                raise ValueError("Group should be an incremental integer array.")
+            if not group_num == max(group) + 1:
+                raise ValueError("There is a gap in group.")
+            group = np.array([np.where(group==i)[0][0] for i in range(group_num)], dtype="int32")
+
+        # support_size
+        if self.path_type == "gs":
+            support_size = np.array([0], dtype='int32')
+        else:
+            if self.support_size == None:
+                if (n == 1 or group_num == 1):
+                    support_size = np.array([0,1], dtype='int32')
+                else:
+                    support_size = np.array(range(max(1, min(group_num, int(n / np.log(np.log(n)) / np.log(group_num))))), dtype='int32')
+            else:
+                if isinstance(self.support_size, (int, float)):
+                    support_size = np.array([self.support_size], dtype='int32')
+                else:
+                    support_size = np.array(self.support_size, dtype='int32')
+                support_size = np.sort(np.unique(support_size))
+                if support_size[0] < 0 or support_size[-1] > group_num:
+                    raise ValueError("All support_size should be between 0 and model_size")
+
+        # regular_coef
+        if self.regular_coef == None:
+            regular_coef = np.array([0.0],dtype=float)
+        else:
+            if isinstance(self.regular_coef, (int, float)):
+                regular_coef = np.array([self.regular_coef], dtype=float)
+            else:
+                regular_coef = np.array(self.regular_coef, dtype=float)            
+            if any(regular_coef < 0.0):
+                raise ValueError("regular_coef should be positive.")
+
+        # gs_bound
+        if self.path_type == "seq":
+            gs_lower_bound = gs_higher_bound = 0
+        else:
+            if self.gs_lower_bound == None:
+                gs_lower_bound = 0 
+                gs_higher_bound = min(group_num, int(n / (np.log(np.log(n)) * np.log(group_num))))     
+            else:
+                gs_lower_bound = self.gs_lower_bound
+                gs_higher_bound = self.gs_higher_bound
+            if gs_lower_bound > gs_higher_bound:
+                raise ValueError("gs_higher_bound should be larger than gs_lower_bound.")
+
+        # screening_size
+        if self.screening_size == -1:
+            screening_size = -1
+        elif self.screening_size == 0:
+            screening_size = min(group_num, max(max(support_size[-1], gs_higher_bound), int(n / (np.log(np.log(n)) * np.log(group_num)))))
+        else:
+            screening_size = self.screening_size
+            if screening_size > group_num or screening_size < max(support_size[-1], gs_higher_bound):
+                raise ValueError("screening_size should be between max(support_size) and model_size.")
+
+        # always_select
+        always_select = np.sort(np.array(self.always_select, dtype='int32'))
+        if always_select[0] < 0 or always_select[-1] >= group_num:
+            raise ValueError("always_select should be between 0 and model_size.")
+
+        # thread
+        check_non_negative_integer(self.thread, "thread");
+
+        # splicing_type
+        if self.splicing_type == "halve":
+            splicing_type = 0
+        elif self.splicing_type == "taper":
+            splicing_type = 1
+        else:
+            raise ValueError('splicing_type should be "halve" or "taper".')    
+
+        # important_search
+        check_non_negative_integer(self.important_search, "important_search");
+
+        # cv_fold_id
+        if self.cv_fold_id is None:
+            cv_fold_id = np.array([], dtype="int32")
+        else: 
+            cv_fold_id = np.array(cv_fold_id, dtype="int32")
+            if cv_fold_id.ndim > 1:
+                raise ValueError("group should be an 1D array of integers.")
+            if cv_fold_id.size != n:
+                raise ValueError(
+                    "The length of group should be equal to X.shape[0].")
+            if len(set(cv_fold_id)) != self.cv:
+                raise ValueError(
+                    "The number of different masks should be equal to `cv`.")
+
+        # init_active_set
+        if self.init_active_set is None:
+            init_active_set = np.array([], dtype="int32")
+        else:
+            init_active_set = np.array(init_active_set, dtype="int32")
+            if init_active_set.ndim > 1:
+                raise ValueError("The initial active set should be "
+                                 "an 1D array of integers.")
+            if (init_active_set.min() < 0 or init_active_set.max() >= p):
+                raise ValueError("init_active_set contains wrong index.")
+
+        result = pywrap_Universal(data, self.model, p, n, m,
+            self.max_iter, self.max_exchange_num, path_type, self.is_warm_start, ic_type, 
+            self.ic_coef, self.cv, support_size, regular_coef, gs_lower_bound, gs_higher_bound,
+            screening_size, group, always_select, self.thread, splicing_type, 
+            self.important_search, cv_fold_id, self.init_active_set)
         
         self.coef_ = result[0]
         self.intercept_ = result[1].squeeze()
         self.train_loss_ = result[2]
         self.test_loss_ = result[3]
         self.ic_ = result[4]
-        self.regularization_ = result[5]
     
     def set_loss(self, func):
         r"""
