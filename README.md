@@ -9,6 +9,7 @@
 [![R docs](https://github.com/abess-team/abess/actions/workflows/r_website.yml/badge.svg)](https://abess-team.github.io/abess/)
 [![cran](https://img.shields.io/cran/v/abess?logo=R)](https://cran.r-project.org/package=abess)
 [![pypi](https://badge.fury.io/py/abess.svg)](https://badge.fury.io/py/abess)
+[![Conda version](https://img.shields.io/conda/vn/conda-forge/abess.svg)](https://anaconda.org/conda-forge/abess)
 [![pyversions](https://img.shields.io/pypi/pyversions/abess)](https://img.shields.io/pypi/pyversions/abess)
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76)](https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abess-team/abess&amp;utm_campaign=Badge_Grade)
@@ -39,11 +40,18 @@ The `abess` software has both Python and R's interfaces. Here a quick start will
 
 ### Python package
 
-Install the stable version of Python-package from [Pypi](https://pypi.org/project/abess/) with:
+Install the stable version of Python-package from [Pypi](https://pypi.org/project/abess/):
 
 ```shell
 $ pip install abess
 ```
+
+or [conda-forge](https://anaconda.org/conda-forge/abess):
+
+```shell
+$ conda install abess
+```
+
 
 Best subset selection for linear regression on a simulated dataset in Python:    
 
@@ -56,7 +64,7 @@ model.fit(sim_dat.x, sim_dat.y)
 ```
 
 
-See more examples analyzed with Python in the [Python tutorials](https://abess.readthedocs.io/en/latest/Tutorial/index.html).
+See more examples analyzed with Python in the [Python tutorials](https://abess.readthedocs.io/en/latest/auto_gallery/index.html).
 
 
 ### R package
@@ -80,7 +88,7 @@ See more examples analyzed with R in the [R tutorials](https://abess-team.github
 
 ## Runtime Performance
 
-To show the power of abess in computation, we assess its timings of the CPU execution (seconds) on synthetic datasets, and compare to state-of-the-art variable selection methods. The variable selection and estimation results are deferred to [Python performance](https://abess.readthedocs.io/en/latest/Tutorial/power_of_abess.html) and [R performance](https://abess-team.github.io/abess/articles/v11-power-of-abess.html). All computations are conducted on a Ubuntu platform with Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM.
+To show the power of abess in computation, we assess its timings of the CPU execution (seconds) on synthetic datasets, and compare to state-of-the-art variable selection methods. The variable selection and estimation results are deferred to [Python performance](https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_a1_power_of_abess.html) and [R performance](https://abess-team.github.io/abess/articles/v11-power-of-abess.html). All computations are conducted on a Ubuntu platform with Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM.
 
 ### Python package   
 
@@ -120,6 +128,7 @@ $ Rscript abess/docs/simulation/R/timings.R
 
 New features:
 
+- `abess` Python package can be installed via `conda`. 
 - `abess` R package is is highlighted as one of the core packages in [CRAN Task View: Machine Learning & Statistical Learning](https://cran.r-project.org/web/views/MachineLearning.html).
 - On Windows, the recommended C++ compiler shifts from Mingw to Microsoft Visual Studio.
 - Support predicting survival function in `abess.linear.CoxPHSurvivalAnalysis`.

@@ -11,7 +11,7 @@ Welcome to ``abess``'s documentation!
 .. |logopic| image:: ./image/icon_long.png    
 
 
-|Python build status| |R build status| |codecov| |docs| |cran| |pypi| |pyversions| |License| |Codacy|
+|Python build status| |R build status| |codecov| |docs| |cran| |pypi| |conda-forge| |pyversions| |License| |Codacy|
 
 .. |Codacy| image:: https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76 
    :target: https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abess-team/abess&amp;utm_campaign=Badge_Grade
@@ -32,6 +32,8 @@ Welcome to ``abess``'s documentation!
    :target: https://cran.r-project.org/package=abess
 .. |pypi| image:: https://badge.fury.io/py/abess.svg
    :target: https://badge.fury.io/py/abess
+.. |conda-forge| image:: https://img.shields.io/conda/vn/conda-forge/abess.svg
+   :target: https://anaconda.org/conda-forge/abess
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/abess
 .. |License| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg 
    :target: http://www.gnu.org/licenses/gpl-3.0
@@ -78,6 +80,12 @@ Install the stable ``abess`` Python package from `PyPI <https://pypi.org/project
 .. code-block:: shell
 
    $ pip install abess
+   
+or `conda-forge <https://anaconda.org/conda-forge/abess>`_
+
+.. code-block:: shell
+
+   $ conda install abess
 
 Best subset selection for linear regression on a simulated dataset in Python:    
 
@@ -121,7 +129,7 @@ state-of-the-art variable selection methods.
 The variable selection and estimation results as well as the details of settings are deferred to `Python performance`_  
 and `R performance`_. All computations are conducted on a Ubuntu platform with Intel(R) Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM.
 
-.. _Python performance: https://abess.readthedocs.io/en/latest/Tutorial/power_of_abess.html
+.. _Python performance: https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_a1_power_of_abess.html
 .. _R performance: https://abess-team.github.io/abess/articles/v11-power-of-abess.html
 
 Python package   
@@ -178,8 +186,11 @@ What's new
 
 Version 0.4.5:
 
+- `abess` Python package can be installed via `conda`. 
 - Easier installation for Python users
 - ``abess`` R package is is highlighted as one of the core packages in `CRAN Task View: Machine Learning & Statistical Learning <https://cran.r-project.org/web/views/MachineLearning.html>`__.
+- Support predicting survival function in `abess.linear.CoxPHSurvivalAnalysis`.
+- Rename estimators in Python. Please check `here <https://abess.readthedocs.io/en/latest/Python-package/index.html>`__.
 
 New best subset selection tasks: 
 

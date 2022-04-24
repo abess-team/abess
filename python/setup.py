@@ -49,7 +49,7 @@ except BaseException:
 if sys.platform.startswith('win32'):
     # os_type = 'MS_WIN64'
     pybind_cabess_module = Pybind11Extension(
-        name='pybind_cabess',
+        name='abess.pybind_cabess',
         sources=[
             'src/api.cpp',
             'src/List.cpp',
@@ -99,7 +99,7 @@ elif sys.platform.startswith('darwin'):
         pass
 
     pybind_cabess_module = Pybind11Extension(
-        name='pybind_cabess',
+        name='abess.pybind_cabess',
         sources=['src/api.cpp',
                  'src/List.cpp',
                  'src/utilities.cpp',
@@ -120,7 +120,7 @@ elif sys.platform.startswith('darwin'):
     )
 else:
     pybind_cabess_module = Pybind11Extension(
-        name='pybind_cabess',
+        name='abess.pybind_cabess',
         sources=['src/api.cpp',
                  'src/List.cpp',
                  'src/utilities.cpp',
@@ -167,6 +167,7 @@ setup(
     long_description_content_type="text/x-rst",
     install_requires=[
         "numpy",
+        "pandas",
         "scipy",
         "scikit-learn>=0.24"
     ],
