@@ -208,7 +208,8 @@ class ConvexSparseSolver(BaseEstimator):
 
         # cv
         check_positive_integer(self.cv, "cv")
-        check_not_greater_than(self.cv, "cv", n, "sample_size")
+        if self.cv > n:
+            raise ValueError("cv should not be greater than sample_size")
 
         # group
         if self.group is None:
