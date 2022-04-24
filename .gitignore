@@ -1,5 +1,6 @@
 python/abess.egg-info/*
 python/src/*
+!python/src/predefinedModel.h
 !python/src/List.cpp
 !python/src/List.h
 !python/src/numpy.i
