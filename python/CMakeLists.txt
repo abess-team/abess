@@ -4,6 +4,8 @@ project(pybind_cabess LANGUAGES CXX)
 # environment variables
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
+option(NLOPT_MATLAB OFF)
+option(NLOPT_OCTAVE OFF)
 
 if(MSVC)
     SET(CMAKE_CXX_FLAGS "/EHsc /arch:AVX2")
@@ -18,6 +20,8 @@ endif()
 # dependencies
 find_package(pybind11)
 find_package(OpenMP)
+add_subdirectory(nlopt)
+
 
 # sources
 set(SOURCES
@@ -35,7 +39,8 @@ target_include_directories(pybind_cabess PRIVATE include
 target_link_libraries(pybind_cabess PRIVATE pybind11::module 
                                             pybind11::opt_size 
                                             pybind11::lto
-                                            pybind11::windows_extras)
+                                            pybind11::windows_extras
+                                            nlopt)
 if(OpenMP_CXX_FOUND)
     target_link_libraries(pybind_cabess PRIVATE OpenMP::OpenMP_CXX)
 endif()
