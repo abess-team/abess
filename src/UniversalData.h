@@ -19,7 +19,7 @@ using Eigen::VectorXd;
 using Eigen::VectorXi;
 using Eigen::MatrixXd;
 using Eigen::Matrix;
-using Eigen::Index; // maybe name conflict
+using Eigen::Index; 
 using Eigen::Map;
 using autodiff::dual;
 using autodiff::dual2nd;
@@ -100,4 +100,3 @@ public:
     void unset_deleter();
 };
 #endif //SRC_UNIVERSALDATA_H
-
