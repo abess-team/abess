@@ -2218,7 +2218,6 @@ class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
         if (XA.cols() == 0) return 0.;
 
         int n = X.rows();
-        int p = X.cols();
         int k = coef0.size() - 1;
 
         Eigen::VectorXd h_intercept = Eigen::VectorXd::Zero(k);

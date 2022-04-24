@@ -555,26 +555,25 @@ class Algorithm {
                                              Eigen::VectorXi &g_size, int &N) {
         if (bd.size() == 0) {
             // variable initialization
-            int n = X.rows();
             int beta_size = this->get_beta_size(X.rows(), X.cols());
             bd = Eigen::VectorXd::Zero(N);
 
             // calculate beta & d & h
             Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, beta_size, N);
-            T4 X_A = X_seg(X, n, A_ind, this->model_type);
+            T4 X_A = X_seg(X, X.rows(), A_ind, this->model_type);
             T2 beta_A;
             slice(beta, A_ind, beta_A);
 
             Eigen::VectorXi U = Eigen::VectorXi::LinSpaced(N, 0, N - 1);
             Eigen::VectorXi U_ind = Eigen::VectorXi::LinSpaced(beta_size, 0, beta_size - 1);
             this->sacrifice(X, X_A, y, beta, beta_A, coef0, A, I, weights, g_index, g_size, N, A_ind, bd, U, U_ind, 0);
-            // alway_select
-            for (int i = 0; i < this->always_select.size(); i++) {
-                bd(this->always_select(i)) = DBL_MAX;
-            }
             // A_init
             for (int i = 0; i < A.size(); i++) {
                 bd(A(i)) = DBL_MAX - 1;
+            }
+            // alway_select
+            for (int i = 0; i < this->always_select.size(); i++) {
+                bd(this->always_select(i)) = DBL_MAX;
             }
         }
 

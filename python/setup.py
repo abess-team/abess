@@ -48,7 +48,6 @@ except BaseException:
 
 if sys.platform.startswith('win32'):
     # os_type = 'MS_WIN64'
-
     pybind_cabess_module = Pybind11Extension(
         name='abess.pybind_cabess',
         sources=[
@@ -56,21 +55,30 @@ if sys.platform.startswith('win32'):
             'src/List.cpp',
             'src/utilities.cpp',
             'src/normalize.cpp',
-            'src/pywrap.cpp'],
+            'src/pywrap.cpp',
+            'src/AlgorithmUniversal.cpp',
+            'src/UniversalData.cpp'
+        ],
         extra_compile_args=[
             "/openmp",
             "/O2", "/W4",
-            "/arch:AVX2"
+            "/arch:AVX2","/std:c++17"
         ],
         include_dirs=[
             'include'
+        ],
+        libraries=[
+            'nlopt.windows'
+        ],
+        library_dirs=[
+            'lib'
         ]
     )
 elif sys.platform.startswith('darwin'):
     # compatible compile args with M1 chip:
     extra_compile_args = [
         "-DNDEBUG", "-O2",
-        "-Wall", "-std=c++11",
+        "-Wall", "-std=c++17",
         "-Wno-int-in-bool-context"
     ]
     m1chip_unable_extra_compile_args = [
@@ -96,10 +104,18 @@ elif sys.platform.startswith('darwin'):
                  'src/List.cpp',
                  'src/utilities.cpp',
                  'src/normalize.cpp',
-                 'src/pywrap.cpp'],
+                 'src/pywrap.cpp',
+                 'src/AlgorithmUniversal.cpp',
+                 'src/UniversalData.cpp'],
         extra_compile_args=extra_compile_args,
         include_dirs=[
             'include'
+        ],
+        libraries=[
+            'nlopt.macos'
+        ],
+        library_dirs=[
+            'lib'
         ]
     )
 else:
@@ -109,11 +125,13 @@ else:
                  'src/List.cpp',
                  'src/utilities.cpp',
                  'src/normalize.cpp',
-                 'src/pywrap.cpp'],
+                 'src/pywrap.cpp',
+                 'src/AlgorithmUniversal.cpp',
+                 'src/UniversalData.cpp'],
         extra_compile_args=[
             "-DNDEBUG", "-fopenmp",
             "-O2", "-Wall",
-            "-std=c++11", "-mavx",
+            "-std=c++17", "-mavx",
             "-mfma", "-march=native",
             # "-Wno-unused-variable",
             # "-Wno-unused-but-set-variable",
@@ -122,6 +140,12 @@ else:
         extra_link_args=['-lgomp'],
         include_dirs=[
             'include'
+        ],
+        libraries=[
+            'nlopt.linux'
+        ],
+        library_dirs=[
+            'lib'
         ]
     )
     pass

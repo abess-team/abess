@@ -46,13 +46,14 @@
 #include <RcppEigen.h>
 // [[Rcpp::depends(RcppEigen)]]
 using namespace Rcpp;
+
 #else
 #include <Eigen/Eigen>
-
 #include "List.h"
 #endif
 
 #include <iostream>
+#include "UniversalData.h"
 
 /**
  * @brief The main function of abess fremework
@@ -130,4 +131,23 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
                    Eigen::VectorXi always_select, bool early_stop, int thread, bool sparse_matrix, int splicing_type,
                    int sub_search, Eigen::VectorXi A_init);
 
+/**
+ * @brief The main function of universal-abess fremework
+ * @param model                         Its definition is in "UniversalData.h".
+ *                                      This parameter corresponds to model_type of abessGLM.
+ * @param data                          A pointer to struct consisting of data that the statistic model need. 
+ *                                      This parameter corresponds to x,y of abessGLM.
+ * @param model_size                    The number of the statistic model's parameters. 
+ *                                      This parameter corresponds to p of abessGLM.
+ * @param sample_size                   The number of the samples. 
+ *                                      This parameter corresponds to n of abessGLM.
+ */
+#ifdef R_BUILD
+
+#else
+List abessUniversal_API(ExternData data, UniversalModel model, int model_size, int sample_size, int intercept_size, int max_iter, int exchange_num, int path_type,
+    bool is_warm_start, int ic_type, double ic_coef, int Kfold, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq, int s_min, int s_max,
+    int screening_size, Eigen::VectorXi g_index, Eigen::VectorXi always_select, int thread, int splicing_type, int sub_search,
+    Eigen::VectorXi cv_fold_id, Eigen::VectorXi A_init);
+#endif
 #endif  // SRC_API_H

@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by jiangkangkang on 2020/3/9.
 //
 
@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include "utilities.h"
 
 using namespace std;
 using namespace Eigen;
@@ -34,6 +35,10 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &gindex, Eigen::Vec
         }
         return ind.head(mark).eval();
     }
+}
+
+UniversalData X_seg(UniversalData& X, int n, Eigen::VectorXi& ind, int model_type){
+    return X.slice_by_para(ind);
 }
 
 Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &Phi, int N) {
@@ -308,6 +313,16 @@ void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::Spars
     return;
 }
 
+void slice(UniversalData& nums, Eigen::VectorXi& ind, UniversalData& A, int axis)
+{
+    if (axis == 0) {
+        A = nums.slice_by_sample(ind);
+    }
+    else {
+        A = nums.slice_by_para(ind);
+    }
+}
+
 void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nums, int axis) {
     if (ind.size() == 0) {
         nums = Eigen::VectorXd::Zero(nums.size());
@@ -342,6 +357,12 @@ void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nu
 void coef_set_zero(int p, int M, Eigen::VectorXd &beta, double &coef0) {
     beta = Eigen::VectorXd::Zero(p);
     coef0 = 0.;
+    return;
+}
+
+void coef_set_zero(int p, int M, Eigen::VectorXd& beta, Eigen::VectorXd& coef0) {
+    beta = Eigen::VectorXd::Zero(p);
+    coef0 = Eigen::VectorXd::Zero(M);
     return;
 }
 
@@ -536,3 +557,5 @@ void add_weight(Eigen::SparseMatrix<double> &x, Eigen::MatrixXd &y, Eigen::Vecto
     Eigen::VectorXd sqrt_weight = weights.array().sqrt();
     array_product(y, sqrt_weight, 1);
 };
+
+

@@ -19,10 +19,24 @@
 #include <RcppEigen.h>
 #endif
 
+#include <type_traits>
 #include <cfloat>
 #include <iostream>
+#include "UniversalData.h"
 using namespace std;
 using namespace Eigen;
+
+constexpr int UNIVERSAL_MODEL = 0;
+constexpr int LM_MODEL = 1;
+constexpr int LOGISTIC_MODEL = 2;
+constexpr int POISSON_MODEL = 3;
+constexpr int COX_MODEL = 4;
+constexpr int MUL_LM_MODEL = 5;
+constexpr int MUL_NOMIAL_MODEL = 6;
+constexpr int PCA_MODEL = 7;
+constexpr int GAMMA_MODEL = 8;
+constexpr int ORDINAL_MODEL = 9;
+constexpr int RPCA_MODEL = 10;
 
 /**
  * @brief Save the sequential fitting result along the parameter searching.
@@ -145,7 +159,7 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &index, Eigen::Vect
  */
 template <class T4>
 T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type) {
-    if (ind.size() == X.cols() || model_type == 10 || model_type == 7) {
+    if (ind.size() == X.cols() || model_type == PCA_MODEL || model_type == RPCA_MODEL) {
         return X;
     } else {
         T4 X_new(n, ind.size());
@@ -155,6 +169,9 @@ T4 X_seg(T4 &X, int n, Eigen::VectorXi &ind, int model_type) {
         return X_new;
     }
 };
+
+// The non-template function will be preferred.
+UniversalData X_seg(UniversalData& X, int n, Eigen::VectorXi& ind, int model_type); 
 
 // template <class T4>
 // void X_seg(T4 &X, int n, Eigen::VectorXi &ind, T4 &X_seg)
@@ -230,6 +247,7 @@ Eigen::VectorXi max_k(Eigen::VectorXd &nums, int k, bool sort_by_value = false);
 void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int axis = 0);
 void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int axis = 0);
 void slice(Eigen::SparseMatrix<double> &nums, Eigen::VectorXi &ind, Eigen::SparseMatrix<double> &A, int axis = 0);
+void slice(UniversalData& nums, Eigen::VectorXi& ind, UniversalData& A, int axis = 0);
 /**
  * @brief The inverse action of function slice.
  */
@@ -238,7 +256,7 @@ void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nu
 
 void coef_set_zero(int p, int M, Eigen::VectorXd &beta, double &coef0);
 void coef_set_zero(int p, int M, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0);
-
+void coef_set_zero(int p, int M, Eigen::VectorXd& beta, Eigen::VectorXd& coef0);
 /**
  * @brief element-wise product: A.array() * B.array().
  */
@@ -295,7 +313,7 @@ void add_constant_column(Eigen::SparseMatrix<double> &X);
 /**
  * @brief If enable normalization, restore coefficients after fitting.
  */
-template <class T2, class T3>
+template <class T2, class T3, class T4, std::enable_if_t<!std::is_same_v<T4,UniversalData>,bool> = true>
 void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, 1> &beta_matrix,
                         Eigen::Matrix<T3, Dynamic, 1> &coef0_matrix, bool sparse_matrix, int normalize_type, int n,
                         Eigen::VectorXd x_mean, T3 y_mean, Eigen::VectorXd x_norm) {
@@ -333,6 +351,11 @@ void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, 1> &beta
     }
     return;
 }
+
+template <class T2, class T3, class T4, std::enable_if_t<std::is_same_v<T4, UniversalData>, bool> = true>
+void restore_for_normal(T2& beta, T3& coef0, Eigen::Matrix<T2, Dynamic, 1>& beta_matrix,
+    Eigen::Matrix<T3, Dynamic, 1>& coef0_matrix, bool sparse_matrix, int normalize_type, int n,
+    Eigen::VectorXd x_mean, T3 y_mean, Eigen::VectorXd x_norm){}
 
 template <class T4>
 Eigen::VectorXd pi(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &coef) {
@@ -414,5 +437,7 @@ void add_weight(Eigen::SparseMatrix<double> &x, Eigen::VectorXd &y, Eigen::Vecto
  * @brief Add weights information into data.
  */
 void add_weight(Eigen::SparseMatrix<double> &x, Eigen::MatrixXd &y, Eigen::VectorXd weights);
-
+// Invalid function to cope with compiler check
+template <class T1,class T2, class T3>
+void add_weight(T1& x, T2& y, T3& weights) {};
 #endif  // SRC_UTILITIES_H

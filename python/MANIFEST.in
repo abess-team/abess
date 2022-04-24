@@ -1,5 +1,6 @@
 include README.rst
 include LICENSE
+recursive-include lib *
 recursive-include include *
 recursive-include src *
 recursive-include abess *
