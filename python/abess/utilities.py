@@ -61,7 +61,7 @@ def categorical_to_dummy(x, classes=None):
     """
     if not classes:
         classes = np.unique(x)
-    print("classes: {}".format(classes))
+    # print("classes: {}".format(classes))
     if x.shape == ():
         x = np.array([x])
     n = len(x)
@@ -76,4 +76,4 @@ def categorical_to_dummy(x, classes=None):
         #         "Data {} (index {}) is not in classes.".format(
         #             x_i,
         #             i))
-    return dummy_x
+    return dummy_x, classes
