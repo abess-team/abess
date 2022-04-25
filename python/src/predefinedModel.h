@@ -2,41 +2,63 @@
 #define PREDEFINED_MODEL_H
 #ifndef R_BUILD
 
+#include <Eigen/Eigen>
+#include <pybind11/pybind11.h>
+#include <autodiff/forward/dual.hpp>
 #include <autodiff/forward/dual/eigen.hpp>
 
-#include "UniversalData.h"
+using ExternData = pybind11::object;
+using Eigen::VectorXd;
+using Eigen::VectorXi;
+using Eigen::MatrixXd;
+using Eigen::Matrix;
+using Eigen::InnerStride;
+using autodiff::dual;
+using autodiff::VectorXdual;
+using autodiff::dual2nd;
+using autodiff::VectorXdual2nd;
 
-struct Data {
+struct PredefinedData {
+    static int data_num;
     MatrixXd x;
     MatrixXd y;
-    Data() {}
-    Data(MatrixXd x, MatrixXd y) : x(x), y(y) {}
+    PredefinedData(MatrixXd x, MatrixXd y) : x(x), y(y) {
+        pybind11::print("Constructor", ++data_num);
+    }
+    ~PredefinedData() {
+        pybind11::print("Destructor", --data_num);
+    }
 };
+int PredefinedData::data_num = 0;
 
-pybind11::object slice_by_para(pybind11::object const& old_data, VectorXi const& target_para_index) {
-    Data* new_data = new Data;
-    Data* data = old_data.cast<Data*>();
-    new_data->x = data->x(Eigen::all, target_para_index);
-    new_data->y = data->y;
+ExternData slice_by_para(ExternData const& old_data, VectorXi const& target_para_index) {
+    PredefinedData* data = old_data.cast<PredefinedData*>();
+    PredefinedData* new_data = new PredefinedData(data->x(Eigen::all, target_para_index),data->y);
     return pybind11::cast(new_data);
 }
 
-pybind11::object slice_by_sample(pybind11::object const& old_data, VectorXi const& target_sample_index) {
-    Data* new_data = new Data;
-    Data* data = old_data.cast<Data*>();
-    new_data->x = data->x(target_sample_index, Eigen::all);
-    new_data->y = data->y(target_sample_index);
+ExternData slice_by_sample(ExternData const& old_data, VectorXi const& target_sample_index) {  
+    PredefinedData* data = old_data.cast<PredefinedData*>();
+    PredefinedData* new_data = new PredefinedData(data->x(target_sample_index, Eigen::all), data->y(target_sample_index, Eigen::all));
     return pybind11::cast(new_data);
 }
 
-void deleter(pybind11::object const& data) { delete data.cast<Data*>(); }
+void deleter(ExternData const& data) { delete data.cast<PredefinedData*>(); }
 
 template <class T>
-T linear_model(Matrix<T, -1, 1> const& para, Matrix<T, -1, 1> const& intercept, pybind11::object const& ex_data) {
-    Data* data = ex_data.cast<Data*>();
-    Map<Matrix<T, -1, -1, RowMajor> const> Beta(para.data(), data->x.cols(), intercept.size());
-    return (VectorXd::Ones(data->x.rows()) * intercept.transpose() + data->x * Beta - data->y).squaredNorm();
+T linear_model(Matrix<T, -1, 1> const& para, Matrix<T, -1, 1> const& intercept, ExternData const& ex_data) {
+    PredefinedData* data = ex_data.cast<PredefinedData*>();
+    T v = T(0.0);
+    Eigen::Index m = intercept.size();
+    Eigen::Index p = data->x.cols();
+    Eigen::Map<Matrix<T, -1, 1> const, 0, InnerStride<>> beta(NULL, p, InnerStride<>(m));
+    for (Eigen::Index i = 0; i < m; i++) {
+        new (&beta) Eigen::Map<Matrix<T, -1, 1> const, 0, InnerStride<>>(para.data() + i, p, InnerStride<>(m));
+        v += ((data->x * beta - data->y.col(i)).array() + intercept[i]).square().sum();
+    }
+    return v;
 }
+
 
 #endif
 #endif

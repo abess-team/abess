@@ -1,6 +1,6 @@
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
-
+#include <pybind11/functional.h>
 #include <tuple>
 #include "UniversalData.h"
 #include "List.h"
@@ -143,13 +143,6 @@ pywrap_Universal(ExternData data, UniversalModel model, int model_size, int samp
 }
 
 PYBIND11_MODULE(pybind_cabess, m) {
-    pybind11::class_<Data>(m, "Data").def(pybind11::init<MatrixXd, MatrixXd>());
-    m.def("slice_by_para", &slice_by_para);
-    m.def("slice_by_sample", &slice_by_sample);
-    m.def("deleter", &deleter);
-    m.def("linear_model_loss", &linear_model<double>);
-    m.def("linear_model_gradient", &linear_model<dual>);
-    m.def("linear_model_hessian", &linear_model<dual2nd>);
     pybind11::class_<UniversalModel>(m, "UniversalModel").def(pybind11::init<>())
         .def("set_loss_of_model", &UniversalModel::set_loss_of_model)
         .def("set_gradient_autodiff", &UniversalModel::set_gradient_autodiff)
@@ -158,12 +151,17 @@ PYBIND11_MODULE(pybind_cabess, m) {
         .def("set_hessian_user_defined", &UniversalModel::set_hessian_user_defined)
         .def("set_slice_by_sample", &UniversalModel::set_slice_by_sample)
         .def("set_slice_by_para", &UniversalModel::set_slice_by_para)
-        .def("set_deleter", &UniversalModel::set_deleter)
-        .def("unset_slice_by_sample", &UniversalModel::unset_slice_by_sample)
-        .def("unset_slice_by_para", &UniversalModel::unset_slice_by_para)
-        .def("unset_deleter", &UniversalModel::unset_deleter);
+        .def("set_deleter", &UniversalModel::set_deleter);
     m.def("pywrap_GLM", &pywrap_GLM);
     m.def("pywrap_PCA", &pywrap_PCA);
     m.def("pywrap_RPCA", &pywrap_RPCA);
     m.def("pywrap_Universal", &pywrap_Universal);
+    // predefine some function for test
+    pybind11::class_<PredefinedData>(m, "Data").def(pybind11::init<MatrixXd, MatrixXd>());
+    m.def("loss_linear", &linear_model<double>);
+    m.def("gradient_linear", &linear_model<dual>);
+    m.def("hessian_linear", &linear_model<dual2nd>);
+    m.def("slice_by_sample", &slice_by_sample);
+    m.def("slice_by_para", &slice_by_para);
+    m.def("deleter", &deleter);
 }

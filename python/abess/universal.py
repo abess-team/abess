@@ -131,8 +131,8 @@ class ConvexSparseSolver(BaseEstimator):
                 max_iter=20, max_exchange_num=5, splicing_type="halve", 
                 path_type="seq", support_size=None, gs_lower_bound=0, gs_higher_bound=None,
                 ic_type="gic", ic_coef=1.0, cv=1, cv_fold_id=None, regular_coef=0.0,
-                always_select=None, screening_size=-1, important_search=None,
-                group=None, init_active_set=[], is_warm_start=True, thread=1):
+                always_select=None, screening_size=-1, important_search=128,
+                group=None, init_active_set=None, is_warm_start=True, thread=1):
         self.model_size = model_size
         self.intercept_size = intercept_size
         self.sample_size = sample_size
@@ -283,9 +283,12 @@ class ConvexSparseSolver(BaseEstimator):
                 raise ValueError("screening_size should be between max(support_size) and model_size.")
 
         # always_select
-        always_select = np.sort(np.array(self.always_select, dtype='int32'))
-        if always_select[0] < 0 or always_select[-1] >= group_num:
-            raise ValueError("always_select should be between 0 and model_size.")
+        if self.always_select is None:
+            always_select=np.array([],dtype='int32')
+        else:
+            always_select = np.sort(np.array(self.always_select, dtype='int32'))
+            if len(always_select) > 0 and (always_select[0] < 0 or always_select[-1] >= group_num):
+                raise ValueError("always_select should be between 0 and model_size.")
 
         # thread
         check_non_negative_integer(self.thread, "thread");
@@ -319,18 +322,18 @@ class ConvexSparseSolver(BaseEstimator):
         if self.init_active_set is None:
             init_active_set = np.array([], dtype="int32")
         else:
-            init_active_set = np.array(init_active_set, dtype="int32")
+            init_active_set = np.array(self.init_active_set, dtype="int32")
             if init_active_set.ndim > 1:
                 raise ValueError("The initial active set should be "
                                  "an 1D array of integers.")
             if (init_active_set.min() < 0 or init_active_set.max() >= p):
                 raise ValueError("init_active_set contains wrong index.")
 
-        result = pywrap_Universal(data, self.model, p, n, m,
+        result = pywrap_Universal(data, self.model, group_num, n, m,
             self.max_iter, self.max_exchange_num, path_type, self.is_warm_start, ic_type, 
             self.ic_coef, self.cv, support_size, regular_coef, gs_lower_bound, gs_higher_bound,
             screening_size, group, always_select, self.thread, splicing_type, 
-            self.important_search, cv_fold_id, self.init_active_set)
+            self.important_search, cv_fold_id, init_active_set)
         
         self.coef_ = result[0]
         self.intercept_ = result[1].squeeze()
