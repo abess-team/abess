@@ -33,18 +33,18 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies for ubuntu
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get install -y bash swig
+      # - name: Install dependencies for ubuntu
+      #   if: matrix.os == 'ubuntu-latest'
+      #   run: |
+      #     sudo apt-get install -y bash
       - name: Install dependencies for macOS
         if: matrix.os == 'macos-latest'
         run: |
-          brew install bash libomp swig
+          brew install bash libomp
       - name: Install dependencies for windows
         if: matrix.os == 'windows-latest'
         run: |
-          choco install git swig
+          choco install git
       - name: Install abess
         run: |
           python --version
