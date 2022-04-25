@@ -5,6 +5,7 @@
 
 #include "List.h"
 #include "api.h"
+#include "nlopt_foo.h"
 
 std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_GLM(
     Eigen::MatrixXd x_Mat, Eigen::MatrixXd y_Mat, Eigen::VectorXd weight_Vec, int n, int p, int normalize_type,
@@ -123,4 +124,5 @@ PYBIND11_MODULE(pybind_cabess, m) {
     m.def("pywrap_GLM", &pywrap_GLM);
     m.def("pywrap_PCA", &pywrap_PCA);
     m.def("pywrap_RPCA", &pywrap_RPCA);
+    m.def("foo", &foo);
 }

@@ -23,6 +23,8 @@ jobs:
         working-directory: python
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: true
 
       - name: Build SDist
         run: |
@@ -47,6 +49,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: true
 
       - name: Set up QEMU
         if: runner.os == 'Linux'
