@@ -1,12 +1,21 @@
 import os
+import re
 import sys
-import platform
 import distutils
-from setuptools import setup, find_packages
-from pybind11.setup_helpers import Pybind11Extension
+import subprocess
+import platform
+
+from setuptools import Extension, setup, find_packages
+from setuptools.command.build_ext import build_ext
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 
+PLAT_TO_CMAKE = {
+    "win32": "Win32",
+    "win-amd64": "x64",
+    "win-arm32": "ARM",
+    "win-arm64": "ARM64",
+}
 
 def get_info():
     # get information from `__init__.py`
@@ -22,136 +31,115 @@ def get_info():
                 break
     return dict(zip(labels, values))
 
-
-package_info = get_info()
-
-# copy files from parent dir
-NEED_CLEAN_TREE = set()
 try:
-    target_dir = CURRENT_DIR
     src_dir = os.path.join(CURRENT_DIR, os.path.pardir)
 
-    dst = os.path.join(target_dir, 'src')
+    dst = os.path.join(CURRENT_DIR, 'src')
     src = os.path.join(src_dir, 'src')
     distutils.dir_util.copy_tree(src, dst)
-    NEED_CLEAN_TREE.add(os.path.abspath(dst))
 
-    dst = os.path.join(target_dir, 'include')
+    dst = os.path.join(CURRENT_DIR, 'include')
     src = os.path.join(src_dir, 'include')
     distutils.dir_util.copy_tree(src, dst)
-    NEED_CLEAN_TREE.add(os.path.abspath(dst))
 except BaseException:
     pass
 
-# print("sys.platform output: {}".format(sys.platform))
-# print("platform.processor() output: {}".format(platform.processor()))
+class CMakeExtension(Extension):
+    def __init__(self, name, sourcedir=""):
+        Extension.__init__(self, name, sources=[])
+        self.sourcedir = os.path.abspath(sourcedir)
+        self.parallel = 4
 
-if sys.platform.startswith('win32'):
-    # os_type = 'MS_WIN64'
-    pybind_cabess_module = Pybind11Extension(
-        name='abess.pybind_cabess',
-        sources=[
-            'src/api.cpp',
-            'src/List.cpp',
-            'src/utilities.cpp',
-            'src/normalize.cpp',
-            'src/pywrap.cpp',
-            'src/AlgorithmUniversal.cpp',
-            'src/UniversalData.cpp'
-        ],
-        extra_compile_args=[
-            "/openmp",
-            "/O2", "/W4",
-            "/arch:AVX2","/std:c++17"
-        ],
-        include_dirs=[
-            'include'
-        ],
-        libraries=[
-            'nlopt.windows'
-        ],
-        library_dirs=[
-            'lib'
-        ]
-    )
-elif sys.platform.startswith('darwin'):
-    # compatible compile args with M1 chip:
-    extra_compile_args = [
-        "-DNDEBUG", "-O2",
-        "-Wall", "-std=c++17",
-        "-Wno-int-in-bool-context"
-    ]
-    m1chip_unable_extra_compile_args = [
-        # "-mavx",
-        # "-mfma"
-        # "-march=native"
+class CMakeBuild(build_ext):
+    def build_extension(self, ext):
+        extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
 
-        # Enable the "-mavx", "-mfma", "-march=native"
-        # would improve the computational efficiency.
-        # "-mavx" and "-mfma" do not supported
-        # by github-action environment when arch = x86_64
-        # "-mavx" and "-mfma" do not supported
-        # by github-action when building arm64
-        # (because it the default is not arm64)
-    ]
-    if platform.processor() not in ('arm', 'arm64'):
-        extra_compile_args.extend(m1chip_unable_extra_compile_args)
-        pass
+        # required for auto-detection & inclusion of auxiliary "native" libs
+        if not extdir.endswith(os.path.sep):
+            extdir += os.path.sep
 
-    pybind_cabess_module = Pybind11Extension(
-        name='abess.pybind_cabess',
-        sources=['src/api.cpp',
-                 'src/List.cpp',
-                 'src/utilities.cpp',
-                 'src/normalize.cpp',
-                 'src/pywrap.cpp',
-                 'src/AlgorithmUniversal.cpp',
-                 'src/UniversalData.cpp'],
-        extra_compile_args=extra_compile_args,
-        include_dirs=[
-            'include'
-        ],
-        libraries=[
-            'nlopt.macos'
-        ],
-        library_dirs=[
-            'lib'
+        debug = int(os.environ.get("DEBUG", 0)) if self.debug is None else self.debug
+        cfg = "Debug" if debug else "Release"
+
+        # CMake lets you override the generator - we need to check this.
+        # Can be set with Conda-Build, for example.
+        cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
+
+        cmake_args = [
+            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
+            f"-DPYTHON_EXECUTABLE={sys.executable}",
+            f"-DCMAKE_BUILD_TYPE={cfg}"
         ]
-    )
-else:
-    pybind_cabess_module = Pybind11Extension(
-        name='abess.pybind_cabess',
-        sources=['src/api.cpp',
-                 'src/List.cpp',
-                 'src/utilities.cpp',
-                 'src/normalize.cpp',
-                 'src/pywrap.cpp',
-                 'src/AlgorithmUniversal.cpp',
-                 'src/UniversalData.cpp'],
-        extra_compile_args=[
-            "-DNDEBUG", "-fopenmp",
-            "-O2", "-Wall",
-            "-std=c++17", "-mavx",
-            "-mfma", "-march=native",
-            # "-Wno-unused-variable",
-            # "-Wno-unused-but-set-variable",
-            "-Wno-int-in-bool-context"  # avoid warnings from Eigen
-        ],
-        extra_link_args=['-lgomp'],
-        include_dirs=[
-            'include'
-        ],
-        libraries=[
-            'nlopt.linux'
-        ],
-        library_dirs=[
-            'lib'
-        ]
-    )
-    pass
+        build_args = []
+        # Adding CMake arguments set as environment variable
+        # (needed e.g. to build for ARM OSx on conda-forge)
+        if "CMAKE_ARGS" in os.environ:
+            cmake_args += [item for item in os.environ["CMAKE_ARGS"].split(" ") if item]
+
+        if self.compiler.compiler_type != "msvc":
+            # Using Ninja-build since it a) is available as a wheel and b)
+            # multithreads automatically. MSVC would require all variables be
+            # exported for Ninja to pick it up, which is a little tricky to do.
+            # Users can override the generator with CMAKE_GENERATOR in CMake
+            # 3.15+.
+            if not cmake_generator:
+                try:
+                    import ninja  # noqa: F401
+
+                    cmake_args += ["-GNinja"]
+                except ImportError:
+                    pass
+
+        else:
+            cmake_args += ["-DMSVC=ON"]
+
+            # Single config generators are handled "normally"
+            single_config = any(x in cmake_generator for x in {"NMake", "Ninja"})
+
+            # CMake allows an arch-in-generator style for backward compatibility
+            contains_arch = any(x in cmake_generator for x in {"ARM", "Win64"})
+
+            # Specify the arch if using MSVC generator, but only if it doesn't
+            # contain a backward-compatibility arch spec already in the
+            # generator name.
+            if not single_config and not contains_arch:
+                cmake_args += ["-A", PLAT_TO_CMAKE[self.plat_name]]
+
+            # Multi-config generators have a different way to specify configs
+            if not single_config:
+                cmake_args += [
+                    f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}"
+                ]
+                build_args += ["--config", cfg]
+
+        if sys.platform.startswith("darwin"):
+            cmake_args += ["-DDARWIN=ON"]
+            # Cross-compile support for macOS - respect ARCHFLAGS if set
+            archs = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
+            if archs:
+                cmake_args += ["-DCMAKE_OSX_ARCHITECTURES={}".format(";".join(archs))]
+
+        # Set CMAKE_BUILD_PARALLEL_LEVEL to control the parallel build level
+        # across all generators.
+        if "CMAKE_BUILD_PARALLEL_LEVEL" not in os.environ:
+            # self.parallel is a Python 3 only way to set parallel jobs by hand
+            # using -j in the build_ext call, not supported by pip or PyPA-build.
+            if hasattr(self, "parallel") and self.parallel:
+                # CMake 3.12+ only.
+                build_args += [f"-j{self.parallel}"]
+
+        build_temp = os.path.join(self.build_temp, ext.name)
+        if not os.path.exists(build_temp):
+            os.makedirs(build_temp)
+
+        subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=build_temp)
+        subprocess.check_call(["cmake", "--build", "."] + build_args, cwd=build_temp)
+
 
 with open(os.path.join(CURRENT_DIR, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
+
+package_info = get_info()
 
 setup(
     name='abess',
@@ -160,7 +148,6 @@ setup(
     author_email="zhuj37@mail2.sysu.edu.cn",
     maintainer="Junhao Huang",
     maintainer_email="huangjh256@mail2.sysu.edu.cn",
-    # package_dir={'': CURRENT_DIR},
     packages=find_packages(),
     description="abess: Fast Best Subset Selection",
     long_description=long_description,
@@ -192,12 +179,12 @@ setup(
         "Operating System :: POSIX :: Linux",
         "Operating System :: MacOS",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
     ],
-    python_requires='>=3.5',
-    ext_modules=[pybind_cabess_module]
+    python_requires='>=3.6',
+    ext_modules=[CMakeExtension("abess.pybind_cabess")],
+    cmdclass={"build_ext": CMakeBuild}
 )

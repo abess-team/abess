@@ -41,6 +41,8 @@ jobs:
       PYTHON: "3.9"
     steps:
       - uses: actions/checkout@master
+        with:
+          submodules: true
       - name: Setup Python
         uses: actions/setup-python@master
         with:
