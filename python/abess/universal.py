@@ -156,7 +156,7 @@ class ConvexSparseSolver(BaseEstimator):
         self.is_warm_start = is_warm_start
         self.thread = thread
 
-    def fit(self, data):
+    def fit(self, data=None):
         r"""
         The fit function is used to transfer
         the information of data and return the fit result.
@@ -167,6 +167,10 @@ class ConvexSparseSolver(BaseEstimator):
             Any class which is match to model which is also user-defined before fit, denoted as ExternData.  
             It cantains all data that model should be known, like samples, responses, weight.
         """
+        # data
+        if data is None:
+            data = self.data
+
         # model_size
         p = self.model_size
         check_positive_integer(p, "model_size")
@@ -421,32 +425,8 @@ class ConvexSparseSolver(BaseEstimator):
         """
         self.model.set_deleter(func)
 
-    def unset_slice_by_sample(self, func):
+    def set_data(self, data):
         r"""
-        Register callback function:
-
-        Parameters
-        ----------
-        func : function {}
+        
         """
-        self.model.unset_slice_by_sample(func)
-
-    def unset_slice_by_para(self, func):
-        r"""
-        Register callback function: 
-
-        Parameters
-        ----------
-        func : function {}
-        """
-        self.model.unset_slice_by_para(func)
-
-    def unset_deleter(self, func):
-        r"""
-        Register callback function: 
-
-        Parameters
-        ----------
-        func : function {}
-        """
-        self.model.unset_deleter(func)
+        self.data = data

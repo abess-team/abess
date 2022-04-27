@@ -1,4 +1,5 @@
 from python.abess.datasets import sample
+from python.pytest.utilities import assert_value
 from .universal import ConvexSparseSolver
 from .datasets import make_multivariate_glm_data
 import .pybind_cabess
@@ -22,13 +23,33 @@ class TestUniversalModel:
         M = 3
         data = make_multivariate_glm_data(family=family, n=n, p=p, k=k, rho=rho, M=M)
         group = [i for i in range(p) for j in range(M)]
-        model1 = ConvexSparseSolver(model_size=p*M, sample_size=n, intercept_size=M, group=group)
-        model1.set_loss(pybind_cabess.loss_linear)
-        model1.set_gradient_autodiff(pybind_cabess.gradient_linear)
-        model1.set_hessian_autodiff(pybind_cabess.hessian_linear)
+        model = ConvexSparseSolver(model_size=p*M, sample_size=n, intercept_size=M, group=group)
+        model.set_data(pybind_cabess.Data(data.x, data.y))
+        model.set_loss(pybind_cabess.loss_linear)
+        model.set_gradient_autodiff(pybind_cabess.gradient_linear)
+        model.set_hessian_autodiff(pybind_cabess.hessian_linear)
 
-        model1.fit(pybind_cabess.Data(data.x, data.y))
+        model.fit()
+        coef = model.coef_
+        assert_fit(coef, data.coef_)
 
-        #model2 = MultiTaskRegression()
-        #model2.fit(data.x, data.y)
-        #assert_fit(model1.coef_, model2.coef_)
+        model.thread = 0
+        model.fit()
+        assert_value(model.coef_, coef)
+
+        model.path_type = "gs"
+        model.fit()
+        assert_value(model.coef_, coef)
+
+        model.cv = 5
+        model.set_slice_by_sample(pybind_cabess.slice_by_sample)
+        model.set_deleter(pybind_cabess.deleter)
+        model.fit()
+        assert_value(model.coef_, coef)
+
+        model.path_type = "seq"
+        model.set_slice_by_para(pybind_cabess.slice_by_para)
+        model.fit()
+        assert_value(model.coef_, coef)                
+
+        
