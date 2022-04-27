@@ -29,13 +29,14 @@ add_subdirectory(nlopt)
 
 
 # sources
-set(SOURCES
-    src/pywrap.cpp
-    src/utilities.cpp
-    src/List.cpp
-    src/normalize.cpp
-    src/api.cpp
-)
+aux_source_directory(src SOURCES)
+#set(SOURCES
+#    src/pywrap.cpp
+#    src/utilities.cpp
+#    src/List.cpp
+#    src/normalize.cpp
+#    src/api.cpp
+#)
 add_library(pybind_cabess MODULE ${SOURCES})
 
 # links
