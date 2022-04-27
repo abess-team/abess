@@ -1540,7 +1540,7 @@ class abessMultinomial : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eige
         for (int i = 0; i < n; i++) {
             res.row(i) = res.row(i) * weights(i);
         }
-        d = X.transpose() * res - 2 * this->lambda_level * beta;
+        d = X.transpose() * res - 2 * this->lambda_level * beta.leftCols(M - 1);
         h = Pi;
 
         // int A_size = A.size();

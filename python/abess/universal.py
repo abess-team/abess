@@ -329,7 +329,7 @@ class ConvexSparseSolver(BaseEstimator):
             if (init_active_set.min() < 0 or init_active_set.max() >= p):
                 raise ValueError("init_active_set contains wrong index.")
 
-        result = pywrap_Universal(data, self.model, group_num, n, m,
+        result = pywrap_Universal(data, self.model, p, n, m,
             self.max_iter, self.max_exchange_num, path_type, self.is_warm_start, ic_type, 
             self.ic_coef, self.cv, support_size, regular_coef, gs_lower_bound, gs_higher_bound,
             screening_size, group, always_select, self.thread, splicing_type, 

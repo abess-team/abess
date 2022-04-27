@@ -79,7 +79,7 @@ void abessUniversal::sacrifice(UniversalData& data, UniversalData& XA, MatrixXd&
             //? TODO: hessian may be not positive definite
             MatrixXd inv_hessian_group = hessian_group.ldlt().solve(MatrixXd::Identity(g_size(i), g_size(i)));
             sacrifice(I[i]) = gradient_group.transpose() * inv_hessian_group * gradient_group;
-            sacrifice(I[i]) /= g_size(A[i]);
+            sacrifice(I[i]) /= g_size(I[i]);
         }
     }
 }
