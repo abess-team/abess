@@ -267,11 +267,13 @@ class ConvexSparseSolver(BaseEstimator):
         if self.path_type == "seq":
             gs_lower_bound = gs_higher_bound = 0
         else:
-            if self.gs_lower_bound == None:
-                gs_lower_bound = 0 
-                gs_higher_bound = min(group_num, int(n / (np.log(np.log(n)) * np.log(group_num))))     
+            if self.gs_lower_bound is None:
+                gs_lower_bound = 0             
             else:
                 gs_lower_bound = self.gs_lower_bound
+            if self.gs_higher_bound is None:
+                gs_higher_bound = min(group_num, int(n / (np.log(np.log(n)) * np.log(group_num))))
+            else:
                 gs_higher_bound = self.gs_higher_bound
             if gs_lower_bound > gs_higher_bound:
                 raise ValueError("gs_higher_bound should be larger than gs_lower_bound.")

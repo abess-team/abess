@@ -1,12 +1,9 @@
-from python.abess.datasets import sample
-from python.pytest.utilities import assert_value
-from .universal import ConvexSparseSolver
-from .datasets import make_multivariate_glm_data
-import .pybind_cabess
-from abess import MultiTaskRegression
+from abess.universal import ConvexSparseSolver
+from abess.datasets import make_multivariate_glm_data
+from abess import pybind_cabess
 import pytest
 import numpy as np
-from utilities import  assert_fit
+from utilities import (assert_fit, assert_value)
 
 class TestUniversalModel:
     """
@@ -31,7 +28,7 @@ class TestUniversalModel:
 
         model.fit()
         coef = model.coef_
-        assert_fit(coef, data.coef_)
+        assert_fit(coef, [c for v in data.coef_ for c in v])
 
         model.thread = 0
         model.fit()

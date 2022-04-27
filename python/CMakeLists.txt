@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(pybind_cabess LANGUAGES CXX)
 
 # environment variables
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 option(NLOPT_FORTRAN "enable fortran tests" OFF)
 option(BUILD_SHARED_LIBS "Build NLopt as a shared library" OFF)
