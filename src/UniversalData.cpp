@@ -175,9 +175,8 @@ void UniversalData::hessian(const VectorXd& effective_para, const VectorXd& inte
     }
 
     if (model->hessian_user_defined) {
-
+        gradient = model->gradient_user_defined(*para_ptr, intercept, *this->data, compute_para_index).tail(size);
         hessian = model->hessian_user_defined(*para_ptr, intercept, *this->data, compute_para_index);
-
     }
     else { // autodiff
         dual2nd v;

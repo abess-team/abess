@@ -452,36 +452,23 @@ class ConvexSparseSolver(BaseEstimator):
             para_j = jnp.array(para)
             intercept_j = jnp.array(intercept)
             para_compute_j = jnp.array(para[compute_para_index])
-            tem = jnp.append(
+            return np.array(
+                jnp.append(
                     *jax_grad(func_, (1, 0))(
                         para_compute_j, intercept_j, para_j, compute_para_index, data
                     )
                 )
-            tem2 = jnp.append(2*jnp.sum(data[0]@para_j+intercept_j-data[1]), (2*data[0].T@(data[0]@para_j+intercept_j-data[1]))[compute_para_index])
-            if jnp.sum(jnp.square(tem-tem2)) > 0.1:
-                print("fail!!!!!!!!!!!!!!!")
-            return np.array(tem)
+            )
 
-        def hessian_(para, intercept, data, compute_para_index, gradient, hessian):
+        def hessian_(para, intercept, data, compute_para_index):
             para_j = jnp.array(para)
             intercept_j = jnp.array(intercept)
             para_compute_j = jnp.array(para[compute_para_index])
-            gradient[:] = np.array(
-                jax_grad(func_)(
-                    para_compute_j, intercept_j, para_j, compute_para_index, data
-                )
-            )
-            hessian[:, :] = np.array(
+            return np.array(
                 jacfwd(jacrev(func_))(
                     para_compute_j, intercept_j, para_j, compute_para_index, data
                 )
             )
-            tem_g = np.array((2*data[0].T@(data[0]@para_j+intercept_j-data[1]))[compute_para_index])
-            tem_h = np.array(2*data[0][:,compute_para_index].T@data[0][:,compute_para_index])
-            if np.sum(np.square(tem_h-hessian)) > 0.1:
-                print("hessian fail!!!!!!")
-            if jnp.sum(jnp.square(tem_g-gradient)) > 0.1:
-                print("gradient fail!!!!!!!!!!!!!!!")
 
         self.model.set_loss_of_model(loss)
         self.model.set_gradient_user_defined(grad_)
