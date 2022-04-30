@@ -1,13 +1,18 @@
 from sklearn.base import BaseEstimator
 import numpy as np
 from .pybind_cabess import pywrap_Universal
-from .pybind_cabess import UniversalModel 
+from .pybind_cabess import UniversalModel
 from .utilities import check_positive_integer, check_non_negative_integer
-class ConvexSparseSolver(BaseEstimator): 
+from jax import jacfwd, jacrev
+from jax import grad as jax_grad
+import jax.numpy as jnp
+
+
+class ConvexSparseSolver(BaseEstimator):
     r"""
     Adaptive Best-Subset Selection(ABESS) algorithm for
     user defined model.
-    
+
     Parameters
     ----------
     model_size : int
@@ -38,13 +43,13 @@ class ConvexSparseSolver(BaseEstimator):
           specific support size to be considered is
           determined by golden section.
     support_size : array-like, optional
-        default=range(min(n, int(n/(log(log(n))log(p))))) 
+        default=range(min(n, int(n/(log(log(n))log(p)))))
         An integer vector representing the alternative support sizes.
         Used only when path_type = "seq".
     gs_lower_bound : int, optional, default=0
         The lower bound of golden-section-search for sparsity searching.
         Used only when path_type = "gs".
-    gs_higher_bound : int, optional, default=min(n, int(n/(log(log(n))log(p)))) 
+    gs_higher_bound : int, optional, default=min(n, int(n/(log(log(n))log(p))))
         The higher bound of golden-section-search for sparsity searching.
         Used only when path_type = "gs".
     cv : int, optional, default=1
@@ -82,7 +87,7 @@ class ConvexSparseSolver(BaseEstimator):
         Here are wrong examples: [0,2,1,2](not incremental), [1,2,3,3](not start from 0), [0,2,2,3](there is a gap).
         The variables in the same group must be adjacent, and they will be selected together or not.
         Before use group, it's worth mentioning that the concept "a variable" means "a group of variables" in fact.
-        For example, "support_size=[3]" means there will be 3 groups of variables selected rather than 3 variables, 
+        For example, "support_size=[3]" means there will be 3 groups of variables selected rather than 3 variables,
         and "always_include=[0,3]" means the 0-th and 3-th groups must be selected.
     init_active_set : array-like, optional, default=[]
         The index of the variable in initial active set.
@@ -106,7 +111,7 @@ class ConvexSparseSolver(BaseEstimator):
     train_loss_ : float
         The loss on training data.
     regularization_: float
-        The best L2 regularization coefficient. 
+        The best L2 regularization coefficient.
     Examples
     --------
 
@@ -120,19 +125,38 @@ class ConvexSparseSolver(BaseEstimator):
     """
 
     # attributes
-    model = UniversalModel()
     coef_ = None
     intercept_ = None
     ic_ = 0
     train_loss_ = 0
     test_loss_ = 0
 
-    def __init__(self, model_size, intercept_size=0, sample_size=1,
-                max_iter=20, max_exchange_num=5, splicing_type="halve", 
-                path_type="seq", support_size=None, gs_lower_bound=0, gs_higher_bound=None,
-                ic_type="gic", ic_coef=1.0, cv=1, cv_fold_id=None, regular_coef=0.0,
-                always_select=None, screening_size=-1, important_search=128,
-                group=None, init_active_set=None, is_warm_start=True, thread=1):
+    def __init__(
+        self,
+        model_size,
+        intercept_size=0,
+        sample_size=1,
+        max_iter=20,
+        max_exchange_num=5,
+        splicing_type="halve",
+        path_type="seq",
+        support_size=None,
+        gs_lower_bound=0,
+        gs_higher_bound=None,
+        ic_type="gic",
+        ic_coef=1.0,
+        cv=1,
+        cv_fold_id=None,
+        regular_coef=0.0,
+        always_select=None,
+        screening_size=-1,
+        important_search=128,
+        group=None,
+        init_active_set=None,
+        is_warm_start=True,
+        thread=1,
+    ):
+        self.model = UniversalModel()
         self.model_size = model_size
         self.intercept_size = intercept_size
         self.sample_size = sample_size
@@ -164,7 +188,7 @@ class ConvexSparseSolver(BaseEstimator):
         Parameters
         ----------
         data : user-defined class
-            Any class which is match to model which is also user-defined before fit, denoted as ExternData.  
+            Any class which is match to model which is also user-defined before fit, denoted as ExternData.
             It cantains all data that model should be known, like samples, responses, weight.
         """
         # data
@@ -177,7 +201,7 @@ class ConvexSparseSolver(BaseEstimator):
 
         # sample_size
         n = self.sample_size
-        check_positive_integer(n, "sample_size")   
+        check_positive_integer(n, "sample_size")
 
         # intercept_size
         m = self.intercept_size
@@ -189,13 +213,13 @@ class ConvexSparseSolver(BaseEstimator):
         # max_exchange_num
         check_positive_integer(self.max_exchange_num, "max_exchange_num")
 
-        # path_type 
+        # path_type
         if self.path_type == "seq":
             path_type = 1
         elif self.path_type == "gs":
             path_type = 2
         else:
-            raise ValueError("path_type should be \'seq\' or \'gs\'")
+            raise ValueError("path_type should be 'seq' or 'gs'")
 
         # ic_type
         if self.ic_type == "aic":
@@ -207,8 +231,7 @@ class ConvexSparseSolver(BaseEstimator):
         elif self.ic_type == "ebic":
             ic_type = 4
         else:
-            raise ValueError(
-                "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")        
+            raise ValueError('ic_type should be "aic", "bic", "ebic" or "gic"')
 
         # cv
         check_positive_integer(self.cv, "cv")
@@ -218,7 +241,7 @@ class ConvexSparseSolver(BaseEstimator):
         # group
         if self.group is None:
             group = np.array(range(p), dtype="int32")
-            group_num = p #len(np.unique(group))
+            group_num = p  # len(np.unique(group))
         else:
             group = np.array(self.group)
             if group.ndim > 1:
@@ -232,34 +255,49 @@ class ConvexSparseSolver(BaseEstimator):
                 raise ValueError("Group should be an incremental integer array.")
             if not group_num == max(group) + 1:
                 raise ValueError("There is a gap in group.")
-            group = np.array([np.where(group==i)[0][0] for i in range(group_num)], dtype="int32")
+            group = np.array(
+                [np.where(group == i)[0][0] for i in range(group_num)], dtype="int32"
+            )
 
         # support_size
         if self.path_type == "gs":
-            support_size = np.array([0], dtype='int32')
+            support_size = np.array([0], dtype="int32")
         else:
             if self.support_size == None:
-                if (n == 1 or group_num == 1):
-                    support_size = np.array([0,1], dtype='int32')
+                if n == 1 or group_num == 1:
+                    support_size = np.array([0, 1], dtype="int32")
                 else:
-                    support_size = np.array(range(max(1, min(group_num, int(n / np.log(np.log(n)) / np.log(group_num))))), dtype='int32')
+                    support_size = np.array(
+                        range(
+                            max(
+                                1,
+                                min(
+                                    group_num,
+                                    int(n / np.log(np.log(n)) / np.log(group_num)),
+                                ),
+                            )
+                        ),
+                        dtype="int32",
+                    )
             else:
                 if isinstance(self.support_size, (int, float)):
-                    support_size = np.array([self.support_size], dtype='int32')
+                    support_size = np.array([self.support_size], dtype="int32")
                 else:
-                    support_size = np.array(self.support_size, dtype='int32')
+                    support_size = np.array(self.support_size, dtype="int32")
                 support_size = np.sort(np.unique(support_size))
                 if support_size[0] < 0 or support_size[-1] > group_num:
-                    raise ValueError("All support_size should be between 0 and model_size")
+                    raise ValueError(
+                        "All support_size should be between 0 and model_size"
+                    )
 
         # regular_coef
         if self.regular_coef == None:
-            regular_coef = np.array([0.0],dtype=float)
+            regular_coef = np.array([0.0], dtype=float)
         else:
             if isinstance(self.regular_coef, (int, float)):
                 regular_coef = np.array([self.regular_coef], dtype=float)
             else:
-                regular_coef = np.array(self.regular_coef, dtype=float)            
+                regular_coef = np.array(self.regular_coef, dtype=float)
             if any(regular_coef < 0.0):
                 raise ValueError("regular_coef should be positive.")
 
@@ -268,36 +306,52 @@ class ConvexSparseSolver(BaseEstimator):
             gs_lower_bound = gs_higher_bound = 0
         else:
             if self.gs_lower_bound is None:
-                gs_lower_bound = 0             
+                gs_lower_bound = 0
             else:
                 gs_lower_bound = self.gs_lower_bound
             if self.gs_higher_bound is None:
-                gs_higher_bound = min(group_num, int(n / (np.log(np.log(n)) * np.log(group_num))))
+                gs_higher_bound = min(
+                    group_num, int(n / (np.log(np.log(n)) * np.log(group_num)))
+                )
             else:
                 gs_higher_bound = self.gs_higher_bound
             if gs_lower_bound > gs_higher_bound:
-                raise ValueError("gs_higher_bound should be larger than gs_lower_bound.")
+                raise ValueError(
+                    "gs_higher_bound should be larger than gs_lower_bound."
+                )
 
         # screening_size
         if self.screening_size == -1:
             screening_size = -1
         elif self.screening_size == 0:
-            screening_size = min(group_num, max(max(support_size[-1], gs_higher_bound), int(n / (np.log(np.log(n)) * np.log(group_num)))))
+            screening_size = min(
+                group_num,
+                max(
+                    max(support_size[-1], gs_higher_bound),
+                    int(n / (np.log(np.log(n)) * np.log(group_num))),
+                ),
+            )
         else:
             screening_size = self.screening_size
-            if screening_size > group_num or screening_size < max(support_size[-1], gs_higher_bound):
-                raise ValueError("screening_size should be between max(support_size) and model_size.")
+            if screening_size > group_num or screening_size < max(
+                support_size[-1], gs_higher_bound
+            ):
+                raise ValueError(
+                    "screening_size should be between max(support_size) and model_size."
+                )
 
         # always_select
         if self.always_select is None:
-            always_select=np.array([],dtype='int32')
+            always_select = np.array([], dtype="int32")
         else:
-            always_select = np.sort(np.array(self.always_select, dtype='int32'))
-            if len(always_select) > 0 and (always_select[0] < 0 or always_select[-1] >= group_num):
+            always_select = np.sort(np.array(self.always_select, dtype="int32"))
+            if len(always_select) > 0 and (
+                always_select[0] < 0 or always_select[-1] >= group_num
+            ):
                 raise ValueError("always_select should be between 0 and model_size.")
 
         # thread
-        check_non_negative_integer(self.thread, "thread");
+        check_non_negative_integer(self.thread, "thread")
 
         # splicing_type
         if self.splicing_type == "halve":
@@ -305,24 +359,24 @@ class ConvexSparseSolver(BaseEstimator):
         elif self.splicing_type == "taper":
             splicing_type = 1
         else:
-            raise ValueError('splicing_type should be "halve" or "taper".')    
+            raise ValueError('splicing_type should be "halve" or "taper".')
 
         # important_search
-        check_non_negative_integer(self.important_search, "important_search");
+        check_non_negative_integer(self.important_search, "important_search")
 
         # cv_fold_id
         if self.cv_fold_id is None:
             cv_fold_id = np.array([], dtype="int32")
-        else: 
+        else:
             cv_fold_id = np.array(cv_fold_id, dtype="int32")
             if cv_fold_id.ndim > 1:
                 raise ValueError("group should be an 1D array of integers.")
             if cv_fold_id.size != n:
-                raise ValueError(
-                    "The length of group should be equal to X.shape[0].")
+                raise ValueError("The length of group should be equal to X.shape[0].")
             if len(set(cv_fold_id)) != self.cv:
                 raise ValueError(
-                    "The number of different masks should be equal to `cv`.")
+                    "The number of different masks should be equal to `cv`."
+                )
 
         # init_active_set
         if self.init_active_set is None:
@@ -330,23 +384,109 @@ class ConvexSparseSolver(BaseEstimator):
         else:
             init_active_set = np.array(self.init_active_set, dtype="int32")
             if init_active_set.ndim > 1:
-                raise ValueError("The initial active set should be "
-                                 "an 1D array of integers.")
-            if (init_active_set.min() < 0 or init_active_set.max() >= p):
+                raise ValueError(
+                    "The initial active set should be " "an 1D array of integers."
+                )
+            if init_active_set.min() < 0 or init_active_set.max() >= p:
                 raise ValueError("init_active_set contains wrong index.")
 
-        result = pywrap_Universal(data, self.model, p, n, m,
-            self.max_iter, self.max_exchange_num, path_type, self.is_warm_start, ic_type, 
-            self.ic_coef, self.cv, support_size, regular_coef, gs_lower_bound, gs_higher_bound,
-            screening_size, group, always_select, self.thread, splicing_type, 
-            self.important_search, cv_fold_id, init_active_set)
-        
+        result = pywrap_Universal(
+            data,
+            self.model,
+            p,
+            n,
+            m,
+            self.max_iter,
+            self.max_exchange_num,
+            path_type,
+            self.is_warm_start,
+            ic_type,
+            self.ic_coef,
+            self.cv,
+            support_size,
+            regular_coef,
+            gs_lower_bound,
+            gs_higher_bound,
+            screening_size,
+            group,
+            always_select,
+            self.thread,
+            splicing_type,
+            self.important_search,
+            cv_fold_id,
+            init_active_set,
+        )
+
         self.coef_ = result[0]
         self.intercept_ = result[1].squeeze()
         self.train_loss_ = result[2]
         self.test_loss_ = result[3]
         self.ic_ = result[4]
-    
+
+    def set_model_autodiff(self, loss, gradient, hessian):
+        r"""
+        Register callback function:
+
+        Parameters
+        ----------
+        func : function {'para': array-like, 'intercept': array-like, 'data': ExternData, 'return': float}
+        """
+        self.model.set_loss_of_model(loss)
+        self.model.set_gradient_autodiff(gradient)
+        self.model.set_hessian_autodiff(hessian)
+
+    def set_model_jax(self, loss):
+        r"""
+        Register callback function: loss of model.
+
+        Parameters
+        ----------
+        loss : function {'para': array-like, 'intercept': array-like, 'data': ExternData, 'return': float}
+        """
+        # the function for differential
+        def func_(para_compute, intercept, para, ind, data):
+            para_complete = para.at[ind].set(para_compute)
+            return loss(para_complete, intercept, data)
+
+        def grad_(para, intercept, data, compute_para_index):
+            para_j = jnp.array(para)
+            intercept_j = jnp.array(intercept)
+            para_compute_j = jnp.array(para[compute_para_index])
+            tem = jnp.append(
+                    *jax_grad(func_, (1, 0))(
+                        para_compute_j, intercept_j, para_j, compute_para_index, data
+                    )
+                )
+            tem2 = jnp.append(2*jnp.sum(data[0]@para_j+intercept_j-data[1]), (2*data[0].T@(data[0]@para_j+intercept_j-data[1]))[compute_para_index])
+            if jnp.sum(jnp.square(tem-tem2)) > 0.1:
+                print("fail!!!!!!!!!!!!!!!")
+            return np.array(tem)
+
+        def hessian_(para, intercept, data, compute_para_index, gradient, hessian):
+            para_j = jnp.array(para)
+            intercept_j = jnp.array(intercept)
+            para_compute_j = jnp.array(para[compute_para_index])
+            gradient[:] = np.array(
+                jax_grad(func_)(
+                    para_compute_j, intercept_j, para_j, compute_para_index, data
+                )
+            )
+            hessian[:, :] = np.array(
+                jacfwd(jacrev(func_))(
+                    para_compute_j, intercept_j, para_j, compute_para_index, data
+                )
+            )
+            tem_g = np.array((2*data[0].T@(data[0]@para_j+intercept_j-data[1]))[compute_para_index])
+            tem_h = np.array(2*data[0][:,compute_para_index].T@data[0][:,compute_para_index])
+            if np.sum(np.square(tem_h-hessian)) > 0.1:
+                print("hessian fail!!!!!!")
+            if jnp.sum(jnp.square(tem_g-gradient)) > 0.1:
+                print("gradient fail!!!!!!!!!!!!!!!")
+
+        self.model.set_loss_of_model(loss)
+        self.model.set_gradient_user_defined(grad_)
+        self.model.set_hessian_user_defined(hessian_)
+
     def set_loss(self, func):
         r"""
         Register callback function: loss of model.
@@ -356,30 +496,10 @@ class ConvexSparseSolver(BaseEstimator):
         func : function {'para': array-like, 'intercept': array-like, 'data': ExternData, 'return': float}
         """
         self.model.set_loss_of_model(func)
-    
-    def set_gradient_autodiff(self, func):
-        r"""
-        Register callback function: 
-
-        Parameters
-        ----------
-        func : function {}
-        """
-        self.model.set_gradient_autodiff(func)
-
-    def set_hessian_autodiff(self, func):
-        r"""
-        Register callback function: 
-
-        Parameters
-        ----------
-        func : function {}
-        """
-        self.model.set_hessian_autodiff(func)
 
     def set_gradient(self, func):
         r"""
-        Register callback function: 
+        Register callback function:
 
         Parameters
         ----------
@@ -389,7 +509,7 @@ class ConvexSparseSolver(BaseEstimator):
 
     def set_hessian(self, func):
         r"""
-        Register callback function: 
+        Register callback function:
 
         Parameters
         ----------
@@ -399,7 +519,7 @@ class ConvexSparseSolver(BaseEstimator):
 
     def set_slice_by_sample(self, func):
         r"""
-        Register callback function: 
+        Register callback function:
 
         Parameters
         ----------
@@ -409,7 +529,7 @@ class ConvexSparseSolver(BaseEstimator):
 
     def set_slice_by_para(self, func):
         r"""
-        Register callback function: 
+        Register callback function:
 
         Parameters
         ----------
@@ -428,7 +548,5 @@ class ConvexSparseSolver(BaseEstimator):
         self.model.set_deleter(func)
 
     def set_data(self, data):
-        r"""
-        
-        """
+        r""" """
         self.data = data

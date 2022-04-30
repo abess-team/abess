@@ -75,8 +75,7 @@ private:
     function <VectorXd(VectorXd const& para, VectorXd const& intercept, ExternData const& data, VectorXi const& compute_para_index)> gradient_user_defined;
     // only the derivative of para[compute_para_index[i]] need be computed, size of gradient will equal to compute_para_index.
     // compute_para_index: compute_para[i] = para[compute_para_index[i]]
-    // result need be setted in gradient IN-PLACE!
-    function <void(VectorXd const& para, VectorXd const& intercept, ExternData const& data, VectorXi const& compute_para_index, VectorXd& gradient, MatrixXd& hessian)> hessian_user_defined;
+    function <MatrixXd(VectorXd const& para, VectorXd const& intercept, ExternData const& data, VectorXi const& compute_para_index)> hessian_user_defined;
     function <ExternData(ExternData const& old_data, VectorXi const& target_sample_index)> slice_by_sample;
     function <ExternData(ExternData const& old_data, VectorXi const& target_para_index)> slice_by_para;
     function <void(ExternData const* p)> deleter = [](ExternData const* p) { delete p; };
@@ -87,7 +86,7 @@ public:
     void set_gradient_autodiff(function <dual(VectorXdual const&, VectorXdual const&, ExternData const&)> const&);
     void set_hessian_autodiff(function <dual2nd(VectorXdual2nd const&, VectorXdual2nd const&, ExternData const&)> const&);
     void set_gradient_user_defined(function <VectorXd(VectorXd const&, VectorXd const&, ExternData const&, VectorXi const&)> const&);
-    void set_hessian_user_defined(function <void(VectorXd const&, VectorXd const&, ExternData const&, VectorXi const&, VectorXd&, MatrixXd&)> const&);
+    void set_hessian_user_defined(function <MatrixXd(VectorXd const&, VectorXd const&, ExternData const&, VectorXi const&)> const&);
     void set_slice_by_sample(function <ExternData(ExternData const&, VectorXi const&)> const&);
     void set_slice_by_para(function <ExternData(ExternData const&, VectorXi const&)> const&);
     void set_deleter(function <void(ExternData const&)> const&);

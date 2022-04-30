@@ -1,6 +1,7 @@
 #include"UniversalData.h"
 #include <autodiff/forward/dual/eigen.hpp>
 #include <assert.h>// just for debug
+#include <iostream>
 using namespace std;
 using Eigen::Map;
 using Eigen::Matrix;
@@ -174,7 +175,9 @@ void UniversalData::hessian(const VectorXd& effective_para, const VectorXd& inte
     }
 
     if (model->hessian_user_defined) {
-        model->hessian_user_defined(*para_ptr, intercept, *this->data, compute_para_index, gradient, hessian);
+
+        hessian = model->hessian_user_defined(*para_ptr, intercept, *this->data, compute_para_index);
+
     }
     else { // autodiff
         dual2nd v;
@@ -220,7 +223,7 @@ void UniversalModel::set_gradient_user_defined(function <VectorXd(VectorXd const
     gradient_autodiff = nullptr;
 }
 
-void UniversalModel::set_hessian_user_defined(function <void(VectorXd const&, VectorXd const&, ExternData const&, VectorXi const&, VectorXd&, MatrixXd&)> const& f)
+void UniversalModel::set_hessian_user_defined(function <MatrixXd(VectorXd const&, VectorXd const&, ExternData const&, VectorXi const&)> const& f)
 {
     hessian_user_defined = f;
     hessian_autodiff = nullptr;
@@ -245,4 +248,3 @@ void UniversalModel::set_deleter(function<void(ExternData const&)> const& f)
         deleter = [](ExternData const* p) { delete p; };
     }
 }
-
