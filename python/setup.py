@@ -158,6 +158,9 @@ setup(
         "scipy",
         "scikit-learn>=0.24"
     ],
+    extras_require={
+        "jax": "jax"
+    },
     license="GPL-3",
     url="https://abess.readthedocs.io",
     download_url="https://pypi.python.org/pypi/abess",

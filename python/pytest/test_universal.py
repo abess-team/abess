@@ -15,9 +15,9 @@ class TestUniversalModel:
 
     @staticmethod
     def test_linear_model_autodiff():
-        np.random.seed(1)
-        n = 100
-        p = 20
+        np.random.seed(3)
+        n = 30
+        p = 5
         k = 3
         family = "multigaussian"
         rho = 0.5
@@ -39,29 +39,22 @@ class TestUniversalModel:
         assert_fit(coef, [c for v in data.coef_ for c in v])
 
         model.thread = 0
-        model.fit()
-        assert_value(model.coef_, coef)
-
+        model.set_slice_by_para(pybind_cabess.slice_by_para)
+        model.set_deleter(pybind_cabess.deleter)
         model.path_type = "gs"
         model.fit()
         assert_value(model.coef_, coef)
 
         model.cv = 5
         model.set_slice_by_sample(pybind_cabess.slice_by_sample)
-        model.set_deleter(pybind_cabess.deleter)
-        model.fit()
-        assert_value(model.coef_, coef)
-
-        model.path_type = "seq"
-        model.set_slice_by_para(pybind_cabess.slice_by_para)
         model.fit()
         assert_value(model.coef_, coef)
 
     @staticmethod
     def test_linear_model_jax():
         np.random.seed(1)
-        n = 1000
-        p = 20
+        n = 30
+        p = 5
         k = 3
         family = "multigaussian"
         rho = 0.5
@@ -89,18 +82,11 @@ class TestUniversalModel:
         assert_fit(coef, [c for v in data.coef_ for c in v])
 
         model.thread = 0
-        model.fit()
-        assert_value(model.coef_, coef)
-
         model.path_type = "gs"
         model.fit()
         assert_value(model.coef_, coef)
 
-        model.cv = 5
+        model.cv = 3
         model.set_slice_by_sample(lambda data, ind: (data[0][ind, :], data[1][ind, :]))
-        model.fit()
-        assert_value(model.coef_, coef)
-
-        model.path_type = "seq"
         model.fit()
         assert_value(model.coef_, coef)
