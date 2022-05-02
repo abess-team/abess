@@ -4,9 +4,13 @@ from abess import pybind_cabess
 import pytest
 import numpy as np
 from utilities import assert_fit, assert_value
-import jax.numpy as jnp
-from jax import jit
 
+try:
+    import jax.numpy as jnp
+    from jax import jit
+    miss_dep = False
+except ImportError:
+    miss_dep = True
 
 class TestUniversalModel:
     """
@@ -52,6 +56,12 @@ class TestUniversalModel:
 
     @staticmethod
     def test_linear_model_jax():
+
+        if miss_dep:
+            pytest.skip(
+                "Skip because modules 'jax' have not been installed."
+                )
+
         np.random.seed(1)
         n = 30
         p = 5
