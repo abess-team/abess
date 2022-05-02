@@ -1,11 +1,11 @@
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
-
+#include <pybind11/functional.h>
 #include <tuple>
 #include "UniversalData.h"
 #include "List.h"
 #include "api.h"
-#include "universal_model_just_for_debug.h"
+#include "predefinedModel.h"
 
 std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_GLM(
     Eigen::MatrixXd x_Mat, Eigen::MatrixXd y_Mat, Eigen::VectorXd weight_Vec, int n, int p, int normalize_type,
@@ -120,68 +120,8 @@ std::tuple<Eigen::VectorXd, double, double, double, double> pywrap_RPCA(
     return std::make_tuple(beta, coef0, train_loss, test_loss, ic);
 }
 
-// just for debug
-std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> pywrap_Universal(
-    Eigen::MatrixXd x_Mat, Eigen::MatrixXd y_Mat, Eigen::VectorXd weight_Vec, int n, int p, int normalize_type,
-    int algorithm_type, int model_type, int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type,
-    double ic_coef, int Kfold, Eigen::VectorXi gindex_Vec, Eigen::VectorXi sequence_Vec,
-    Eigen::VectorXd lambda_sequence_Vec, Eigen::VectorXi cv_fold_id_Vec, int s_min, int s_max, double lambda_min,
-    double lambda_max, int n_lambda, int screening_size, Eigen::VectorXi always_select_Vec,
-    int primary_model_fit_max_iter, double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton,
-    int thread, bool covariance_update, bool sparse_matrix, int splicing_type, int sub_search,
-    Eigen::VectorXi A_init_Vec) 
-{
-    Data* data = new Data;
-    data->x = x_Mat;
-    data->y = y_Mat;
-    pybind11::object d = pybind11::cast(data);
-    UniversalModel model;
-    get_model(model);
-
-    List mylist = abessUniversal_API(d, model, p, n, 1, max_iter, exchange_num,
-            path_type, is_warm_start, ic_type, ic_coef, Kfold, sequence_Vec, lambda_sequence_Vec, s_min, s_max,
-            screening_size, gindex_Vec, always_select_Vec, thread,
-            splicing_type, sub_search, cv_fold_id_Vec, A_init_Vec);
-    delete data;
-
-    std::tuple<Eigen::MatrixXd, Eigen::VectorXd, double, double, double> output;
-    int y_col = y_Mat.cols();
-    if (y_col == 1 && model_type != 5 && model_type != 6) {
-        Eigen::VectorXd beta;
-        double coef0 = 0;
-        double train_loss = 0;
-        double test_loss = 0;
-        double ic = 0;
-        mylist.get_value_by_name("beta", beta);
-        mylist.get_value_by_name("coef0", coef0);
-        mylist.get_value_by_name("train_loss", train_loss);
-        mylist.get_value_by_name("test_loss", test_loss);
-        mylist.get_value_by_name("ic", ic);
-
-        Eigen::MatrixXd beta_out(beta.size(), 1);
-        beta_out.col(0) = beta;
-        Eigen::VectorXd coef0_out(1);
-        coef0_out(0) = coef0;
-        output = std::make_tuple(beta_out, coef0_out, train_loss, test_loss, ic);
-    } else {
-        Eigen::MatrixXd beta;
-        Eigen::VectorXd coef0;
-        double train_loss = 0;
-        double test_loss = 0;
-        double ic = 0;
-        mylist.get_value_by_name("beta", beta);
-        mylist.get_value_by_name("coef0", coef0);
-        mylist.get_value_by_name("train_loss", train_loss);
-        mylist.get_value_by_name("test_loss", test_loss);
-        mylist.get_value_by_name("ic", ic);
-
-        output = std::make_tuple(beta, coef0, train_loss, test_loss, ic);
-    }
-    return output;
-}
-
 std::tuple<Eigen::VectorXd, Eigen::VectorXd, double, double, double>
-pywrap_Universal_true(ExternData data, UniversalModel model, int model_size, int sample_size,int intercept_size, int max_iter,
+pywrap_Universal(ExternData data, UniversalModel model, int model_size, int sample_size,int intercept_size, int max_iter,
     int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef, int Kfold, Eigen::VectorXi sequence, 
     Eigen::VectorXd lambda_seq, int s_min, int s_max, int screening_size, Eigen::VectorXi g_index, Eigen::VectorXi always_select, 
     int thread, int splicing_type, int sub_search, Eigen::VectorXi cv_fold_id, Eigen::VectorXi A_init)
@@ -203,7 +143,6 @@ pywrap_Universal_true(ExternData data, UniversalModel model, int model_size, int
 }
 
 PYBIND11_MODULE(pybind_cabess, m) {
-    pybind11::class_<Data>(m, "Data"); // just for debug
     pybind11::class_<UniversalModel>(m, "UniversalModel").def(pybind11::init<>())
         .def("set_loss_of_model", &UniversalModel::set_loss_of_model)
         .def("set_gradient_autodiff", &UniversalModel::set_gradient_autodiff)
@@ -212,12 +151,17 @@ PYBIND11_MODULE(pybind_cabess, m) {
         .def("set_hessian_user_defined", &UniversalModel::set_hessian_user_defined)
         .def("set_slice_by_sample", &UniversalModel::set_slice_by_sample)
         .def("set_slice_by_para", &UniversalModel::set_slice_by_para)
-        .def("set_deleter", &UniversalModel::set_deleter)
-        .def("unset_slice_by_sample", &UniversalModel::unset_slice_by_sample)
-        .def("unset_slice_by_para", &UniversalModel::unset_slice_by_para)
-        .def("unset_deleter", &UniversalModel::unset_deleter);
+        .def("set_deleter", &UniversalModel::set_deleter);
     m.def("pywrap_GLM", &pywrap_GLM);
     m.def("pywrap_PCA", &pywrap_PCA);
     m.def("pywrap_RPCA", &pywrap_RPCA);
     m.def("pywrap_Universal", &pywrap_Universal);
+    // predefine some function for test
+    pybind11::class_<PredefinedData>(m, "Data").def(pybind11::init<MatrixXd, MatrixXd>());
+    m.def("loss_linear", &linear_model<double>);
+    m.def("gradient_linear", &linear_model<dual>);
+    m.def("hessian_linear", &linear_model<dual2nd>);
+    m.def("slice_by_sample", &slice_by_sample);
+    m.def("slice_by_para", &slice_by_para);
+    m.def("deleter", &deleter);
 }

@@ -18,15 +18,11 @@ using ExternData = pybind11::object;
 using Eigen::VectorXd;
 using Eigen::VectorXi;
 using Eigen::MatrixXd;
-using Eigen::Matrix;
-using Eigen::Index; // maybe name conflict
-using Eigen::Map;
 using autodiff::dual;
 using autodiff::dual2nd;
-using VectorXdual = Matrix<dual,-1,1>;
-using VectorXdual2nd = Matrix<dual2nd,-1,1>;
+using VectorXdual = Eigen::Matrix<dual,-1,1>;
+using VectorXdual2nd = Eigen::Matrix<dual2nd,-1,1>;
 using std::function;
-using std::shared_ptr;
 
 using optim_function = function<double(const VectorXd&, VectorXd*, void*)>;
 using nlopt_function = double (*)(unsigned n, const double* x, double* grad, void* f_data);
@@ -42,28 +38,28 @@ class UniversalData {
     // inactivate_para: similar to activate_para
     // effective_para: IMPORTANT! this is a concept of class UniversalData, its meaning depends on the instance of class, 
     //                  and used to simulate the division operation of data sets.
-    //                  Its size(effective_size) is match for (set_by_para ? the size of this->data : this->effective_para_index.size()).
+    //                  Its size(effective_size) is match for (slice_by_para ? the size of this->data : this->effective_para_index.size()).
 private:
     UniversalModel* model;
-    Index sample_size;
+    Eigen::Index sample_size;
     double lambda = 0.;  // L2 penalty coef
     // model_size and effective_para_index are useful just when function 'set_by_para' of model isn't setted
-    Index model_size; // length of complete_para
+    Eigen::Index model_size; // length of complete_para
     VectorXi effective_para_index;// complete_para[effective_para_index[i]] = effective_para[i], ohter location of complete_para is 0
-    Index effective_size; // set_by_para ? the size of this->data : length of effective_para_index
-    shared_ptr<ExternData> data;
+    Eigen::Index effective_size; // set_by_para ? the size of this->data : length of effective_para_index
+    std::shared_ptr<ExternData> data;
 public:
     UniversalData() = default;
-    UniversalData(Index model_size, Index sample_size, ExternData& data, UniversalModel* model);
+    UniversalData(Eigen::Index model_size, Eigen::Index sample_size, ExternData& data, UniversalModel* model);
     UniversalData slice_by_para(const VectorXi& target_para_index);
-    Index rows() const; // getter of sample_size
-    Index cols() const; // getter of effective_para
+    Eigen::Index rows() const; // getter of sample_size
+    Eigen::Index cols() const; // getter of effective_para
     UniversalData slice_by_sample(const VectorXi& target_sample_index);
     optim_function get_optim_function(double lambda); // create a function which can be optimized by OptimLib 
     nlopt_function get_nlopt_function(double lambda); // create a function which can be optimized by nlopt
     double loss(const VectorXd& effective_para, const VectorXd& intercept, double lambda); // compute the loss with effective_para
-    double gradient(const VectorXd& effective_para, const VectorXd& intercept, Map<VectorXd>& gradient, double lambda); // compute the gradient of effective_para
-    void hessian(const VectorXd& effective_para, const VectorXd& intercept, VectorXd& gradient, MatrixXd& hessian, Index index, Index size, double lambda); // compute the hessian of sequence from index to (index+size-1) in effective_para                                                                                                                            
+    double gradient(const VectorXd& effective_para, const VectorXd& intercept, Eigen::Map<VectorXd>& gradient, double lambda); // compute the gradient of effective_para
+    void hessian(const VectorXd& effective_para, const VectorXd& intercept, VectorXd& gradient, MatrixXd& hessian, Eigen::Index index, Eigen::Index size, double lambda); // compute the hessian of sequence from index to (index+size-1) in effective_para                                                                                                                            
 };
 
 class UniversalModel{
@@ -79,8 +75,7 @@ private:
     function <VectorXd(VectorXd const& para, VectorXd const& intercept, ExternData const& data, VectorXi const& compute_para_index)> gradient_user_defined;
     // only the derivative of para[compute_para_index[i]] need be computed, size of gradient will equal to compute_para_index.
     // compute_para_index: compute_para[i] = para[compute_para_index[i]]
-    // result need be setted in gradient IN-PLACE!
-    function <void(VectorXd const& para, VectorXd const& intercept, ExternData const& data, VectorXi const& compute_para_index, VectorXd& gradient, MatrixXd& hessian)> hessian_user_defined;
+    function <MatrixXd(VectorXd const& para, VectorXd const& intercept, ExternData const& data, VectorXi const& compute_para_index)> hessian_user_defined;
     function <ExternData(ExternData const& old_data, VectorXi const& target_sample_index)> slice_by_sample;
     function <ExternData(ExternData const& old_data, VectorXi const& target_para_index)> slice_by_para;
     function <void(ExternData const* p)> deleter = [](ExternData const* p) { delete p; };
@@ -91,13 +86,9 @@ public:
     void set_gradient_autodiff(function <dual(VectorXdual const&, VectorXdual const&, ExternData const&)> const&);
     void set_hessian_autodiff(function <dual2nd(VectorXdual2nd const&, VectorXdual2nd const&, ExternData const&)> const&);
     void set_gradient_user_defined(function <VectorXd(VectorXd const&, VectorXd const&, ExternData const&, VectorXi const&)> const&);
-    void set_hessian_user_defined(function <void(VectorXd const&, VectorXd const&, ExternData const&, VectorXi const&, VectorXd&, MatrixXd&)> const&);
+    void set_hessian_user_defined(function <MatrixXd(VectorXd const&, VectorXd const&, ExternData const&, VectorXi const&)> const&);
     void set_slice_by_sample(function <ExternData(ExternData const&, VectorXi const&)> const&);
     void set_slice_by_para(function <ExternData(ExternData const&, VectorXi const&)> const&);
     void set_deleter(function <void(ExternData const&)> const&);
-    void unset_slice_by_sample();
-    void unset_slice_by_para();
-    void unset_deleter();
 };
 #endif //SRC_UNIVERSALDATA_H
-

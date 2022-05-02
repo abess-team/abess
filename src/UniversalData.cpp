@@ -1,9 +1,12 @@
 #include"UniversalData.h"
 #include <autodiff/forward/dual/eigen.hpp>
 #include <assert.h>// just for debug
+#include <iostream>
 using namespace std;
+using Eigen::Map;
+using Eigen::Matrix;
 
-UniversalData::UniversalData(Index model_size, Index sample_size, ExternData& data, UniversalModel* model)
+UniversalData::UniversalData(Eigen::Index model_size, Eigen::Index sample_size, ExternData& data, UniversalModel* model)
     : model(model), sample_size(sample_size), model_size(model_size), effective_size(model_size)
 {
     if (!model->slice_by_para) {
@@ -20,7 +23,7 @@ UniversalData UniversalData::slice_by_para(const VectorXi& target_para_index)
     }
     else {
         tem.effective_para_index = VectorXi(target_para_index.size());
-        for (Index i = 0; i < target_para_index.size(); i++) {
+        for (Eigen::Index i = 0; i < target_para_index.size(); i++) {
             tem.effective_para_index[i] = this->effective_para_index[target_para_index[i]];
         }
     }
@@ -37,12 +40,12 @@ UniversalData UniversalData::slice_by_sample(const VectorXi& target_sample_index
     return tem;
 }
 
-Index UniversalData::cols() const
+Eigen::Index UniversalData::cols() const
 {
     return effective_size;
 }
 
-Index UniversalData::rows() const
+Eigen::Index UniversalData::rows() const
 {
     return sample_size;
 }
@@ -87,7 +90,7 @@ double UniversalData::loss(const VectorXd& effective_para, const VectorXd& inter
     }
     else {
         VectorXd complete_para = VectorXd::Zero(this->model_size);
-        for (Index i = 0; i < this->effective_size; i++) {
+        for (Eigen::Index i = 0; i < this->effective_size; i++) {
             complete_para[this->effective_para_index[i]] = effective_para[i];
         }
         return model->loss(complete_para, intercept, *this->data) + lambda * effective_para.squaredNorm();
@@ -119,7 +122,7 @@ double UniversalData::gradient(const VectorXd& effective_para, const VectorXd& i
     }
     else {
         VectorXd complete_para = VectorXd::Zero(this->model_size);
-        for (Index i = 0; i < this->effective_size; i++) {
+        for (Eigen::Index i = 0; i < this->effective_size; i++) {
             complete_para[this->effective_para_index[i]] = effective_para[i];
         }
         if (model->gradient_user_defined) {
@@ -132,7 +135,7 @@ double UniversalData::gradient(const VectorXd& effective_para, const VectorXd& i
             VectorXdual intercept_dual = intercept;
             auto func = [this, &complete_para](VectorXdual const& compute_para, VectorXdual const& intercept) {
                 VectorXdual para = complete_para;
-                for (Index i = 0; i < compute_para.size(); i++) {
+                for (Eigen::Index i = 0; i < compute_para.size(); i++) {
                     para[this->effective_para_index[i]] = compute_para[i];
                 }
                 return this->model->gradient_autodiff(para, intercept, *this->data);
@@ -149,7 +152,7 @@ double UniversalData::gradient(const VectorXd& effective_para, const VectorXd& i
 
 
 
-void UniversalData::hessian(const VectorXd& effective_para, const VectorXd& intercept, VectorXd& gradient, MatrixXd& hessian, Index index, Index size, double lambda)
+void UniversalData::hessian(const VectorXd& effective_para, const VectorXd& intercept, VectorXd& gradient, MatrixXd& hessian, Eigen::Index index, Eigen::Index size, double lambda)
 {
     assert(effective_para.size() == this->effective_size);
     gradient.resize(size);
@@ -165,14 +168,15 @@ void UniversalData::hessian(const VectorXd& effective_para, const VectorXd& inte
     else {
         compute_para_index = this->effective_para_index.segment(index, size);
         complete_para = VectorXd::Zero(this->model_size);
-        for (Index i = 0; i < this->effective_size; i++) {
+        for (Eigen::Index i = 0; i < this->effective_size; i++) {
             complete_para[this->effective_para_index[i]] = effective_para[i];
         }
         para_ptr = &complete_para;
     }
 
     if (model->hessian_user_defined) {
-        model->hessian_user_defined(*para_ptr, intercept, *this->data, compute_para_index, gradient, hessian);
+        gradient = model->gradient_user_defined(*para_ptr, intercept, *this->data, compute_para_index).tail(size);
+        hessian = model->hessian_user_defined(*para_ptr, intercept, *this->data, compute_para_index);
     }
     else { // autodiff
         dual2nd v;
@@ -181,12 +185,12 @@ void UniversalData::hessian(const VectorXd& effective_para, const VectorXd& inte
         VectorXdual2nd intercept_dual = intercept;
         hessian = autodiff::hessian([this, para_ptr, &compute_para_index](VectorXdual2nd const& compute_para, VectorXdual2nd const& intercept_dual) {
             VectorXdual2nd para = *para_ptr;
-            for (Index i = 0; i < compute_para_index.size(); i++) {
+            for (Eigen::Index i = 0; i < compute_para_index.size(); i++) {
                 para[compute_para_index[i]] = compute_para[i];
             }
             return this->model->hessian_autodiff(para, intercept_dual, *this->data);
             }, wrt(compute_para), at(compute_para, intercept_dual), v, g);
-        for (Index i = 0; i < size; i++) {
+        for (Eigen::Index i = 0; i < size; i++) {
             gradient[i] = val(g[i]);
         }
     }
@@ -218,7 +222,7 @@ void UniversalModel::set_gradient_user_defined(function <VectorXd(VectorXd const
     gradient_autodiff = nullptr;
 }
 
-void UniversalModel::set_hessian_user_defined(function <void(VectorXd const&, VectorXd const&, ExternData const&, VectorXi const&, VectorXd&, MatrixXd&)> const& f)
+void UniversalModel::set_hessian_user_defined(function <MatrixXd(VectorXd const&, VectorXd const&, ExternData const&, VectorXi const&)> const& f)
 {
     hessian_user_defined = f;
     hessian_autodiff = nullptr;
@@ -236,25 +240,10 @@ void UniversalModel::set_slice_by_para(function <ExternData(ExternData const&, V
 
 void UniversalModel::set_deleter(function<void(ExternData const&)> const& f)
 {
-    deleter = [f](ExternData const* p) {
-        f(*p);
-        delete p;
-    };
-}
-
-void UniversalModel::unset_slice_by_sample()
-{
-    slice_by_sample = nullptr;
-}
-
-void UniversalModel::unset_slice_by_para()
-{
-    slice_by_para = nullptr;
-}
-
-void UniversalModel::unset_deleter()
-{
-    deleter = [](ExternData const* p) {
-        delete p;
-    };
+    if (f) {
+        deleter = [f](ExternData const* p) { f(*p); delete p; };
+    }
+    else {
+        deleter = [](ExternData const* p) { delete p; };
+    }
 }

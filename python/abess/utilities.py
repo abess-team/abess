@@ -87,9 +87,3 @@ def check_positive_integer(var, name: str):
 def check_non_negative_integer(var, name: str):
     if (not isinstance(var, int) or var < 0):
         raise ValueError("{} should be an non-negative integer.".format(name))
-
-
-def check_not_greater_than(var, var_name: str, n: int, int_name: str):
-    if(var > n):
-        raise ValueError("{} should not be greater than {}".format(var_name, int_name))
-    
