@@ -2140,7 +2140,7 @@ class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
                          Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size,
                          double lambda) {
         int n = X.rows();
-        int p = X.cols();
+        // int p = X.cols();
         int k = coef0.size() - 1;
 
         Eigen::VectorXd xbeta = X * beta.col(0);
@@ -2218,7 +2218,7 @@ class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
         if (XA.cols() == 0) return 0.;
 
         int n = X.rows();
-        int p = X.cols();
+        // int p = X.cols();
         int k = coef0.size() - 1;
 
         Eigen::VectorXd h_intercept = Eigen::VectorXd::Zero(k);
