@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.metrics import r2_score, d2_tweedie_score
 from .metrics import concordance_index_censored
 from .bess_base import bess_base
-from .utilities import (new_data_check, categorical_to_dummy)
+from .utilities import new_data_check
 from .functions import (BreslowEstimator)
 # from .nonparametric import _compute_counts
 
