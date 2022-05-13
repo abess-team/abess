@@ -86,7 +86,7 @@ def make_glm_data(n, p, k, family, rho=0, corr_type="const", sigma=1, coef_=None
             R[i, i] = 1
     else:
         raise ValueError(
-            "corr_type should be \'const\', or \'exp\'")
+            "corr_type should be \'const\' or \'exp\'")
       
             
     x = np.random.multivariate_normal(mean=np.zeros(p), cov=R, size=(n,))
@@ -268,9 +268,9 @@ def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho
             R[i, i] = 1
     else:
         raise ValueError(
-            "corr_type should be \'const\', or \'exp\'")
+            "corr_type should be \'const\' or \'exp\'")
             
-    x = np.random.multivariate_normal(mean=np.zeros(p), cov=R, size=(n,))
+    X = np.random.multivariate_normal(mean=np.zeros(p), cov=R, size=(n,))
     
 
     if sparse_ratio != None:
