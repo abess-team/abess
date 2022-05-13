@@ -548,6 +548,9 @@ class TestAlgorithm:
             n, p, family=family, k=k, rho=rho, sigma=sigma)
         # data3 = abess.make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
+
+        # save_data(data, "binomial_sklearn")
+        data = load_data("binomial_sklearn")
         s_max = 20
         support_size = np.linspace(0, s_max, s_max + 1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3, 0.4]
@@ -578,6 +581,10 @@ class TestAlgorithm:
         data = abess.make_glm_data(n, p, family=family, k=k, rho=rho)
         # data3 = abess.make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
+
+        # save_data(data, "poisson_sklearn")
+        data = load_data("poisson_sklearn")
+
         s_max = 20
         support_size = np.linspace(0, s_max, s_max + 1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3, 0.4]
@@ -608,6 +615,10 @@ class TestAlgorithm:
         data = abess.make_glm_data(n, p, family=family, k=k, rho=rho)
         # data3 = abess.make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
+
+        # save_data(data, "cox_sklearn")
+        data = load_data("cox_sklearn")
+
         s_max = 10
         support_size = np.linspace(1, s_max, s_max + 1, dtype="int32")
         alpha = [0., 0.1, 0.2, 0.3]
