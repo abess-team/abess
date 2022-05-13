@@ -62,6 +62,11 @@ class make_glm_data:
     rho: float, optional, default=0
         A parameter used to characterize the pairwise
         correlation in predictors.
+    corr_type: string, optional
+        The structure of correlation matrix.
+        "const" for constant pairwise correlation,
+        "exp" for pairwise correlation with exponential decay.
+        Default: corr_type = "const"
     sigma: float, optional, default=1
         The variance of the gaussian noise.
         It would be unused if snr is not None.
@@ -169,23 +174,28 @@ class make_glm_data:
 
     """
 
-    def __init__(self, n, p, k, family, rho=0, sigma=1, coef_=None,
+    def __init__(self, n, p, k, family, rho=0, corr_type = "const", sigma=1, coef_=None,
                  censoring=True, c=1, scal=10, snr=None, class_num=3):
         self.n = n
         self.p = p
         self.k = k
         self.family = family
-
-        zero = np.zeros([n, 1])
-        ones = np.ones([n, 1])
-        X = np.random.normal(0, 1, n * p).reshape(n, p)
-        X = (X - np.matmul(ones, np.array([np.mean(X, axis=0)])))
-        normX = np.sqrt(np.matmul(ones.reshape(1, n), X ** 2))
-        X = np.sqrt(n) * X / normX
-
-        x = X + rho * \
-            (np.hstack((zero, X[:, 0:(p - 2)], zero)) +
-             np.hstack((zero, X[:, 2:p], zero)))
+        
+        if corr_type == "exp":  # generate correlation matrix with exponential decay 
+            R = np.zeros((p, p))
+            for i in range(p):
+                for j in range(i, p):
+                    R[i, j] = rho ** abs(i - j)
+            R = R + R.T - np.identity(p)
+        elif corr_type == "const":  # generate correlation matrix with constant correlation
+            R = np.ones((p, p)) * rho
+            for i in range(p):
+                R[i, i] = 1
+        else:
+            raise ValueError(
+                "corr_type should be \'const\' or \'exp\'")
+        
+        x = np.random.multivariate_normal(mean=np.zeros(p), cov=R, size=(n,))
 
         nonzero = sample(p, k)
         Tbeta = np.zeros(p)
@@ -326,6 +336,11 @@ class make_multivariate_glm_data:
     rho: float, optional, default=0.5
         A parameter used to characterize the pairwise correlation
         in predictors.
+    corr_type: string, optional
+        The structure of correlation matrix.
+        "const" for constant pairwise correlation,
+        "exp" for pairwise correlation with exponential decay.
+        Default: corr_type = "const"
     coef_: array_like, optional, default=None
         The coefficient values in the underlying regression model.
     sparse_ratio: float, optional, default=None
@@ -383,19 +398,23 @@ class make_multivariate_glm_data:
 
     def __init__(self,
                  n=100, p=100, k=10, family="multigaussian", rho=0.5,
-                 coef_=None, M=1, sparse_ratio=None):
-        Sigma = np.ones(p * p).reshape(p, p) * rho
-        ones = np.ones([n, 1])
-        for i in range(p):
-            Sigma[i, i] = 1
-        mean = np.zeros(p)
-        X = np.random.multivariate_normal(mean=mean, cov=Sigma, size=(n,))
-
-        # Sigma[Sigma < 1e-10] = 0
-        X = (X - np.matmul(ones, np.array([np.mean(X, axis=0)])))
-        normX = np.sqrt(np.matmul(ones.reshape(1, n), X ** 2) / (n - 1))
-
-        X = X / normX
+                 corr_type = "const", coef_=None, M=1, sparse_ratio=None):
+        
+        if corr_type == "exp":  # generate correlation matrix with exponential decay 
+            R = np.zeros((p, p))
+            for i in range(p):
+                for j in range(i, p):
+                    R[i, j] = rho ** abs(i - j)
+            R = R + R.T - np.identity(p)
+        elif corr_type == "const":  # generate correlation matrix with constant correlation
+            R = np.ones((p, p)) * rho
+            for i in range(p):
+                R[i, i] = 1
+        else:
+            raise ValueError(
+                "corr_type should be \'const\' or \'exp\'")
+        
+        X = np.random.multivariate_normal(mean=np.zeros(p), cov=R, size=(n,))
 
         if sparse_ratio is not None:
             sparse_size = int((1 - sparse_ratio) * n * p)
