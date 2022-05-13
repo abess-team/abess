@@ -62,11 +62,10 @@ class make_glm_data:
     rho: float, optional, default=0
         A parameter used to characterize the pairwise
         correlation in predictors.
-    corr_type: string, optional
+    corr_type: string, optional, default="const"
         The structure of correlation matrix.
         "const" for constant pairwise correlation,
         "exp" for pairwise correlation with exponential decay.
-        Default: corr_type = "const"
     sigma: float, optional, default=1
         The variance of the gaussian noise.
         It would be unused if snr is not None.
@@ -174,14 +173,14 @@ class make_glm_data:
 
     """
 
-    def __init__(self, n, p, k, family, rho=0, corr_type = "const", sigma=1, coef_=None,
+    def __init__(self, n, p, k, family, rho=0, corr_type="const", sigma=1, coef_=None,
                  censoring=True, c=1, scal=10, snr=None, class_num=3):
         self.n = n
         self.p = p
         self.k = k
         self.family = family
-        
-        if corr_type == "exp":  # generate correlation matrix with exponential decay 
+
+        if corr_type == "exp":  # generate correlation matrix with exponential decay
             R = np.zeros((p, p))
             for i in range(p):
                 for j in range(i, p):
@@ -194,7 +193,7 @@ class make_glm_data:
         else:
             raise ValueError(
                 "corr_type should be \'const\' or \'exp\'")
-        
+
         x = np.random.multivariate_normal(mean=np.zeros(p), cov=R, size=(n,))
 
         nonzero = sample(p, k)
@@ -336,11 +335,10 @@ class make_multivariate_glm_data:
     rho: float, optional, default=0.5
         A parameter used to characterize the pairwise correlation
         in predictors.
-    corr_type: string, optional
+    corr_type: string, optional, default="const"
         The structure of correlation matrix.
         "const" for constant pairwise correlation,
         "exp" for pairwise correlation with exponential decay.
-        Default: corr_type = "const"
     coef_: array_like, optional, default=None
         The coefficient values in the underlying regression model.
     sparse_ratio: float, optional, default=None
@@ -398,9 +396,9 @@ class make_multivariate_glm_data:
 
     def __init__(self,
                  n=100, p=100, k=10, family="multigaussian", rho=0.5,
-                 corr_type = "const", coef_=None, M=1, sparse_ratio=None):
-        
-        if corr_type == "exp":  # generate correlation matrix with exponential decay 
+                 corr_type="const", coef_=None, M=1, sparse_ratio=None):
+
+        if corr_type == "exp":  # generate correlation matrix with exponential decay
             R = np.zeros((p, p))
             for i in range(p):
                 for j in range(i, p):
@@ -413,7 +411,7 @@ class make_multivariate_glm_data:
         else:
             raise ValueError(
                 "corr_type should be \'const\' or \'exp\'")
-        
+
         X = np.random.multivariate_normal(mean=np.zeros(p), cov=R, size=(n,))
 
         if sparse_ratio is not None:
