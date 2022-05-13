@@ -15,7 +15,7 @@ def sample(p, k):
     return select
 
 
-def make_glm_data(n, p, k, family, rho=0, exp_decay=False, sigma=1, coef_=None, censoring=True, c=1, scal=10, snr=None):
+def make_glm_data(n, p, k, family, rho=0, corr_type="const", sigma=1, coef_=None, censoring=True, c=1, scal=10, snr=None):
     """
     Generate a dataset with single response.
 
@@ -36,6 +36,11 @@ def make_glm_data(n, p, k, family, rho=0, exp_decay=False, sigma=1, coef_=None, 
     rho: float, optional
         A parameter used to characterize the pairwise correlation in predictors. 
         Default: rho = 0.
+    corr_type: string, optional
+        The structure of correlation matrix.
+        "const" for constant pairwise correlation,
+        "exp" for pairwise correlation with exponential decay.
+        Default: corr_type = "const"
     sigma: float, optional
         The variance of the gaussian noise. 
         It would be unused if `snr` is not None.
@@ -69,29 +74,23 @@ def make_glm_data(n, p, k, family, rho=0, exp_decay=False, sigma=1, coef_=None, 
     zero = np.zeros([n, 1])
     ones = np.ones([n, 1])
     
-    if exp_decay:  # generate correlation matrix with exponential decay 
+    if corr_type == "exp":  # generate correlation matrix with exponential decay 
         R = np.zeros((p, p))
         for i in range(p):
             for j in range(i, p):
                 R[i, j] = rho ** abs(i - j)
         R = R + R.T - np.identity(p)
-    else:  # generate correlation matrix with constant correlation
+    elif corr_type == "const":  # generate correlation matrix with constant correlation
         R = np.ones((p, p)) * rho
         for i in range(p):
-            R[i, i] = 1   
+            R[i, i] = 1
+    else:
+        raise ValueError(
+            "corr_type should be \'const\', or \'exp\'")
+      
             
     x = np.random.multivariate_normal(mean=np.zeros(p), cov=R, size=(n,))
     
-    '''
-    X = np.random.normal(0, 1, n*p).reshape(n, p)
-    X = (X - np.matmul(ones, np.array([np.mean(X, axis=0)])))
-    normX = np.sqrt(np.matmul(ones.reshape(1, n), X ** 2))
-    X = np.sqrt(n) * X / normX
-
-    x = X + rho * \
-        (np.hstack((zero, X[:, 0:(p-2)], zero)) +
-         np.hstack((zero, X[:, 2:p], zero)))
-    '''
 
     nonzero = sample(p, k)
     Tbeta = np.zeros(p)
@@ -208,7 +207,7 @@ def beta_generator(k, M):
     return beta_value
 
 
-def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho=0.5, exp_decay=False, coef_=None, M=1, sparse_ratio=None):
+def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho=0.5, corr_type="const", coef_=None, M=1, sparse_ratio=None):
     """
     Generate a dataset with multi-responses.
 
@@ -235,6 +234,11 @@ def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho
     rho: float, optional
         A parameter used to characterize the pairwise correlation in predictors. 
         Default: rho = 0.5.
+    corr_type: string, optional
+        The structure of correlation matrix.
+        "const" for constant pairwise correlation,
+        "exp" for pairwise correlation with exponential decay.
+        Default: corr_type = "const"
     coef\_: array_like, optional
         The coefficient values in the underlying regression model. 
         Default: coef\_ = None.
@@ -252,33 +256,22 @@ def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho
         The coefficients used in the underlying regression model.
     """
     
-    if exp_decay:  # generate correlation matrix with exponential decay 
+    if corr_type == "exp":  # generate correlation matrix with exponential decay 
         R = np.zeros((p, p))
         for i in range(p):
             for j in range(i, p):
                 R[i, j] = rho ** abs(i - j)
         R = R + R.T - np.identity(p)
-    else:  # generate correlation matrix with constant correlation
+    elif corr_type == "const":  # generate correlation matrix with constant correlation
         R = np.ones((p, p)) * rho
         for i in range(p):
-            R[i, i] = 1   
+            R[i, i] = 1
+    else:
+        raise ValueError(
+            "corr_type should be \'const\', or \'exp\'")
             
     x = np.random.multivariate_normal(mean=np.zeros(p), cov=R, size=(n,))
     
-    '''
-    Sigma = np.ones(p*p).reshape(p, p) * rho
-    ones = np.ones([n, 1])
-    for i in range(p):
-        Sigma[i, i] = 1
-    mean = np.zeros(p)
-    X = np.random.multivariate_normal(mean=mean, cov=Sigma, size=(n,))
-
-    # Sigma[Sigma < 1e-10] = 0
-    X = (X - np.matmul(ones, np.array([np.mean(X, axis=0)])))
-    normX = np.sqrt(np.matmul(ones.reshape(1, n), X ** 2) / (n-1))
-
-    X = X / normX
-    '''
 
     if sparse_ratio != None:
         sparse_size = int((1 - sparse_ratio) * n * p)
