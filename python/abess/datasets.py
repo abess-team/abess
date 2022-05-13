@@ -15,7 +15,7 @@ def sample(p, k):
     return select
 
 
-def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None, censoring=True, c=1, scal=10, snr=None):
+def make_glm_data(n, p, k, family, rho=0, exp_decay=False, sigma=1, coef_=None, censoring=True, c=1, scal=10, snr=None):
     """
     Generate a dataset with single response.
 
@@ -68,6 +68,21 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None, censoring=True, c
     """
     zero = np.zeros([n, 1])
     ones = np.ones([n, 1])
+    
+    if exp_decay:  # generate correlation matrix with exponential decay 
+        R = np.zeros((p, p))
+        for i in range(p):
+            for j in range(i, p):
+                R[i, j] = rho ** abs(i - j)
+        R = R + R.T - np.identity(p)
+    else:  # generate correlation matrix with constant correlation
+        R = np.ones((p, p)) * rho
+        for i in range(p):
+            R[i, i] = 1   
+            
+    x = np.random.multivariate_normal(mean=np.zeros(p), cov=R, size=(n,))
+    
+    '''
     X = np.random.normal(0, 1, n*p).reshape(n, p)
     X = (X - np.matmul(ones, np.array([np.mean(X, axis=0)])))
     normX = np.sqrt(np.matmul(ones.reshape(1, n), X ** 2))
@@ -76,6 +91,7 @@ def make_glm_data(n, p, k, family, rho=0, sigma=1, coef_=None, censoring=True, c
     x = X + rho * \
         (np.hstack((zero, X[:, 0:(p-2)], zero)) +
          np.hstack((zero, X[:, 2:p], zero)))
+    '''
 
     nonzero = sample(p, k)
     Tbeta = np.zeros(p)
@@ -192,7 +208,7 @@ def beta_generator(k, M):
     return beta_value
 
 
-def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho=0.5, coef_=None, M=1, sparse_ratio=None):
+def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho=0.5, exp_decay=False, coef_=None, M=1, sparse_ratio=None):
     """
     Generate a dataset with multi-responses.
 
@@ -235,6 +251,21 @@ def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho
     coef\_: array_like, shape(p, M)
         The coefficients used in the underlying regression model.
     """
+    
+    if exp_decay:  # generate correlation matrix with exponential decay 
+        R = np.zeros((p, p))
+        for i in range(p):
+            for j in range(i, p):
+                R[i, j] = rho ** abs(i - j)
+        R = R + R.T - np.identity(p)
+    else:  # generate correlation matrix with constant correlation
+        R = np.ones((p, p)) * rho
+        for i in range(p):
+            R[i, i] = 1   
+            
+    x = np.random.multivariate_normal(mean=np.zeros(p), cov=R, size=(n,))
+    
+    '''
     Sigma = np.ones(p*p).reshape(p, p) * rho
     ones = np.ones([n, 1])
     for i in range(p):
@@ -247,6 +278,7 @@ def make_multivariate_glm_data(n=100, p=100, k=10, family="gaussian", SNR=1, rho
     normX = np.sqrt(np.matmul(ones.reshape(1, n), X ** 2) / (n-1))
 
     X = X / normX
+    '''
 
     if sparse_ratio != None:
         sparse_size = int((1 - sparse_ratio) * n * p)
