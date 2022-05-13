@@ -14,7 +14,9 @@ GitHub, clone, and develop on a branch:
 
 2. Fork the `master repository <https://github.com/abess-team/abess>`__
    by clicking on the “Fork” button on the top right of the page, which
-   would create a copy to your own GitHub account;
+   would create a copy to your own GitHub account. If you have forked abess
+   repository, enter it and click "Fetch upsteam", followed by "Fetch and merge"
+   to ensure the code is the latest one;
 
 3. Clone your fork of abess to the local by
    `Git <https://git-scm.com/>`__;
