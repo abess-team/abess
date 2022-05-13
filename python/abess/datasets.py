@@ -173,20 +173,23 @@ class make_glm_data:
 
     """
 
-    def __init__(self, n, p, k, family, rho=0, corr_type="const", sigma=1, coef_=None,
+    def __init__(self, n, p, k, family, rho=0, corr_type="const", sigma=1,
+                 coef_=None,
                  censoring=True, c=1, scal=10, snr=None, class_num=3):
         self.n = n
         self.p = p
         self.k = k
         self.family = family
 
-        if corr_type == "exp":  # generate correlation matrix with exponential decay
+        if corr_type == "exp":
+            # generate correlation matrix with exponential decay
             R = np.zeros((p, p))
             for i in range(p):
                 for j in range(i, p):
                     R[i, j] = rho ** abs(i - j)
             R = R + R.T - np.identity(p)
-        elif corr_type == "const":  # generate correlation matrix with constant correlation
+        elif corr_type == "const":
+            # generate correlation matrix with constant correlation
             R = np.ones((p, p)) * rho
             for i in range(p):
                 R[i, i] = 1
@@ -398,13 +401,15 @@ class make_multivariate_glm_data:
                  n=100, p=100, k=10, family="multigaussian", rho=0.5,
                  corr_type="const", coef_=None, M=1, sparse_ratio=None):
 
-        if corr_type == "exp":  # generate correlation matrix with exponential decay
+        if corr_type == "exp":
+            # generate correlation matrix with exponential decay
             R = np.zeros((p, p))
             for i in range(p):
                 for j in range(i, p):
                     R[i, j] = rho ** abs(i - j)
             R = R + R.T - np.identity(p)
-        elif corr_type == "const":  # generate correlation matrix with constant correlation
+        elif corr_type == "const":
+            # generate correlation matrix with constant correlation
             R = np.ones((p, p)) * rho
             for i in range(p):
                 R[i, i] = 1
