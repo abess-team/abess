@@ -158,7 +158,7 @@ print(
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #
 # Here we compare the AUC and runtime for ``LogisticRegression`` under different ``important_search``
-# and the test code can be found here: https://github.com/abess-team/abess/blob/master/docs/simulation/Python/impsearch.py.
+# and the test code can be found here: https://github.com/abess-team/abess/blob/master/docs/simulation/Python/plot_impsearch.py.
 # We present the numerical results under 100 replications below.
 #
 # .. image:: ../../Tutorial/figure/impsearch.png
