@@ -62,7 +62,7 @@ Power of **abess** Library: Empirical Comparison
 #
 # .. code:: bash
 #
-#    $ python abess/docs/simulation/Python/perform.py
+#    $ python abess/docs/simulation/Python/plot_results_figure.py
 
 ##############################################################
 # Numerical Results
