@@ -376,7 +376,7 @@ plot_fun <- function(model)
   p
 }
 p1 = plot_fun("linear")
-p2 = plot_fun(("logistic"))
+p2 = plot_fun("logistic")
 p = ggpubr::ggarrange(p1,
                       p2,
                       ncol = 2,
