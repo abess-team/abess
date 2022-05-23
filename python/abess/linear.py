@@ -1,6 +1,6 @@
 import warnings
 import numpy as np
-from sklearn.metrics import r2_score, d2_tweedie_score
+from sklearn.metrics import r2_score, d2_tweedie_score, ndcg_score
 from .metrics import concordance_index_censored
 from .bess_base import bess_base
 from .utilities import new_data_check
@@ -1163,6 +1163,33 @@ class OrdinalRegression(bess_base):
     #         y = categorical_to_dummy(y)
 
     #     return ???
+    
+    def score(self, X, y, k=None, sample_weight=None, ignore_ties=False):
+        """
+        Give new data, and it returns normalized discounted cumulative gain.
+
+        Parameters
+        ----------
+        X : array-like, shape(n_samples, p_features)
+            Test data.
+        y : array-like, shape(n_samples, )
+            Test response (class labels for samples in X).
+        k : int, default=None
+            Only consider the highest k scores in the ranking. If None, use all outputs.
+        sample_weight : ndarray of shape (n_samples, ), default=None
+            If None, all samples are given the same weight.
+        ignore_ties : bool, default=False
+            Assume that there are no ties in y_pred (which is likely to be the case if y_score is continuous) for efficiency gains.
+
+        Returns
+        -------
+        score : float
+             normalized discounted cumulative gain
+         """
+         X, y = new_data_check(self, X, y)
+         y_pred = self.predict(X)
+         ndcg = ndcg_score(y_true=y.reshape(1, -1), y_score=y_pred.reshape(1, -1), k=k, sample_weight=sample_weight, ignore_ties=ignore_ties)
+         return ndcg
 
 
 class abessLogistic(LogisticRegression):
