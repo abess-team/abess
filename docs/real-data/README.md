@@ -32,7 +32,7 @@ python superconductivity.py
 2. Run the `preprocess.R` script to produce files `chin_x.txt` and `chin_y.txt`:
 
 ```bash
-Rscript preprocess.py
+Rscript preprocess.R
 ```
 
 3. Run the `chin.py` script:

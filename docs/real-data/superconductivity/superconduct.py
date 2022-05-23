@@ -34,10 +34,10 @@ def metrics(coef, pred, real):
 M = 20
 model_name = "Linear"
 method = [
-    "lasso",
-    # "celer",
+    # "lasso",
+    "celer",
     # "omp",  # uncomment this line because of memory leak
-    # "abess",
+    "abess",
 ]
 res_output = True
 data_output = False
