@@ -58,6 +58,8 @@ Our website is published via `readthedocs <https://readthedocs.org>`__.
 Python document
 ~~~~~~~~~~~~~~~
 
+The Python document includes two parts. The first part depicts the APIs in `abess`, and the second part aims to show simple use-cases and on-board new users.
+
 Python API
 ^^^^^^^^^^
 
@@ -121,6 +123,8 @@ except the first step changes to:
 
 R document
 ~~~~~~~~~~
+
+The R document includes two parts. The first part depicts the APIs in the `abess` R package, and the second part aims to show simple use-cases and on-board new users.
 
 R function
 ^^^^^^^^^^
