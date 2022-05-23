@@ -1185,11 +1185,11 @@ class OrdinalRegression(bess_base):
         -------
         score : float
              normalized discounted cumulative gain
-         """
-         X, y = new_data_check(self, X, y)
-         y_pred = self.predict(X)
-         ndcg = ndcg_score(y_true=y.reshape(1, -1), y_score=y_pred.reshape(1, -1), k=k, sample_weight=sample_weight, ignore_ties=ignore_ties)
-         return ndcg
+        """
+        X, y = new_data_check(self, X, y)
+        y_pred = self.predict(X)
+        ndcg = ndcg_score(y_true=y.reshape(1, -1), y_score=y_pred.reshape(1, -1), k=k, sample_weight=sample_weight, ignore_ties=ignore_ties)
+        return ndcg
 
 
 class abessLogistic(LogisticRegression):
