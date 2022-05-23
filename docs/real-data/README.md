@@ -8,8 +8,8 @@ Note that, at presented, users should manually download the datasets from corres
 ### Python (version 3.9.1):
 
 - abess (0.4.5)
-- celer
-- scikit-learn ()
+- celer (0.6.1)
+- scikit-learn (1.0.2)
 - pandas
 - numpy
 
