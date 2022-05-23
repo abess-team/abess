@@ -92,7 +92,6 @@ for m in range(M):
             met[ind, m, 0:2] = metrics(fit.best_estimator_.coef_, fit.predict_proba(testx)[:, 1].flatten(), testy)
         else:
             t_start = time()
-            # ConvergenceWarning occurs, so increase `tol` and `max_iter`
             model = celerLogisticRegressionCV(C=best_lasso_C)
             fit = model.fit(trainx, trainy)
             t_end = time()
@@ -111,7 +110,6 @@ for m in range(M):
         ind += 1
 
         t_start = time()
-        # model = abessLogistic(is_cv = True, path_type = "pgs", s_min = 0, s_max = 99, thread = 0)
         model = LogisticRegression(cv=5, support_size = range(100), thread=5, 
                                    approximate_Newton = True, primary_model_fit_epsilon=1e-6)
         model.fit(trainx, trainy)
