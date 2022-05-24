@@ -188,17 +188,23 @@ plt.show()
 # %%
 # The following figure shows the running time with `abess` or `scikit-learn`.
 
+abess_geo_time_mean = np.mean(abess_geo_time)
+skl_geo_time_mean = np.mean(skl_geo_time)
+abess_geo_time_std = np.std(abess_geo_time)
+skl_geo_time_std = np.std(skl_geo_time)
+meth = ['abess', 'scikit-learn']
+x_pos = np.arange(len(meth))
+CTEs = [abess_geo_time_mean, skl_geo_time_mean]
+error = [abess_geo_time_std, skl_geo_time_std]
+
 fig = plt.figure(figsize=(8,5))
 ax = fig.add_subplot(111)
-ax.boxplot([abess_geo_time, skl_geo_time],
-           patch_artist='Patch',
-           labels = ['abess', 'scikit-learn'],
-           boxprops = {'color':'black','facecolor':'yellow'}
-           
-          )
-ax.set_title('running time with abess or scikit-learn')
+ax.bar(x_pos, CTEs, yerr=error, align='center', alpha=0.5, ecolor='black', capsize=10)
 ax.set_ylabel('running time')
-plt.ylim(-0.001, 0.03)
+ax.set_xticks(x_pos)
+ax.set_xticklabels(meth)
+ax.set_title('running time with abess or scikit-learn')
+ax.yaxis.grid(True)
 plt.show()
 
 # %%
