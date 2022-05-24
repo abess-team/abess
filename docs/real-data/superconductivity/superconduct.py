@@ -35,9 +35,9 @@ M = 20
 model_name = "Linear"
 method = [
     "lasso",
-    # "celer",
+    "celer",
     # "omp",  # uncomment this line because of memory leak
-    # "abess",
+    "abess",
 ]
 res_output = True
 data_output = False
@@ -64,7 +64,7 @@ for m in range(M):
         lasso_trainx = scaler.transform(trainx)
         lasso_testx = scaler.transform(testx)
         t_start = time()
-        model = LassoCV(cv=5, n_jobs=5, random_state=0, tol=2e-3)
+        model = LassoCV(cv=5, n_jobs=5, random_state=0, tol=2e-2)
         fit = model.fit(lasso_trainx, trainy)
         t_end = time()
 
@@ -72,6 +72,7 @@ for m in range(M):
         met[ind, m, 2] = t_end - t_start
         print("     --> SKL time: " + str(t_end - t_start))
         print("     --> SKL err : " + str(met[ind, m, 0]))
+        print("     --> SKL NNZ : " + str(met[ind, m, 1]))
     
     if "celer" in method:
         ind += 1
@@ -85,6 +86,7 @@ for m in range(M):
         met[ind, m, 2] = t_end - t_start
         print("     --> CELER time: " + str(t_end - t_start))
         print("     --> CELER err : " + str(met[ind, m, 0]))
+        print("     --> CELER NNZ : " + str(met[ind, m, 1]))
     
     ## omp
     if "omp" in method:
@@ -99,6 +101,7 @@ for m in range(M):
         met[ind, m, 2] = t_end - t_start
         print("     --> OMP time: " + str(t_end - t_start))
         print("     --> OMP err : " + str(met[ind, m, 0]))
+        print("     --> OMP NNZ : " + str(met[ind, m, 1]))
 
     ## abess
     if "abess" in method:
@@ -114,6 +117,7 @@ for m in range(M):
         met[ind, m, 2] = t_end - t_start
         print("     --> ABESS time: " + str(t_end - t_start))
         print("     --> ABESS err : " + str(met[ind, m, 0]))
+        print("     --> ABESS NNZ : " + str(met[ind, m, 1]))
 
 for ind in range(0, len(method)):
     m = met[ind].mean(axis = 0)

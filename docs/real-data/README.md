@@ -32,7 +32,7 @@ python superconductivity.py
 2. Run the `preprocess.R` script to produce files `chin_x.txt` and `chin_y.txt`:
 
 ```bash
-Rscript preprocess.py
+Rscript preprocess.R
 ```
 
 3. Run the `chin.py` script:
@@ -42,7 +42,7 @@ python chin.py
 
 ### musk dataset
 
-1. Download `clean1.data` and `clean2.data` from https://archive.ics.uci.edu/ml/machine-learning-databases/musk. Put them into the `musk` directory. 
+1. Download `clean1.data.Z` and `clean2.data.Z` from https://archive.ics.uci.edu/ml/machine-learning-databases/musk, and extract `clean1.data` and `clean2.data` from the two `.Z` files, then put them into the `musk` directory. 
 
 2. Run the `musk.py` script:
 ```bash
