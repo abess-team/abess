@@ -500,6 +500,10 @@ class TestAlgorithm:
         model1 = abess.OrdinalRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
+        
+        test_data = abess.make_glm_data(n=100, p=20, k=5, family="ordinal")
+        score = model1.score(test_data.x, test_data.y)
+        assert score >= 0 and score <= 1
 
         pred = model1.predict(data.x)
         print((pred != data.y).sum())
