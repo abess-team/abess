@@ -210,3 +210,10 @@ plt.show()
 # %%
 # We can find that the precision score and the recall score with `abess` are generally higher than those without `abess`.
 # And the running time with `abess` is only slightly slower than that without `abess`.
+
+# %%
+# 
+# 
+# 
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/geomstats.png'
+# 
