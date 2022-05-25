@@ -3,6 +3,7 @@ import abess
 import pytest
 import numpy as np
 from scipy.sparse import coo_matrix
+from sklearn.metrics import ndcg_score
 from sklearn.model_selection import KFold, GridSearchCV
 from sklearn.linear_model import (
     LinearRegression,
@@ -500,6 +501,13 @@ class TestAlgorithm:
         model1 = abess.OrdinalRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
+        
+        # score
+        score_ordinal = model1.score(data.x, data.y)
+        y_random = data.y.copy()
+        np.random.shuffle(y_random)
+        score_random = ndcg_score(data.y.reshape((1,-1)), y_random.reshape((1,-1)))
+        assert score_ordinal > score_random
 
         pred = model1.predict(data.x)
         print((pred != data.y).sum())
