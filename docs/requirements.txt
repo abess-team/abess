@@ -2,3 +2,4 @@ Sphinx
 sphinx-gallery
 sphinxcontrib-phpdomain
 sphinx-autoapi
+geomstats
