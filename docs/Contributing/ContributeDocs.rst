@@ -11,10 +11,9 @@ contribute a pull request to a abess documentation.
 In most of case, the workflow is given below, but if you are not familar
 with git and github, we suggest you install the `github
 desktop <https://desktop.github.com/>`__ that provide a user-friendly
-interaction interface for simplifying documentation contribution. - Fork
-the `master repository <https://github.com/abess-team/abess>`__ by
-clicking on the “Fork” button on the top right of the page, which would
-create a copy to your own GitHub account;
+interaction interface for simplifying documentation contribution. 
+
+- Fork the `master repository <https://github.com/abess-team/abess>`__ by clicking on the “Fork” button on the top right of the page, which would create a copy to your own GitHub account;
 
 -  Clone your fork of abess to the local by
    `Git <https://git-scm.com/>`__;
@@ -83,22 +82,6 @@ markdown for Sphinx),
 (support “Read the Docs” theme for Sphinx). Make sure these packages
 have been installed.
 
-There are four basic steps to write documentation for the Python API:
-
-1. Add comments to Python files in ``python/abess`` directory.
-
-2. Go to the ``docs`` directory, and run ``make html`` in command line
-   to convert comments to ``.html`` files.
-
-3. Preview documentation by open/refresh the ``.html`` files in
-   ``docs/_build/Python-package/``.
-
-4. Repeat steps 1-3 until you are satisfied with the documentation for
-   Python API.
-
-More advanced topics for writing documentation are available at:
-`Sphinx <https://www.sphinx-doc.org/en/master/>`__.
-
 Tutorials
 ^^^^^^^^^
 
@@ -116,10 +99,88 @@ A typical online vignette example is present
 
 The development of the tutorial relies on `sphinix-gallery <https://pypi.org/project/sphinx-gallery/>`__.
 
-The development also follows the four basic steps for the Python API
-except the first step changes to:
+The development of Python document
+^^^^^^^^^
 
--  add/modify the tutorial files in ``docs/Tutorial`` directory.
+There are three basic steps to write documentation for the Python document:
+
+1. Add comments to Python files
+
+You can refer to ``General procedure``, or do the following brief steps:
+
+- Fork the  `master repository <https://github.com/abess-team/abess>`__ as the same of the first steps of ``General procedure``;
+
+- Access in ``your_account_name/abess``, then click on the “master” button and create a  new branch, e.g. named ``my_branch``. Upload files in the suitable directory.
+
+If you use packages that aren't base packages in your comments, please add them in ``docs/requirements.txt`` to make the cloud server running with the packages correctly.
+
+2. Preview documentation
+
+In this step, packages `virtualenv <https://pypi.org/project/virtualenv>`__ is required to create isolated Python environments. Make sure the package have been installed.
+
+- Choose a local directory you prefer then create isolated Python environments. Run the   
+  following code in command line:
+  
+  .. code:: bash
+
+      $ cd directory_you_prefer
+      $ virtualenv env_name
+     
+  "env_name" is the name of the virtual environment directory, and 
+  you can customize the name;
+
+- Activate the virtual environment, and "cd" to ``env_name\Scripts`` directory:
+  
+  - Under windows:
+  
+    .. code:: bash
+
+        $ cd env_name\Scripts
+        $ .\activate
+        
+    If you get error when running ``.\activate``, Run the following code then enter "y" before running ``.\activate``:
+    
+    .. code:: bash
+
+        $ set-executionpolicy remotesigned
+        
+  - Under Mac:
+   
+    .. code:: bash
+
+         $ source env_name/bin/activate
+         $ cd env_name\Scripts
+
+- Clone your fork of abess to ``env_name\Scripts`` directory. If you have already clone it, just copy it here.
+  
+  Run the following code in in command line or git:
+  
+  .. code:: bash
+
+      $ git clone https://github.com/your_account_name/abess.git
+     
+  Or run the following code to clone the new branch:
+  
+  .. code:: bash
+
+      $ git clone -b my_branch https://github.com/your_account_name/abess.git
+   
+  You can also clone it from the `github desktop <https://desktop.github.com/>`__ ;
+   
+- "cd" to ``abess\docs`` directory, then convert comments to ``.html`` files:
+  
+  .. code:: bash
+
+      $ cd abess\docs
+      $ .\make html
+
+- Preview documentation by open/refresh the ``.html`` files in ``docs/_build/html`` directory.
+
+3. Submit a pull request
+
+Repeat steps 1-2 until you are satisfied with the documentation. Then submit a pull request from ``my_branch`` to ``abess-team/abess``.
+
+More advanced topics for writing documentation are available at: `Sphinx <https://www.sphinx-doc.org/en/master/>`__.
 
 R document
 ~~~~~~~~~~
