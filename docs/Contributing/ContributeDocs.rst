@@ -99,7 +99,7 @@ A typical online vignette example is present
 
 The development of the tutorial relies on `sphinix-gallery <https://pypi.org/project/sphinx-gallery/>`__.
 
-The development of python document
+Development
 ^^^^^^^^^
 
 There are three basic steps to write documentation for the Python document:
