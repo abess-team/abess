@@ -106,30 +106,30 @@ There are three basic steps to write documentation for the Python document:
 
 1. Add comments to Python files
 
-You can refer to ``General procedure``, or do the following brief steps:
+You can refer to ``General procedure``, or follow the  simple steps below:
 
-- Fork the  `master repository <https://github.com/abess-team/abess>`__ as the same of the first steps of ``General procedure``;
+- Fork the `master repository <https://github.com/abess-team/abess>`__ according to the first step of ``General procedure``;
 
-- Access in ``your_account_name/abess``, then click on the “master” button and create a  new branch, e.g. named ``my_branch``. Upload files in the suitable directory.
+- Access in ``your_account_name/abess``, then click “master” and create a new branch, e.g. named ``my_branch``. Upload files to the suitable directory.
 
-If you use packages that aren't base packages in your comments, please add them in ``docs/requirements.txt`` to make the cloud server running with the packages correctly.
+If you’re using packages that aren't basic ones in your comments, paste their names into ``docs/requirements.txt`` so that the cloud server can run the packages correctly.
 
 2. Preview documentation
 
-In this step, packages `virtualenv <https://pypi.org/project/virtualenv>`__ is required to create isolated Python environments. Make sure the package have been installed.
+In this step, package `virtualenv <https://pypi.org/project/virtualenv>`__ is required to create isolated Python environments. Please make sure the package is installed in advance.
 
-- Choose a local directory you prefer then create isolated Python environments. Run the   
-  following code in command line:
+- Choose a local directory you prefer, then create isolated Python environments. Run the   
+  following codes in command line:
   
   .. code:: bash
 
       $ cd directory_you_prefer
       $ virtualenv env_name
      
-  "env_name" is the name of the virtual environment directory, and 
-  you can customize the name;
+  "env_name" is the name of the virtual environment directory which 
+  you can customize;
 
-- Activate the virtual environment, and "cd" to ``env_name\Scripts`` directory:
+- Activate the virtual environment, and change directory to ``env_name\Scripts``:
   
   - Under windows:
   
@@ -138,7 +138,7 @@ In this step, packages `virtualenv <https://pypi.org/project/virtualenv>`__ is r
         $ cd env_name\Scripts
         $ .\activate
         
-    If you get error when running ``.\activate``, Run the following code then enter "y" before running ``.\activate``:
+    If you come into error when running ``.\activate``, Run the following code and enter "y" before running ``.\activate``:
     
     .. code:: bash
 
@@ -151,9 +151,9 @@ In this step, packages `virtualenv <https://pypi.org/project/virtualenv>`__ is r
          $ source env_name/bin/activate
          $ cd env_name\Scripts
 
-- Clone your fork of abess to ``env_name\Scripts`` directory. If you have already clone it, just copy it here.
+- Clone your fork of abess to ``env_name\Scripts`` directory. If you have already cloned it, just copy it here.
   
-  Run the following code in in command line or git:
+  Run the following code in command line or git:
   
   .. code:: bash
 
@@ -167,25 +167,20 @@ In this step, packages `virtualenv <https://pypi.org/project/virtualenv>`__ is r
    
   You can also clone it from the `github desktop <https://desktop.github.com/>`__ ;
    
-- "cd" to ``abess\docs`` directory, then convert comments to ``.html`` files:
+- Change directory to ``abess\docs``, then convert comments to ``.html`` files:
   
   .. code:: bash
 
       $ cd abess\docs
       $ .\make html
 
-- Preview documentation by open/refresh the ``.html`` files in ``docs/_build/html`` directory.
+- Preview documentation by opening/refreshing the ``.html`` files in ``docs/_build/html`` directory.
 
 3. Submit a pull request
 
-Repeat steps 1-2 until you are satisfied with the documentation. Then submit a pull request from ``your_account_name/abess`` ``my_branch`` to ``abess-team/abess`` ``master``.
+Repeat step 1 and step 2 until you are satisfied with the documentation. Then submit a pull request from ``your_account_name/abess`` ``my_branch`` to ``abess-team/abess`` ``master``.
 
 More advanced topics for writing documentation are available at: `Sphinx <https://www.sphinx-doc.org/en/master/>`__.
-
-R document
-~~~~~~~~~~
-
-The R document includes two parts. The first part depicts the APIs in the `abess` R package, and the second part aims to show simple use-cases and on-board new users.
 
 R function
 ^^^^^^^^^^
