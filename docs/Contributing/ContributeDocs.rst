@@ -178,7 +178,7 @@ In this step, packages `virtualenv <https://pypi.org/project/virtualenv>`__ is r
 
 3. Submit a pull request
 
-Repeat steps 1-2 until you are satisfied with the documentation. Then submit a pull request from ``my_branch`` to ``abess-team/abess``.
+Repeat steps 1-2 until you are satisfied with the documentation. Then submit a pull request from ``your_account_name/abess`` ``my_branch`` to ``abess-team/abess`` ``master``.
 
 More advanced topics for writing documentation are available at: `Sphinx <https://www.sphinx-doc.org/en/master/>`__.
 
