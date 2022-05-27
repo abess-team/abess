@@ -182,6 +182,11 @@ Repeat step 1 and step 2 until you are satisfied with the documentation. Then su
 
 More advanced topics for writing documentation are available at: `Sphinx <https://www.sphinx-doc.org/en/master/>`__.
 
+R document
+~~~~~~~~~~
+
+The R document includes two parts. The first part depicts the APIs in the `abess` R package, and the second part aims to show simple use-cases and on-board new users.
+
 R function
 ^^^^^^^^^^
 
