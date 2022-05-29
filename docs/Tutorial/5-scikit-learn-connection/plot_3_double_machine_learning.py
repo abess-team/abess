@@ -4,9 +4,9 @@ Work with DoubleML
 ================================
 Double machine learning offer a debiased way for estimating low-dimensional parameter of interest in the presence of
 high-dimensional nuisance. Many machine learning methods can be used to estimate the nuisance parameters, such as random
-forests, lasso or post-lasso, neural nets, boosted regression trees, and so on. The Python package `DoubleML` provide an
+forests, lasso or post-lasso, neural nets, boosted regression trees, and so on. The Python package ``DoubleML`` provide an
 implementation of the double machine learning. It's built on top of scikit-learn and is an excellent package. The
-object-oriented implementation of `DoubleML` is very flexible, in particular functionalities to estimate double machine
+object-oriented implementation of ``DoubleML`` is very flexible, in particular functionalities to estimate double machine
 learning models and to perform statistical inference via the methods fit, bootstrap, confint, p_adjust and tune.
 """
 
