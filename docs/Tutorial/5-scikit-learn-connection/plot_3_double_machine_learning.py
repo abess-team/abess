@@ -182,9 +182,7 @@ plt.legend(loc="upper left")
 # situations, the mean absolute bias of abess learner regression is relatively smaller.
 
 
-###############################################################################
-# References
-# ^^^^^^^^^^^^^^^^^
+# %%
 # .. rubric:: References
 # .. [1] Chernozhukov V, Chetverikov D, Demirer M, et al. Double/debiased machine learning for treatment and structural parameters[M]. Oxford University Press Oxford, UK, 2018.
 # .. [2] Bach P, Chernozhukov V, Kurz M S, et al. Doubleml-an object-oriented implementation of double machine learning in python[J]. Journal of Machine Learning Research, 2022, 23(53): 1-6.
