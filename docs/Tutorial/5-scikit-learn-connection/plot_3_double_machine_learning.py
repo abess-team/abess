@@ -188,3 +188,10 @@ plt.legend(loc="upper left")
 # .. [2] Bach P, Chernozhukov V, Kurz M S, et al. Doubleml-an object-oriented implementation of double machine learning in python[J]. Journal of Machine Learning Research, 2022, 23(53): 1-6.
 # .. [3] Zhu J, Hu L, Huang J, et al. abess: A fast best subset selection library in python and r[J]. arXiv preprint arXiv:2110.09697, 2021.
 #
+
+# %%
+#
+#
+#
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/doubleml.png'
+#
