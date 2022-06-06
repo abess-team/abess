@@ -177,3 +177,5 @@ ax2.set_ylabel("Value", fontsize=15)
 plt.suptitle("Learned Shapelets")
 plt.show()
 
+# %%
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/pyts.png'
