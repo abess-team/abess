@@ -4,3 +4,4 @@ sphinxcontrib-phpdomain
 sphinx-autoapi
 geomstats
 DoubleML
+pyts
