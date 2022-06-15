@@ -5,3 +5,4 @@ sphinx-autoapi
 geomstats
 DoubleML
 pyts
+dowhy
