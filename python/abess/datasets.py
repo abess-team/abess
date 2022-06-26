@@ -201,12 +201,13 @@ class make_glm_data:
 
         nonzero = sample(p, k)
         Tbeta = np.zeros(p)
+        sign = np.random.choice([1, -1], k)
 
         if family == "gaussian":
             m = 5 * np.sqrt(2 * np.log(p) / n)
             M = 100 * m
             if coef_ is None:
-                Tbeta[nonzero] = np.random.uniform(m, M, k)
+                Tbeta[nonzero] = np.random.uniform(m, M, k) * sign
             else:
                 Tbeta = coef_
 
@@ -222,7 +223,7 @@ class make_glm_data:
         elif family == "binomial":
             m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
             if coef_ is None:
-                Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k)
+                Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k) * sign
             else:
                 Tbeta = coef_
 
@@ -237,7 +238,7 @@ class make_glm_data:
             x = x / 16
             m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
             if coef_ is None:
-                Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k)
+                Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k) * sign
                 # Tbeta[nonzero] = np.random.normal(0, 4*m, k)
             else:
                 Tbeta = coef_
@@ -252,7 +253,7 @@ class make_glm_data:
         elif family == "cox":
             m = 5 * sigma * np.sqrt(2 * np.log(p) / n)
             if coef_ is None:
-                Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k)
+                Tbeta[nonzero] = np.random.uniform(2 * m, 10 * m, k) * sign
             else:
                 Tbeta = coef_
 
@@ -276,7 +277,7 @@ class make_glm_data:
             x = x / 16
             m = 5 * np.sqrt(2 * np.log(p) / n)
             if coef_ is None:
-                Tbeta[nonzero] = np.random.uniform(m, 100 * m, k)
+                Tbeta[nonzero] = np.random.uniform(m, 100 * m, k) * sign
             else:
                 Tbeta = coef_
             # add noise
