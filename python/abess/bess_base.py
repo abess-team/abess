@@ -324,7 +324,8 @@ class bess_base(BaseEstimator):
             ic_type_int = 5
         else:
             raise ValueError(
-                "ic_type should be \"aic\", \"bic\", \"ebic\", \"gic\" or \"hic\".")
+                "ic_type should be \"aic\", \"bic\", \"ebic\","
+                " \"gic\" or \"hic\".")
 
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
