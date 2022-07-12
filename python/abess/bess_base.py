@@ -42,9 +42,9 @@ class bess_base(BaseEstimator):
     alpha : float, optional, default=0
         Constant that multiples the L2 term in loss function, controlling
         regularization strength. It should be non-negative.
-        
+
         - If alpha = 0, it indicates ordinary least square.
-        
+
     s_min : int, optional, default=0
         The lower bound of golden-section-search for sparsity searching.
     s_max : int, optional, default=min(n, int(n/(log(log(n))log(p)))).
