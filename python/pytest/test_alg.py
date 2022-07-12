@@ -205,7 +205,7 @@ class TestAlgorithm:
 
     @staticmethod
     def test_poisson():
-        np.random.seed(3)
+        np.random.seed(0)
         n = 100
         p = 20
         k = 3
