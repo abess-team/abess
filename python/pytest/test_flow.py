@@ -183,7 +183,7 @@ class TestWorkflow:
         assert len(set(group[nonzero])) == 2
 
         # ic
-        for ic in ['aic', 'bic', 'ebic', 'gic']:
+        for ic in ['aic', 'bic', 'ebic', 'gic', 'hic']:
             model = abess.LinearRegression(ic_type=ic)
             model.fit(data.x, data.y)
 

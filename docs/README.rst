@@ -37,7 +37,12 @@ Welcome to ``abess``'s documentation!
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/abess
 .. |License| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg 
    :target: http://www.gnu.org/licenses/gpl-3.0
-
+.. |CodeFactor| image:: https://www.codefactor.io/repository/github/abess-team/abess/badge 
+   :target: https://www.codefactor.io/repository/github/abess-team/abess
+.. |Platform| image:: https://anaconda.org/conda-forge/abess/badges/platforms.svg
+   :target: https://anaconda.org/conda-forge/abess
+.. |Downloads| image:: https://pepy.tech/badge/abess
+   :target: https://pepy.tech/project/abess
 
 Overview
 ============
@@ -201,17 +206,17 @@ Citation
 
 If you use ``abess`` or reference our tutorials in a presentation or publication, we would appreciate citations of our library [#5abesslib]_.
 
-| Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). “abess: A Fast Best Subset Selection Library in Python and R.” arXiv:2110.09697.
+| Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2022). “abess: A Fast Best Subset Selection Library in Python and R.” Journal of Machine Learning Research (Accepted).
 
 The corresponding BibteX entry:
 
 .. code-block:: shell
 
-   @article{zhu-abess-arxiv,
+   @article{JMLR:v22:19-1049,
       author  = {Jin Zhu and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu and Xueqin Wang},
       title   = {abess: A Fast Best Subset Selection Library in Python and R},
-      journal = {arXiv:2110.09697},
-      year    = {2021},
+      journal = {Journal of Machine Learning Research (Accepted)},
+      year    = {2022}
    }
 
 References

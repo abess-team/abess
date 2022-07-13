@@ -151,7 +151,7 @@ sphinx_gallery_conf = {
 intersphinx_mapping = {
     "numpy": ("https://numpy.org/doc/stable/", None),
     'python': ('https://docs.python.org/{.major}'.format(sys.version_info), None),
-    'matplotlib': ('https://matplotlib.org/', None),
+    'matplotlib': ('https://matplotlib.org/stable/', None),
     "sklearn": ("https://scikit-learn.org/dev/", None),
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None)
 }
