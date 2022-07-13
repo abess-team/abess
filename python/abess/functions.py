@@ -12,14 +12,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import numpy as np
-from sklearn.utils import (check_consistent_length)
+from sklearn.utils import (check_consistent_length, check_scalar, column_or_1d)
 from sklearn.metrics._regression import (
-    mean_tweedie_deviance,
-    _mean_tweedie_deviance,
     _num_samples,
     _check_reg_targets)
 from sklearn.exceptions import UndefinedMetricWarning
 import warnings
+import numbers
+from scipy.special import xlogy
 
 
 class StepFunction:
@@ -248,6 +248,115 @@ class BreslowEstimator:
 
         return times, n_events, n_at_risk[:-1], n_censored
 
+def _mean_tweedie_deviance(y_true, y_pred, sample_weight, power):
+    """Mean Tweedie deviance regression loss."""
+    p = power
+    if p < 0:
+        # 'Extreme stable', y any real number, y_pred > 0
+        dev = 2 * (
+            np.power(np.maximum(y_true, 0), 2 - p) / ((1 - p) * (2 - p))
+            - y_true * np.power(y_pred, 1 - p) / (1 - p)
+            + np.power(y_pred, 2 - p) / (2 - p)
+        )
+    elif p == 0:
+        # Normal distribution, y and y_pred any real number
+        dev = (y_true - y_pred) ** 2
+    elif p == 1:
+        # Poisson distribution
+        dev = 2 * (xlogy(y_true, y_true / y_pred) - y_true + y_pred)
+    elif p == 2:
+        # Gamma distribution
+        dev = 2 * (np.log(y_pred / y_true) + y_true / y_pred - 1)
+    else:
+        dev = 2 * (
+            np.power(y_true, 2 - p) / ((1 - p) * (2 - p))
+            - y_true * np.power(y_pred, 1 - p) / (1 - p)
+            + np.power(y_pred, 2 - p) / (2 - p)
+        )
+
+    return np.average(dev, weights=sample_weight)
+
+def mean_tweedie_deviance(y_true, y_pred, *, sample_weight=None, power=0):
+    """Mean Tweedie deviance regression loss.
+    Read more in the :ref:`User Guide <mean_tweedie_deviance>`.
+    Parameters
+    ----------
+    y_true : array-like of shape (n_samples,)
+        Ground truth (correct) target values.
+    y_pred : array-like of shape (n_samples,)
+        Estimated target values.
+    sample_weight : array-like of shape (n_samples,), default=None
+        Sample weights.
+    power : float, default=0
+        Tweedie power parameter. Either power <= 0 or power >= 1.
+        The higher `p` the less weight is given to extreme
+        deviations between true and predicted targets.
+        - power < 0: Extreme stable distribution. Requires: y_pred > 0.
+        - power = 0 : Normal distribution, output corresponds to
+          mean_squared_error. y_true and y_pred can be any real numbers.
+        - power = 1 : Poisson distribution. Requires: y_true >= 0 and
+          y_pred > 0.
+        - 1 < p < 2 : Compound Poisson distribution. Requires: y_true >= 0
+          and y_pred > 0.
+        - power = 2 : Gamma distribution. Requires: y_true > 0 and y_pred > 0.
+        - power = 3 : Inverse Gaussian distribution. Requires: y_true > 0
+          and y_pred > 0.
+        - otherwise : Positive stable distribution. Requires: y_true > 0
+          and y_pred > 0.
+    Returns
+    -------
+    loss : float
+        A non-negative floating point value (the best value is 0.0).
+    Examples
+    --------
+    >>> from sklearn.metrics import mean_tweedie_deviance
+    >>> y_true = [2, 0, 1, 4]
+    >>> y_pred = [0.5, 0.5, 2., 2.]
+    >>> mean_tweedie_deviance(y_true, y_pred, power=1)
+    1.4260...
+    """
+    y_type, y_true, y_pred, _ = _check_reg_targets(
+        y_true, y_pred, None, dtype=[np.float64, np.float32]
+    )
+    if y_type == "continuous-multioutput":
+        raise ValueError("Multioutput not supported in mean_tweedie_deviance")
+    check_consistent_length(y_true, y_pred, sample_weight)
+
+    if sample_weight is not None:
+        sample_weight = column_or_1d(sample_weight)
+        sample_weight = sample_weight[:, np.newaxis]
+
+    p = check_scalar(
+        power,
+        name="power",
+        target_type=numbers.Real,
+    )
+
+    message = f"Mean Tweedie deviance error with power={p} can only be used on "
+    if p < 0:
+        # 'Extreme stable', y any real number, y_pred > 0
+        if (y_pred <= 0).any():
+            raise ValueError(message + "strictly positive y_pred.")
+    elif p == 0:
+        # Normal, y and y_pred can be any real number
+        pass
+    elif 0 < p < 1:
+        raise ValueError("Tweedie deviance is only defined for power<=0 and power>=1.")
+    elif 1 <= p < 2:
+        # Poisson and compound Poisson distribution, y >= 0, y_pred > 0
+        if (y_true < 0).any() or (y_pred <= 0).any():
+            raise ValueError(message + "non-negative y and strictly positive y_pred.")
+    elif p >= 2:
+        # Gamma and Extreme stable distribution, y and y_pred > 0
+        if (y_true <= 0).any() or (y_pred <= 0).any():
+            raise ValueError(message + "strictly positive y and y_pred.")
+    else:  # pragma: nocover
+        # Unreachable statement
+        raise ValueError
+
+    return _mean_tweedie_deviance(
+        y_true, y_pred, sample_weight=sample_weight, power=power
+    )
 
 def d2_tweedie_score(y_true, y_pred, *, sample_weight=None, power=0):
     """D^2 regression score function, fraction of Tweedie deviance explained.
