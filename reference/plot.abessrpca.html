@@ -100,14 +100,16 @@ for a fitted "<code>abessrpca</code>" object.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for abessrpca</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"S"</span>, <span class="st">"loss"</span>, <span class="st">"tune"</span><span class="op">)</span>, support.size <span class="op">=</span> <span class="cn">NULL</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for abessrpca</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"S"</span>, <span class="st">"loss"</span>, <span class="st">"tune"</span><span class="op">)</span>, support.size <span class="op">=</span> <span class="cn">NULL</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>A "<code>abessrpca</code>" object.</p></dd>
+
+
 <dt>type</dt>
 <dd><p>The plot type.
 One of the following:
@@ -115,23 +117,32 @@ One of the following:
 <code>"loss"</code> (i.e., a support.size versus loss plot),
 and <code>"tune"</code> (i.e., , a support.size versus tuning value plot).
 Default is <code>"coef"</code>.</p></dd>
+
+
 <dt>support.size</dt>
 <dd><p>An integer vector specifies
 the sparse matrix fitted at given <code>support.size</code> to be returned.
 If <code>support.size = NULL</code>, then the sparse matrix with 
 the least tuning value would be returned.
 Default: <code>support.size = NULL</code>.</p></dd>
+
+
 <dt>label</dt>
 <dd><p>A logical value.
 If <code>label = TRUE</code> (the default),
 label the curves with variable sequence numbers.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Other graphical parameters to <code>plot</code> 
 or <code><a href="https://rdrr.io/r/stats/heatmap.html" class="external-link">stats::heatmap</a></code> function</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>No return value, called for side effects.</p>
+    
+
+<p>No return value, called for side effects.</p>
     </div>
 
   </div>
@@ -146,7 +157,7 @@ or <code><a href="https://rdrr.io/r/stats/heatmap.html" class="external-link">st
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

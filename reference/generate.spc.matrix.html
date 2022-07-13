@@ -100,48 +100,66 @@ sparse linear combination of its columns.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">generate.spc.matrix</span><span class="op">(</span>
-  <span class="va">n</span>,
-  <span class="va">p</span>,
-  support.size <span class="op">=</span> <span class="fl">3</span>,
-  snr <span class="op">=</span> <span class="fl">20</span>,
-  sigma <span class="op">=</span> <span class="cn">NULL</span>,
-  sparse.loading <span class="op">=</span> <span class="cn">NULL</span>,
-  seed <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">generate.spc.matrix</span><span class="op">(</span></span>
+<span>  <span class="va">n</span>,</span>
+<span>  <span class="va">p</span>,</span>
+<span>  support.size <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  snr <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  sigma <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sparse.loading <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>n</dt>
 <dd><p>The number of observations.</p></dd>
+
+
 <dt>p</dt>
 <dd><p>The number of predictors of interest.</p></dd>
+
+
 <dt>support.size</dt>
 <dd><p>A integer specify the number of non-zero entries in the first column of loading matrix.</p></dd>
+
+
 <dt>snr</dt>
 <dd><p>A positive value controlling the signal-to-noise ratio (SNR).
 A larger SNR implies the identification of sparse matrix is much easier.
 Default <code>snr = Inf</code> enforces no noise exists.</p></dd>
+
+
 <dt>sigma</dt>
 <dd><p>A numerical vector with length <code>p</code> specify the standard deviation of each columns.
 Default <code>sigma = NULL</code> implies it is determined by <code>snr</code>. 
 If it is supplied, <code>support.size</code> would be omit.</p></dd>
+
+
 <dt>sparse.loading</dt>
 <dd><p>A <code>p</code>-by-<code>p</code> sparse orthogonal matrix. 
 If it is supplied, <code>support.size</code> would be omit.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>random seed. Default: <code>seed = 1</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>list</code> object comprising:</p>
+    
+
+<p>A <code>list</code> object comprising:</p>
 <dl><dt>x</dt>
 <dd><p>An \(n\)-by-\(p\) matrix.</p></dd>
+
 <dt>coef</dt>
 <dd><p>The sparse loading matrix used to generate x.</p></dd>
+
 <dt>support.size</dt>
 <dd><p>A vector recording the number of non-zero entries in each .</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -165,7 +183,7 @@ If it is supplied, <code>support.size</code> would be omit.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

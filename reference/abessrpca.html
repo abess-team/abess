@@ -100,60 +100,78 @@ low-rank matrix and sparse matrix via the best subset selection approach</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">abessrpca</span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">rank</span>,
-  support.size <span class="op">=</span> <span class="cn">NULL</span>,
-  tune.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sequence"</span>, <span class="st">"gsection"</span><span class="op">)</span>,
-  gs.range <span class="op">=</span> <span class="cn">NULL</span>,
-  tune.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gic"</span>, <span class="st">"aic"</span>, <span class="st">"bic"</span>, <span class="st">"ebic"</span><span class="op">)</span>,
-  ic.scale <span class="op">=</span> <span class="fl">1</span>,
-  lambda <span class="op">=</span> <span class="fl">0</span>,
-  always.include <span class="op">=</span> <span class="cn">NULL</span>,
-  group.index <span class="op">=</span> <span class="cn">NULL</span>,
-  c.max <span class="op">=</span> <span class="cn">NULL</span>,
-  splicing.type <span class="op">=</span> <span class="fl">2</span>,
-  max.splicing.iter <span class="op">=</span> <span class="fl">1</span>,
-  warm.start <span class="op">=</span> <span class="cn">TRUE</span>,
-  important.search <span class="op">=</span> <span class="cn">NULL</span>,
-  max.newton.iter <span class="op">=</span> <span class="fl">1</span>,
-  newton.thresh <span class="op">=</span> <span class="fl">0.001</span>,
-  num.threads <span class="op">=</span> <span class="fl">0</span>,
-  seed <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">abessrpca</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">rank</span>,</span>
+<span>  support.size <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tune.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sequence"</span>, <span class="st">"gsection"</span><span class="op">)</span>,</span>
+<span>  gs.range <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tune.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gic"</span>, <span class="st">"aic"</span>, <span class="st">"bic"</span>, <span class="st">"ebic"</span><span class="op">)</span>,</span>
+<span>  ic.scale <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  always.include <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  group.index <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  c.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  splicing.type <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  max.splicing.iter <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  warm.start <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  important.search <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max.newton.iter <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  newton.thresh <span class="op">=</span> <span class="fl">0.001</span>,</span>
+<span>  num.threads <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>A matrix object.</p></dd>
+
+
 <dt>rank</dt>
 <dd><p>A positive integer value specify the rank of the low-rank matrix.</p></dd>
+
+
 <dt>support.size</dt>
 <dd><p>An integer vector representing the alternative support sizes. 
 Only used for <code>tune.path = "sequence"</code>. 
 Strongly suggest its minimum value larger than <code>min(dim(x))</code>.</p></dd>
+
+
 <dt>tune.path</dt>
 <dd><p>The method to be used to select the optimal support size. For
 <code>tune.path = "sequence"</code>, we solve the best subset selection problem for each size in <code>support.size</code>.
 For <code>tune.path = "gsection"</code>, we solve the best subset selection problem with support size ranged in <code>gs.range</code>,
 where the specific support size to be considered is determined by golden section.</p></dd>
+
+
 <dt>gs.range</dt>
 <dd><p>A integer vector with two elements.
 The first element is the minimum model size considered by golden-section,
 the later one is the maximum one. Default is <code>gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))</code>.</p></dd>
+
+
 <dt>tune.type</dt>
 <dd><p>The type of criterion for choosing the support size. 
 Available options are "gic", "ebic", "bic" and "aic". 
 Default is "gic".</p></dd>
+
+
 <dt>ic.scale</dt>
 <dd><p>A non-negative value used for multiplying the penalty term
 in information criterion. Default: <code>ic.scale = 1</code>.</p></dd>
+
+
 <dt>lambda</dt>
 <dd><p>A single lambda value for regularized best subset selection. Default is 0.</p></dd>
+
+
 <dt>always.include</dt>
 <dd><p>An integer vector containing the indexes of variables that should always be included in the model.</p></dd>
+
+
 <dt>group.index</dt>
 <dd><p>A vector of integers indicating the which group each variable is in.
 For variables in the same group, they should be located in adjacent columns of <code>x</code>
@@ -161,67 +179,100 @@ and their corresponding index in <code>group.index</code> should be the same.
 Denote the first group as <code>1</code>, the second <code>2</code>, etc.
 If you do not fit a model with a group structure,
 please set <code>group.index = NULL</code> (the default).</p></dd>
+
+
 <dt>c.max</dt>
 <dd><p>an integer splicing size. Default is: <code>c.max = 2</code>.</p></dd>
+
+
 <dt>splicing.type</dt>
 <dd><p>Optional type for splicing.
 If <code>splicing.type = 1</code>, the number of variables to be spliced is
 <code>c.max</code>, ..., <code>1</code>; if <code>splicing.type = 2</code>,
 the number of variables to be spliced is <code>c.max</code>, <code>c.max/2</code>, ..., <code>1</code>.
 (Default: <code>splicing.type = 2</code>.)</p></dd>
+
+
 <dt>max.splicing.iter</dt>
 <dd><p>The maximum number of performing splicing algorithm.
 In most of the case, only a few times of splicing iteration can guarantee the convergence.
 Default is <code>max.splicing.iter = 20</code>.</p></dd>
+
+
 <dt>warm.start</dt>
 <dd><p>Whether to use the last solution as a warm start. Default is <code>warm.start = TRUE</code>.</p></dd>
+
+
 <dt>important.search</dt>
 <dd><p>An integer number indicating the number of
 important variables to be splicing.
 When <code>important.search</code> \(\ll\) <code>p</code> variables,
 it would greatly reduce runtimes. Default: <code>important.search = 128</code>.</p></dd>
+
+
 <dt>max.newton.iter</dt>
 <dd><p>a integer giving the maximal number of Newton's iteration iterations.
 Default is <code>max.newton.iter = 10</code> if <code>newton = "exact"</code>, and <code>max.newton.iter = 60</code> if <code>newton = "approx"</code>.</p></dd>
+
+
 <dt>newton.thresh</dt>
 <dd><p>a numeric value for controlling positive convergence tolerance.
 The Newton's iterations converge when \(|dev - dev_{old}|/(|dev| + 0.1)&lt;\) <code>newton.thresh</code>.</p></dd>
+
+
 <dt>num.threads</dt>
 <dd><p>An integer decide the number of threads to be
 concurrently used for cross-validation (i.e., <code>tune.type = "cv"</code>).
 If <code>num.threads = 0</code>, then all of available cores will be used.
 Default: <code>num.threads = 0</code>.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>Seed to be used to divide the sample into cross-validation folds.
 Default is <code>seed = 1</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>further arguments to be passed to or from methods.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A S3 <code>abessrpca</code> class object, which is a <code>list</code> with the following components:</p>
+    
+
+<p>A S3 <code>abessrpca</code> class object, which is a <code>list</code> with the following components:</p>
 <dl><dt>S</dt>
 <dd><p>A list with <code>length(support.size)</code> elements,
 each of which is a sparse matrix estimation;</p></dd>
+
 <dt>L</dt>
 <dd><p>The low rank matrix estimation.</p></dd>
+
 <dt>nobs</dt>
 <dd><p>The number of sample used for training.</p></dd>
+
 <dt>nvars</dt>
 <dd><p>The number of variables used for training.</p></dd>
+
 <dt>rank</dt>
 <dd><p>The rank of matrix <code>L</code>.</p></dd>
+
 <dt>loss</dt>
 <dd><p>The loss of objective function.</p></dd>
+
 <dt>tune.value</dt>
 <dd><p>A value of tuning criterion of length <code>length(support.size)</code>.</p></dd>
+
 <dt>support.size</dt>
 <dd><p>The actual support.size values used.
 Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.</p></dd>
+
 <dt>tune.type</dt>
 <dd><p>The criterion type for tuning parameters.</p></dd>
+
 <dt>call</dt>
 <dd><p>The original call to <code>abessrpca</code>.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -256,15 +307,15 @@ This feature will coming soon.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">30</span></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">30</span></span>
-<span class="r-in"><span class="va">true_S_size</span> <span class="op">&lt;-</span> <span class="fl">60</span></span>
-<span class="r-in"><span class="va">true_L_rank</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.matrix.html">generate.matrix</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, support.size <span class="op">=</span> <span class="va">true_S_size</span>, rank <span class="op">=</span> <span class="va">true_L_rank</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">abessrpca</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, rank <span class="op">=</span> <span class="va">true_L_rank</span>, support.size <span class="op">=</span> <span class="fl">50</span><span class="op">:</span><span class="fl">70</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">30</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">30</span></span></span>
+<span class="r-in"><span><span class="va">true_S_size</span> <span class="op">&lt;-</span> <span class="fl">60</span></span></span>
+<span class="r-in"><span><span class="va">true_L_rank</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.matrix.html">generate.matrix</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, support.size <span class="op">=</span> <span class="va">true_S_size</span>, rank <span class="op">=</span> <span class="va">true_L_rank</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">abessrpca</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, rank <span class="op">=</span> <span class="va">true_L_rank</span>, support.size <span class="op">=</span> <span class="fl">50</span><span class="op">:</span><span class="fl">70</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> abessrpca(x = dataset[["x"]], rank = true_L_rank, support.size = 50:70)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -290,7 +341,7 @@ This feature will coming soon.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19           68 0.0009796508 -53.63124</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 20           69 0.0009796518 -51.63064</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 21           70 0.0009796469 -49.59384</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 30 x 30 sparse Matrix of class "dgCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                                                         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]  .          .         .  .          .          .          .       </span>
@@ -447,13 +498,13 @@ This feature will coming soon.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [28,]  1.009848</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [29,]  .       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [30,]  .       </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="abessrpca-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"loss"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"loss"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="abessrpca-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"S"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"S"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="abessrpca-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -468,7 +519,7 @@ This feature will coming soon.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

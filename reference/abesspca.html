@@ -98,29 +98,29 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">abesspca</span><span class="op">(</span>
-  <span class="va">x</span>,
-  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"predictor"</span>, <span class="st">"gram"</span><span class="op">)</span>,
-  sparse.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fpc"</span>, <span class="st">"kpc"</span><span class="op">)</span>,
-  cor <span class="op">=</span> <span class="cn">FALSE</span>,
-  kpc.num <span class="op">=</span> <span class="cn">NULL</span>,
-  support.size <span class="op">=</span> <span class="cn">NULL</span>,
-  gs.range <span class="op">=</span> <span class="cn">NULL</span>,
-  tune.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sequence"</span>, <span class="st">"gsection"</span><span class="op">)</span>,
-  tune.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gic"</span>, <span class="st">"aic"</span>, <span class="st">"bic"</span>, <span class="st">"ebic"</span>, <span class="st">"cv"</span><span class="op">)</span>,
-  nfolds <span class="op">=</span> <span class="fl">5</span>,
-  foldid <span class="op">=</span> <span class="cn">NULL</span>,
-  ic.scale <span class="op">=</span> <span class="fl">1</span>,
-  c.max <span class="op">=</span> <span class="cn">NULL</span>,
-  always.include <span class="op">=</span> <span class="cn">NULL</span>,
-  group.index <span class="op">=</span> <span class="cn">NULL</span>,
-  screening.num <span class="op">=</span> <span class="cn">NULL</span>,
-  splicing.type <span class="op">=</span> <span class="fl">1</span>,
-  max.splicing.iter <span class="op">=</span> <span class="fl">20</span>,
-  warm.start <span class="op">=</span> <span class="cn">TRUE</span>,
-  num.threads <span class="op">=</span> <span class="fl">0</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">abesspca</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"predictor"</span>, <span class="st">"gram"</span><span class="op">)</span>,</span>
+<span>  sparse.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fpc"</span>, <span class="st">"kpc"</span><span class="op">)</span>,</span>
+<span>  cor <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  kpc.num <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  support.size <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  gs.range <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tune.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sequence"</span>, <span class="st">"gsection"</span><span class="op">)</span>,</span>
+<span>  tune.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gic"</span>, <span class="st">"aic"</span>, <span class="st">"bic"</span>, <span class="st">"ebic"</span>, <span class="st">"cv"</span><span class="op">)</span>,</span>
+<span>  nfolds <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  foldid <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ic.scale <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  c.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  always.include <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  group.index <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  screening.num <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  splicing.type <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  max.splicing.iter <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  warm.start <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  num.threads <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -131,20 +131,30 @@ where each row is an observation and each column is a predictor or
 a sample covariance/correlation matrix.
 If <code>x</code> is a predictor matrix, it can be in sparse matrix format
 (inherit from class <code>"dgCMatrix"</code> in package <code>Matrix</code>).</p></dd>
+
+
 <dt>type</dt>
 <dd><p>If <code>type = "predictor"</code>, <code>x</code> is considered as the predictor matrix.
 If <code>type = "gram"</code>, <code>x</code> is considered as a sample covariance or correlation matrix.</p></dd>
+
+
 <dt>sparse.type</dt>
 <dd><p>If <code>sparse.type = "fpc"</code>, then best subset selection performs on the first principal component;
 If <code>sparse.type = "kpc"</code>, then best subset selection would be sequentially performed on the first <code>kpc.num</code> number of principal components.
 If <code>kpc.num</code> is supplied, the default is <code>sparse.type = "kpc"</code>; otherwise, is <code>sparse.type = "fpc"</code>.</p></dd>
+
+
 <dt>cor</dt>
 <dd><p>A logical value. If <code>cor = TRUE</code>, perform PCA on the correlation matrix;
 otherwise, the covariance matrix.
 This option is available only if <code>type = "predictor"</code>.
 Default: <code>cor = FALSE</code>.</p></dd>
+
+
 <dt>kpc.num</dt>
 <dd><p>A integer decide the number of principal components to be sequentially considered.</p></dd>
+
+
 <dt>support.size</dt>
 <dd><p>It is a flexible input. If it is an integer vector.
 It represents the support sizes to be considered for each principal component.
@@ -152,32 +162,50 @@ If it is a <code>list</code> object containing <code>kpc.num</code> number of in
 the i-th principal component consider the support size specified in the i-th element in the <code>list</code>.
 Only used for <code>tune.path = "sequence"</code>.
 The default is <code>support.size = NULL</code>, and some rules in details section are used to specify <code>support.size</code>.</p></dd>
+
+
 <dt>gs.range</dt>
 <dd><p>A integer vector with two elements.
 The first element is the minimum model size considered by golden-section,
 the later one is the maximum one. Default is <code>gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))</code>.</p></dd>
+
+
 <dt>tune.path</dt>
 <dd><p>The method to be used to select the optimal support size. For
 <code>tune.path = "sequence"</code>, we solve the best subset selection problem for each size in <code>support.size</code>.
 For <code>tune.path = "gsection"</code>, we solve the best subset selection problem with support size ranged in <code>gs.range</code>,
 where the specific support size to be considered is determined by golden section.</p></dd>
+
+
 <dt>tune.type</dt>
 <dd><p>The type of criterion for choosing the support size.
 Available options are <code>"gic"</code>, <code>"ebic"</code>, <code>"bic"</code>, <code>"aic"</code> and <code>"cv"</code>.
 Default is <code>"gic"</code>.
 <code>tune.type = "cv"</code> is available only when <code>type = "predictor"</code>.</p></dd>
+
+
 <dt>nfolds</dt>
 <dd><p>The number of folds in cross-validation. Default is <code>nfolds = 5</code>.</p></dd>
+
+
 <dt>foldid</dt>
 <dd><p>an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in.
 The default <code>foldid = NULL</code> would generate a random foldid.</p></dd>
+
+
 <dt>ic.scale</dt>
 <dd><p>A non-negative value used for multiplying the penalty term
 in information criterion. Default: <code>ic.scale = 1</code>.</p></dd>
+
+
 <dt>c.max</dt>
 <dd><p>an integer splicing size. The default of <code>c.max</code> is the maximum of 2 and <code>max(support.size) / 2</code>.</p></dd>
+
+
 <dt>always.include</dt>
 <dd><p>An integer vector containing the indexes of variables that should always be included in the model.</p></dd>
+
+
 <dt>group.index</dt>
 <dd><p>A vector of integers indicating the which group each variable is in.
 For variables in the same group, they should be located in adjacent columns of <code>x</code>
@@ -185,64 +213,94 @@ and their corresponding index in <code>group.index</code> should be the same.
 Denote the first group as <code>1</code>, the second <code>2</code>, etc.
 If you do not fit a model with a group structure,
 please set <code>group.index = NULL</code> (the default).</p></dd>
+
+
 <dt>screening.num</dt>
 <dd><p>An integer number. Preserve <code>screening.num</code> number of predictors with the largest
 marginal maximum likelihood estimator before running algorithm.</p></dd>
+
+
 <dt>splicing.type</dt>
 <dd><p>Optional type for splicing.
 If <code>splicing.type = 1</code>, the number of variables to be spliced is
 <code>c.max</code>, ..., <code>1</code>; if <code>splicing.type = 2</code>,
 the number of variables to be spliced is <code>c.max</code>, <code>c.max/2</code>, ..., <code>1</code>.
 Default: <code>splicing.type = 1</code>.</p></dd>
+
+
 <dt>max.splicing.iter</dt>
 <dd><p>The maximum number of performing splicing algorithm.
 In most of the case, only a few times of splicing iteration can guarantee the convergence.
 Default is <code>max.splicing.iter = 20</code>.</p></dd>
+
+
 <dt>warm.start</dt>
 <dd><p>Whether to use the last solution as a warm start. Default is <code>warm.start = TRUE</code>.</p></dd>
+
+
 <dt>num.threads</dt>
 <dd><p>An integer decide the number of threads to be
 concurrently used for cross-validation (i.e., <code>tune.type = "cv"</code>).
 If <code>num.threads = 0</code>, then all of available cores will be used.
 Default: <code>num.threads = 0</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>further arguments to be passed to or from methods.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A S3 <code>abesspca</code> class object, which is a <code>list</code> with the following components:</p>
+    
+
+<p>A S3 <code>abesspca</code> class object, which is a <code>list</code> with the following components:</p>
 <dl><dt>coef</dt>
 <dd><p>A \(p\)-by-<code>length(support.size)</code> loading matrix of sparse principal components (PC),
 where each row is a variable and each column is a support size;</p></dd>
+
 <dt>nvars</dt>
 <dd><p>The number of variables.</p></dd>
+
 <dt>sparse.type</dt>
 <dd><p>The same as input.</p></dd>
+
 <dt>support.size</dt>
 <dd><p>The actual support.size values used. Note that it is not necessary the same as the input if the later have non-integer values or duplicated values.</p></dd>
+
 <dt>ev</dt>
 <dd><p>A vector with size <code>length(support.size)</code>. It records the cumulative sums of explained variance at each support size.</p></dd>
+
 <dt>tune.value</dt>
 <dd><p>A value of tuning criterion of length <code>length(support.size)</code>.</p></dd>
+
 <dt>kpc.num</dt>
 <dd><p>The number of principal component being considered.</p></dd>
+
 <dt>var.pc</dt>
 <dd><p>The variance of principal components obtained by performing standard PCA.</p></dd>
+
 <dt>cum.var.pc</dt>
 <dd><p>Cumulative sums of <code>var.pc</code>.</p></dd>
+
 <dt>var.all</dt>
 <dd><p>If <code>sparse.type = "fpc"</code>,
 it is the total standard deviations of all principal components.</p></dd>
+
 <dt>pev</dt>
 <dd><p>A vector with the same length as <code>ev</code>. It records the percent of explained variance (compared to <code>var.all</code>) at each support size.</p></dd>
+
 <dt>pev.pc</dt>
 <dd><p>It records the percent of explained variance (compared to <code>var.pc</code>) at each support size.</p></dd>
+
 <dt>tune.type</dt>
 <dd><p>The criterion type for tuning parameters.</p></dd>
+
 <dt>tune.path</dt>
 <dd><p>The strategy for tuning parameters.</p></dd>
+
 <dt>call</dt>
 <dd><p>The original call to <code>abess</code>.</p></dd>
+
 </dl><p>It is worthy to note that, if <code>sparse.type == "kpc"</code>, the <code>coef</code>, <code>support.size</code>, <code>ev</code>, <code>tune.value</code>, <code>pev</code> and <code>pev.pc</code> in list are <code>list</code> objects.</p>
     </div>
     <div id="details">
@@ -293,11 +351,11 @@ because the meaning of these parameters are very similar.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## predictor matrix input:</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## predictor matrix input:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            Murder Assault UrbanPop Rape</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Alabama      13.2     236       58 21.2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Alaska       10.0     263       48 44.5</span>
@@ -305,8 +363,8 @@ because the meaning of these parameters are very similar.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Arkansas      8.8     190       50 19.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> California    9.0     276       91 40.6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Colorado      7.9     204       78 38.7</span>
-<span class="r-in"><span class="va">pca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">pca_fit</span></span>
+<span class="r-in"><span><span class="va">pca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pca_fit</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> abesspca(x = USArrests)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -315,13 +373,13 @@ because the meaning of these parameters are very similar.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  1            2 6844.578 0.9618364</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3  1            3 6858.954 0.9638565</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4  1            4 6870.893 0.9655342</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pca_fit</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pca_fit</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="abesspca-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## covariance matrix input:</span></span>
-<span class="r-in"><span class="va">cov_mat</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">pca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">cov_mat</span>, type <span class="op">=</span> <span class="st">"gram"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">pca_fit</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## covariance matrix input:</span></span></span>
+<span class="r-in"><span><span class="va">cov_mat</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cov</a></span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">cov_mat</span>, type <span class="op">=</span> <span class="st">"gram"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pca_fit</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> abesspca(x = cov_mat, type = "gram")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -330,27 +388,27 @@ because the meaning of these parameters are very similar.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  1            2 6844.578 0.9618364</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3  1            3 6858.954 0.9638565</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4  1            4 6870.893 0.9655342</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## robust covariance matrix input:</span></span>
-<span class="r-in"><span class="va">rob_cov</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/cov.rob.html" class="external-link">cov.rob</a></span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span><span class="op">[[</span><span class="st">"cov"</span><span class="op">]</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">rob_cov</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">rob_cov</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">rob_cov</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span></span>
-<span class="r-in"><span class="va">pca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">rob_cov</span>, type <span class="op">=</span> <span class="st">"gram"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">pca_fit</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## robust covariance matrix input:</span></span></span>
+<span class="r-in"><span><span class="va">rob_cov</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/cov.rob.html" class="external-link">cov.rob</a></span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span><span class="op">[[</span><span class="st">"cov"</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">rob_cov</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">rob_cov</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">rob_cov</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="va">pca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">rob_cov</span>, type <span class="op">=</span> <span class="st">"gram"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pca_fit</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> abesspca(x = rob_cov, type = "gram")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   PC support.size       ev       pev</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1            1 6669.930 0.9585470</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1            2 6709.567 0.9642433</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  1            3 6739.360 0.9685249</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1            4 6751.837 0.9703181</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## K-component principal component analysis</span></span>
-<span class="r-in"><span class="va">pca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">USArrests</span>,</span>
-<span class="r-in">  sparse.type <span class="op">=</span> <span class="st">"kpc"</span>,</span>
-<span class="r-in">  support.size <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">pca_fit</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1            1 5511.958 0.9544003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1            2 5537.498 0.9588225</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  1            3 5554.148 0.9617056</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1            4 5570.195 0.9644841</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## K-component principal component analysis</span></span></span>
+<span class="r-in"><span><span class="va">pca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">USArrests</span>,</span></span>
+<span class="r-in"><span>  sparse.type <span class="op">=</span> <span class="st">"kpc"</span>,</span></span>
+<span class="r-in"><span>  support.size <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">pca_fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 x 4 sparse Matrix of class "dgCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          1           2           3           4</span>
@@ -367,21 +425,21 @@ because the meaning of these parameters are very similar.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> UrbanPop 1 -0.9795841 -0.97767271  0.97685748</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rape     . -0.2010350 -0.20170097  0.20071807</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pca_fit</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pca_fit</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="abesspca-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pca_fit</span>, <span class="st">"coef"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pca_fit</span>, <span class="st">"coef"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="abesspca-3.png" alt="" width="700" height="433"></span>
 <span class="r-plt img"><img src="abesspca-4.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## select support size via cross-validation ##</span></span>
-<span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">500</span></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span class="r-in"><span class="va">support_size</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.spc.matrix.html">generate.spc.matrix</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support_size</span>, snr <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">spca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span>, nfolds <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">spca_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## select support size via cross-validation ##</span></span></span>
+<span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">500</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">50</span></span></span>
+<span class="r-in"><span><span class="va">support_size</span> <span class="op">&lt;-</span> <span class="fl">3</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.spc.matrix.html">generate.spc.matrix</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support_size</span>, snr <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">spca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span>, nfolds <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">spca_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="abesspca-5.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -396,7 +454,7 @@ because the meaning of these parameters are very similar.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

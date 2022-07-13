@@ -100,37 +100,45 @@ generalized linear model and Cox proportional hazard model.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">generate.data</span><span class="op">(</span>
-  <span class="va">n</span>,
-  <span class="va">p</span>,
-  support.size <span class="op">=</span> <span class="cn">NULL</span>,
-  rho <span class="op">=</span> <span class="fl">0</span>,
-  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gaussian"</span>, <span class="st">"binomial"</span>, <span class="st">"poisson"</span>, <span class="st">"cox"</span>, <span class="st">"mgaussian"</span>, <span class="st">"multinomial"</span>,
-    <span class="st">"gamma"</span>, <span class="st">"ordinal"</span><span class="op">)</span>,
-  beta <span class="op">=</span> <span class="cn">NULL</span>,
-  cortype <span class="op">=</span> <span class="fl">1</span>,
-  snr <span class="op">=</span> <span class="fl">10</span>,
-  sigma <span class="op">=</span> <span class="cn">NULL</span>,
-  weibull.shape <span class="op">=</span> <span class="fl">1</span>,
-  uniform.max <span class="op">=</span> <span class="fl">1</span>,
-  y.dim <span class="op">=</span> <span class="fl">3</span>,
-  class.num <span class="op">=</span> <span class="fl">3</span>,
-  seed <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">generate.data</span><span class="op">(</span></span>
+<span>  <span class="va">n</span>,</span>
+<span>  <span class="va">p</span>,</span>
+<span>  support.size <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rho <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gaussian"</span>, <span class="st">"binomial"</span>, <span class="st">"poisson"</span>, <span class="st">"cox"</span>, <span class="st">"mgaussian"</span>, <span class="st">"multinomial"</span>,</span>
+<span>    <span class="st">"gamma"</span>, <span class="st">"ordinal"</span><span class="op">)</span>,</span>
+<span>  beta <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cortype <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  snr <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  sigma <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  weibull.shape <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  uniform.max <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  y.dim <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  class.num <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>n</dt>
 <dd><p>The number of observations.</p></dd>
+
+
 <dt>p</dt>
 <dd><p>The number of predictors of interest.</p></dd>
+
+
 <dt>support.size</dt>
 <dd><p>The number of nonzero coefficients in the underlying regression
 model. Can be omitted if <code>beta</code> is supplied.</p></dd>
+
+
 <dt>rho</dt>
 <dd><p>A parameter used to characterize the pairwise correlation in
 predictors. Default is <code>0</code>.</p></dd>
+
+
 <dt>family</dt>
 <dd><p>The distribution of the simulated response. <code>"gaussian"</code> for
 univariate quantitative response, <code>"binomial"</code> for binary classification response,
@@ -138,9 +146,13 @@ univariate quantitative response, <code>"binomial"</code> for binary classificat
 <code>"mgaussian"</code> for multivariate quantitative response,
 <code>"mgaussian"</code> for multi-classification response, 
 <code>"ordinal"</code> for ordinal response.</p></dd>
+
+
 <dt>beta</dt>
 <dd><p>The coefficient values in the underlying regression model.
 If it is supplied, <code>support.size</code> would be omitted.</p></dd>
+
+
 <dt>cortype</dt>
 <dd><p>The correlation structure.
 <code>cortype = 1</code> denotes the independence structure,
@@ -150,6 +162,8 @@ where the covariance matrix has \((i,j)\) entry equals \(rho^{|i-j|}\).
 codecortype = 3 denotes the constant structure,
 where the non-diagonal entries of covariance
 matrix are \(rho\) and diagonal entries are 1.</p></dd>
+
+
 <dt>snr</dt>
 <dd><p>A numerical value controlling the signal-to-noise ratio (SNR). The SNR is defined as
 as the variance of \(x\beta\) divided
@@ -157,34 +171,52 @@ by the variance of a gaussian noise: \(\frac{Var(x\beta)}{\sigma^2}\).
 The gaussian noise \(\epsilon\) is set with mean 0 and variance.
 The noise is added to the linear predictor \(\eta\) = \(x\beta\). Default is <code>snr = 10</code>.
 Note that this arguments's effect is overridden if <code>sigma</code> is supplied with a non-null value.</p></dd>
+
+
 <dt>sigma</dt>
 <dd><p>The variance of the gaussian noise. Default <code>sigma = NULL</code> implies it is determined by <code>snr</code>.</p></dd>
+
+
 <dt>weibull.shape</dt>
 <dd><p>The shape parameter of the Weibull distribution.
 It works only when <code>family = "cox"</code>.
 Default: <code>weibull.shape = 1</code>.</p></dd>
+
+
 <dt>uniform.max</dt>
 <dd><p>A parameter controlling censored rate.
 A large value implies a small censored rate;
 otherwise, a large censored rate.
 It works only when <code>family = "cox"</code>.
 Default is <code>uniform.max = 1</code>.</p></dd>
+
+
 <dt>y.dim</dt>
 <dd><p>Response's Dimension. It works only when <code>family = "mgaussian"</code>. Default: <code>y.dim = 3</code>.</p></dd>
+
+
 <dt>class.num</dt>
 <dd><p>The number of class. It works only when <code>family = "multinomial"</code>. Default: <code>class.num = 3</code>.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>random seed. Default: <code>seed = 1</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>list</code> object comprising:</p>
+    
+
+<p>A <code>list</code> object comprising:</p>
 <dl><dt>x</dt>
 <dd><p>Design matrix of predictors.</p></dd>
+
 <dt>y</dt>
 <dd><p>Response variable.</p></dd>
+
 <dt>beta</dt>
 <dd><p>The coefficients used in the underlying regression model.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -236,13 +268,13 @@ where \(\sigma^2\) is determined by the <code>snr</code> and q is <code>y.dim</c
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># Generate simulated data</span></span>
-<span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
-<span class="r-in"><span class="va">support.size</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu">generate.data</span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Generate simulated data</span></span></span>
+<span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">200</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">20</span></span></span>
+<span class="r-in"><span><span class="va">support.size</span> <span class="op">&lt;-</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu">generate.data</span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ x   : num [1:200, 1:20] -0.626 0.184 -0.836 1.595 0.33 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "dimnames")=List of 2</span>
@@ -264,7 +296,7 @@ where \(\sigma^2\) is determined by the <code>snr</code> and q is <code>y.dim</c
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

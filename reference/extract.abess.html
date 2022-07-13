@@ -102,44 +102,58 @@ predictors, coefficient estimation, and so on.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">extract</span><span class="op">(</span><span class="va">object</span>, support.size <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for abess</span>
-<span class="fu">extract</span><span class="op">(</span><span class="va">object</span>, support.size <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract</span><span class="op">(</span><span class="va">object</span>, support.size <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for abess</span></span>
+<span><span class="fu">extract</span><span class="op">(</span><span class="va">object</span>, support.size <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>An "<code>abess</code>" project.</p></dd>
+
+
 <dt>support.size</dt>
 <dd><p>An integer value specifies
 the model size fitted at given <code>support.size</code>.
 If <code>support.size = NULL</code>, then the model with
 the best tuning value would be returned.
 Default: <code>support.size = NULL</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Other arguments.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>list</code> object including the following components:</p>
+    
+
+<p>A <code>list</code> object including the following components:</p>
 <dl><dt>beta</dt>
 <dd><p>A \(p\)-by-1 matrix of sparse matrix, stored in column format.</p></dd>
+
 <dt>intercept</dt>
 <dd><p>The fitted intercept value.</p></dd>
+
 <dt>support.size</dt>
 <dd><p>The <code>support.size</code> used in the function.</p></dd>
+
 <dt>support.beta</dt>
 <dd><p>The <code>support.size</code>-length vector of fitted
 coefficients on the support set.</p></dd>
+
 <dt>support.vars</dt>
 <dd><p>The character vector gives
 variables in the support set.</p></dd>
+
 <dt>tune.value</dt>
 <dd><p>The tuning value of the model.</p></dd>
+
 <dt>dev</dt>
 <dd><p>The deviance of the model.</p></dd>
+
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -163,7 +177,7 @@ variables in the support set.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

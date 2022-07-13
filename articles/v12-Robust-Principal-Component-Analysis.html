@@ -201,46 +201,46 @@ X=S+L,
 </h3>
 <p>Simulated Data Example Fitting model Now we generate an example with 100 rows and 100 columns with 200 outliers. We are looking forward to recover it with a low rank 10.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
-<span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>     <span class="co"># rows</span>
-<span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">100</span>     <span class="co"># columns</span>
-<span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">200</span>     <span class="co"># outliers</span>
-<span class="va">r</span> <span class="op">&lt;-</span> <span class="fl">10</span>      <span class="co"># rank(L)</span>
-
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.matrix.html">generate.matrix</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">r</span>, <span class="va">s</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>     <span class="co"># rows</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">100</span>     <span class="co"># columns</span></span>
+<span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">200</span>     <span class="co"># outliers</span></span>
+<span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fl">10</span>      <span class="co"># rank(L)</span></span>
+<span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.matrix.html">generate.matrix</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">r</span>, <span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p>In order to use our program, users should call <code>abessrpca</code> with a given outlier number <code>support_size</code> or an integer interval. For the latter case, a support size will be chosen by information criterion (e.g. GIC) adaptively. <code>abessrpca</code> will return a <code>abessrpca</code> object.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res.srpca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abessrpca.html">abessrpca</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span>, <span class="va">dat</span><span class="op">$</span><span class="va">rank</span>, support.size <span class="op">=</span> <span class="va">s</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res.srpca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abessrpca.html">abessrpca</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span>, <span class="va">dat</span><span class="op">$</span><span class="va">rank</span>, support.size <span class="op">=</span> <span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p>To extract the estimated coefficients from a fitted <code>abessrpca</code> object, we use the <code>coef</code> function.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">res.srpca</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">res.srpca</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="more-on-the-result">More on the result<a class="anchor" aria-label="anchor" href="#more-on-the-result"></a>
 </h3>
 <p>To check the performance of the program, we use TPR, FPR as the criterion.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">test.model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pred</span>, <span class="va">real</span><span class="op">)</span>
-<span class="op">{</span>
-  <span class="va">tpr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pred</span> <span class="op">!=</span><span class="fl">0</span> <span class="op">&amp;</span> <span class="va">real</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">real</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span>
-  <span class="va">fpr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pred</span> <span class="op">!=</span><span class="fl">0</span> <span class="op">&amp;</span> <span class="va">real</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">real</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>tpr <span class="op">=</span> <span class="va">tpr</span>, fpr <span class="op">=</span> <span class="va">fpr</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="fu">test.model</span><span class="op">(</span><span class="va">res.srpca</span><span class="op">$</span><span class="va">S</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">dat</span><span class="op">$</span><span class="va">S</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##         tpr         fpr </span>
-<span class="co">## 0.835000000 0.003367347</span></code></pre>
+<code class="sourceCode R"><span><span class="va">test.model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pred</span>, <span class="va">real</span><span class="op">)</span></span>
+<span><span class="op">{</span></span>
+<span>  <span class="va">tpr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pred</span> <span class="op">!=</span><span class="fl">0</span> <span class="op">&amp;</span> <span class="va">real</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">real</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>  <span class="va">fpr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pred</span> <span class="op">!=</span><span class="fl">0</span> <span class="op">&amp;</span> <span class="va">real</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">real</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>tpr <span class="op">=</span> <span class="va">tpr</span>, fpr <span class="op">=</span> <span class="va">fpr</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu">test.model</span><span class="op">(</span><span class="va">res.srpca</span><span class="op">$</span><span class="va">S</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">dat</span><span class="op">$</span><span class="va">S</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##         tpr         fpr </span></span>
+<span><span class="co">## 0.835000000 0.003367347</span></span></code></pre>
 <p>We can also change different random seeds to test for more situations:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">M</span> <span class="op">&lt;-</span> <span class="fl">30</span>
-<span class="va">res.test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">M</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span>
-<span class="op">{</span>
-  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.matrix.html">generate.matrix</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">r</span>, <span class="va">s</span>, seed <span class="op">=</span> <span class="va">i</span><span class="op">)</span>
-  <span class="va">res.srpca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abessrpca.html">abessrpca</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span>, <span class="va">dat</span><span class="op">$</span><span class="va">rank</span>, support.size <span class="op">=</span> <span class="va">s</span><span class="op">)</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu">test.model</span><span class="op">(</span><span class="va">res.srpca</span><span class="op">$</span><span class="va">S</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">dat</span><span class="op">$</span><span class="va">S</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html" class="external-link">rowMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">simplify2array</a></span><span class="op">(</span><span class="va">res.test</span><span class="op">)</span><span class="op">)</span>  </code></pre></div>
-<pre><code><span class="co">##         tpr         fpr </span>
-<span class="co">## 0.839000000 0.003285714</span></code></pre>
+<code class="sourceCode R"><span><span class="va">M</span> <span class="op">&lt;-</span> <span class="fl">30</span></span>
+<span><span class="va">res.test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">M</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
+<span><span class="op">{</span></span>
+<span>  <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.matrix.html">generate.matrix</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">r</span>, <span class="va">s</span>, seed <span class="op">=</span> <span class="va">i</span><span class="op">)</span></span>
+<span>  <span class="va">res.srpca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abessrpca.html">abessrpca</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span>, <span class="va">dat</span><span class="op">$</span><span class="va">rank</span>, support.size <span class="op">=</span> <span class="va">s</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu">test.model</span><span class="op">(</span><span class="va">res.srpca</span><span class="op">$</span><span class="va">S</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">dat</span><span class="op">$</span><span class="va">S</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html" class="external-link">rowMeans</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">simplify2array</a></span><span class="op">(</span><span class="va">res.test</span><span class="op">)</span><span class="op">)</span>  </span></code></pre></div>
+<pre><code><span><span class="co">##         tpr         fpr </span></span>
+<span><span class="co">## 0.839000000 0.003285714</span></span></code></pre>
 <p>Under all of these situations, abessRPCA has a good performance.</p>
 </div>
 </div>
@@ -263,7 +263,7 @@ X=S+L,
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>

@@ -100,35 +100,46 @@ coefficients from a fitted "<code>abesspca</code>" object.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for abesspca</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">object</span>, support.size <span class="op">=</span> <span class="cn">NULL</span>, kpc <span class="op">=</span> <span class="cn">NULL</span>, sparse <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for abesspca</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">object</span>, support.size <span class="op">=</span> <span class="cn">NULL</span>, kpc <span class="op">=</span> <span class="cn">NULL</span>, sparse <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>An "<code>abesspca</code>" project.</p></dd>
+
+
 <dt>support.size</dt>
 <dd><p>An integer vector specifies
 the coefficient fitted at given <code>support.size</code>.
 If <code>support.size = NULL</code>, then all coefficients would be returned.
 Default: <code>support.size = NULL</code>.
 This parameter is omitted if sparse.type = "kpc".</p></dd>
+
+
 <dt>kpc</dt>
 <dd><p>An integer vector specifies
 the coefficient fitted at given principal component.
 If <code>kpc = NULL</code>, then all coefficients would be returned.
 Default: <code>kpc = NULL</code>.
 This parameter is omitted if sparse.type = "fpc".</p></dd>
+
+
 <dt>sparse</dt>
 <dd><p>A logical value, specifying whether the coefficients should be
 presented as sparse matrix or not. Default: <code>sparse = TRUE</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Other arguments.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A matrix with <code>length(support.size)</code> columns.
+    
+
+<p>A matrix with <code>length(support.size)</code> columns.
 Each column corresponds to a sparse loading for the first principal component,
 where the number of non-zeros entries depends on the <code>support.size</code>.</p>
     </div>
@@ -151,7 +162,7 @@ where the number of non-zeros entries depends on the <code>support.size</code>.<
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

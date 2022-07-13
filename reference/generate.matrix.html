@@ -100,51 +100,71 @@ a low-rank component and a sparse component.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">generate.matrix</span><span class="op">(</span>
-  <span class="va">n</span>,
-  <span class="va">p</span>,
-  rank <span class="op">=</span> <span class="cn">NULL</span>,
-  support.size <span class="op">=</span> <span class="cn">NULL</span>,
-  beta <span class="op">=</span> <span class="cn">NULL</span>,
-  snr <span class="op">=</span> <span class="cn">Inf</span>,
-  sigma <span class="op">=</span> <span class="cn">NULL</span>,
-  seed <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">generate.matrix</span><span class="op">(</span></span>
+<span>  <span class="va">n</span>,</span>
+<span>  <span class="va">p</span>,</span>
+<span>  rank <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  support.size <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  beta <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  snr <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  sigma <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>n</dt>
 <dd><p>The number of observations.</p></dd>
+
+
 <dt>p</dt>
 <dd><p>The number of predictors of interest.</p></dd>
+
+
 <dt>rank</dt>
 <dd><p>The rank of low-rank matrix.</p></dd>
+
+
 <dt>support.size</dt>
 <dd><p>The number of nonzero coefficients in the underlying regression
 model. Can be omitted if <code>beta</code> is supplied.</p></dd>
+
+
 <dt>beta</dt>
 <dd><p>The coefficient values in the underlying regression model.
 If it is supplied, <code>support.size</code> would be omitted.</p></dd>
+
+
 <dt>snr</dt>
 <dd><p>A positive value controlling the signal-to-noise ratio (SNR).
 A larger SNR implies the identification of sparse matrix is much easier.
 Default <code>snr = Inf</code> enforces no noise exists.</p></dd>
+
+
 <dt>sigma</dt>
 <dd><p>A numerical value supplied the variance of the gaussian noise. 
 Default <code>sigma = NULL</code> implies it is determined by <code>snr</code>.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>random seed. Default: <code>seed = 1</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>list</code> object comprising:</p>
+    
+
+<p>A <code>list</code> object comprising:</p>
 <dl><dt>x</dt>
 <dd><p>An \(n\)-by-\(p\) matrix.</p></dd>
+
 <dt>L</dt>
 <dd><p>The latent low rank matrix.</p></dd>
+
 <dt>S</dt>
 <dd><p>The latent sparse matrix.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -172,21 +192,21 @@ $$x = L + S + N.$$</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Generate simulated data</span></span>
-<span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">30</span></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu">generate.matrix</span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/heatmap.html" class="external-link">heatmap</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"S"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
-<span class="r-in">  Rowv <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span class="r-in">  Colv <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span class="r-in">  scale <span class="op">=</span> <span class="st">"none"</span>,</span>
-<span class="r-in">  col <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">cm.colors</a></span><span class="op">(</span><span class="fl">256</span><span class="op">)</span>,</span>
-<span class="r-in">  frame.plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">  margins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.4</span>, <span class="fl">2.4</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Generate simulated data</span></span></span>
+<span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">30</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">20</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu">generate.matrix</span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/heatmap.html" class="external-link">heatmap</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"S"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  Rowv <span class="op">=</span> <span class="cn">NA</span>,</span></span>
+<span class="r-in"><span>  Colv <span class="op">=</span> <span class="cn">NA</span>,</span></span>
+<span class="r-in"><span>  scale <span class="op">=</span> <span class="st">"none"</span>,</span></span>
+<span class="r-in"><span>  col <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">cm.colors</a></span><span class="op">(</span><span class="fl">256</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  frame.plot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  margins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.4</span>, <span class="fl">2.4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="generate.matrix-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -201,7 +221,7 @@ $$x = L + S + N.$$</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

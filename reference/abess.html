@@ -102,43 +102,43 @@ positive response, multi-response modeling in polynomial times.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for default</span>
-<span class="fu">abess</span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">y</span>,
-  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gaussian"</span>, <span class="st">"binomial"</span>, <span class="st">"poisson"</span>, <span class="st">"cox"</span>, <span class="st">"mgaussian"</span>, <span class="st">"multinomial"</span>,
-    <span class="st">"gamma"</span>, <span class="st">"ordinal"</span><span class="op">)</span>,
-  tune.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sequence"</span>, <span class="st">"gsection"</span><span class="op">)</span>,
-  tune.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gic"</span>, <span class="st">"ebic"</span>, <span class="st">"bic"</span>, <span class="st">"aic"</span>, <span class="st">"cv"</span><span class="op">)</span>,
-  weight <span class="op">=</span> <span class="cn">NULL</span>,
-  normalize <span class="op">=</span> <span class="cn">NULL</span>,
-  c.max <span class="op">=</span> <span class="fl">2</span>,
-  support.size <span class="op">=</span> <span class="cn">NULL</span>,
-  gs.range <span class="op">=</span> <span class="cn">NULL</span>,
-  lambda <span class="op">=</span> <span class="fl">0</span>,
-  always.include <span class="op">=</span> <span class="cn">NULL</span>,
-  group.index <span class="op">=</span> <span class="cn">NULL</span>,
-  init.active.set <span class="op">=</span> <span class="cn">NULL</span>,
-  splicing.type <span class="op">=</span> <span class="fl">2</span>,
-  max.splicing.iter <span class="op">=</span> <span class="fl">20</span>,
-  screening.num <span class="op">=</span> <span class="cn">NULL</span>,
-  important.search <span class="op">=</span> <span class="cn">NULL</span>,
-  warm.start <span class="op">=</span> <span class="cn">TRUE</span>,
-  nfolds <span class="op">=</span> <span class="fl">5</span>,
-  foldid <span class="op">=</span> <span class="cn">NULL</span>,
-  cov.update <span class="op">=</span> <span class="cn">FALSE</span>,
-  newton <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exact"</span>, <span class="st">"approx"</span><span class="op">)</span>,
-  newton.thresh <span class="op">=</span> <span class="fl">1e-06</span>,
-  max.newton.iter <span class="op">=</span> <span class="cn">NULL</span>,
-  early.stop <span class="op">=</span> <span class="cn">FALSE</span>,
-  ic.scale <span class="op">=</span> <span class="fl">1</span>,
-  num.threads <span class="op">=</span> <span class="fl">0</span>,
-  seed <span class="op">=</span> <span class="fl">1</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="co"># S3 method for formula</span>
-<span class="fu">abess</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">subset</span>, <span class="va">na.action</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">abess</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gaussian"</span>, <span class="st">"binomial"</span>, <span class="st">"poisson"</span>, <span class="st">"cox"</span>, <span class="st">"mgaussian"</span>, <span class="st">"multinomial"</span>,</span>
+<span>    <span class="st">"gamma"</span>, <span class="st">"ordinal"</span><span class="op">)</span>,</span>
+<span>  tune.path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sequence"</span>, <span class="st">"gsection"</span><span class="op">)</span>,</span>
+<span>  tune.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gic"</span>, <span class="st">"ebic"</span>, <span class="st">"bic"</span>, <span class="st">"aic"</span>, <span class="st">"cv"</span><span class="op">)</span>,</span>
+<span>  weight <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  normalize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  c.max <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  support.size <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  gs.range <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  always.include <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  group.index <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  init.active.set <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  splicing.type <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  max.splicing.iter <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  screening.num <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  important.search <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  warm.start <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  nfolds <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  foldid <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cov.update <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  newton <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exact"</span>, <span class="st">"approx"</span><span class="op">)</span>,</span>
+<span>  newton.thresh <span class="op">=</span> <span class="fl">1e-06</span>,</span>
+<span>  max.newton.iter <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  early.stop <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ic.scale <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  num.threads <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for formula</span></span>
+<span><span class="fu">abess</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, <span class="va">subset</span>, <span class="va">na.action</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -147,6 +147,8 @@ positive response, multi-response modeling in polynomial times.</p>
 <dd><p>Input matrix, of dimension \(n \times p\); each row is an observation
 vector and each column is a predictor/feature/variable.
 Can be in sparse matrix format (inherit from class <code>"dgCMatrix"</code> in package <code>Matrix</code>).</p></dd>
+
+
 <dt>y</dt>
 <dd><p>The response variable, of <code>n</code> observations.
 For <code>family = "binomial"</code> should have two levels.
@@ -158,6 +160,8 @@ For <code>family = "mgaussian"</code>, <code>y</code> should be a matrix of quan
 For <code>family = "multinomial"</code> or <code>"ordinal"</code>, <code>y</code> should be a factor of at least three levels.
 Note that, for either <code>"binomial"</code>, <code>"ordinal"</code> or <code>"multinomial"</code>,
 if y is presented as a numerical vector, it will be coerced into a factor.</p></dd>
+
+
 <dt>family</dt>
 <dd><p>One of the following models:
 <code>"gaussian"</code> (continuous response),
@@ -169,18 +173,26 @@ if y is presented as a numerical vector, it will be coerced into a factor.</p></
 <code>"ordinal"</code> (multi-class ordinal response),
 <code>"gamma"</code> (positive continuous response).
 Depending on the response. Any unambiguous substring can be given.</p></dd>
+
+
 <dt>tune.path</dt>
 <dd><p>The method to be used to select the optimal support size. For
 <code>tune.path = "sequence"</code>, we solve the best subset selection problem for each size in <code>support.size</code>.
 For <code>tune.path = "gsection"</code>, we solve the best subset selection problem with support size ranged in <code>gs.range</code>,
 where the specific support size to be considered is determined by golden section.</p></dd>
+
+
 <dt>tune.type</dt>
 <dd><p>The type of criterion for choosing the support size.
 Available options are <code>"gic"</code>, <code>"ebic"</code>, <code>"bic"</code>, <code>"aic"</code> and <code>"cv"</code>.
 Default is <code>"gic"</code>.</p></dd>
+
+
 <dt>weight</dt>
 <dd><p>Observation weights. When <code>weight = NULL</code>,
 we set <code>weight = 1</code> for each observation as default.</p></dd>
+
+
 <dt>normalize</dt>
 <dd><p>Options for normalization.
 <code>normalize = 0</code> for no normalization.
@@ -191,19 +203,31 @@ scaling the columns of <code>x</code> to have \(\sqrt n\) norm.
 <code>normalize = 3</code> for scaling the columns of <code>x</code> to have \(\sqrt n\) norm.
 If <code>normalize = NULL</code>, <code>normalize</code> will be set <code>1</code> for <code>"gaussian"</code> and <code>"mgaussian"</code>,
 <code>3</code> for <code>"cox"</code>. Default is <code>normalize = NULL</code>.</p></dd>
+
+
 <dt>c.max</dt>
 <dd><p>an integer splicing size. Default is: <code>c.max = 2</code>.</p></dd>
+
+
 <dt>support.size</dt>
 <dd><p>An integer vector representing the alternative support sizes.
 Only used for <code>tune.path = "sequence"</code>. Default is <code>0:min(n, round(n/(log(log(n))log(p))))</code>.</p></dd>
+
+
 <dt>gs.range</dt>
 <dd><p>A integer vector with two elements.
 The first element is the minimum model size considered by golden-section,
 the later one is the maximum one. Default is <code>gs.range = c(1, min(n, round(n/(log(log(n))log(p)))))</code>.</p></dd>
+
+
 <dt>lambda</dt>
 <dd><p>A single lambda value for regularized best subset selection. Default is 0.</p></dd>
+
+
 <dt>always.include</dt>
 <dd><p>An integer vector containing the indexes of variables that should always be included in the model.</p></dd>
+
+
 <dt>group.index</dt>
 <dd><p>A vector of integers indicating the which group each variable is in.
 For variables in the same group, they should be located in adjacent columns of <code>x</code>
@@ -211,121 +235,181 @@ and their corresponding index in <code>group.index</code> should be the same.
 Denote the first group as <code>1</code>, the second <code>2</code>, etc.
 If you do not fit a model with a group structure,
 please set <code>group.index = NULL</code> (the default).</p></dd>
+
+
 <dt>init.active.set</dt>
 <dd><p>A vector of integers indicating the initial active set.
 Default: <code>init.active.set = NULL</code>.</p></dd>
+
+
 <dt>splicing.type</dt>
 <dd><p>Optional type for splicing.
 If <code>splicing.type = 1</code>, the number of variables to be spliced is
 <code>c.max</code>, ..., <code>1</code>; if <code>splicing.type = 2</code>,
 the number of variables to be spliced is <code>c.max</code>, <code>c.max/2</code>, ..., <code>1</code>.
 (Default: <code>splicing.type = 2</code>.)</p></dd>
+
+
 <dt>max.splicing.iter</dt>
 <dd><p>The maximum number of performing splicing algorithm.
 In most of the case, only a few times of splicing iteration can guarantee the convergence.
 Default is <code>max.splicing.iter = 20</code>.</p></dd>
+
+
 <dt>screening.num</dt>
 <dd><p>An integer number. Preserve <code>screening.num</code> number of predictors with the largest
 marginal maximum likelihood estimator before running algorithm.</p></dd>
+
+
 <dt>important.search</dt>
 <dd><p>An integer number indicating the number of
 important variables to be splicing.
 When <code>important.search</code> \(\ll\) <code>p</code> variables,
 it would greatly reduce runtimes. Default: <code>important.search = 128</code>.</p></dd>
+
+
 <dt>warm.start</dt>
 <dd><p>Whether to use the last solution as a warm start. Default is <code>warm.start = TRUE</code>.</p></dd>
+
+
 <dt>nfolds</dt>
 <dd><p>The number of folds in cross-validation. Default is <code>nfolds = 5</code>.</p></dd>
+
+
 <dt>foldid</dt>
 <dd><p>an optional integer vector of values between 1, ..., nfolds identifying what fold each observation is in.
 The default <code>foldid = NULL</code> would generate a random foldid.</p></dd>
+
+
 <dt>cov.update</dt>
 <dd><p>A logical value only used for <code>family = "gaussian"</code>. If <code>cov.update = TRUE</code>,
 use a covariance-based implementation; otherwise, a naive implementation.
 The naive method is more computational efficient than covariance-based method when \(p &gt;&gt; n\) and <code>important.search</code> is much large than its default value.
 Default: <code>cov.update = FALSE</code>.</p></dd>
+
+
 <dt>newton</dt>
 <dd><p>A character specify the Newton's method for fitting generalized linear models,
 it should be either <code>newton = "exact"</code> or <code>newton = "approx"</code>.
 If <code>newton = "exact"</code>, then the exact hessian is used,
 while <code>newton = "approx"</code> uses diagonal entry of the hessian,
 and can be faster (especially when <code>family = "cox"</code>).</p></dd>
+
+
 <dt>newton.thresh</dt>
 <dd><p>a numeric value for controlling positive convergence tolerance.
 The Newton's iterations converge when \(|dev - dev_{old}|/(|dev| + 0.1)&lt;\) <code>newton.thresh</code>.</p></dd>
+
+
 <dt>max.newton.iter</dt>
 <dd><p>a integer giving the maximal number of Newton's iteration iterations.
 Default is <code>max.newton.iter = 10</code> if <code>newton = "exact"</code>, and <code>max.newton.iter = 60</code> if <code>newton = "approx"</code>.</p></dd>
+
+
 <dt>early.stop</dt>
 <dd><p>A boolean value decide whether early stopping.
 If <code>early.stop = TRUE</code>, algorithm will stop if the last tuning value less than the existing one.
 Default: <code>early.stop = FALSE</code>.</p></dd>
+
+
 <dt>ic.scale</dt>
 <dd><p>A non-negative value used for multiplying the penalty term
 in information criterion. Default: <code>ic.scale = 1</code>.</p></dd>
+
+
 <dt>num.threads</dt>
 <dd><p>An integer decide the number of threads to be
 concurrently used for cross-validation (i.e., <code>tune.type = "cv"</code>).
 If <code>num.threads = 0</code>, then all of available cores will be used.
 Default: <code>num.threads = 0</code>.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>Seed to be used to divide the sample into cross-validation folds.
 Default is <code>seed = 1</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>further arguments to be passed to or from methods.</p></dd>
+
+
 <dt>formula</dt>
 <dd><p>an object of class "<code>formula</code>":
 a symbolic description of the model to be fitted.
 The details of model specification are given in the "Details" section of "<code><a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a></code>".</p></dd>
+
+
 <dt>data</dt>
 <dd><p>a data frame containing the variables in the <code>formula</code>.</p></dd>
+
+
 <dt>subset</dt>
 <dd><p>an optional vector specifying a subset of observations to be used.</p></dd>
+
+
 <dt>na.action</dt>
 <dd><p>a function which indicates
 what should happen when the data contain <code>NA</code>s.
 Defaults to <code>getOption("na.action")</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A S3 <code>abess</code> class object, which is a <code>list</code> with the following components:</p>
+    
+
+<p>A S3 <code>abess</code> class object, which is a <code>list</code> with the following components:</p>
 <dl><dt>beta</dt>
 <dd><p>A \(p\)-by-<code>length(support.size)</code> matrix of coefficients for univariate family, stored in column format;
 while a list of <code>length(support.size)</code> coefficients matrix (with size \(p\)-by-<code>ncol(y)</code>) for multivariate family.</p></dd>
+
 <dt>intercept</dt>
 <dd><p>An intercept vector of length <code>length(support.size)</code> for univariate family;
 while a list of <code>length(support.size)</code> intercept vector (with size <code>ncol(y)</code>) for multivariate family.</p></dd>
+
 <dt>dev</dt>
 <dd><p>the deviance of length <code>length(support.size)</code>.</p></dd>
+
 <dt>tune.value</dt>
 <dd><p>A value of tuning criterion of length <code>length(support.size)</code>.</p></dd>
+
 <dt>nobs</dt>
 <dd><p>The number of sample used for training.</p></dd>
+
 <dt>nvars</dt>
 <dd><p>The number of variables used for training.</p></dd>
+
 <dt>family</dt>
 <dd><p>Type of the model.</p></dd>
+
 <dt>tune.path</dt>
 <dd><p>The path type for tuning parameters.</p></dd>
+
 <dt>support.size</dt>
 <dd><p>The actual <code>support.size</code> values used.
 Note that it is not necessary the same as the input
 if the later have non-integer values or duplicated values.</p></dd>
+
 <dt>edf</dt>
 <dd><p>The effective degree of freedom.
 It is the same as <code>support.size</code> when <code>lambda = 0</code>.</p></dd>
+
 <dt>best.size</dt>
 <dd><p>The best support size selected by the tuning value.</p></dd>
+
 <dt>tune.type</dt>
 <dd><p>The criterion type for tuning parameters.</p></dd>
+
 <dt>tune.path</dt>
 <dd><p>The strategy for tuning parameters.</p></dd>
+
 <dt>screening.vars</dt>
 <dd><p>The character vector specify the feature
 selected by feature screening.
 It would be an empty character vector if <code>screening.num = 0</code>.</p></dd>
+
 <dt>call</dt>
 <dd><p>The original call to <code>abess</code>.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -385,17 +469,17 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
-<span class="r-in"><span class="va">support.size</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################ linear model ################</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">## helpful generic functions:</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">20</span></span></span>
+<span class="r-in"><span><span class="va">support.size</span> <span class="op">&lt;-</span> <span class="fl">3</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################ linear model ################</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## helpful generic functions:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> abess.default(x = dataset[["x"]], y = dataset[["y"]])</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -421,7 +505,7 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19           18  716.6929 739.8151</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 20           19  716.1755 744.3179</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 21           20  716.1127 748.8842</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 21 x 1 sparse Matrix of class "dgCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                     3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (intercept) -4.369861</span>
@@ -445,10 +529,10 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span> x18         43.410846</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x19          .       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x20          .       </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>,</span>
-<span class="r-in">  newx <span class="op">=</span> <span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span>,</span>
-<span class="r-in">  support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>,</span></span>
+<span class="r-in"><span>  newx <span class="op">=</span> <span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span>,</span></span>
+<span class="r-in"><span>  support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                3           4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,]  103.05157   91.524774</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [2,]   74.66998   85.359664</span>
@@ -460,7 +544,7 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] -126.67823 -142.927367</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,]  -23.29128  -22.898065</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10,] -109.76937 -117.273626</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:3] 5 13 17</span>
@@ -477,22 +561,22 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ support.beta: num [1:3] 83.3 89.7 43.4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ dev         : num 921</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ tune.value  : num 696</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 8902.8419 5081.6351 2203.6977  921.3726  833.5074  797.0079  771.9370</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [8]  759.3075  750.0559  743.0171  736.8746  730.2053  726.1450  722.1120</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [15]  719.8878  718.7611  717.9167  717.2695  716.6929  716.1755  716.1127</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="abess-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="abess-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################ logistic model ################</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">## allow cross-validation to tuning</span></span>
-<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span class="r-in">  family <span class="op">=</span> <span class="st">"binomial"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################ logistic model ################</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"binomial"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## allow cross-validation to tuning</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  family <span class="op">=</span> <span class="st">"binomial"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> abess.default(x = dataset[["x"]], y = dataset[["y"]], family = "binomial", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     tune.type = "cv")</span>
@@ -519,13 +603,13 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19           18  0.1321514 97.451196</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 20           19  0.1790295 97.418885</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 21           20  2.0997138 97.608781</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################ poisson model ################</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span class="r-in">  family <span class="op">=</span> <span class="st">"poisson"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################ poisson model ################</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  family <span class="op">=</span> <span class="st">"poisson"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> abess.default(x = dataset[["x"]], y = dataset[["y"]], family = "poisson", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     tune.type = "cv")</span>
@@ -552,30 +636,30 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19           18 -171.94049 -28.14750</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 20           19 -171.94879 -27.96317</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 21           20 -171.95952 -27.89898</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################ Cox model ################</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"cox"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span class="r-in">  family <span class="op">=</span> <span class="st">"cox"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################ Multivariate gaussian model ################</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"mgaussian"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span class="r-in">  family <span class="op">=</span> <span class="st">"mgaussian"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"l2norm"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################ Cox model ################</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"cox"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  family <span class="op">=</span> <span class="st">"cox"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################ Multivariate gaussian model ################</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"mgaussian"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  family <span class="op">=</span> <span class="st">"mgaussian"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"l2norm"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="abess-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################ Multinomial model (multi-classification) ################</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"multinomial"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span class="r-in">  family <span class="op">=</span> <span class="st">"multinomial"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>,</span>
-<span class="r-in">  newx <span class="op">=</span> <span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span>,</span>
-<span class="r-in">  support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"response"</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################ Multinomial model (multi-classification) ################</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"multinomial"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  family <span class="op">=</span> <span class="st">"multinomial"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>,</span></span>
+<span class="r-in"><span>  newx <span class="op">=</span> <span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span>,</span></span>
+<span class="r-in"><span>  support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"response"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`3`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                  1            2             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 3.195016e-01 6.796457e-01 8.526170e-04</span>
@@ -602,17 +686,17 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 2.219998e-04 7.084179e-01 2.913601e-01</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 2.934310e-03 1.071389e-07 9.970656e-01</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################ Ordinal regression  ################</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"ordinal"</span>, class.num <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span class="r-in">  family <span class="op">=</span> <span class="st">"ordinal"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="va">coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="va">abess_fit</span><span class="op">[[</span><span class="st">"best.size"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>,</span>
-<span class="r-in">  newx <span class="op">=</span> <span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span>,</span>
-<span class="r-in">  support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"response"</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################ Ordinal regression  ################</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span>, family <span class="op">=</span> <span class="st">"ordinal"</span>, class.num <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  family <span class="op">=</span> <span class="st">"ordinal"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="va">abess_fit</span><span class="op">[[</span><span class="st">"best.size"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>,</span></span>
+<span class="r-in"><span>  newx <span class="op">=</span> <span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span>,</span></span>
+<span class="r-in"><span>  support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"response"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`3`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                  1            2            3             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] 4.262225e-05 1.829633e-02 9.726829e-01 8.978109e-03</span>
@@ -639,12 +723,12 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] 8.676204e-01 1.323548e-01 2.481049e-05 3.752842e-11</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 4.631050e-03 9.615982e-01 3.377066e-02 5.286555e-08</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">########## Best group subset selection #############</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">group_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, each <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, group.index <span class="op">=</span> <span class="va">group_index</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">########## Best group subset selection #############</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">group_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, each <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, group.index <span class="op">=</span> <span class="va">group_index</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:8] 4 5 12 13 14 15 16 17</span>
@@ -661,11 +745,11 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ support.beta: num [1:8] 1.992 82.397 -0.735 88.545 -4.368 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ dev         : num 819</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ tune.value  : num 699</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################ Golden section searching ################</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, tune.path <span class="op">=</span> <span class="st">"gsection"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################ Golden section searching ################</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, tune.path <span class="op">=</span> <span class="st">"gsection"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> abess.default(x = dataset[["x"]], y = dataset[["y"]], tune.path = "gsection")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -676,14 +760,14 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4            6 771.9370 692.3404</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5            8 750.0559 698.6149</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6           13 722.1120 717.6933</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################ Feature screening ################</span></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span class="r-in">  screening.num <span class="op">=</span> <span class="fl">100</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################ Feature screening ################</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  screening.num <span class="op">=</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:3] 288 642 780</span>
@@ -700,16 +784,16 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ support.beta: num [1:3] 145.3 51.9 160.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ dev         : num 1821</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ tune.value  : num 772</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################ Sparse predictor ################</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://Matrix.R-forge.R-project.org/" class="external-link">Matrix</a></span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################ Sparse predictor ################</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://Matrix.R-forge.R-project.org/" class="external-link">Matrix</a></span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: Matrix</span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
-<span class="r-in"><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
-<span class="r-in"><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span> <span class="op">&lt;-</span> <span class="fu"><a href="generate.data.html">generate.data</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">support.size</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
+<span class="r-in"><span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix</a></span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ i       : int [1:2] 288 780</span>
@@ -726,12 +810,12 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ support.beta: num [1:2] 147 171</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ dev         : num 7266</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ tune.value  : num 910</span>
-<span class="r-in"><span class="co"># }</span></span>
-<span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="co">################  Formula interface  ################</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"trim32"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">trim32</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">abess_fit</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co">################  Formula interface  ################</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"trim32"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">trim32</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">abess_fit</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> abess.formula(formula = y ~ ., data = trim32)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -749,7 +833,7 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-out co"><span class="r-pr">#&gt;</span> 11           10 0.002256348 -633.9598</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12           11 0.002243761 -624.8989</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 13           12 0.002225414 -616.1521</span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -764,7 +848,7 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -184,123 +184,123 @@ h_{i'}(t) = h_0(t)\exp(\eta_{i'}) = h_0(t)\exp(x_{i'}\boldsymbol\beta).
 </h2>
 <p>We are going to apply best subset selection to the NCCTG Lung Cancer Dataset. This dataset consists of survival information of patients with advanced lung cancer from the North Central Cancer Treatment Group. The proportional hazards model allows the analysis of survival data by regression modeling. Linearity is assumed on the log scale of the hazard. The hazard ratio in Cox proportional hazard model is assumed constant. First, we load the data</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">lung</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"lung.csv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##   inst time status age sex ph.ecog ph.karno pat.karno meal.cal wt.loss</span>
-<span class="co">## 1    3  306      2  74   1       1       90       100     1175      NA</span>
-<span class="co">## 2    3  455      2  68   1       0       90        90     1225      15</span>
-<span class="co">## 3    3 1010      1  56   1       0       90        90       NA      15</span>
-<span class="co">## 4    5  210      2  57   1       1       90        60     1150      11</span>
-<span class="co">## 5    1  883      2  60   1       0      100        90       NA       0</span>
-<span class="co">## 6   12 1022      1  74   1       1       50        80      513       0</span></code></pre>
+<code class="sourceCode R"><span><span class="va">lung</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"lung.csv"</span>, header <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   inst time status age sex ph.ecog ph.karno pat.karno meal.cal wt.loss</span></span>
+<span><span class="co">## 1    3  306      2  74   1       1       90       100     1175      NA</span></span>
+<span><span class="co">## 2    3  455      2  68   1       0       90        90     1225      15</span></span>
+<span><span class="co">## 3    3 1010      1  56   1       0       90        90       NA      15</span></span>
+<span><span class="co">## 4    5  210      2  57   1       1       90        60     1150      11</span></span>
+<span><span class="co">## 5    1  883      2  60   1       0      100        90       NA       0</span></span>
+<span><span class="co">## 6   12 1022      1  74   1       1       50        80      513       0</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] 67</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 67</span></span></code></pre>
 <p>Then we remove the rows containing any missing data. After that, we have a total of 167 observations.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">lung</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span>
-<span class="va">lung</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] 167   9</span></code></pre>
+<code class="sourceCode R"><span><span class="va">lung</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span></span>
+<span><span class="va">lung</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">lung</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 167   9</span></span></code></pre>
 <p>Then we change the factors into dummy variables with the <code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix()</a></code> function. Note that the <code><a href="../reference/abess.html">abess()</a></code> function will automatically include the intercept.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">lung</span><span class="op">$</span><span class="va">ph.ecog</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">lung</span><span class="op">$</span><span class="va">ph.ecog</span><span class="op">)</span>
-<span class="va">lung</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">.</span>, <span class="va">lung</span><span class="op">)</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">lung</span><span class="op">$</span><span class="va">ph.ecog</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">lung</span><span class="op">$</span><span class="va">ph.ecog</span><span class="op">)</span></span>
+<span><span class="va">lung</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">.</span>, <span class="va">lung</span><span class="op">)</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span></span></code></pre></div>
 <p>We split the dataset into a training set and a test set. The model is going to be built on the training set and later We will test the model performance on the test set.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">train</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="fl">167</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span>, <span class="op">]</span>
-<span class="va">test</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="op">-</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="fl">167</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span>, <span class="op">]</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">train</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="fl">167</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">test</span> <span class="op">&lt;-</span> <span class="va">lung</span><span class="op">[</span><span class="op">-</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="fl">167</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span>, <span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="best-subset-selection-for-coxph-regression">Best Subset Selection for CoxPH Regression<a class="anchor" aria-label="anchor" href="#best-subset-selection-for-coxph-regression"></a>
 </h2>
 <p>The <code><a href="../reference/abess.html">abess()</a></code> function in the <code>abess</code> package allows you to perform the best subset selection in a highly efficient way. For CoxPH model, the survival information should be passed to <code>y</code> as a matrix with the first column storing the observed time and the second the status. The covariates should be passed to <code>x</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span>
-<span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">train</span><span class="op">[</span>, <span class="op">-</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">train</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, family <span class="op">=</span> <span class="st">"cox"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span>
+<span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">train</span><span class="op">[</span>, <span class="op">-</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">train</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, family <span class="op">=</span> <span class="st">"cox"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="interpret-the-result">Interpret the Result<a class="anchor" aria-label="anchor" href="#interpret-the-result"></a>
 </h2>
 <p>After getting the estimator, we can further do more exploring work. The output of <code><a href="../reference/abess.html">abess()</a></code> function contains the best model for all the candidate support size in the <code>support.size</code>. You can use some generic function to quickly draw some information of those estimators.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># draw the estimated coefficients on all candidate support size</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## 10 x 10 sparse Matrix of class "dgCMatrix"</span>
-<span class="co">##                                                                      </span>
-<span class="co">## (intercept) . .          .          .          .           .         </span>
-<span class="co">## age         . .          .          .          .           .         </span>
-<span class="co">## sex         . .         -0.3158899 -0.3056507 -0.31215218 -0.37217880</span>
-<span class="co">## ph.ecog1    . .          .          .          .           0.43339436</span>
-<span class="co">## ph.ecog2    . 0.6198472  0.6356454  0.6485150  0.90762608  1.39697310</span>
-<span class="co">## ph.ecog3    . .          .          1.5289436  1.85001630  2.38783028</span>
-<span class="co">## ph.karno    . .          .          .          0.01230716  0.02223652</span>
-<span class="co">## pat.karno   . .          .          .          .           .         </span>
-<span class="co">## meal.cal    . .          .          .          .           .         </span>
-<span class="co">## wt.loss     . .          .          .          .           .         </span>
-<span class="co">##                                                                 </span>
-<span class="co">## (intercept)  .            .            .            .           </span>
-<span class="co">## age          .            .            0.009612417  0.0087629301</span>
-<span class="co">## sex         -0.398257611 -0.400263398 -0.405046539 -0.4176205102</span>
-<span class="co">## ph.ecog1     0.492850038  0.498563852  0.544978560  0.5487891976</span>
-<span class="co">## ph.ecog2     1.548225079  1.421509544  1.426897301  1.4056078686</span>
-<span class="co">## ph.ecog3     2.546825864  2.496377201  2.499743506  2.5323174307</span>
-<span class="co">## ph.karno     0.022739460  0.024257824  0.026461316  0.0266012605</span>
-<span class="co">## pat.karno    .           -0.008454919 -0.008258875 -0.0076750436</span>
-<span class="co">## meal.cal     .            .            .           -0.0001728139</span>
-<span class="co">## wt.loss     -0.008638164 -0.010134095 -0.009558614 -0.0097602080</span></code></pre>
+<code class="sourceCode R"><span><span class="co"># draw the estimated coefficients on all candidate support size</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 10 x 10 sparse Matrix of class "dgCMatrix"</span></span>
+<span><span class="co">##                                                                      </span></span>
+<span><span class="co">## (intercept) . .          .          .          .           .         </span></span>
+<span><span class="co">## age         . .          .          .          .           .         </span></span>
+<span><span class="co">## sex         . .         -0.3158899 -0.3056507 -0.31215218 -0.37217880</span></span>
+<span><span class="co">## ph.ecog1    . .          .          .          .           0.43339436</span></span>
+<span><span class="co">## ph.ecog2    . 0.6198472  0.6356454  0.6485150  0.90762608  1.39697310</span></span>
+<span><span class="co">## ph.ecog3    . .          .          1.5289436  1.85001630  2.38783028</span></span>
+<span><span class="co">## ph.karno    . .          .          .          0.01230716  0.02223652</span></span>
+<span><span class="co">## pat.karno   . .          .          .          .           .         </span></span>
+<span><span class="co">## meal.cal    . .          .          .          .           .         </span></span>
+<span><span class="co">## wt.loss     . .          .          .          .           .         </span></span>
+<span><span class="co">##                                                                 </span></span>
+<span><span class="co">## (intercept)  .            .            .            .           </span></span>
+<span><span class="co">## age          .            .            0.009612417  0.0087629301</span></span>
+<span><span class="co">## sex         -0.398257611 -0.400263398 -0.405046539 -0.4176205102</span></span>
+<span><span class="co">## ph.ecog1     0.492850038  0.498563852  0.544978560  0.5487891976</span></span>
+<span><span class="co">## ph.ecog2     1.548225079  1.421509544  1.426897301  1.4056078686</span></span>
+<span><span class="co">## ph.ecog3     2.546825864  2.496377201  2.499743506  2.5323174307</span></span>
+<span><span class="co">## ph.karno     0.022739460  0.024257824  0.026461316  0.0266012605</span></span>
+<span><span class="co">## pat.karno    .           -0.008454919 -0.008258875 -0.0076750436</span></span>
+<span><span class="co">## meal.cal     .            .            .           -0.0001728139</span></span>
+<span><span class="co">## wt.loss     -0.008638164 -0.010134095 -0.009558614 -0.0097602080</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># get the deviance of the estimated model on all candidate support size</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##  [1] 798.3509 791.3829 788.9978 787.5387 785.8258 783.7560 782.4605 781.7364</span>
-<span class="co">##  [9] 781.1942 780.8985</span></code></pre>
+<code class="sourceCode R"><span><span class="co"># get the deviance of the estimated model on all candidate support size</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  [1] 798.3509 791.3829 788.9978 787.5387 785.8258 783.7560 782.4605 781.7364</span></span>
+<span><span class="co">##  [9] 781.1942 780.8985</span></span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># print the fitted model</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Call:</span>
-<span class="co">## abess.default(x = train[, -(1:2)], y = train[, 1:2], family = "cox")</span>
-<span class="co">## </span>
-<span class="co">##    support.size      dev      GIC</span>
-<span class="co">## 1             0 798.3509 1596.702</span>
-<span class="co">## 2             1 791.3829 1586.171</span>
-<span class="co">## 3             2 788.9978 1584.805</span>
-<span class="co">## 4             3 787.5387 1585.292</span>
-<span class="co">## 5             4 785.8258 1585.271</span>
-<span class="co">## 6             5 783.7560 1584.536</span>
-<span class="co">## 7             6 782.4605 1585.350</span>
-<span class="co">## 8             7 781.7364 1587.306</span>
-<span class="co">## 9             8 781.1942 1589.627</span>
-<span class="co">## 10            9 780.8985 1592.440</span></code></pre>
+<code class="sourceCode R"><span><span class="co"># print the fitted model</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Call:</span></span>
+<span><span class="co">## abess.default(x = train[, -(1:2)], y = train[, 1:2], family = "cox")</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##    support.size      dev      GIC</span></span>
+<span><span class="co">## 1             0 798.3509 1596.702</span></span>
+<span><span class="co">## 2             1 791.3829 1586.171</span></span>
+<span><span class="co">## 3             2 788.9978 1584.805</span></span>
+<span><span class="co">## 4             3 787.5387 1585.292</span></span>
+<span><span class="co">## 5             4 785.8258 1585.271</span></span>
+<span><span class="co">## 6             5 783.7560 1584.536</span></span>
+<span><span class="co">## 7             6 782.4605 1585.350</span></span>
+<span><span class="co">## 8             7 781.7364 1587.306</span></span>
+<span><span class="co">## 9             8 781.1942 1589.627</span></span>
+<span><span class="co">## 10            9 780.8985 1592.440</span></span></code></pre>
 <p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including <code>coef</code> for the coefficient value, <code>l2norm</code> for the L2-norm of the coefficients, <code>dev</code> for the deviance and <code>tune</code> for the tuning value.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v05-coxreg_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <p>The graph shows that, beginning from the most dense model, the 4th variable (<code>ph.ecog2</code>) is included in the active set until the support size reaches 0.</p>
 <p>We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type<span class="op">=</span><span class="st">"tune"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type<span class="op">=</span><span class="st">"tune"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v05-coxreg_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <p>The tuning value reaches the lowest point at 5. And We might choose the estimated model with support size equals 5 as our final model.</p>
 <p>To extract the specified model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.abess.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">best.model</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## List of 7</span>
-<span class="co">##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span>
-<span class="co">##   .. ..@ i       : int [1:5] 1 2 3 4 5</span>
-<span class="co">##   .. ..@ p       : int [1:2] 0 5</span>
-<span class="co">##   .. ..@ Dim     : int [1:2] 9 1</span>
-<span class="co">##   .. ..@ Dimnames:List of 2</span>
-<span class="co">##   .. .. ..$ : chr [1:9] "age" "sex" "ph.ecog1" "ph.ecog2" ...</span>
-<span class="co">##   .. .. ..$ : chr "5"</span>
-<span class="co">##   .. ..@ x       : num [1:5] -0.3722 0.4334 1.397 2.3878 0.0222</span>
-<span class="co">##   .. ..@ factors : list()</span>
-<span class="co">##  $ intercept   : num 0</span>
-<span class="co">##  $ support.size: num 5</span>
-<span class="co">##  $ support.vars: chr [1:5] "sex" "ph.ecog1" "ph.ecog2" "ph.ecog3" ...</span>
-<span class="co">##  $ support.beta: num [1:5] -0.3722 0.4334 1.397 2.3878 0.0222</span>
-<span class="co">##  $ dev         : num 784</span>
-<span class="co">##  $ tune.value  : num 1585</span></code></pre>
+<code class="sourceCode R"><span><span class="va">best.model</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## List of 7</span></span>
+<span><span class="co">##  $ beta        :Formal class 'dgCMatrix' [package "Matrix"] with 6 slots</span></span>
+<span><span class="co">##   .. ..@ i       : int [1:5] 1 2 3 4 5</span></span>
+<span><span class="co">##   .. ..@ p       : int [1:2] 0 5</span></span>
+<span><span class="co">##   .. ..@ Dim     : int [1:2] 9 1</span></span>
+<span><span class="co">##   .. ..@ Dimnames:List of 2</span></span>
+<span><span class="co">##   .. .. ..$ : chr [1:9] "age" "sex" "ph.ecog1" "ph.ecog2" ...</span></span>
+<span><span class="co">##   .. .. ..$ : chr "5"</span></span>
+<span><span class="co">##   .. ..@ x       : num [1:5] -0.3722 0.4334 1.397 2.3878 0.0222</span></span>
+<span><span class="co">##   .. ..@ factors : list()</span></span>
+<span><span class="co">##  $ intercept   : num 0</span></span>
+<span><span class="co">##  $ support.size: num 5</span></span>
+<span><span class="co">##  $ support.vars: chr [1:5] "sex" "ph.ecog1" "ph.ecog2" "ph.ecog3" ...</span></span>
+<span><span class="co">##  $ support.beta: num [1:5] -0.3722 0.4334 1.397 2.3878 0.0222</span></span>
+<span><span class="co">##  $ dev         : num 784</span></span>
+<span><span class="co">##  $ tune.value  : num 1585</span></span></code></pre>
 <p>The return is a list containing the basic information of the estimated model.</p>
 </div>
 <div class="section level2">
@@ -308,13 +308,13 @@ h_{i'}(t) = h_0(t)\exp(\eta_{i'}) = h_0(t)\exp(x_{i'}\boldsymbol\beta).
 </h2>
 <p>Prediction is allowed for all the estimated model. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value. The <code><a href="../reference/predict.abess.html">predict.abess()</a></code> can provide both <code>link</code>, standing for the linear predictors, and the <code>response</code>, standing for the fitted relative-risk. Here We will predict fitted relative-risk on the test data.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fitted.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">test</span>, type <span class="op">=</span> <span class="st">'response'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fitted.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">test</span>, type <span class="op">=</span> <span class="st">'response'</span><span class="op">)</span></span></code></pre></div>
 <p>We now calculate the C-index, i.e., the probability that, for a pair of randomly chosen comparable samples, the sample with the higher risk prediction will experience an event before the other sample or belong to a higher binary class. On this dataset, the C-index is 0.64.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hbiostat.org/R/Hmisc/" class="external-link">Hmisc</a></span><span class="op">)</span>
-<span class="va">Cindex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/pkg/Hmisc/man/rcorr.cens.html" class="external-link">rcorr.cens</a></span><span class="op">(</span><span class="va">fitted.results</span>, <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">test</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">test</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,<span class="fu"><a href="https://rdrr.io/pkg/Hmisc/man/rcorr.cens.html" class="external-link">rcorr.cens</a></span><span class="op">(</span><span class="va">fitted.results</span>, <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">test</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">test</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>
-<span class="va">Cindex</span></code></pre></div>
-<pre><code><span class="co">## [1] 0.6422652</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hbiostat.org/R/Hmisc/" class="external-link">Hmisc</a></span><span class="op">)</span></span>
+<span><span class="va">Cindex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/pkg/Hmisc/man/rcorr.cens.html" class="external-link">rcorr.cens</a></span><span class="op">(</span><span class="va">fitted.results</span>, <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">test</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">test</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,<span class="fu"><a href="https://rdrr.io/pkg/Hmisc/man/rcorr.cens.html" class="external-link">rcorr.cens</a></span><span class="op">(</span><span class="va">fitted.results</span>, <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">test</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">test</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">Cindex</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 0.6422652</span></span></code></pre>
 </div>
   </div>
 
@@ -335,7 +335,7 @@ h_{i'}(t) = h_0(t)\exp(\eta_{i'}) = h_0(t)\exp(x_{i'}\boldsymbol\beta).
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>
