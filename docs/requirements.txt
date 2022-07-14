@@ -6,3 +6,4 @@ geomstats
 DoubleML
 pyts
 dowhy
+numpy<1.23
