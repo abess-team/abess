@@ -249,6 +249,7 @@ class BreslowEstimator:
 
         return times, n_events, n_at_risk[:-1], n_censored
 
+
 def check_scalar(
     x,
     name,
@@ -370,6 +371,7 @@ def check_scalar(
 
     return x
 
+
 def _mean_tweedie_deviance(y_true, y_pred, sample_weight, power):
     """Mean Tweedie deviance regression loss."""
     p = power
@@ -397,6 +399,7 @@ def _mean_tweedie_deviance(y_true, y_pred, sample_weight, power):
         )
 
     return np.average(dev, weights=sample_weight)
+
 
 def mean_tweedie_deviance(y_true, y_pred, *, sample_weight=None, power=0):
     """Mean Tweedie deviance regression loss.
@@ -463,11 +466,13 @@ def mean_tweedie_deviance(y_true, y_pred, *, sample_weight=None, power=0):
         # Normal, y and y_pred can be any real number
         pass
     elif 0 < p < 1:
-        raise ValueError("Tweedie deviance is only defined for power<=0 and power>=1.")
+        raise ValueError(
+            "Tweedie deviance is only defined for power<=0 and power>=1.")
     elif 1 <= p < 2:
         # Poisson and compound Poisson distribution, y >= 0, y_pred > 0
         if (y_true < 0).any() or (y_pred <= 0).any():
-            raise ValueError(message + "non-negative y and strictly positive y_pred.")
+            raise ValueError(
+                message + "non-negative y and strictly positive y_pred.")
     elif p >= 2:
         # Gamma and Extreme stable distribution, y and y_pred > 0
         if (y_true <= 0).any() or (y_pred <= 0).any():
@@ -479,6 +484,7 @@ def mean_tweedie_deviance(y_true, y_pred, *, sample_weight=None, power=0):
     return _mean_tweedie_deviance(
         y_true, y_pred, sample_weight=sample_weight, power=power
     )
+
 
 def d2_tweedie_score(y_true, y_pred, *, sample_weight=None, power=0):
     """D^2 regression score function, fraction of Tweedie deviance explained.
