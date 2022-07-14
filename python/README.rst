@@ -130,7 +130,7 @@ The corresponding BibteX entry:
 
 .. code-block:: shell
 
-   @article{JMLR:v22:19-1049,
+   @article{zhu2022abess,
       author  = {Jin Zhu and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu and Xueqin Wang},
       title   = {abess: A Fast Best Subset Selection Library in Python and R},
       journal = {Journal of Machine Learning Research (Accepted)},
