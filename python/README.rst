@@ -4,7 +4,8 @@
 .. |logopic| image:: https://github.com/abess-team/abess/raw/master/docs/image/icon_long.png    
 
 
-|Python build status| |R build status| |codecov| |docs| |cran| |pypi| |pyversions| |License| |Codacy| |CodeFactor|
+|Python build status| |R build status| |codecov| |docs| |cran| |pypi| |conda-forge| |pyversions| |License| |Codacy|
+|CodeFactor| |Platform| |Downloads|
 
 .. |Codacy| image:: https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76 
    :target: https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=abess-team/abess&amp;utm_campaign=Badge_Grade
@@ -25,6 +26,8 @@
    :target: https://cran.r-project.org/package=abess
 .. |pypi| image:: https://badge.fury.io/py/abess.svg
    :target: https://badge.fury.io/py/abess
+.. |conda-forge| image:: https://img.shields.io/conda/vn/conda-forge/abess.svg
+   :target: https://anaconda.org/conda-forge/abess
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/abess
 .. |License| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg 
    :target: http://www.gnu.org/licenses/gpl-3.0
