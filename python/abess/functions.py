@@ -11,16 +11,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import warnings
+import numbers
+import operator
 import numpy as np
 from sklearn.utils import (check_consistent_length, column_or_1d)
 from sklearn.metrics._regression import (
     _num_samples,
     _check_reg_targets)
 from sklearn.exceptions import UndefinedMetricWarning
-import warnings
-import numbers
 from scipy.special import xlogy
-import operator
 
 
 class StepFunction:
@@ -347,7 +347,8 @@ def check_scalar(
 
     if min_val is None and include_boundaries == "left":
         raise ValueError(
-            "`include_boundaries`='left' without specifying explicitly `min_val` "
+            "`include_boundaries`='left' without"
+            " specifying explicitly `min_val` "
             "is inconsistent."
         )
 
@@ -357,7 +358,8 @@ def check_scalar(
     if min_val is not None and comparison_operator(x, min_val):
         raise ValueError(
             f"{name} == {x}, must be"
-            f" {'>=' if include_boundaries in ('left', 'both') else '>'} {min_val}."
+            f" {'>=' if include_boundaries in ('left', 'both') else '>'} "
+            f"{min_val}."
         )
 
     comparison_operator = (
@@ -366,7 +368,8 @@ def check_scalar(
     if max_val is not None and comparison_operator(x, max_val):
         raise ValueError(
             f"{name} == {x}, must be"
-            f" {'<=' if include_boundaries in ('right', 'both') else '<'} {max_val}."
+            f" {'<=' if include_boundaries in ('right', 'both') else '<'} "
+            f"{max_val}."
         )
 
     return x
