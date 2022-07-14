@@ -1,11 +1,15 @@
 import warnings
 import numpy as np
-from sklearn.metrics import r2_score, d2_tweedie_score, ndcg_score
+from sklearn.metrics import r2_score, ndcg_score
 from .metrics import concordance_index_censored
 from .bess_base import bess_base
 from .utilities import new_data_check
 from .functions import (BreslowEstimator)
 # from .nonparametric import _compute_counts
+try:
+    from sklearn.metrics import d2_tweedie_score
+except ImportError:
+    from .functions import d2_tweedie_score
 
 
 def fix_docs(cls):
