@@ -89,7 +89,8 @@ class TestAlgorithm:
 
         model4 = abess.LinearRegression(
             covariance_update=True, path_type='gs', cv=5)
-        model4.fit(data.x, data.y)
+        cv_fold_id = np.repeat(np.linspace(1, 5, 5), int(n / 5))
+        model4.fit(data.x, data.y, cv_fold_id=cv_fold_id)
         assert_fit(model4.coef_, data.coef_)
 
     @staticmethod
@@ -308,7 +309,8 @@ class TestAlgorithm:
 
         model4 = abess.MultiTaskRegression(
             covariance_update=True, path_type='gs', cv=5)
-        model4.fit(data.x, data.y)
+        cv_fold_id = np.repeat(np.linspace(1, 5, 5), int(n / 5))
+        model4.fit(data.x, data.y, cv_fold_id=cv_fold_id)
         assert_fit(model4.coef_, data.coef_)
 
     @staticmethod
