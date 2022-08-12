@@ -207,17 +207,21 @@ Citation
 
 If you use ``abess`` or reference our tutorials in a presentation or publication, we would appreciate citations of our library [#5abesslib]_.
 
-| Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2022). “abess: A Fast Best Subset Selection Library in Python and R.” Journal of Machine Learning Research (Accepted).
+| Zhu Jin, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, and Junxian Zhu. "abess: A Fast Best-Subset Selection Library in Python and R." Journal of Machine Learning Research 23, no. 202 (2022): 1-7.
 
 The corresponding BibteX entry:
 
 .. code-block:: shell
 
-   @article{zhu2022abess,
-      author  = {Jin Zhu and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu and Xueqin Wang},
-      title   = {abess: A Fast Best Subset Selection Library in Python and R},
-      journal = {Journal of Machine Learning Research (Accepted)},
-      year    = {2022}
+   @article{JMLR:v23:21-1060,
+     author  = {Jin Zhu and Xueqin Wang and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu},
+     title   = {abess: A Fast Best-Subset Selection Library in Python and R},
+     journal = {Journal of Machine Learning Research},
+     year    = {2022},
+     volume  = {23},
+     number  = {202},
+     pages   = {1--7},
+     url     = {http://jmlr.org/papers/v23/21-1060.html}
    }
 
 References
