@@ -57,7 +57,7 @@ jobs:
       - name: Install package on Ubuntu
         if: matrix.os == 'ubuntu-latest'
         run: |
-          sudo apt-get install -y libcurl4-openssl-dev
+          sudo apt-get install -y libcurl4-openssl-dev libharfbuzz-dev libfribidi-dev
           R CMD INSTALL R-package
       - name: Install package on Windows
         if: matrix.os == 'windows-latest'
