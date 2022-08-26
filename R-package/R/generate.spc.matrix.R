@@ -56,7 +56,7 @@ generate.spc.matrix <- function(n, p, support.size = 3, snr = 20, sigma = NULL, 
     sparse.loading <- diag(p)
     sparse.loading[, kpc.num] <- c(runif(support.size), rep(0, p - support.size))
     sparse.loading <- qr.Q(qr(sparse.loading))
-    sparse.loading <- methods::as(sparse.loading, "dgCMatrix")
+    sparse.loading <- methods::as(methods::as(methods::as(sparse.loading, "dMatrix"), "generalMatrix"), "CsparseMatrix")
   } else {
     stopifnot(inherits(sparse.loading, "dgCMatrix"))
     stopifnot(ncol(sparse.loading) == p)
