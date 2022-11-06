@@ -19,7 +19,7 @@ positive response, multi-response modeling in polynomial times."><meta property=
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.6</span>
       </span>
     </div>
 
@@ -435,7 +435,7 @@ The sequential searching for the optimal model is somehow time-wasting.
 A faster strategy is golden section (GS), which only need to specify <code>gs.range</code>.
 More details about GS is referred to Zhang et al (2021).</p>
 <p>It is worthy to note that the parameters <code>newton</code>, <code>max.newton.iter</code> and <code>newton.thresh</code> allows
-user control the parameter estimation in non-guassian models.
+user control the parameter estimation in non-gaussian models.
 The parameter estimation procedure use Newton method or approximated Newton method (only consider the diagonal elements in the Hessian matrix).
 Again, we suggest to use the default values unchanged because the same reason for the parameter <code>c.max</code>.</p>
 <p><code>abess</code> support some well-known advanced statistical methods to analyze data, including</p><ul><li><p>sure independent screening:  helpful for ultra-high dimensional predictors (i.e., \(p \gg n\)). Use the parameter <code>screening.num</code> to retain the marginally most important predictors. See Fan et al (2008) for more details.</p></li>
@@ -449,7 +449,7 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
     <h2>References</h2>
     <p>A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; <a href="https://doi.org/10.1073/pnas.2014241117" class="external-link">doi:10.1073/pnas.2014241117</a></p>
 <p>Certifiably Polynomial Algorithm for Best Group Subset Selection. Zhang, Yanhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). arXiv preprint arXiv:2104.12576.</p>
-<p>abess: A Fast Best Subset Selection Library in Python and R. Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). arXiv preprint arXiv:2110.09697.</p>
+<p>abess: A Fast Best-Subset Selection Library in Python and R. Zhu Jin, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, and Junxian Zhu. Journal of Machine Learning Research 23, no. 202 (2022): 1-7.</p>
 <p>Sure independence screening for ultrahigh dimensional feature space. Fan, J. and Lv, J. (2008), Journal of the Royal Statistical Society: Series B (Statistical Methodology), 70: 849-911. <a href="https://doi.org/10.1111/j.1467-9868.2008.00674.x" class="external-link">doi:10.1111/j.1467-9868.2008.00674.x</a></p>
 <p>Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression. Qiang Sun &amp; Heping Zhang (2020). Journal of the American Statistical Association, <a href="https://doi.org/10.1080/01621459.2020.1737079" class="external-link">doi:10.1080/01621459.2020.1737079</a></p>
     </div>
@@ -656,27 +656,27 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>  family <span class="op">=</span> <span class="st">"multinomial"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>,</span></span>
 <span class="r-in"><span>  newx <span class="op">=</span> <span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span>,</span></span>
 <span class="r-in"><span>  support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"response"</span></span></span>
@@ -713,27 +713,27 @@ Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeat
 <span class="r-in"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu">abess</span><span class="op">(</span><span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>, <span class="va">dataset</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>  family <span class="op">=</span> <span class="st">"ordinal"</span>, tune.type <span class="op">=</span> <span class="st">"cv"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', etc, are disregarded for matrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'nrow', 'ncol', 'byrow' disregarded for [mM]atrix 'data'</span>
 <span class="r-in"><span><span class="va">coef</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="va">abess_fit</span><span class="op">[[</span><span class="st">"best.size"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>,</span></span>
 <span class="r-in"><span>  newx <span class="op">=</span> <span class="va">dataset</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span>,</span></span>
