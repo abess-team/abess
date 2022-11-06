@@ -1,3 +1,10 @@
+# abess 0.4.6
+
+* Adapt to the API change of the `Matrix` package.
+* Change the package structure such that the API functions can reuse the 
+utility function. It facilitates the testing for package.
+* Update citation information.
+
 # abess 0.4.5
 
 * Support generalized linear model for ordinal response, also named as rank learning in machine learning community. 
