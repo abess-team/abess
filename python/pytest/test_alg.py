@@ -72,6 +72,9 @@ class TestAlgorithm:
 
         # score
         score = model1.score(test_data.x, test_data.y)
+        sample_weight = np.random.rand(n)
+        score = model1.score(test_data.x, test_data.y,
+                             sample_weight=sample_weight)
         assert score > 0.5
 
         # covariance update
@@ -148,6 +151,9 @@ class TestAlgorithm:
 
         # score
         score = model1.score(test_data.x, test_data.y)
+        sample_weight = np.random.rand(n)
+        score = model1.score(test_data.x, test_data.y, 
+                             sample_weight=sample_weight)
         assert score > 0.5
 
         # approximate Newton
@@ -204,6 +210,9 @@ class TestAlgorithm:
 
         # score
         score = model1.score(data.x, data.y)
+        sample_weight = np.random.rand(n)
+        score = model1.score(data.x, data.y,
+                             sample_weight = sample_weight)
         assert not np.isnan(score)
 
         # approximate Newton
@@ -259,6 +268,9 @@ class TestAlgorithm:
 
         # score
         score = model1.score(test_data.x, test_data.y)
+        sample_weight = np.random.rand(n)
+        score = model1.score(test_data.x, test_data.y,
+                             sample_weight = sample_weight)
         assert score > 0.5
 
     @staticmethod
@@ -292,6 +304,9 @@ class TestAlgorithm:
 
         # score
         score = model1.score(test_data.x, test_data.y)
+        sample_weight = np.random.rand(n)
+        score = model1.score(test_data.x, test_data.y,
+                             sample_weight = sample_weight)
         assert score > 0.5
 
         # covariance update
@@ -345,6 +360,9 @@ class TestAlgorithm:
 
         # score
         score = model1.score(test_data.x, test_data.y)
+        sample_weight = np.random.rand(n)
+        score = model1.score(test_data.x, test_data.y,
+                             sample_weight=sample_weight)
         assert score > 0.5
 
         # # approximate Newton
@@ -355,7 +373,8 @@ class TestAlgorithm:
         # categorical y
         cate_y = np.repeat(np.arange(n / 10), 10)
         model1.fit(data.x, cate_y)
-        score = model1.score(data.x, cate_y)
+        score = model1.score(data.x, cate_y,
+                             sample_weight = sample_weight)
         assert not np.isnan(score)
 
     @staticmethod
@@ -463,7 +482,9 @@ class TestAlgorithm:
 
         # score
         score = model1.score(data.x, data.y)
-        score = model1.score(data.x, data.y, np.ones(data.x.shape[0]))
+        sample_weight = np.random.rand(100)
+        score = model1.score(data.x, data.y, 
+                             sample_weight = sample_weight)
         assert not np.isnan(score)
 
     @staticmethod
@@ -529,6 +550,9 @@ class TestAlgorithm:
         assert_fit(model1.coef_, data.coef_)
 
         # score
+        sample_weight = np.random.rand(100)
+        score_ordinal = model1.score(data.x, data.y,
+                             sample_weight=sample_weight)
         score_ordinal = model1.score(data.x, data.y)
         y_random = data.y.copy()
         np.random.shuffle(y_random)

@@ -104,8 +104,8 @@ def _estimate_concordance_index(
     return cindex, concordant, discordant, tied_risk, tied_time
 
 
-def concordance_index_censored(
-        event_indicator, event_time, estimate, sample_weight=None, tied_tol=1e-8):
+def concordance_index_censored(event_indicator, event_time, 
+                               estimate, sample_weight=None, tied_tol=1e-8):
     """Concordance index for right-censored data
 
     Reference from scikit-survival:
@@ -169,7 +169,7 @@ def concordance_index_censored(
     """
     event_indicator, event_time, estimate = _check_inputs(
         event_indicator, event_time, estimate)
-    
+
     if sample_weight is None:
         sample_weight = numpy.ones_like(estimate)
 

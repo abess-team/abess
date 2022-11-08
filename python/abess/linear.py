@@ -433,7 +433,8 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
         risk_score = X.dot(self.coef_)
         y = np.array(y)
         result = concordance_index_censored(
-            np.array(y[:, 1], np.bool_), y[:, 0], risk_score, sample_weight=sample_weight)
+            np.array(y[:, 1], np.bool_), y[:, 0], 
+            risk_score, sample_weight=sample_weight)
         return result[0]
 
     def predict_survival_function(self, X):
@@ -587,7 +588,8 @@ class PoissonRegression(bess_base):
         # exp_eta = np.exp(eta)
         # return (y * eta - exp_eta).sum()
         y_pred = self.predict(X)
-        return d2_tweedie_score(y, y_pred, power=1, sample_weight=sample_weight)
+        return d2_tweedie_score(y, y_pred, power=1, 
+                                sample_weight=sample_weight)
 
 
 @ fix_docs
@@ -984,7 +986,8 @@ class GammaRegression(bess_base):
         )
 
     def _more_tags(self):
-        return {'poor_score': True}
+        return {'poor_score': True,
+                'requires_positive_y': True}
 
     def predict(self, X):
         r"""
@@ -1042,7 +1045,8 @@ class GammaRegression(bess_base):
             sample_weight = np.ones(len(y))
         X, y, sample_weight = new_data_check(self, X, y, sample_weight)
         y_pred = self.predict(X)
-        return d2_tweedie_score(y, y_pred, power=2, sample_weight=sample_weight)
+        return d2_tweedie_score(y, y_pred, power=2, 
+                                sample_weight=sample_weight)
 
 
 @ fix_docs
@@ -1222,18 +1226,13 @@ class OrdinalRegression(bess_base):
         X, y, sample_weight = new_data_check(self, X, y, sample_weight)
         unique_ = np.unique(y)
         class_num = len(unique_)
-        for k in range(class_num):
-            y[y == unique_[k]] = k
-        y_true = class_num - 1 - abs(np.tile(np.arange(len(unique_)), (len(y), 1)) - y[..., np.newaxis])
+        for i in range(class_num):
+            y[y == unique_[i]] = i
+        y_true = class_num - 1 - abs(np.tile(np.arange(len(unique_)), 
+                                             (len(y), 1)) - y[..., np.newaxis])
         y_score = self.predict_proba(X)
         ndcg = ndcg_score(y_true, y_score, k=k, sample_weight=sample_weight, ignore_ties=ignore_ties)
         return ndcg
-        
-        
-        # y_pred = self.predict(X)
-        # ndcg = ndcg_score(y_true=y.reshape(1, -1), y_score=y_pred.reshape(1, -1), 
-        #                   k=k, sample_weight=sample_weight, ignore_ties=ignore_ties)
-        # return ndcg
 
 
 class abessLogistic(LogisticRegression):
