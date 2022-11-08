@@ -1,6 +1,6 @@
 import warnings
 import numpy as np
-from sklearn.metrics import r2_score, ndcg_score
+from sklearn.metrics import r2_score, accuracy_score, ndcg_score, d2_tweedie_score
 from .metrics import concordance_index_censored
 from .bess_base import bess_base
 from .utilities import new_data_check
@@ -149,7 +149,7 @@ class LogisticRegression(bess_base):
             y[xbeta > 0] = self.classes_[1]
         return y
 
-    def score(self, X, y):
+    def score(self, X, y, sample_weight=None):
         r"""
         Give new data, and it returns the prediction accuracy.
 
@@ -159,13 +159,17 @@ class LogisticRegression(bess_base):
             Sample matrix.
         y : array-like, shape(n_samples,)
             Real class labels (0 or 1) for X.
+        sample_weight: array-like, shape(n_samples,), default=None
+            Sample weights.
 
         Returns
         -------
         score : float
             The mean prediction accuracy on the given data.
         """
-        X, y = new_data_check(self, X, y)
+        if sample_weight is None:
+            sample_weight = np.ones(len(y))
+        X, y, sample_weight = new_data_check(self, X, y, sample_weight)
 
         # intercept_ = np.ones(X.shape[0]) * self.intercept_
         # xbeta = X.dot(self.coef_) + intercept_
@@ -176,7 +180,7 @@ class LogisticRegression(bess_base):
         #         (np.ones(X.shape[0]) - y) *
         #         np.log(np.ones(X.shape[0]) - pr)).sum()
         y_pred = self.predict(X)
-        return (y == y_pred).mean()
+        return accuracy_score(y, y_pred, sample_weight=sample_weight)
 
 
 @ fix_docs
@@ -276,7 +280,7 @@ class LinearRegression(bess_base):
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         return X.dot(self.coef_) + intercept_
 
-    def score(self, X, y):
+    def score(self, X, y, sample_weight=None):
         r"""
         Give data, and it returns the coefficient of determination.
 
@@ -286,16 +290,19 @@ class LinearRegression(bess_base):
             Sample matrix.
         y : array-like, shape(n_samples, p_features)
             Real response for given X.
+        sample_weight: array-like, shape(n_samples,), default=None
+            Sample weights.
 
         Returns
         -------
         score : float
             :math:`R^2` score.
         """
-        X, y = new_data_check(self, X, y)
+        if sample_weight is None:
+            sample_weight = np.ones(len(y))
+        X, y, sample_weight = new_data_check(self, X, y, sample_weight)
         y_pred = self.predict(X)
-        # return ((y - y_pred) * (y - y_pred)).sum()
-        return r2_score(y, y_pred)
+        return r2_score(y, y_pred, sample_weight=sample_weight)
 
 
 @ fix_docs
@@ -402,7 +409,7 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
 
         return np.exp(X.dot(self.coef_))
 
-    def score(self, X, y):
+    def score(self, X, y, sample_weight=None):
         r"""
         Give data, and it returns C-index.
 
@@ -412,17 +419,21 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
             Sample matrix.
         y : array-like, shape(n_samples, p_features)
             Real response for given X.
+        sample_weight: array-like, shape(n_samples,), default=None
+            Sample weights.
 
         Returns
         -------
         score : float
             C-index.
         """
-        X, y = new_data_check(self, X, y)
+        if sample_weight is None:
+            sample_weight = np.ones(len(y))
+        X, y, sample_weight = new_data_check(self, X, y, sample_weight)
         risk_score = X.dot(self.coef_)
         y = np.array(y)
         result = concordance_index_censored(
-            np.array(y[:, 1], np.bool_), y[:, 0], risk_score)
+            np.array(y[:, 1], np.bool_), y[:, 0], risk_score, sample_weight=sample_weight)
         return result[0]
 
     def predict_survival_function(self, X):
@@ -549,7 +560,7 @@ class PoissonRegression(bess_base):
         xbeta_exp = np.exp(X.dot(self.coef_) + intercept_)
         return xbeta_exp
 
-    def score(self, X, y):
+    def score(self, X, y, sample_weight=None):
         r"""
         Give new data, and it returns the :math:`D^2` score.
 
@@ -559,20 +570,24 @@ class PoissonRegression(bess_base):
             Sample matrix.
         y : array-like, shape(n_samples, p_features)
             Real response for given X.
+        sample_weight: array-like, shape(n_samples,), default=None
+            Sample weights.
 
         Returns
         -------
         score : float
             :math:`D^2` score.
         """
-        X, y = new_data_check(self, X, y)
+        if sample_weight is None:
+            sample_weight = np.ones(len(y))
+        X, y, sample_weight = new_data_check(self, X, y, sample_weight)
 
         # intercept_ = np.ones(X.shape[0]) * self.intercept_
         # eta = X.dot(self.coef_) + intercept_
         # exp_eta = np.exp(eta)
         # return (y * eta - exp_eta).sum()
         y_pred = self.predict(X)
-        return d2_tweedie_score(y, y_pred, power=1)
+        return d2_tweedie_score(y, y_pred, power=1, sample_weight=sample_weight)
 
 
 @ fix_docs
@@ -689,7 +704,7 @@ class MultiTaskRegression(bess_base):
             y_pred = y_pred[:, np.newaxis]
         return y_pred
 
-    def score(self, X, y):
+    def score(self, X, y, sample_weight=None):
         r"""
         Give data, and it returns the coefficient of determination.
 
@@ -699,17 +714,20 @@ class MultiTaskRegression(bess_base):
             Sample matrix.
         y : array-like, shape(n_samples, M_responses)
             Real responses for given X.
+        sample_weight: array-like, shape(n_samples,), default=None
+            Sample weights.
 
         Returns
         -------
         score : float
             :math:`R^2` score.
         """
-        X, y = new_data_check(self, X, y)
+        if sample_weight is None:
+            sample_weight = np.ones(len(y))
+        X, y, sample_weight = new_data_check(self, X, y, sample_weight)
 
         y_pred = self.predict(X)
-        # return -((y - y_pred) * (y - y_pred)).sum()
-        return r2_score(y, y_pred)
+        return r2_score(y, y_pred, sample_weight=sample_weight)
 
 
 @ fix_docs
@@ -839,10 +857,8 @@ class MultinomialRegression(bess_base):
 
         Returns
         -------
-        y : array-like, shape(n_samples, M_responses)
-            Predict class labels for samples in X.
-            Each row contains only one "1", and its column index is the
-            predicted class for related sample.
+        y : array-like, shape(n_samples, )
+            Predicted class label for each sample in X.
         """
         X = new_data_check(self, X)
 
@@ -856,7 +872,7 @@ class MultinomialRegression(bess_base):
         cl = getattr(self, "classes_", np.arange(self.coef_.shape[1]))
         return cl[max_item]
 
-    def score(self, X, y):
+    def score(self, X, y, sample_weight=None):
         """
         Give new data, and it returns the prediction accuracy.
 
@@ -866,26 +882,30 @@ class MultinomialRegression(bess_base):
             Test data.
         y : array-like, shape(n_samples, M_responses)
             Test response (dummy variables of real class).
+        sample_weight: array-like, shape(n_samples,), default=None
+            Sample weights.
 
         Returns
         -------
         score : float
             the mean prediction accuracy.
         """
-        X, y = new_data_check(self, X, y)
+        if sample_weight is None:
+            sample_weight = np.ones(len(y))
+        X, y, sample_weight = new_data_check(self, X, y, sample_weight)
         # if (len(y.shape) == 1 or y.shape[1] == 1):
         #     y, _ = categorical_to_dummy(y.squeeze())
 
         # pr = self.predict_proba(X)
         # return np.sum(y * np.log(pr))
-        y_real = np.zeros(X.shape[0])
+        y_true = np.zeros(X.shape[0])
         if (len(y.shape) > 1 and y.shape[1] == self.coef_.shape[1]):
             # if given dummy y
-            y_real = np.nonzero(y)[1]
+            y_true = np.nonzero(y)[1]
         else:
-            y_real = y
+            y_true = y
         y_pred = self.predict(X)
-        return (y_real == y_pred).mean()
+        return accuracy_score(y_true, y_pred, sample_weight=sample_weight)
 
 
 @ fix_docs
@@ -986,7 +1006,7 @@ class GammaRegression(bess_base):
         xbeta_exp = np.exp(X.dot(self.coef_) + intercept_)
         return xbeta_exp
 
-    def score(self, X, y, weights=None):
+    def score(self, X, y, sample_weight=None):
         r"""
         Give new data, and it returns the prediction error.
 
@@ -996,26 +1016,33 @@ class GammaRegression(bess_base):
             Sample matrix.
         y : array-like, shape(n_samples, p_features)
             Real response for given X.
+        sample_weight: array-like, shape(n_samples,), default=None
+            Sample weights.
 
         Returns
         -------
         score : float
             Prediction error.
         """
-        if weights is None:
-            X = np.array(X)
-            weights = np.ones(X.shape[0])
-        X, y, weights = new_data_check(self, X, y, weights)
+        # if weights is None:
+        #     X = np.array(X)
+        #     weights = np.ones(X.shape[0])
+        # X, y, weights = new_data_check(self, X, y, weights)
 
-        def deviance(y, y_pred):
-            dev = 2 * (np.log(y_pred / y) + y / y_pred - 1)
-            return np.sum(weights * dev)
+        # def deviance(y, y_pred):
+        #     dev = 2 * (np.log(y_pred / y) + y / y_pred - 1)
+        #     return np.sum(weights * dev)
 
+        # y_pred = self.predict(X)
+        # y_mean = np.average(y, weights=weights)
+        # dev = deviance(y, y_pred)
+        # dev_null = deviance(y, y_mean)
+        # return 1 - dev / dev_null
+        if sample_weight is None:
+            sample_weight = np.ones(len(y))
+        X, y, sample_weight = new_data_check(self, X, y, sample_weight)
         y_pred = self.predict(X)
-        y_mean = np.average(y, weights=weights)
-        dev = deviance(y, y_pred)
-        dev_null = deviance(y, y_mean)
-        return 1 - dev / dev_null
+        return d2_tweedie_score(y, y_pred, power=2, sample_weight=sample_weight)
 
 
 @ fix_docs
@@ -1180,8 +1207,8 @@ class OrdinalRegression(bess_base):
             Test response (class labels for samples in X).
         k : int, default=None
             Only consider the highest k scores in the ranking. If None, use all outputs.
-        sample_weight : ndarray of shape (n_samples, ), default=None
-            If None, all samples are given the same weight.
+        sample_weight: array-like, shape(n_samples,), default=None
+            Sample weights.
         ignore_ties : bool, default=False
             Assume that there are no ties in y_pred (which is likely to be the case if y_score is continuous) for efficiency gains.
 
@@ -1190,10 +1217,23 @@ class OrdinalRegression(bess_base):
         score : float
              normalized discounted cumulative gain
         """
-        X, y = new_data_check(self, X, y)
-        y_pred = self.predict(X)
-        ndcg = ndcg_score(y_true=y.reshape(1, -1), y_score=y_pred.reshape(1, -1), k=k, sample_weight=sample_weight, ignore_ties=ignore_ties)
+        if sample_weight is None:
+            sample_weight = np.ones(len(y))
+        X, y, sample_weight = new_data_check(self, X, y, sample_weight)
+        unique_ = np.unique(y)
+        class_num = len(unique_)
+        for k in range(class_num):
+            y[y == unique_[k]] = k
+        y_true = class_num - 1 - abs(np.tile(np.arange(len(unique_)), (len(y), 1)) - y[..., np.newaxis])
+        y_score = self.predict_proba(X)
+        ndcg = ndcg_score(y_true, y_score, k=k, sample_weight=sample_weight, ignore_ties=ignore_ties)
         return ndcg
+        
+        
+        # y_pred = self.predict(X)
+        # ndcg = ndcg_score(y_true=y.reshape(1, -1), y_score=y_pred.reshape(1, -1), 
+        #                   k=k, sample_weight=sample_weight, ignore_ties=ignore_ties)
+        # return ndcg
 
 
 class abessLogistic(LogisticRegression):
