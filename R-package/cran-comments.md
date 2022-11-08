@@ -1,6 +1,6 @@
 ## Comment
 
-A new release. 
+A new release. We update info about citation. 
 
 ## Test environments
 * local R installation, R 4.1.0
