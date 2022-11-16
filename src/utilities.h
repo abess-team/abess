@@ -415,4 +415,35 @@ void add_weight(Eigen::SparseMatrix<double> &x, Eigen::VectorXd &y, Eigen::Vecto
  */
 void add_weight(Eigen::SparseMatrix<double> &x, Eigen::MatrixXd &y, Eigen::VectorXd weights);
 
+Eigen::MatrixXd combine_beta_coef0(Eigen::MatrixXd &beta, Eigen::VectorXd &coef0) {
+    int p = beta.rows();
+    int M = beta.cols();
+    Eigen::MatrixXd beta_full(p + 1, M);
+    beta_full.row(0) = coef0.transpose();
+    beta_full.bottomRows(p) = beta;
+    return beta_full;
+}
+
+Eigen::MatrixXd combine_beta_coef0(Eigen::VectorXd &beta, double &coef0) {
+    int p = beta.size();
+    Eigen::MatrixXd beta_full(p + 1, 1);
+    beta_full(0, 0) = coef0;
+    beta_full.bottomRows(p) = beta;
+    return beta_full;
+}
+
+void extract_beta_coef0(Eigen::MatrixXd &beta_full, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0) {
+    int p = beta_full.rows() - 1;
+    coef0 = beta_full.row(0).transpose();
+    beta = beta_full.bottomRows(p);
+    return;
+}
+
+void extract_beta_coef0(Eigen::MatrixXd &beta_full, Eigen::VectorXd &beta, double &coef0) {
+    int p = beta_full.rows() - 1;
+    coef0 = beta_full(0, 0);
+    beta = beta_full.bottomRows(p);
+    return;
+}
+
 #endif  // SRC_UTILITIES_H

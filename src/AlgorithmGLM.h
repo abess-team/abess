@@ -5,19 +5,113 @@
 
 using namespace std;
 
+template <class T1, class T2, class T3, class T4>
+class _abessGLM : public Algorithm<T1, T2, T3, T4> {
+   public:
+    _abessGLM(int algorithm_type, int model_type, int max_iter, int primary_model_fit_max_iter,
+              double primary_model_fit_epsilon, bool warm_start, int exchange_num, Eigen::VectorXi always_select,
+              int splicing_type, int sub_search)
+        : Algorithm<T1, T2, T3, T4>::Algorithm(algorithm_type, model_type, max_iter, primary_model_fit_max_iter,
+                                               primary_model_fit_epsilon, warm_start, exchange_num, always_select,
+                                               splicing_type, sub_search){};
+    ~_abessGLM(){};
+
+    double newton_step = 1;
+
+    virtual Eigen::MatrixXd gradian(T4 &X_full, T1 &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
+        return Eigen::MatrixXd::Zero(beta_full.rows(), beta_full.cols());
+    };
+    virtual Eigen::MatrixXd inverse_hessian(T4 &X_full, T1 &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
+        return Eigen::MatrixXd::Zero(beta_full.rows(), beta_full.rows());
+    };
+
+    bool primary_model_fit(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, double loss0,
+                           Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
+        // Approximate Newton (basic fitting)
+        int n = X.rows();
+        int p = X.cols();
+        int M = y.cols();
+        // X_full: add constant col to X
+        T4 X_full(n, p + 1);
+        X_full.rightCols(p) = X;
+        add_constant_column(X_full);
+        // beta_full: combine beta and coef0
+        Eigen::MatrixXd beta_full = combine_beta_coef0(beta, coef0);
+
+        // initialize
+        double step = this->newton_step;
+        double loss = this->loss_function(X, y, weights, beta, coef0, A, g_index, g_size, this->lambda_level);
+        for (int iter = 0; iter < this->primary_model_fit_max_iter; iter++) {
+            Eigen::MatrixXd g = this->gradian(X_full, y, weights, beta_full);              // gradian matrix
+            Eigen::MatrixXd inv_h = this->inverse_hessian(X_full, y, weights, beta_full);  // inverse hessian matrix
+            Eigen::MatrixXd beta_new = beta_full - step * inv_h * g;
+            extract_beta_coef0(beta_new, beta, coef0);
+            double loss_new = this->loss_function(X, y, weights, beta, coef0, A, g_index, g_size, this->lambda_level);
+            // step down if loss_new > loss
+            while (loss_new > loss && step > this->primary_model_fit_epsilon) {
+                step /= 2;
+                beta_new = beta_full - step * inv_h * g;
+                extract_beta_coef0(beta_new, beta, coef0);
+                loss_new = this->loss_function(X, y, weights, beta, coef0, A, g_index, g_size, this->lambda_level);
+            }
+
+            // Update beta_full if loss decrease
+            if (loss_new > loss) {
+                break;
+            } else {
+                beta_full = beta_new;
+            }
+
+            // Early stop 1: expected final loss is too large
+            double expected_loss = loss - (this->primary_model_fit_max_iter - iter) * (loss - loss_new);
+            if (expected_loss >= loss0 + this->tau) break;
+            // Early stop 2: step is too small
+            if (step < this->primary_model_fit_epsilon) break;
+        }
+
+        // extract beta and coef0
+        extract_beta_coef0(beta_full, beta, coef0);
+        return true;
+    };
+};
+
 template <class T4>
-class abessLogistic : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
+class abessLogistic : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
    public:
     bool approximate_Newton; /* use approximate Newton method or not. */
 
     abessLogistic(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10,
                   double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5,
                   Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
-        : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(
+        : _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_abessGLM(
               algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start,
               exchange_num, always_select, splicing_type, sub_search){};
 
     ~abessLogistic(){};
+
+    Eigen::MatrixXd gradian(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
+        Eigen::VectorXd beta0 = beta_full.col(0);
+        Eigen::VectorXd Pi = pi(X_full, y, beta0);
+        Eigen::VectorXd g = -X_full.transpose() * ((y - Pi).cwiseProduct(weights));
+        return Eigen::MatrixXd(g);
+    };
+
+    Eigen::MatrixXd inverse_hessian(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights,
+                                    Eigen::MatrixXd &beta_full) {
+        Eigen::VectorXd beta0 = beta_full.col(0);
+        Eigen::VectorXd Pi = pi(X_full, y, beta0);
+        Eigen::VectorXd one = Eigen::VectorXd::Ones(X_full.rows());
+        Eigen::VectorXd W = Pi.cwiseProduct(one - Pi);
+        for (int i = 0; i < W.size(); i++) {
+            if (W(i) < 0.001) W(i) = 0.001;
+        }
+        Eigen::VectorXd inv_h_diag(X_full.cols());
+        for (int i = 0; i < X_full.cols(); i++) {
+            inv_h_diag(i) = X_full.col(i).eval().cwiseProduct(W).cwiseProduct(weights).dot(X_full.col(i).eval());
+            inv_h_diag(i) = 1 / inv_h_diag(i);
+        }
+        return Eigen::MatrixXd(inv_h_diag.asDiagonal());
+    };
 
     bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0,
                            double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
@@ -26,6 +120,12 @@ class abessLogistic : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double,
             return true;
         }
 
+        if (this->approximate_Newton) {
+            // call _abessGLM
+            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::primary_model_fit(
+                x, y, weights, beta, coef0, loss0, A, g_index, g_size);
+        }
+        
         int n = x.rows();
         int p = x.cols();
 
@@ -33,9 +133,7 @@ class abessLogistic : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double,
         T4 X(n, p + 1);
         X.rightCols(p) = x;
         add_constant_column(X);
-
         T4 X_new(X);
-
         Eigen::VectorXd beta0 = Eigen::VectorXd::Zero(p + 1);
         beta0(0) = coef0;
         beta0.tail(p) = beta;
@@ -59,84 +157,41 @@ class abessLogistic : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double,
         Eigen::VectorXd g(p + 1);
         Eigen::VectorXd beta1;
         for (j = 0; j < this->primary_model_fit_max_iter; j++) {
-            // To do: Approximate Newton method
-            if (this->approximate_Newton) {
-                Eigen::VectorXd h_diag(p + 1);
-                for (int i = 0; i < (p + 1); i++) {
-                    h_diag(i) = X.col(i).eval().cwiseProduct(W).cwiseProduct(weights).dot(X.col(i).eval());
-                }
-                g = X.transpose() * ((y - Pi).cwiseProduct(weights));
-                beta1 = beta0 + step * g.cwiseQuotient(h_diag);
-                Pi = pi(X, y, beta1);
-                log_Pi = Pi.array().log();
-                log_1_Pi = (one - Pi).array().log();
-                loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) -
-                          this->lambda_level * beta1.cwiseAbs2().sum();
-
-                while (loglik1 < loglik0 && step > this->primary_model_fit_epsilon) {
-                    step = step / 2;
-                    beta1 = beta0 + step * g.cwiseProduct(h_diag);
-                    Pi = pi(X, y, beta1);
-                    log_Pi = Pi.array().log();
-                    log_1_Pi = (one - Pi).array().log();
-                    loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) -
-                              this->lambda_level * beta1.cwiseAbs2().sum();
-                }
-
-                bool condition1 =
-                    -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
-                // bool condition1 = false;
-                if (condition1) break;
-
-                if (loglik1 > loglik0) {
-                    beta0 = beta1;
-                    loglik0 = loglik1;
-                    W = Pi.cwiseProduct(one - Pi);
-                    for (int i = 0; i < n; i++) {
-                        if (W(i) < 0.001) W(i) = 0.001;
-                    }
-                }
-
-                if (step < this->primary_model_fit_epsilon) {
-                    break;
-                }
-            } else {
-                for (int i = 0; i < p + 1; i++) {
-                    X_new.col(i) = X.col(i).cwiseProduct(W).cwiseProduct(weights);
-                }
-
-                Eigen::MatrixXd XTX = 2 * this->lambda_level * lambdamat + X_new.transpose() * X;
-                // if (check_ill_condition(XTX)) return false;
-                beta0 = XTX.ldlt().solve(X_new.transpose() * Z);
-
-                // overload_ldlt(X_new, X, Z, beta0);
-
-                // CG
-                // ConjugateGradient<T4, Lower | Upper> cg;
-                // cg.compute(X_new.transpose() * X);
-                // beta0 = cg.solve(X_new.transpose() * Z);
-
-                Pi = pi(X, y, beta0);
-                log_Pi = Pi.array().log();
-                log_1_Pi = (one - Pi).array().log();
-                loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) -
-                          this->lambda_level * beta0.cwiseAbs2().sum();
-
-                bool condition1 =
-                    -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
-                bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
-                bool condition3 = abs(loglik1) < min(1e-3, this->tau);
-                if (condition1 || condition2 || condition3) {
-                    break;
-                }
-
-                loglik0 = loglik1;
-                W = Pi.cwiseProduct(one - Pi);
-                for (int i = 0; i < n; i++) {
-                    if (W(i) < 0.001) W(i) = 0.001;
-                }
-                Z = X * beta0 + (y - Pi).cwiseQuotient(W);
+            for (int i = 0; i < p + 1; i++) {
+                X_new.col(i) = X.col(i).cwiseProduct(W).cwiseProduct(weights);
             }
+
+            Eigen::MatrixXd XTX = 2 * this->lambda_level * lambdamat + X_new.transpose() * X;
+            // if (check_ill_condition(XTX)) return false;
+            beta0 = XTX.ldlt().solve(X_new.transpose() * Z);
+
+            // overload_ldlt(X_new, X, Z, beta0);
+
+            // CG
+            // ConjugateGradient<T4, Lower | Upper> cg;
+            // cg.compute(X_new.transpose() * X);
+            // beta0 = cg.solve(X_new.transpose() * Z);
+
+            Pi = pi(X, y, beta0);
+            log_Pi = Pi.array().log();
+            log_1_Pi = (one - Pi).array().log();
+            loglik1 = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights) -
+                      this->lambda_level * beta0.cwiseAbs2().sum();
+
+            bool condition1 =
+                -(loglik1 + (this->primary_model_fit_max_iter - j - 1) * (loglik1 - loglik0)) + this->tau > loss0;
+            bool condition2 = abs(loglik0 - loglik1) / (0.1 + abs(loglik1)) < this->primary_model_fit_epsilon;
+            bool condition3 = abs(loglik1) < min(1e-3, this->tau);
+            if (condition1 || condition2 || condition3) {
+                break;
+            }
+
+            loglik0 = loglik1;
+            W = Pi.cwiseProduct(one - Pi);
+            for (int i = 0; i < n; i++) {
+                if (W(i) < 0.001) W(i) = 0.001;
+            }
+            Z = X * beta0 + (y - Pi).cwiseQuotient(W);
         }
 
         beta = beta0.tail(p).eval();
@@ -158,7 +213,7 @@ class abessLogistic : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double,
         Eigen::VectorXd log_1_Pi = (one - Pi).array().log();
         double loglik_logit = (y.cwiseProduct(log_Pi) + (one - y).cwiseProduct(log_1_Pi)).dot(weights);
 
-        return -loglik_logit + lambda * beta.cwiseAbs2().sum();
+        return -loglik_logit + lambda * coef.cwiseAbs2().sum();
     }
 
     void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0,
