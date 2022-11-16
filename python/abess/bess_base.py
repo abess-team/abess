@@ -39,6 +39,12 @@ class bess_base(BaseEstimator):
         default=range(min(n, int(n/(log(log(n))log(p))))).
         An integer vector representing the alternative support sizes.
         Only used when path_type = "seq".
+    alpha : float, optional, default=0
+        Constant that multiples the L2 term in loss function, controlling
+        regularization strength. It should be non-negative.
+
+        - If alpha = 0, it indicates ordinary least square.
+
     s_min : int, optional, default=0
         The lower bound of golden-section-search for sparsity searching.
     s_max : int, optional, default=min(n, int(n/(log(log(n))log(p)))).
@@ -314,9 +320,12 @@ class bess_base(BaseEstimator):
             ic_type_int = 3
         elif self.ic_type == "ebic":
             ic_type_int = 4
+        elif self.ic_type == "hic":
+            ic_type_int = 5
         else:
             raise ValueError(
-                "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
+                "ic_type should be \"aic\", \"bic\", \"ebic\","
+                " \"gic\" or \"hic\".")
 
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):

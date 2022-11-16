@@ -1,10 +1,15 @@
 import warnings
 import numpy as np
+from sklearn.metrics import r2_score, ndcg_score
 from .metrics import concordance_index_censored
 from .bess_base import bess_base
-from .utilities import (new_data_check, categorical_to_dummy)
+from .utilities import new_data_check
 from .functions import (BreslowEstimator)
 # from .nonparametric import _compute_counts
+try:
+    from sklearn.metrics import d2_tweedie_score
+except ImportError:
+    from .functions import d2_tweedie_score
 
 
 def fix_docs(cls):
@@ -146,7 +151,7 @@ class LogisticRegression(bess_base):
 
     def score(self, X, y):
         r"""
-        Give new data, and it returns the entropy function.
+        Give new data, and it returns the prediction accuracy.
 
         Parameters
         ----------
@@ -158,18 +163,20 @@ class LogisticRegression(bess_base):
         Returns
         -------
         score : float
-            The value of entropy function under given data.
+            The mean prediction accuracy on the given data.
         """
         X, y = new_data_check(self, X, y)
 
-        intercept_ = np.ones(X.shape[0]) * self.intercept_
-        xbeta = X.dot(self.coef_) + intercept_
-        xbeta[xbeta > 30] = 30
-        xbeta[xbeta < -30] = -30
-        pr = np.exp(xbeta) / (1 + np.exp(xbeta))
-        return (y * np.log(pr) +
-                (np.ones(X.shape[0]) - y) *
-                np.log(np.ones(X.shape[0]) - pr)).sum()
+        # intercept_ = np.ones(X.shape[0]) * self.intercept_
+        # xbeta = X.dot(self.coef_) + intercept_
+        # xbeta[xbeta > 30] = 30
+        # xbeta[xbeta < -30] = -30
+        # pr = np.exp(xbeta) / (1 + np.exp(xbeta))
+        # return (y * np.log(pr) +
+        #         (np.ones(X.shape[0]) - y) *
+        #         np.log(np.ones(X.shape[0]) - pr)).sum()
+        y_pred = self.predict(X)
+        return (y == y_pred).mean()
 
 
 @ fix_docs
@@ -248,8 +255,7 @@ class LinearRegression(bess_base):
         )
 
     def _more_tags(self):
-        return {'multioutput': False,
-                'poor_score': True}
+        return {'multioutput': False}
 
     def predict(self, X):
         r"""
@@ -272,7 +278,7 @@ class LinearRegression(bess_base):
 
     def score(self, X, y):
         r"""
-        Give data, and it returns the prediction error.
+        Give data, and it returns the coefficient of determination.
 
         Parameters
         ----------
@@ -284,11 +290,12 @@ class LinearRegression(bess_base):
         Returns
         -------
         score : float
-            Prediction error.
+            :math:`R^2` score.
         """
         X, y = new_data_check(self, X, y)
         y_pred = self.predict(X)
-        return -((y - y_pred) * (y - y_pred)).sum()
+        # return ((y - y_pred) * (y - y_pred)).sum()
+        return r2_score(y, y_pred)
 
 
 @ fix_docs
@@ -544,7 +551,7 @@ class PoissonRegression(bess_base):
 
     def score(self, X, y):
         r"""
-        Give new data, and it returns the prediction error.
+        Give new data, and it returns the :math:`D^2` score.
 
         Parameters
         ----------
@@ -556,14 +563,16 @@ class PoissonRegression(bess_base):
         Returns
         -------
         score : float
-            Prediction error.
+            :math:`D^2` score.
         """
         X, y = new_data_check(self, X, y)
 
-        intercept_ = np.ones(X.shape[0]) * self.intercept_
-        eta = X.dot(self.coef_) + intercept_
-        exp_eta = np.exp(eta)
-        return (y * eta - exp_eta).sum()
+        # intercept_ = np.ones(X.shape[0]) * self.intercept_
+        # eta = X.dot(self.coef_) + intercept_
+        # exp_eta = np.exp(eta)
+        # return (y * eta - exp_eta).sum()
+        y_pred = self.predict(X)
+        return d2_tweedie_score(y, y_pred, power=1)
 
 
 @ fix_docs
@@ -654,8 +663,7 @@ class MultiTaskRegression(bess_base):
 
     def _more_tags(self):
         return {'multioutput': True,
-                'multioutput_only': True,
-                'poor_score': True}
+                'multioutput_only': True}
 
     def predict(self, X):
         r"""
@@ -683,7 +691,7 @@ class MultiTaskRegression(bess_base):
 
     def score(self, X, y):
         r"""
-        Give data, and it returns the prediction error.
+        Give data, and it returns the coefficient of determination.
 
         Parameters
         ----------
@@ -695,12 +703,13 @@ class MultiTaskRegression(bess_base):
         Returns
         -------
         score : float
-            Prediction error.
+            :math:`R^2` score.
         """
         X, y = new_data_check(self, X, y)
 
         y_pred = self.predict(X)
-        return -((y - y_pred) * (y - y_pred)).sum()
+        # return -((y - y_pred) * (y - y_pred)).sum()
+        return r2_score(y, y_pred)
 
 
 @ fix_docs
@@ -849,7 +858,7 @@ class MultinomialRegression(bess_base):
 
     def score(self, X, y):
         """
-        Give new data, and it returns the entropy function.
+        Give new data, and it returns the prediction accuracy.
 
         Parameters
         ----------
@@ -861,14 +870,22 @@ class MultinomialRegression(bess_base):
         Returns
         -------
         score : float
-            entropy function
+            the mean prediction accuracy.
         """
         X, y = new_data_check(self, X, y)
-        if (len(y.shape) == 1 or y.shape[1] == 1):
-            y, _ = categorical_to_dummy(y.squeeze())
+        # if (len(y.shape) == 1 or y.shape[1] == 1):
+        #     y, _ = categorical_to_dummy(y.squeeze())
 
-        pr = self.predict_proba(X)
-        return np.sum(y * np.log(pr))
+        # pr = self.predict_proba(X)
+        # return np.sum(y * np.log(pr))
+        y_real = np.zeros(X.shape[0])
+        if (len(y.shape) > 1 and y.shape[1] == self.coef_.shape[1]):
+            # if given dummy y
+            y_real = np.nonzero(y)[1]
+        else:
+            y_real = y
+        y_pred = self.predict(X)
+        return (y_real == y_pred).mean()
 
 
 @ fix_docs
@@ -1150,6 +1167,33 @@ class OrdinalRegression(bess_base):
     #         y = categorical_to_dummy(y)
 
     #     return ???
+    
+    def score(self, X, y, k=None, sample_weight=None, ignore_ties=False):
+        """
+        Give new data, and it returns normalized discounted cumulative gain.
+
+        Parameters
+        ----------
+        X : array-like, shape(n_samples, p_features)
+            Test data.
+        y : array-like, shape(n_samples, )
+            Test response (class labels for samples in X).
+        k : int, default=None
+            Only consider the highest k scores in the ranking. If None, use all outputs.
+        sample_weight : ndarray of shape (n_samples, ), default=None
+            If None, all samples are given the same weight.
+        ignore_ties : bool, default=False
+            Assume that there are no ties in y_pred (which is likely to be the case if y_score is continuous) for efficiency gains.
+
+        Returns
+        -------
+        score : float
+             normalized discounted cumulative gain
+        """
+        X, y = new_data_check(self, X, y)
+        y_pred = self.predict(X)
+        ndcg = ndcg_score(y_true=y.reshape(1, -1), y_score=y_pred.reshape(1, -1), k=k, sample_weight=sample_weight, ignore_ties=ignore_ties)
+        return ndcg
 
 
 class abessLogistic(LogisticRegression):

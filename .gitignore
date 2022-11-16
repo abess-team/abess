@@ -138,3 +138,10 @@ python/*.so
 *.pptx
 .vs/
 *.pyproj
+
+docs/real-data/*/*.csv
+docs/real-data/*/*.data
+docs/real-data/*/*.txt
+docs/real-data/*/*.rdata
+docs/real-data/*/*.zip
+docs/real-data/*/*.npy

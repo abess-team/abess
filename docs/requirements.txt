@@ -2,3 +2,8 @@ Sphinx
 sphinx-gallery
 sphinxcontrib-phpdomain
 sphinx-autoapi
+geomstats
+DoubleML
+pyts
+dowhy
+numpy<1.23

@@ -20,12 +20,12 @@ Power of **abess** Library: Empirical Comparison
 # presents a poor prediction error, the ``statsmodels`` runs slow and the
 # ``L0bnb`` cannot adaptively choose sparsity level. So their results are not
 # showed here.)
-# 
+#
 
 ######################################
 # Simulation Setting
 # ^^^^^^^^^^
-# 
+#
 # Both packages are compared in three aspects including the prediction
 # performance, the variable selection performance, and the computation
 # efficiency.
@@ -46,10 +46,10 @@ Power of **abess** Library: Empirical Comparison
 # number of predictors is :math:`p=8000` and the size of data is
 # :math:`n=500`. The true coefficient contains :math:`k=10` nonzero
 # entries uniformly distributed in :math:`[b,B]`:
-# 
-# -  For linear regression (``family = "gaussian"``), we set :math:`b = 5\sqrt{2\ln p / n}` and :math:`B = 100b`. 
-# -  For logistic regression (``family = "binomial"``), we set :math:`b = 10\sqrt{2\ln p / n}` and :math:`B = 5b`. 
-# 
+#
+# -  For linear regression (``family = "gaussian"``), we set :math:`b = 5\sqrt{2\ln p / n}` and :math:`B = 100b`.
+# -  For logistic regression (``family = "binomial"``), we set :math:`b = 10\sqrt{2\ln p / n}` and :math:`B = 5b`.
+#
 # In each regression, we test for both low
 # (:math:`\rho=0.1`) and high correlation (:math:`\rho=0.7`) scenarios.
 # What’s more, a random noise generated from a standard Gaussian
@@ -57,12 +57,12 @@ Power of **abess** Library: Empirical Comparison
 # regression.
 #
 # All the performances are averaged over 20 replications.
-# All experiments are evaluated on a Ubuntu platform with Intel(R)
-# Core(TM) i9-9940X CPU @ 3.30GHz and 48 RAM.
+# All experiments are evaluated on a Arch Linux platform with Intel(R)
+# Core(TM) i5-6500 CPU @ 3.20GHz and 16 RAM.
 #
 # .. code:: bash
 #
-#    $ python abess/docs/simulation/Python/perform.py
+#    $ python abess/docs/simulation/Python/plot_results_figure.py
 
 ##############################################################
 # Numerical Results
@@ -94,6 +94,6 @@ Power of **abess** Library: Empirical Comparison
 #
 # .. |image0| image:: ../../Tutorial/figure/perform.png
 # .. |image1| image:: ../../Tutorial/figure/timings.png
-# 
+#
 # sphinx_gallery_thumbnail_path = 'Tutorial/figure/timings.png'
-# 
+#

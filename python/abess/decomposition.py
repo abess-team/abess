@@ -211,10 +211,12 @@ class SparsePCA(bess_base):
             ic_type_int = 3
         elif self.ic_type == "ebic":
             ic_type_int = 4
+        elif self.ic_type == "hic":
+            ic_type_int = 5
         else:
             raise ValueError(
                 "ic_type should be \"loss\", \"aic\", \"bic\","
-                " \"ebic\" or \"gic\"")
+                " \"ebic\", \"gic\" or \"hic\".")
 
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
@@ -505,9 +507,12 @@ class RobustPCA(bess_base):
             ic_type_int = 3
         elif self.ic_type == "ebic":
             ic_type_int = 4
+        elif self.ic_type == "hic":
+            ic_type_int = 5
         else:
             raise ValueError(
-                "ic_type should be \"aic\", \"bic\", \"ebic\" or \"gic\"")
+                "ic_type should be \"aic\", \"bic\", \"ebic\", \"gic\", "
+                "or \"hic\".")
 
         # Group
         if group is None:
