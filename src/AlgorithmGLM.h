@@ -1917,7 +1917,7 @@ class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
               exchange_num, always_select, splicing_type, sub_search){};
     ~abessOrdinal(){};
     // We only use beta.col(0) and coef0.head(k) which k = coef0.size() - 1 rather than the whole beta and coef0.
-    bool gradient(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXd &g) {
+    bool gradient(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, Eigen::VectorXd &g) {
         const int n = X.rows();
         const int p = X.cols();
         const int k = coef0.size() - 1;
@@ -1958,7 +1958,7 @@ class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
         for (int i1 = 0; i1 < n; i1++) {
             for (int i2 = 0; i2 < k; i2++) {
                 grad_L(i1, i2) =
-                    (y(i1, i2) / P(i1, i2) - y(i1, i2 + 1) / P(i1, i2 + 1)) * logit(i1, i2) * (1.0 - logit(i1, i2));
+                    (y(i1, i2) / P(i1, i2) - y(i1, i2 + 1) / P(i1, i2 + 1)) * logit(i1, i2) * (1.0 - logit(i1, i2)) * weights(i1);
             }
         }
 
@@ -1970,7 +1970,7 @@ class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
         return true;
     }
 
-    bool hessianCore(T4 &X, Eigen::MatrixXd &y, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0,
+    bool hessianCore(T4 &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0,
                      Eigen::VectorXd &h_intercept, Eigen::VectorXd &W) {
         const int n = X.rows();
         const int p = X.cols();
@@ -2010,7 +2010,7 @@ class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
         for (int i2 = 0; i2 < k; i2++) {
             for (int i1 = 0; i1 < n; i1++) {
                 h_intercept(i2) += (1.0 / P(i1, i2) + 1.0 / P(i1, i2 + 1)) * logit(i1, i2) * logit(i1, i2) *
-                                   (1.0 - logit(i1, i2)) * (1.0 - logit(i1, i2));
+                                   (1.0 - logit(i1, i2)) * (1.0 - logit(i1, i2)) * weights(i1);
             }
         }
 
@@ -2024,6 +2024,7 @@ class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
                 W(i) -= 1.0 / P(i, i1 + 1) * logit(i, i1) * logit(i, i1 + 1) * (1.0 - logit(i, i1)) *
                         (1.0 - logit(i, i1 + 1));
             }
+            W(i) *= weights(i);
         }
 
         return true;
@@ -2057,7 +2058,7 @@ class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
         loglik = -loss_function(X, y, weights, beta, coef0, A, g_indeX, g_size, this->lambda_level);
 
         for (int j = 0; j < this->primary_model_fit_max_iter; j++) {
-            if (!gradient(X, y, beta, coef0, g) || !hessianCore(X, y, beta, coef0, h_intercept, W)) {
+            if (!gradient(X, y, weights, beta, coef0, g) || !hessianCore(X, y, weights, beta, coef0, h_intercept, W)) {
                 return false;
             }
 
@@ -2151,13 +2152,13 @@ class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
             for (int j = 0; j < k + 1; j++) {
                 if (y(i, j) == 1) {
                     if (j == 0) {
-                        loss += log(1 + exp(-xbeta(i) - coef0(0)));
+                        loss += log(1 + exp(-xbeta(i) - coef0(0))) * weights(i);
                     } else if (j == k) {
-                        loss -= log(1 - 1.0 / (1 + exp(-xbeta(i) - coef0(k - 1))));
+                        loss -= log(1 - 1.0 / (1 + exp(-xbeta(i) - coef0(k - 1)))) * weights(i);
                     } else {
                         pro = 1.0 / (1 + exp(-xbeta(i) - coef0(j))) - 1.0 / (1 + exp(-xbeta(i) - coef0(j - 1)));
                         if (pro < 1e-20) pro = 1e-20;
-                        loss -= log(pro);
+                        loss -= log(pro) * weights(i);
                     }
                     break;
                 }
@@ -2179,8 +2180,8 @@ class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
         Eigen::VectorXd d(p);
         Eigen::VectorXd h_intercept = Eigen::VectorXd::Zero(k);
 
-        gradient(X, y, beta, coef0, d);
-        hessianCore(X, y, beta, coef0, h_intercept, W);
+        gradient(X, y, weights, beta, coef0, d);
+        hessianCore(X, y, weights, beta, coef0, h_intercept, W);
 
         Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
         Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
@@ -2224,7 +2225,7 @@ class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
         Eigen::VectorXd h_intercept = Eigen::VectorXd::Zero(k);
         Eigen::VectorXd W = Eigen::VectorXd::Zero(n);
 
-        hessianCore(X, y, beta, coef0, h_intercept, W);
+        hessianCore(X, y, weights, beta, coef0, h_intercept, W);
 
         T4 XA_new = XA;
         for (int j = 0; j < XA.cols(); j++) {
