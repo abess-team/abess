@@ -10,4 +10,4 @@ MultiTaskRegression
     Please note that it will be deprecated in version 0.6.0. 
 
 .. autoclass:: abess.linear.MultiTaskRegression
-    :members: fit, predict, score
+    :members: fit, predict, score, get_params, set_params
