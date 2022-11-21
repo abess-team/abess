@@ -6,4 +6,4 @@ OrdinalRegression
     :local:
 
 .. autoclass:: abess.linear.OrdinalRegression
-    :members: fit
+    :members: fit, get_params, set_params
