@@ -152,7 +152,7 @@ class TestAlgorithm:
         # score
         score = model1.score(test_data.x, test_data.y)
         sample_weight = np.random.rand(n)
-        score = model1.score(test_data.x, test_data.y, 
+        score = model1.score(test_data.x, test_data.y,
                              sample_weight=sample_weight)
         assert score > 0.5
 
@@ -212,7 +212,7 @@ class TestAlgorithm:
         score = model1.score(data.x, data.y)
         sample_weight = np.random.rand(n)
         score = model1.score(data.x, data.y,
-                             sample_weight = sample_weight)
+                             sample_weight=sample_weight)
         assert not np.isnan(score)
 
         # approximate Newton
@@ -253,7 +253,7 @@ class TestAlgorithm:
             reg = PoissonRegressor(
                 alpha=0, tol=1e-6, max_iter=200)
             reg.fit(new_x, data.y)
-            assert_value(coef[nonzero], reg.coef_)
+            assert_value(coef[nonzero], reg.coef_, 0.1, 0.1)
 
         # null
         check_estimator(abess.PoissonRegression())
@@ -270,7 +270,7 @@ class TestAlgorithm:
         score = model1.score(test_data.x, test_data.y)
         sample_weight = np.random.rand(n)
         score = model1.score(test_data.x, test_data.y,
-                             sample_weight = sample_weight)
+                             sample_weight=sample_weight)
         assert score > 0.5
 
         # approximate Newton
@@ -312,7 +312,7 @@ class TestAlgorithm:
         score = model1.score(test_data.x, test_data.y)
         sample_weight = np.random.rand(n)
         score = model1.score(test_data.x, test_data.y,
-                             sample_weight = sample_weight)
+                             sample_weight=sample_weight)
         assert score > 0.5
 
         # covariance update
@@ -380,7 +380,7 @@ class TestAlgorithm:
         cate_y = np.repeat(np.arange(n / 10), 10)
         model1.fit(data.x, cate_y)
         score = model1.score(data.x, cate_y,
-                             sample_weight = sample_weight)
+                             sample_weight=sample_weight)
         assert not np.isnan(score)
 
     @staticmethod
@@ -489,8 +489,8 @@ class TestAlgorithm:
         # score
         score = model1.score(data.x, data.y)
         sample_weight = np.random.rand(100)
-        score = model1.score(data.x, data.y, 
-                             sample_weight = sample_weight)
+        score = model1.score(data.x, data.y,
+                             sample_weight=sample_weight)
         assert not np.isnan(score)
 
     @staticmethod
@@ -558,7 +558,7 @@ class TestAlgorithm:
         # score
         sample_weight = np.random.rand(100)
         score_ordinal = model1.score(data.x, data.y,
-                             sample_weight=sample_weight)
+                                     sample_weight=sample_weight)
         score_ordinal = model1.score(data.x, data.y)
         y_random = data.y.copy()
         np.random.shuffle(y_random)

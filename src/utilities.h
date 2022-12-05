@@ -432,14 +432,22 @@ Eigen::MatrixXd combine_beta_coef0(Eigen::VectorXd &beta, double &coef0) {
     return beta_full;
 }
 
-void extract_beta_coef0(Eigen::MatrixXd &beta_full, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0) {
+void extract_beta_coef0(Eigen::MatrixXd &beta_full, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, bool add_constant) {
+    if (!add_constant) {
+        beta = beta_full;
+        return;
+    }
     int p = beta_full.rows() - 1;
     coef0 = beta_full.row(0).transpose();
     beta = beta_full.bottomRows(p);
     return;
 }
 
-void extract_beta_coef0(Eigen::MatrixXd &beta_full, Eigen::VectorXd &beta, double &coef0) {
+void extract_beta_coef0(Eigen::MatrixXd &beta_full, Eigen::VectorXd &beta, double &coef0, bool add_constant) {
+    if (!add_constant) {
+        beta = beta_full;
+        return;
+    }
     int p = beta_full.rows() - 1;
     coef0 = beta_full(0, 0);
     beta = beta_full.bottomRows(p);

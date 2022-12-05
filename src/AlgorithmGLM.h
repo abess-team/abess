@@ -18,6 +18,8 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
 
     bool approximate_Newton; /* use approximate Newton method or not. */
     double newton_step = 1;
+    // Eigen::MatrixXd G;  // Gradian
+    // Eigen::MatrixXd H;  // Hessian
 
     /* --- TO BE IMPLEMENTED IN CHILD CLASS --- */
     virtual Eigen::MatrixXd inv_link_function(T4 &X_full, Eigen::MatrixXd &beta_full) {
@@ -36,67 +38,64 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
     };
     /* ---------------------------------------- */
 
-    bool primary_model_fit(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, double loss0,
-                           Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
-        if (this->approximate_Newton) {
-            // Fitting method 1: Approximate Newton
-            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_approx_newton_fit(
-                X, y, weights, beta, coef0, loss0, A, g_index, g_size);
-        } else {
-            // Fitting method 2: Iteratively Reweighted Least Squares
-            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_IRLS_fit(X, y, weights, beta, coef0, loss0,
-                                                                                      A, g_index, g_size);
-        }
-    };
-
-    Eigen::VectorXd _inv_hessian_diag(T4 &X_full, T1 &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
-        // returns diagnal values of hessian matrix
+    virtual Eigen::MatrixXd hessian(T4 &X_full, T1 &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
+        // returns hessian matrix
         Eigen::VectorXd D = this->hessian_core(X_full, y, weights, beta_full);
-        Eigen::VectorXd inv_H_diag(X_full.cols());
+        Eigen::VectorXd H_diag(X_full.cols());
         for (int i = 0; i < X_full.cols(); i++) {
-            inv_H_diag(i) = X_full.col(i).eval().cwiseProduct(D).cwiseProduct(weights).dot(X_full.col(i).eval());
-            if (i > 0) {
-                inv_H_diag(i) += 2 * this->lambda_level;
+            H_diag(i) = X_full.col(i).eval().cwiseProduct(D).cwiseProduct(weights).dot(X_full.col(i).eval());
+            if (H_diag(i) < 1e-7) {
+                H_diag(i) = 1e-7;
             }
-            if (inv_H_diag(i) < 1e-7) {
-                inv_H_diag(i) = 1e7;
-            } else
-                inv_H_diag(i) = 1.0 / inv_H_diag(i);
         }
-        return inv_H_diag;
+        return Eigen::MatrixXd(H_diag.asDiagonal());
     };
 
     bool _approx_newton_fit(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, double loss0,
-                            Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
+                            Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size,
+                            bool add_constant = true) {
         // Fitting method 1: Approximate Newton
         int n = X.rows();
         int p = X.cols();
         int M = y.cols();
 
-        // X_full: add constant col to X
-        T4 X_full(n, p + 1);
-        X_full.rightCols(p) = X;
-        add_constant_column(X_full);
-        // beta_full: combine beta and coef0
-        Eigen::MatrixXd beta_full = combine_beta_coef0(beta, coef0);
+        T4 X_full;
+        Eigen::MatrixXd beta_full;
+        if (add_constant) {
+            // X_full: add constant col to X
+            X_full.resize(n, p + 1);
+            X_full.rightCols(p) = X;
+            add_constant_column(X_full);
+            // beta_full: combine beta and coef0
+            beta_full = combine_beta_coef0(beta, coef0);
+        } else {
+            X_full = X;
+            beta_full = beta;
+        }
 
         // initialize
         double step = this->newton_step;
         double loss = this->loss_function(X, y, weights, beta, coef0, A, g_index, g_size, this->lambda_level);
         for (int iter = 0; iter < this->primary_model_fit_max_iter; iter++) {
-            Eigen::MatrixXd G = this->gradian(X_full, y, weights, beta_full) + 2 * this->lambda_level * beta_full;
-            Eigen::VectorXd inv_H_diag =
-                this->_inv_hessian_diag(X_full, y, weights, beta_full);  // diag values in hessian matrix
-            Eigen::MatrixXd inv_H = Eigen::MatrixXd(inv_H_diag.asDiagonal());
+            // get Gradian/Hessian (no penalty)
+            Eigen::MatrixXd G = this->gradian(X_full, y, weights, beta_full);
+            Eigen::MatrixXd H = this->hessian(X_full, y, weights, beta_full);
+            // update direction (add penalty)
+            Eigen::MatrixXd direction = G + 2 * this->lambda_level * beta_full;
+            for (int i = 0; i < p + 1; i++) {
+                double hii = H(i, i);
+                if (i > 0) hii += 2 * this->lambda_level;
+                direction.row(i) /= hii;
+            }
             // update beta
-            Eigen::MatrixXd beta_new = beta_full - step * inv_H * G;
-            extract_beta_coef0(beta_new, beta, coef0);
+            Eigen::MatrixXd beta_new = beta_full + step * direction;
+            extract_beta_coef0(beta_new, beta, coef0, add_constant);
             double loss_new = this->loss_function(X, y, weights, beta, coef0, A, g_index, g_size, this->lambda_level);
             // step down if loss_new > loss
             while (loss_new > loss && step > this->primary_model_fit_epsilon) {
                 step /= 2;
-                beta_new = beta_full - step * inv_H * G;
-                extract_beta_coef0(beta_new, beta, coef0);
+                beta_new = beta_full + step * direction;
+                extract_beta_coef0(beta_new, beta, coef0, add_constant);
                 loss_new = this->loss_function(X, y, weights, beta, coef0, A, g_index, g_size, this->lambda_level);
             }
 
@@ -105,6 +104,8 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
                 break;
             } else {
                 beta_full = beta_new;
+                // this->G = G;
+                // this->H = H;
             }
 
             // Early stop 1: expected final loss is too large
@@ -115,29 +116,36 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
         }
 
         // extract beta and coef0
-        extract_beta_coef0(beta_full, beta, coef0);
+        extract_beta_coef0(beta_full, beta, coef0, add_constant);
         return true;
     };
 
     bool _IRLS_fit(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, double loss0, Eigen::VectorXi &A,
-                   Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
+                   Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, bool add_constant = true) {
         // Fitting method 2: Iteratively Reweighted Least Squares
         int n = X.rows();
         int p = X.cols();
         int M = y.cols();
 
         // X_full: add constant col to X
-        T4 X_full(n, p + 1);
-        X_full.rightCols(p) = X;
-        add_constant_column(X_full);
-        // beta_full: combine beta and coef0
-        Eigen::MatrixXd beta_full = combine_beta_coef0(beta, coef0);
+        T4 X_full;
+        Eigen::MatrixXd beta_full;
+        if (add_constant) {
+            // X_full: add constant col to X
+            X_full.resize(n, p + 1);
+            X_full.rightCols(p) = X;
+            add_constant_column(X_full);
+            // beta_full: combine beta and coef0
+            beta_full = combine_beta_coef0(beta, coef0);
+        } else {
+            X_full = X;
+            beta_full = beta;
+        }
 
         // initialize
         T4 X_new(X_full);
         double loss = this->loss_function(X, y, weights, beta, coef0, A, g_index, g_size, this->lambda_level);
         for (int iter = 0; iter < this->primary_model_fit_max_iter; iter++) {
-            Eigen::MatrixXd G = this->gradian(X_full, y, weights, beta_full);
             Eigen::VectorXd D = this->hessian_core(X_full, y, weights, beta_full);
             // reweight
             T1 y_pred = this->inv_link_function(X_full, beta_full);
@@ -152,7 +160,7 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
             beta_full = XTX.ldlt().solve(X_new.transpose() * Z);
 
             // compute new loss
-            extract_beta_coef0(beta_full, beta, coef0);
+            extract_beta_coef0(beta_full, beta, coef0, add_constant);
             double loss_new = this->loss_function(X, y, weights, beta, coef0, A, g_index, g_size, this->lambda_level);
 
             // Early stop 1: expected final loss is too large
@@ -169,7 +177,7 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
         }
 
         // extract beta and coef0
-        extract_beta_coef0(beta_full, beta, coef0);
+        extract_beta_coef0(beta_full, beta, coef0, add_constant);
         return true;
     };
 };
@@ -203,18 +211,18 @@ class abessLogistic : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double,
 
     Eigen::MatrixXd gradian(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
         Eigen::MatrixXd Pi = this->inv_link_function(X_full, beta_full);
-        Eigen::VectorXd G = -X_full.transpose() * ((y - Pi.col(0)).cwiseProduct(weights));
+        Eigen::VectorXd G = X_full.transpose() * ((y - Pi.col(0)).cwiseProduct(weights));
         return Eigen::MatrixXd(G);
     };
 
     Eigen::VectorXd hessian_core(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
         Eigen::MatrixXd Pi = this->inv_link_function(X_full, beta_full);
         Eigen::VectorXd one = Eigen::VectorXd::Ones(X_full.rows());
-        Eigen::VectorXd D = Pi.col(0).eval().cwiseProduct(one - Pi.col(0).eval());
-        for (int i = 0; i < D.size(); i++) {
-            if (D(i) < 0.001) D(i) = 0.001;
+        Eigen::VectorXd W = Pi.col(0).eval().cwiseProduct(one - Pi.col(0).eval());
+        for (int i = 0; i < W.size(); i++) {
+            if (W(i) < 0.001) W(i) = 0.001;
         }
-        return D;
+        return W;
     };
 
     bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0,
@@ -224,8 +232,17 @@ class abessLogistic : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double,
             return true;
         }
 
-        return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::primary_model_fit(x, y, weights, beta, coef0,
-                                                                                          loss0, A, g_index, g_size);
+        if (this->approximate_Newton) {
+            // Fitting method 1: Approximate Newton
+            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_approx_newton_fit(
+                x, y, weights, beta, coef0, loss0, A, g_index, g_size, true);
+        } else {
+            // Fitting method 2: Iteratively Reweighted Least Squares
+            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_IRLS_fit(x, y, weights, beta, coef0, loss0,
+                                                                                      A, g_index, g_size, true);
+        }
+
+        return true;
     };
 
     double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0,
@@ -557,8 +574,6 @@ class abessLm : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
 template <class T4>
 class abessPoisson : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
    public:
-    bool approximate_Newton; /* use approximate Newton method or not. */
-
     abessPoisson(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10,
                  double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5,
                  Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
@@ -583,7 +598,7 @@ class abessPoisson : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, 
 
     Eigen::MatrixXd gradian(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
         Eigen::MatrixXd expeta = this->inv_link_function(X_full, beta_full);
-        Eigen::VectorXd G = -X_full.transpose() * (y - expeta.col(0).eval()).cwiseProduct(weights);
+        Eigen::VectorXd G = X_full.transpose() * (y - expeta.col(0).eval()).cwiseProduct(weights);
         return Eigen::MatrixXd(G);
     };
 
@@ -598,8 +613,18 @@ class abessPoisson : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, 
             coef0 = log(weights.dot(y) / weights.sum());
             return true;
         }
-        return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::primary_model_fit(x, y, weights, beta, coef0,
-                                                                                          loss0, A, g_index, g_size);
+
+        if (this->approximate_Newton) {
+            // Fitting method 1: Approximate Newton
+            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_approx_newton_fit(
+                x, y, weights, beta, coef0, loss0, A, g_index, g_size, true);
+        } else {
+            // Fitting method 2: Iteratively Reweighted Least Squares
+            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_IRLS_fit(x, y, weights, beta, coef0, loss0,
+                                                                                      A, g_index, g_size, true);
+        }
+
+        return true;
     };
 
     double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0,
@@ -713,16 +738,15 @@ class abessPoisson : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, 
 };
 
 template <class T4>
-class abessCox : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
+class abessCox : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
    public:
     Eigen::MatrixXd cox_hessian; /* hessian matrix for cox model. */
     Eigen::VectorXd cox_g;       /* score function for cox model. */
-    bool approximate_Newton;     /* use approximate Newton method or not. */
 
     abessCox(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10,
              double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5,
              Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
-        : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(
+        : _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_abessGLM(
               algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start,
               exchange_num, always_select, splicing_type, sub_search){};
 
@@ -1035,7 +1059,7 @@ class abessCox : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4> 
 };
 
 template <class T4>
-class abessMLm : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4> {
+class abessMLm : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4> {
    public:
     bool clear = true;
     Eigen::MatrixXd XTy;                            /*X.transpose() * y */
@@ -1054,7 +1078,7 @@ class abessMLm : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::Vecto
     abessMLm(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10,
              double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5,
              Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
-        : Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::Algorithm(
+        : _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::_abessGLM(
               algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start,
               exchange_num, always_select, splicing_type, sub_search){};
 
@@ -1266,19 +1290,32 @@ class abessMLm : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::Vecto
 };
 
 template <class T4>
-class abessMultinomial : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4> {
+class abessMultinomial : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4> {
    public:
-    bool approximate_Newton; /* use approximate Newton method or not. */
-
     abessMultinomial(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10,
                      double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5,
                      Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0,
                      int sub_search = 0)
-        : Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::Algorithm(
+        : _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::_abessGLM(
               algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start,
               exchange_num, always_select, splicing_type, sub_search){};
 
     ~abessMultinomial(){};
+
+    Eigen::MatrixXd inv_link_function(T4 &X_full, Eigen::MatrixXd &beta_full) {
+        // denote the link function g() as g(y) = X^T * beta,
+        // return its inverse g^{-1}(X, beta), i.e. predicted y
+        return X_full * beta_full;
+    }
+    Eigen::MatrixXd gradian(T4 &X_full, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
+        // returns the gradian matrix G
+        return Eigen::MatrixXd::Zero(beta_full.rows(), beta_full.cols());
+    };
+    Eigen::VectorXd hessian_core(T4 &X_full, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
+        // hessian matrix can be expressed as H = X^T * D * X,
+        // returns the (diagnal values of) diagnal matrix D.
+        return Eigen::VectorXd::Zero(beta_full.rows());
+    };
 
     bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta,
                            Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index,
@@ -1665,131 +1702,59 @@ class abessMultinomial : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eige
 };
 
 template <class T4>
-class abessGamma : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
+class abessGamma : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
    public:
-    bool approximate_Newton; /* use approximate Newton method or not. */
-
     abessGamma(int algorithm_type, int model_type, int maX_iter = 30, int primary_model_fit_maX_iter = 10,
                double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int eXchange_num = 5,
                Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
-        : Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>::Algorithm(
+        : _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_abessGLM(
               algorithm_type, model_type, maX_iter, primary_model_fit_maX_iter, primary_model_fit_epsilon, warm_start,
               eXchange_num, always_select, splicing_type, sub_search){};
     ~abessGamma(){};
 
+    Eigen::MatrixXd inv_link_function(T4 &X_full, Eigen::MatrixXd &beta_full) {
+        Eigen::VectorXd eta = X_full * beta_full;
+        for (int i = 0; i < eta.size(); i++) {
+            if (eta(i) < this->threshold) {
+                eta(i) = this->threshold;
+            }
+        }
+        return Eigen::MatrixXd(eta.cwiseInverse());
+    }
+    Eigen::MatrixXd gradian(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
+        Eigen::VectorXd EY = this->inv_link_function(X_full, beta_full);
+        Eigen::VectorXd G = X_full.transpose() * (EY - y).cwiseProduct(weights);
+        return Eigen::MatrixXd(G);
+    };
+    Eigen::VectorXd hessian_core(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
+        Eigen::VectorXd EY = this->inv_link_function(X_full, beta_full);
+        Eigen::VectorXd W = EY.array().square() * weights.array();
+        return W;
+    };
+
     bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0,
-                           double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_indeX, Eigen::VectorXi &g_size) {
+                           double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
         if (x.cols() == 0) {
             coef0 = weights.sum() / weights.dot(y);
             return true;
         }
-        int n = x.rows();
-        int p = x.cols();
-        // expand data matrix to design matrix
-        T4 X(n, p + 1);
-        Eigen::VectorXd coef = Eigen::VectorXd::Zero(p + 1);
-        X.rightCols(p) = x;
-        add_constant_column(X);
-        coef(0) = coef0;
-        coef.tail(p) = beta;
 
         // modify start point to make sure Xbeta > 0
-        double min_xb = (X * coef).minCoeff();
+        Eigen::VectorXd ones = Eigen::VectorXd::Ones(x.rows());
+        double min_xb = (x * beta + coef0 * ones).minCoeff();
         if (min_xb < this->threshold) {
-            coef(0) += abs(min_xb) + 0.1;
+            coef0 += abs(min_xb) + max(this->threshold, 0.1);
         }
 
-        // Approximate Newton method
         if (this->approximate_Newton) {
-            double step = 1;
-            Eigen::VectorXd g(p + 1);
-            Eigen::VectorXd coef_new;
-            Eigen::VectorXd h_diag(p + 1);
-            Eigen::VectorXd desend_direction;  // coef_new = coef + step * desend_direction
-            Eigen::VectorXd EY = expect_y(X, coef);
-            Eigen::VectorXd W = EY.array().square() * weights.array();
-            double loglik_new = DBL_MAX, loglik = -this->loss_function(X, y, weights, coef);
-
-            for (int j = 0; j < this->primary_model_fit_max_iter; j++) {
-                for (int i = 0; i < p + 1; i++) {
-                    h_diag(i) = X.col(i).cwiseProduct(W).dot(X.col(i)) + 2 * this->lambda_level;  // diag of Hessian
-                    // we can find h_diag(i) >= 0
-                    if (h_diag(i) < 1e-7) {
-                        h_diag(i) = 1e7;
-                    } else
-                        h_diag(i) = 1.0 / h_diag(i);
-                }
-
-                g = X.transpose() * (EY - y).cwiseProduct(weights) -
-                    2 * this->lambda_level * coef;  // negtive gradient direction
-                desend_direction = g.cwiseProduct(h_diag);
-                coef_new = coef + step * desend_direction;  // ApproXimate Newton method
-                loglik_new = -this->loss_function(X, y, weights, coef_new);
-
-                while (loglik_new < loglik && step > this->primary_model_fit_epsilon) {
-                    step = step / 2;
-                    coef_new = coef + step * desend_direction;
-                    loglik_new = -this->loss_function(X, y, weights, coef_new);
-                }
-
-                bool condition1 = step < this->primary_model_fit_epsilon;
-                bool condition2 =
-                    -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau >
-                    loss0;
-                if (condition1 || condition2) {
-                    break;
-                }
-
-                coef = coef_new;
-                loglik = loglik_new;
-                EY = expect_y(X, coef);
-                W = EY.array().square() * weights.array();
-            }
+            // Fitting method 1: Approximate Newton
+            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_approx_newton_fit(
+                x, y, weights, beta, coef0, loss0, A, g_index, g_size, true);
+        } else {
+            // Fitting method 2: Iteratively Reweighted Least Squares
+            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_IRLS_fit(x, y, weights, beta, coef0, loss0,
+                                                                                      A, g_index, g_size, true);
         }
-        // IWLS method
-        else {
-            T4 X_new(X);
-            Eigen::MatrixXd lambdamat = Eigen::MatrixXd::Identity(p + 1, p + 1);
-            lambdamat(0, 0) = 0;
-            Eigen::VectorXd EY = expect_y(X, coef);
-            Eigen::VectorXd EY_square = EY.array().square();
-            Eigen::VectorXd W = EY_square.cwiseProduct(weights);  // the weight matriX of IW(eight)LS method
-            Eigen::VectorXd Z = X * coef - (y - EY).cwiseQuotient(EY_square);
-            double loglik_new = DBL_MAX, loglik = -this->loss_function(X, y, weights, coef);
-
-            for (int j = 0; j < this->primary_model_fit_max_iter; j++) {
-                for (int i = 0; i < p + 1; i++) {
-                    X_new.col(i) = X.col(i).cwiseProduct(W);
-                }
-                Eigen::MatrixXd XTX = 2 * this->lambda_level * lambdamat + X_new.transpose() * X;
-                coef = XTX.ldlt().solve(X_new.transpose() * Z);
-
-                loglik_new = -this->loss_function(X, y, weights, coef);
-                bool condition1 =
-                    -(loglik_new + (this->primary_model_fit_max_iter - j - 1) * (loglik_new - loglik)) + this->tau >
-                    loss0;
-                bool condition2 = abs(loglik - loglik_new) / (0.1 + abs(loglik_new)) < this->primary_model_fit_epsilon;
-                // TODO maybe here should be abs(loglik - loglik_new)
-                bool condition3 = abs(loglik_new) < min(1e-3, this->tau);
-                if (condition1 || condition2 || condition3) {
-                    break;
-                }
-
-                double min_xb = (X * coef).minCoeff();
-                if (min_xb < this->threshold) {
-                    coef(0) += abs(min_xb) + 0.1;
-                }
-                EY = expect_y(X, coef);
-                EY_square = EY.array().square();
-                loglik = loglik_new;
-                W = EY_square.cwiseProduct(weights);
-                Z = X * coef - (y - EY).cwiseQuotient(EY_square);
-            }
-        }
-
-        beta = coef.tail(p).eval();
-        coef0 = coef(0);
-        return true;
     }
 
     double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0,
@@ -1898,12 +1863,12 @@ class abessGamma : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4
 };
 
 template <class T4>
-class abessOrdinal : public Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4> {
+class abessOrdinal : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4> {
    public:
     abessOrdinal(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10,
                  double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5,
                  Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
-        : Algorithm<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::Algorithm(
+        : _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, T4>::_abessGLM(
               algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start,
               exchange_num, always_select, splicing_type, sub_search){};
     ~abessOrdinal(){};
