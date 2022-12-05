@@ -178,7 +178,7 @@ class bess_base(BaseEstimator):
             X=None,
             y=None,
             is_normal=True,
-            weight=None,
+            sample_weight=None,
             group=None,
             cv_fold_id=None,
             A_init=None):
@@ -205,7 +205,7 @@ class bess_base(BaseEstimator):
         is_normal : bool, optional, default=True
             whether normalize the variables array
             before fitting the algorithm.
-        weight : array-like, shape (n_samples,), optional, default=np.ones(n)
+        sample_weight : array-like, shape (n_samples,), optional, default=np.ones(n)
             Individual weights for each sample. Only used for is_weight=True.
         group : int, optional, default=np.ones(p)
             The group index for each variable.
@@ -377,17 +377,27 @@ class bess_base(BaseEstimator):
                     j += 1
                 g_index.append(j)
 
-        # Weight:
-        if weight is None:
-            weight = np.ones(n)
+        # sample_weight:
+        if sample_weight is None:
+            sample_weight = np.ones(n)
         else:
-            weight = np.array(weight)
-            if weight.dtype not in ("int", "float"):
-                raise ValueError("weight should be numeric.")
-            if weight.ndim > 1:
-                raise ValueError("weight should be a 1-D array.")
-            if weight.size != n:
-                raise ValueError("X.shape[0] should be equal to weight.size")
+            sample_weight = np.array(sample_weight)
+            if sample_weight.dtype not in ("int", "float"):
+                raise ValueError("sample_weight should be numeric.")
+            if sample_weight.ndim > 1:
+                raise ValueError("sample_weight should be a 1-D array.")
+            if sample_weight.size != n:
+                raise ValueError("X.shape[0] should be equal to sample_weight.size")
+            
+            useful_index = list()
+            for i, w in enumerate(sample_weight):
+                if w > 0:
+                    useful_index.append(i)
+            if len(useful_index) < n:
+                X = X[useful_index, :]
+                y = y[useful_index, :] if len(y.shape) > 1 else y[useful_index]
+                sample_weight = sample_weight[useful_index]
+                n = len(useful_index)
 
         # Path parameters
         if path_type_int == 1:  # seq
@@ -538,7 +548,7 @@ class bess_base(BaseEstimator):
             result = [np.zeros((p, M)), np.zeros(M), 0, 0, 0]
         else:
             result = pywrap_GLM(
-                X, y, weight, n, p, normalize, algorithm_type_int,
+                X, y, sample_weight, n, p, normalize, algorithm_type_int,
                 model_type_int,
                 self.max_iter, self.exchange_num, path_type_int,
                 self.is_warm_start, ic_type_int, self.ic_coef, self.cv,
