@@ -273,6 +273,12 @@ class TestAlgorithm:
                              sample_weight = sample_weight)
         assert score > 0.5
 
+        # approximate Newton
+        model2 = abess.PoissonRegression(approximate_Newton=True)
+        model2.fit(data.x, data.y)
+        assert_fit(model1.coef_, model2.coef_)
+        assert_reg(model2.coef_)
+
     @staticmethod
     def test_multigaussian():
         np.random.seed(1)
