@@ -646,7 +646,7 @@ class TestAlgorithm:
         rho = 0.5
         # sigma = 1
         # M = 1
-        np.random.seed(0)
+        np.random.seed(3)
         data = abess.make_glm_data(n, p, family=family, k=k, rho=rho)
         # data3 = abess.make_multivariate_glm_data(
         #     family=family, n=n, p=p, k=k, rho=rho, M=M, sparse_ratio=0.1)
