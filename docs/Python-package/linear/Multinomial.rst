@@ -10,4 +10,4 @@ MultinomialRegression
     Please note that it will be deprecated in version 0.6.0. 
 
 .. autoclass:: abess.linear.MultinomialRegression
-    :members: fit, predict, predict_proba, score
+    :members: fit, predict, predict_proba, score, get_params, set_params

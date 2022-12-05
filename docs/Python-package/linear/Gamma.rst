@@ -10,4 +10,4 @@ GammaRegression
     Please note that it will be deprecated in version 0.6.0. 
 
 .. autoclass:: abess.linear.GammaRegression
-    :members: fit, predict, score
+    :members: fit, predict, score, get_params, set_params

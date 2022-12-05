@@ -136,6 +136,8 @@ python/abess/*.so
 python/*.so
 /.history
 *.pptx
+.vs/
+*.pyproj
 
 docs/real-data/*/*.csv
 docs/real-data/*/*.data
