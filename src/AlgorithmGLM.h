@@ -23,7 +23,7 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
     // Eigen::MatrixXd H;  // Hessian
 
     /* --- TO BE IMPLEMENTED IN CHILD CLASS --- */
-    virtual Eigen::MatrixXd gradian(T4 &X_full, T1 &y, Eigen::VectorXd &weights, T2 &beta_full) {
+    virtual Eigen::MatrixXd gradian_core(T4 &X_full, T1 &y, Eigen::VectorXd &weights, T2 &beta_full) {
         // returns the gradian matrix G
         return Eigen::MatrixXd::Zero(beta_full.rows(), beta_full.cols());
     };
@@ -44,12 +44,16 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
     /* ---------------------------------------- */
 
     /* --- CAN BE RE-IMPLEMENTED IN CHILD CLASS --- */
+    virtual Eigen::MatrixXd gradian(T4 &X_full, T1 &y, Eigen::VectorXd &weights, T2 &beta_full) {
+        // returns gradian matrix
+        return X_full.transpose() * this->gradian_core(X_full, y, weights, beta_full);
+    }
     virtual Eigen::MatrixXd hessian(T4 &X_full, T1 &y, Eigen::VectorXd &weights, T2 &beta_full) {
         // returns hessian matrix
-        Eigen::VectorXd D = this->hessian_core(X_full, y, weights, beta_full);
+        Eigen::VectorXd H_core = this->hessian_core(X_full, y, weights, beta_full);
         Eigen::VectorXd H_diag(X_full.cols());
         for (int i = 0; i < X_full.cols(); i++) {
-            H_diag(i) = X_full.col(i).eval().cwiseProduct(D).dot(X_full.col(i).eval());
+            H_diag(i) = X_full.col(i).eval().cwiseProduct(H_core).dot(X_full.col(i).eval());
             if (H_diag(i) < 1e-7) {
                 H_diag(i) = 1e-7;
             }
@@ -69,6 +73,52 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
 
         Eigen::VectorXd log_proba = this->log_probability(X_full, beta_full, y);
         return -log_proba.dot(weights) + lambda * beta.cwiseAbs2().sum();
+    };
+    virtual void sacrifice(T4 &X, T4 &XA, T1 &y, T2 &beta, T2 &beta_A, T3 &coef0, Eigen::VectorXi &A,
+                           Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index,
+                           Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd,
+                           Eigen::VectorXi &U, Eigen::VectorXi &U_ind, int num) {
+        int p = X.cols();
+        int n = X.rows();
+        int M = y.cols();
+        int A_size = A.size();
+        int I_size = I.size();
+        T4 X_A_full;
+        T2 beta_A_full;
+        add_constant_column(X_A_full, XA, this->add_constant);
+        combine_beta_coef0(beta_A_full, beta_A, coef0, this->add_constant);
+
+        Eigen::MatrixXd G = X.transpose() * this->gradian_core(X_A_full, y, weights, beta_A_full);
+        Eigen::VectorXd H_core = this->hessian_core(X_A_full, y, weights, beta_A_full);
+        G -= 2 * this->lambda_level * beta;
+
+        Eigen::MatrixXd betabar = Eigen::MatrixXd::Zero(p, M);
+        Eigen::MatrixXd dbar = Eigen::MatrixXd::Zero(p, M);
+
+        for (int i = 0; i < N; i++) {
+            // focus on X in group i
+            T4 XG = X.middleCols(g_index(i), g_size(i));
+            T4 XG_new = XG;
+            for (int j = 0; j < g_size(i); j++) {
+                XG_new.col(j) = XG.col(j).cwiseProduct(H_core);
+            }
+            Eigen::MatrixXd XGbar = XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
+            Eigen::MatrixXd phiG;
+            XGbar.sqrt().evalTo(phiG);
+            Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
+            // compute sacrifice for each variable
+            betabar.block(g_index(i), 0, g_size(i), M) = phiG * beta.block(g_index(i), 0, g_size(i), M);
+            dbar.block(g_index(i), 0, g_size(i), M) = invphiG * G.block(g_index(i), 0, g_size(i), M);
+        }
+
+        // backward sacrifice (group)
+        for (int i = 0; i < A_size; i++) {
+            bd(A(i)) = betabar.block(g_index(A[i]), 0, g_size(A[i]), M).squaredNorm() / g_size(A(i));
+        }
+        // forward sacrifice (group)
+        for (int i = 0; i < I_size; i++) {
+            bd(I(i)) = dbar.block(g_index(I[i]), 0, g_size(I[i]), M).squaredNorm() / g_size(I(i));
+        }
     };
     /* -------------------------------------------- */
 
@@ -93,7 +143,7 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
             Eigen::MatrixXd G = this->gradian(X_full, y, weights, beta_full);
             Eigen::MatrixXd H = this->hessian(X_full, y, weights, beta_full);
             // update direction (add penalty)
-            Eigen::MatrixXd direction = G + 2 * this->lambda_level * beta_full;
+            Eigen::MatrixXd direction = G - 2 * this->lambda_level * beta_full;
             for (int i = 0; i < p + 1; i++) {
                 double hii = H(i, i);
                 if (i > 0) hii += 2 * this->lambda_level;
@@ -200,9 +250,9 @@ class abessLogistic : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double,
 
     ~abessLogistic(){};
 
-    Eigen::MatrixXd gradian(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta_full) {
+    Eigen::MatrixXd gradian_core(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta_full) {
         Eigen::VectorXd Pi = this->inv_link_function(X_full, beta_full);
-        Eigen::VectorXd G = X_full.transpose() * ((y - Pi).cwiseProduct(weights));
+        Eigen::VectorXd G = (y - Pi).cwiseProduct(weights);
         return Eigen::MatrixXd(G);
     };
 
@@ -258,55 +308,6 @@ class abessLogistic : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double,
 
         return true;
     };
-
-    void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0,
-                   Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index,
-                   Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U,
-                   Eigen::VectorXi &U_ind, int num) {
-        int p = X.cols();
-        int n = X.rows();
-
-        Eigen::VectorXd coef(XA.cols() + 1);
-        Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-        coef << coef0, beta_A;
-
-        Eigen::VectorXd pr = pi(XA, y, coef);
-        Eigen::VectorXd res = (y - pr).cwiseProduct(weights);
-
-        Eigen::VectorXd d = X.transpose() * res - 2 * this->lambda_level * beta;
-        Eigen::VectorXd h = weights.array() * pr.array() * (one - pr).array();
-
-        int A_size = A.size();
-        int I_size = I.size();
-
-        Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
-        Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
-
-        for (int i = 0; i < N; i++) {
-            T4 XG = X.middleCols(g_index(i), g_size(i));
-            T4 XG_new = XG;
-            for (int j = 0; j < g_size(i); j++) {
-                XG_new.col(j) = XG.col(j).cwiseProduct(h);
-            }
-            Eigen::MatrixXd XGbar;
-            XGbar = XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
-
-            // to do
-            Eigen::MatrixXd phiG;
-            XGbar.sqrt().evalTo(phiG);
-            Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
-            betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
-            dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
-        }
-        for (int i = 0; i < A_size; i++) {
-            bd(A(i)) = betabar.segment(g_index(A(i)), g_size(A(i))).squaredNorm() / g_size(A(i));
-        }
-        for (int i = 0; i < I_size; i++) {
-            bd(I(i)) = dbar.segment(g_index(I(i)), g_size(I(i))).squaredNorm() / g_size(I(i));
-        }
-
-        return;
-    }
 
     double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights,
                                          Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0) {
@@ -580,9 +581,9 @@ class abessPoisson : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, 
 
     ~abessPoisson(){};
 
-    Eigen::MatrixXd gradian(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta_full) {
+    Eigen::MatrixXd gradian_core(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta_full) {
         Eigen::VectorXd expeta = this->inv_link_function(X_full, beta_full);
-        Eigen::VectorXd G = X_full.transpose() * (y - expeta).cwiseProduct(weights);
+        Eigen::VectorXd G = (y - expeta).cwiseProduct(weights);
         return Eigen::MatrixXd(G);
     };
 
@@ -629,53 +630,6 @@ class abessPoisson : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, 
 
         return true;
     };
-
-    void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0,
-                   Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_index,
-                   Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U,
-                   Eigen::VectorXi &U_ind, int num) {
-        int p = X.cols();
-        int n = X.rows();
-
-        Eigen::VectorXd coef = Eigen::VectorXd::Ones(n) * coef0;
-        Eigen::VectorXd xbeta_exp = XA * beta_A + coef;
-        for (int i = 0; i <= n - 1; i++) {
-            if (xbeta_exp(i) > 30.0) xbeta_exp(i) = 30.0;
-            if (xbeta_exp(i) < -30.0) xbeta_exp(i) = -30.0;
-        }
-        xbeta_exp = xbeta_exp.array().exp();
-
-        Eigen::VectorXd d = X.transpose() * ((y - xbeta_exp).cwiseProduct(weights)) - 2 * this->lambda_level * beta;
-        Eigen::VectorXd h = weights.array() * xbeta_exp.array();
-
-        int A_size = A.size();
-        int I_size = I.size();
-
-        Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
-        Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
-
-        for (int i = 0; i < N; i++) {
-            T4 XG = X.middleCols(g_index(i), g_size(i));
-            T4 XG_new = XG;
-            for (int j = 0; j < g_size(i); j++) {
-                XG_new.col(j) = XG.col(j).cwiseProduct(h);
-            }
-            Eigen::MatrixXd XGbar;
-            XGbar = XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
-
-            Eigen::MatrixXd phiG;
-            XGbar.sqrt().evalTo(phiG);
-            Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
-            betabar.segment(g_index(i), g_size(i)) = phiG * beta.segment(g_index(i), g_size(i));
-            dbar.segment(g_index(i), g_size(i)) = invphiG * d.segment(g_index(i), g_size(i));
-        }
-        for (int i = 0; i < A_size; i++) {
-            bd(A[i]) = betabar.segment(g_index(A[i]), g_size(A[i])).squaredNorm() / g_size(A[i]);
-        }
-        for (int i = 0; i < I_size; i++) {
-            bd(I[i]) = dbar.segment(g_index(I[i]), g_size(I[i])).squaredNorm() / g_size(I[i]);
-        }
-    }
 
     double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights,
                                          Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0) {
@@ -1283,21 +1237,6 @@ class abessMultinomial : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eige
 
     ~abessMultinomial(){};
 
-    Eigen::MatrixXd inv_link_function(T4 &X_full, Eigen::MatrixXd &beta_full) {
-        // denote the link function g() as g(y) = X^T * beta,
-        // return its inverse g^{-1}(X, beta), i.e. predicted y
-        return X_full * beta_full;
-    }
-    Eigen::MatrixXd gradian(T4 &X_full, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
-        // returns the gradian matrix G
-        return Eigen::MatrixXd::Zero(beta_full.rows(), beta_full.cols());
-    };
-    Eigen::VectorXd hessian_core(T4 &X_full, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta_full) {
-        // hessian matrix can be expressed as H = X^T * D * X,
-        // returns the (diagnal values of) diagnal matrix D.
-        return Eigen::VectorXd::Zero(beta_full.rows());
-    };
-
     bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta,
                            Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index,
                            Eigen::VectorXi &g_size) {
@@ -1693,9 +1632,9 @@ class abessGamma : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4
               eXchange_num, always_select, splicing_type, sub_search){};
     ~abessGamma(){};
 
-    Eigen::MatrixXd gradian(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta_full) {
+    Eigen::MatrixXd gradian_core(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta_full) {
         Eigen::VectorXd EY = this->inv_link_function(X_full, beta_full);
-        Eigen::VectorXd G = X_full.transpose() * (EY - y).cwiseProduct(weights);
+        Eigen::VectorXd G = (EY - y).cwiseProduct(weights);
         return Eigen::MatrixXd(G);
     };
 
@@ -1745,44 +1684,6 @@ class abessGamma : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4
         }
     }
 
-    void sacrifice(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0,
-                   Eigen::VectorXi &A, Eigen::VectorXi &I, Eigen::VectorXd &weights, Eigen::VectorXi &g_indeX,
-                   Eigen::VectorXi &g_size, int N, Eigen::VectorXi &A_ind, Eigen::VectorXd &bd, Eigen::VectorXi &U,
-                   Eigen::VectorXi &U_ind, int num) {
-        int p = X.cols();
-        // int n = X.rows();
-        Eigen::VectorXd EY = expect_y(XA, beta_A, coef0);
-        Eigen::VectorXd EY_square_weights = EY.array().square() * weights.array();
-        Eigen::VectorXd d = X.transpose() * (EY - y).cwiseProduct(weights) -
-                            2 * this->lambda_level * beta;  // negative gradient direction
-        Eigen::VectorXd betabar = Eigen::VectorXd::Zero(p);
-        Eigen::VectorXd dbar = Eigen::VectorXd::Zero(p);
-        // we only need N diagonal sub-matriX of hessian of Loss, X^T %*% diag(EY^2) %*% X is OK, but waste.
-        for (int i = 0; i < N; i++) {
-            T4 XG = X.middleCols(g_indeX(i), g_size(i));
-            T4 XG_new = XG;
-            for (int j = 0; j < g_size(i); j++) {
-                XG_new.col(j) = XG.col(j).cwiseProduct(EY_square_weights);
-            }
-            // hessianG is the ith group diagonal sub-matriX of hessian matriX of Loss.
-            Eigen::MatrixXd hessianG =
-                XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
-            Eigen::MatrixXd phiG;
-            hessianG.sqrt().evalTo(phiG);
-            Eigen::MatrixXd invphiG = phiG.ldlt().solve(
-                Eigen::MatrixXd::Identity(g_size(i), g_size(i)));  // this is a way to inverse a matriX.
-            betabar.segment(g_indeX(i), g_size(i)) = phiG * beta.segment(g_indeX(i), g_size(i));
-            dbar.segment(g_indeX(i), g_size(i)) = invphiG * d.segment(g_indeX(i), g_size(i));
-        }
-        int A_size = A.size();
-        int I_size = I.size();
-        for (int i = 0; i < A_size; i++) {
-            bd(A[i]) = betabar.segment(g_indeX(A[i]), g_size(A[i])).squaredNorm() / g_size(A[i]);
-        }
-        for (int i = 0; i < I_size; i++) {
-            bd(I[i]) = dbar.segment(g_indeX(I[i]), g_size(I[i])).squaredNorm() / g_size(I[i]);
-        }
-    }
     double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights,
                                          Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0) {
         if (this->lambda_level == 0.) return XA.cols();
