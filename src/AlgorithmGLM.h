@@ -49,7 +49,7 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
         Eigen::VectorXd D = this->hessian_core(X_full, y, weights, beta_full);
         Eigen::VectorXd H_diag(X_full.cols());
         for (int i = 0; i < X_full.cols(); i++) {
-            H_diag(i) = X_full.col(i).eval().cwiseProduct(D).cwiseProduct(weights).dot(X_full.col(i).eval());
+            H_diag(i) = X_full.col(i).eval().cwiseProduct(D).dot(X_full.col(i).eval());
             if (H_diag(i) < 1e-7) {
                 H_diag(i) = 1e-7;
             }
@@ -71,7 +71,7 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
         return -log_proba.dot(weights) + lambda * beta.cwiseAbs2().sum();
     };
     /* -------------------------------------------- */
-    
+
     /* --- BUILT-IN FITTING METHOD --- */
     bool _approx_newton_fit(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, double loss0,
                             Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
@@ -209,7 +209,7 @@ class abessLogistic : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double,
     Eigen::VectorXd hessian_core(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta_full) {
         Eigen::VectorXd Pi = this->inv_link_function(X_full, beta_full);
         Eigen::VectorXd one = Eigen::VectorXd::Ones(X_full.rows());
-        Eigen::VectorXd W = Pi.cwiseProduct(one - Pi);
+        Eigen::VectorXd W = Pi.cwiseProduct(one - Pi).cwiseProduct(weights);
         for (int i = 0; i < W.size(); i++) {
             if (W(i) < 0.001) W(i) = 0.001;
         }
@@ -588,7 +588,7 @@ class abessPoisson : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, 
 
     Eigen::VectorXd hessian_core(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta_full) {
         Eigen::VectorXd expeta = this->inv_link_function(X_full, beta_full);
-        return expeta;
+        return expeta.cwiseProduct(weights);
     };
 
     Eigen::VectorXd inv_link_function(T4 &X_full, Eigen::VectorXd &beta_full) {
@@ -603,7 +603,7 @@ class abessPoisson : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, 
         Eigen::VectorXd expeta = eta.array().exp();
         return expeta;
     };
-    
+
     Eigen::VectorXd log_probability(T4 &X_full, Eigen::VectorXd &beta_full, Eigen::VectorXd &y) {
         Eigen::VectorXd Xbeta = X_full * beta_full;
         Eigen::VectorXd Ey = this->inv_link_function(X_full, beta_full);
@@ -1698,11 +1698,11 @@ class abessGamma : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4
         Eigen::VectorXd G = X_full.transpose() * (EY - y).cwiseProduct(weights);
         return Eigen::MatrixXd(G);
     };
-    
+
     Eigen::VectorXd hessian_core(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta_full) {
         Eigen::VectorXd EY = this->inv_link_function(X_full, beta_full);
-        Eigen::VectorXd W = EY.array().square() * weights.array();
-        return W;
+        Eigen::VectorXd W = EY.array().square();
+        return W.cwiseProduct(weights);
     };
 
     Eigen::VectorXd inv_link_function(T4 &X_full, Eigen::VectorXd &beta_full) {
@@ -1805,8 +1805,8 @@ class abessGamma : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4
     }
 
    private:
-    double threshold = 1e-20;  // use before log or inverse to avoid inf\
-    
+    double threshold = 1e-20;  // use before log or inverse to avoid inf
+
     Eigen::VectorXd expect_y(T4 &design, Eigen::VectorXd &coef) {
         Eigen::VectorXd eta = design * coef;
         // assert(eta.minCoeff() >= 0); // only use expect_y in where this can be guaranteed.
