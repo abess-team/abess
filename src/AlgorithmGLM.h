@@ -41,6 +41,10 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
         // returns: log P(y_i | X_i, beta)
         return T1(Eigen::MatrixXd::Zero(y.rows(), y.cols()));
     }
+    virtual bool null_model(T1 &y, Eigen::VectorXd &weights, T3 &coef0) {
+        // fitting a null model, i.e. only coef0
+        return true;
+    }
     /* ---------------------------------------- */
 
     /* --- CAN BE RE-IMPLEMENTED IN CHILD CLASS --- */
@@ -59,6 +63,19 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
             }
         }
         return Eigen::MatrixXd(H_diag.asDiagonal());
+    };
+    virtual bool primary_model_fit(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, double loss0,
+                                   Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
+        if (X.cols() == 0) return null_model(y, weights, coef0);
+
+        if (this->approximate_Newton) {
+            // Fitting method 1: Approximate Newton
+            return this->_approx_newton_fit(X, y, weights, beta, coef0, loss0, A, g_index, g_size);
+        } else {
+            // Fitting method 2: Iteratively Reweighted Least Squares
+            return this->_IRLS_fit(X, y, weights, beta, coef0, loss0, A, g_index, g_size);
+        }
+        return true;
     };
     virtual double loss_function(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, Eigen::VectorXi &A,
                                  Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda) {
@@ -102,7 +119,8 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
             for (int j = 0; j < g_size(i); j++) {
                 XG_new.col(j) = XG.col(j).cwiseProduct(H_core);
             }
-            Eigen::MatrixXd XGbar = XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
+            Eigen::MatrixXd XGbar =
+                XG_new.transpose() * XG + 2 * this->lambda_level * Eigen::MatrixXd::Identity(g_size(i), g_size(i));
             Eigen::MatrixXd phiG;
             XGbar.sqrt().evalTo(phiG);
             Eigen::MatrixXd invphiG = phiG.ldlt().solve(Eigen::MatrixXd::Identity(g_size(i), g_size(i)));
@@ -119,6 +137,10 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
         for (int i = 0; i < I_size; i++) {
             bd(I(i)) = dbar.block(g_index(I[i]), 0, g_size(I[i]), M).squaredNorm() / g_size(I(i));
         }
+    };
+    virtual double effective_number_of_parameter(T4 &X, T4 &XA, T1 &y, Eigen::VectorXd &weights, T2 &beta, T2 &beta_A,
+                                                 T3 &coef0) {
+        return this->sparsity_level;
     };
     /* -------------------------------------------- */
 
@@ -289,25 +311,10 @@ class abessLogistic : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double,
         return y.cwiseProduct(logP_1) + (ones - y).cwiseProduct(logP_0);
     }
 
-    bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0,
-                           double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
-        if (x.cols() == 0) {
-            coef0 = -log(1 / y.mean() - 1);
-            return true;
-        }
-
-        if (this->approximate_Newton) {
-            // Fitting method 1: Approximate Newton
-            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_approx_newton_fit(
-                x, y, weights, beta, coef0, loss0, A, g_index, g_size);
-        } else {
-            // Fitting method 2: Iteratively Reweighted Least Squares
-            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_IRLS_fit(x, y, weights, beta, coef0, loss0,
-                                                                                      A, g_index, g_size);
-        }
-
+    bool null_model(Eigen::VectorXd &y, Eigen::VectorXd &weights, double &coef0) {
+        coef0 = -log(1 / y.mean() - 1);
         return true;
-    };
+    }
 
     double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights,
                                          Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0) {
@@ -611,25 +618,10 @@ class abessPoisson : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, 
         return y.cwiseProduct(Xbeta) - Ey;
     }
 
-    bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0,
-                           double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
-        if (x.cols() == 0) {
-            coef0 = log(weights.dot(y) / weights.sum());
-            return true;
-        }
-
-        if (this->approximate_Newton) {
-            // Fitting method 1: Approximate Newton
-            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_approx_newton_fit(
-                x, y, weights, beta, coef0, loss0, A, g_index, g_size);
-        } else {
-            // Fitting method 2: Iteratively Reweighted Least Squares
-            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_IRLS_fit(x, y, weights, beta, coef0, loss0,
-                                                                                      A, g_index, g_size);
-        }
-
+    bool null_model(Eigen::VectorXd &y, Eigen::VectorXd &weights, double &coef0) {
+        coef0 = log(weights.dot(y) / weights.sum());
         return true;
-    };
+    }
 
     double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights,
                                          Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0) {
@@ -1659,29 +1651,9 @@ class abessGamma : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4
         return (Xbeta.cwiseProduct(y) - Xbeta.array().log().matrix());
     }
 
-    bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0,
-                           double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
-        if (x.cols() == 0) {
-            coef0 = weights.sum() / weights.dot(y);
-            return true;
-        }
-
-        // modify start point to make sure Xbeta > 0
-        Eigen::VectorXd ones = Eigen::VectorXd::Ones(x.rows());
-        double min_xb = (x * beta + coef0 * ones).minCoeff();
-        if (min_xb < this->threshold) {
-            coef0 += abs(min_xb) + max(this->threshold, 0.1);
-        }
-
-        if (this->approximate_Newton) {
-            // Fitting method 1: Approximate Newton
-            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_approx_newton_fit(
-                x, y, weights, beta, coef0, loss0, A, g_index, g_size);
-        } else {
-            // Fitting method 2: Iteratively Reweighted Least Squares
-            return _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_IRLS_fit(x, y, weights, beta, coef0, loss0,
-                                                                                      A, g_index, g_size);
-        }
+    bool null_model(Eigen::VectorXd &y, Eigen::VectorXd &weights, double &coef0) {
+        coef0 = weights.sum() / weights.dot(y);
+        return true;
     }
 
     double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights,
