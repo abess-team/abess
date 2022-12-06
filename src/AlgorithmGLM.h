@@ -140,7 +140,29 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
     };
     virtual double effective_number_of_parameter(T4 &X, T4 &XA, T1 &y, Eigen::VectorXd &weights, T2 &beta, T2 &beta_A,
                                                  T3 &coef0) {
-        return this->sparsity_level;
+        if (XA.cols() == 0) return 0;
+        if (this->lambda_level == 0) return XA.cols();
+
+        T4 X_A_full;
+        T2 beta_A_full;
+        add_constant_column(X_A_full, XA, this->add_constant);
+        combine_beta_coef0(beta_A_full, beta_A, coef0, this->add_constant);
+
+        Eigen::VectorXd H_core = this->hessian_core(X_A_full, y, weights, beta_A_full);
+
+        T4 XA_new = XA;
+        for (int j = 0; j < XA.cols(); j++) {
+            XA_new.col(j) = XA.col(j).cwiseProduct(H_core);
+        }
+        Eigen::MatrixXd XGbar = XA_new.transpose() * XA;
+        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> adjoint_eigen_solver(XGbar);
+
+        double enp = 0.;
+        for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++) {
+            enp += adjoint_eigen_solver.eigenvalues()(i) / (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
+        }
+
+        return enp;
     };
     /* -------------------------------------------- */
 
@@ -314,46 +336,6 @@ class abessLogistic : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double,
     bool null_model(Eigen::VectorXd &y, Eigen::VectorXd &weights, double &coef0) {
         coef0 = -log(1 / y.mean() - 1);
         return true;
-    }
-
-    double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights,
-                                         Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0) {
-        if (this->lambda_level == 0.) {
-            return XA.cols();
-        } else {
-            if (XA.cols() == 0) return 0.;
-
-            // int p = X.cols();
-            int n = X.rows();
-
-            Eigen::VectorXd coef = Eigen::VectorXd::Ones(XA.cols() + 1);
-            Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-            coef(0) = coef0;
-            coef.tail(XA.cols()) = beta_A;
-
-            Eigen::VectorXd pr = pi(XA, y, coef);
-            // Eigen::VectorXd res = (y - pr).cwiseProduct(weights);
-
-            // Eigen::VectorXd d = X.transpose() * res - 2 * this->lambda_level * beta;
-            Eigen::VectorXd h = weights.array() * pr.array() * (one - pr).array();
-
-            T4 XA_new = XA;
-            for (int j = 0; j < XA.cols(); j++) {
-                XA_new.col(j) = XA.col(j).cwiseProduct(h);
-            }
-            Eigen::MatrixXd XGbar;
-            XGbar = XA_new.transpose() * XA;
-
-            Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> adjoint_eigen_solver(XGbar);
-
-            double enp = 0.;
-            for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++) {
-                enp += adjoint_eigen_solver.eigenvalues()(i) /
-                       (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
-            }
-
-            return enp;
-        }
     }
 };
 
@@ -621,46 +603,6 @@ class abessPoisson : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, 
     bool null_model(Eigen::VectorXd &y, Eigen::VectorXd &weights, double &coef0) {
         coef0 = log(weights.dot(y) / weights.sum());
         return true;
-    }
-
-    double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights,
-                                         Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0) {
-        if (this->lambda_level == 0.) {
-            return XA.cols();
-        } else {
-            if (XA.cols() == 0) return 0.;
-
-            // int p = X.cols();
-            int n = X.rows();
-
-            Eigen::VectorXd coef = Eigen::VectorXd::Ones(n) * coef0;
-            Eigen::VectorXd xbeta_exp = XA * beta_A + coef;
-            for (int i = 0; i <= n - 1; i++) {
-                if (xbeta_exp(i) > 30.0) xbeta_exp(i) = 30.0;
-                if (xbeta_exp(i) < -30.0) xbeta_exp(i) = -30.0;
-            }
-            xbeta_exp = xbeta_exp.array().exp();
-
-            // Eigen::VectorXd d = X.transpose() * res - 2 * this->lambda_level * beta;
-            Eigen::VectorXd h = xbeta_exp.array() * weights.array();
-
-            T4 XA_new = XA;
-            for (int j = 0; j < XA.cols(); j++) {
-                XA_new.col(j) = XA.col(j).cwiseProduct(h);
-            }
-            Eigen::MatrixXd XGbar;
-            XGbar = XA_new.transpose() * XA;
-
-            Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> adjoint_eigen_solver(XGbar);
-
-            double enp = 0.;
-            for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++) {
-                enp += adjoint_eigen_solver.eigenvalues()(i) /
-                       (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
-            }
-
-            return enp;
-        }
     }
 };
 
@@ -1656,50 +1598,8 @@ class abessGamma : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4
         return true;
     }
 
-    double effective_number_of_parameter(T4 &X, T4 &XA, Eigen::VectorXd &y, Eigen::VectorXd &weights,
-                                         Eigen::VectorXd &beta, Eigen::VectorXd &beta_A, double &coef0) {
-        if (this->lambda_level == 0.) return XA.cols();
-
-        if (XA.cols() == 0) return 0.;
-        Eigen::VectorXd EY = expect_y(XA, beta_A, coef0);
-        Eigen::VectorXd EY_square_weights = weights.array() * EY.array().square();
-        T4 XA_new = XA;
-        for (int j = 0; j < XA.cols(); j++) {
-            XA_new.col(j) = XA.col(j).cwiseProduct(EY_square_weights);
-        }
-        Eigen::MatrixXd XGbar = XA_new.transpose() * XA;
-
-        Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> adjoint_eigen_solver(XGbar);
-        double enp = 0.;
-        for (int i = 0; i < adjoint_eigen_solver.eigenvalues().size(); i++) {
-            enp += adjoint_eigen_solver.eigenvalues()(i) / (adjoint_eigen_solver.eigenvalues()(i) + this->lambda_level);
-        }
-        return enp;
-    }
-
    private:
     double threshold = 1e-20;  // use before log or inverse to avoid inf
-
-    Eigen::VectorXd expect_y(T4 &design, Eigen::VectorXd &coef) {
-        Eigen::VectorXd eta = design * coef;
-        // assert(eta.minCoeff() >= 0); // only use expect_y in where this can be guaranteed.
-        for (int i = 0; i < eta.size(); i++) {
-            if (eta(i) < this->threshold) {
-                eta(i) = this->threshold;
-            }
-        }
-        return eta.cwiseInverse();  // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
-    }
-    Eigen::VectorXd expect_y(T4 &data_matrix, Eigen::VectorXd &beta, double &coef0) {
-        Eigen::VectorXd eta = data_matrix * beta + Eigen::VectorXd::Ones(data_matrix.rows()) * coef0;
-        // assert(eta.minCoeff() >= 0); // only use expect_y in where this can be guaranteed.
-        for (int i = 0; i < eta.size(); i++) {
-            if (eta(i) < this->threshold) {
-                eta(i) = this->threshold;
-            }
-        }
-        return eta.cwiseInverse();  // EY is E(Y) = g^-1(Xb), where link func g(u)=1/u in Gamma model.
-    }
 };
 
 template <class T4>
