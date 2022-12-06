@@ -381,9 +381,7 @@ class bess_base(BaseEstimator):
         if sample_weight is None:
             sample_weight = np.ones(n)
         else:
-            sample_weight = np.array(sample_weight)
-            if sample_weight.dtype not in ("int", "float"):
-                raise ValueError("sample_weight should be numeric.")
+            sample_weight = np.array(sample_weight, dtype="float")
             if sample_weight.ndim > 1:
                 raise ValueError("sample_weight should be a 1-D array.")
             if sample_weight.size != n:
