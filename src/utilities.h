@@ -420,7 +420,7 @@ void add_constant_column(Eigen::MatrixXd &X_full, Eigen::MatrixXd &X, bool add_c
         X_full = X;
         return;
     }
-    X_full.resize(X.rows(), X.cols()+1);
+    X_full.resize(X.rows(), X.cols() + 1);
     X_full.rightCols(X.cols()) = X;
     X_full.col(0) = Eigen::MatrixXd::Ones(X.rows(), 1);
     return;
@@ -431,7 +431,7 @@ void add_constant_column(Eigen::SparseMatrix<double> &X_full, Eigen::SparseMatri
         X_full = X;
         return;
     }
-    X_full.resize(X.rows(), X.cols()+1);
+    X_full.resize(X.rows(), X.cols() + 1);
     X_full.rightCols(X.cols()) = X;
     for (int i = 0; i < X.rows(); i++) {
         X_full.insert(i, 0) = 1.0;
@@ -464,7 +464,7 @@ void combine_beta_coef0(Eigen::MatrixXd &beta_full, Eigen::MatrixXd &beta, Eigen
     return;
 }
 
-void extract_beta_coef0(Eigen::VectorXd  &beta_full, Eigen::VectorXd  &beta, double &coef0, bool add_constant) {
+void extract_beta_coef0(Eigen::VectorXd &beta_full, Eigen::VectorXd &beta, double &coef0, bool add_constant) {
     if (!add_constant) {
         beta = beta_full;
         return;
@@ -486,5 +486,15 @@ void extract_beta_coef0(Eigen::MatrixXd &beta_full, Eigen::MatrixXd &beta, Eigen
     return;
 }
 
+void trunc(double &value, double *trunc_range) {
+    if (value < trunc_range[0]) value = trunc_range[0];
+    if (value > trunc_range[1]) value = trunc_range[1];
+}
+
+void trunc(Eigen::VectorXd &vec, double *trunc_range) {
+    for (int i = 0; i < vec.size(); i++) {
+        trunc(vec(i), trunc_range);
+    }
+}
 
 #endif  // SRC_UTILITIES_H
