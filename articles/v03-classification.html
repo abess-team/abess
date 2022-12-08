@@ -226,9 +226,9 @@ i. print the fitted model:</p>
 <span><span class="co">## 4            3 229.5308 46.99849</span></span>
 <span><span class="co">## 5            4 228.9702 45.95916</span></span>
 <span><span class="co">## 6            5 220.1834 45.34507</span></span>
-<span><span class="co">## 7            6 220.0022 46.29066</span></span>
-<span><span class="co">## 8            7 219.9602 46.30510</span></span>
-<span><span class="co">## 9            8 219.9189 46.43192</span></span></code></pre>
+<span><span class="co">## 7            6 220.0022 46.33645</span></span>
+<span><span class="co">## 8            7 219.9659 46.31131</span></span>
+<span><span class="co">## 9            8 219.9210 46.44845</span></span></code></pre>
 <ol start="2" style="list-style-type: lower-roman">
 <li>draw the estimated coefficients on all candidate support size by <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> function:</li>
 </ol>
@@ -236,32 +236,32 @@ i. print the fitted model:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 9 x 9 sparse Matrix of class "dgCMatrix"</span></span>
 <span><span class="co">##                      0         1          2            3            4</span></span>
-<span><span class="co">## (intercept) -0.3530971  1.158781  2.9213405  3.051182673  3.261927165</span></span>
-<span><span class="co">## Pclass       .          .        -0.7952709 -0.833342494 -0.814632228</span></span>
-<span><span class="co">## Sexmale      .         -2.545075 -2.5818945 -2.593870586 -2.590161184</span></span>
+<span><span class="co">## (intercept) -0.3530971  1.158781  2.9213405  3.051182650  3.261927124</span></span>
+<span><span class="co">## Pclass       .          .        -0.7952709 -0.833342489 -0.814632212</span></span>
+<span><span class="co">## Sexmale      .         -2.545075 -2.5818944 -2.593870577 -2.590161192</span></span>
 <span><span class="co">## Age          .          .         .          .            .          </span></span>
 <span><span class="co">## SibSp        .          .         .          .            .          </span></span>
 <span><span class="co">## Parch        .          .         .          .            .          </span></span>
-<span><span class="co">## Fare         .          .         .         -0.001187224 -0.001680436</span></span>
+<span><span class="co">## Fare         .          .         .         -0.001187223 -0.001680436</span></span>
 <span><span class="co">## EmbarkedQ    .          .         .          .            .          </span></span>
-<span><span class="co">## EmbarkedS    .          .         .          .           -0.305263085</span></span>
+<span><span class="co">## EmbarkedS    .          .         .          .           -0.305263064</span></span>
 <span><span class="co">##                       5            6            7            8</span></span>
-<span><span class="co">## (intercept)  4.85381910  5.112842846  5.107729128  5.086770775</span></span>
-<span><span class="co">## Pclass      -1.00849768 -1.076518968 -1.081124454 -1.089943494</span></span>
-<span><span class="co">## Sexmale     -2.59656530 -2.610629567 -2.600187973 -2.598196999</span></span>
-<span><span class="co">## Age         -0.03672237 -0.037470212 -0.037124146 -0.037077478</span></span>
-<span><span class="co">## SibSp       -0.35770272 -0.339008095 -0.350578567 -0.352536406</span></span>
-<span><span class="co">## Parch        .           .            0.048181625  0.050990431</span></span>
-<span><span class="co">## Fare         .          -0.001998164 -0.002239426 -0.002198745</span></span>
-<span><span class="co">## EmbarkedQ    .           .            .            0.209753726</span></span>
-<span><span class="co">## EmbarkedS   -0.21507392 -0.245358838 -0.255839632 -0.218910699</span></span></code></pre>
+<span><span class="co">## (intercept)  4.85381911  5.112857497  5.091004680  5.079012307</span></span>
+<span><span class="co">## Pclass      -1.00849770 -1.076530668 -1.083610537 -1.085091543</span></span>
+<span><span class="co">## Sexmale     -2.59656529 -2.610623446 -2.609378045 -2.601337079</span></span>
+<span><span class="co">## Age         -0.03672237 -0.037469721 -0.037437108 -0.037259374</span></span>
+<span><span class="co">## SibSp       -0.35770273 -0.339011356 -0.340217327 -0.350406209</span></span>
+<span><span class="co">## Parch        .           .            .            0.053009526</span></span>
+<span><span class="co">## Fare         .          -0.001998009 -0.001938335 -0.002224556</span></span>
+<span><span class="co">## EmbarkedQ    .           .            0.196096062  0.210160986</span></span>
+<span><span class="co">## EmbarkedS   -0.21507393 -0.245371516 -0.210145242 -0.214986229</span></span></code></pre>
 <ol start="3" style="list-style-type: lower-roman">
 <li>get the deviance of the estimated model on all candidate support sizes via <code><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance()</a></code> function:</li>
 </ol>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 321.9560 246.5820 229.6078 229.5308 228.9702 220.1834 220.0022 219.9602</span></span>
-<span><span class="co">## [9] 219.9189</span></span></code></pre>
+<pre><code><span><span class="co">## [1] 321.9560 246.5820 229.6078 229.5308 228.9702 220.1834 220.0022 219.9659</span></span>
+<span><span class="co">## [9] 219.9210</span></span></code></pre>
 <ol start="4" style="list-style-type: lower-roman">
 <li>visualize the change of models with the change of support size via <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> function:</li>
 </ol>
