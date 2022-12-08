@@ -161,7 +161,7 @@ class TestCheck:
             assert False
 
         try:
-            model.fit([[1, 1, 1]], [1], weight=['c'])
+            model.fit([[1, 1, 1]], [1], sample_weight=['c'])
         except ValueError as e:
             print(e)
         else:
@@ -223,14 +223,14 @@ class TestCheck:
             assert False
 
         try:
-            model.fit([[1, 1, 1]], [1], weight=[1, 2])
+            model.fit([[1, 1, 1]], [1], sample_weight=[1, 2])
         except ValueError as e:
             print(e)
         else:
             assert False
 
         try:
-            model.fit([[1, 1, 1]], [1], weight=[[1, 2, 3]])
+            model.fit([[1, 1, 1]], [1], sample_weight=[[1, 2, 3]])
         except ValueError as e:
             print(e)
         else:

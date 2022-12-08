@@ -516,7 +516,7 @@ class PoissonRegression(bess_base):
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 thread=1,
+                 thread=1, approximate_Newton=False,
                  sparse_matrix=False,
                  splicing_type=0,
                  important_search=128
@@ -532,6 +532,7 @@ class PoissonRegression(bess_base):
             primary_model_fit_max_iter=primary_model_fit_max_iter,
             primary_model_fit_epsilon=primary_model_fit_epsilon,
             thread=thread,
+            approximate_Newton=approximate_Newton,
             sparse_matrix=sparse_matrix,
             splicing_type=splicing_type,
             important_search=important_search,
