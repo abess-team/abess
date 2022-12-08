@@ -385,8 +385,9 @@ class bess_base(BaseEstimator):
             if sample_weight.ndim > 1:
                 raise ValueError("sample_weight should be a 1-D array.")
             if sample_weight.size != n:
-                raise ValueError("X.shape[0] should be equal to sample_weight.size")
-            
+                raise ValueError(
+                    "X.shape[0] should be equal to sample_weight.size")
+
             useful_index = list()
             for i, w in enumerate(sample_weight):
                 if w > 0:
