@@ -60,7 +60,7 @@ jobs:
           package-dir: ./python ## trigger cibuildwheel in sub-directory
         env:
           CIBW_SKIP: "pp* *-manylinux_aarch64 *-manylinux_ppc64le *-manylinux_s390x"
-          CIBW_BUILD: "*-musllinux_i686 *-musllinux_x86_64"  # lack of necessary libraries to compile dependencies
+          CIBW_TEST_SKIP: "*-musllinux_i686 *-musllinux_x86_64"  # lack of necessary libraries to compile dependencies
           # configure cibuildwheel to build native archs ('auto'), and some emulated ones via: "CIBW_ARCHS_LINUX: auto aarch64 ppc64le s390x"
           CIBW_ARCHS_LINUX: auto # currently, not support aarch64 ppc64le s390x because avx instruction is not supported on these platforms
           CIBW_ARCHS_MACOS: x86_64 arm64 universal2 # the latest MacOS support the Rosetta
