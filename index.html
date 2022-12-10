@@ -20,7 +20,7 @@
 <script src="pkgdown.js"></script><!-- docsearch --><script src="docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
 <link href="docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Fast Best Subset Selection">
-<meta property="og:description" content="Extremely efficient toolkit for solving the best subset selection problem &lt;https://www.jmlr.org/papers/v23/21-1060.html&gt;. This package is its R interface. The package implements and generalizes algorithms designed in &lt;doi:10.1073/pnas.2014241117&gt; that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times for linear model. It also supports best subset selection for logistic regression, Poisson regression, Cox proportional hazard model, Gamma regression, multiple-response regression, multinomial logistic regression, ordinal regression, (sequential) principal component analysis, and robust principal component analysis. The other valuable features such as the best subset of group selection &lt;arXiv:2104.12576&gt; and sure independence screening &lt;doi:10.1111/j.1467-9868.2008.00674.x&gt; are also provided.  ">
+<meta property="og:description" content="Extremely efficient toolkit for solving the best subset selection problem &lt;https://www.jmlr.org/papers/v23/21-1060.html&gt;. This package is its R interface. The package implements and generalizes algorithms designed in &lt;doi:10.1073/pnas.2014241117&gt; that exploits a novel sequencing-and-splicing technique to guarantee exact support recovery and globally optimal solution in polynomial times for linear model. It also supports best subset selection for logistic regression, Poisson regression, Cox proportional hazard model, Gamma regression, multiple-response regression, multinomial logistic regression, ordinal regression, (sequential) principal component analysis, and robust principal component analysis. The other valuable features such as the best subset of group selection &lt;doi:10.1287/ijoc.2022.1241&gt; and sure independence screening &lt;doi:10.1111/j.1467-9868.2008.00674.x&gt; are also provided.  ">
 <meta property="og:image" content="https://abess-team.github.io/abess/logo.svg">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -161,13 +161,17 @@
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If you use <code>abess</code> or refer to our tutorials in a presentation or publication, we would appreciate citations of our library.</p>
-<p>Jin Zhu, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu (2021). “abess: A Fast Best Subset Selection Library in Python and R.” arXiv:2110.09697.</p>
+<p>Zhu Jin, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, and Junxian Zhu. “abess: A Fast Best-Subset Selection Library in Python and R.” Journal of Machine Learning Research 23, no. 202 (2022): 1-7.</p>
 <p>The corresponding BibteX entry:</p>
-<pre><code>@article{zhu-abess-arxiv,
-  author    = {Jin Zhu and Xueqin Wang and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu},
-  title     = {abess: A Fast Best Subset Selection Library in Python and R},
-  journal   = {arXiv:2110.09697},
-  year      = {2021},
+<pre><code>@article{JMLR:v23:21-1060,
+  author  = {Jin Zhu and Xueqin Wang and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu},
+  title   = {abess: A Fast Best-Subset Selection Library in Python and R},
+  journal = {Journal of Machine Learning Research},
+  year    = {2022},
+  volume  = {23},
+  number  = {202},
+  pages   = {1--7},
+  url     = {http://jmlr.org/papers/v23/21-1060.html}
 }</code></pre>
 </div>
 <div class="section level2">
@@ -175,9 +179,9 @@
 </h2>
 <ul>
 <li><p>Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang (2020). A polynomial algorithm for best-subset selection problem. Proceedings of the National Academy of Sciences, 117(52):33117-33123.</p></li>
-<li><p>Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). abess: A Fast Best Subset Selection Library in Python and R. arXiv preprint arXiv:2110.09697.</p></li>
+<li><p>Zhu Jin, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, and Junxian Zhu. “abess: A Fast Best-Subset Selection Library in Python and R.” Journal of Machine Learning Research 23, no. 202 (2022): 1-7.</p></li>
 <li><p>Pölsterl, S (2020). scikit-survival: A Library for Time-to-Event Analysis Built on Top of scikit-learn. J. Mach. Learn. Res., 21(212), 1-6.</p></li>
-<li><p>Yanhang Zhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). Certifiably Polynomial Algorithm for Best Group Subset Selection. arXiv preprint arXiv:2104.12576.</p></li>
+<li><p>Yanhang Zhang, Junxian Zhu, Jin Zhu, and Xueqin Wang. A Splicing Approach to Best Subset of Groups Selection. INFORMS Journal on Computing (Accepted). <a href="doi:10.1287/ijoc.2022.1241" class="uri">doi:10.1287/ijoc.2022.1241</a>.</p></li>
 <li><p>Qiang Sun and Heping Zhang (2020). Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079.</p></li>
 </ul>
 </div>
