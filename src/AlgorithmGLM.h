@@ -28,11 +28,12 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
 
     /* --- TO BE IMPLEMENTED IN CHILD CLASS --- */
     virtual Eigen::MatrixXd gradian_core(T4 &X_full, T1 &y, Eigen::VectorXd &weights, T2 &beta_full) {
-        // returns the gradian matrix G
+        // the gradian matrix can be expressed as G = X^T * A,
+        // returns the gradian core A
         return Eigen::MatrixXd::Zero(beta_full.rows(), beta_full.cols());
     };
     virtual Eigen::VectorXd hessian_core(T4 &X_full, T1 &y, Eigen::VectorXd &weights, T2 &beta_full) {
-        // hessian matrix can be expressed as H = X^T * D * X,
+        // the hessian matrix can be expressed as H = X^T * D * X,
         // returns the (diagnal values of) diagnal matrix D.
         return Eigen::VectorXd::Ones(X_full.rows());
     };
@@ -42,11 +43,12 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
         return T1(X_full * beta_full);
     }
     virtual T1 log_probability(T4 &X_full, T2 &beta_full, T1 &y) {
-        // returns: log P(y_i | X_i, beta)
+        // returns log P(y | X, beta)
         return T1(Eigen::MatrixXd::Zero(y.rows(), y.cols()));
     }
     virtual bool null_model(T1 &y, Eigen::VectorXd &weights, T3 &coef0) {
-        // fitting a null model, i.e. only coef0
+        // returns a null model,
+        // i.e. given only y, fit an intercept
         return true;
     }
     /* ---------------------------------------- */
