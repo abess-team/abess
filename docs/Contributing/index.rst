@@ -10,5 +10,6 @@ to make valuable contribution to the ``abess``.
     ContributeDocs
     ContributePyR
     DevelopNewFeatures
+    DevelopNewFeaturesGLM
     AfterCodeDeveloping
     AppendixArchitecture
