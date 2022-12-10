@@ -74,16 +74,20 @@ also named as rank learning in machine learning community.
 
 If you use `abess` or refer to our tutorials in a presentation or publication, we would appreciate citations of our library.
 
-Jin Zhu, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu (2021). “abess: A Fast Best Subset Selection Library in Python and R.” arXiv:2110.09697.
+Zhu Jin, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, and Junxian Zhu. "abess: A Fast Best-Subset Selection Library in Python and R." Journal of Machine Learning Research 23, no. 202 (2022): 1-7.
 
 The corresponding BibteX entry:
 
 ```
-@article{zhu-abess-arxiv,
-  author    = {Jin Zhu and Xueqin Wang and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu},
-  title     = {abess: A Fast Best Subset Selection Library in Python and R},
-  journal   = {arXiv:2110.09697},
-  year      = {2021},
+@article{JMLR:v23:21-1060,
+  author  = {Jin Zhu and Xueqin Wang and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu},
+  title   = {abess: A Fast Best-Subset Selection Library in Python and R},
+  journal = {Journal of Machine Learning Research},
+  year    = {2022},
+  volume  = {23},
+  number  = {202},
+  pages   = {1--7},
+  url     = {http://jmlr.org/papers/v23/21-1060.html}
 }
 ```
 
@@ -91,10 +95,10 @@ The corresponding BibteX entry:
 
 - Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang (2020). A polynomial algorithm for best-subset selection problem. Proceedings of the National Academy of Sciences, 117(52):33117-33123.
 
-- Jin Zhu, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu, Xueqin Wang (2021). abess: A Fast Best Subset Selection Library in Python and R. arXiv preprint arXiv:2110.09697.
+- Zhu Jin, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, and Junxian Zhu. "abess: A Fast Best-Subset Selection Library in Python and R." Journal of Machine Learning Research 23, no. 202 (2022): 1-7.
 
 - Pölsterl, S (2020). scikit-survival: A Library for Time-to-Event Analysis Built on Top of scikit-learn. J. Mach. Learn. Res., 21(212), 1-6.
 
-- Yanhang Zhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2021). Certifiably Polynomial Algorithm for Best Group Subset Selection. arXiv preprint arXiv:2104.12576.
+- Yanhang Zhang, Junxian Zhu, Jin Zhu, and Xueqin Wang. A Splicing Approach to Best Subset of Groups Selection. INFORMS Journal on Computing (Accepted). doi:10.1287/ijoc.2022.1241.
 
 - Qiang Sun and Heping Zhang (2020). Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079.

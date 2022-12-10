@@ -36,6 +36,7 @@ citEntry(
   author   = "Yanhang Zhang, Junxian Zhu, Jin Zhu, Xueqin Wang",
   journal  = "INFORMS Journal on Computing (Accepted)",
   year     = "2022+",
+  doi      = "10.1287/ijoc.2022.1241",
   textVersion = paste(
   
   )
