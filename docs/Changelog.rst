@@ -4,8 +4,12 @@ Changelog
 Unreleased
 ----------
 
-- R package
-- Python package
+-  R package
+-  Python package
+-  C++
+
+   -  Support the base model for GLM. The Sparse GLM model can be implemented easilier.
+   -  Re-write logistic, poisson and gamma regression on the basis of GLM base model.
 
 Versions 0.4.2 -- 0.4.5
 ----------
@@ -17,7 +21,7 @@ Versions 0.4.2 -- 0.4.5
    -  Support ordinal regression
    -  Update README.md to synchronize with the layout change of abess official website. 
 
-- Python package
+-  Python package
 
    -  Fix bugs in sparse principal component analysis
    -  Support ordinal regression
@@ -30,7 +34,7 @@ Versions 0.4.2 -- 0.4.5
       from ``scikit-learn`` into pytest
    -  Refine the configuration in ``setup.py`` to facilitate the source code installation
 
-- C++
+-  C++
 
    -  Support ordinal regression
    -  Fix bugs for multiple-regressors' API
@@ -49,7 +53,7 @@ Version 0.4.1
 
    -  Support user-specified initial active set.
 
-- Python package
+-  Python package
 
    -  The API name shifts from ``abessXXX`` to ``xxxRegression`` and from ``abessXXX`` to ``SparsePCA``
    -  Improve the PEP8 criteria and ``scikit-learn`` criterion
