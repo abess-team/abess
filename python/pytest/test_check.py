@@ -281,6 +281,22 @@ class TestCheck:
         else:
             assert False
 
+        try:
+            data = abess.make_glm_data(
+                n=100, p=10, k=3, family='gaussian', corr_type="null")
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            data = abess.make_multivariate_glm_data(
+                n=100, p=10, k=3, family='gaussian', corr_type="null")
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
         # lack of necessary parameter
         try:
             model = abess.LinearRegression()

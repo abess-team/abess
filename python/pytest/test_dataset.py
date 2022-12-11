@@ -21,7 +21,7 @@ class TestOther:
         rho = 0.
         sigma = 1.
 
-        for family in ['gaussian', 'binomial', 'poisson', 'gamma']:
+        for family in ['gaussian', 'binomial', 'poisson', 'gamma', 'ordinal']:
             data1 = abess.make_glm_data(
                 n=n,
                 p=p,
@@ -42,6 +42,14 @@ class TestOther:
                 sigma=sigma,
                 coef_=data1.coef_)
             assert (data1.coef_ == data2.coef_).all()
+            data3 = abess.make_glm_data(
+                n=n,
+                p=p,
+                k=k,
+                family=family,
+                rho=rho,
+                sigma=sigma,
+                corr_type="exp")
 
         for family in ['cox']:
             data1 = abess.make_glm_data(
@@ -84,6 +92,8 @@ class TestOther:
             data2 = abess.make_multivariate_glm_data(
                 n=n, p=p, k=k, family=family, rho=rho, M=M, coef_=data1.coef_)
             assert (data1.coef_ == data2.coef_).all()
+            data3 = abess.make_multivariate_glm_data(
+                n=n, p=p, k=k, family=family, rho=rho, M=M, corr_type="exp")
 
         data1 = abess.make_multivariate_glm_data(
             n=n, p=p, k=k, family='poisson', rho=rho, M=M)
