@@ -33,6 +33,7 @@ Versions 0.4.2 -- 0.4.5
    -  Add `estimator check <https://scikit-learn.org/stable/modules/generated/sklearn.utils.estimator_checks.check_estimator.html>`__
       from ``scikit-learn`` into pytest
    -  Refine the configuration in ``setup.py`` to facilitate the source code installation
+   -  Support ``get_params`` and ``set_params`` methods for each model
 
 -  C++
 
