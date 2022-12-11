@@ -123,6 +123,7 @@ Then, you need to install R library dependencies ``Rcpp`` and ``RcppEigen`` via 
 After installing dependencies, run the following code in terminal/bash:
 
 .. code:: bash
+
    cd R-package
    autoreconf
    R CMD INSTALL .

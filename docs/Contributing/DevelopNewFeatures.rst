@@ -9,8 +9,8 @@ Preliminaries
 We have endeavor to make developing new features easily. Before developing the code, please make sure you have:    
 
 - understood the `ABESS algorithm <https://www.pnas.org/doi/10.1073/pnas.2014241117#sec-21>`__;
-- installed ``abess`` via the code in github by following `Installation <../Installation.rst>`__ instruction;
-- read the `Appendix: Architecture of abess <AppendixArchitecture.rst>`__ of ``abess`` library;
+- installed ``abess`` via the code in github by following `Installation <../Installation.html>`__ instruction;
+- read the `Appendix: Architecture of abess <AppendixArchitecture.html>`__ of ``abess`` library;
 - some experience on writing R or Python code.
 
 Core C++
@@ -26,18 +26,18 @@ are written in C++. Among them, some important files:
 If you want to add a new algorithm, all of them should be noticed.
 
 Besides, we have implemented ABESS algorithms for generalized linear model on
-``src/AlgorithmGLM.h`` `[code temp] <https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h>`__
+``src/AlgorithmGLM.h`` `[code temp] <https://github.com/abess-team/abess/blob/master/src/AlgorithmGLM.h>`__
 and principal component analysis (PCA) on ``src/AlgorithmPCA.h`` 
-`[code temp] <https://github.com/abess-team/abess/blob/master/python/src/AlgorithmPCA.h>`__.
+`[code temp] <https://github.com/abess-team/abess/blob/master/src/AlgorithmPCA.h>`__.
 You can check them to help your own developing.
 
 Write an API
 ~~~~~~~~~~~~
 
 API’s are all defined in the ``src/api.cpp``\ `[code
-temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp>`__
+temp] <https://github.com/abess-team/abess/blob/master/src/api.cpp>`__
 and the related header file ``src/api.h``\ `[code
-temp] <https://github.com/abess-team/abess/blob/master/python/src/api.h>`__.
+temp] <https://github.com/abess-team/abess/blob/master/src/api.h>`__.
 We have written some API functions (e.g. ``abessGLM_API()``), so you
 can either add a new function for the new algorithm or simply add
 into existing one.
@@ -58,7 +58,7 @@ Next, four important data type should be determined:
 -  T3 : type of intercept
 -  T4 : type of X
 
-The algorithm variable are based on them: `[code link] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp>`__
+The algorithm variable are based on them: `[code link] <https://github.com/abess-team/abess/blob/master/src/api.cpp>`__
 
 .. code:: cpp
 
@@ -79,7 +79,7 @@ so that we define:
    vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd> *> algorithm_list_uni_dense(algorithm_list_size);
    vector<Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>> *> algorithm_list_uni_sparse(algorithm_list_size);
 
-After that, request memory to initial the algorithm: `[code link] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=%7B-,if%20(model_type%20%3D%3D%201),%7B,-abessLm%3CEigen%3A%3AMatrixXd>`__
+After that, request memory to initial the algorithm: `[code link] <https://github.com/abess-team/abess/blob/master/src/api.cpp#:~:text=%7B-,if%20(model_type%20%3D%3D%201),%7B,-abessLm%3CEigen%3A%3AMatrixXd>`__
 
 .. code:: cpp
 
@@ -92,7 +92,7 @@ After that, request memory to initial the algorithm: `[code link] <https://githu
    }
 
 Finally, call ``abessWorkflow()``, which would compute the result:
-`[code link] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=Eigen%3A%3AVectorXd%20y_vec%20%3D%20y.col(0).eval()%3B-,out_result%20%3D%20abessWorkflow,-%3CEigen%3A%3AVectorXd%2C%20Eigen%3A%3AVectorXd%2C%20double%2C%20Eigen%3A%3AMatrixXd>`__
+`[code link] <https://github.com/abess-team/abess/blob/master/src/api.cpp#:~:text=Eigen%3A%3AVectorXd%20y_vec%20%3D%20y.col(0).eval()%3B-,out_result%20%3D%20abessWorkflow,-%3CEigen%3A%3AVectorXd%2C%20Eigen%3A%3AVectorXd%2C%20double%2C%20Eigen%3A%3AMatrixXd>`__
 
 .. code:: cpp
 
@@ -147,11 +147,11 @@ such that you can easily extend the package.
 
    The abess process can automatically use the loss and its derivatives to complete algorithm. 
    However, it should be noted that if you want to achieve higher efficiency, 
-   a FULL concrete algorithm can be: [[code temp]](https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessLogistic,-%3A%20public%20Algorithm%3CEigen)
+   a FULL concrete algorithm can be: [[code temp]](https://github.com/abess-team/abess/blob/master/src/AlgorithmGLM.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessLogistic,-%3A%20public%20Algorithm%3CEigen)
 
    -->
 
-A concrete algorithm is like: `[code link] <https://github.com/abess-team/abess/blob/master/python/src/AlgorithmGLM.h#:~:text=template%20%3Cclass%20T4%3E-,class%20abessLogistic,-%3A%20public%20Algorithm%3CEigen>`__
+A concrete algorithm is like: `[code link] <https://github.com/abess-team/abess/blob/master/src/AlgorithmPCA.h#:~:text=class%20T4%3E-,class%20abessPCA,-%3A%20public%20Algorithm>`__
 
 .. code:: cpp
 
@@ -195,7 +195,7 @@ sacrifices” and record them in ``bd``.
 
 If you create a new file to store the algorithm, remember to include
 it inside ``src/api.cpp``. `[code
-temp] <https://github.com/abess-team/abess/blob/master/python/src/api.cpp#:~:text=%23include%20%22AlgorithmGLM.h%22>`__
+temp] <https://github.com/abess-team/abess/blob/master/src/api.cpp#:~:text=%23include%20%22AlgorithmGLM.h%22>`__
 
 Now your new method has been connected to the whole frame. In the next
 section, we focus on how to build R or Python package based on the core
@@ -239,7 +239,7 @@ Then create a new python file in ``python/abess`` or open an
 existed file, such as ``python/abess/linear.py``, to add a python
 API for your new method.
 
-A simple new method can be added like: `[code temp] <https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=class%20abessPCA(bess_base)%3A>`__.
+A simple new method can be added like: `[code temp] <https://github.com/abess-team/abess/blob/master/python/abess/decomposition.py#:~:text=%40fix_docs-,class%20SparsePCA,-(bess_base)%3A>`__.
 
 .. code:: python
 
@@ -264,7 +264,7 @@ A simple new method can be added like: `[code temp] <https://github.com/abess-te
 
 The base class implements a ``fit`` function, which plays a role on
 checking input and calling C++ API to compute results. You may want to
-override it for custom features. `[code temp] <https://github.com/abess-team/abess/blob/master/python/abess/pca.py#:~:text=def%20fit(self%2C%20X%3DNone%2C%20is_normal%3DFalse%2C%20group%3DNone%2C%20Sigma%3DNone%2C%20number%3D1%2C%20n%3DNone)%3A>`__.
+override it for custom features. `[code temp] <https://github.com/abess-team/abess/blob/master/python/abess/decomposition.py#:~:text=def%20fit(self%2C%20X%3DNone%2C%20y%3DNone%2C%20is_normal%3DFalse%2C>`__.
 
 Then, the final step is to link this Python class with the model type
 number (it has been defined in Section **Core C++**). In the ``fit``
