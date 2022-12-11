@@ -4,3 +4,4 @@ ignore:
   - "src"
   - "include"
   - "docs"
+  - "python/abess/functions.py"
