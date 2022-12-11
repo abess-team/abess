@@ -64,8 +64,7 @@ jobs:
           # configure cibuildwheel to build native archs ('auto'), and some emulated ones via: "CIBW_ARCHS_LINUX: auto aarch64 ppc64le s390x"
           CIBW_ARCHS_LINUX: auto # currently, not support aarch64 ppc64le s390x because avx instruction is not supported on these platforms
           CIBW_BEFORE_ALL: >
-            apk add openblas-dev &&
-            apk add lapack-dev
+            apk add openblas-dev  lapack-dev jpeg-dev
       
       - name: Build wheels for manylinux
         if: runner.os == 'Linux'
