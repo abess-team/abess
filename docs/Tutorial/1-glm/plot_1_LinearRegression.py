@@ -178,7 +178,7 @@ for s in range(20):
     model = LinearRegression(support_size=s)
     model.fit(x, y)
     coef[s, :] = model.coef_
-    ic[s] = model.ic_
+    ic[s] = model.eval_loss_
 
 for i in range(19):
     plt.plot(coef[:, i], label=i)

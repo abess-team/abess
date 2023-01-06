@@ -87,12 +87,12 @@ class bess_base(BaseEstimator):
         Estimated coefficients for the best subset selection problem.
     intercept_ : float or array-like, shape(M_responses,)
         The intercept in the model.
-    ic_ : float
-        If cv=1, it stores the score under chosen information criterion.
-    test_loss_ : float
-        If cv>1, it stores the test loss under cross-validation.
     train_loss_ : float
         The loss on training data.
+    eval_loss_ : float
+
+        - If cv=1, it stores the score under chosen information criterion.
+        - If cv>1, it stores the test loss under cross-validation.
 
     References
     ----------
@@ -105,9 +105,8 @@ class bess_base(BaseEstimator):
     # attributes
     coef_ = None
     intercept_ = None
-    ic_ = 0
     train_loss_ = 0
-    test_loss_ = 0
+    eval_loss_ = 0
 
     def __init__(
         self,
@@ -566,8 +565,9 @@ class bess_base(BaseEstimator):
         self.coef_ = result[0].squeeze()
         self.intercept_ = result[1].squeeze()
         self.train_loss_ = result[2]
-        self.test_loss_ = result[3]
-        self.ic_ = result[4]
+        # self.test_loss_ = result[3]
+        # self.ic_ = result[4]
+        self.eval_loss_ = result[3] if (self.cv > 1) else result[4]
 
         if self.model_type == "Cox":
             self.baseline_model.fit(np.dot(X, self.coef_), y, time)
