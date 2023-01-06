@@ -14,17 +14,6 @@ class bess_base(BaseEstimator):
     r"""
     Parameters
     ----------
-    max_iter : int, optional, default=20
-        Maximum number of iterations taken for the
-        splicing algorithm to converge.
-        Due to the limitation of loss reduction, the splicing
-        algorithm must be able to converge.
-        The number of iterations is only to simplify the implementation.
-    is_warm_start : bool, optional, default=True
-        When tuning the optimal parameter combination,
-        whether to use the last solution
-        as a warm start to accelerate the iterative
-        convergence of the splicing algorithm.
     path_type : {"seq", "gs"}, optional, default="seq"
         The method to be used to select the optimal support size.
 
@@ -39,19 +28,23 @@ class bess_base(BaseEstimator):
         default=range(min(n, int(n/(log(log(n))log(p))))).
         An integer vector representing the alternative support sizes.
         Only used when path_type = "seq".
+    s_min : int, optional, default=0
+        The lower bound of golden-section-search for sparsity searching.
+    s_max : int, optional, default=min(n, int(n/(log(log(n))log(p)))).
+        The higher bound of golden-section-search for sparsity searching.
+    group : int, optional, default=np.ones(p)
+        The group index for each variable.
     alpha : float, optional, default=0
         Constant that multiples the L2 term in loss function, controlling
         regularization strength. It should be non-negative.
 
         - If alpha = 0, it indicates ordinary least square.
-    group : int, optional, default=np.ones(p)
-            The group index for each variable.
-    s_min : int, optional, default=0
-        The lower bound of golden-section-search for sparsity searching.
-    s_max : int, optional, default=min(n, int(n/(log(log(n))log(p)))).
-        The higher bound of golden-section-search for sparsity searching.
+
     ic_type : {'aic', 'bic', 'gic', 'ebic'}, optional, default='ebic'
-        The type of criterion for choosing the support size.
+        The type of criterion for choosing the support size if `cv=1`.
+    ic_coef : float, optional, default=1.0
+        Constant that controls the regularization strength
+        on chosen information criterion.
     cv : int, optional, default=1
         The folds number when use the cross-validation method.
 
@@ -65,6 +58,24 @@ class bess_base(BaseEstimator):
         - If thread = 0, the maximum number of threads supported by
           the device will be used.
 
+    A_init : array-like, optional, default=None
+        Initial active set before the first splicing.
+    always_select : array-like, optional, default=None
+        An array contains the indexes of variables
+        we want to consider in the model.
+
+    max_iter : int, optional, default=20
+        Maximum number of iterations taken for the
+        splicing algorithm to converge.
+        Due to the limitation of loss reduction, the splicing
+        algorithm must be able to converge.
+        The number of iterations is only to simplify the implementation.
+    is_warm_start : bool, optional, default=True
+        When tuning the optimal parameter combination,
+        whether to use the last solution
+        as a warm start to accelerate the iterative
+        convergence of the splicing algorithm.
+
     screening_size : int, optional, default=-1
         The number of variables remaining after screening.
         It should be a non-negative number smaller than p,
@@ -74,9 +85,6 @@ class bess_base(BaseEstimator):
         - If screening_size=0, screening_size will be set as
           :math:`\\min(p, int(n / (\\log(\\log(n))\\log(p))))`.
 
-    always_select : array-like, optional, default=[]
-        An array contains the indexes of variables
-        we want to consider in the model.
     primary_model_fit_max_iter : int, optional, default=10
         The maximal number of iteration for primary_model_fit.
     primary_model_fit_epsilon : float, optional, default=1e-08
@@ -114,28 +122,28 @@ class bess_base(BaseEstimator):
         algorithm_type,
         model_type,
         normalize_type,
-        path_type,
-        max_iter=20,
-        exchange_num=5,
-        is_warm_start=True,
+        path_type="seq",
         support_size=None,
-        A_init=None,
-        group=None,
-        alpha=None,
         s_min=None,
         s_max=None,
+        group=None,
+        alpha=None,
         ic_type="ebic",
         ic_coef=1.0,
         cv=1,
-        screening_size=-1,
+        thread=1,
+        A_init=None,
         always_select=None,
+        max_iter=20,
+        exchange_num=5,
+        is_warm_start=True,
+        splicing_type=0,
+        important_search=0,
+        screening_size=-1,
         primary_model_fit_max_iter=10,
         primary_model_fit_epsilon=1e-8,
         approximate_Newton=False,
-        thread=1,
         covariance_update=False,
-        splicing_type=0,
-        important_search=0,
         # lambda_min=None, lambda_max=None,
         # early_stop=False, n_lambda=100,
         baseline_model=None,
@@ -406,12 +414,10 @@ class bess_base(BaseEstimator):
                     support_sizes = [0, 1]
                 else:
                     support_sizes = list(
-                        range(
-                            0,
-                            max(
-                                min(p,
-                                    int(n / (np.log(np.log(n)) * np.log(p)))),
-                                1)))
+                        range(0, max(min(
+                            p,
+                            int(n / (np.log(np.log(n)) * np.log(p)))
+                        ), 1)))
             else:
                 if isinstance(self.support_size,
                               (numbers.Real, numbers.Integral)):

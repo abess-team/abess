@@ -104,7 +104,7 @@ def _estimate_concordance_index(
     return cindex, concordant, discordant, tied_risk, tied_time
 
 
-def concordance_index_censored(event_indicator, event_time, 
+def concordance_index_censored(event_indicator, event_time,
                                estimate, sample_weight=None, tied_tol=1e-8):
     """Concordance index for right-censored data
 

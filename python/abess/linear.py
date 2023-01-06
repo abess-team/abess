@@ -1196,11 +1196,14 @@ class OrdinalRegression(bess_base):
         y : array-like, shape(n_samples, )
             Test response (class labels for samples in X).
         k : int, default=None
-            Only consider the highest k scores in the ranking. If None, use all outputs.
+            Only consider the highest k scores in the ranking.
+            If None, use all outputs.
         sample_weight: array-like, shape(n_samples,), default=None
             Sample weights.
         ignore_ties : bool, default=False
-            Assume that there are no ties in y_pred (which is likely to be the case if y_score is continuous) for efficiency gains.
+            Assume that there are no ties in y_pred
+            (which is likely to be the case if y_score is continuous)
+            for efficiency gains.
 
         Returns
         -------
