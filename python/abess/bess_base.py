@@ -44,7 +44,8 @@ class bess_base(BaseEstimator):
         regularization strength. It should be non-negative.
 
         - If alpha = 0, it indicates ordinary least square.
-
+    group : int, optional, default=np.ones(p)
+            The group index for each variable.
     s_min : int, optional, default=0
         The lower bound of golden-section-search for sparsity searching.
     s_max : int, optional, default=min(n, int(n/(log(log(n))log(p)))).
@@ -118,6 +119,8 @@ class bess_base(BaseEstimator):
         exchange_num=5,
         is_warm_start=True,
         support_size=None,
+        A_init=None,
+        group=None,
         alpha=None,
         s_min=None,
         s_max=None,
@@ -131,7 +134,6 @@ class bess_base(BaseEstimator):
         approximate_Newton=False,
         thread=1,
         covariance_update=False,
-        sparse_matrix=False,
         splicing_type=0,
         important_search=0,
         # lambda_min=None, lambda_max=None,
@@ -152,6 +154,8 @@ class bess_base(BaseEstimator):
         self.n_iter_: int
         self.s_min = s_min
         self.s_max = s_max
+        self.A_init = A_init
+        self.group = group
         # self.lambda_min = None
         # self.lambda_max = None
         # self.n_lambda = 100
@@ -166,7 +170,6 @@ class bess_base(BaseEstimator):
         self.approximate_Newton = approximate_Newton
         self.thread = thread
         self.covariance_update = covariance_update
-        self.sparse_matrix = sparse_matrix
         self.splicing_type = splicing_type
         self.important_search = important_search
         self.baseline_model = baseline_model
@@ -178,9 +181,8 @@ class bess_base(BaseEstimator):
             y=None,
             is_normal=True,
             sample_weight=None,
-            group=None,
             cv_fold_id=None,
-            A_init=None):
+            sparse_matrix=False):
         r"""
         The fit function is used to transfer
         the information of data and return the fit result.
@@ -206,8 +208,7 @@ class bess_base(BaseEstimator):
             before fitting the algorithm.
         sample_weight : array-like, shape (n_samples,), optional, default=np.ones(n)
             Individual weights for each sample. Only used for is_weight=True.
-        group : int, optional, default=np.ones(p)
-            The group index for each variable.
+
         cv_fold_id: array-like, shape (n_samples,), optional, default=None
             An array indicates different folds in CV.
             Samples in the same fold should be given the same number.
@@ -225,7 +226,7 @@ class bess_base(BaseEstimator):
         if isinstance(X, (list, np.ndarray, np.matrix, pd.DataFrame,
                       coo_matrix, csr_matrix)):
             if isinstance(X, (coo_matrix, csr_matrix)):
-                self.sparse_matrix = True
+                sparse_matrix = True
 
             # Sort for Cox
             if self.model_type == "Cox":
@@ -338,41 +339,42 @@ class bess_base(BaseEstimator):
         else:
             cv_fold_id = np.array(cv_fold_id, dtype="int32")
             if cv_fold_id.ndim > 1:
-                raise ValueError("group should be an 1D array of integers.")
+                raise ValueError(
+                    "cv_fold_id should be an 1D array of integers.")
             if cv_fold_id.size != n:
                 raise ValueError(
-                    "The length of group should be equal to X.shape[0].")
+                    "The length of cv_fold_id should be equal to X.shape[0].")
             if len(set(cv_fold_id)) != self.cv:
                 raise ValueError(
                     "The number of different masks should be equal to `cv`.")
 
         # A_init
-        if A_init is None:
-            A_init = np.array([], dtype="int32")
+        if self.A_init is None:
+            A_init_list = np.array([], dtype="int32")
         else:
-            A_init = np.array(A_init, dtype="int32")
-            if A_init.ndim > 1:
+            A_init_list = np.array(self.A_init, dtype="int32")
+            if A_init_list.ndim > 1:
                 raise ValueError("The initial active set should be "
                                  "an 1D array of integers.")
-            if (A_init.min() < 0 or A_init.max() >= p):
-                raise ValueError("A_init contains wrong index.")
+            if (A_init_list.min() < 0 or A_init_list.max() >= p):
+                raise ValueError("A_init contains out-of-range index.")
 
         # Group:
-        if group is None:
+        if self.group is None:
             g_index = list(range(p))
         else:
-            group = np.array(group)
-            if group.ndim > 1:
+            g = np.array(self.group)
+            if g.ndim > 1:
                 raise ValueError("group should be an 1D array of integers.")
-            if group.size != p:
+            if g.size != p:
                 raise ValueError(
                     "The length of group should be equal to X.shape[1].")
+            group_set = list(set(g))
+            g.sort()
             g_index = []
-            group.sort()
-            group_set = list(set(group))
             j = 0
             for i in group_set:
-                while group[j] != i:
+                while g[j] != i:
                     j += 1
                 g_index.append(j)
 
@@ -502,7 +504,7 @@ class bess_base(BaseEstimator):
                 "important_search should be a non-negative number.")
 
         # Sparse X
-        if self.sparse_matrix:
+        if sparse_matrix:
             if not isinstance(X, (coo_matrix)):
                 # print("sparse matrix 1")
                 nonzero = 0
@@ -556,8 +558,8 @@ class bess_base(BaseEstimator):
                 always_select_list, self.primary_model_fit_max_iter,
                 self.primary_model_fit_epsilon, early_stop,
                 self.approximate_Newton, self.thread, self.covariance_update,
-                self.sparse_matrix, self.splicing_type, self.important_search,
-                A_init)
+                sparse_matrix, self.splicing_type, self.important_search,
+                A_init_list)
 
         # print("linear fit end")
         # print(len(result))

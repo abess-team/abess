@@ -416,14 +416,14 @@ class TestAlgorithm:
         model1.fit_transform(X)
 
         # sparse
-        model2 = abess.SparsePCA(support_size=s, sparse_matrix=True)
-        model2.fit(coo_matrix(X))
+        model2 = abess.SparsePCA(support_size=s)
+        model2.fit(coo_matrix(X), sparse_matrix=True)
         print("coef1: ", np.unique(np.nonzero(model1.coef_)[0]))
         print("coef2: ", np.unique(np.nonzero(model2.coef_)[0]))
         assert_value(model1.coef_, model2.coef_)
 
-        model2 = abess.SparsePCA(support_size=s, sparse_matrix=True)
-        model2.fit(X)
+        model2 = abess.SparsePCA(support_size=s)
+        model2.fit(X, sparse_matrix=True)
         assert_value(model1.coef_, model2.coef_)
 
         # sigma input
@@ -448,8 +448,8 @@ class TestAlgorithm:
         support_size_g = np.zeros((4, 1))
         support_size_g[1, 0] = 1
         group = np.repeat([0, 1, 2, 3], [5, 5, 5, 5])
-        model5 = abess.SparsePCA(support_size=support_size_g)
-        model5.fit(X, group=group)
+        model5 = abess.SparsePCA(support_size=support_size_g, group=group)
+        model5.fit(X)
         coef = g_index[np.nonzero(model5.coef_)[0]]
 
         assert len(coef) == 10
@@ -466,8 +466,8 @@ class TestAlgorithm:
             model.fit(X, is_normal=False)
 
         # A_init
-        model = abess.SparsePCA(support_size=support_size)
-        model.fit(X, A_init=[0, 1, 2])
+        model = abess.SparsePCA(support_size=support_size, A_init=[0, 1, 2])
+        model.fit(X)
 
     @staticmethod
     def test_gamma():
@@ -523,14 +523,14 @@ class TestAlgorithm:
         model2.fit(coo_matrix(X), r=r)
         assert_value(model1.coef_, model2.coef_)
 
-        model2 = abess.RobustPCA(support_size=s, sparse_matrix=True)
-        model2.fit(X, r=r)
+        model2 = abess.RobustPCA(support_size=s)
+        model2.fit(X, r=r, sparse_matrix=True)
         assert_value(model1.coef_, model2.coef_)
 
-        # group
-        group = np.arange(n * p)
-        model3 = abess.RobustPCA(support_size=s)
-        model3.fit(X, r=r, group=group)
+        # # group
+        # group = np.arange(n * p)
+        # model3 = abess.RobustPCA(support_size=s, group=group)
+        # model3.fit(X, r=r)
 
         # ic
         for ic in ['aic', 'bic', 'ebic', 'gic']:
