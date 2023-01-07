@@ -69,17 +69,15 @@ class LogisticRegression(bess_base):
     array([0., 0., 0., 1., 1., 0., 1., 0., 1., 0.])
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None, alpha=None,
-                 s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 approximate_Newton=False,
-                 thread=1, A_init=None,
-                 group=None,
-                 splicing_type=0,
-                 important_search=128,
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
+                 primary_model_fit_max_iter=10,
+                 primary_model_fit_epsilon=1e-8,
+                 approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Logistic", normalize_type=2,
@@ -230,16 +228,13 @@ class LinearRegression(bess_base):
     array([   1.42163813,  -43.23929886, -139.79509191,  141.45138403])
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 thread=1, covariance_update=False,
-                 A_init=None,
-                 group=None,
-                 splicing_type=0,
-                 important_search=128,
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
+                 covariance_update=False,
                  # primary_model_fit_max_iter=10,
                  # primary_model_fit_epsilon=1e-8,
                  # approximate_Newton=False
@@ -355,18 +350,15 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
     array([1.07629689e+00, 6.47263126e-04, 4.30660826e-06, 3.66389638e+05])
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 approximate_Newton=False,
-                 thread=1,
-                 A_init=None,
-                 group=None,
-                 splicing_type=0,
-                 important_search=128
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
+                 primary_model_fit_max_iter=10,
+                 primary_model_fit_epsilon=1e-8,
+                 approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Cox", normalize_type=3,
@@ -512,17 +504,15 @@ class PoissonRegression(bess_base):
     array([1.03373139e+00, 4.32229653e-01, 4.48811009e-01, 2.27170366e+00])
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 thread=1, approximate_Newton=False,
-                 A_init=None,
-                 group=None,
-                 splicing_type=0,
-                 important_search=128
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
+                 primary_model_fit_max_iter=10,
+                 primary_model_fit_epsilon=1e-8,
+                 approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Poisson", normalize_type=2,
@@ -656,16 +646,16 @@ class MultiTaskRegression(bess_base):
        [0., 0., 1.]])
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 thread=1, covariance_update=False,
-                 A_init=None,
-                 group=None,
-                 splicing_type=0,
-                 important_search=128
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
+                 covariance_update=False,
+                 # primary_model_fit_max_iter=10,
+                 # primary_model_fit_epsilon=1e-8,
+                 # approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Multigaussian",
@@ -789,20 +779,15 @@ class MultinomialRegression(bess_base):
 
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1,
-                 screening_size=-1,
-                 always_select=None,
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
                  primary_model_fit_max_iter=10,
                  primary_model_fit_epsilon=1e-8,
-                 #  approximate_Newton=False,
-                 thread=1,
-                 A_init=None,
-                 group=None,
-                 splicing_type=0,
-                 important_search=128
+                 # approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Multinomial", normalize_type=2,
@@ -963,17 +948,15 @@ class GammaRegression(bess_base):
     array([7.03065424e+19, 7.03065424e+19, 7.03065424e+19, 7.03065424e+19])
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None, alpha=None,
-                 s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 thread=1,
-                 A_init=None,
-                 group=None,
-                 splicing_type=0,
-                 important_search=128
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
+                 primary_model_fit_max_iter=10,
+                 primary_model_fit_epsilon=1e-8,
+                 approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Gamma", normalize_type=2,
@@ -985,7 +968,7 @@ class GammaRegression(bess_base):
             always_select=always_select,
             primary_model_fit_max_iter=primary_model_fit_max_iter,
             primary_model_fit_epsilon=primary_model_fit_epsilon,
-            thread=thread,
+            thread=thread, approximate_Newton=approximate_Newton,
             A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search,
@@ -1109,20 +1092,15 @@ class OrdinalRegression(bess_base):
     [ 0  4 10 14 26 29 38 47 48]
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1,
-                 screening_size=-1,
-                 always_select=None,
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
                  primary_model_fit_max_iter=10,
                  primary_model_fit_epsilon=1e-8,
-                 approximate_Newton=False,
-                 thread=1,
-                 A_init=None,
-                 group=None,
-                 splicing_type=0,
-                 important_search=128
+                 approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Ordinal", normalize_type=2,

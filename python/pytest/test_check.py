@@ -248,7 +248,7 @@ class TestCheck:
 
         try:
             model1 = abess.LinearRegression(group=[[1, 2, 3]])
-            model.fit([[1, 1, 1]], [1])
+            model1.fit([[1, 1, 1]], [1])
         except ValueError as e:
             print(e)
         else:
@@ -464,7 +464,7 @@ class TestCheck:
         # A_init
         try:
             model1 = abess.SparsePCA(A_init=[[0]])
-            model.fit([[1]])
+            model1.fit([[1]])
         except ValueError as e:
             print(e)
         else:
@@ -472,7 +472,7 @@ class TestCheck:
 
         try:
             model1 = abess.SparsePCA(A_init=[2])
-            model.fit([[1]])
+            model1.fit([[1]])
         except ValueError as e:
             print(e)
         else:
@@ -513,7 +513,7 @@ class TestCheck:
 
         try:
             model1 = abess.SparsePCA(A_init=[[0, 1, 2]])
-            model.fit([[1]])
+            model1.fit([[1]])
         except ValueError as e:
             print(e)
         else:
@@ -521,7 +521,7 @@ class TestCheck:
 
         try:
             model1 = abess.SparsePCA(A_init=[-1])
-            model.fit([[1]])
+            model1.fit([[1]])
         except ValueError as e:
             print(e)
         else:

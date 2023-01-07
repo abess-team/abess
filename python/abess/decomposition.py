@@ -62,14 +62,12 @@ class SparsePCA(bess_base):
      [2.33419537e-313]]
     """
 
-    def __init__(self, max_iter=20, exchange_num=5,
-                 is_warm_start=True, support_size=None,
-                 ic_type="loss", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 thread=1,
-                 A_init=None,
-                 group=None,
-                 splicing_type=1
+    def __init__(self, support_size=None, group=None,
+                 ic_type="loss", ic_coef=1.0, cv=1, thread=1,
+                 A_init=None, always_select=None,
+                 max_iter=20, exchange_num=5, is_warm_start=True,
+                 splicing_type=1,
+                 screening_size=-1,
                  ):
         super().__init__(
             algorithm_type="abess", model_type="PCA", normalize_type=1,
@@ -423,12 +421,10 @@ class RobustPCA(bess_base):
 
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, is_warm_start=True,
-                 support_size=None,
+    def __init__(self, support_size=None,
                  ic_type="gic", ic_coef=1.0,
-                 always_select=None,
-                 thread=1,
-                 A_init=None,
+                 thread=1, A_init=None, always_select=None,
+                 max_iter=20, exchange_num=5, is_warm_start=True,
                  splicing_type=1
                  ):
         super().__init__(
