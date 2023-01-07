@@ -25,8 +25,8 @@ np.random.seed(2)
 
 data = make_glm_data(n=n, p=p, k=k, family='gaussian')
 
-model = LinearRegression(support_size=range(0, 5))
-model.fit(data.x, data.y, A_init=[0, 1, 2])
+model = LinearRegression(support_size=range(0, 5), A_init=[0, 1, 2])
+model.fit(data.x, data.y)
 
 # %%
 # Some strategies for initial active set are:

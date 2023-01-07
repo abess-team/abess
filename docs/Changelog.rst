@@ -6,6 +6,10 @@ Unreleased
 
 -  R package
 -  Python package
+
+   -  Rearrange some arguments to improve legibility. 
+      Please check `here <https://abess.readthedocs.io/en/latest/Python-package/index.html>`__ for the latest API.
+
 -  C++
 
    -  Support the base model for GLM. The Sparse GLM model can be implemented easilier.

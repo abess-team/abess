@@ -84,7 +84,7 @@ for s in range(7):
     model = PoissonRegression(support_size=s)
     model.fit(data.x, data.y)
     coef[s, :] = model.coef_
-    ic[s] = model.ic_
+    ic[s] = model.eval_loss_
 
 for i in range(6):
     plt.plot(coef[:, i], label=i)
@@ -181,7 +181,7 @@ for s in range(7):
     model = GammaRegression(support_size=s)
     model.fit(data.x, data.y)
     coef[s, :] = model.coef_
-    loss[s] = model.test_loss_
+    loss[s] = model.eval_loss_
 
 for i in range(6):
     plt.plot(coef[:, i], label=i)

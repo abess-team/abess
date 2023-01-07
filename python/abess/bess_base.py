@@ -14,17 +14,6 @@ class bess_base(BaseEstimator):
     r"""
     Parameters
     ----------
-    max_iter : int, optional, default=20
-        Maximum number of iterations taken for the
-        splicing algorithm to converge.
-        Due to the limitation of loss reduction, the splicing
-        algorithm must be able to converge.
-        The number of iterations is only to simplify the implementation.
-    is_warm_start : bool, optional, default=True
-        When tuning the optimal parameter combination,
-        whether to use the last solution
-        as a warm start to accelerate the iterative
-        convergence of the splicing algorithm.
     path_type : {"seq", "gs"}, optional, default="seq"
         The method to be used to select the optimal support size.
 
@@ -39,18 +28,23 @@ class bess_base(BaseEstimator):
         default=range(min(n, int(n/(log(log(n))log(p))))).
         An integer vector representing the alternative support sizes.
         Only used when path_type = "seq".
+    s_min : int, optional, default=0
+        The lower bound of golden-section-search for sparsity searching.
+    s_max : int, optional, default=min(n, int(n/(log(log(n))log(p)))).
+        The higher bound of golden-section-search for sparsity searching.
+    group : int, optional, default=np.ones(p)
+        The group index for each variable.
     alpha : float, optional, default=0
         Constant that multiples the L2 term in loss function, controlling
         regularization strength. It should be non-negative.
 
         - If alpha = 0, it indicates ordinary least square.
 
-    s_min : int, optional, default=0
-        The lower bound of golden-section-search for sparsity searching.
-    s_max : int, optional, default=min(n, int(n/(log(log(n))log(p)))).
-        The higher bound of golden-section-search for sparsity searching.
     ic_type : {'aic', 'bic', 'gic', 'ebic'}, optional, default='ebic'
-        The type of criterion for choosing the support size.
+        The type of criterion for choosing the support size if `cv=1`.
+    ic_coef : float, optional, default=1.0
+        Constant that controls the regularization strength
+        on chosen information criterion.
     cv : int, optional, default=1
         The folds number when use the cross-validation method.
 
@@ -64,6 +58,24 @@ class bess_base(BaseEstimator):
         - If thread = 0, the maximum number of threads supported by
           the device will be used.
 
+    A_init : array-like, optional, default=None
+        Initial active set before the first splicing.
+    always_select : array-like, optional, default=None
+        An array contains the indexes of variables
+        we want to consider in the model.
+
+    max_iter : int, optional, default=20
+        Maximum number of iterations taken for the
+        splicing algorithm to converge.
+        Due to the limitation of loss reduction, the splicing
+        algorithm must be able to converge.
+        The number of iterations is only to simplify the implementation.
+    is_warm_start : bool, optional, default=True
+        When tuning the optimal parameter combination,
+        whether to use the last solution
+        as a warm start to accelerate the iterative
+        convergence of the splicing algorithm.
+
     screening_size : int, optional, default=-1
         The number of variables remaining after screening.
         It should be a non-negative number smaller than p,
@@ -73,9 +85,6 @@ class bess_base(BaseEstimator):
         - If screening_size=0, screening_size will be set as
           :math:`\\min(p, int(n / (\\log(\\log(n))\\log(p))))`.
 
-    always_select : array-like, optional, default=[]
-        An array contains the indexes of variables
-        we want to consider in the model.
     primary_model_fit_max_iter : int, optional, default=10
         The maximal number of iteration for primary_model_fit.
     primary_model_fit_epsilon : float, optional, default=1e-08
@@ -87,12 +96,12 @@ class bess_base(BaseEstimator):
         Estimated coefficients for the best subset selection problem.
     intercept_ : float or array-like, shape(M_responses,)
         The intercept in the model.
-    ic_ : float
-        If cv=1, it stores the score under chosen information criterion.
-    test_loss_ : float
-        If cv>1, it stores the test loss under cross-validation.
     train_loss_ : float
         The loss on training data.
+    eval_loss_ : float
+
+        - If cv=1, it stores the score under chosen information criterion.
+        - If cv>1, it stores the test loss under cross-validation.
 
     References
     ----------
@@ -105,36 +114,36 @@ class bess_base(BaseEstimator):
     # attributes
     coef_ = None
     intercept_ = None
-    ic_ = 0
     train_loss_ = 0
-    test_loss_ = 0
+    eval_loss_ = 0
 
     def __init__(
         self,
         algorithm_type,
         model_type,
         normalize_type,
-        path_type,
-        max_iter=20,
-        exchange_num=5,
-        is_warm_start=True,
+        path_type="seq",
         support_size=None,
-        alpha=None,
         s_min=None,
         s_max=None,
+        group=None,
+        alpha=None,
         ic_type="ebic",
         ic_coef=1.0,
         cv=1,
-        screening_size=-1,
+        thread=1,
+        A_init=None,
         always_select=None,
+        max_iter=20,
+        exchange_num=5,
+        is_warm_start=True,
+        splicing_type=0,
+        important_search=0,
+        screening_size=-1,
         primary_model_fit_max_iter=10,
         primary_model_fit_epsilon=1e-8,
         approximate_Newton=False,
-        thread=1,
         covariance_update=False,
-        sparse_matrix=False,
-        splicing_type=0,
-        important_search=0,
         # lambda_min=None, lambda_max=None,
         # early_stop=False, n_lambda=100,
         baseline_model=None,
@@ -153,6 +162,8 @@ class bess_base(BaseEstimator):
         self.n_iter_: int
         self.s_min = s_min
         self.s_max = s_max
+        self.A_init = A_init
+        self.group = group
         # self.lambda_min = None
         # self.lambda_max = None
         # self.n_lambda = 100
@@ -167,7 +178,6 @@ class bess_base(BaseEstimator):
         self.approximate_Newton = approximate_Newton
         self.thread = thread
         self.covariance_update = covariance_update
-        self.sparse_matrix = sparse_matrix
         self.splicing_type = splicing_type
         self.important_search = important_search
         self.baseline_model = baseline_model
@@ -179,9 +189,8 @@ class bess_base(BaseEstimator):
             y=None,
             is_normal=True,
             sample_weight=None,
-            group=None,
             cv_fold_id=None,
-            A_init=None):
+            sparse_matrix=False):
         r"""
         The fit function is used to transfer
         the information of data and return the fit result.
@@ -207,8 +216,7 @@ class bess_base(BaseEstimator):
             before fitting the algorithm.
         sample_weight : array-like, shape (n_samples,), optional, default=np.ones(n)
             Individual weights for each sample. Only used for is_weight=True.
-        group : int, optional, default=np.ones(p)
-            The group index for each variable.
+
         cv_fold_id: array-like, shape (n_samples,), optional, default=None
             An array indicates different folds in CV.
             Samples in the same fold should be given the same number.
@@ -226,7 +234,7 @@ class bess_base(BaseEstimator):
         if isinstance(X, (list, np.ndarray, np.matrix, pd.DataFrame,
                       coo_matrix, csr_matrix)):
             if isinstance(X, (coo_matrix, csr_matrix)):
-                self.sparse_matrix = True
+                sparse_matrix = True
 
             # Sort for Cox
             if self.model_type == "Cox":
@@ -339,41 +347,42 @@ class bess_base(BaseEstimator):
         else:
             cv_fold_id = np.array(cv_fold_id, dtype="int32")
             if cv_fold_id.ndim > 1:
-                raise ValueError("group should be an 1D array of integers.")
+                raise ValueError(
+                    "cv_fold_id should be an 1D array of integers.")
             if cv_fold_id.size != n:
                 raise ValueError(
-                    "The length of group should be equal to X.shape[0].")
+                    "The length of cv_fold_id should be equal to X.shape[0].")
             if len(set(cv_fold_id)) != self.cv:
                 raise ValueError(
                     "The number of different masks should be equal to `cv`.")
 
         # A_init
-        if A_init is None:
-            A_init = np.array([], dtype="int32")
+        if self.A_init is None:
+            A_init_list = np.array([], dtype="int32")
         else:
-            A_init = np.array(A_init, dtype="int32")
-            if A_init.ndim > 1:
+            A_init_list = np.array(self.A_init, dtype="int32")
+            if A_init_list.ndim > 1:
                 raise ValueError("The initial active set should be "
                                  "an 1D array of integers.")
-            if (A_init.min() < 0 or A_init.max() >= p):
-                raise ValueError("A_init contains wrong index.")
+            if (A_init_list.min() < 0 or A_init_list.max() >= p):
+                raise ValueError("A_init contains out-of-range index.")
 
         # Group:
-        if group is None:
+        if self.group is None:
             g_index = list(range(p))
         else:
-            group = np.array(group)
-            if group.ndim > 1:
+            g = np.array(self.group)
+            if g.ndim > 1:
                 raise ValueError("group should be an 1D array of integers.")
-            if group.size != p:
+            if g.size != p:
                 raise ValueError(
                     "The length of group should be equal to X.shape[1].")
+            group_set = list(set(g))
+            g.sort()
             g_index = []
-            group.sort()
-            group_set = list(set(group))
             j = 0
             for i in group_set:
-                while group[j] != i:
+                while g[j] != i:
                     j += 1
                 g_index.append(j)
 
@@ -405,12 +414,10 @@ class bess_base(BaseEstimator):
                     support_sizes = [0, 1]
                 else:
                     support_sizes = list(
-                        range(
-                            0,
-                            max(
-                                min(p,
-                                    int(n / (np.log(np.log(n)) * np.log(p)))),
-                                1)))
+                        range(0, max(min(
+                            p,
+                            int(n / (np.log(np.log(n)) * np.log(p)))
+                        ), 1)))
             else:
                 if isinstance(self.support_size,
                               (numbers.Real, numbers.Integral)):
@@ -503,7 +510,7 @@ class bess_base(BaseEstimator):
                 "important_search should be a non-negative number.")
 
         # Sparse X
-        if self.sparse_matrix:
+        if sparse_matrix:
             if not isinstance(X, (coo_matrix)):
                 # print("sparse matrix 1")
                 nonzero = 0
@@ -557,8 +564,8 @@ class bess_base(BaseEstimator):
                 always_select_list, self.primary_model_fit_max_iter,
                 self.primary_model_fit_epsilon, early_stop,
                 self.approximate_Newton, self.thread, self.covariance_update,
-                self.sparse_matrix, self.splicing_type, self.important_search,
-                A_init)
+                sparse_matrix, self.splicing_type, self.important_search,
+                A_init_list)
 
         # print("linear fit end")
         # print(len(result))
@@ -566,8 +573,9 @@ class bess_base(BaseEstimator):
         self.coef_ = result[0].squeeze()
         self.intercept_ = result[1].squeeze()
         self.train_loss_ = result[2]
-        self.test_loss_ = result[3]
-        self.ic_ = result[4]
+        # self.test_loss_ = result[3]
+        # self.ic_ = result[4]
+        self.eval_loss_ = result[3] if (self.cv > 1) else result[4]
 
         if self.model_type == "Cox":
             self.baseline_model.fit(np.dot(X, self.coef_), y, time)

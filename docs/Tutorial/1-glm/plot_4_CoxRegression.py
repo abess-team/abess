@@ -138,7 +138,7 @@ for s in range(10):
     model = CoxPHSurvivalAnalysis(support_size=s, ic_type='gic')
     model.fit(train[:, 2:], train[:, :2])
     coef[s, :] = model.coef_
-    ic[s] = model.ic_
+    ic[s] = model.eval_loss_
 
 for i in range(9):
     plt.plot(coef[:, i], label=i)

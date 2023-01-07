@@ -30,7 +30,7 @@ ic = np.zeros(21)
 for sz in range(21):
     model = LinearRegression(support_size=[sz], ic_type='ebic')
     model.fit(data.x, data.y)
-    ic[sz] = model.ic_
+    ic[sz] = model.eval_loss_
 print("lowest point: ", np.argmin(ic))
 
 # %%

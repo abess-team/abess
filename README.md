@@ -137,6 +137,10 @@ New best subset selection tasks:
 
 - Generalized linear model for ordinal regression (a.k.a rank learning in some machine learning literature).
 
+Trivial updates:
+
+- Rearrange some arguments in Python package to improve legibility. Please check the latest [API document](https://abess.readthedocs.io/en/latest/Python-package/index.html).
+
 ## Citation
 
 If you use `abess` or reference our tutorials in a presentation or publication, we would appreciate citations of our library.

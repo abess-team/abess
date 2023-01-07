@@ -22,29 +22,29 @@ class TestWorkflow:
         # glm
         data = abess.make_glm_data(n=n, p=p, k=k, family='gaussian')
 
-        model1 = abess.LinearRegression(sparse_matrix=False)
+        model1 = abess.LinearRegression()
         model1.fit(data.x, data.y)
-        model2 = abess.LinearRegression(sparse_matrix=True)
-        model2.fit(coo_matrix(data.x), data.y)
+        model2 = abess.LinearRegression()
+        model2.fit(coo_matrix(data.x), data.y, sparse_matrix=True)
         assert_value(model1.coef_, model2.coef_)
         assert_value(model1.intercept_, model2.intercept_)
 
-        model3 = abess.LinearRegression(sparse_matrix=True)
-        model3.fit(data.x, data.y)
+        model3 = abess.LinearRegression()
+        model3.fit(data.x, data.y, sparse_matrix=True)
         assert_value(model1.coef_, model3.coef_)
         assert_value(model1.intercept_, model2.intercept_)
 
         # pca
         data_pca = np.random.randn(n, p)
 
-        model1 = abess.SparsePCA(sparse_matrix=False)
+        model1 = abess.SparsePCA()
         model1.fit(data_pca)
-        model2 = abess.SparsePCA(sparse_matrix=True)
-        model2.fit(coo_matrix(data_pca))
+        model2 = abess.SparsePCA()
+        model2.fit(coo_matrix(data_pca), sparse_matrix=True)
         assert_value(model1.coef_, model2.coef_)
 
-        model3 = abess.SparsePCA(sparse_matrix=True)
-        model3.fit(data_pca)
+        model3 = abess.SparsePCA()
+        model3.fit(data_pca, sparse_matrix=True)
         assert_value(model1.coef_, model3.coef_)
 
     @staticmethod
@@ -176,8 +176,8 @@ class TestWorkflow:
 
         # group
         group = np.repeat([1, 2, 3, 4], [5, 5, 5, 5])
-        model = abess.LinearRegression(support_size=2)
-        model.fit(data.x, data.y, group=group)
+        model = abess.LinearRegression(support_size=2, group=group)
+        model.fit(data.x, data.y)
         nonzero = np.nonzero(model.coef_)[0]
         assert len(nonzero) == 2 * 5
         assert len(set(group[nonzero])) == 2
@@ -188,5 +188,5 @@ class TestWorkflow:
             model.fit(data.x, data.y)
 
         # A_init
-        model = abess.LinearRegression()
-        model.fit(data.x, data.y, A_init=[0, 1, 2])
+        model = abess.LinearRegression(A_init=[0, 1, 2])
+        model.fit(data.x, data.y)

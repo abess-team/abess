@@ -131,7 +131,7 @@ print('Used variables\' index:', np.nonzero(model.coef_ != 0)[0])
 
 
 print('Training Loss: ', model.train_loss_)
-print('IC: ', model.ic_)
+print('IC: ', model.eval_loss_)
 
 # %%
 # Prediction is allowed for the estimated model. Just call

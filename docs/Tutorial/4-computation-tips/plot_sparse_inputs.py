@@ -40,8 +40,8 @@ plt.show()
 
 coef = np.array([1, 1, 1, 0, 0, 0])
 y = x.dot(coef)
-model = LinearRegression(sparse_matrix=True)
-model.fit(x, y)
+model = LinearRegression()
+model.fit(x, y, sparse_matrix=True)
 
 print("real coef: \n", coef)
 print("pred coef: \n", model.coef_)
@@ -53,13 +53,11 @@ print("pred coef: \n", model.coef_)
 
 
 t = time()
-model = LinearRegression()
 model.fit(x.toarray(), y)
 print("dense matrix:  ", time() - t)
 
 t = time()
-model = LinearRegression(sparse_matrix=True)
-model.fit(x, y)
+model.fit(x, y, sparse_matrix=True)
 print("sparse matrix:  ", time() - t)
 
 # %%

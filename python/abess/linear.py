@@ -69,17 +69,15 @@ class LogisticRegression(bess_base):
     array([0., 0., 0., 1., 1., 0., 1., 0., 1., 0.])
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None, alpha=None,
-                 s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 approximate_Newton=False,
-                 thread=1,
-                 sparse_matrix=False,
-                 splicing_type=0,
-                 important_search=128,
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
+                 primary_model_fit_max_iter=10,
+                 primary_model_fit_epsilon=1e-8,
+                 approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Logistic", normalize_type=2,
@@ -93,7 +91,7 @@ class LogisticRegression(bess_base):
             primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search,
             _estimator_type='classifier'
@@ -230,15 +228,13 @@ class LinearRegression(bess_base):
     array([   1.42163813,  -43.23929886, -139.79509191,  141.45138403])
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 thread=1, covariance_update=False,
-                 sparse_matrix=False,
-                 splicing_type=0,
-                 important_search=128,
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
+                 covariance_update=False,
                  # primary_model_fit_max_iter=10,
                  # primary_model_fit_epsilon=1e-8,
                  # approximate_Newton=False
@@ -252,7 +248,7 @@ class LinearRegression(bess_base):
             screening_size=screening_size,
             always_select=always_select,
             thread=thread, covariance_update=covariance_update,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search,
             _estimator_type='regressor'
@@ -354,17 +350,15 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
     array([1.07629689e+00, 6.47263126e-04, 4.30660826e-06, 3.66389638e+05])
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 approximate_Newton=False,
-                 thread=1,
-                 sparse_matrix=False,
-                 splicing_type=0,
-                 important_search=128
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
+                 primary_model_fit_max_iter=10,
+                 primary_model_fit_epsilon=1e-8,
+                 approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Cox", normalize_type=3,
@@ -378,7 +372,7 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
             primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search,
             baseline_model=BreslowEstimator()
@@ -433,7 +427,7 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
         risk_score = X.dot(self.coef_)
         y = np.array(y)
         result = concordance_index_censored(
-            np.array(y[:, 1], np.bool_), y[:, 0], 
+            np.array(y[:, 1], np.bool_), y[:, 0],
             risk_score, sample_weight=sample_weight)
         return result[0]
 
@@ -510,16 +504,15 @@ class PoissonRegression(bess_base):
     array([1.03373139e+00, 4.32229653e-01, 4.48811009e-01, 2.27170366e+00])
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 thread=1, approximate_Newton=False,
-                 sparse_matrix=False,
-                 splicing_type=0,
-                 important_search=128
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
+                 primary_model_fit_max_iter=10,
+                 primary_model_fit_epsilon=1e-8,
+                 approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Poisson", normalize_type=2,
@@ -533,7 +526,7 @@ class PoissonRegression(bess_base):
             primary_model_fit_epsilon=primary_model_fit_epsilon,
             thread=thread,
             approximate_Newton=approximate_Newton,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search,
             _estimator_type='regressor'
@@ -589,7 +582,7 @@ class PoissonRegression(bess_base):
         # exp_eta = np.exp(eta)
         # return (y * eta - exp_eta).sum()
         y_pred = self.predict(X)
-        return d2_tweedie_score(y, y_pred, power=1, 
+        return d2_tweedie_score(y, y_pred, power=1,
                                 sample_weight=sample_weight)
 
 
@@ -653,15 +646,16 @@ class MultiTaskRegression(bess_base):
        [0., 0., 1.]])
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 thread=1, covariance_update=False,
-                 sparse_matrix=False,
-                 splicing_type=0,
-                 important_search=128
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
+                 covariance_update=False,
+                 # primary_model_fit_max_iter=10,
+                 # primary_model_fit_epsilon=1e-8,
+                 # approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Multigaussian",
@@ -673,7 +667,7 @@ class MultiTaskRegression(bess_base):
             screening_size=screening_size,
             always_select=always_select,
             thread=thread, covariance_update=covariance_update,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search,
             _estimator_type='regressor'
@@ -785,19 +779,15 @@ class MultinomialRegression(bess_base):
 
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1,
-                 screening_size=-1,
-                 always_select=None,
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
                  primary_model_fit_max_iter=10,
                  primary_model_fit_epsilon=1e-8,
-                 #  approximate_Newton=False,
-                 thread=1,
-                 sparse_matrix=False,
-                 splicing_type=0,
-                 important_search=128
+                 # approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Multinomial", normalize_type=2,
@@ -811,7 +801,7 @@ class MultinomialRegression(bess_base):
             primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=True,
             thread=thread,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search,
             _estimator_type='classifier'
@@ -958,16 +948,15 @@ class GammaRegression(bess_base):
     array([7.03065424e+19, 7.03065424e+19, 7.03065424e+19, 7.03065424e+19])
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None, alpha=None,
-                 s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
-                 always_select=None,
-                 primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
-                 thread=1,
-                 sparse_matrix=False,
-                 splicing_type=0,
-                 important_search=128
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
+                 primary_model_fit_max_iter=10,
+                 primary_model_fit_epsilon=1e-8,
+                 approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Gamma", normalize_type=2,
@@ -979,8 +968,8 @@ class GammaRegression(bess_base):
             always_select=always_select,
             primary_model_fit_max_iter=primary_model_fit_max_iter,
             primary_model_fit_epsilon=primary_model_fit_epsilon,
-            thread=thread,
-            sparse_matrix=sparse_matrix,
+            thread=thread, approximate_Newton=approximate_Newton,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search,
             _estimator_type='regressor'
@@ -1046,7 +1035,7 @@ class GammaRegression(bess_base):
             sample_weight = np.ones(len(y))
         X, y, sample_weight = new_data_check(self, X, y, sample_weight)
         y_pred = self.predict(X)
-        return d2_tweedie_score(y, y_pred, power=2, 
+        return d2_tweedie_score(y, y_pred, power=2,
                                 sample_weight=sample_weight)
 
 
@@ -1103,19 +1092,15 @@ class OrdinalRegression(bess_base):
     [ 0  4 10 14 26 29 38 47 48]
     """
 
-    def __init__(self, max_iter=20, exchange_num=5, path_type="seq",
-                 is_warm_start=True, support_size=None,
-                 alpha=None, s_min=None, s_max=None,
-                 ic_type="ebic", ic_coef=1.0, cv=1,
-                 screening_size=-1,
-                 always_select=None,
+    def __init__(self, path_type="seq", support_size=None,
+                 s_min=None, s_max=None, group=None, alpha=None,
+                 ic_type="ebic", ic_coef=1.0, cv=1, thread=1, A_init=None,
+                 always_select=None, max_iter=20, exchange_num=5,
+                 is_warm_start=True, splicing_type=0,
+                 important_search=128, screening_size=-1,
                  primary_model_fit_max_iter=10,
                  primary_model_fit_epsilon=1e-8,
-                 approximate_Newton=False,
-                 thread=1,
-                 sparse_matrix=False,
-                 splicing_type=0,
-                 important_search=128
+                 approximate_Newton=False
                  ):
         super().__init__(
             algorithm_type="abess", model_type="Ordinal", normalize_type=2,
@@ -1129,7 +1114,7 @@ class OrdinalRegression(bess_base):
             primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search,
             # _estimator_type="regressor"
@@ -1178,28 +1163,6 @@ class OrdinalRegression(bess_base):
         proba = self.predict_proba(X)
         return np.argmax(proba, axis=1)
 
-    # def score(self, X, y):
-    #     """
-    #     Give new data, and it returns the entropy function.
-
-    #     Parameters
-    #     ----------
-    #     X : array-like, shape(n_samples, p_features)
-    #         Test data.
-    #     y : array-like, shape(n_samples, M_responses)
-    #         Test response (dummy variables of real class).
-
-    #     Returns
-    #     -------
-    #     score : float
-    #         entropy function
-    #     """
-    #     X, y = new_data_check(self, X, y)
-    #     if len(y.shape) == 1:
-    #         y = categorical_to_dummy(y)
-
-    #     return ???
-    
     def score(self, X, y, k=None, sample_weight=None, ignore_ties=False):
         """
         Give new data, and it returns normalized discounted cumulative gain.
@@ -1211,11 +1174,14 @@ class OrdinalRegression(bess_base):
         y : array-like, shape(n_samples, )
             Test response (class labels for samples in X).
         k : int, default=None
-            Only consider the highest k scores in the ranking. If None, use all outputs.
+            Only consider the highest k scores in the ranking.
+            If None, use all outputs.
         sample_weight: array-like, shape(n_samples,), default=None
             Sample weights.
         ignore_ties : bool, default=False
-            Assume that there are no ties in y_pred (which is likely to be the case if y_score is continuous) for efficiency gains.
+            Assume that there are no ties in y_pred
+            (which is likely to be the case if y_score is continuous)
+            for efficiency gains.
 
         Returns
         -------
@@ -1229,10 +1195,11 @@ class OrdinalRegression(bess_base):
         class_num = len(unique_)
         for i in range(class_num):
             y[y == unique_[i]] = i
-        y_true = class_num - 1 - abs(np.tile(np.arange(len(unique_)), 
+        y_true = class_num - 1 - abs(np.tile(np.arange(len(unique_)),
                                              (len(y), 1)) - y[..., np.newaxis])
         y_score = self.predict_proba(X)
-        ndcg = ndcg_score(y_true, y_score, k=k, sample_weight=sample_weight, ignore_ties=ignore_ties)
+        ndcg = ndcg_score(y_true, y_score, k=k,
+                          sample_weight=sample_weight, ignore_ties=ignore_ties)
         return ndcg
 
 
@@ -1250,7 +1217,8 @@ class abessLogistic(LogisticRegression):
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
                  thread=1,
-                 sparse_matrix=False,
+                 A_init=None,
+                 group=None,
                  splicing_type=0,
                  important_search=128,
                  ):
@@ -1266,7 +1234,7 @@ class abessLogistic(LogisticRegression):
             primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search
         )
@@ -1284,7 +1252,8 @@ class abessLm(LinearRegression):
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  thread=1, covariance_update=False,
-                 sparse_matrix=False,
+                 A_init=None,
+                 group=None,
                  splicing_type=0,
                  important_search=128,
                  # primary_model_fit_max_iter=10,
@@ -1299,7 +1268,7 @@ class abessLm(LinearRegression):
             screening_size=screening_size,
             always_select=always_select,
             thread=thread, covariance_update=covariance_update,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search
         )
@@ -1319,7 +1288,8 @@ class abessCox(CoxPHSurvivalAnalysis):
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  approximate_Newton=False,
                  thread=1,
-                 sparse_matrix=False,
+                 A_init=None,
+                 group=None,
                  splicing_type=0,
                  important_search=128
                  ):
@@ -1335,7 +1305,7 @@ class abessCox(CoxPHSurvivalAnalysis):
             primary_model_fit_epsilon=primary_model_fit_epsilon,
             approximate_Newton=approximate_Newton,
             thread=thread,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search
         )
@@ -1354,7 +1324,8 @@ class abessPoisson(PoissonRegression):
                  always_select=None,
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  thread=1,
-                 sparse_matrix=False,
+                 A_init=None,
+                 group=None,
                  splicing_type=0,
                  important_search=128
                  ):
@@ -1369,7 +1340,7 @@ class abessPoisson(PoissonRegression):
             primary_model_fit_max_iter=primary_model_fit_max_iter,
             primary_model_fit_epsilon=primary_model_fit_epsilon,
             thread=thread,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search
         )
@@ -1387,7 +1358,8 @@ class abessMultigaussian(MultiTaskRegression):
                  ic_type="ebic", ic_coef=1.0, cv=1, screening_size=-1,
                  always_select=None,
                  thread=1, covariance_update=False,
-                 sparse_matrix=False,
+                 A_init=None,
+                 group=None,
                  splicing_type=0,
                  important_search=128
                  ):
@@ -1400,7 +1372,7 @@ class abessMultigaussian(MultiTaskRegression):
             screening_size=screening_size,
             always_select=always_select,
             thread=thread, covariance_update=covariance_update,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search
         )
@@ -1420,7 +1392,8 @@ class abessMultinomial(MultinomialRegression):
                  primary_model_fit_max_iter=10, primary_model_fit_epsilon=1e-8,
                  # approximate_Newton=False,
                  thread=1,
-                 sparse_matrix=False,
+                 A_init=None,
+                 group=None,
                  splicing_type=0,
                  important_search=128
                  ):
@@ -1436,7 +1409,7 @@ class abessMultinomial(MultinomialRegression):
             primary_model_fit_epsilon=primary_model_fit_epsilon,
             # approximate_Newton=approximate_Newton,
             thread=thread,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search
         )
@@ -1456,7 +1429,8 @@ class abessGamma(GammaRegression):
                  primary_model_fit_max_iter=10,
                  primary_model_fit_epsilon=1e-8,
                  thread=1,
-                 sparse_matrix=False,
+                 A_init=None,
+                 group=None,
                  splicing_type=0,
                  important_search=128
                  ):
@@ -1471,7 +1445,7 @@ class abessGamma(GammaRegression):
             primary_model_fit_max_iter=primary_model_fit_max_iter,
             primary_model_fit_epsilon=primary_model_fit_epsilon,
             thread=thread,
-            sparse_matrix=sparse_matrix,
+            A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search
         )
