@@ -442,7 +442,7 @@ class SparsePCA(bess_base):
     def fit_transform(self, X=None, y=None, is_normal=False,
                       Sigma=None, number=1, n=None, sparse_matrix=False):
         r"""
-        Fit and transform the sample matrix. 
+        Fit and transform the sample matrix.
         Returns transformed data in expected dimension.
 
         Parameters
@@ -514,7 +514,7 @@ class RobustPCA(bess_base):
     splicing_type: {0, 1}, optional, default=1
         The type of splicing.
         "0" for decreasing by half, "1" for decresing by one.
-    
+
     Attributes
     ----------
     coef_ : array-like, shape(n_samples, p_features)

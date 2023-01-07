@@ -46,7 +46,6 @@ class abessRPCA(RobustPCA):
                  always_select=None,
                  thread=1,
                  A_init=None,
-                 group=None,
                  splicing_type=1
                  ):
         warnings.warn(self.warning_msg, FutureWarning)
