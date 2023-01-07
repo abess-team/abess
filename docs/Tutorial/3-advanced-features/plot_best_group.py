@@ -60,8 +60,8 @@ print('group index:\n', group)
 # ``support_size`` here indicates the number of groups, instead of the
 # number of variables.
 
-model1 = LinearRegression(support_size=range(3))
-model1.fit(data.x, data.y, group=group)
+model1 = LinearRegression(support_size=range(3), group=group)
+model1.fit(data.x, data.y)
 print('coefficients:\n', model1.coef_)
 
 

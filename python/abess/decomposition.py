@@ -7,17 +7,16 @@ from .bess_base import bess_base
 from .utilities import new_data_check
 
 
-def fix_docs(cls):
-    # This function is to inherit the docstring from base class
-    # and avoid unnecessary duplications on description.
-    index = cls.__doc__.find("Examples\n    --------\n")
-    if index != -1:
-        cls.__doc__ = cls.__doc__[:index] + \
-            cls.__bases__[0].__doc__ + cls.__doc__[index:]
-    return cls
+# def fix_docs(cls):
+#     # This function is to inherit the docstring from base class
+#     # and avoid unnecessary duplications on description.
+#     index = cls.__doc__.find("Examples\n    --------\n")
+#     if index != -1:
+#         cls.__doc__ = cls.__doc__[:index] + \
+#             cls.__bases__[0].__doc__ + cls.__doc__[index:]
+#     return cls
 
 
-@fix_docs
 class SparsePCA(bess_base):
     r"""
     Adaptive Best-Subset Selection(ABESS) algorithm for
@@ -25,9 +24,72 @@ class SparsePCA(bess_base):
 
     Parameters
     ----------
+    support_size : array-like, optional
+        default=range(min(n, int(n/(log(log(n))log(p))))).
+        An integer vector representing the alternative support sizes.
+    group : int, optional, default=np.ones(p)
+        The group index for each variable.
+    ic_type : {'aic', 'bic', 'gic', 'ebic', 'loss'}, optional, default='loss'
+        The type of criterion for choosing the support size if `cv=1`.
+    ic_coef : float, optional, default=1.0
+        Constant that controls the regularization strength
+        on chosen information criterion.
+    cv : int, optional, default=1
+        The folds number when use the cross-validation method.
+
+        - If cv=1, cross-validation would not be used.
+        - If cv>1, support size will be chosen by CV's test loss,
+          instead of IC.
+
+    thread : int, optional, default=1
+        Max number of multithreads.
+
+        - If thread = 0, the maximum number of threads supported by
+          the device will be used.
+
+    A_init : array-like, optional, default=None
+        Initial active set before the first splicing.
+    always_select : array-like, optional, default=None
+        An array contains the indexes of variables
+        we want to consider in the model.
+
+    max_iter : int, optional, default=20
+        Maximum number of iterations taken for the
+        splicing algorithm to converge.
+        Due to the limitation of loss reduction, the splicing
+        algorithm must be able to converge.
+        The number of iterations is only to simplify the implementation.
+    is_warm_start : bool, optional, default=True
+        When tuning the optimal parameter combination,
+        whether to use the last solution
+        as a warm start to accelerate the iterative
+        convergence of the splicing algorithm.
+
+    screening_size : int, optional, default=-1
+        The number of variables remaining after screening.
+        It should be a non-negative number smaller than p,
+        but larger than any value in support_size.
+
+        - If screening_size=-1, screening will not be used.
+        - If screening_size=0, screening_size will be set as
+          :math:`\\min(p, int(n / (\\log(\\log(n))\\log(p))))`.
+
     splicing_type: {0, 1}, optional, default=1
         The type of splicing.
         "0" for decreasing by half, "1" for decresing by one.
+
+    Attributes
+    ----------
+    coef_ : array-like, shape(p_features, ) or (p_features, k)
+        The first :math:`k` principal axes in feature space, which are
+        sorted by decreasing explained variance.
+
+    References
+    ----------
+    - Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang.
+      A polynomial algorithm for best-subset selection problem.
+      Proceedings of the National Academy of Sciences,
+      117(52):33117-33123, 2020.
 
     Examples
     --------
@@ -138,8 +200,6 @@ class SparsePCA(bess_base):
             whether normalize the variables array before fitting the algorithm.
         weight : array-like, shape(n_samples,), optional, default=np.ones(n)
             Individual weights for each sample. Only used for is_weight=True.
-        group : int, optional, default=np.ones(p)
-            The group index for each variable.
         Sigma : array-like, shape(p_features, p_features), optional
             default=np.cov(X.T).
             Sample covariance matrix.
@@ -381,11 +441,37 @@ class SparsePCA(bess_base):
 
     def fit_transform(self, X=None, y=None, is_normal=False,
                       Sigma=None, number=1, n=None, sparse_matrix=False):
+        r"""
+        Fit and transform the sample matrix. 
+        Returns transformed data in expected dimension.
+
+        Parameters
+        ----------
+        X : array-like, shape(n_samples, p_features)
+            Training data.
+        y : ignore
+            Ignore.
+        is_normal : bool, optional, default=False
+            whether normalize the variables array before fitting the algorithm.
+        weight : array-like, shape(n_samples,), optional, default=np.ones(n)
+            Individual weights for each sample. Only used for is_weight=True.
+        Sigma : array-like, shape(p_features, p_features), optional
+            default=np.cov(X.T).
+            Sample covariance matrix.
+            For PCA, it can be given as input, instead of X.
+            But if X is given, Sigma will be set to np.cov(X.T).
+        number : int, optional, default=1
+            Indicates the number of PCs returned.
+        n : int, optional, default=X.shape[0] or 1
+            Sample size.
+
+            - if X is given, it would be X.shape[0] by default;
+            - if X is not given (Sigma is given), it would be 1 by default.
+        """
         self.fit(X, y, is_normal, Sigma, number, n, sparse_matrix)
         return X @ self.coef_
 
 
-@fix_docs
 class RobustPCA(bess_base):
     r"""
     Adaptive Best-Subset Selection(ABESS) algorithm for
@@ -393,9 +479,54 @@ class RobustPCA(bess_base):
 
     Parameters
     ----------
+    support_size : array-like, optional
+        default=range(min(n, int(n/(log(log(n))log(p))))).
+        An integer vector representing the alternative support sizes.
+    ic_type : {'aic', 'bic', 'gic', 'ebic', 'loss'}, optional, default='gic'
+        The type of criterion for choosing the support size.
+    ic_coef : float, optional, default=1.0
+        Constant that controls the regularization strength
+        on chosen information criterion.
+    thread : int, optional, default=1
+        Max number of multithreads.
+
+        - If thread = 0, the maximum number of threads supported by
+          the device will be used.
+
+    A_init : array-like, optional, default=None
+        Initial active set before the first splicing.
+    always_select : array-like, optional, default=None
+        An array contains the indexes of variables
+        we want to consider in the model.
+
+    max_iter : int, optional, default=20
+        Maximum number of iterations taken for the
+        splicing algorithm to converge.
+        Due to the limitation of loss reduction, the splicing
+        algorithm must be able to converge.
+        The number of iterations is only to simplify the implementation.
+    is_warm_start : bool, optional, default=True
+        When tuning the optimal parameter combination,
+        whether to use the last solution
+        as a warm start to accelerate the iterative
+        convergence of the splicing algorithm.
+
     splicing_type: {0, 1}, optional, default=1
         The type of splicing.
         "0" for decreasing by half, "1" for decresing by one.
+    
+    Attributes
+    ----------
+    coef_ : array-like, shape(n_samples, p_features)
+        The transformed sample matrix after robust PCA.
+
+    References
+    ----------
+    - Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang.
+      A polynomial algorithm for best-subset selection problem.
+      Proceedings of the National Academy of Sciences,
+      117(52):33117-33123, 2020.
+
 
     Examples
     --------

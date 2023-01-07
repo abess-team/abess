@@ -265,8 +265,8 @@ print(g_info)
 # And fit a group sparse PCA model with additional argument `group=g_info`:
 
 
-model = SparsePCA(support_size=np.ones((6, 1)))
-model.fit(X, group=g_info, is_normal=False)
+model = SparsePCA(support_size=np.ones((6, 1)), group=g_info)
+model.fit(X, is_normal=False)
 
 # %%
 # The result comes to:
