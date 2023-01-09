@@ -7,3 +7,4 @@ DoubleML
 pyts
 dowhy
 numpy<1.23
+Jinja2<3.1
