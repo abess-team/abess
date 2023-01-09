@@ -1,4 +1,6 @@
-Sphinx
+Sphinx==4.5.0
+docutils==0.17.1
+sphinx-rtd-theme==1.1.1
 sphinx-gallery
 sphinxcontrib-phpdomain
 sphinx-autoapi
@@ -7,4 +9,3 @@ DoubleML
 pyts
 dowhy
 numpy<1.23
-Jinja2<3.1
