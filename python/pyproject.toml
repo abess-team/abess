@@ -19,8 +19,8 @@ test-requires = "pytest"
 test-command = "pytest {package}"
 before-test = """\
     pip install lifelines pandas \
-    \"scipy<=1.9.1; python_version < '3.8' or sys.platform == 'win32'\" \
+    \"scipy<=1.9.1; python_version < '3.8' and sys_platform == 'win32'\" \
     scipy \
-    \"scikit-learn<=0.24.2; python_version < '3.8' or sys.platform == 'win32'\" \
+    \"scikit-learn<=0.24.2; python_version < '3.8' and sys_platform == 'win32'\" \
     scikit-learn \
     """
