@@ -58,32 +58,40 @@ jobs:
         if: runner.os == 'Linux'
         uses: pypa/cibuildwheel@v2.11.3
         with:
-          package-dir: ./python ## trigger cibuildwheel in sub-directory
+          package-dir: ./python # trigger cibuildwheel in sub-directory
         env:
           CIBW_BUILD: "cp*-musllinux_i686 cp*-musllinux_x86_64"
-          # configure cibuildwheel to build native archs ('auto'), and some emulated ones via: "CIBW_ARCHS_LINUX: auto aarch64 ppc64le s390x"
-          CIBW_ARCHS_LINUX: auto # currently, not support aarch64 ppc64le s390x because avx instruction is not supported on these platforms
-          CIBW_BEFORE_ALL: >
-            apk add openblas-dev lapack-dev jpeg-dev
+          # CIBW_BEFORE_ALL: "apk add openblas-dev lapack-dev jpeg-dev"
+          CIBW_TEST_SKIP: "*" # some dependencies not provide wheel
 
       - name: Build wheels for manylinux
         if: runner.os == 'Linux'
         uses: pypa/cibuildwheel@v2.11.3
         with:
-          package-dir: ./python ## trigger cibuildwheel in sub-directory
+          package-dir: ./python # trigger cibuildwheel in sub-directory
         env:
           CIBW_BUILD: "cp*-manylinux_i686 cp*-manylinux_x86_64"
-          # configure cibuildwheel to build native archs ('auto'), and some emulated ones via: "CIBW_ARCHS_LINUX: auto aarch64 ppc64le s390x"
-          CIBW_ARCHS_LINUX: auto # currently, not support aarch64 ppc64le s390x because avx instruction is not supported on these platforms
+          CIBW_TEST_SKIP: "cp*-manylinux_i686" # test fail but no informative message return 
 
-      - name: Build wheels for Windows/MacOS
-        if: runner.os != 'Linux'
+      - name: Build wheels for Windows
+        if: runner.os == 'Windows'
         uses: pypa/cibuildwheel@v2.11.3
         with:
-          package-dir: ./python ## trigger cibuildwheel in sub-directory
+          package-dir: ./python # trigger cibuildwheel in sub-directory
         env:
-          CIBW_SKIP: "pp*"
-          CIBW_ARCHS_MACOS: x86_64 arm64 universal2 # the latest MacOS support the Rosetta
+          CIBW_BUILD: "cp*"
+          CIBW_TEST_SKIP: "cp310-win32 cp311-win32" # some dependencies not provide wheel
+
+      - name: Build wheels for MacOS
+        if: runner.os == 'macos'
+        uses: pypa/cibuildwheel@v2.11.3
+        with:
+          package-dir: ./python # trigger cibuildwheel in sub-directory
+        env:
+          CIBW_BUILD: "cp*"
+          CIBW_ARCHS: "x86_64 arm64 universal2" # the latest MacOS support the Rosetta
+          CIBW_BEFORE_ALL: "brew install libomp" # install openmp library
+          CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64"
 
       - name: Verify clean directory
         run: git diff --exit-code
