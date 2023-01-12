@@ -42,7 +42,7 @@ jobs:
       - name: Install dependencies for windows
         if: matrix.os == 'windows-latest'
         run: |
-          choco install mingw git
+          choco install git
       - name: Install abess
         run: |
           python --version
