@@ -58,9 +58,6 @@ jobs:
         uses: pypa/cibuildwheel@v2.11.3
         with:
           package-dir: ./python # trigger cibuildwheel in sub-directory
-        env:
-          CIBW_BUILD: "*linux_i686 *linux_x86_64 *linux_aarch64 *win* *macos*"
-          CIBW_SKIP: "pp*"
 
       - name: Verify clean directory
         run: git diff --exit-code

@@ -15,26 +15,28 @@ build-backend = "setuptools.build_meta"
 
 # Configuration for cibuildwheel
 [tool.cibuildwheel]
+build = "*linux_i686 *linux_x86_64 *linux_aarch64 *win* *macos*"
+skip = "pp*"
+archs-macos = ["x86_64", "arm64", "universal2"] # the latest MacOS support the Rosetta
+
+# skip test because lack of wheels for dependencies
+test-skip = """\
+    *manylinux_i686 \
+    *musllinux* \
+    cp310-win32 cp311-win32
+    """
 test-requires = "pytest"
 test-command = "pytest {package}"
 before-test = "pip install lifelines pandas scipy scikit-learn"
 
 [[tool.cibuildwheel.overrides]]
-select = "*manylinux*"
-test-skip = "*_i686" # some dependencies not provide wheel
-
-[[tool.cibuildwheel.overrides]]
 select = "*musllinux*"
 # before-all = "apk add openblas-dev lapack-dev jpeg-dev"
-test-skip = "*" # some dependencies not provide wheel
 
 [[tool.cibuildwheel.overrides]]
 select = "*win32"
 before-test = "pip install lifelines pandas \"scipy<=1.9.1\" \"scikit-learn<=0.24.2\""
-test-skip = "cp310-win32 cp311-win32" # some dependencies not provide wheel
 
 [[tool.cibuildwheel.overrides]]
 select = "*macos*"
-archs = ["x86_64", "arm64", "universal2"] # the latest MacOS support the Rosetta
 before-all = "brew install libomp" # install openmp library
-test-skip = "*-macosx_arm64 *-macosx_universal2:arm64"
