@@ -59,7 +59,7 @@ jobs:
         with:
           package-dir: ./python # trigger cibuildwheel in sub-directory
         env:
-          CIBW_BUILD: "*linux_i686 *linux_x86_64 *win* *macos*"
+          CIBW_BUILD: "*linux_i686 *linux_x86_64 *linux_aarch64 *win* *macos*"
           CIBW_SKIP: "pp*"
 
       - name: Verify clean directory
