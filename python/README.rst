@@ -24,9 +24,9 @@
    :target: https://abess-team.github.io/abess/
 .. |cran| image:: https://img.shields.io/cran/v/abess?logo=R
    :target: https://cran.r-project.org/package=abess
-.. |pypi| image:: https://badge.fury.io/py/abess.svg
-   :target: https://badge.fury.io/py/abess
-.. |conda-forge| image:: https://img.shields.io/conda/vn/conda-forge/abess.svg
+.. |pypi| image:: https://img.shields.io/pypi/v/abess?logo=Pypi
+   :target: https://pypi.org/project/abess
+.. |conda-forge| image:: https://img.shields.io/conda/vn/conda-forge/abess.svg?logo=condaforge
    :target: https://anaconda.org/conda-forge/abess
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/abess
 .. |License| image:: https://img.shields.io/badge/License-GPL%20v3-blue.svg 
