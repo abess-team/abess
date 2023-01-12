@@ -215,8 +215,8 @@ class SparsePCA(bess_base):
 
         sparse_matrix : bool, optional, default=False
             Set as True to treat X as sparse matrix during fitting.
-            It would be automatically set as True when X has the sparse matrix type
-            defined in scipy.sparse.
+            It would be automatically set as True when X has the
+            sparse matrix type defined in scipy.sparse.
         """
 
         # Input check
@@ -601,8 +601,8 @@ class RobustPCA(bess_base):
 
         sparse_matrix : bool, optional, default=False
             Set as True to treat X as sparse matrix during fitting.
-            It would be automatically set as True when X has the sparse matrix type
-            defined in scipy.sparse.
+            It would be automatically set as True when X has the
+            sparse matrix type defined in scipy.sparse.
         """
 
         # Input check
