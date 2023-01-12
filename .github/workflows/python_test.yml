@@ -31,18 +31,6 @@ jobs:
         uses: actions/setup-python@master
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies for ubuntu
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get install -y bash
-      - name: Install dependencies for macOS
-        if: matrix.os == 'macos-latest'
-        run: |
-          brew install bash
-      - name: Install dependencies for windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          choco install mingw git
       - name: Install abess
         run: |
           python --version
