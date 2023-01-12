@@ -54,44 +54,13 @@ jobs:
         with:
           platforms: all
 
-      - name: Build wheels for musllinux
-        if: runner.os == 'Linux'
+      - name: Build wheels
         uses: pypa/cibuildwheel@v2.11.3
         with:
           package-dir: ./python # trigger cibuildwheel in sub-directory
         env:
-          CIBW_BUILD: "cp*-musllinux_i686 cp*-musllinux_x86_64"
-          # CIBW_BEFORE_ALL: "apk add openblas-dev lapack-dev jpeg-dev"
-          CIBW_TEST_SKIP: "*" # some dependencies not provide wheel
-
-      - name: Build wheels for manylinux
-        if: runner.os == 'Linux'
-        uses: pypa/cibuildwheel@v2.11.3
-        with:
-          package-dir: ./python # trigger cibuildwheel in sub-directory
-        env:
-          CIBW_BUILD: "cp*-manylinux_i686 cp*-manylinux_x86_64"
-          CIBW_TEST_SKIP: "cp*-manylinux_i686" # test fail but no informative message return 
-
-      - name: Build wheels for Windows
-        if: runner.os == 'Windows'
-        uses: pypa/cibuildwheel@v2.11.3
-        with:
-          package-dir: ./python # trigger cibuildwheel in sub-directory
-        env:
-          CIBW_BUILD: "cp*"
-          CIBW_TEST_SKIP: "cp310-win32 cp311-win32" # some dependencies not provide wheel
-
-      - name: Build wheels for MacOS
-        if: runner.os == 'macos'
-        uses: pypa/cibuildwheel@v2.11.3
-        with:
-          package-dir: ./python # trigger cibuildwheel in sub-directory
-        env:
-          CIBW_BUILD: "cp*"
-          CIBW_ARCHS: "x86_64 arm64 universal2" # the latest MacOS support the Rosetta
-          CIBW_BEFORE_ALL: "brew install libomp" # install openmp library
-          CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64"
+          CIBW_BUILD: "*linux_i686 *linux_x86_64 *win* *macos*"
+          CIBW_SKIP: "pp*"
 
       - name: Verify clean directory
         run: git diff --exit-code
