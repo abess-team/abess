@@ -216,10 +216,13 @@ class bess_base(BaseEstimator):
             before fitting the algorithm.
         sample_weight : array-like, shape (n_samples,), optional, default=np.ones(n)
             Individual weights for each sample. Only used for is_weight=True.
-
-        cv_fold_id: array-like, shape (n_samples,), optional, default=None
+        cv_fold_id : array-like, shape (n_samples,), optional, default=None
             An array indicates different folds in CV.
             Samples in the same fold should be given the same number.
+        sparse_matrix : bool, optional, default=False
+            Set as True to treat X as sparse matrix during fitting.
+            It would be automatically set as True when X has the sparse matrix type
+            defined in scipy.sparse.
         """
 
         # Check that X and y have correct shape

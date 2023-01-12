@@ -1,41 +1,14 @@
 import warnings
 import numpy as np
 from sklearn.metrics import r2_score, accuracy_score, ndcg_score
-from .metrics import concordance_index_censored
 from .bess_base import bess_base
-from .utilities import new_data_check
-from .functions import (BreslowEstimator)
+from .utilities import fix_docs, new_data_check
+from .functions import (BreslowEstimator, concordance_index_censored)
 # from .nonparametric import _compute_counts
 try:
     from sklearn.metrics import d2_tweedie_score
 except ImportError:
     from .functions import d2_tweedie_score
-
-
-def fix_docs(cls):
-    # This function is to inherit the docstring from base class
-    # and avoid unnecessary duplications on description.
-    title_index = cls.__doc__.find("Parameters\n    ----------")
-    more_para_index = cls.__doc__.find("Examples\n    --------")
-    base_para_index = cls.__bases__[0].__doc__.find(
-        "Attributes\n    ----------")
-    if title_index == -1:
-        title_index = 0
-    if more_para_index == -1:
-        more_para_index = len(cls.__doc__) - 1
-    # class title
-    full_doc = cls.__doc__[:title_index]
-    # class paras
-    full_doc = (full_doc +
-                cls.__bases__[0].__doc__[:base_para_index] +
-                cls.__doc__[title_index:more_para_index])
-    # more info
-    full_doc = (full_doc +
-                cls.__doc__[more_para_index:] +
-                cls.__bases__[0].__doc__[base_para_index:])
-    cls.__doc__ = full_doc
-    return cls
-
 
 @ fix_docs
 class LogisticRegression(bess_base):
