@@ -15,7 +15,7 @@ build-backend = "setuptools.build_meta"
 
 # Configuration for cibuildwheel
 [tool.cibuildwheel]
-build = "*linux_i686 *linux_x86_64 *linux_aarch64 *win* *macos*"
+build = "*linux_i686 *linux_x86_64 *win* *macos*"
 skip = "pp*"
 
 # skip test because lack of wheels for dependencies
@@ -30,9 +30,6 @@ before-test = "pip install lifelines pandas scipy scikit-learn"
 
 [tool.cibuildwheel.macos]
 archs = ["x86_64", "universal2", "arm64"]
-
-[tool.cibuildwheel.linux]
-archs = ["auto", "aarch64"]
 
 [[tool.cibuildwheel.overrides]]
 select = "*musllinux*"
