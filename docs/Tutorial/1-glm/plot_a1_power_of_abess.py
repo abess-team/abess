@@ -24,7 +24,7 @@ Power of **abess** Library: Empirical Comparison
 
 ######################################
 # Simulation Setting
-# ^^^^^^^^^^
+# ^^^^^^^^^^^^^^^^^^
 #
 # Both packages are compared in three aspects including the prediction
 # performance, the variable selection performance, and the computation
@@ -66,7 +66,7 @@ Power of **abess** Library: Empirical Comparison
 
 ##############################################################
 # Numerical Results
-# ^^^^^^^^^^^^^^^^^^^^
+# ^^^^^^^^^^^^^^^^^
 #
 # For linear regression, we compare three methods in the two packages:
 # Lasso, OMP and abess. For logistic regression, we compare two

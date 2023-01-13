@@ -1,22 +1,25 @@
 Changelog
 =========
 
-Unreleased
-----------
+Version 0.4.6
+-------------
 
 -  R package
 -  Python package
 
+   -  Support `score` function for all GLM estimators.
    -  Rearrange some arguments to improve legibility. 
       Please check `here <https://abess.readthedocs.io/en/latest/Python-package/index.html>`__ for the latest API.
+   -  Better docstring, e.g. move important arguments to the front.
+   -  Combine `metrics.py` and `functions.py`.
 
 -  C++
 
-   -  Support the base model for GLM. The Sparse GLM model can be implemented easilier.
+   -  Support the base model for GLM. The Sparse GLM model can be implemented much easilier.
    -  Re-write logistic, poisson and gamma regression on the basis of GLM base model.
 
 Versions 0.4.2 -- 0.4.5
-----------
+-----------------------
 
 -  R package
 
@@ -52,7 +55,7 @@ Versions 0.4.2 -- 0.4.5
       `Junhao Huang <https://github.com/oooo26>`__!
 
 Version 0.4.1
-----------
+-------------
 
 -  R package
 

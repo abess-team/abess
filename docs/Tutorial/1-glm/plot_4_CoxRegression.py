@@ -1,7 +1,7 @@
 """
-==============
+=================================
 Survival Analysis: Cox Regression
-==============
+=================================
 """
 ###############################################################################
 # Cox Proportional Hazards Regression
@@ -49,7 +49,7 @@ Survival Analysis: Cox Regression
 # which is independent of time.
 #
 # Lung Cancer Dataset Analysis
-# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # We are going to apply best subset selection to the NCCTG Lung Cancer Dataset from https://www.kaggle.com/ukveteran/ncctg-lung-cancer-data.
 # This dataset consists of survival information of patients with advanced lung cancer from the North Central Cancer Treatment Group.
 # The proportional hazards model allows the analysis of survival data by regression modeling.
@@ -114,7 +114,6 @@ model.fit(train[:, 2:], train[:, :2])
 # After fitting, the coefficients are stored in ``model.coef_``,
 # and the non-zero values indicate the variables used in our model.
 
-
 print(model.coef_)
 
 # %%
@@ -175,10 +174,9 @@ print(pred)
 # the sample with the higher risk prediction will experience an event
 # before the other sample or belong to a higher binary class.
 
-from abess.metrics import concordance_index_censored
-
-cindex = concordance_index_censored(test[:, 1] == 2, test[:, 0], pred)
-print(cindex[0])
+test[:, 1] = test[:, 1] == 2
+cindex = model.score(test[:, 2:], test[:, :2])
+print(cindex)
 
 # %%
 # On this dataset, the C-index is about 0.68.

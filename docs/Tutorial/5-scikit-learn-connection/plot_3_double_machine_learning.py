@@ -2,9 +2,9 @@
 ================================
 Work with DoubleML
 ================================
-Double machine learning offer a debiased way for estimating low-dimensional parameter of interest in the presence of
+Double machine learning [1]_ offer a debiased way for estimating low-dimensional parameter of interest in the presence of
 high-dimensional nuisance. Many machine learning methods can be used to estimate the nuisance parameters, such as random
-forests, lasso or post-lasso, neural nets, boosted regression trees, and so on. The Python package ``DoubleML`` provide an
+forests, lasso or post-lasso, neural nets, boosted regression trees, and so on. The Python package ``DoubleML`` [2]_ provide an
 implementation of the double machine learning. It's built on top of scikit-learn and is an excellent package. The
 object-oriented implementation of ``DoubleML`` is very flexible, in particular functionalities to estimate double machine
 learning models and to perform statistical inference via the methods fit, bootstrap, confint, p_adjust and tune.
@@ -12,7 +12,7 @@ learning models and to perform statistical inference via the methods fit, bootst
 
 ###############################################################################
 #
-# In fact, ``abess`` also works well with the package ``DoubleML``. Here is an example of using ``abess`` to solve such
+# In fact, ``abess`` [3]_ also works well with the package ``DoubleML``. Here is an example of using ``abess`` to solve such
 # a problem, and we will compare it to the lasso regression.
 
 
@@ -28,7 +28,7 @@ import time
 
 ###############################################################################
 # Partially linear regression (PLR) model
-# ^^^^^^^^^^^^^^^^^
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # PLR models take the form
 #
 # .. math::
@@ -47,7 +47,7 @@ import time
 
 ###############################################################################
 # Data
-# """""""""""""""
+# """"
 # We simulate the data from a PLR model, which both :math:`m_0` and :math:`g_0` are low-dimensional linear combinations
 # of :math:`X`, and we save the data as ``DoubleMLData`` class.
 
@@ -67,7 +67,7 @@ dml_data_sim = DoubleMLData.from_arrays(X, y, d)
 
 ###############################################################################
 # Model fitting with ``abess``
-# """""""""""""""
+# """"""""""""""""""""""""""""
 # Based on the simulated data, now we are going to illustrate how to integrate the ``abess`` with ``DoubleML``. To
 # estimate the PLR model with the double machine learning algorithm, first we need to choose a learner to estimate the
 # nuisance parameters :math:`\eta_0 = (m_0, g_0)`. Considering the sparsity of the data, we can use the adaptive best
@@ -90,7 +90,7 @@ print("sd:", obj_dml_plr_abess.se)
 
 ###############################################################################
 # Comparison with lasso
-# ^^^^^^^^^^^^^^^^^
+# ^^^^^^^^^^^^^^^^^^^^^
 # The lasso regression is a shrinkage and variable selection method for regression models, which can also be used in
 # high-dimensional setting. Here, we compare the abess regression with the lasso regression at different variable
 # dimensions.
@@ -190,8 +190,4 @@ plt.legend(loc="upper left")
 #
 
 # %%
-#
-#
-#
 # sphinx_gallery_thumbnail_path = 'Tutorial/figure/doubleml.png'
-#

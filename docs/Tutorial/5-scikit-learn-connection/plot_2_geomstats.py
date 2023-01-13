@@ -1,11 +1,11 @@
 """
 Work with geomstats
-======================
+===================
 """
 
 # %%
 # The package `geomstats` is used for computations and statistics on nonlinear manifolds, 
-#such as Hypersphere,Hyperbolic Space, Symmetric-Positive-Definite (SPD) Matrices Space and Skew-Symmetric Matrices Space. 
+# such as Hypersphere,Hyperbolic Space, Symmetric-Positive-Definite (SPD) Matrices Space and Skew-Symmetric Matrices Space. 
 # `abess` also works well with the package `geomstats`. 
 # Here is an example of using `abess` to do logistic regression of samples on Hypersphere, 
 # and we will compare the precision score, the recall score and the running time with `abess` and with `scikit-learn`.
@@ -27,7 +27,7 @@ gs.random.seed(0)
 
 ###############################################################################
 # An Example
-# ---------------------
+# ----------
 # Two sets of samples on Hypersphere in 3-dimensional Euclidean Space are created. 
 # The sample points in `data0` are distributed around $[-3/5, 0, 4/5]$, and the sample points in `data1` are distributed around $[3/5, 0, 4/5]$. 
 # The sample size of both is set to 100, and the precision of both is set to 5. 
@@ -107,7 +107,7 @@ print('accuracy:',sum((fitted_labels - test_labels + 1) % 2)/test_data.shape[0])
 
 ###############################################################################
 # Comparison
-# -------------
+# ----------
 # Here is the comparison of the precision score and the recall score with `abess` and `scikit-learn`, and 
 # the comparison of the running time with `abess` and `scikit-learn`. 
 # 
@@ -212,8 +212,4 @@ plt.show()
 # And the running time with `abess` is only slightly slower than that without `abess`.
 
 # %%
-# 
-# 
-# 
 # sphinx_gallery_thumbnail_path = 'Tutorial/figure/geomstats.png'
-# 

@@ -1,7 +1,7 @@
 """
-================================
+==============
 Work with pyts
-================================
+==============
 ``pyts`` is a Python package dedicated to time series classification. It aims to make time series classification 
 easily accessible by providing preprocessing and utility tools, and implementations of several time series 
 classification algorithms. In this example, we will mainly focus on the shapelets-based algorithms.
@@ -29,7 +29,7 @@ from pyts.datasets import load_coffee
 
 # %%
 # Data
-# """""""""""""""
+# """"
 # In this example, we use the buint-in coffee dataset in ``pyts`` to perform shapelets learning. It has two classes, 
 # 0 and 1. So, this is a binary classification task. Both train dataset and test dataset have 28 time series and the 
 # dimension of each time series is 286. We plot the time series in the train dataset.
@@ -53,7 +53,7 @@ plt.show()
 
 # %%
 # Learning shapelets with ``abess``
-# """""""""""""""""""""""""""""""""""
+# """""""""""""""""""""""""""""""""
 # To select discriminant shapelets, we first collect all subsequences with predefined length and step as the candidates. 
 # Then we transform the original time series by computing the distance between them to each subsequence. Therefore, 
 # the original time series are transformed to some ultra high dimensional vectors. Finally, we perform binary 
@@ -132,7 +132,7 @@ print("time_abess : {}s".format(round(t2 - t1, 2)))
 
 # %%
 # Learning shapelets with ``pyts``
-# """"""""""""""""""""""""""""""""""
+# """"""""""""""""""""""""""""""""
 # We compare our method with the one implemented in ``pyts``, which is a two-step procedure. First, it selects discriminant
 # shapelets based on mutual information. Then, a support vector machine is applied to perform binary classification with 
 # transformed time series based on those selected shapelets. Analogously, we print the performance and execution time.
@@ -154,7 +154,7 @@ print("time_pyts : {}s".format(round(t4 - t3, 2)))
 
 # %%
 # Plot: learned shapelets
-# """""""""""""""""""""""""
+# """""""""""""""""""""""
 # The following figure shows the discriminant shapelets selected by these two methods.
 
 # %%

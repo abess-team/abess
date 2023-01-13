@@ -1,5 +1,5 @@
 Bug Report or New Feature Request
-============
+=================================
 
 Bugs Report
 -----------
