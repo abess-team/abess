@@ -6,13 +6,13 @@ Work with DoWhy
 this section, we will use ``abess`` to cope with high-dimensional mediation analysis problem, which is a popular topic in
 the research of causal inference. High-Dimensional mediation model is crucial in biomedical research studies. People always
 want to know by what mechanism the genes with differential expression, distinct genotypes or various epigeneticmarkers affect
-the outcome or phenotype. Such a mechanistic process is what a mediation analysis aims to characterize (Huang and Pan, 2016).
+the outcome or phenotype. Such a mechanistic process is what a mediation analysis aims to characterize (Huang and Pan, 2016 [2]_ ).
 """
 
 ###############################################################################
 #
 # A typical example of the high-dimensional mediators is high-dimensional DNA methylation markers. This model can be represented
-# by the following figure (Zhang et al. 2016),
+# by the following figure (Zhang et al. 2016 [1]_ ),
 #
 # .. image:: ../../Tutorial/figure/med_model.png
 #
@@ -34,7 +34,7 @@ the outcome or phenotype. Such a mechanistic process is what a mediation analysi
 
 ###############################################################################
 # Continuous Outcome
-# """""""""""""""
+# """"""""""""""""""
 # We will follow the simulation settings and the data generating process in the R document of the R package HIMA
 # (Zhang et al. 2016). :math:`X` is generated from :math:`N(0,1.5)`, the first 8 elements of :math:`\beta\left(\beta_{k}, k=1, \cdots, 8\right)`
 # are :math:`(0.55,0.6,0.65,0.7,0.8,0.8,0,0)^{\mathrm{T}}`, and the first 8 elements of :math:`a\left(\alpha_{k}, k=1, \cdots, 8\right)`
@@ -93,7 +93,7 @@ simdat = simhima(n,p,alpha,beta,seed=12345)
 # variables. In this case, continuing to naively use ``abess`` may lead to philosophical causal issues and cannot have good theoretical
 # guarantees, since we have to treat :math:`X` as an "dependent variable" and treat :math:`M_i` as "independent variables", which is contrary
 # to the interpretation in reality. However, this naive approach performs well in this task of selecting true mediators, and this
-# kind of idea has already been used in some existing methods, such as Coordinate-wise Mediation Filter (van Kesteren and Oberski, 2019).
+# kind of idea has already been used in some existing methods, such as Coordinate-wise Mediation Filter (Van Kesteren and Oberski, 2019 [3]_ ).
 # Therefore, we will still use this kind of idea here, and the main task is to show the power of ``abess``.
 # 
 # We will first apply BESS with a fixed support size to one of these subproblems, conducting a preliminary screening to
@@ -197,6 +197,7 @@ np.vstack((mask,np.array(tmp))).T
 # %%
 # After doing 1000 replications of the process mentioned above, we can get this list. The left number in each row is the
 # index, and the right number is the times that this mediator been selected. We can find that:
+#
 #  -  The true mediators (indices 0-3) can always be selected during all the 1000 replications.
 #  -  The bewildering false mediators (indices 4-7) may be occasionally selected, but FDR can be controlled at a low level.
 #  -  It is almost impossible for other mediators (indices 8-199) to be selected by our method.

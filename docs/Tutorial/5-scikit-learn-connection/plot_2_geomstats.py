@@ -1,11 +1,11 @@
 """
 Work with geomstats
-======================
+===================
 """
 
 # %%
 # The package `geomstats` is used for computations and statistics on nonlinear manifolds, 
-#such as Hypersphere,Hyperbolic Space, Symmetric-Positive-Definite (SPD) Matrices Space and Skew-Symmetric Matrices Space. 
+# such as Hypersphere,Hyperbolic Space, Symmetric-Positive-Definite (SPD) Matrices Space and Skew-Symmetric Matrices Space. 
 # `abess` also works well with the package `geomstats`. 
 # Here is an example of using `abess` to do logistic regression of samples on Hypersphere, 
 # and we will compare the precision score, the recall score and the running time with `abess` and with `scikit-learn`.

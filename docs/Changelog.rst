@@ -16,7 +16,7 @@ Unreleased
    -  Re-write logistic, poisson and gamma regression on the basis of GLM base model.
 
 Versions 0.4.2 -- 0.4.5
-----------
+-----------------------
 
 -  R package
 
@@ -52,7 +52,7 @@ Versions 0.4.2 -- 0.4.5
       `Junhao Huang <https://github.com/oooo26>`__!
 
 Version 0.4.1
-----------
+-------------
 
 -  R package
 

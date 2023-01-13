@@ -1,10 +1,10 @@
 Contribute documentation
-============
+========================
 
 .. _general development procedure:
 
 General development procedure
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you're a more experienced with the ``abess`` and are looking forward to
 improve your open source development skills, the next step up is to
@@ -77,14 +77,14 @@ parameters it requires, such as
 Also note that the style of Python document is similar to
 `numpydoc <https://numpydoc.readthedocs.io/en/latest/format.html>`__.
 
-The development of Python API's documentation relies on
+The development of Python API's documentation mainly relies on
 `Sphinx <https://pypi.org/project/Sphinx/>`__,
-`nbsphinx <https://pypi.org/project/nbsphinx/>`__ (support jupyter
-notebook for Sphinx),
-`myst-parser <https://pypi.org/project/myst-parser/>`__ (support
+`sphinx-gallery <https://pypi.org/project/sphinx-gallery/>`__ (support
 markdown for Sphinx),
 `sphinx-rtd-theme <https://pypi.org/project/sphinx-rtd-theme/>`__
-(support “Read the Docs” theme for Sphinx). Make sure these packages
+(support “Read the Docs” theme for Sphinx) and so on.
+
+Please make sure all packages in :code:`docs/requirements.txt` 
 have been installed.
 
 Tutorials
@@ -107,7 +107,7 @@ The development of the tutorial relies on `sphinix-gallery <https://pypi.org/pro
 .. _python document development:
 
 Document development
-^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 Before developing document, we presume that you have already complete the steps 1-3 described in `general development procedure`_, 
 and you have installed necessary packages, including: ``sphinix-gallery``, ``Sphinx``, ``nbsphinx``, ``myst-parser``, ``sphinx-rtd-theme``.
