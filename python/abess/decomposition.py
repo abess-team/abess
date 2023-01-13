@@ -212,6 +212,11 @@ class SparsePCA(bess_base):
 
             - if X is given, it would be X.shape[0] by default;
             - if X is not given (Sigma is given), it would be 1 by default.
+
+        sparse_matrix : bool, optional, default=False
+            Set as True to treat X as sparse matrix during fitting.
+            It would be automatically set as True when X has the
+            sparse matrix type defined in scipy.sparse.
         """
 
         # Input check
@@ -593,6 +598,11 @@ class RobustPCA(bess_base):
             Rank of the (recovered) information matrix L.
             It should be smaller than rank of X
             (at least smaller than X.shape[1]).
+
+        sparse_matrix : bool, optional, default=False
+            Set as True to treat X as sparse matrix during fitting.
+            It would be automatically set as True when X has the
+            sparse matrix type defined in scipy.sparse.
         """
 
         # Input check
