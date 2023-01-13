@@ -21,10 +21,10 @@ in linear regression with both simulated data and real data.
 # Next, we present an example to show the ``abess`` package can get an optimal estimation.
 #
 # Toward optimality: adaptive best-subset selection
-# ^^^^^^^^^^^^^^^^^^^^^^
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # 
 # Synthetic dataset
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~
 #
 # We generate a design matrix :math:`X` containing :math:`n = 300` observations and each observation has :math:`p = 1000` predictors.
 # The response variable :math:`y` is linearly related to the first, second, and fifth predictors in :math:`X`:

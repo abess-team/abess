@@ -99,8 +99,4 @@ plt.legend(loc="lower right")
 plt.show()
 
 # %%
-# 
-# 
-# 
 # sphinx_gallery_thumbnail_path = 'Tutorial/figure/scikit_learn.png'
-# 

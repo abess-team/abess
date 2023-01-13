@@ -299,8 +299,4 @@ print('TPR:',TPR,'\nTNR:',TNR,'\nFDR:',FDR,'\nPPV:',PPV,'\nACC:',ACC,'\nF1 score
 #
 
 # %%
-#
-#
-#
-# sphinx_gallery_thumbnail_path = '../../Tutorial/figure/dowhy.png'
-#
+# sphinx_gallery_thumbnail_path = 'Tutorial/figure/dowhy.png'
