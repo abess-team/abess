@@ -29,6 +29,9 @@ test-requires = "pytest"
 test-command = "pytest {package}"
 before-test = "pip install lifelines pandas scipy scikit-learn"
 
+# install pybind11 for cmake
+before-build = "pip install pybind11[global]"
+
 [tool.cibuildwheel.macos]
 archs = ["x86_64", "universal2", "arm64"]
 
