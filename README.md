@@ -139,6 +139,7 @@ New best subset selection tasks:
 Trivial updates:
 
 - Rearrange some arguments in Python package to improve legibility. Please check the latest [API document](https://abess.readthedocs.io/en/latest/Python-package/index.html).
+- Only support Python>=3.6 now, because of the [limitation from pybind11](https://github.com/pybind/pybind11/pull/3719).
 
 ## Citation
 
