@@ -1,12 +1,12 @@
 version: 2
 
 build:
-  os: "ubuntu-20.04"
+  os: "ubuntu-22.04"
   tools:
-    python: "3.8"
+    python: "3.9"
   jobs:
-    post_install:
-        - python -m pip install --no-cache-dir -r docs/requirements.txt
+    pre_install:
+      - python -m pip install --no-cache-dir pybind11[global]
 
 # Build PDF
 formats:
