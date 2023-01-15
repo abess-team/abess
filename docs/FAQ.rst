@@ -14,11 +14,12 @@ Installation failed
 Compliers
 ^^^^^^^^^
 
-First of all, please check the version of Python and GCC. To make sure
+First of all, please check the version of Python and GCC/MSVC. To make sure
 that ``abess`` package runs correctly,
 
--  Python 3.5 or later is required
--  GCC 4.7 or later is required (support c++11)
+-  Python 3.5 or later is required;
+-  On Linux and MacOS, GCC 4.7 or later is required (support c++11);
+-  On Windows, Microsoft Visual C++ (MSVC) Build Tools is required;
 
 What's more, the newer version is recommended. So if you meet some
 errors, please try to update the complier first.
@@ -40,6 +41,26 @@ denied. The step below would help with it.
    ``$ sudo python setup.py install`` instead.
 -  For Windows: run ``$ python setup.py install --user`` or
    run the command as an administrator.
+
+
+Dependencies
+^^^^^^^^^^^^
+
+If you receive an error message including:
+
+.. code:: bash
+   Could not find a package configuration file provided by "pybind11" with any
+   of the following names:
+
+      pybind11Config.cmake
+      pybind11-config.cmake
+
+
+It means `pybind11 <https://pybind11.readthedocs.io/en/stable/installing.html#>`__ has
+not been installed properly, and please check it again.
+
+What's more, this situation usually happen when you install by ``pip install pybind11``.
+Instead, we recommend using ``pip install pybind11[global]`` to avoid it.
 
 Import failed
 ~~~~~~~~~~~~~
