@@ -6,7 +6,7 @@ Unreleased
 
 -  Python package
 
-   -  Use [CMake](https://cmake.org/) on compiling to increase scalability.
+   -  Use `CMake <https://cmake.org/>`__ on compiling to increase scalability.
 
 Version 0.4.6
 -------------
