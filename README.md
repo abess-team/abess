@@ -127,11 +127,10 @@ $ Rscript abess/docs/simulation/R/timings.R
 
 New features:
 
+- Use [CMake](https://cmake.org/) on compiling to increase scalability.
+- Support score functions for all GLM models.
 - `abess` Python package can be installed via `conda`.
 - `abess` R package is is highlighted as one of the core packages in [CRAN Task View: Machine Learning &amp; Statistical Learning](https://cran.r-project.org/web/views/MachineLearning.html).
-- On Windows, the recommended C++ compiler shifts from Mingw to Microsoft Visual Studio.
-- Support predicting survival function in `abess.linear.CoxPHSurvivalAnalysis`.
-- Rename estimators in Python. Please check [here](https://abess.readthedocs.io/en/latest/Python-package/index.html).
 
 New best subset selection tasks:
 
@@ -140,6 +139,7 @@ New best subset selection tasks:
 Trivial updates:
 
 - Rearrange some arguments in Python package to improve legibility. Please check the latest [API document](https://abess.readthedocs.io/en/latest/Python-package/index.html).
+- Only support Python>=3.6 now, because of the [limitation from pybind11](https://github.com/pybind/pybind11/pull/3719).
 
 ## Citation
 

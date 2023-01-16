@@ -3,6 +3,7 @@ requires = [
     "setuptools>=42",
     "wheel",
     "pybind11>=2.8.0",
+    "cmake>=3.12",
 
     # use oldest-supported-numpy which provides the oldest numpy version with
     # wheels on PyPI (it is a similar operation used in scikit-learn)
@@ -27,6 +28,9 @@ test-skip = """\
 test-requires = "pytest"
 test-command = "pytest {package}"
 before-test = "pip install lifelines pandas scipy scikit-learn"
+
+# install pybind11 for cmake
+before-build = "pip install pybind11[global]"
 
 [tool.cibuildwheel.macos]
 archs = ["x86_64", "universal2", "arm64"]

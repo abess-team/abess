@@ -145,3 +145,4 @@ docs/real-data/*/*.txt
 docs/real-data/*/*.rdata
 docs/real-data/*/*.zip
 docs/real-data/*/*.npy
+docs/Tutorial/5-scikit-learn-connection/casual_model.png

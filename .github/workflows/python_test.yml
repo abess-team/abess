@@ -31,12 +31,14 @@ jobs:
         uses: actions/setup-python@master
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install abess
+      - name: Install dependencies
         run: |
           python --version
+          pip install pybind11[global]
+      - name: Install abess
+        run: |
           cd ./python
-          # python setup.py install
-          pip install .
+          pip install . -v
       - name: A simple test
         run: |
           echo "import abess; print(abess.__version__);" > ./test.py

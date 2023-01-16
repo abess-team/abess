@@ -36,7 +36,8 @@ to ask questions by opening an
 `issue <https://github.com/abess-team/abess/issues>`__.
 
 First of all, clone our the latest `github
-project <https://github.com/abess-team/abess>`__ to your device:
+project <https://github.com/abess-team/abess>`__ by
+`Git <https://git-scm.com/downloads>`__ to your device:
 
 .. code:: bash
 
@@ -51,21 +52,24 @@ langulage you prefer.
 Python
 ~~~~~~
 
-Before installing ``abess``, some dependent libraries should be installed
-first, which may be a little different in
-different platforms:
+Before installing ``abess`` from source, some compiling tools should be installed
+first, which may be a little different in different platforms:
 
--  **Linux**: ``$ sudo apt install bash`` (for Ubuntu,
-   but other Linux systems are similar);
--  **Windows**: ``$ choco install git`` (using
-   `Chocolatey <https://community.chocolatey.org/packages>`__), or
-   manually install the software and add them into PATH;
-   Windows user will also need to download `Microsoft C++ Build Tools <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`__,
+-  `cmake <https://cmake.org/download/>`__:
+   control the software compilation process. Make sure it has been added into PATH,
+   which means it can be called on the command line like ``cmake --version``.
+
+-  `pybind11 <https://pybind11.readthedocs.io/en/stable/installing.html#>`__:
+   create Python bindings of existing C++ code. 
+   If you want to install from PyPI, please use ``pip install "pybind11[global]"``.
+
+-  For **Linux** and **MacOS** user, please download and install
+   `GCC <https://gcc.gnu.org/>`__.
+
+-  For **Windows** user, please download
+   `Microsoft C++ Build Tools <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`__,
    and then install the "Desktop development with C++" module inside.
--  **MacOS**: ``$ brew install bash`` (using
-   `Homebrew <https://brew.sh/>`__).
 
-Then, you need to install ``pybind11`` via ``pip install pybind11`` (or `other methods <https://pybind11.readthedocs.io/en/stable/installing.html#>`__). 
 After that, we can manually install ``abess`` by conducting command:
 
 .. code:: bash
