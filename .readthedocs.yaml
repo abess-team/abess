@@ -6,15 +6,17 @@ build:
     python: "3.9"
   jobs:
     pre_install:
-      - python -m pip install --no-cache-dir pybind11[global]
-
-# Build PDF
-formats:
-  - pdf
+      - pip install --no-cache-dir pip --upgrade
+      - pip install --no-cache-dir pybind11[global]
+    pre_build:
+      - pip install --no-cache-dir -r docs/requirements.txt
 
 python:
   install:
     - requirements: docs/requirements.txt
     - method: pip
       path: python
-  system_packages: true
+
+# Build PDF
+formats:
+  - pdf
