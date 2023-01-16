@@ -21,7 +21,7 @@ find_package(pybind11)
 find_package(OpenMP)
 
 # sources
-set(SOURCES
+SET(SOURCES
     src/pywrap.cpp
     src/utilities.cpp
     src/List.cpp
@@ -38,7 +38,7 @@ target_link_libraries(pybind_cabess PRIVATE pybind11::module
                                             pybind11::lto
                                             pybind11::windows_extras)
 if(OpenMP_CXX_FOUND)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     target_link_libraries(pybind_cabess PRIVATE OpenMP::OpenMP_CXX)
 endif()
 
