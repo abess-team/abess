@@ -1,0 +1,76 @@
+---
+title: "Use `abess` via mlr3"
+author: "Zezhi Wang"
+output:
+  html_document: 
+    toc: yes
+    keep_md: yes
+    self_contained: no
+  pdf_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 3
+  word_document: 
+    toc: yes
+    keep_md: yes
+---
+
+This guide is to show how to use `abess` via mlr3 (Machine Learning in R universe).
+
+First, install `mlr3` and `mlr3extralearners` (from github) if they are not in the environment.
+
+```
+devtools::install_github("mlr-org/mlr3extralearners")
+install.packages("mlr3")
+```
+
+There are two learners `regr.abess` and `classif.abess`, we need to install them before use.
+
+```{r warning=FALSE}
+library(mlr3extralearners)
+library(mlr3)
+install_learners("regr.abess")
+install_learners("classif.abess")
+```
+
+## Quick example  
+
+We generate a design matrix $X$ containing 300 observations and each observation has 1000 predictors. The response variable $y$ is linearly related to the first, second, and fifth predictors in $X$: 
+$$y = 3X_1 + 1.5X_2 + 2X_5 + \epsilon,$$
+where $\varepsilon$ is a standard normal random variable.
+
+```{r warning=FALSE}
+library(abess)
+synthetic_data <- generate.data(n = 300, p = 1000, 
+                                beta = c(3, 1.5, 0, 0, 2, rep(0, 995)))
+dat <- cbind.data.frame("y" = synthetic_data[["y"]], 
+                        synthetic_data[["x"]])
+```
+
+In mlr3, learners work with the task, so we generate `task_synthetic` and split it.
+
+```{r}
+task_synthetic = as_task_regr(dat, target = "y", id = "synthetic_data")
+
+splits = partition(task_synthetic)
+```
+
+Then we use the learner `regr.abess` to solve regression problems with abess.
+
+```{r}
+learner_regr_abess = lrn("regr.abess")
+learner_regr_abess$train(task_synthetic, splits$train)
+```
+
+The method `selected_features` can show the best subset.
+
+```{r}
+learner_regr_abess$selected_features()
+```
+
+The method `predict` can use those selected features to predict on the test set.
+
+```{r}
+learner_regr_abess$predict(task_synthetic, splits$test)
+```
+

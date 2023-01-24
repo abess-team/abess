@@ -127,10 +127,11 @@ $ Rscript abess/docs/simulation/R/timings.R
 
 New features:
 
+- `abess` can be used via `mlr3extralearners` as learners `regr.abess` and `classif.abess`.
 - Use [CMake](https://cmake.org/) on compiling to increase scalability.
 - Support score functions for all GLM models.
 - `abess` Python package can be installed via `conda`.
-- `abess` R package is is highlighted as one of the core packages in [CRAN Task View: Machine Learning &amp; Statistical Learning](https://cran.r-project.org/web/views/MachineLearning.html).
+- `abess` R package is highlighted as one of the core packages in [CRAN Task View: Machine Learning &amp; Statistical Learning](https://cran.r-project.org/web/views/MachineLearning.html).
 
 New best subset selection tasks:
 
