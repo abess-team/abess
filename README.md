@@ -125,22 +125,12 @@ $ Rscript abess/docs/simulation/R/timings.R
 
 ## What's news
 
-New features:
+New features version `4.6`:
 
 - `abess` can be used via `mlr3extralearners` as learners `regr.abess` and `classif.abess`.
 - Use [CMake](https://cmake.org/) on compiling to increase scalability.
 - Support score functions for all GLM models.
-- `abess` Python package can be installed via `conda`.
-- `abess` R package is highlighted as one of the core packages in [CRAN Task View: Machine Learning &amp; Statistical Learning](https://cran.r-project.org/web/views/MachineLearning.html).
-
-New best subset selection tasks:
-
-- Generalized linear model for ordinal regression (a.k.a rank learning in some machine learning literature).
-
-Trivial updates:
-
 - Rearrange some arguments in Python package to improve legibility. Please check the latest [API document](https://abess.readthedocs.io/en/latest/Python-package/index.html).
-- Only support Python>=3.6 now, because of the [limitation from pybind11](https://github.com/pybind/pybind11/pull/3719).
 
 ## Citation
 

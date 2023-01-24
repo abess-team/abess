@@ -8,6 +8,11 @@ Unreleased
 
    -  Use `CMake <https://cmake.org/>`__ on compiling to increase scalability.
 
+-  R package
+
+   -  abess can be used in mlr3extralearners, a package like scikit-learn. Please see `mlr3extralearners <https://github.com/mlr-org/mlr3extralearners/>`__ for usage. 
+
+
 Version 0.4.6
 -------------
 
