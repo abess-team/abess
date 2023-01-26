@@ -127,6 +127,7 @@ $ Rscript abess/docs/simulation/R/timings.R
 
 New features version `4.6`:
 
+- `abess` can be used via `mlr3extralearners` as learners `regr.abess` and `classif.abess`.
 - Use [CMake](https://cmake.org/) on compiling to increase scalability.
 - Support score functions for all GLM models.
 - Rearrange some arguments in Python package to improve legibility. Please check the latest [API document](https://abess.readthedocs.io/en/latest/Python-package/index.html).
