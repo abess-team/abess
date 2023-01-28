@@ -128,7 +128,7 @@ class bess_base(BaseEstimator):
         s_max=None,
         group=None,
         alpha=None,
-        ic_type="ebic",
+        ic_type="ebic",     # TODO: rename to eval_type?
         ic_coef=1.0,
         cv=1,
         thread=1,
@@ -324,20 +324,29 @@ class bess_base(BaseEstimator):
             raise ValueError("path_type should be \'seq\' or \'gs\'")
 
         # Ic_type: aic, bic, gic, ebic
-        if self.ic_type == "aic":
-            ic_type_int = 1
-        elif self.ic_type == "bic":
-            ic_type_int = 2
-        elif self.ic_type == "gic":
-            ic_type_int = 3
-        elif self.ic_type == "ebic":
-            ic_type_int = 4
-        elif self.ic_type == "hic":
-            ic_type_int = 5
+        if self.cv == 1:
+            if self.ic_type == "aic":
+                ic_type_int = 1
+            elif self.ic_type == "bic":
+                ic_type_int = 2
+            elif self.ic_type == "gic":
+                ic_type_int = 3
+            elif self.ic_type == "ebic":
+                ic_type_int = 4
+            elif self.ic_type == "hic":
+                ic_type_int = 5
+            else:
+                raise ValueError(
+                    "ic_type should be \"aic\", \"bic\", \"ebic\","
+                    " \"gic\" or \"hic\".")
         else:
-            raise ValueError(
-                "ic_type should be \"aic\", \"bic\", \"ebic\","
-                " \"gic\" or \"hic\".")
+            if self.ic_type == "auc":
+                ic_type_int = 1
+            else:
+                ic_type_int = 0
+                # raise ValueError(
+                #     "ic_type should be \"aic\", \"bic\", \"ebic\","
+                #     " \"gic\" or \"hic\".")
 
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):

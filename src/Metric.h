@@ -19,12 +19,12 @@ class Metric {
    public:
     bool is_cv;
     int Kfold;
-    int ic_type;
+    int eval_type;
     // Eigen::Matrix<T2, Dynamic, 1> cv_initial_model_param;
     // Eigen::Matrix<T3, Dynamic, 1> cv_initial_coef0;
 
-    std::vector<Eigen::VectorXi> cv_initial_A;
-    std::vector<Eigen::VectorXi> cv_initial_I;
+    // std::vector<Eigen::VectorXi> cv_initial_A;
+    // std::vector<Eigen::VectorXi> cv_initial_I;
 
     std::vector<Eigen::VectorXi> train_mask_list;
     std::vector<Eigen::VectorXi> test_mask_list;
@@ -44,9 +44,9 @@ class Metric {
 
     Metric() = default;
 
-    Metric(int ic_type, double ic_coef = 1.0, int Kfold = 5) {
+    Metric(int eval_type, double ic_coef = 1.0, int Kfold = 5) {
         this->is_cv = Kfold > 1;
-        this->ic_type = ic_type;
+        this->eval_type = eval_type;
         this->Kfold = Kfold;
         this->ic_coef = ic_coef;
         if (is_cv) {
@@ -211,6 +211,7 @@ class Metric {
     // }
 
     double ic(int train_n, int M, int N, Algorithm<T1, T2, T3, T4> *algorithm) {
+        // information criterioin: for non-CV
         double loss;
         if (algorithm->model_type == 1 || algorithm->model_type == 5) {
             loss = train_n *
@@ -219,44 +220,91 @@ class Metric {
             loss = 2 * (algorithm->get_train_loss() - algorithm->lambda_level * algorithm->beta.cwiseAbs2().sum());
         }
 
-        if (ic_type == 0) {
+        if (this->eval_type == 0) {
             return loss;
-        } else if (ic_type == 1) {
+        }
+        if (this->eval_type == 1) {
             return loss + 2.0 * algorithm->get_effective_number();
-        } else if (ic_type == 2) {
+        }
+        if (this->eval_type == 2) {
             return loss + this->ic_coef * log(double(train_n)) * algorithm->get_effective_number();
-        } else if (ic_type == 3) {
+        }
+        if (this->eval_type == 3) {
             return loss +
                    this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
-        } else if (ic_type == 4) {
+        }
+        if (this->eval_type == 4) {
             return loss +
                    this->ic_coef * (log(double(train_n)) + 2 * log(double(N))) * algorithm->get_effective_number();
-        } else if (ic_type == 5) {
+        }
+        if (this->eval_type == 5) {
             return train_n *
                        (algorithm->get_train_loss() - algorithm->lambda_level * algorithm->beta.cwiseAbs2().sum()) +
                    this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
-        } else
-            return 0;
+        }
+        return 0;
     };
 
-    double loss_function(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index,
-                         Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm<T1, T2, T3, T4> *algorithm) {
+    double test_loss(T4 &test_x, T1 &test_y, Eigen::VectorXd &test_weight, Eigen::VectorXi &g_index,
+                     Eigen::VectorXi &g_size, int test_n, int p, int N, Algorithm<T1, T2, T3, T4> *algorithm) {
+        // test loss: for CV
         Eigen::VectorXi A = algorithm->get_A_out();
         T2 beta = algorithm->get_beta();
         T3 coef0 = algorithm->get_coef0();
 
         Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, beta.rows(), N);
-        T4 X_A = X_seg(train_x, train_n, A_ind, algorithm->model_type);
+        T4 test_X_A = X_seg(test_x, test_n, A_ind, algorithm->model_type);
 
         T2 beta_A;
         slice(beta, A_ind, beta_A);
 
-        // Eigen::VectorXd beta_A(A_ind.size());
-        // for (int k = 0; k < A_ind.size(); k++)
-        // {
-        //   beta_A(k) = beta(A_ind(k));
-        // }
-        return algorithm->loss_function(X_A, train_y, train_weight, beta_A, coef0, A, g_index, g_size, 0.0);
+        // 1. test loss
+        if (this->eval_type == 0) {
+            return algorithm->loss_function(test_X_A, test_y, test_weight, beta_A, coef0, A, g_index, g_size, 0.0);
+        }
+        // 2. negative AUC (for classification)
+        if (this->eval_type == 1) {
+            // binomial
+            if (algorithm->model_type == 2) {
+                // compute probability
+                Eigen::VectorXd proba = test_X_A * beta_A + coef0 * Eigen::VectorXd::Ones(test_n);
+                proba = proba.array().exp();
+                proba = proba.cwiseProduct((Eigen::VectorXd::Ones(test_n) + proba).cwiseInverse());
+                // std::cout << "\n---------------------\n" << endl;
+                // std::cout << proba.transpose() << endl;
+                // sort from large to small
+                Eigen::VectorXi sort_ind = max_k(proba, test_n, true);
+                // use each value as threshold to get TPR, FPR
+                double tp = 0, fp = 0, positive = test_y.sum();
+                double last_tpr = 0, last_fpr = 0, auc = 0;
+                for (int i = 0; i < test_n; i++) {
+                    int k = sort_ind(i);
+                    tp += test_y(k);
+                    fp += 1 - test_y(k);
+                    // skip same proba
+                    if (i < test_n - 1) {
+                        int kk = sort_ind(i + 1);
+                        if (proba(k) == proba(kk)) continue;
+                    }
+                    double tpr = tp / positive;
+                    double fpr = fp / (test_n - positive);
+                    auc += (tpr + last_tpr) / 2 * (fpr - last_fpr);
+                    // std::cout << "==> i=" << i << ", k=" << k << endl;
+                    // std::cout << "    tp=" << tp << ", fp=" << fp << ", tpr=" << tpr << ", fpr=" << fpr
+                    //           << ", auc=" << auc << endl;
+                    last_tpr = tpr;
+                    last_fpr = fpr;
+                }
+                // std::cout << "    sort:" << sort_ind.transpose() << endl;
+                // std::cout << "AUC:" << auc << " | " << (tp == p) << (fp == test_n - p) << endl;
+                return -auc;
+            }
+            // multinomial
+            if (algorithm->model_type == 6) {
+                return algorithm->loss_function(test_X_A, test_y, test_weight, beta_A, coef0, A, g_index, g_size, 0.0);
+            }
+        }
+        return 0;
     }
 
     // to do
@@ -328,9 +376,8 @@ class Metric {
                     // this->update_cv_initial_coef0(algorithm->get_coef0(), k);
                 }
 
-                loss_list(k) =
-                    this->loss_function(this->test_X_list[k], this->test_y_list[k], this->test_weight_list[k], g_index,
-                                        g_size, test_n, p, N, algorithm_list[k]);
+                loss_list(k) = this->test_loss(this->test_X_list[k], this->test_y_list[k], this->test_weight_list[k],
+                                               g_index, g_size, test_n, p, N, algorithm_list[k]);
             }
         }
 

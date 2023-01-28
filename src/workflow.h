@@ -59,7 +59,7 @@ using namespace std;
  * @param algorithm_type type of algorithm
  * @param path_type type of path: 1 for sequencial search and 2 for golden section search
  * @param is_warm_start whether enable warm-start
- * @param ic_type type of information criterion, used for not CV
+ * @param eval_type type of information criterion, or test loss in CV
  * @param Kfold number of folds, used for CV
  * @param parameters parameters to be selected, including `support_size`, `lambda`
  * @param screening_size size of screening
@@ -74,7 +74,7 @@ using namespace std;
  */
 template <class T1, class T2, class T3, class T4>
 List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::VectorXd weight, int algorithm_type,
-                   int path_type, bool is_warm_start, int ic_type, double ic_coef, int Kfold, Parameters parameters,
+                   int path_type, bool is_warm_start, int eval_type, double ic_coef, int Kfold, Parameters parameters,
                    int screening_size, Eigen::VectorXi g_index, bool early_stop, int thread, bool sparse_matrix,
                    Eigen::VectorXi &cv_fold_id, Eigen::VectorXi &A_init,
                    vector<Algorithm<T1, T2, T3, T4> *> algorithm_list) {
@@ -111,7 +111,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     //     if CV is enable,
     //     specify train and test data,
     //     and initialize the fitting argument inside each fold.
-    Metric<T1, T2, T3, T4> *metric = new Metric<T1, T2, T3, T4>(ic_type, ic_coef, Kfold);
+    Metric<T1, T2, T3, T4> *metric = new Metric<T1, T2, T3, T4>(eval_type, ic_coef, Kfold);
     if (Kfold > 1) {
         metric->set_cv_train_test_mask(data, data.n, cv_fold_id);
         metric->set_cv_init_fit_arg(beta_size, data.M);

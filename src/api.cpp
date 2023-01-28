@@ -31,7 +31,7 @@ using namespace std;
 // [[Rcpp::export]]
 List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normalize_type, Eigen::VectorXd weight,
                   int algorithm_type, int model_type, int max_iter, int exchange_num, int path_type, bool is_warm_start,
-                  int ic_type, double ic_coef, int Kfold, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq,
+                  int eval_type, double ic_coef, int Kfold, Eigen::VectorXi sequence, Eigen::VectorXd lambda_seq,
                   int s_min, int s_max, double lambda_min, double lambda_max, int nlambda, int screening_size,
                   Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
                   double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton, int thread,
@@ -169,12 +169,12 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
             Eigen::VectorXd y_vec = y.col(0).eval();
 
             out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(
-                x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, ic_type, ic_coef,
+                x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, eval_type, ic_coef,
                 Kfold, parameters, screening_size, g_index, early_stop, thread, sparse_matrix, cv_fold_id, A_init,
                 algorithm_list_uni_dense);
         } else {
             out_result = abessWorkflow<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::MatrixXd>(
-                x, y, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, ic_type, ic_coef, Kfold,
+                x, y, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, eval_type, ic_coef, Kfold,
                 parameters, screening_size, g_index, early_stop, thread, sparse_matrix, cv_fold_id, A_init,
                 algorithm_list_mul_dense);
         }
@@ -199,12 +199,12 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
             Eigen::VectorXd y_vec = y.col(0).eval();
 
             out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(
-                sparse_x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, ic_type,
+                sparse_x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, eval_type,
                 ic_coef, Kfold, parameters, screening_size, g_index, early_stop, thread, sparse_matrix, cv_fold_id,
                 A_init, algorithm_list_uni_sparse);
         } else {
             out_result = abessWorkflow<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::VectorXd, Eigen::SparseMatrix<double>>(
-                sparse_x, y, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, ic_type, ic_coef,
+                sparse_x, y, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, eval_type, ic_coef,
                 Kfold, parameters, screening_size, g_index, early_stop, thread, sparse_matrix, cv_fold_id, A_init,
                 algorithm_list_mul_sparse);
         }
@@ -222,7 +222,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
 
 // [[Rcpp::export]]
 List abessPCA_API(Eigen::MatrixXd x, int n, int p, int normalize_type, Eigen::VectorXd weight, Eigen::MatrixXd sigma,
-                  int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,
+                  int max_iter, int exchange_num, int path_type, bool is_warm_start, int eval_type, double ic_coef,
                   int Kfold, Eigen::MatrixXi sequence, int s_min, int s_max, int screening_size,
                   Eigen::VectorXi g_index, Eigen::VectorXi always_select, bool early_stop, int thread,
                   bool sparse_matrix, int splicing_type, int sub_search, Eigen::VectorXi cv_fold_id, int pca_num,
@@ -303,7 +303,7 @@ List abessPCA_API(Eigen::MatrixXd x, int n, int p, int normalize_type, Eigen::Ve
             Parameters parameters(pca_support_size, lambda_seq, s_min, s_max);
 
             out_result_next = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(
-                x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, ic_type, ic_coef,
+                x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, eval_type, ic_coef,
                 Kfold, parameters, screening_size, g_index, early_stop, thread, sparse_matrix, cv_fold_id, A_init,
                 algorithm_list_uni_dense);
             Eigen::VectorXd beta_next;
@@ -385,7 +385,7 @@ List abessPCA_API(Eigen::MatrixXd x, int n, int p, int normalize_type, Eigen::Ve
             Parameters parameters(pca_support_size, lambda_seq, s_min, s_max);
 
             out_result_next = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(
-                sparse_x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, ic_type,
+                sparse_x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, eval_type,
                 ic_coef, Kfold, parameters, screening_size, g_index, early_stop, thread, sparse_matrix, cv_fold_id,
                 A_init, algorithm_list_uni_sparse);
             Eigen::VectorXd beta_next;
@@ -447,7 +447,7 @@ List abessPCA_API(Eigen::MatrixXd x, int n, int p, int normalize_type, Eigen::Ve
 
 // [[Rcpp::export]]
 List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_num, int path_type, bool is_warm_start,
-                   int ic_type, double ic_coef, Eigen::VectorXi sequence,
+                   int eval_type, double ic_coef, Eigen::VectorXi sequence,
                    Eigen::VectorXd lambda_seq,  // rank of L
                    int s_min, int s_max, double lambda_min, double lambda_max, int nlambda, int screening_size,
                    int primary_model_fit_max_iter, double primary_model_fit_epsilon, Eigen::VectorXi g_index,
@@ -499,7 +499,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
     List out_result;
     if (!sparse_matrix) {
         out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::MatrixXd>(
-            x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, ic_type, ic_coef, Kfold,
+            x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, eval_type, ic_coef, Kfold,
             parameters, screening_size, g_index, early_stop, thread, sparse_matrix, cv_fold_id, A_init,
             algorithm_list_uni_dense);
 
@@ -521,7 +521,7 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
         sparse_x.makeCompressed();
 
         out_result = abessWorkflow<Eigen::VectorXd, Eigen::VectorXd, double, Eigen::SparseMatrix<double>>(
-            sparse_x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, ic_type, ic_coef,
+            sparse_x, y_vec, n, p, normalize_type, weight, algorithm_type, path_type, is_warm_start, eval_type, ic_coef,
             Kfold, parameters, screening_size, g_index, early_stop, thread, sparse_matrix, cv_fold_id, A_init,
             algorithm_list_uni_sparse);
     }

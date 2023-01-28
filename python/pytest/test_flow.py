@@ -136,6 +136,7 @@ class TestWorkflow:
         screen = 15
         imp = 5
         data = abess.make_glm_data(n=n, p=p, k=k, family='gaussian')
+        data2 = abess.make_glm_data(n=n, p=p, k=k, family='binomial')
 
         # alpha
         model = abess.LinearRegression(alpha=[0.1, 0.2, 0.3])
@@ -186,6 +187,9 @@ class TestWorkflow:
         for ic in ['aic', 'bic', 'ebic', 'gic', 'hic']:
             model = abess.LinearRegression(ic_type=ic)
             model.fit(data.x, data.y)
+        for ic in ['auc', 'loss']:
+            model = abess.LogisticRegression(ic_type=ic, cv=5)
+            model.fit(data2.x, data2.y)
 
         # A_init
         model = abess.LinearRegression(A_init=[0, 1, 2])
