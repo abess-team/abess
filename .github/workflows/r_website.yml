@@ -60,6 +60,7 @@ jobs:
           install.packages("survival", type = "binary")
           install.packages("Hmisc", type = "binary")
           install.packages("ROCR", type = "binary")
+          remotes::install_github("mlr-org/mlr3extralearners@*release")
         shell: Rscript {0}
 
       - name: Install package
