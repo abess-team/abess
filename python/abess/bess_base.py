@@ -340,7 +340,8 @@ class bess_base(BaseEstimator):
                     "ic_type should be \"aic\", \"bic\", \"ebic\","
                     " \"gic\" or \"hic\".")
         else:
-            if self.ic_type == "auc":
+            if self.ic_type == "auc" and (self.model_type == "Multinomial" or
+                                          self.model_type == "Logistic"):
                 ic_type_int = 1
             else:
                 ic_type_int = 0

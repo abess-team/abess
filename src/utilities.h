@@ -124,15 +124,15 @@ class Parameters {
         }
     }
 
-    // void print_sequence() {
-    //     // for debug
-    //     std::cout << "==> Parameter List:" << endl;
-    //     for (int i = 0; i < (this->sequence).size(); i++) {
-    //         int support_size = (this->sequence(i)).support_size;
-    //         double lambda = (this->sequence(i)).lambda;
-    //         std::cout << "  support_size = " << support_size << ", lambda = " << lambda << endl;
-    //     }
-    // }
+    void print_sequence() {
+        // for debug
+        std::cout << "==> Parameter List:" << endl;
+        for (int i = 0; i < (this->sequence).size(); i++) {
+            int support_size = (this->sequence(i)).support_size;
+            double lambda = (this->sequence(i)).lambda;
+            std::cout << "  support_size = " << support_size << ", lambda = " << lambda << endl;
+        }
+    }
 };
 
 /**
@@ -495,6 +495,15 @@ void trunc(Eigen::VectorXd &vec, double *trunc_range) {
     for (int i = 0; i < vec.size(); i++) {
         trunc(vec(i), trunc_range);
     }
+}
+
+Eigen::MatrixXd rowwise_add(Eigen::MatrixXd &m, Eigen::VectorXd &v) {
+    return m.rowwise() + v.transpose();
+}
+
+Eigen::MatrixXd rowwise_add(Eigen::MatrixXd &m, double &v) {
+    Eigen::VectorXd ones = Eigen::VectorXd::Ones(m.cols());
+    return m.rowwise() + ones.transpose() * v;
 }
 
 #endif  // SRC_UTILITIES_H

@@ -259,53 +259,107 @@ class Metric {
         slice(beta, A_ind, beta_A);
 
         // 1. test loss
-        if (this->eval_type == 0) {
-            return algorithm->loss_function(test_X_A, test_y, test_weight, beta_A, coef0, A, g_index, g_size, 0.0);
+        if (this->eval_type == 0 || p == 0) {
+            return algorithm->loss_function(test_X_A, test_y, test_weight, beta_A, coef0, A, g_index, g_size,
+                                            algorithm->lambda_level);
         }
         // 2. negative AUC (for classification)
         if (this->eval_type == 1) {
+            double auc = 0;
             // binomial
             if (algorithm->model_type == 2) {
                 // compute probability
+                Eigen::VectorXd test_y_temp = test_y;
                 Eigen::VectorXd proba = test_X_A * beta_A + coef0 * Eigen::VectorXd::Ones(test_n);
                 proba = proba.array().exp();
-                proba = proba.cwiseProduct((Eigen::VectorXd::Ones(test_n) + proba).cwiseInverse());
-                // std::cout << "\n---------------------\n" << endl;
-                // std::cout << proba.transpose() << endl;
-                // sort from large to small
-                Eigen::VectorXi sort_ind = max_k(proba, test_n, true);
-                // use each value as threshold to get TPR, FPR
-                double tp = 0, fp = 0, positive = test_y.sum();
-                double last_tpr = 0, last_fpr = 0, auc = 0;
-                for (int i = 0; i < test_n; i++) {
-                    int k = sort_ind(i);
-                    tp += test_y(k);
-                    fp += 1 - test_y(k);
-                    // skip same proba
-                    if (i < test_n - 1) {
-                        int kk = sort_ind(i + 1);
-                        if (proba(k) == proba(kk)) continue;
-                    }
-                    double tpr = tp / positive;
-                    double fpr = fp / (test_n - positive);
-                    auc += (tpr + last_tpr) / 2 * (fpr - last_fpr);
-                    // std::cout << "==> i=" << i << ", k=" << k << endl;
-                    // std::cout << "    tp=" << tp << ", fp=" << fp << ", tpr=" << tpr << ", fpr=" << fpr
-                    //           << ", auc=" << auc << endl;
-                    last_tpr = tpr;
-                    last_fpr = fpr;
-                }
-                // std::cout << "    sort:" << sort_ind.transpose() << endl;
-                // std::cout << "AUC:" << auc << " | " << (tp == p) << (fp == test_n - p) << endl;
-                return -auc;
+                proba = proba.cwiseQuotient(Eigen::VectorXd::Ones(test_n) + proba);
+                auc = this->binary_auc_score(test_y_temp, proba);
             }
             // multinomial
             if (algorithm->model_type == 6) {
-                return algorithm->loss_function(test_X_A, test_y, test_weight, beta_A, coef0, A, g_index, g_size, 0.0);
+                int M = test_y.cols();
+                // compute probability
+                Eigen::MatrixXd proba = test_X_A * beta_A;
+                proba = rowwise_add(proba, coef0);
+                proba = proba.array().exp();
+                Eigen::VectorXd proba_rowsum = proba.rowwise().sum();
+                proba = proba.cwiseQuotient(proba_rowsum.replicate(1, p));
+
+                // // Algorithm 1: (One vs Rest) the AUC of each class against the rest
+                // for (int i = 0; i < M; i++) {
+                //     Eigen::VectorXd test_y_single = test_y.col(i);
+                //     Eigen::VectorXd proba_single = proba.col(i);
+                //     auc += this->binary_auc_score(test_y_single, proba_single);
+                // }
+                // auc /= p;
+
+                // Algorithm 2: (One vs One) the AUC of all possible pairwise combinations of classes
+                for (int i = 0; i < M - 1; i++) {
+                    for (int j = i + 1; j < M; j++) {
+                        int nij = 0;
+                        Eigen::VectorXd test_y_i(test_n), test_y_j(test_n), proba_i(test_n), proba_j(test_n);
+                        // extract samples who belongs to class i or j
+                        for (int k = 0; k < test_n; k++) {
+                            if (test_y(k, i) + test_y(k, j) > 0) {
+                                test_y_i(nij) = test_y(k, i);
+                                test_y_j(nij) = test_y(k, j);
+                                proba_i(nij) = proba(k, i);
+                                proba_j(nij) = proba(k, j);
+                                nij++;
+                            }
+                        }
+                        test_y_i = test_y_i.head(nij).eval();
+                        test_y_j = test_y_j.head(nij).eval();
+                        proba_i = proba_i.head(nij).eval();
+                        proba_j = proba_j.head(nij).eval();
+                        // get AUC
+                        auc += this->binary_auc_score(test_y_i, proba_i);
+                        auc += this->binary_auc_score(test_y_j, proba_j);
+                    }
+                }
+                auc /= p * (p - 1);
             }
+            return -auc;
         }
         return 0;
-    }
+    };
+
+    double binary_auc_score(Eigen::VectorXd &true_label, Eigen::VectorXd &pred_proba) {
+        // sort proba from large to small
+        int n = true_label.rows();
+        Eigen::VectorXi sort_ind = max_k(pred_proba, n, true);
+
+        // use each value as threshold to get TPR, FPR
+        double tp = 0, fp = 0, positive = true_label.sum();
+        double last_tpr = 0, last_fpr = 0, auc = 0;
+
+        if (positive == 0 || positive == n) {
+            cout << "[Warning] There is only one class in the test data, "
+                 << "the result may be meaningless. Please use another type of loss, "
+                 << "or try to specify cv_fold_id." << endl;
+        }
+
+        for (int i = 0; i < n; i++) {
+            // current threshold: pred_proba(sort_ind(i))
+            int k = sort_ind(i);
+            tp += true_label(k);
+            fp += 1 - true_label(k);
+            // skip same threshold
+            if (i < n - 1) {
+                int kk = sort_ind(i + 1);
+                if (pred_proba(k) == pred_proba(kk)) continue;
+            }
+            // compute tpr, fpr
+            double tpr = tp / positive;
+            double fpr = fp / (n - positive);
+            if (fpr > last_fpr) {
+                auc += (tpr + last_tpr) / 2 * (fpr - last_fpr);
+            }
+            last_tpr = tpr;
+            last_fpr = fpr;
+        }
+        return auc;
+    };
 
     // to do
     Eigen::VectorXd fit_and_evaluate_in_metric(std::vector<Algorithm<T1, T2, T3, T4> *> algorithm_list,
