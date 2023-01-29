@@ -5,11 +5,11 @@ Version: 0.4.6
 Date: 2022-11-05
 Authors@R: c(
   person(given = "Jin", family = "Zhu", email = "zhuj37@mail2.sysu.edu.cn", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8550-5822")),
+  person(given = "Zezhi", family = "Wang", email = "homura@mail.ustc.edu.cn", role = c("aut")),
   person(given = "Liyuan", family = "Hu", email = "huly5@mail2.sysu.edu.cn", role = c("aut")),
   person(given = "Junhao", family = "Huang", email = "huangjh256@mail2.sysu.edu.cn", role = c("aut")),
   person(given = "Kangkang", family = "Jiang", email = "jiangkk3@mail2.sysu.edu.cn", role = c("aut")),
   person(given = "Yanhang", family = "Zhang", email = "zhangyh98@ruc.edu.cn", role = c("aut")),
-  person(given = "Zezhi", family = "Wang", email = "homura@mail.ustc.edu.cn", role = c("aut")),
   person(given = "Borui", family = "Tang", email = "tangborui@mail.ustc.edu.cn", role = c("aut")),
   person(given = "Shiyun", family = "Lin", email = "shiyunlin@stu.pku.edu.cn", role = c("aut")),
   person(given = "Junxian", family = "Zhu", email = "adaizjx@163.com", role = c("aut")),
@@ -33,7 +33,6 @@ LinkingTo:
     Rcpp,
     RcppEigen
 RoxygenNote: 7.1.2
-SystemRequirements: C++11
 Suggests: 
     testthat,
     knitr,
