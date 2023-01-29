@@ -128,7 +128,7 @@ class bess_base(BaseEstimator):
         s_max=None,
         group=None,
         alpha=None,
-        ic_type="ebic",     # TODO: rename to eval_type?
+        ic_type="ebic",     # rename to eval_type?
         ic_coef=1.0,
         cv=1,
         thread=1,
@@ -340,8 +340,8 @@ class bess_base(BaseEstimator):
                     "ic_type should be \"aic\", \"bic\", \"ebic\","
                     " \"gic\" or \"hic\".")
         else:
-            if self.ic_type == "auc" and (self.model_type == "Multinomial" or
-                                          self.model_type == "Logistic"):
+            if self.ic_type == "auc" and self.model_type in (
+                    "Multinomial", "Logistic"):
                 ic_type_int = 1
             else:
                 ic_type_int = 0
