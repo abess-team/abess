@@ -41,6 +41,10 @@ class SparsePCA(bess_base):
         - If cv>1, support size will be chosen by CV's test loss,
           instead of IC.
 
+    cv_score : {'test_loss'}, optional, default='test_loss'
+        The score used on test data for CV.
+        Only 'test_loss' is supported for PCA now.
+
     thread : int, optional, default=1
         Max number of multithreads.
 
@@ -125,8 +129,9 @@ class SparsePCA(bess_base):
     """
 
     def __init__(self, support_size=None, group=None,
-                 ic_type="loss", ic_coef=1.0, cv=1, thread=1,
-                 A_init=None, always_select=None,
+                 ic_type="loss", ic_coef=1.0,
+                 cv=1, cv_score="test_loss",
+                 thread=1, A_init=None, always_select=None,
                  max_iter=20, exchange_num=5, is_warm_start=True,
                  splicing_type=1,
                  screening_size=-1,
@@ -137,7 +142,7 @@ class SparsePCA(bess_base):
             max_iter=max_iter, exchange_num=exchange_num,
             is_warm_start=is_warm_start, support_size=support_size,
             # s_min=s_min, s_max=s_max,
-            ic_type=ic_type, ic_coef=ic_coef, cv=cv,
+            ic_type=ic_type, ic_coef=ic_coef, cv=cv, cv_score=cv_score,
             screening_size=screening_size,
             always_select=always_select,
             thread=thread,
@@ -264,23 +269,31 @@ class SparsePCA(bess_base):
         # model_type_int = 7
         path_type_int = 1
 
-        # Ic_type
-        if self.ic_type == "loss":
-            ic_type_int = 0
-        elif self.ic_type == "aic":
-            ic_type_int = 1
-        elif self.ic_type == "bic":
-            ic_type_int = 2
-        elif self.ic_type == "gic":
-            ic_type_int = 3
-        elif self.ic_type == "ebic":
-            ic_type_int = 4
-        elif self.ic_type == "hic":
-            ic_type_int = 5
+        # Ic_type: aic, bic, gic, ebic
+        # cv_score: test_loss, roc_auc
+        if self.cv == 1:
+            if self.ic_type == "loss":
+                eval_type_int = 0
+            elif self.ic_type == "aic":
+                eval_type_int = 1
+            elif self.ic_type == "bic":
+                eval_type_int = 2
+            elif self.ic_type == "gic":
+                eval_type_int = 3
+            elif self.ic_type == "ebic":
+                eval_type_int = 4
+            elif self.ic_type == "hic":
+                eval_type_int = 5
+            else:
+                raise ValueError(
+                    "ic_type should be \"aic\", \"bic\", \"ebic\","
+                    " \"gic\" or \"hic\".")
         else:
-            raise ValueError(
-                "ic_type should be \"loss\", \"aic\", \"bic\","
-                " \"ebic\", \"gic\" or \"hic\".")
+            if self.cv_score == "test_loss":
+                eval_type_int = 0
+            else:
+                raise ValueError(
+                    "cv_score should be \"test_loss\".")
 
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
@@ -425,7 +438,7 @@ class SparsePCA(bess_base):
                 n, p, normalize, Sigma,
                 self.max_iter, self.exchange_num,
                 path_type_int, self.is_warm_start,
-                ic_type_int, self.ic_coef, self.cv,
+                eval_type_int, self.ic_coef, self.cv,
                 g_index,
                 support_sizes,
                 cv_fold_id,
@@ -633,15 +646,15 @@ class RobustPCA(bess_base):
 
         # Ic_type
         if self.ic_type == "aic":
-            ic_type_int = 1
+            eval_type_int = 1
         elif self.ic_type == "bic":
-            ic_type_int = 2
+            eval_type_int = 2
         elif self.ic_type == "gic":
-            ic_type_int = 3
+            eval_type_int = 3
         elif self.ic_type == "ebic":
-            ic_type_int = 4
+            eval_type_int = 4
         elif self.ic_type == "hic":
-            ic_type_int = 5
+            eval_type_int = 5
         else:
             raise ValueError(
                 "ic_type should be \"aic\", \"bic\", \"ebic\", \"gic\", "
@@ -769,7 +782,7 @@ class RobustPCA(bess_base):
                 X, n, p, normalize,
                 self.max_iter, self.exchange_num,
                 path_type_int, self.is_warm_start,
-                ic_type_int, self.ic_coef,
+                eval_type_int, self.ic_coef,
                 g_index,
                 support_sizes,
                 alphas,

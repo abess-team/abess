@@ -219,29 +219,35 @@ class Metric {
         } else {
             loss = 2 * (algorithm->get_train_loss() - algorithm->lambda_level * algorithm->beta.cwiseAbs2().sum());
         }
-
+        // 0. only loss
         if (this->eval_type == 0) {
             return loss;
         }
+        // 1. AIC
         if (this->eval_type == 1) {
             return loss + 2.0 * algorithm->get_effective_number();
         }
+        // 2. BIC
         if (this->eval_type == 2) {
             return loss + this->ic_coef * log(double(train_n)) * algorithm->get_effective_number();
         }
+        // 3. GIC
         if (this->eval_type == 3) {
             return loss +
                    this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
         }
+        // 4. EBIC
         if (this->eval_type == 4) {
             return loss +
                    this->ic_coef * (log(double(train_n)) + 2 * log(double(N))) * algorithm->get_effective_number();
         }
+        // 5. HIC
         if (this->eval_type == 5) {
             return train_n *
                        (algorithm->get_train_loss() - algorithm->lambda_level * algorithm->beta.cwiseAbs2().sum()) +
                    this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
         }
+        cout << "[warning] No available IC type for training." << endl;
         return 0;
     };
 
@@ -258,42 +264,33 @@ class Metric {
         T2 beta_A;
         slice(beta, A_ind, beta_A);
 
-        // 1. test loss
-        if (this->eval_type == 0 || p == 0) {
+        // 0. only test loss
+        if (this->eval_type == 0) {
             return algorithm->loss_function(test_X_A, test_y, test_weight, beta_A, coef0, A, g_index, g_size,
                                             algorithm->lambda_level);
         }
-        // 2. negative AUC (for classification)
-        if (this->eval_type == 1) {
-            double auc = 0;
-            // binomial
-            if (algorithm->model_type == 2) {
-                // compute probability
-                Eigen::VectorXd test_y_temp = test_y;
-                Eigen::VectorXd proba = test_X_A * beta_A + coef0 * Eigen::VectorXd::Ones(test_n);
-                proba = proba.array().exp();
-                proba = proba.cwiseQuotient(Eigen::VectorXd::Ones(test_n) + proba);
-                auc = this->binary_auc_score(test_y_temp, proba);
-            }
-            // multinomial
-            if (algorithm->model_type == 6) {
-                int M = test_y.cols();
-                // compute probability
-                Eigen::MatrixXd proba = test_X_A * beta_A;
-                proba = rowwise_add(proba, coef0);
-                proba = proba.array().exp();
-                Eigen::VectorXd proba_rowsum = proba.rowwise().sum();
-                proba = proba.cwiseQuotient(proba_rowsum.replicate(1, p));
-
-                // // Algorithm 1: (One vs Rest) the AUC of each class against the rest
-                // for (int i = 0; i < M; i++) {
-                //     Eigen::VectorXd test_y_single = test_y.col(i);
-                //     Eigen::VectorXd proba_single = proba.col(i);
-                //     auc += this->binary_auc_score(test_y_single, proba_single);
-                // }
-                // auc /= p;
-
-                // Algorithm 2: (One vs One) the AUC of all possible pairwise combinations of classes
+        // 1. negative AUC (for logistic)
+        if (this->eval_type == 1 && algorithm->model_type == 2) {
+            // compute probability
+            Eigen::VectorXd test_y_temp = test_y;
+            Eigen::VectorXd proba = test_X_A * beta_A + coef0 * Eigen::VectorXd::Ones(test_n);
+            proba = proba.array().exp();
+            proba = proba.cwiseQuotient(Eigen::VectorXd::Ones(test_n) + proba);
+            return -this->binary_auc_score(test_y_temp, proba);
+        }
+        // 2. 3. negative AUC, One vs One/Rest (for multinomial)
+        if (algorithm->model_type == 6) {
+            int M = test_y.cols();
+            // compute probability
+            Eigen::MatrixXd proba = test_X_A * beta_A;
+            proba = rowwise_add(proba, coef0);
+            proba = proba.array().exp();
+            Eigen::VectorXd proba_rowsum = proba.rowwise().sum();
+            proba = proba.cwiseQuotient(proba_rowsum.replicate(1, p));
+            // compute AUC
+            if (this->eval_type == 2) {
+                // (One vs One) the AUC of all possible pairwise combinations of classes
+                double auc = 0;
                 for (int i = 0; i < M - 1; i++) {
                     for (int j = i + 1; j < M; j++) {
                         int nij = 0;
@@ -317,10 +314,20 @@ class Metric {
                         auc += this->binary_auc_score(test_y_j, proba_j);
                     }
                 }
-                auc /= p * (p - 1);
+                return -auc / (p * (p - 1));
             }
-            return -auc;
+            if (this->eval_type == 3) {
+                // (One vs Rest) the AUC of each class against the rest
+                double auc = 0;
+                for (int i = 0; i < M; i++) {
+                    Eigen::VectorXd test_y_single = test_y.col(i);
+                    Eigen::VectorXd proba_single = proba.col(i);
+                    auc += this->binary_auc_score(test_y_single, proba_single);
+                }
+                return -auc / p;
+            }
         }
+        cout << "[warning] No available CV score for training." << endl;
         return 0;
     };
 

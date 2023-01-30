@@ -45,6 +45,14 @@ class TestCheck:
         else:
             assert False
 
+        try:
+            model = abess.LinearRegression(cv=2, cv_score='other')
+            model.fit([[1], [2]], [1, 2])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
         # exchange_num
         try:
             model = abess.LinearRegression(exchange_num=-1)
@@ -482,6 +490,14 @@ class TestCheck:
         try:
             model1 = abess.SparsePCA(ic_type='other')
             model1.fit([[1]])
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
+        try:
+            model1 = abess.SparsePCA(cv=2, cv_score='other')
+            model1.fit([[1], [2]])
         except ValueError as e:
             print(e)
         else:
