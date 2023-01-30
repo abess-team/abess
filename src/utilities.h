@@ -497,9 +497,7 @@ void trunc(Eigen::VectorXd &vec, double *trunc_range) {
     }
 }
 
-Eigen::MatrixXd rowwise_add(Eigen::MatrixXd &m, Eigen::VectorXd &v) {
-    return m.rowwise() + v.transpose();
-}
+Eigen::MatrixXd rowwise_add(Eigen::MatrixXd &m, Eigen::VectorXd &v) { return m.rowwise() + v.transpose(); }
 
 Eigen::MatrixXd rowwise_add(Eigen::MatrixXd &m, double &v) {
     Eigen::VectorXd ones = Eigen::VectorXd::Ones(m.cols());

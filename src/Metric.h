@@ -247,8 +247,10 @@ class Metric {
                        (algorithm->get_train_loss() - algorithm->lambda_level * algorithm->beta.cwiseAbs2().sum()) +
                    this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
         }
-        cout << "[warning] No available IC type for training." << endl;
-        return 0;
+        cout << "[warning] No available IC type for training. Use loss instead. "
+             << "(E" << this->eval_type << "M" << algorithm->model_type << ")" << endl;
+        // return 0;
+        return loss;
     };
 
     double test_loss(T4 &test_x, T1 &test_y, Eigen::VectorXd &test_weight, Eigen::VectorXi &g_index,
@@ -327,8 +329,11 @@ class Metric {
                 return -auc / p;
             }
         }
-        cout << "[warning] No available CV score for training." << endl;
-        return 0;
+        cout << "[warning] No available CV score for training. Use test_loss instead. "
+             << "(E" << this->eval_type << "M" << algorithm->model_type << ")" << endl;
+        // return 0;
+        return algorithm->loss_function(test_X_A, test_y, test_weight, beta_A, coef0, A, g_index, g_size,
+                                        algorithm->lambda_level);
     };
 
     double binary_auc_score(Eigen::VectorXd &true_label, Eigen::VectorXd &pred_proba) {
