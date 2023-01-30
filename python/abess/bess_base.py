@@ -40,7 +40,7 @@ class bess_base(BaseEstimator):
 
         - If alpha = 0, it indicates ordinary least square.
 
-    ic_type : {'aic', 'bic', 'gic', 'ebic'}, optional, default='ebic'
+    ic_type : {'aic', 'bic', 'gic', 'ebic', 'loss'}, optional, default='ebic'
         The type of criterion for choosing the support size if `cv=1`.
     ic_coef : float, optional, default=1.0
         Constant that controls the regularization strength
@@ -139,7 +139,7 @@ class bess_base(BaseEstimator):
         ic_type="ebic",
         ic_coef=1.0,
         cv=1,
-        cv_score="loss",
+        cv_score="test_loss",
         thread=1,
         A_init=None,
         always_select=None,
