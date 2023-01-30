@@ -82,7 +82,7 @@ map_tunetype2numeric <- function(tune.type) {
     "bic" = 2,
     "gic" = 3,
     "ebic" = 4,
-    "cv" = 1
+    "cv" = 0
   )
   ic_type
 }
