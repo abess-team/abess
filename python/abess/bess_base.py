@@ -40,7 +40,7 @@ class bess_base(BaseEstimator):
 
         - If alpha = 0, it indicates ordinary least square.
 
-    ic_type : {'aic', 'bic', 'gic', 'ebic'}, optional, default='ebic'
+    ic_type : {'aic', 'bic', 'gic', 'ebic', 'loss'}, optional, default='ebic'
         The type of criterion for choosing the support size if `cv=1`.
     ic_coef : float, optional, default=1.0
         Constant that controls the regularization strength
@@ -51,6 +51,14 @@ class bess_base(BaseEstimator):
         - If cv=1, cross-validation would not be used.
         - If cv>1, support size will be chosen by CV's test loss,
           instead of IC.
+
+    cv_score : {'test_loss', ...}, optional, default='test_loss'
+        The score used on test data for CV.
+
+        - All methods support {'test_loss'}.
+        - LogisticRegression also supports {'roc_auc'}.
+        - MultinomialRegression also supports {'roc_auc_ovo', 'roc_auc_ovr'},
+          which indicate "One vs One/Rest" algorithm, respectively.
 
     thread : int, optional, default=1
         Max number of multithreads.
@@ -131,6 +139,7 @@ class bess_base(BaseEstimator):
         ic_type="ebic",
         ic_coef=1.0,
         cv=1,
+        cv_score="test_loss",
         thread=1,
         A_init=None,
         always_select=None,
@@ -170,6 +179,7 @@ class bess_base(BaseEstimator):
         self.ic_type = ic_type
         self.ic_coef = ic_coef
         self.cv = cv
+        self.cv_score = cv_score
         self.screening_size = screening_size
         self.always_select = always_select
         self.primary_model_fit_max_iter = primary_model_fit_max_iter
@@ -323,27 +333,48 @@ class bess_base(BaseEstimator):
         else:
             raise ValueError("path_type should be \'seq\' or \'gs\'")
 
-        # Ic_type: aic, bic, gic, ebic
-        if self.ic_type == "aic":
-            ic_type_int = 1
-        elif self.ic_type == "bic":
-            ic_type_int = 2
-        elif self.ic_type == "gic":
-            ic_type_int = 3
-        elif self.ic_type == "ebic":
-            ic_type_int = 4
-        elif self.ic_type == "hic":
-            ic_type_int = 5
-        else:
-            raise ValueError(
-                "ic_type should be \"aic\", \"bic\", \"ebic\","
-                " \"gic\" or \"hic\".")
-
         # cv
         if (not isinstance(self.cv, int) or self.cv <= 0):
             raise ValueError("cv should be an positive integer.")
         if self.cv > n:
             raise ValueError("cv should be smaller than n.")
+
+        # Ic_type: aic, bic, gic, ebic
+        # cv_score: test_loss, roc_auc
+        if self.cv == 1:
+            if self.ic_type == "loss":
+                eval_type_int = 0
+            elif self.ic_type == "aic":
+                eval_type_int = 1
+            elif self.ic_type == "bic":
+                eval_type_int = 2
+            elif self.ic_type == "gic":
+                eval_type_int = 3
+            elif self.ic_type == "ebic":
+                eval_type_int = 4
+            elif self.ic_type == "hic":
+                eval_type_int = 5
+            else:
+                raise ValueError(
+                    "ic_type should be \"aic\", \"bic\", \"ebic\","
+                    " \"gic\" or \"hic\".")
+        else:
+            if self.cv_score == "test_loss":
+                eval_type_int = 0
+            elif self.cv_score == "roc_auc" and self.model_type == "Logistic":
+                eval_type_int = 1
+            elif (self.cv_score == "roc_auc_ovo" and
+                  self.model_type == "Multinomial"):
+                eval_type_int = 2
+            elif (self.cv_score == "roc_auc_ovr" and
+                  self.model_type == "Multinomial"):
+                eval_type_int = 3
+            else:
+                raise ValueError(
+                    "cv_score should be \"test_loss\", "
+                    "\"roc_auc\"(for logistic), "
+                    "\"roc_auc_ovo\"(for multinomial), or "
+                    "\"roc_auc_ovr\"(for multinomial).")
 
         # cv_fold_id
         if cv_fold_id is None:
@@ -561,7 +592,7 @@ class bess_base(BaseEstimator):
                 X, y, sample_weight, n, p, normalize, algorithm_type_int,
                 model_type_int,
                 self.max_iter, self.exchange_num, path_type_int,
-                self.is_warm_start, ic_type_int, self.ic_coef, self.cv,
+                self.is_warm_start, eval_type_int, self.ic_coef, self.cv,
                 g_index,
                 support_sizes, alphas, cv_fold_id, new_s_min, new_s_max,
                 new_lambda_min, new_lambda_max, n_lambda, self.screening_size,

@@ -14,8 +14,7 @@ using namespace Rcpp;
 
 using namespace std;
 
-void constant_warning_ith_variable(int i)
-{
+void constant_warning_ith_variable(int i) {
 #ifdef R_BUILD
     Rcout << "Warning: the variable " << i + 1 << " is constant. ";
     Rcout << "It may cause NAN in the result. Please drop this variable or disable the normalization.\n";

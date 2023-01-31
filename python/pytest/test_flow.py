@@ -131,11 +131,15 @@ class TestWorkflow:
         n = 100
         p = 20
         k = 5
+        M = 3
         # s_min = 0
         s_max = 10
         screen = 15
         imp = 5
         data = abess.make_glm_data(n=n, p=p, k=k, family='gaussian')
+        data2 = abess.make_glm_data(n=n, p=p, k=k, family='binomial')
+        data3 = abess.make_multivariate_glm_data(
+            n=n, p=p, k=k, M=M, family='multinomial')
 
         # alpha
         model = abess.LinearRegression(alpha=[0.1, 0.2, 0.3])
@@ -183,9 +187,15 @@ class TestWorkflow:
         assert len(set(group[nonzero])) == 2
 
         # ic
-        for ic in ['aic', 'bic', 'ebic', 'gic', 'hic']:
+        for ic in ['loss', 'aic', 'bic', 'ebic', 'gic', 'hic']:
             model = abess.LinearRegression(ic_type=ic)
             model.fit(data.x, data.y)
+        for cv_score in ['test_loss', 'roc_auc']:
+            model = abess.LogisticRegression(cv_score=cv_score, cv=5)
+            model.fit(data2.x, data2.y)
+        for cv_score in ['test_loss', 'roc_auc_ovo', 'roc_auc_ovr']:
+            model = abess.MultinomialRegression(cv_score=cv_score, cv=5)
+            model.fit(data3.x, data3.y)
 
         # A_init
         model = abess.LinearRegression(A_init=[0, 1, 2])

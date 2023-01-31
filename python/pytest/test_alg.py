@@ -461,7 +461,7 @@ class TestAlgorithm:
         assert_nan(model6.coef_)
 
         # ic
-        for ic in ['aic', 'bic', 'ebic', 'gic', 'hic']:
+        for ic in ['loss', 'aic', 'bic', 'ebic', 'gic', 'hic']:
             model = abess.SparsePCA(support_size=support_size, ic_type=ic)
             model.fit(X, is_normal=False)
 
@@ -533,7 +533,7 @@ class TestAlgorithm:
         # model3.fit(X, r=r)
 
         # ic
-        for ic in ['aic', 'bic', 'ebic', 'gic']:
+        for ic in ['aic', 'bic', 'ebic', 'gic', 'hic']:
             model4 = abess.RobustPCA(support_size=s, ic_type=ic)
             model4.fit(X, r=r)
 

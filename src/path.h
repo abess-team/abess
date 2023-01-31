@@ -94,7 +94,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
         // evaluate the beta
         if (metric->is_cv) {
             test_loss_matrix(ind) =
-                metric->loss_function(test_x, test_y, test_weight, g_index, g_size, test_n, p, N, algorithm);
+                metric->test_loss(test_x, test_y, test_weight, g_index, g_size, test_n, p, N, algorithm);
         } else {
             ic_matrix(ind) = metric->ic(train_n, M, N, algorithm);
         }

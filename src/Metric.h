@@ -19,12 +19,16 @@ class Metric {
    public:
     bool is_cv;
     int Kfold;
-    int ic_type;
+    int eval_type;
+    double ic_coef;
+
+    bool raise_warning = true;
+
     // Eigen::Matrix<T2, Dynamic, 1> cv_initial_model_param;
     // Eigen::Matrix<T3, Dynamic, 1> cv_initial_coef0;
 
-    std::vector<Eigen::VectorXi> cv_initial_A;
-    std::vector<Eigen::VectorXi> cv_initial_I;
+    // std::vector<Eigen::VectorXi> cv_initial_A;
+    // std::vector<Eigen::VectorXi> cv_initial_I;
 
     std::vector<Eigen::VectorXi> train_mask_list;
     std::vector<Eigen::VectorXi> test_mask_list;
@@ -40,13 +44,11 @@ class Metric {
 
     // std::vector<std::vector<T4>> group_XTX_list;
 
-    double ic_coef;
-
     Metric() = default;
 
-    Metric(int ic_type, double ic_coef = 1.0, int Kfold = 5) {
+    Metric(int eval_type, double ic_coef = 1.0, int Kfold = 5) {
         this->is_cv = Kfold > 1;
-        this->ic_type = ic_type;
+        this->eval_type = eval_type;
         this->Kfold = Kfold;
         this->ic_coef = ic_coef;
         if (is_cv) {
@@ -211,6 +213,7 @@ class Metric {
     // }
 
     double ic(int train_n, int M, int N, Algorithm<T1, T2, T3, T4> *algorithm) {
+        // information criterioin: for non-CV
         double loss;
         if (algorithm->model_type == 1 || algorithm->model_type == 5) {
             loss = train_n *
@@ -218,46 +221,165 @@ class Metric {
         } else {
             loss = 2 * (algorithm->get_train_loss() - algorithm->lambda_level * algorithm->beta.cwiseAbs2().sum());
         }
-
-        if (ic_type == 0) {
+        // 0. only loss
+        if (this->eval_type == 0) {
             return loss;
-        } else if (ic_type == 1) {
+        }
+        // 1. AIC
+        if (this->eval_type == 1) {
             return loss + 2.0 * algorithm->get_effective_number();
-        } else if (ic_type == 2) {
+        }
+        // 2. BIC
+        if (this->eval_type == 2) {
             return loss + this->ic_coef * log(double(train_n)) * algorithm->get_effective_number();
-        } else if (ic_type == 3) {
+        }
+        // 3. GIC
+        if (this->eval_type == 3) {
             return loss +
                    this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
-        } else if (ic_type == 4) {
+        }
+        // 4. EBIC
+        if (this->eval_type == 4) {
             return loss +
                    this->ic_coef * (log(double(train_n)) + 2 * log(double(N))) * algorithm->get_effective_number();
-        } else if (ic_type == 5) {
+        }
+        // 5. HIC
+        if (this->eval_type == 5) {
             return train_n *
                        (algorithm->get_train_loss() - algorithm->lambda_level * algorithm->beta.cwiseAbs2().sum()) +
                    this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
-        } else
-            return 0;
+        }
+        if (this->raise_warning) {
+            cout << "[warning] No available IC type for training. Use loss instead. "
+                 << "(E" << this->eval_type << "M" << algorithm->model_type << ")" << endl;
+            this->raise_warning = false;
+        }
+        // return 0;
+        return loss;
     };
 
-    double loss_function(T4 &train_x, T1 &train_y, Eigen::VectorXd &train_weight, Eigen::VectorXi &g_index,
-                         Eigen::VectorXi &g_size, int train_n, int p, int N, Algorithm<T1, T2, T3, T4> *algorithm) {
+    double test_loss(T4 &test_x, T1 &test_y, Eigen::VectorXd &test_weight, Eigen::VectorXi &g_index,
+                     Eigen::VectorXi &g_size, int test_n, int p, int N, Algorithm<T1, T2, T3, T4> *algorithm) {
+        // test loss: for CV
         Eigen::VectorXi A = algorithm->get_A_out();
         T2 beta = algorithm->get_beta();
         T3 coef0 = algorithm->get_coef0();
 
         Eigen::VectorXi A_ind = find_ind(A, g_index, g_size, beta.rows(), N);
-        T4 X_A = X_seg(train_x, train_n, A_ind, algorithm->model_type);
+        T4 test_X_A = X_seg(test_x, test_n, A_ind, algorithm->model_type);
 
         T2 beta_A;
         slice(beta, A_ind, beta_A);
 
-        // Eigen::VectorXd beta_A(A_ind.size());
-        // for (int k = 0; k < A_ind.size(); k++)
-        // {
-        //   beta_A(k) = beta(A_ind(k));
-        // }
-        return algorithm->loss_function(X_A, train_y, train_weight, beta_A, coef0, A, g_index, g_size, 0.0);
-    }
+        // 0. only test loss
+        if (this->eval_type == 0) {
+            return algorithm->loss_function(test_X_A, test_y, test_weight, beta_A, coef0, A, g_index, g_size,
+                                            algorithm->lambda_level);
+        }
+        // 1. negative AUC (for logistic)
+        if (this->eval_type == 1 && algorithm->model_type == 2) {
+            // compute probability
+            Eigen::VectorXd test_y_temp = test_y;
+            Eigen::VectorXd proba = test_X_A * beta_A + coef0 * Eigen::VectorXd::Ones(test_n);
+            proba = proba.array().exp();
+            proba = proba.cwiseQuotient(Eigen::VectorXd::Ones(test_n) + proba);
+            return -this->binary_auc_score(test_y_temp, proba);
+        }
+        // 2. 3. negative AUC, One vs One/Rest (for multinomial)
+        if (algorithm->model_type == 6) {
+            int M = test_y.cols();
+            // compute probability
+            Eigen::MatrixXd proba = test_X_A * beta_A;
+            proba = rowwise_add(proba, coef0);
+            proba = proba.array().exp();
+            Eigen::VectorXd proba_rowsum = proba.rowwise().sum();
+            proba = proba.cwiseQuotient(proba_rowsum.replicate(1, p));
+            // compute AUC
+            if (this->eval_type == 2) {
+                // (One vs One) the AUC of all possible pairwise combinations of classes
+                double auc = 0;
+                for (int i = 0; i < M - 1; i++) {
+                    for (int j = i + 1; j < M; j++) {
+                        int nij = 0;
+                        Eigen::VectorXd test_y_i(test_n), test_y_j(test_n), proba_i(test_n), proba_j(test_n);
+                        // extract samples who belongs to class i or j
+                        for (int k = 0; k < test_n; k++) {
+                            if (test_y(k, i) + test_y(k, j) > 0) {
+                                test_y_i(nij) = test_y(k, i);
+                                test_y_j(nij) = test_y(k, j);
+                                proba_i(nij) = proba(k, i);
+                                proba_j(nij) = proba(k, j);
+                                nij++;
+                            }
+                        }
+                        test_y_i = test_y_i.head(nij).eval();
+                        test_y_j = test_y_j.head(nij).eval();
+                        proba_i = proba_i.head(nij).eval();
+                        proba_j = proba_j.head(nij).eval();
+                        // get AUC
+                        auc += this->binary_auc_score(test_y_i, proba_i);
+                        auc += this->binary_auc_score(test_y_j, proba_j);
+                    }
+                }
+                return -auc / (p * (p - 1));
+            }
+            if (this->eval_type == 3) {
+                // (One vs Rest) the AUC of each class against the rest
+                double auc = 0;
+                for (int i = 0; i < M; i++) {
+                    Eigen::VectorXd test_y_single = test_y.col(i);
+                    Eigen::VectorXd proba_single = proba.col(i);
+                    auc += this->binary_auc_score(test_y_single, proba_single);
+                }
+                return -auc / p;
+            }
+        }
+        if (this->raise_warning) {
+            cout << "[warning] No available CV score for training. Use test_loss instead. "
+                 << "(E" << this->eval_type << "M" << algorithm->model_type << ")" << endl;
+            this->raise_warning = false;
+        }
+        // return 0;
+        return algorithm->loss_function(test_X_A, test_y, test_weight, beta_A, coef0, A, g_index, g_size,
+                                        algorithm->lambda_level);
+    };
+
+    double binary_auc_score(Eigen::VectorXd &true_label, Eigen::VectorXd &pred_proba) {
+        // sort proba from large to small
+        int n = true_label.rows();
+        Eigen::VectorXi sort_ind = max_k(pred_proba, n, true);
+
+        // use each value as threshold to get TPR, FPR
+        double tp = 0, fp = 0, positive = true_label.sum();
+        double last_tpr = 0, last_fpr = 0, auc = 0;
+
+        if (positive == 0 || positive == n) {
+            cout << "[Warning] There is only one class in the test data, "
+                 << "the result may be meaningless. Please use another type of loss, "
+                 << "or try to specify cv_fold_id." << endl;
+        }
+
+        for (int i = 0; i < n; i++) {
+            // current threshold: pred_proba(sort_ind(i))
+            int k = sort_ind(i);
+            tp += true_label(k);
+            fp += 1 - true_label(k);
+            // skip same threshold
+            if (i < n - 1) {
+                int kk = sort_ind(i + 1);
+                if (pred_proba(k) == pred_proba(kk)) continue;
+            }
+            // compute tpr, fpr
+            double tpr = tp / positive;
+            double fpr = fp / (n - positive);
+            if (fpr > last_fpr) {
+                auc += (tpr + last_tpr) / 2 * (fpr - last_fpr);
+            }
+            last_tpr = tpr;
+            last_fpr = fpr;
+        }
+        return auc;
+    };
 
     // to do
     Eigen::VectorXd fit_and_evaluate_in_metric(std::vector<Algorithm<T1, T2, T3, T4> *> algorithm_list,
@@ -328,9 +450,8 @@ class Metric {
                     // this->update_cv_initial_coef0(algorithm->get_coef0(), k);
                 }
 
-                loss_list(k) =
-                    this->loss_function(this->test_X_list[k], this->test_y_list[k], this->test_weight_list[k], g_index,
-                                        g_size, test_n, p, N, algorithm_list[k]);
+                loss_list(k) = this->test_loss(this->test_X_list[k], this->test_y_list[k], this->test_weight_list[k],
+                                               g_index, g_size, test_n, p, N, algorithm_list[k]);
             }
         }
 

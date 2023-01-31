@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 
+
 def fix_docs(cls):
     """
     This function is to inherit the docstring from base class
@@ -26,6 +27,7 @@ def fix_docs(cls):
                 cls.__bases__[0].__doc__[base_para_index:])
     cls.__doc__ = full_doc
     return cls
+
 
 def new_data_check(self, X, y=None, weights=None):
     """
