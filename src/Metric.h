@@ -20,6 +20,10 @@ class Metric {
     bool is_cv;
     int Kfold;
     int eval_type;
+    double ic_coef;
+
+    bool raise_warning = true;
+
     // Eigen::Matrix<T2, Dynamic, 1> cv_initial_model_param;
     // Eigen::Matrix<T3, Dynamic, 1> cv_initial_coef0;
 
@@ -39,8 +43,6 @@ class Metric {
     std::vector<FIT_ARG<T2, T3>> cv_init_fit_arg;
 
     // std::vector<std::vector<T4>> group_XTX_list;
-
-    double ic_coef;
 
     Metric() = default;
 
@@ -247,8 +249,11 @@ class Metric {
                        (algorithm->get_train_loss() - algorithm->lambda_level * algorithm->beta.cwiseAbs2().sum()) +
                    this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
         }
-        cout << "[warning] No available IC type for training. Use loss instead. "
-             << "(E" << this->eval_type << "M" << algorithm->model_type << ")" << endl;
+        if (this->raise_warning) {
+            cout << "[warning] No available IC type for training. Use loss instead. "
+                 << "(E" << this->eval_type << "M" << algorithm->model_type << ")" << endl;
+            this->raise_warning = false;
+        }
         // return 0;
         return loss;
     };
@@ -329,8 +334,11 @@ class Metric {
                 return -auc / p;
             }
         }
-        cout << "[warning] No available CV score for training. Use test_loss instead. "
-             << "(E" << this->eval_type << "M" << algorithm->model_type << ")" << endl;
+        if (this->raise_warning) {
+            cout << "[warning] No available CV score for training. Use test_loss instead. "
+                 << "(E" << this->eval_type << "M" << algorithm->model_type << ")" << endl;
+            this->raise_warning = false;
+        }
         // return 0;
         return algorithm->loss_function(test_X_A, test_y, test_weight, beta_A, coef0, A, g_index, g_size,
                                         algorithm->lambda_level);
