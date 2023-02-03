@@ -9,14 +9,17 @@ Work with scikit-learn
 # build a non-linear model for diagnosing malignant tumors.
 # Let start with importing necessary dependencies:
 
-from abess.linear import LogisticRegression
+import numpy as np
+from abess.datasets import make_glm_data
+from abess.linear import LinearRegression, LogisticRegression
 from sklearn.datasets import load_breast_cancer
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import roc_auc_score, make_scorer, roc_curve, auc
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.model_selection import GridSearchCV
+from sklearn.feature_selection import SelectFromModel
 
-###############################################################################
+#%%
 # Establish the process
 # ---------------------
 # Suppose we would like to extend the original variables to their
@@ -29,7 +32,7 @@ pipe = Pipeline([
     ('alogistic', LogisticRegression())
 ])
 
-###############################################################################
+#%%
 # Parameter grid
 # --------------
 # We can give different parameters to model and let the program choose the
@@ -43,6 +46,7 @@ param_grid = {
     'poly__degree': [1, 2, 3]                   # the degree of polynomial
 }
 
+
 # %%
 # Note that the program would try all combinations of what we give, which means that there are :math:`2\times3=6` combinations of parameters will be tried.
 #
@@ -55,7 +59,7 @@ param_grid = {
 
 scorer = make_scorer(roc_auc_score, greater_is_better=True)
 
-###############################################################################
+#%%
 # Cross Validation
 # ----------------
 # For more accurate results, cross validation (CV) is often formed. In
@@ -64,7 +68,7 @@ scorer = make_scorer(roc_auc_score, greater_is_better=True)
 
 grid_search = GridSearchCV(pipe, param_grid, scoring=scorer, cv=5)
 
-###############################################################################
+#%%
 # Model fitting
 # -------------
 # Eveything is prepared now. We can simply load the data and put it into
@@ -97,6 +101,31 @@ plt.ylabel('True Positive Rate')
 plt.title("Receiver operating characteristic (ROC) curve")
 plt.legend(loc="lower right")
 plt.show()
+
+
+#%%
+# Feature selection
+# ------------------
+
+#%%
+# Besides being used to make prediction explicitly, ``abess`` can be exploited to 
+# select important features.
+# The following example shows how to perform abess-based feature selection
+# using ``sklearn.feature_selection.SelectFromModel``.
+
+
+#%% 
+np.random.seed(0)
+n, p, k = 300, 1000, 5
+data = make_glm_data(n=n, p=p, k=k, family='gaussian')
+X, y = data.x, data.y
+print('Shape of original data: ', X.shape) 
+
+model = LinearRegression().fit(X, y)
+sfm = SelectFromModel(model, prefit=True)
+X_new = sfm.transform(X)
+print('Shape of transformed data: ', X_new.shape) 
+
 
 # %%
 # sphinx_gallery_thumbnail_path = 'Tutorial/figure/scikit_learn.png'
