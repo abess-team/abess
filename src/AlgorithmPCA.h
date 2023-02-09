@@ -155,14 +155,14 @@ class abessRPCA : public Algorithm<Eigen::VectorXd, Eigen::VectorXd, double, T4>
             S.resize(N, 1);
 
             for (int i = 0; i < N; i++) bd(i) = abs(S(i, 0));
-
-            for (int i = 0; i < (this->always_select).size(); i++) {
-                bd(this->always_select(i)) = DBL_MAX;
-            }
-
+            
             // A_init
             for (int i = 0; i < A.size(); i++) {
-                bd(A(i)) = DBL_MAX - 1;
+                bd(A(i)) = DBL_MAX / 2;
+            }
+            // alway_select
+            for (int i = 0; i < (this->always_select).size(); i++) {
+                bd(this->always_select(i)) = DBL_MAX;
             }
 
             this->r = (int)this->lambda_level;
