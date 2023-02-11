@@ -22,7 +22,7 @@ from utilities import (
     assert_nan,
     assert_value,
     assert_fit,
-    # save_data,
+    save_data,  # noqa
     load_data)
 
 
@@ -471,24 +471,29 @@ class TestAlgorithm:
 
     @staticmethod
     def test_gamma():
-        np.random.seed(1)
-        data = abess.make_glm_data(n=100, p=10, k=3, family="gamma")
+        np.random.seed(0)
+        n = 10000
+        p = 20
+        k = 3
+        data = abess.make_glm_data(n=n, p=p, k=k, family="gamma")
 
         # save_data(data, 'gamma')
         data = load_data('gamma')
 
         # null
         check_estimator(abess.GammaRegression())
-        model1 = abess.GammaRegression()
+        model1 = abess.GammaRegression(support_size=k)
         model1.fit(data.x, data.y)
         assert_nan(model1.coef_)
+        assert_fit(data.coef_, model1.coef_)
+        assert_value(data.coef_, model1.coef_, 1., 1.)
 
         # predict
         model1.predict(data.x)
 
         # score
         score = model1.score(data.x, data.y)
-        sample_weight = np.random.rand(100)
+        sample_weight = np.random.rand(n)
         score = model1.score(data.x, data.y,
                              sample_weight=sample_weight)
         assert not np.isnan(score)
