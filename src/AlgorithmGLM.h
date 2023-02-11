@@ -255,7 +255,7 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
             array_quotient(Z, D, 1);
             Z += X_full * beta_full;
             for (int i = 0; i < p + 1; i++) {
-                X_new.col(i) = X_full.col(i).cwiseProduct(D).cwiseProduct(weights);
+                X_new.col(i) = X_full.col(i).cwiseProduct(D);
             }
             // update beta
             Eigen::MatrixXd lambda_one = Eigen::MatrixXd::Identity(X_full.cols(), X_full.cols());
@@ -300,7 +300,7 @@ class abessLogistic : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double,
     ~abessLogistic(){};
 
     double Xbeta_range[2] = {-30, 30};
-    double PiPj_range[2] = {0.001, 1};     // Pi * Pj
+    double PiPj_range[2] = {0.001, 1};  // Pi * Pj
 
     Eigen::MatrixXd gradian_core(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta_full) {
         Eigen::VectorXd Pi = this->inv_link_function(X_full, beta_full);
@@ -1149,7 +1149,7 @@ class abessMultinomial : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eige
 
     ~abessMultinomial(){};
 
-    double PiPj_range[2] = {0.001, 1};     // Pi * Pj
+    double PiPj_range[2] = {0.001, 1};  // Pi * Pj
 
     bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta,
                            Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index,
@@ -1311,12 +1311,12 @@ class abessMultinomial : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eige
 
                             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
                             Eigen::VectorXd PiPj = Pi.col(m1).array() * (one - Pi.col(m1).eval()).array();
-                        trunc(PiPj, PiPj_range);
+                            trunc(PiPj, PiPj_range);
                             W.block(m1 * n, m2 * n, n, n).diagonal() = PiPj;
                         } else {
                             W.block(m1 * n, m2 * n, n, n) = Eigen::MatrixXd::Zero(n, n);
                             Eigen::VectorXd PiPj = Pi.col(m1).array() * Pi.col(m2).array();
-                        trunc(PiPj, PiPj_range);
+                            trunc(PiPj, PiPj_range);
                             W.block(m1 * n, m2 * n, n, n).diagonal() = -PiPj;
                             W.block(m2 * n, m1 * n, n, n) = W.block(m1 * n, m2 * n, n, n);
                         }
@@ -1507,19 +1507,19 @@ class abessMultinomial : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eige
 template <class T4>
 class abessGamma : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
    public:
-    abessGamma(int algorithm_type, int model_type, int maX_iter = 30, int primary_model_fit_maX_iter = 10,
-               double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int eXchange_num = 5,
+    abessGamma(int algorithm_type, int model_type, int max_iter = 30, int primary_model_fit_max_iter = 10,
+               double primary_model_fit_epsilon = 1e-8, bool warm_start = true, int exchange_num = 5,
                Eigen::VectorXi always_select = Eigen::VectorXi::Zero(0), int splicing_type = 0, int sub_search = 0)
         : _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4>::_abessGLM(
-              algorithm_type, model_type, maX_iter, primary_model_fit_maX_iter, primary_model_fit_epsilon, warm_start,
-              eXchange_num, always_select, splicing_type, sub_search){};
+              algorithm_type, model_type, max_iter, primary_model_fit_max_iter, primary_model_fit_epsilon, warm_start,
+              exchange_num, always_select, splicing_type, sub_search){};
     ~abessGamma(){};
 
-    double Xbeta_range[2] = {1e-20, DBL_MAX};  // the range of acceptable value for X * beta
+    double Xbeta_range[2] = {-DBL_MAX, -1e-20};  // the range of acceptable value for X * beta
 
     Eigen::MatrixXd gradian_core(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta_full) {
         Eigen::VectorXd EY = this->inv_link_function(X_full, beta_full);
-        Eigen::VectorXd G = (EY - y).cwiseProduct(weights);
+        Eigen::VectorXd G = (y - EY).cwiseProduct(weights);
         return Eigen::MatrixXd(G);
     };
 
@@ -1532,18 +1532,38 @@ class abessGamma : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4
     Eigen::VectorXd inv_link_function(T4 &X_full, Eigen::VectorXd &beta_full) {
         Eigen::VectorXd eta = X_full * beta_full;
         trunc(eta, Xbeta_range);
-        return eta.cwiseInverse();
+        return -eta.cwiseInverse();
     }
 
     Eigen::VectorXd log_probability(T4 &X_full, Eigen::VectorXd &beta_full, Eigen::VectorXd &y) {
-        Eigen::VectorXd Xbeta = X_full * beta_full;
-        return (Xbeta.cwiseProduct(y) - Xbeta.array().log().matrix());
+        Eigen::VectorXd eta = X_full * beta_full;
+        trunc(eta, Xbeta_range);
+        return (-eta).array().log().matrix() + eta.cwiseProduct(y);
     }
 
     bool null_model(Eigen::VectorXd &y, Eigen::VectorXd &weights, double &coef0) {
-        coef0 = weights.sum() / weights.dot(y);
+        coef0 = - weights.sum() / weights.dot(y);
         return true;
     }
+
+    bool primary_model_fit(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0,
+                           double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
+        if (X.cols() == 0) return null_model(y, weights, coef0);
+
+        Eigen::VectorXd temp = X * beta + coef0 * Eigen::VectorXd::Ones(X.rows());
+        if (temp.maxCoeff() > this->Xbeta_range[1]) {
+            coef0 -= abs(temp.maxCoeff()) + 0.1;
+        }
+
+        if (this->approximate_Newton) {
+            // Fitting method 1: Approximate Newton
+            return this->_approx_newton_fit(X, y, weights, beta, coef0, loss0, A, g_index, g_size);
+        } else {
+            // Fitting method 2: Iteratively Reweighted Least Squares
+            return this->_IRLS_fit(X, y, weights, beta, coef0, loss0, A, g_index, g_size);
+        }
+        return true;
+    };
 };
 
 template <class T4>
