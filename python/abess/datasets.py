@@ -138,7 +138,7 @@ class make_glm_data:
 
         * Usage: ``family='gamma'``
         * Model: :math:`y \sim \text{Gamma}(k, \theta),\
-          k\theta = \exp(x^T \beta + \epsilon), k\sim U[0.1, 100.1]`
+          k\theta = -1/(x^T \beta + \epsilon), k\sim U[0.1, 100.1]`
           in shape-scale definition.
 
             * the coefficient :math:`\beta\sim U[m, 100m]`,
