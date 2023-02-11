@@ -18,11 +18,11 @@ try:
 except ImportError:
     miss_dep = True
 
-from utilities import (
+from utilities import (  # noqa: F401
     assert_nan,
     assert_value,
     assert_fit,
-    save_data,  # noqa
+    save_data,
     load_data)
 
 
