@@ -1,3 +1,8 @@
+# abess 0.4.7
+
+* Allow the other criterion for model selection: AUC for logistic/multinomial regression
+* Fix note "Specified C++11: please update to current default of C++17" in [CRAN](https://cran.r-project.org/web/checks/check_results_abess.html).
+
 # abess 0.4.6
 
 * Adapt to the API change of the `Matrix` package.
