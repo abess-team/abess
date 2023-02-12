@@ -138,7 +138,7 @@ class make_glm_data:
 
         * Usage: ``family='gamma'``
         * Model: :math:`y \sim \text{Gamma}(k, \theta),\
-          k\theta = \exp(x^T \beta + \epsilon), k\sim U[0.1, 100.1]`
+          k\theta = -1/(x^T \beta + \epsilon), k\sim U[0.1, 100.1]`
           in shape-scale definition.
 
             * the coefficient :math:`\beta\sim U[m, 100m]`,
@@ -282,12 +282,15 @@ class make_glm_data:
                 Tbeta = coef_
             # add noise
             eta = x @ Tbeta + np.random.normal(0, sigma, n)
-            # set coef_0 as + abs(min(eta)) + 1
-            eta = eta + np.abs(np.min(eta)) + 10
+            # set coef_0 to make eta<0
+            eta = eta - np.abs(np.max(eta)) - 10
+            eta = -1 / eta
             # set the shape para of gamma uniformly in [0.1,100.1]
             shape_para = 100 * np.random.uniform(0, 1, n) + 0.1
-            y = np.random.gamma(shape=shape_para, scale=1 /
-                                shape_para / eta, size=n)
+            y = np.random.gamma(
+                shape=shape_para,
+                scale=eta / shape_para,
+                size=n)
         elif family == "ordinal":
             M = 125 * np.sqrt(2 * np.log(p) / n)
             if coef_ is None:

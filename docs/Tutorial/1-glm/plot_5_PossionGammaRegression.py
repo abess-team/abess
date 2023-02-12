@@ -124,7 +124,7 @@ plt.show()
 #   y_i \sim Gamma(\mu_i, \alpha),
 #
 #
-# where :math:`1/\mu_i = x_i^T\beta`.
+# where :math:`-1/\mu_i = x_i^T\beta`.
 #
 # Compared with Poisson regression, this time we consider the response variables as (continuous) levels of satisfaction.
 #

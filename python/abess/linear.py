@@ -992,7 +992,7 @@ class GammaRegression(bess_base):
         X = new_data_check(self, X)
 
         intercept_ = np.ones(X.shape[0]) * self.intercept_
-        xbeta_exp = np.exp(X.dot(self.coef_) + intercept_)
+        xbeta_exp = - 1 / (X.dot(self.coef_) + intercept_)
         return xbeta_exp
 
     def score(self, X, y, sample_weight=None):
