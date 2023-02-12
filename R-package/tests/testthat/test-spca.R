@@ -95,9 +95,9 @@ test_that("abesspca (FPC and golden-section) works", {
   expect_equal(spca_fit[["var.all"]], pca_var)
 
   ## check identity:
-  spca_fit1 <- abesspca(USArrests, tune.path = "gsection")
+  spca_fit1 <- abesspca(USArrests, tune.path = "gsection", gs.range = c(1,3))
   spca_fit2 <- abesspca(cov(USArrests) * (nrow(USArrests) - 1) / nrow(USArrests),
-    type = "gram", tune.path = "gsection"
+    type = "gram", tune.path = "gsection", gs.range = c(1,3)
   )
   spca_fit1[["call"]] <- NULL
   spca_fit2[["call"]] <- NULL
