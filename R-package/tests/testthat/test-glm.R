@@ -34,6 +34,11 @@ test_batch <- function(abess_fit, dataset, family) {
 
   oracle_beta <- coef(oracle_est)[-1]
   oracle_coef0 <- coef(oracle_est)[1]
+  # our setting of gamma (Xb<0) is different from glm (Xb>0)
+  if (family()[["family"]] == "Gamma") {
+    oracle_beta <- -oracle_beta
+    oracle_coef0 <- -oracle_coef0
+  }
   names(oracle_beta) <- NULL
   names(oracle_coef0) <- NULL
   # estimation by abess:

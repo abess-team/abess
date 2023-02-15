@@ -539,7 +539,7 @@ abess.default <- function(x,
       )
     } else if (family %in% c("multinomial", "ordinal")) {
       result[["beta"]] <- lapply(result[["beta"]], function(x) {
-        Matrix::Matrix(x[, -y_dim], nrow = length(vn), sparse = TRUE, dimnames = list(vn, y_vn[-1]))
+        Matrix::Matrix(x[, -y_dim], sparse = TRUE, dimnames = list(vn, y_vn[-1]))
       })
     }
   } else {
