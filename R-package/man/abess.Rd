@@ -363,7 +363,7 @@ abess_fit
 \references{
 A polynomial algorithm for best-subset selection problem. Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang. Proceedings of the National Academy of Sciences Dec 2020, 117 (52) 33117-33123; \doi{10.1073/pnas.2014241117}
 
-A Splicing Approach to Best Subset of Groups Selection. Zhang, Yanhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2022). INFORMS Journal on Computing (Accepted). \doi{10.1287/ijoc.2022.1241}
+A Splicing Approach to Best Subset of Groups Selection. Zhang, Yanhang, Junxian Zhu, Jin Zhu, and Xueqin Wang (2023). INFORMS Journal on Computing, 35:1, 104-119. \doi{10.1287/ijoc.2022.1241}
 
 abess: A Fast Best-Subset Selection Library in Python and R. Zhu Jin, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, and Junxian Zhu. Journal of Machine Learning Research 23, no. 202 (2022): 1-7.
 

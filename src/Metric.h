@@ -5,6 +5,11 @@
 #ifndef SRC_METRICS_H
 #define SRC_METRICS_H
 
+#ifdef R_BUILD
+#include <Rcpp.h>
+using namespace Rcpp;
+#endif
+
 #include <algorithm>
 #include <random>
 #include <vector>
@@ -250,8 +255,13 @@ class Metric {
                    this->ic_coef * log(double(N)) * log(log(double(train_n))) * algorithm->get_effective_number();
         }
         if (this->raise_warning) {
+#ifdef R_BUILD
+            Rcout << "[warning] No available IC type for training. Use loss instead. "
+                  << "(E" << this->eval_type << "M" << algorithm->model_type << ")" << endl;
+#else
             cout << "[warning] No available IC type for training. Use loss instead. "
                  << "(E" << this->eval_type << "M" << algorithm->model_type << ")" << endl;
+#endif
             this->raise_warning = false;
         }
         // return 0;
@@ -335,8 +345,13 @@ class Metric {
             }
         }
         if (this->raise_warning) {
+#ifdef R_BUILD
+            Rcout << "[warning] No available CV score for training. Use test_loss instead. "
+                  << "(E" << this->eval_type << "M" << algorithm->model_type << ")" << endl;
+#else
             cout << "[warning] No available CV score for training. Use test_loss instead. "
                  << "(E" << this->eval_type << "M" << algorithm->model_type << ")" << endl;
+#endif
             this->raise_warning = false;
         }
         // return 0;
@@ -354,9 +369,15 @@ class Metric {
         double last_tpr = 0, last_fpr = 0, auc = 0;
 
         if (positive == 0 || positive == n) {
+#ifdef R_BUILD
+            Rcout << "[Warning] There is only one class in the test data, "
+                  << "the result may be meaningless. Please use another type of loss, "
+                  << "or try to specify cv_fold_id." << endl;
+#else
             cout << "[Warning] There is only one class in the test data, "
                  << "the result may be meaningless. Please use another type of loss, "
                  << "or try to specify cv_fold_id." << endl;
+#endif
         }
 
         for (int i = 0; i < n; i++) {

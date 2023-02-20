@@ -16,6 +16,7 @@
 #include <unsupported/Eigen/MatrixFunctions>
 
 #else
+#include <Rcpp.h>
 #include <RcppEigen.h>
 #endif
 
@@ -126,11 +127,19 @@ class Parameters {
 
     void print_sequence() {
         // for debug
+#ifdef R_BUILD
+        Rcout << "==> Parameter List:" << endl;
+#else
         std::cout << "==> Parameter List:" << endl;
+#endif        
         for (int i = 0; i < (this->sequence).size(); i++) {
             int support_size = (this->sequence(i)).support_size;
             double lambda = (this->sequence(i)).lambda;
+#ifdef R_BUILD
+            Rcout << "  support_size = " << support_size << ", lambda = " << lambda << endl;
+#else
             std::cout << "  support_size = " << support_size << ", lambda = " << lambda << endl;
+#endif  
         }
     }
 };

@@ -24,7 +24,7 @@ knitr::opts_chunk$set(warning = FALSE, eval = TRUE, message = FALSE)
 
 
 ## Brief introduction       
-The R package `abess` implement a polynomial algorithm [\color{blue}{paper}](https://www.pnas.org/doi/10.1073/pnas.2014241117) for solving the best-subset selection problem:
+The R package `abess` implement a polynomial algorithm [\color{blue}{paper}](https://doi.org/10.1073/pnas.2014241117) for solving the best-subset selection problem:
 $$\min_{\boldsymbol{\beta} \in \mathbb{R}^p} \mathcal{L_n}({\boldsymbol\beta}), \text{ s.t. } \|\boldsymbol\beta\|_0 \leq s,$$
 where $\mathcal{L}_{n}(\boldsymbol \beta)=\frac{1}{2 n}\|y-X \boldsymbol{\beta}\|_{2}^{2}$, $\|\boldsymbol{\beta}\|_0=\sum_{i=1}^pI( \boldsymbol{\beta}_i\neq 0)$ is the $\ell_0$(-pseudo) norm of $\beta$, and the sparsity level $s$ is usually an unknown non-negative integer.
 Next, we present an example to show how to use the `abess` package to solve a simple problem. 
@@ -45,7 +45,7 @@ dat <- cbind.data.frame("y" = synthetic_data[["y"]],
 ```
 
 Then, we use the main function `abess` in the package to fit this dataset. 
-By setting the arguments `support.size = s`, `abess()` function conducts **Algorithm 1** [\color{blue}{paper}](https://www.pnas.org/doi/10.1073/pnas.2014241117) for the best-subset selection with a sparsity level `s`. In our example, we set the options: `support.size = 3`, and we run **Algorithm 1** with the following command: 
+By setting the arguments `support.size = s`, `abess()` function conducts **Algorithm 1** [\color{blue}{paper}](https://doi.org/10.1073/pnas.2014241117) for the best-subset selection with a sparsity level `s`. In our example, we set the options: `support.size = 3`, and we run **Algorithm 1** with the following command: 
 ```{r}
 abess_fit <- abess(y ~ ., data = dat, support.size = 3)
 ```
@@ -62,7 +62,7 @@ lm(y ~ ., data = dat[, c(1, c(1, 2, 5) + 1)])
 <!-- Users could `print`, `summary` or `predict` this bestmodel object just like working with classical regression modeling. This would be helpful for data scientists who are familiar with `lm` functions in R. -->
 
 ### Adaptive best subset selection        
-Supposing we are unknown about the true sparsity level in real world data, and thus, we need to determine the most proper one. The **Algorithm 3** [\color{blue}{paper}](https://www.pnas.org/doi/10.1073/pnas.2014241117) is designed for this scenario. `abess` is capable of performing this algorithm: 
+Supposing we are unknown about the true sparsity level in real world data, and thus, we need to determine the most proper one. The **Algorithm 3** [\color{blue}{paper}](https://doi.org/10.1073/pnas.2014241117) is designed for this scenario. `abess` is capable of performing this algorithm: 
 ```{r}
 abess_fit <- abess(y ~ ., data = dat)
 ```

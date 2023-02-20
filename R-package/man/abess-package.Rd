@@ -23,11 +23,11 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Zezhi Wang \email{homura@mail.ustc.edu.cn}
   \item Liyuan Hu \email{huly5@mail2.sysu.edu.cn}
   \item Junhao Huang \email{huangjh256@mail2.sysu.edu.cn}
   \item Kangkang Jiang \email{jiangkk3@mail2.sysu.edu.cn}
   \item Yanhang Zhang \email{zhangyh98@ruc.edu.cn}
-  \item Zezhi Wang \email{homura@mail.ustc.edu.cn}
   \item Borui Tang \email{tangborui@mail.ustc.edu.cn}
   \item Shiyun Lin \email{shiyunlin@stu.pku.edu.cn}
   \item Junxian Zhu \email{adaizjx@163.com}

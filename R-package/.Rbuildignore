@@ -40,6 +40,7 @@
 ^vignettes/v10-algorithm\.Rmd$
 ^vignettes/v11-power-of-abess\.Rmd$
 ^vignettes/v12-Robust-Principal-Component-Analysis\.Rmd$
+^vignettes/_v13-Use-abess-via-mlr3\.Rmd$
 ^\.covrignore$
 ^logo\.png$
 ^logo\.svg

@@ -1,9 +1,9 @@
 citHeader("To cite abess in publications use:")
 
-citEntry(
-  entry    = "Article",
+bibentry(
+  bibtype  = "Article",
   title    = "A polynomial algorithm for best-subset selection problem",
-  author   = "Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, Xueqin Wang",
+  author   = as.person("Junxian Zhu [aut], Canhong Wen [aut], Jin Zhu [aut], Heping Zhang [aut], Xueqin Wang [aut]"),
   journal  = "Proceedings of the National Academy of Sciences",
   year     = "2020",
   volume   = "117",
@@ -15,10 +15,10 @@ citEntry(
   )
 )
 
-citEntry(
-  entry    = "Article",
+bibentry(
+  bibtype  = "Article",
   title    = "abess: A Fast Best Subset Selection Library in Python and R",
-  author   = "Jin Zhu, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, Junxian Zhu",
+  author   = as.person("Jin Zhu [aut], Xueqin Wang [aut], Liyuan Hu [aut], Junhao Huang [aut], Kangkang Jiang [aut], Yanhang Zhang [aut], Shiyun Lin[aut], Junxian Zhu [aut]"),
   journal  = "Journal of Machine Learning Research",
   year     = "2022",
   volume   = "23",
@@ -30,12 +30,15 @@ citEntry(
   )
 )
 
-citEntry(
-  entry    = "Article",
+bibentry(
+  bibtype  = "Article",
   title    = "A Splicing Approach to Best Subset of Groups Selection",
-  author   = "Yanhang Zhang, Junxian Zhu, Jin Zhu, Xueqin Wang",
-  journal  = "INFORMS Journal on Computing (Accepted)",
-  year     = "2022+",
+  author   = as.person("Yanhang Zhang [aut], Junxian Zhu [aut], Jin Zhu [aut], Xueqin Wang [aut]"),
+  journal  = "INFORMS Journal on Computing",
+  year     = "2023",
+  volume   = "35",
+  number   = "1",
+  pages    = "104--119",
   doi      = "10.1287/ijoc.2022.1241",
   textVersion = paste(
   

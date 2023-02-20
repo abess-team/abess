@@ -1,17 +1,36 @@
 ## Comment
 
-A new release. We update info about citation. 
+`abess` is remove from CRAN because incorrect C++ flags in configure scripts. This submission has address this incorrectness.
 
 ## Test environments
 * local R installation, R 4.1.0
 * win-builder (devel)
+* rhub
 
 ## R CMD check results
 
 * local R installation, R 4.1.0: 0 errors | 0 warnings | 0 note
 * win-builder: 0 errors | 0 warnings | 1 note
+* rhub: notes about doi.
 
 1 note in win-builder:
+
+```
+Possibly misspelled words in DESCRIPTION:
+  multinomial (22:584)
+  
+CRAN repository db overrides:
+  X-CRAN-Comment: Archived on 2023-02-18 as configure issues were not
+    corrected in time.
+
+  CXX not set correctly.
+```
+
+First, the word "multinomial" is not misspelled. As we have checked in Google, this word is widely used. The typical examples include multinomial distribution and multinomial logistic regression.
+
+Second, the CXX is correct in the submission. The check under the win-builder haven't report this issue.  
+
+### Response NOTEs reported by rhub
 
 ```
 Found the following (possibly) invalid URLs:
@@ -29,11 +48,6 @@ Found the following (possibly) invalid URLs:
     From: man/abess.Rd
     Status: 503
     Message: Service Unavailable
-  URL: https://www.pnas.org/doi/10.1073/pnas.2014241117
-    From: inst/CITATION
-          inst/doc/v01-abess-guide.html
-    Status: 503
-    Message: Service Unavailable
 
 Found the following (possibly) invalid DOIs:
   DOI: 10.1073/pnas.2014241117
@@ -48,19 +62,18 @@ Found the following (possibly) invalid DOIs:
 
 These websites are accessible, and dois are valid. I have checked the availability of them on multiple local computers.
 
-### response to NOTE in R CRAN
+### response to one addtional NOTE in R CRAN
 
-Last released version's CRAN status: OK: 7, NOTE: 6
-(See: <https://CRAN.R-project.org/web/checks/check_results_abess.html>), 
-where the NOTE reports:
+R CRAN also reports the following NOTE:
+
 ```
-Result: NOTE 
-     installed size is 70.2Mb
+Result: NOTE
+     installed size is 96.4Mb
      sub-directories of 1Mb or more:
-     libs 69.2Mb 
+     libs 95.4Mb
 ```
 
-We believe this note cannot be fixed at present. 
+We believe this NOTE cannot be fixed at present. 
 This NOTE occurs because our sub-directory includes a C++ source code 
 provided in https://github.com/yixuan/spectra/, 
 but the latest C++ code haven't been published in R CRAN. 
