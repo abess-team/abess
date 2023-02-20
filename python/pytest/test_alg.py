@@ -228,7 +228,7 @@ class TestAlgorithm:
 
     @staticmethod
     def test_poisson():
-        np.random.seed(0)
+        np.random.seed(2)
         n = 100
         p = 20
         k = 3
@@ -463,7 +463,7 @@ class TestAlgorithm:
         # ic
         for ic in ['loss', 'aic', 'bic', 'ebic', 'gic', 'hic']:
             model = abess.SparsePCA(support_size=support_size, ic_type=ic)
-            model.fit(X, is_normal=False)
+            model.fit(X)
 
         # A_init
         model = abess.SparsePCA(support_size=support_size, A_init=[0, 1, 2])
