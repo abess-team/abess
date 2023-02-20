@@ -197,7 +197,7 @@ class bess_base(BaseEstimator):
     def fit(self,
             X=None,
             y=None,
-            is_normal=True,
+            is_normal=False,
             sample_weight=None,
             cv_fold_id=None,
             sparse_matrix=False):
@@ -221,7 +221,7 @@ class bess_base(BaseEstimator):
               where the columns indicates "censoring" and "time",
               respectively.
 
-        is_normal : bool, optional, default=True
+        is_normal : bool, optional, default=False
             whether normalize the variables array
             before fitting the algorithm.
         sample_weight : array-like, shape (n_samples,), optional
