@@ -543,8 +543,9 @@ class RobustPCA(bess_base):
     >>> X = np.random.randn(100, 50)
     >>> model.fit(X, r = 10)
     RobustPCA(support_size=10)
-    >>> print(np.nonzero(model.coef_.flatten())[0])
-    [ 343  521 1223 1530 1694 1782 2049 3058 3698 4269]
+    >>> print(np.vstack(np.nonzero(model.coef_)))
+    [[ 6 10 24 30 33 35 40 61 73 85]
+     [43 21 23 30 44 32 49  8 48 19]]
     """
 
     def __init__(self, support_size=None,
