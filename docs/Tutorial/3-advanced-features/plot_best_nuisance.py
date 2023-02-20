@@ -48,11 +48,11 @@ model.fit(data.x, data.y)
 print('Estimated subset:', np.nonzero(model.coef_))
 
 # %%
-# The result from ``model`` omits the 449-th predictor belonging to the true effective set. 
-# But if we suppose that the 449-th predictor are worthy to be
+# The result from ``model`` omits the 87-th predictor belonging to the true effective set. 
+# But if we suppose that the 87-th predictor are worthy to be
 # included in the model, we can call:
 
-model = LinearRegression(support_size=range(10), always_select=[449])
+model = LinearRegression(support_size=range(10), always_select=[87])
 model.fit(data.x, data.y)
 print('Estimated subset:', np.nonzero(model.coef_))
 

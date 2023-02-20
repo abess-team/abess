@@ -75,7 +75,7 @@ model2.fit(data.x, data.y)
 print('coefficients:\n', model2.coef_)
 
 # %%
-# The result from a model without a given group structure omits two predictors 
+# The result from a model without a given group structure omits three predictors 
 # belonging to the active set.
 # The ``abess`` R package also supports best group subset selection.
 #

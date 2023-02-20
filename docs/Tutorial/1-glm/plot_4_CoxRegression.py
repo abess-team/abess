@@ -117,7 +117,7 @@ model.fit(train[:, 2:], train[:, :2])
 print(model.coef_)
 
 # %%
-# This result shows that 4 variables (the 2nd, 3rd, 7th, 8th, 9th) are chosen into the Cox model.
+# This result shows that 5 variables (the 2nd, 3rd, 7th, 8th, 9th) are chosen into the Cox model.
 # Then a further analysis can be based on them.
 
 ###############################################################################

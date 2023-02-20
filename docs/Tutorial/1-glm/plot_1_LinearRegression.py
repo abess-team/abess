@@ -163,8 +163,8 @@ print("non-zero:\n", data2.columns[ind])
 print("coef:\n", model.coef_)
 
 # %%
-# Automatically, variables `Hits`, `CRBI`, `PutOuts`, `League\_N` are
-# chosen in the model (the chosen sparsity level is 4).
+# Automatically, variables `Hits`, `CHits`, `CHmRun`, `PutOuts`, `League_N` are
+# chosen in the model (the chosen sparsity level is 5).
 
 ###############################################################################
 # More on the results
@@ -199,8 +199,8 @@ plt.title('Model selection via EBIC')
 plt.show()
 
 # %%
-# In EBIC criterion, a subset with the support size 3 has the lowest value,
-# so the process adaptively chooses 3 variables.
+# In EBIC criterion, a subset with the support size 4 has the lowest value,
+# so the process adaptively chooses 4 variables.
 # Note that under other information criteria, the result may be different.
 
 ###############################################################################
