@@ -7,6 +7,7 @@ Unreleased
 -  Python package
 
    -  Use `CMake <https://cmake.org/>`__ on compiling to increase scalability.
+   -  Disable normalization for GLM by default. See `issue#486 <https://github.com/abess-team/abess/issues/486>`__ for details.
 
 -  R package
 
