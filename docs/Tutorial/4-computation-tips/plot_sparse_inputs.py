@@ -49,8 +49,15 @@ print("pred coef: \n", model.coef_)
 # %%
 # Sparse v.s. Dense: runtime comparsion
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-# We compare the runtime when the input matrix is dense matrix:
+# We compare the runtime under a larger sparse data:
+#
+from scipy.sparse import rand
+from numpy.random import default_rng
 
+rng = default_rng(12345)
+x = rand(1000, 200, density=0.01, format='coo', random_state=rng)
+coef = np.repeat([1, 0], 100)
+y = x.dot(coef)
 
 t = time()
 model.fit(x.toarray(), y)

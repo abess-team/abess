@@ -16,7 +16,7 @@ from sklearn.datasets import fetch_openml, load_breast_cancer
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.metrics import roc_auc_score, make_scorer, roc_curve, auc
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import MinMaxScaler, OneHotEncoder, PolynomialFeatures
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder, PolynomialFeatures, StandardScaler
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit, cross_val_score
 from sklearn.feature_selection import SelectFromModel
 
@@ -30,6 +30,7 @@ from sklearn.feature_selection import SelectFromModel
 
 pipe = Pipeline([
     ('poly', PolynomialFeatures(include_bias=False)),   # without intercept
+    ('standard', StandardScaler()),
     ('alogistic', LogisticRegression())
 ])
 
@@ -127,7 +128,7 @@ print([grid_search.best_score_, grid_search.best_params_])
 
 # %%
 # The output of the code reports the information of the polynomial features for the selected model among candidates,
-# and its corresponding area under the curve (AUC), which is 0.99, 
+# and its corresponding area under the curve (AUC), which is over 0.97, 
 # indicating the selected model would have an admirable contribution in practice.
 # 
 # Moreover, the best choice of parameter combination is shown above: 2 degree with "self-combination",

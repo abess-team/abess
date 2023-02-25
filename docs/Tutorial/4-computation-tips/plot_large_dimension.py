@@ -136,7 +136,7 @@ t2 = time()
 print("time : ", t2 - t1)
 
 # %%
-# It is easily see that the time consumption is much larger than before.
+# It is easily see that the time consumption is larger than before.
 #
 # Finally, we investigate the estimated support sets given by ``model1``
 # and ``model2`` as follow:

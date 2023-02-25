@@ -34,7 +34,7 @@ loss = np.zeros((2, 100))
 coef = np.repeat([1, 0], [5, 25])
 for i in range(100):
     np.random.seed(i)
-    data = make_glm_data(n=200, p=30, k=5, family='gaussian', coef_=coef, snr=0.5, rho=0.5)
+    data = make_glm_data(n=100, p=30, k=5, family='gaussian', coef_=coef, snr=0.5, rho=0.5)
     train_x, test_x, train_y, test_y = train_test_split(
         data.x, data.y, test_size=0.5, random_state=i)
 

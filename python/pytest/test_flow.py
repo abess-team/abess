@@ -126,6 +126,23 @@ class TestWorkflow:
         assert_value(model1.coef_, model2.coef_, 0, 0)
 
     @staticmethod
+    def test_normalize():
+        np.random.seed(0)
+        n = 100
+        p = 20
+        k = 5
+
+        # glm
+        data = abess.make_glm_data(n=n, p=p, k=k, family='gaussian')
+
+        model1 = abess.LinearRegression()
+        model2 = abess.LinearRegression()
+        model1.fit(data.x, data.y)
+        model2.fit(data.x, data.y, is_normal=True)
+        assert_value(model1.coef_, model2.coef_)
+        assert_value(model1.intercept_, model2.intercept_)
+
+    @staticmethod
     def test_possible_input():
         np.random.seed(2)
         n = 100

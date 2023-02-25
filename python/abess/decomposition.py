@@ -7,16 +7,6 @@ from .bess_base import bess_base
 from .utilities import new_data_check
 
 
-# def fix_docs(cls):
-#     # This function is to inherit the docstring from base class
-#     # and avoid unnecessary duplications on description.
-#     index = cls.__doc__.find("Examples\n    --------\n")
-#     if index != -1:
-#         cls.__doc__ = cls.__doc__[:index] + \
-#             cls.__bases__[0].__doc__ + cls.__doc__[index:]
-#     return cls
-
-
 class SparsePCA(bess_base):
     r"""
     Adaptive Best-Subset Selection(ABESS) algorithm for
@@ -97,6 +87,8 @@ class SparsePCA(bess_base):
 
     Examples
     --------
+    Results may differ with different version of numpy.
+
     >>> ### Sparsity known
     >>>
     >>> from abess.decomposition import SparsePCA
@@ -107,25 +99,15 @@ class SparsePCA(bess_base):
     >>> ### X known
     >>> X = np.random.randn(100, 50)
     >>> model.fit(X)
-    SparsePCA(always_select=[], support_size=10)
-    >>> # print(model.coef_)
-    >>> print(model.coef_[1:6,])
-    [[6.36598737e-314]
-     [1.06099790e-313]
-     [1.48539705e-313]
-     [1.90979621e-313]
-     [2.33419537e-313]]
+    SparsePCA(support_size=10)
+    >>> print(np.nonzero(model.coef_)[0])
+    [10 26 31 33 35 36 38 42 43 49]
     >>>
     >>> ### X unknown, but Sigma known
     >>> model.fit(Sigma = np.cov(X.T))
-    SparsePCA(always_select=[], support_size=10)
-    >>> # print(model.coef_)
-    >>> print(model.coef_[1:6,])
-    [[6.36598737e-314]
-     [1.06099790e-313]
-     [1.48539705e-313]
-     [1.90979621e-313]
-     [2.33419537e-313]]
+    SparsePCA(support_size=10)
+    >>> print(np.nonzero(model.coef_)[0])
+    [10 26 31 33 35 36 38 42 43 49]
     """
 
     def __init__(self, support_size=None, group=None,
@@ -548,6 +530,8 @@ class RobustPCA(bess_base):
 
     Examples
     --------
+    Results may differ with different version of numpy.
+
     >>> ### Sparsity known
     >>>
     >>> from abess.decomposition import RobustPCA
@@ -558,16 +542,10 @@ class RobustPCA(bess_base):
     >>> ### X known
     >>> X = np.random.randn(100, 50)
     >>> model.fit(X, r = 10)
-    RobustPCA(always_select=[], support_size=10)
-    >>> print(model.coef_)
-    [[0.         0.         0.         ... 0.         3.71203604 0.        ]
-     [0.         0.         0.         ... 0.         0.         0.        ]
-     [0.         0.         0.         ... 0.         0.         0.        ]
-     ...
-     [0.         0.         0.         ... 0.         0.         0.        ]
-     [0.         0.         0.         ... 0.         0.         0.        ]
-     [0.         0.         0.         ... 0.         0.         0.        ]]
-
+    RobustPCA(support_size=10)
+    >>> print(np.vstack(np.nonzero(model.coef_)))
+    [[ 6 10 24 30 33 35 40 61 73 85]
+     [43 21 23 30 44 32 49  8 48 19]]
     """
 
     def __init__(self, support_size=None,

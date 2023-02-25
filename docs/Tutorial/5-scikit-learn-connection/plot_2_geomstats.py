@@ -29,7 +29,7 @@ gs.random.seed(0)
 # An Example
 # ----------
 # Two sets of samples on Hypersphere in 3-dimensional Euclidean Space are created. 
-# The sample points in `data0` are distributed around $[-3/5, 0, 4/5]$, and the sample points in `data1` are distributed around $[3/5, 0, 4/5]$. 
+# The sample points in `data0` are distributed around :math:`[-3/5, 0, 4/5]`, and the sample points in `data1` are distributed around :math:`[3/5, 0, 4/5]`. 
 # The sample size of both is set to 100, and the precision of both is set to 5. 
 # The two sets of samples are shown in the figure below.
 
@@ -101,7 +101,7 @@ print('Used variables\' index:', np.nonzero(model.coef_ != 0)[0])
 print('accuracy:',sum((fitted_labels - test_labels + 1) % 2)/test_data.shape[0])
 
 # %%
-# The result shows that the only variables' index it used is $[0]$. 
+# The result shows that the only variables' index it used is :math:`[0]`. 
 # When constructing the samples, the means of the two sets are only different in the 0th direction. 
 # It shows that `abess` correctly identifies the most relevant variable for classification.
 
@@ -113,8 +113,8 @@ print('accuracy:',sum((fitted_labels - test_labels + 1) % 2)/test_data.shape[0])
 # 
 # We loop 50 times. 
 # At each time, two sets of samples on Hypersphere in 10-dimensional Euclidean Space are created. 
-# The sample points in `data0` are distributed around $[1 / 3, 0, 2 / 3, 0, 2 / 3, 0, 0, 0, 0, 0]$, and 
-# the sample points in `data1` are distributed around $[0, 0, 2 / 3, 0, 2 / 3, 0, 0, 0, 0, 1 / 3]$. 
+# The sample points in `data0` are distributed around :math:`[1 / 3, 0, 2 / 3, 0, 2 / 3, 0, 0, 0, 0, 0]`, and 
+# the sample points in `data1` are distributed around :math:`[0, 0, 2 / 3, 0, 2 / 3, 0, 0, 0, 0, 1 / 3]`. 
 # The sample size of both is set to 200, and the precision of both is set to 5. 
 
 m = 50  # cycles
