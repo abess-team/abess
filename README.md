@@ -125,6 +125,10 @@ $ Rscript abess/docs/simulation/R/timings.R
 
 ## What's news
 
+API updates:
+
+- Set `is_normal=False` for GLM fitting by default. See [issue#486](https://github.com/abess-team/abess/issues/486).
+
 New features version `4.6`:
 
 - `abess` can be used via `mlr3extralearners` as learners `regr.abess` and `classif.abess`.
