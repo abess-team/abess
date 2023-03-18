@@ -55,7 +55,7 @@ jobs:
           platforms: all
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.11.3
+        uses: pypa/cibuildwheel@v2.3.1
         with:
           package-dir: ./python # trigger cibuildwheel in sub-directory
 
@@ -68,23 +68,23 @@ jobs:
         with:
           path: wheelhouse/*.whl
 
-  #   upload_TestPyPI:
-  #     name: Upload alpha version to TestPyPI
-  #     needs: [build_wheels, build_sdist]
-  #     runs-on: ubuntu-latest
+  # upload_TestPyPI:
+  #   name: Upload alpha version to TestPyPI
+  #   needs: [build_wheels, build_sdist]
+  #   runs-on: ubuntu-latest
 
-  #     steps:
-  #       - uses: actions/download-artifact@v3
-  #         with:
-  #           name: artifact
-  #           path: dist
+  #   steps:
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: artifact
+  #         path: dist
 
-  #       - uses: pypa/gh-action-pypi-publish@release/v1
-  #         with:
-  #           user: __token__
-  #           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-  #           repository_url: https://test.pypi.org/legacy/
-  #           verbose: true
+  #     - uses: pypa/gh-action-pypi-publish@release/v1
+  #       with:
+  #         user: __token__
+  #         password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+  #         repository_url: https://test.pypi.org/legacy/
+  #         verbose: true
 
   upload_PyPI:
     name: Upload to PyPI if release

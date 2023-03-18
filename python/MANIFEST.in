@@ -1,5 +1,6 @@
 include README.rst
 include LICENSE
+include CMakeLists.txt
 recursive-include include *
 recursive-include src *
 recursive-include abess *
