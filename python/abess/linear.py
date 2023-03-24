@@ -51,7 +51,7 @@ class LogisticRegression(bess_base):
     LogisticRegression()
     >>> model.predict(data.x)[:10]
     array([0, 1, 0, 1, 1, 1, 0, 0, 0, 1])
-    >>>
+    >>> 
     >>> # path_type="gs"
     >>> model = LogisticRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -213,7 +213,7 @@ class LinearRegression(bess_base):
     LinearRegression()
     >>> model.predict(data.x)[:4]
     array([ -91.02169383,  100.7302593 , -226.99517096,    9.47389912])
-    >>>
+    >>> 
     >>> # path_type="gs"
     >>> model = LinearRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -338,7 +338,7 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
     CoxPHSurvivalAnalysis()
     >>> model.predict(data.x)[:4]
     array([1.36126061e-01, 1.38312962e+04, 5.95470917e-08, 3.87857074e+02])
-    >>>
+    >>> 
     >>> # path_type="gs"
     >>> model = CoxPHSurvivalAnalysis(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -485,7 +485,8 @@ class PoissonRegression(bess_base):
     >>> model.fit(data.x, data.y)
     PoissonRegression(support_size=10)
     >>> model.predict(data.x)[:4]
-    array([0.04152616, 0.0348882 , 2.12338988, 0.52328165])
+    array([0.51647246, 1.72152904, 0.25906485, 1.11715123])
+
 
     >>> ### Sparsity unknown
     >>>
@@ -494,14 +495,14 @@ class PoissonRegression(bess_base):
     >>> model.fit(data.x, data.y)
     PoissonRegression()
     >>> model.predict(data.x)[:4]
-    array([0.67990312, 2.4249844 , 0.20481202, 1.4669951 ])
-    >>>
+    array([0.41189011, 1.34910167, 0.28326399, 1.05768798])
+    >>> 
     >>> # path_type="gs"
     >>> model = PoissonRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     PoissonRegression(path_type='gs')
     >>> model.predict(data.x)[:4]
-    array([0.17968103, 1.19109427, 0.25447389, 0.99769173])
+    array([0.3824694 , 2.72926425, 0.14566451, 1.41221177])
     """
 
     def __init__(self, path_type="seq", support_size=None,
@@ -613,40 +614,42 @@ class MultiTaskRegression(bess_base):
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_multivariate_glm_data(
-    >>>     n = 100, p = 50, k = 10, M = 3, family = 'multigaussian')
+    ...     n = 100, p = 50, k = 10, M = 3, family = 'multigaussian')
     >>> model = MultiTaskRegression(support_size = 10)
     >>> model.fit(data.x, data.y)
     MultiTaskRegression(support_size=10)
+    >>> 
     >>> model.predict(data.x)[:5, ]
     array([[ 14.8632471 ,  -3.50042308,  11.88954251],
-       [  9.50857154,  -3.63397256,  17.24496971],
-       [ 27.74599919, -28.29785667, -13.26021431],
-       [ 13.58562727,  -1.02215199,   5.06593256],
-       [-29.18519221,  18.64600541,  15.44881672]])
+        [  9.50857154,  -3.63397256,  17.24496971],
+        [ 27.74599919, -28.29785667, -13.26021431],
+        [ 13.58562727,  -1.02215199,   5.06593256],
+        [-29.18519221,  18.64600541,  15.44881672]])
+
 
     >>> ### Sparsity unknown
     >>>
     >>> # path_type="seq"
     >>> model = MultiTaskRegression(path_type = "seq")
     >>> model.fit(data.x, data.y)
-    MultiTaskRegression(a)
+    MultiTaskRegression()
     >>> model.predict(data.x)[:5, ]
-    array([[ 14.8632471 ,  -3.50042308,  11.88954251],
-       [  9.50857154,  -3.63397256,  17.24496971],
-       [ 27.74599919, -28.29785667, -13.26021431],
-       [ 13.58562727,  -1.02215199,   5.06593256],
-       [-29.18519221,  18.64600541,  15.44881672]])
-    >>>
+    array([[ 14.67257826,  -4.2882759 ,  12.050597  ],
+        [  8.99687125,  -5.74834275,  17.67719359],
+        [ 27.60141854, -28.89527087, -13.13808967],
+        [ 13.63623637,  -0.81303274,   5.02318398],
+        [-28.48945127,  21.52084036,  14.86113707]])
+    >>> 
     >>> # path_type="gs"
     >>> model = MultiTaskRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     MultiTaskRegression(path_type='gs')
     >>> model.predict(data.x)[:5, ]
-    array([[ 14.8632471 ,  -3.50042308,  11.88954251],
-       [  9.50857154,  -3.63397256,  17.24496971],
-       [ 27.74599919, -28.29785667, -13.26021431],
-       [ 13.58562727,  -1.02215199,   5.06593256],
-       [-29.18519221,  18.64600541,  15.44881672]])
+    array([[ 14.67257826,  -4.2882759 ,  12.050597  ],
+        [  8.99687125,  -5.74834275,  17.67719359],
+        [ 27.60141854, -28.89527087, -13.13808967],
+        [ 13.63623637,  -0.81303274,   5.02318398],
+        [-28.48945127,  21.52084036,  14.86113707]])
     """
 
     def __init__(self, path_type="seq", support_size=None,
@@ -773,7 +776,7 @@ class MultinomialRegression(bess_base):
     MultinomialRegression()
     >>> model.predict(data.x)[:10, ]
     array([0, 2, 0, 0, 1, 1, 1, 1, 1, 0])
-    >>>
+    >>> 
     >>> # path_type="gs"
     >>> model = MultinomialRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -935,7 +938,7 @@ class GammaRegression(bess_base):
     >>> model.fit(data.x, data.y)
     GammaRegression(support_size=10)
     >>> model.predict(data.x)[:4]
-    array([0.01295775, 0.01548078, 0.01221643, 0.01623115])
+    array([0.01295776, 0.01548078, 0.01221642, 0.01623115])
 
     >>> ### Sparsity unknown
     >>>
@@ -945,13 +948,14 @@ class GammaRegression(bess_base):
     GammaRegression()
     >>> model.predict(data.x)[:4]
     array([0.01779091, 0.01779091, 0.01779091, 0.01779091])
-    >>>
+    >>> 
     >>> # path_type="gs"
     >>> model = GammaRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     GammaRegression(path_type='gs')
     >>> model.predict(data.x)[:4]
     array([0.01779091, 0.01779091, 0.01779091, 0.01779091])
+
     """
 
     def __init__(self, path_type="seq", support_size=None,
@@ -1077,7 +1081,7 @@ class OrdinalRegression(bess_base):
     >>> model.fit(data.x, data.y)
     OrdinalRegression(support_size=10)
     >>> model.predict(data.x)[:10]
-    array([2, 1, 1, 1, 2, 0, 2, 2, 2, 1])
+    array([2, 1, 1, 1, 2, 0, 2, 1, 2, 1])
 
     >>> ### Sparsity unknown
     >>>
@@ -1086,14 +1090,14 @@ class OrdinalRegression(bess_base):
     >>> model.fit(data.x, data.y)
     OrdinalRegression()
     >>> model.predict(data.x)[:10]
-    array([2, 1, 1, 1, 2, 0, 2, 2, 2, 1])
-    >>>
+    array([2, 1, 1, 1, 2, 0, 2, 1, 2, 1])
+    >>> 
     >>> # path_type="gs"
     >>> model = OrdinalRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
     OrdinalRegression(path_type='gs')
     >>> model.predict(data.x)[:10]
-    array([2, 1, 1, 1, 2, 0, 2, 2, 2, 1])
+    array([2, 1, 1, 1, 2, 0, 2, 1, 2, 1])
     """
 
     def __init__(self, path_type="seq", support_size=None,
