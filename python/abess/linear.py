@@ -51,7 +51,7 @@ class LogisticRegression(bess_base):
     LogisticRegression()
     >>> model.predict(data.x)[:10]
     array([0, 1, 0, 1, 1, 1, 0, 0, 0, 1])
-    >>> 
+    >>>
     >>> # path_type="gs"
     >>> model = LogisticRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -213,7 +213,7 @@ class LinearRegression(bess_base):
     LinearRegression()
     >>> model.predict(data.x)[:4]
     array([ -91.02169383,  100.7302593 , -226.99517096,    9.47389912])
-    >>> 
+    >>>
     >>> # path_type="gs"
     >>> model = LinearRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -338,7 +338,7 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
     CoxPHSurvivalAnalysis()
     >>> model.predict(data.x)[:4]
     array([1.36126061e-01, 1.38312962e+04, 5.95470917e-08, 3.87857074e+02])
-    >>> 
+    >>>
     >>> # path_type="gs"
     >>> model = CoxPHSurvivalAnalysis(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -496,7 +496,7 @@ class PoissonRegression(bess_base):
     PoissonRegression()
     >>> model.predict(data.x)[:4]
     array([0.41189011, 1.34910167, 0.28326399, 1.05768798])
-    >>> 
+    >>>
     >>> # path_type="gs"
     >>> model = PoissonRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -614,11 +614,11 @@ class MultiTaskRegression(bess_base):
     >>> import numpy as np
     >>> np.random.seed(12345)
     >>> data = make_multivariate_glm_data(
-    ...     n = 100, p = 50, k = 10, M = 3, family = 'multigaussian')
+    >>>     n = 100, p = 50, k = 10, M = 3, family = 'multigaussian')
     >>> model = MultiTaskRegression(support_size = 10)
     >>> model.fit(data.x, data.y)
     MultiTaskRegression(support_size=10)
-    >>> 
+    >>>
     >>> model.predict(data.x)[:5, ]
     array([[ 14.8632471 ,  -3.50042308,  11.88954251],
         [  9.50857154,  -3.63397256,  17.24496971],
@@ -639,7 +639,7 @@ class MultiTaskRegression(bess_base):
         [ 27.60141854, -28.89527087, -13.13808967],
         [ 13.63623637,  -0.81303274,   5.02318398],
         [-28.48945127,  21.52084036,  14.86113707]])
-    >>> 
+    >>>
     >>> # path_type="gs"
     >>> model = MultiTaskRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -776,7 +776,7 @@ class MultinomialRegression(bess_base):
     MultinomialRegression()
     >>> model.predict(data.x)[:10, ]
     array([0, 2, 0, 0, 1, 1, 1, 1, 1, 0])
-    >>> 
+    >>>
     >>> # path_type="gs"
     >>> model = MultinomialRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -948,7 +948,7 @@ class GammaRegression(bess_base):
     GammaRegression()
     >>> model.predict(data.x)[:4]
     array([0.01779091, 0.01779091, 0.01779091, 0.01779091])
-    >>> 
+    >>>
     >>> # path_type="gs"
     >>> model = GammaRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
@@ -1091,7 +1091,7 @@ class OrdinalRegression(bess_base):
     OrdinalRegression()
     >>> model.predict(data.x)[:10]
     array([2, 1, 1, 1, 2, 0, 2, 1, 2, 1])
-    >>> 
+    >>>
     >>> # path_type="gs"
     >>> model = OrdinalRegression(path_type="gs")
     >>> model.fit(data.x, data.y)
