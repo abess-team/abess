@@ -11,17 +11,23 @@ using namespace Rcpp;
 #include <Eigen/Eigen>
 #endif
 #include <iostream>
+#include <exception>
+#include <string>
 
 using namespace std;
 
 void constant_warning_ith_variable(int i) {
 #ifdef R_BUILD
-    Rcout << "Warning: the variable " << i + 1 << " is constant. ";
-    Rcout << "It may cause NAN in the result. Please drop this variable or disable the normalization.\n";
+    // Rcout << "Warning: the variable " << i + 1 << " is constant. ";
+    // Rcout << "It may cause NAN in the result. Please drop this variable or disable the normalization.\n";
+    i++;
 #else
-    cout << "Warning: the variable " << i << " is constant. ";
-    cout << "It may cause NAN in the result. Please drop this variable or disable the normalization.\n";
+    // cout << "Warning: the variable " << i << " is constant. ";
+    // cout << "It may cause NAN in the result. Please drop this variable or disable the normalization.\n";
 #endif
+    string msg = "The variable " + std::to_string(i) + " is constant. " + 
+        "Please drop this variable or disable the normalization.";
+    throw std::overflow_error(msg);
 }
 
 void Normalize(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &meanx, double &meany,

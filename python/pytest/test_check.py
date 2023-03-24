@@ -326,6 +326,15 @@ class TestCheck:
         else:
             assert False
 
+        # constant column
+        try:
+            model = abess.LinearRegression()
+            model.fit(X=[[1, 1], [1, 2]], y=[1, 2])
+        except OverflowError as e:
+            print(e)
+        else:
+            assert False
+
     @staticmethod
     def test_pca():
         """
