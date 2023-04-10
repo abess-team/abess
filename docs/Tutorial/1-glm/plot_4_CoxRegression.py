@@ -186,7 +186,7 @@ print(cindex)
 # negative status would affect the survival function for each patient.
 #
 surv_fns = model.predict_survival_function(train[:, 2:])
-time_points = np.quantile(train[:, 0], np.linspace(0, 0.6, 100))
+time_points = np.quantile(train[:, 0], np.linspace(0, 0.6, 100)).astype(float)
 legend_handles = []
 legend_labels = []
 _, ax = plt.subplots(figsize=(9, 6))
