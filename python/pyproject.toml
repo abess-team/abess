@@ -27,7 +27,7 @@ test-skip = """\
     """
 test-requires = "pytest"
 test-command = "pytest {package}/pytest -v"
-before-test = "pip install lifelines pandas scipy scikit-learn"
+before-test = "pip install lifelines \"pandas<2.0.0\" scipy scikit-learn"
 
 # install pybind11 for cmake
 before-build = "pip install pybind11[global]"
@@ -41,7 +41,7 @@ archs = ["x86_64", "universal2", "arm64"]
 
 [[tool.cibuildwheel.overrides]]
 select = "*win32"
-before-test = "pip install lifelines pandas \"scipy<=1.9.1\" \"scikit-learn<=0.24.2\""
+before-test = "pip install lifelines \"pandas<2.0.0\" \"scipy<=1.9.1\" \"scikit-learn<=0.24.2\""
 
 [[tool.cibuildwheel.overrides]]
 select = "*macos*"
