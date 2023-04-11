@@ -47,7 +47,7 @@ jobs:
           python-version: 3.9
       - name: Install abess & dependencies
         run: |
-          pip install pandas
+          pip install "pandas<2.0.0"
           pip install lifelines
           pip install pybind11[global]
           # pip install codecov
