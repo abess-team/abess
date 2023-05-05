@@ -33,7 +33,7 @@ $$y = B x + \varepsilon,$$
 where $\varepsilon$ is $m$-dimensional random noise variable with zero mean. 
 
 Due to the Occam's razor principal or the high-dimensionality of predictors, it is meaningful to use a small amount of predictors to conduct multi-task learning. For example, understanding the relationship between gene expression and symptoms of a disease have significant importance in identifying potential makers. Many diseases usually involve multiple manifestations and those manifestations are usually related. In some cases, it makes sense to predict those manifestations using a small but the same set of predictors. The best subset selection problem under the MMLR model is formulated as 
-$$\frac{1}{2n} \| Y - XB \|_{2}^2, \text{ s.t. } \| B \|_{0, 2} \leq s,$$
+$$\frac{1}{2n} \| Y - XB \|_{F}^2, \text{ s.t. } \| B \|_{0, 2} \leq s,$$
 where, $Y \in R^{n \times m}$ and $X \in R^{n \times p}$ record 
 $n$ observations' response and predictors, respectively. 
 Here $\| B \|_{0, 2} = \sum_{i = 1}^{p} I(B_{i\cdot} = {\bf 0})$, 
