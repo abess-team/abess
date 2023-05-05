@@ -31,7 +31,7 @@ Multi-Response Linear Regression
 # The best subset selection problem under the MMLR model is formulated as
 #
 # .. math::
-#   \frac{1}{2n} \| Y - XB \|_{2}^2, \text{ subject to: } \| B \|_{0, 2} \leq s,
+#   \frac{1}{2n} \| Y - XB \|_{F}^2, \text{ subject to: } \| B \|_{0, 2} \leq s,
 #
 # where, :math:`Y \in R^{n \times m}` and :math:`X \in R^{n \times p}` record
 # :math:`n` observations` response and predictors, respectively.
