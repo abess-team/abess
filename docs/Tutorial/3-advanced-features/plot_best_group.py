@@ -58,7 +58,9 @@ print('group index:\n', group)
 # %%
 # Then we can set the ``group`` argument in function. Besides, the
 # ``support_size`` here indicates the number of groups, instead of the
-# number of variables.
+# number of variables. Similarly, ``always_select``, ``A_init`` and other
+# parameters related to "index" should also be group index, instead of
+# the variable one.
 
 model1 = LinearRegression(support_size=range(3), group=group)
 model1.fit(data.x, data.y)
