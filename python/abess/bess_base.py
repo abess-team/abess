@@ -70,7 +70,8 @@ class bess_base(BaseEstimator):
         Initial active set before the first splicing.
     always_select : array-like, optional, default=None
         An array contains the indexes of variables
-        we want to consider in the model.
+        we want to consider in the model. For group selection,
+        it should be the indexes of groups (start from 0).
 
     max_iter : int, optional, default=20
         Maximum number of iterations taken for the
