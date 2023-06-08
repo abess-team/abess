@@ -41,7 +41,8 @@ class bess_base(BaseEstimator):
         - If alpha = 0, it indicates ordinary least square.
 
     fit_intercept : bool, optional, default=True
-        Whether to consider intercept in the model.
+        Whether to consider intercept in the model. We assume that the data
+        has been centered if fit_intercept=False.
 
     ic_type : {'aic', 'bic', 'gic', 'ebic', 'loss'}, optional, default='ebic'
         The type of criterion for choosing the support size if `cv=1`.
