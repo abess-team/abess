@@ -608,11 +608,8 @@ class bess_base(BaseEstimator):
                 sparse_matrix, self.splicing_type, self.important_search,
                 A_init_list, self.fit_intercept)
 
-        # print("linear fit end")
-        # print(len(result))
-        # print(result)
         self.coef_ = result[0].squeeze()
-        self.intercept_ = result[1].squeeze() if self.fit_intercept else None
+        self.intercept_ = result[1].squeeze()
         self.train_loss_ = result[2]
         # self.test_loss_ = result[3]
         # self.ic_ = result[4]

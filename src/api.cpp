@@ -176,6 +176,9 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
         }
     }
 
+    // suppose X has been centered for no-intercept model
+    if (normalize_type > 0 && !fit_intercept) normalize_type = 3;
+
     // parameter list
     Parameters parameters(sequence, lambda_seq, s_min, s_max);
 
