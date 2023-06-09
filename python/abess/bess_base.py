@@ -40,6 +40,10 @@ class bess_base(BaseEstimator):
 
         - If alpha = 0, it indicates ordinary least square.
 
+    fit_intercept : bool, optional, default=True
+        Whether to consider intercept in the model. We assume that the data
+        has been centered if fit_intercept=False.
+
     ic_type : {'aic', 'bic', 'gic', 'ebic', 'loss'}, optional, default='ebic'
         The type of criterion for choosing the support size if `cv=1`.
     ic_coef : float, optional, default=1.0
@@ -104,7 +108,7 @@ class bess_base(BaseEstimator):
     coef_ : array-like, shape(p_features, ) or (p_features, M_responses)
         Estimated coefficients for the best subset selection problem.
     intercept_ : float or array-like, shape(M_responses,)
-        The intercept in the model.
+        The intercept in the model when fit_intercept=True.
     train_loss_ : float
         The loss on training data.
     eval_loss_ : float
@@ -137,6 +141,7 @@ class bess_base(BaseEstimator):
         s_max=None,
         group=None,
         alpha=None,
+        fit_intercept=True,
         ic_type="ebic",
         ic_coef=1.0,
         cv=1,
@@ -168,6 +173,7 @@ class bess_base(BaseEstimator):
         self.is_warm_start = is_warm_start
         self.support_size = support_size
         self.alpha = alpha
+        self.fit_intercept = fit_intercept
         self.n_features_in_: int
         self.n_iter_: int
         self.s_min = s_min
@@ -601,11 +607,8 @@ class bess_base(BaseEstimator):
                 self.primary_model_fit_epsilon, early_stop,
                 self.approximate_Newton, self.thread, self.covariance_update,
                 sparse_matrix, self.splicing_type, self.important_search,
-                A_init_list)
+                A_init_list, self.fit_intercept)
 
-        # print("linear fit end")
-        # print(len(result))
-        # print(result)
         self.coef_ = result[0].squeeze()
         self.intercept_ = result[1].squeeze()
         self.train_loss_ = result[2]

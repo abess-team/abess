@@ -50,14 +50,14 @@ class TestAlgorithm:
         data = load_data("gaussian")
         test_data = load_data("gaussian_test")
 
-        def assert_reg(coef):
+        def assert_reg(coef, fit_intercept=True, rel=0.01, abs=0.01):
             if (sys.version_info[0] < 3 or sys.version_info[1] < 6):
                 return
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
-            reg = LinearRegression()
+            reg = LinearRegression(fit_intercept=fit_intercept)
             reg.fit(new_x, data.y.reshape(-1))
-            assert_value(coef[nonzero], reg.coef_)
+            assert_value(coef[nonzero], reg.coef_, rel, abs)
 
         # null
         check_estimator(abess.LinearRegression())
@@ -65,6 +65,12 @@ class TestAlgorithm:
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
         assert_reg(model1.coef_)
+
+        model0 = abess.LinearRegression(fit_intercept=False)
+        model0.fit(data.x, data.y)
+        assert model0.intercept_ == 0
+        assert_fit(model0.coef_, data.coef_)
+        assert_reg(model0.coef_, fit_intercept=False)
 
         # predict
         y = model1.predict(test_data.x)
@@ -127,14 +133,15 @@ class TestAlgorithm:
         data = load_data("binomial")
         test_data = load_data("binomial_test")
 
-        def assert_reg(coef):
+        def assert_reg(coef, fit_intercept=True, rel=0.01, abs=0.01):
             if sys.version_info[0] + 0.1 * sys.version_info[1] < 3.6:
                 return
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
-            reg = LogisticRegression(penalty="none")
+            reg = LogisticRegression(
+                penalty="none", fit_intercept=fit_intercept)
             reg.fit(new_x, data.y)
-            assert_value(coef[nonzero], reg.coef_)
+            assert_value(coef[nonzero], reg.coef_, rel, abs)
 
         # null
         check_estimator(abess.LogisticRegression())
@@ -142,6 +149,12 @@ class TestAlgorithm:
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
         assert_reg(model1.coef_)
+
+        model0 = abess.LogisticRegression(fit_intercept=False)
+        model0.fit(data.x, data.y)
+        assert model0.intercept_ == 0
+        assert_fit(model0.coef_, data.coef_)
+        assert_reg(model0.coef_, fit_intercept=False)
 
         # predict
         prob = model1.predict_proba(test_data.x)
@@ -245,15 +258,16 @@ class TestAlgorithm:
         data = load_data("poisson")
         test_data = load_data("poisson_test")
 
-        def assert_reg(coef):
+        def assert_reg(coef, fit_intercept=True, rel=0.1, abs=0.1):
             if sys.version_info[0] + 0.1 * sys.version_info[1] < 3.6:
                 return
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
             reg = PoissonRegressor(
+                fit_intercept=fit_intercept,
                 alpha=0, tol=1e-6, max_iter=200)
             reg.fit(new_x, data.y)
-            assert_value(coef[nonzero], reg.coef_, 0.1, 0.1)
+            assert_value(coef[nonzero], reg.coef_, rel, abs)
 
         # null
         check_estimator(abess.PoissonRegression())
@@ -261,6 +275,12 @@ class TestAlgorithm:
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
         assert_reg(model1.coef_)
+
+        model0 = abess.PoissonRegression(fit_intercept=False)
+        model0.fit(data.x, data.y)
+        assert model0.intercept_ == 0
+        assert_fit(model0.coef_, data.coef_)
+        assert_reg(model0.coef_, fit_intercept=False)
 
         # predict
         y = model1.predict(test_data.x)
@@ -303,6 +323,11 @@ class TestAlgorithm:
         model1 = abess.MultiTaskRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
+
+        model0 = abess.MultiTaskRegression(fit_intercept=False)
+        model0.fit(data.x, data.y)
+        assert np.count_nonzero(model0.intercept_) == 0
+        assert_fit(model0.coef_, data.coef_)
 
         # predict
         y = model1.predict(test_data.x)
@@ -359,6 +384,11 @@ class TestAlgorithm:
         model1 = abess.MultinomialRegression()
         model1.fit(data.x, data.y)
         assert_fit(model1.coef_, data.coef_)
+
+        model0 = abess.MultinomialRegression(fit_intercept=False)
+        model0.fit(data.x, data.y)
+        assert np.count_nonzero(model0.intercept_) == 0
+        assert_fit(model0.coef_, data.coef_)
 
         # predict
         y = model1.predict(test_data.x)
@@ -487,6 +517,11 @@ class TestAlgorithm:
         assert_nan(model1.coef_)
         assert_fit(data.coef_, model1.coef_)
         assert_value(data.coef_, model1.coef_, 1., 1.)
+
+        model0 = abess.GammaRegression(support_size=k, fit_intercept=False)
+        model0.fit(data.x, data.y)
+        assert model0.intercept_ == 0
+        assert_nan(model0.coef_)
 
         # predict
         model1.predict(data.x)

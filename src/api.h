@@ -112,7 +112,7 @@ List abessGLM_API(Eigen::MatrixXd x, Eigen::MatrixXd y, int n, int p, int normal
                   Eigen::VectorXi g_index, Eigen::VectorXi always_select, int primary_model_fit_max_iter,
                   double primary_model_fit_epsilon, bool early_stop, bool approximate_Newton, int thread,
                   bool covariance_update, bool sparse_matrix, int splicing_type, int sub_search,
-                  Eigen::VectorXi cv_fold_id, Eigen::VectorXi A_init);
+                  Eigen::VectorXi cv_fold_id, Eigen::VectorXi A_init, bool fit_intercept);
 
 List abessPCA_API(Eigen::MatrixXd x, int n, int p, int normalize_type, Eigen::VectorXd weight, Eigen::MatrixXd sigma,
                   int max_iter, int exchange_num, int path_type, bool is_warm_start, int ic_type, double ic_coef,

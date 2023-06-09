@@ -426,22 +426,22 @@ void add_weight(Eigen::SparseMatrix<double> &x, Eigen::MatrixXd &y, Eigen::Vecto
 
 void add_constant_column(Eigen::MatrixXd &X_full, Eigen::MatrixXd &X, bool add_constant) {
     if (!add_constant) {
-        X_full = X;
+        X_full = X.eval();
         return;
     }
     X_full.resize(X.rows(), X.cols() + 1);
-    X_full.rightCols(X.cols()) = X;
+    X_full.rightCols(X.cols()) = X.eval();
     X_full.col(0) = Eigen::MatrixXd::Ones(X.rows(), 1);
     return;
 }
 
 void add_constant_column(Eigen::SparseMatrix<double> &X_full, Eigen::SparseMatrix<double> &X, bool add_constant) {
     if (!add_constant) {
-        X_full = X;
+        X_full = X.eval();
         return;
     }
     X_full.resize(X.rows(), X.cols() + 1);
-    X_full.rightCols(X.cols()) = X;
+    X_full.rightCols(X.cols()) = X.eval();
     for (int i = 0; i < X.rows(); i++) {
         X_full.insert(i, 0) = 1.0;
     }
@@ -450,48 +450,50 @@ void add_constant_column(Eigen::SparseMatrix<double> &X_full, Eigen::SparseMatri
 
 void combine_beta_coef0(Eigen::VectorXd &beta_full, Eigen::VectorXd &beta, double &coef0, bool add_constant) {
     if (!add_constant) {
-        beta_full = beta;
+        beta_full = beta.eval();
         return;
     }
     int p = beta.rows();
     beta_full.resize(p + 1);
     beta_full(0) = coef0;
-    beta_full.tail(p) = beta;
+    beta_full.tail(p) = beta.eval();
     return;
 }
 
 void combine_beta_coef0(Eigen::MatrixXd &beta_full, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, bool add_constant) {
     if (!add_constant) {
-        beta_full = beta;
+        beta_full = beta.eval();
         return;
     }
     int p = beta.rows();
     int M = beta.cols();
     beta_full.resize(p + 1, M);
-    beta_full.row(0) = coef0.transpose();
-    beta_full.bottomRows(p) = beta;
+    beta_full.row(0) = coef0.transpose().eval();
+    beta_full.bottomRows(p) = beta.eval();
     return;
 }
 
 void extract_beta_coef0(Eigen::VectorXd &beta_full, Eigen::VectorXd &beta, double &coef0, bool add_constant) {
     if (!add_constant) {
-        beta = beta_full;
+        beta = beta_full.eval();
+        coef0 = 0;
         return;
     }
     int p = beta_full.rows() - 1;
     coef0 = beta_full(0);
-    beta = beta_full.tail(p);
+    beta = beta_full.tail(p).eval();
     return;
 }
 
 void extract_beta_coef0(Eigen::MatrixXd &beta_full, Eigen::MatrixXd &beta, Eigen::VectorXd &coef0, bool add_constant) {
     if (!add_constant) {
-        beta = beta_full;
+        beta = beta_full.eval();
+        coef0 = Eigen::VectorXd::Zero(beta_full.cols());
         return;
     }
     int p = beta_full.rows() - 1;
-    coef0 = beta_full.row(0).transpose();
-    beta = beta_full.bottomRows(p);
+    coef0 = beta_full.row(0).transpose().eval();
+    beta = beta_full.bottomRows(p).eval();
     return;
 }
 
