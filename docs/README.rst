@@ -190,17 +190,21 @@ the other best subset selection problems.
 What's new
 ===========
 
-Version 0.4.5:
+Unreleased
+----------
 
-- `abess` Python package can be installed via `conda`. 
-- Easier installation for Python users
-- ``abess`` R package is is highlighted as one of the core packages in `CRAN Task View: Machine Learning & Statistical Learning <https://cran.r-project.org/web/views/MachineLearning.html>`__.
-- Support predicting survival function in `abess.linear.CoxPHSurvivalAnalysis`.
-- Rename estimators in Python. Please check `here <https://abess.readthedocs.io/en/latest/Python-package/index.html>`__.
+-  Use `CMake <https://cmake.org/>`__ on compiling to increase scalability.
+-  Support no-intercept model for most regressors in `abess.linear` with argument `fit_intercept=False`. We assume that the data has been centered for these models.
 
-New best subset selection tasks: 
 
-- Generalized linear model for ordinal regression (a.k.a rank learning in some machine learning literature).
+Version 0.4.6
+-------------
+
+-  Support `score` function for all GLM estimators.
+-  Rearrange some arguments to improve legibility. 
+   Please check `here <https://abess.readthedocs.io/en/latest/Python-package/index.html>`__ for the latest API.
+-  Better docstring, e.g. move important arguments to the front.
+-  Combine `metrics.py` and `functions.py`.
 
 Citation         
 ==========

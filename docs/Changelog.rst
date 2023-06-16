@@ -7,6 +7,7 @@ Unreleased
 -  Python package
 
    -  Use `CMake <https://cmake.org/>`__ on compiling to increase scalability.
+   -  Support no-intercept model for most regressors in `abess.linear` with argument `fit_intercept=False`. We assume that the data has been centered for these models.
 
 -  R package
 
