@@ -586,12 +586,15 @@ class bess_base(BaseEstimator):
             always_select_list = np.zeros(0, dtype="int32")
         else:
             always_select_list = np.array(self.always_select, dtype="int32")
-        
+
         # beta range
         if beta_low is None:
             beta_low = -sys.float_info.max
         if beta_high is None:
             beta_high = sys.float_info.max
+        if beta_low > beta_high:
+            raise ValueError(
+                "Please make sure beta_low <= beta_high.")
 
         # unused
         n_lambda = 100

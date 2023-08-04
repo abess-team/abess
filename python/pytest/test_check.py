@@ -209,6 +209,15 @@ class TestCheck:
         else:
             assert False
 
+        # clipping
+        try:
+            model = abess.LinearRegression()
+            model.fit([[1]], [1], beta_low=1, beta_high=0)
+        except ValueError as e:
+            print(e)
+        else:
+            assert False
+
         # incompatible shape
         try:
             model.fit([1, 1, 1], [1])
