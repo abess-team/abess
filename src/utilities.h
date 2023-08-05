@@ -131,7 +131,7 @@ class Parameters {
         Rcout << "==> Parameter List:" << endl;
 #else
         std::cout << "==> Parameter List:" << endl;
-#endif        
+#endif
         for (int i = 0; i < (this->sequence).size(); i++) {
             int support_size = (this->sequence(i)).support_size;
             double lambda = (this->sequence(i)).lambda;
@@ -139,7 +139,7 @@ class Parameters {
             Rcout << "  support_size = " << support_size << ", lambda = " << lambda << endl;
 #else
             std::cout << "  support_size = " << support_size << ", lambda = " << lambda << endl;
-#endif  
+#endif
         }
     }
 };
@@ -506,6 +506,13 @@ void trunc(Eigen::VectorXd &vec, double *trunc_range) {
     for (int i = 0; i < vec.size(); i++) {
         trunc(vec(i), trunc_range);
     }
+}
+
+void trunc(Eigen::MatrixXd &mat, double *trunc_range) {
+    for (int i = 0; i < mat.rows(); i++)
+        for (int j = 0; j < mat.cols(); j++) {
+            trunc(mat(i, j), trunc_range);
+        }
 }
 
 Eigen::MatrixXd rowwise_add(Eigen::MatrixXd &m, Eigen::VectorXd &v) { return m.rowwise() + v.transpose(); }

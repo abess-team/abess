@@ -114,6 +114,8 @@ class Algorithm {
     int sub_search;           // size of sub_searching in splicing
     int U_size;
 
+    double beta_range[2] = {-DBL_MAX, DBL_MAX};
+
     Algorithm() = default;
 
     virtual ~Algorithm(){};
@@ -160,6 +162,17 @@ class Algorithm {
     void update_train_mask(Eigen::VectorXi &train_mask) { this->train_mask = train_mask; }
 
     void update_exchange_num(int exchange_num) { this->exchange_num = exchange_num; }
+
+    void update_beta_range(double beta_low, double beta_high) {
+        if (beta_low > beta_high) {
+            this->beta_range[0] = -DBL_MAX;
+            this->beta_range[1] = DBL_MAX;
+        } else {
+            this->beta_range[0] = beta_low;
+            this->beta_range[1] = beta_high;
+        }
+        // std::cout << "beta range: " << beta_low << "," << beta_high << std::endl;
+    }
 
     virtual void update_tau(int train_n, int N) {
         if (train_n == 1) {

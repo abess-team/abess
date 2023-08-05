@@ -76,13 +76,16 @@ template <class T1, class T2, class T3, class T4>
 List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::VectorXd weight, int algorithm_type,
                    int path_type, bool is_warm_start, int eval_type, double ic_coef, int Kfold, Parameters parameters,
                    int screening_size, Eigen::VectorXi g_index, bool early_stop, int thread, bool sparse_matrix,
-                   Eigen::VectorXi &cv_fold_id, Eigen::VectorXi &A_init,
+                   Eigen::VectorXi &cv_fold_id, Eigen::VectorXi &A_init, double beta_low, double beta_high,
                    vector<Algorithm<T1, T2, T3, T4> *> algorithm_list) {
 #ifndef R_BUILD
     std::srand(123);
 #endif
 
     int algorithm_list_size = algorithm_list.size();
+    for (int i = 0; i < algorithm_list_size; i++) {
+        algorithm_list[i]->update_beta_range(beta_low, beta_high);
+    }
 
     // Size of the candidate set:
     //     usually it is equal to `p`, the number of variable,

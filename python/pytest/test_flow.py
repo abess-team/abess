@@ -143,6 +143,56 @@ class TestWorkflow:
         assert_value(model1.intercept_, model2.intercept_)
 
     @staticmethod
+    def test_clipping():
+        np.random.seed(0)
+        n = 200
+        p = 20
+        k = 5
+
+        # range: (0, 10)
+        coef1 = np.zeros(p)
+        coef1[np.random.choice(p, k, replace=False)
+              ] = np.random.uniform(0, 10, size=k)
+        data1 = abess.make_glm_data(
+            n=n, p=p, k=k, family='gaussian', coef_=coef1)
+
+        model1 = abess.LinearRegression()
+        model1.fit(data1.x, data1.y, beta_low=0, beta_high=10)
+        assert_value(model1.coef_, data1.coef_, 0.1, 0.1)
+
+        # range: (-100, -90)
+        coef2 = np.zeros(p)
+        coef2[np.random.choice(p, k, replace=False)
+              ] = np.random.uniform(-100, -90, size=k)
+        data2 = abess.make_glm_data(
+            n=n, p=p, k=k, family='gaussian', coef_=coef2)
+
+        model2 = abess.LinearRegression()
+        model2.fit(data2.x, data2.y, beta_low=-100, beta_high=-90)
+        assert_value(model2.coef_, data2.coef_, 0.1, 0.1)
+
+        # one-side
+        model1.fit(data1.x, data1.y, beta_low=0)
+        assert_value(model1.coef_, data1.coef_, 0.1, 0.1)
+        model1.fit(data1.x, data1.y, beta_high=10)
+        assert_value(model1.coef_, data1.coef_, 0.1, 0.1)
+
+        # force range
+        coef3 = np.zeros(p)
+        coef3[np.random.choice(p, k, replace=False)
+              ] = np.random.choice([-11, 11], size=k)
+        data3 = abess.make_glm_data(
+            n=n, p=p, k=k, family='gaussian', coef_=coef3)
+
+        model3 = abess.LinearRegression()
+        model3.fit(data3.x, data3.y, beta_low=-10, beta_high=10, is_normal=False)
+        assert_fit(model3.coef_, data3.coef_)
+        assert (model3.coef_ >= -10).all()
+        assert (model3.coef_ <= 10).all()
+        assert (model3.coef_[data3.coef_ == -11] == -10).all()
+        assert (model3.coef_[data3.coef_ == 11] == 10).all()
+
+    @staticmethod
     def test_possible_input():
         np.random.seed(2)
         n = 100

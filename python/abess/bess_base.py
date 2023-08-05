@@ -1,3 +1,4 @@
+import sys
 import numbers
 import warnings
 import numpy as np
@@ -207,7 +208,9 @@ class bess_base(BaseEstimator):
             is_normal=True,
             sample_weight=None,
             cv_fold_id=None,
-            sparse_matrix=False):
+            sparse_matrix=False,
+            beta_low=None,
+            beta_high=None):
         r"""
         The fit function is used to transfer
         the information of data and return the fit result.
@@ -584,6 +587,15 @@ class bess_base(BaseEstimator):
         else:
             always_select_list = np.array(self.always_select, dtype="int32")
 
+        # beta range
+        if beta_low is None:
+            beta_low = -sys.float_info.max
+        if beta_high is None:
+            beta_high = sys.float_info.max
+        if beta_low > beta_high:
+            raise ValueError(
+                "Please make sure beta_low <= beta_high.")
+
         # unused
         n_lambda = 100
         early_stop = False
@@ -607,7 +619,7 @@ class bess_base(BaseEstimator):
                 self.primary_model_fit_epsilon, early_stop,
                 self.approximate_Newton, self.thread, self.covariance_update,
                 sparse_matrix, self.splicing_type, self.important_search,
-                A_init_list, self.fit_intercept)
+                A_init_list, self.fit_intercept, beta_low, beta_high)
 
         self.coef_ = result[0].squeeze()
         self.intercept_ = result[1].squeeze()

@@ -79,6 +79,7 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
             // Fitting method 2: Iteratively Reweighted Least Squares
             return this->_IRLS_fit(X, y, weights, beta, coef0, loss0, A, g_index, g_size);
         }
+        trunc(beta, this->beta_range);
         return true;
     };
     virtual double loss_function(T4 &X, T1 &y, Eigen::VectorXd &weights, T2 &beta, T3 &coef0, Eigen::VectorXi &A,
@@ -421,6 +422,8 @@ class abessLm : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
         Eigen::VectorXd beta_full = XTX.ldlt().solve(XTy);
 
         extract_beta_coef0(beta_full, beta, coef0, this->fit_intercept);
+
+        trunc(beta, this->beta_range);
         return true;
     };
 
@@ -777,6 +780,7 @@ class abessCox : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> 
         }
 
         beta = beta0;
+        trunc(beta, this->beta_range);
         return true;
     };
 
@@ -990,6 +994,7 @@ class abessMLm : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::Vecto
         Eigen::MatrixXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
 
         extract_beta_coef0(beta0, beta, coef0, this->fit_intercept);
+        trunc(beta, this->beta_range);
         return true;
         // if (X.cols() == 0)
         // {
@@ -1351,6 +1356,7 @@ class abessMultinomial : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eige
         }
 
         extract_beta_coef0(beta0, beta, coef0, this->fit_intercept);
+        trunc(beta, this->beta_range);
         return true;
     };
 
@@ -1566,6 +1572,7 @@ class abessGamma : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4
             // Fitting method 2: Iteratively Reweighted Least Squares
             return this->_IRLS_fit(X, y, weights, beta, coef0, loss0, A, g_index, g_size);
         }
+        trunc(beta, this->beta_range);
         return true;
     };
 };
@@ -1799,6 +1806,7 @@ class abessOrdinal : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::V
             beta.col(i) = coef.tail(p).eval();
         }
         coef0.head(k) = coef.head(k);
+        trunc(beta, this->beta_range);
         return true;
     }
 
