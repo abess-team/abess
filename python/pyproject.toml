@@ -23,7 +23,7 @@ skip = "pp*"
 test-skip = """\
     *manylinux_i686 \
     *musllinux* \
-    cp310-win32 cp311-win32
+    *win32
     """
 test-requires = "pytest"
 test-command = "pytest {package}/pytest -v"
@@ -39,9 +39,9 @@ archs = ["x86_64", "universal2", "arm64"]
 # select = "*musllinux*"
 # before-all = "apk add openblas-dev lapack-dev jpeg-dev"
 
-[[tool.cibuildwheel.overrides]]
-select = "*win32"
-before-test = "pip install lifelines \"pandas<2.0.0\" \"scipy<=1.9.1\" \"scikit-learn<=0.24.2\""
+# [[tool.cibuildwheel.overrides]]
+# select = "*win32"
+# before-test = "pip install lifelines \"pandas<2.0.0\" \"scipy<=1.9.1\" \"scikit-learn<=0.24.2\""
 
 [[tool.cibuildwheel.overrides]]
 select = "*macos*"
