@@ -46,3 +46,7 @@ archs = ["x86_64", "universal2", "arm64"]
 [[tool.cibuildwheel.overrides]]
 select = "*macos*"
 before-all = "brew install libomp" # install openmp library
+
+[[tool.cibuildwheel.overrides]]
+select = "cp36-win* cp37-win*"
+before-test = "pip install lifelines \"pandas<2.0.0\" scipy scikit-learn \"joblib<1.3.0\""
