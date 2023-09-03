@@ -286,7 +286,7 @@ class make_glm_data:
             eta = eta - np.abs(np.max(eta)) - 10
             eta = -1 / eta
             # set the shape para of gamma uniformly in [0.1,100.1]
-            shape_para = 100 * np.random.uniform(0, 1, n) + 0.1
+            shape_para = 100 * np.random.uniform(0, 1) + 0.1
             y = np.random.gamma(
                 shape=shape_para,
                 scale=eta / shape_para,

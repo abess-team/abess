@@ -393,7 +393,7 @@ generate.data <- function(n,
     # set coef_0 as + abs(min(eta)) + 1
     eta <- eta + abs(min(eta)) + 10
     # set the shape parameter of gamma uniformly in [0.1, 100.1]
-    shape_para <- 100 * runif(n) + 0.1
+    shape_para <- rep(100 * runif(1) + 0.1, n)
     y <-
       stats::rgamma(n, shape = shape_para, rate = shape_para * eta)
   }
