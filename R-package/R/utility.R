@@ -1,3 +1,9 @@
+.onAttach <- 
+  function(libname, pkgname) {
+    packageStartupMessage("\n Thank you for using abess! To acknowledge our work, please cite the package:")
+    packageStartupMessage("\n Zhu J, Wang X, Hu L, Huang J, Jiang K, Zhang Y, Lin S, Zhu J (2022). “abess: A Fast Best Subset Selection Library in Python and R.” Journal of Machine Learning Research, 23(202), 1–7. https://www.jmlr.org/papers/v23/21-1060.html.")
+  }
+
 match_support_size <- function(object, support.size) {
   supp_size_index <- match(support.size, object[["support.size"]])
   if (anyNA(supp_size_index)) {
