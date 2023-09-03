@@ -406,7 +406,7 @@ class abessLm : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
                            double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
         // int n = x.rows();
         // int p = x.cols();
-        if (x.cols() == 0) return true;
+        //if (x.cols() == 0) return true;
 
         // to ensure
         T4 X_full;
@@ -982,7 +982,7 @@ class abessMLm : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::Vecto
         int n = x.rows();
         int p = x.cols();
         int M = y.cols();
-        if (p == 0) return true;
+        //if (p == 0) return true;
 
         // to ensure
         T4 X;
@@ -1171,7 +1171,7 @@ class abessMultinomial : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eige
         int n = x.rows();
         int p = x.cols();
         int M = y.cols();
-        if (p == 0) return true;
+        //if (p == 0) return true;
 
         T4 X;
         add_constant_column(X, x, this->fit_intercept);
