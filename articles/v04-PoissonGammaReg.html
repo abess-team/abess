@@ -120,11 +120,13 @@
 
       
 
-      </header><script src="v04-PoissonGammaReg_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Positive response: Poisson and Gamma regression</h1>
-                        <h4 data-toc-skip class="author">Liyuan Hu, Jin Zhu, Borui Tang</h4>
+      <h1 data-toc-skip>Positive response: Poisson and Gamma
+regression</h1>
+                        <h4 data-toc-skip class="author">Liyuan Hu, Jin
+Zhu, Borui Tang</h4>
             
             <h4 data-toc-skip class="date">2021/11/3</h4>
       
@@ -138,10 +140,23 @@
 <div class="section level2">
 <h2 id="poisson-regression">Poisson Regression<a class="anchor" aria-label="anchor" href="#poisson-regression"></a>
 </h2>
-<p>Poisson regression involves regression models in which the response variable is in the form of counts. For example, the count of number of car accidents or number of customers in line at a reception desk. The response variable is assumed to be generated from Poisson distribution.</p>
+<p>Poisson regression involves regression models in which the response
+variable is in the form of counts. For example, the count of number of
+car accidents or number of customers in line at a reception desk. The
+response variable is assumed to be generated from Poisson
+distribution.</p>
 <p>The Poisson regression is defined as <span class="math display">\[
 \log(E(y_i|x_i)) = x_i^T \beta.
-\]</span> We generate some artificial data using the following logic. Consider a dataset containing the information of complain calls about 100 companies over a period of 10 years. <code>count</code> gives the number of complains, and the dataset also have other variables like <code>age</code>, <code>sex</code>, <code>job</code>, <code>education</code>, <code>region</code>, <code>marriage</code>. The <code><a href="../reference/generate.data.html">generate.data()</a></code> function allow you to generate simulated data. By specifying <code>support.size = 3</code>, here we set only 3 of the 5 above mentioned variable have effect on the expectation of the response <code>count</code>.</p>
+\]</span> We generate some artificial data using the following logic.
+Consider a dataset containing the information of complain calls about
+100 companies over a period of 10 years. <code>count</code> gives the
+number of complains, and the dataset also have other variables like
+<code>age</code>, <code>sex</code>, <code>job</code>,
+<code>education</code>, <code>region</code>, <code>marriage</code>. The
+<code><a href="../reference/generate.data.html">generate.data()</a></code> function allow you to generate simulated
+data. By specifying <code>support.size = 3</code>, here we set only 3 of
+the 5 above mentioned variable have effect on the expectation of the
+response <code>count</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, p <span class="op">=</span> <span class="fl">6</span>, support.size <span class="op">=</span> <span class="fl">3</span>,family <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span></span>
@@ -164,7 +179,12 @@
 <div class="section level2">
 <h2 id="best-subset-selection-for-poisson-regression">Best Subset Selection for Poisson Regression<a class="anchor" aria-label="anchor" href="#best-subset-selection-for-poisson-regression"></a>
 </h2>
-<p>The <code><a href="../reference/abess.html">abess()</a></code> function in the <code>abess</code> package allows you to perform best subset selection in a highly efficient way. You can call the <code><a href="../reference/abess.html">abess()</a></code> function using formula just like what you do with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>. Or you can specify the design matrix <code>x</code> and the response <code>y</code>. To carry out a poisson regression, we should set the <code>family = "poisson"</code>.</p>
+<p>The <code><a href="../reference/abess.html">abess()</a></code> function in the <code>abess</code> package
+allows you to perform best subset selection in a highly efficient way.
+You can call the <code><a href="../reference/abess.html">abess()</a></code> function using formula just like
+what you do with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>. Or you can specify the design matrix
+<code>x</code> and the response <code>y</code>. To carry out a poisson
+regression, we should set the <code>family = "poisson"</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span>
 <span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, y <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">y</span>, family <span class="op">=</span> <span class="st">"poisson"</span><span class="op">)</span></span>
@@ -175,7 +195,11 @@
 <div class="section level2">
 <h2 id="interpret-the-result">Interpret the Result<a class="anchor" aria-label="anchor" href="#interpret-the-result"></a>
 </h2>
-<p>Hold on, we aren’t finished yet. After get the estimator, we can further do more exploring work. The output of <code><a href="../reference/abess.html">abess()</a></code> function contains the best model for all the candidate support size in the <code>support.size</code>. You can use some generic function to quickly draw some information of those estimators.</p>
+<p>Hold on, we aren’t finished yet. After get the estimator, we can
+further do more exploring work. The output of <code><a href="../reference/abess.html">abess()</a></code>
+function contains the best model for all the candidate support size in
+the <code>support.size</code>. You can use some generic function to
+quickly draw some information of those estimators.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># draw the estimated coefficients on all candidate support size</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
@@ -214,7 +238,11 @@
 <span><span class="co">## 5            4 -1013.1902 -2015.4350</span></span>
 <span><span class="co">## 6            5 -1013.6433 -2013.6050</span></span>
 <span><span class="co">## 7            6 -1013.6466 -2010.8751</span></span></code></pre>
-<p>Prediction is allowed for all the estimated models. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If a <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
+<p>Prediction is allowed for all the estimated models. Just call
+<code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code>
+set to the size of model you are interested in. If a
+<code>support.size</code> is not provided, prediction will be made on
+the model with best tuning value.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##              3         4</span></span>
@@ -224,20 +252,36 @@
 <span><span class="co">## [4,] -1.098245 -1.302048</span></span>
 <span><span class="co">## [5,] -2.200387 -2.211218</span></span>
 <span><span class="co">## [6,]  4.107200  4.103329</span></span></code></pre>
-<p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including <code>coef</code> for the coefficient value, <code>l2norm</code> for the L2-norm of the coefficients, <code>dev</code> for the deviance and <code>tune</code> for the tuning value. Default if <code>coef</code>.</p>
+<p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change
+of models with the change of support size. There are 5 types of graph
+you can generate, including <code>coef</code> for the coefficient value,
+<code>l2norm</code> for the L2-norm of the coefficients,
+<code>dev</code> for the deviance and <code>tune</code> for the tuning
+value. Default if <code>coef</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
-<p>The graph shows that, beginning from the most dense model, the 3rd variable (job) is included in the active set until the support size reaches 0.</p>
-<p>We can also generate a graph about the tuning value. Remember that we use the default GIC to tune the support size.</p>
+<p>The graph shows that, beginning from the most dense model, the 3rd
+variable (job) is included in the active set until the support size
+reaches 0.</p>
+<p>We can also generate a graph about the tuning value. Remember that we
+use the default GIC to tune the support size.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
-<p>The tuning value reaches the lowest point at 3. And We might choose the estimated model with support size equals 6 as our final model. In fact, the tuning values of different model sizes are provided in <code>tune.value</code> of the <code>abess</code> object. You can get the best model size through the following call.</p>
+<p>The tuning value reaches the lowest point at 3. And We might choose
+the estimated model with support size equals 6 as our final model. In
+fact, the tuning values of different model sizes are provided in
+<code>tune.value</code> of the <code>abess</code> object. You can get
+the best model size through the following call.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">abess_fit</span><span class="op">$</span><span class="va">support.size</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">$</span><span class="va">tune.value</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 3</span></span></code></pre>
-<p>To extract the specified model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.abess.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals to 3.</p>
+<p>To extract the specified model from the <code>abess</code> object, we
+can call the <code><a href="../reference/extract.abess.html">extract()</a></code> function with a given
+<code>support.size</code>. If <code>support.size</code> is not provided,
+the model with the best tuning value will be returned. Here we extract
+the model with support size equals to 3.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best.model</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></span></code></pre></div>
@@ -267,17 +311,32 @@
 <span><span class="co">## education 0.7481282</span></span>
 <span><span class="co">## region    0.6772810</span></span>
 <span><span class="co">## marriage  .</span></span></code></pre>
-<p>The return is a list containing the basic information of the estimated model. The best model has estimated coefficients every close to the true coefficients and it successfully recovers the correct support.</p>
+<p>The return is a list containing the basic information of the
+estimated model. The best model has estimated coefficients every close
+to the true coefficients and it successfully recovers the correct
+support.</p>
 </div>
 <div class="section level2">
 <h2 id="gamma-regression">Gamma Regression<a class="anchor" aria-label="anchor" href="#gamma-regression"></a>
 </h2>
-<p>Gamma regression can be used when you meet a positive continuous response variable such as payments for insurance claims, or the lifetime of a redundant system. It is well known that the density of Gamma distribution can be represented as a function of a mean parameter (<span class="math inline">\(\mu\)</span>) and a shape parameter (<span class="math inline">\(\alpha\)</span>), specifically, <span class="math display">\[
-f(y \mid \mu, \alpha)=\frac{1}{y \Gamma(\alpha)}\left(\frac{\alpha y}{\mu}\right)^{\alpha} e^{-\alpha y / \mu} {I}_{(0, \infty)}(y),
-\]</span> where <span class="math inline">\(I(\cdot)\)</span> denotes the indicator function. In the Gamma regression model, response variable IS assumed to follow Gamma distribution. Specifically, <span class="math display">\[
+<p>Gamma regression can be used when you meet a positive continuous
+response variable such as payments for insurance claims, or the lifetime
+of a redundant system. It is well known that the density of Gamma
+distribution can be represented as a function of a mean parameter (<span class="math inline">\(\mu\)</span>) and a shape parameter (<span class="math inline">\(\alpha\)</span>), specifically, <span class="math display">\[
+f(y \mid \mu, \alpha)=\frac{1}{y \Gamma(\alpha)}\left(\frac{\alpha
+y}{\mu}\right)^{\alpha} e^{-\alpha y / \mu} {I}_{(0, \infty)}(y),
+\]</span> where <span class="math inline">\(I(\cdot)\)</span> denotes
+the indicator function. In the Gamma regression model, response variable
+IS assumed to follow Gamma distribution. Specifically, <span class="math display">\[
 y_i \sim Gamma(\mu_i, \alpha),
-\]</span> where <span class="math inline">\(1/\mu_i = x_i^T\beta\)</span>.</p>
-<p>We apply the above procedure for gamma regression simply by changing <code>family = "poisson"</code> to <code>family = "gamma"</code>. This time we consider the response variables as (continuous) levels of satisfaction. Also, instead of GIC, we carry out cross validation to tune the support size by setting <code>tune.type = "cv"</code> in <code>abess</code>.</p>
+\]</span> where <span class="math inline">\(1/\mu_i =
+x_i^T\beta\)</span>.</p>
+<p>We apply the above procedure for gamma regression simply by changing
+<code>family = "poisson"</code> to <code>family = "gamma"</code>. This
+time we consider the response variables as (continuous) levels of
+satisfaction. Also, instead of GIC, we carry out cross validation to
+tune the support size by setting <code>tune.type = "cv"</code> in
+<code>abess</code>.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># generate data</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, p <span class="op">=</span> <span class="fl">6</span>, support.size <span class="op">=</span> <span class="fl">3</span>, family <span class="op">=</span> <span class="st">"gamma"</span><span class="op">)</span></span>
@@ -302,26 +361,26 @@ y_i \sim Gamma(\mu_i, \alpha),
 <span><span class="co"># draw the estimated coefficients on all candidate support size</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 7 x 7 sparse Matrix of class "dgCMatrix"</span></span>
-<span><span class="co">##                     0         1          2          3          4          5</span></span>
-<span><span class="co">## (intercept) -342.3786 -433.5399 -449.27779 -453.62074 -454.59784 -456.83735</span></span>
-<span><span class="co">## age            .         .         .          .          .         12.70809</span></span>
-<span><span class="co">## sex            .         .         .          .         17.01286   15.27728</span></span>
-<span><span class="co">## job            .         .      -105.29506  -84.15002  -85.32491  -87.44926</span></span>
-<span><span class="co">## education      .         .         .        -72.27035  -71.99079  -71.34322</span></span>
-<span><span class="co">## region         .      -132.5486  -72.92359  -54.95904  -58.83054  -61.00715</span></span>
-<span><span class="co">## marriage       .         .         .          .          .          .      </span></span>
-<span><span class="co">##                        6</span></span>
-<span><span class="co">## (intercept) -456.9221416</span></span>
-<span><span class="co">## age           12.6864623</span></span>
-<span><span class="co">## sex           15.1309584</span></span>
-<span><span class="co">## job          -87.4276072</span></span>
-<span><span class="co">## education    -71.2956647</span></span>
-<span><span class="co">## region       -61.0176080</span></span>
-<span><span class="co">## marriage      -0.8781846</span></span></code></pre>
+<span><span class="co">##                     0         1          2          3           4           5</span></span>
+<span><span class="co">## (intercept) -277.2181 -444.2161 -452.68331 -455.14237 -455.695426 -456.367166</span></span>
+<span><span class="co">## age            .         .         .          .          5.492959    6.962364</span></span>
+<span><span class="co">## sex            .         .         .          .          .         -11.180171</span></span>
+<span><span class="co">## job            .         .       -95.09321  -82.23074  -83.524509  -83.087220</span></span>
+<span><span class="co">## education      .         .         .        -65.20976  -65.602198  -65.501814</span></span>
+<span><span class="co">## region         .      -144.2534  -84.55928  -63.44139  -63.867102  -61.992224</span></span>
+<span><span class="co">## marriage       .         .         .          .          .           .       </span></span>
+<span><span class="co">##                       6</span></span>
+<span><span class="co">## (intercept) -456.420322</span></span>
+<span><span class="co">## age            6.794875</span></span>
+<span><span class="co">## sex          -11.346637</span></span>
+<span><span class="co">## job          -82.928554</span></span>
+<span><span class="co">## education    -65.419026</span></span>
+<span><span class="co">## region       -62.036716</span></span>
+<span><span class="co">## marriage      -1.783203</span></span></code></pre>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get the deviance of the estimated model on all candidate support size</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] -483.5917 -497.9948 -504.1093 -505.8884 -505.9648 -506.0127 -506.0129</span></span></code></pre>
+<pre><code><span><span class="co">## [1] -462.4805 -498.1930 -503.9212 -505.4016 -505.4117 -505.4433 -505.4442</span></span></code></pre>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># print the fitted model</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
@@ -330,23 +389,23 @@ y_i \sim Gamma(\mu_i, \alpha),
 <span><span class="co">##     tune.type = "cv")</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##   support.size       dev         cv</span></span>
-<span><span class="co">## 1            0 -483.5917  -95.64499</span></span>
-<span><span class="co">## 2            1 -497.9948  -97.58997</span></span>
-<span><span class="co">## 3            2 -504.1093 -100.19614</span></span>
-<span><span class="co">## 4            3 -505.8884  -91.42828</span></span>
-<span><span class="co">## 5            4 -505.9648  -91.40218</span></span>
-<span><span class="co">## 6            5 -506.0127  -91.36313</span></span>
-<span><span class="co">## 7            6 -506.0129  -91.38519</span></span></code></pre>
+<span><span class="co">## 1            0 -462.4805  -88.64702</span></span>
+<span><span class="co">## 2            1 -498.1930  -94.02883</span></span>
+<span><span class="co">## 3            2 -503.9212  -99.44427</span></span>
+<span><span class="co">## 4            3 -505.4016 -100.94370</span></span>
+<span><span class="co">## 5            4 -505.4117 -100.99783</span></span>
+<span><span class="co">## 6            5 -505.4433 -100.99987</span></span>
+<span><span class="co">## 7            6 -505.4442 -101.00528</span></span></code></pre>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># predict results for given support sizes</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##              3         4</span></span>
-<span><span class="co">## [1,] -611.7083 -627.6304</span></span>
-<span><span class="co">## [2,] -624.2342 -634.1109</span></span>
-<span><span class="co">## [3,] -696.4613 -711.9142</span></span>
-<span><span class="co">## [4,] -376.5679 -373.0617</span></span>
-<span><span class="co">## [5,] -357.9886 -365.3433</span></span>
-<span><span class="co">## [6,] -752.4414 -724.4093</span></span></code></pre>
+<span><span class="co">## [1,] -615.2481 -620.5800</span></span>
+<span><span class="co">## [2,] -645.9886 -648.1139</span></span>
+<span><span class="co">## [3,] -675.9042 -683.6169</span></span>
+<span><span class="co">## [4,] -378.1178 -369.1630</span></span>
+<span><span class="co">## [5,] -348.6865 -344.9450</span></span>
+<span><span class="co">## [6,] -735.3057 -744.0305</span></span></code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
@@ -366,14 +425,14 @@ y_i \sim Gamma(\mu_i, \alpha),
 <span><span class="co">##   .. ..@ Dimnames:List of 2</span></span>
 <span><span class="co">##   .. .. ..$ : chr [1:6] "age" "sex" "job" "education" ...</span></span>
 <span><span class="co">##   .. .. ..$ : chr "3"</span></span>
-<span><span class="co">##   .. ..@ x       : num [1:3] -84.2 -72.3 -55</span></span>
+<span><span class="co">##   .. ..@ x       : num [1:3] -82.2 -65.2 -63.4</span></span>
 <span><span class="co">##   .. ..@ factors : list()</span></span>
-<span><span class="co">##  $ intercept   : num -454</span></span>
+<span><span class="co">##  $ intercept   : num -455</span></span>
 <span><span class="co">##  $ support.size: num 3</span></span>
 <span><span class="co">##  $ support.vars: chr [1:3] "job" "education" "region"</span></span>
-<span><span class="co">##  $ support.beta: num [1:3] -84.2 -72.3 -55</span></span>
-<span><span class="co">##  $ dev         : num -506</span></span>
-<span><span class="co">##  $ tune.value  : num -91.4</span></span></code></pre>
+<span><span class="co">##  $ support.beta: num [1:3] -82.2 -65.2 -63.4</span></span>
+<span><span class="co">##  $ dev         : num -505</span></span>
+<span><span class="co">##  $ tune.value  : num -101</span></span></code></pre>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># estimated coefficients</span></span>
 <span><span class="va">best.model</span><span class="op">$</span><span class="va">beta</span></span></code></pre></div>
@@ -381,9 +440,9 @@ y_i \sim Gamma(\mu_i, \alpha),
 <span><span class="co">##                   3</span></span>
 <span><span class="co">## age         .      </span></span>
 <span><span class="co">## sex         .      </span></span>
-<span><span class="co">## job       -84.15002</span></span>
-<span><span class="co">## education -72.27035</span></span>
-<span><span class="co">## region    -54.95904</span></span>
+<span><span class="co">## job       -82.23074</span></span>
+<span><span class="co">## education -65.20976</span></span>
+<span><span class="co">## region    -63.44139</span></span>
 <span><span class="co">## marriage    .</span></span></code></pre>
 </div>
   </div>

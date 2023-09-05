@@ -120,7 +120,7 @@
 
       
 
-      </header><script src="v12-Robust-Principal-Component-Analysis_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Robust Principal Component Analysis</h1>
@@ -133,63 +133,108 @@
 
     
     
-<p>This vignette introduces what is adaptive best subset selection robust principal component analysis and then we will show how it works using <em>abess</em> package on an artificial example.</p>
+<p>This vignette introduces what is adaptive best subset selection
+robust principal component analysis and then we will show how it works
+using <em>abess</em> package on an artificial example.</p>
 <div class="section level2">
 <h2 id="pca">PCA<a class="anchor" aria-label="anchor" href="#pca"></a>
 </h2>
-<p>Principal component analysis (PCA) is an important method in the field of data science, which can reduce the dimension of data and simplify our model. It solves an optimization problem like:</p>
+<p>Principal component analysis (PCA) is an important method in the
+field of data science, which can reduce the dimension of data and
+simplify our model. It solves an optimization problem like:</p>
 <p><span class="math display">\[
 \max_v v^T \Sigma v, \quad s.t.\  v^Tv=1
-\]</span> where <span class="math inline">\(\Sigma = X^TX/(n-1)\)</span> and <span class="math inline">\(X\in \mathbb{R}^{n\times p}\)</span> is the centered sample matrix with each row containing one observation of <span class="math inline">\(p\)</span> variables.</p>
+\]</span> where <span class="math inline">\(\Sigma = X^TX/(n-1)\)</span>
+and <span class="math inline">\(X\in \mathbb{R}^{n\times p}\)</span> is
+the centered sample matrix with each row containing one observation of
+<span class="math inline">\(p\)</span> variables.</p>
 </div>
 <div class="section level2">
 <h2 id="robust-pca-rpca">Robust-PCA (RPCA)<a class="anchor" aria-label="anchor" href="#robust-pca-rpca"></a>
 </h2>
-<p>However, the original PCA is sensitive to outliers, which may be unavoidable in real data:</p>
+<p>However, the original PCA is sensitive to outliers, which may be
+unavoidable in real data:</p>
 <ul>
-<li><p>Object has extreme performance due to fortuity, but he/she shows normal in repeated tests;</p></li>
-<li><p>Wrong observation/recording/computing, e.g. missing or dead pixels, X-ray spikes.</p></li>
+<li><p>Object has extreme performance due to fortuity, but he/she shows
+normal in repeated tests;</p></li>
+<li><p>Wrong observation/recording/computing, e.g. missing or dead
+pixels, X-ray spikes.</p></li>
 </ul>
-<p>In these situations, PCA may spend too much attention on unnecessary variables. That’s why Robust-PCA (RPCA) is presented, which can be used to recover the (low-rank) sample for subsequent processing.</p>
+<p>In these situations, PCA may spend too much attention on unnecessary
+variables. That’s why Robust-PCA (RPCA) is presented, which can be used
+to recover the (low-rank) sample for subsequent processing.</p>
 <p>In mathematics, RPCA manages to divide the sample matrix <span class="math inline">\(X\)</span> into two parts: <span class="math display">\[
 X=S+L,
-\]</span> where <span class="math inline">\(S\)</span> is the sparse “outlier” matrix and <span class="math inline">\(L\)</span> is the “information” matrix with a low rank. Generally, we also suppose <span class="math inline">\(S\)</span> is not low-rank and <span class="math inline">\(L\)</span> is not sparse, in order to get the unique solution.</p>
+\]</span> where <span class="math inline">\(S\)</span> is the sparse
+“outlier” matrix and <span class="math inline">\(L\)</span> is the
+“information” matrix with a low rank. Generally, we also suppose <span class="math inline">\(S\)</span> is not low-rank and <span class="math inline">\(L\)</span> is not sparse, in order to get the
+unique solution.</p>
 <p><img src="https://raw.githubusercontent.com/abess-team/abess/master/docs/Tutorial/fig/rpca.png" width="70%" height="70%"></p>
 <p>In Lagrange format, <span class="math display">\[
-\min _{S, L}\|X-S-L\|_{F} \leq \varepsilon, s . t . \quad \operatorname{rank}(L)=r,\|S\|_{0} \leq s
-\]</span> where <span class="math inline">\(s\)</span> is the sparsity of <span class="math inline">\(S\)</span>. After RPCA, the information matrix <span class="math inline">\(L\)</span> can be used in further analysis.</p>
+\min _{S, L}\|X-S-L\|_{F} \leq \varepsilon, s . t . \quad
+\operatorname{rank}(L)=r,\|S\|_{0} \leq s
+\]</span> where <span class="math inline">\(s\)</span> is the sparsity
+of <span class="math inline">\(S\)</span>. After RPCA, the information
+matrix <span class="math inline">\(L\)</span> can be used in further
+analysis.</p>
 <p>Note that it does NOT deal with “noise”, which may stay in <span class="math inline">\(L\)</span> and need further procession.</p>
 </div>
 <div class="section level2">
 <h2 id="hard-impute">Hard Impute<a class="anchor" aria-label="anchor" href="#hard-impute"></a>
 </h2>
-<p>To solve its sub-problem, RPCA with known outlier positions, we follow a process called “Hard Impute”. The main idea is to estimate the outlier values by precise values with KPCA, where <span class="math inline">\(K=r\)</span>.</p>
+<p>To solve its sub-problem, RPCA with known outlier positions, we
+follow a process called “Hard Impute”. The main idea is to estimate the
+outlier values by precise values with KPCA, where <span class="math inline">\(K=r\)</span>.</p>
 <p>Here are the steps:</p>
 <ol style="list-style-type: decimal">
-<li>Input <span class="math inline">\(X\)</span>, <code>outliers</code>, <span class="math inline">\(M, \varepsilon\)</span>, where outliers record the non-zero positions in <span class="math inline">\(S\)</span>;</li>
-<li>Denote <span class="math inline">\(X_{n e w} \leftarrow \mathbf{0}\)</span> with the same shape of <span class="math inline">\(X\)</span>;</li>
+<li>Input <span class="math inline">\(X\)</span>, <code>outliers</code>,
+<span class="math inline">\(M, \varepsilon\)</span>, where outliers
+record the non-zero positions in <span class="math inline">\(S\)</span>;</li>
+<li>Denote <span class="math inline">\(X_{n e w} \leftarrow
+\mathbf{0}\)</span> with the same shape of <span class="math inline">\(X\)</span>;</li>
 <li>For <span class="math inline">\(i=1,2, \ldots, M\)</span>
 </li>
 </ol>
 <ul>
-<li><span class="math inline">\(X_{o l d}=\left\{\begin{array}{ll}X_{\text {new }}, &amp; \text { for outliers } \\ X, &amp; \text { for others }\end{array}\right.\)</span></li>
-<li>Form KPCA on <span class="math inline">\(X_{o l d}\)</span> with <span class="math inline">\(K=r\)</span>, and denote <span class="math inline">\(v\)</span> as the eigenvectors;</li>
+<li><span class="math inline">\(X_{o l
+d}=\left\{\begin{array}{ll}X_{\text {new }}, &amp; \text { for outliers
+} \\ X, &amp; \text { for others }\end{array}\right.\)</span></li>
+<li>Form KPCA on <span class="math inline">\(X_{o l d}\)</span> with
+<span class="math inline">\(K=r\)</span>, and denote <span class="math inline">\(v\)</span> as the eigenvectors;</li>
 <li>
-<span class="math inline">\(X_{\text {new }}=X_{\text {old }} \cdot v \cdot v^{T}\)</span>;</li>
-<li>If <span class="math inline">\(\left\|X_{n e w}-X_{o l d}\right\|&lt;\varepsilon\)</span>, break: End for;</li>
+<span class="math inline">\(X_{\text {new }}=X_{\text {old }} \cdot
+v \cdot v^{T}\)</span>;</li>
+<li>If <span class="math inline">\(\left\|X_{n e w}-X_{o l
+d}\right\|&lt;\varepsilon\)</span>, break: End for;</li>
 </ul>
 <ol start="4" style="list-style-type: decimal">
-<li>Return <span class="math inline">\(X_{\text {new }}\)</span> as <span class="math inline">\(L\)</span>; where <span class="math inline">\(M\)</span> is the maximum iteration times and <span class="math inline">\(\varepsilon\)</span> is the convergence coefficient.</li>
+<li>Return <span class="math inline">\(X_{\text {new }}\)</span> as
+<span class="math inline">\(L\)</span>; where <span class="math inline">\(M\)</span> is the maximum iteration times and
+<span class="math inline">\(\varepsilon\)</span> is the convergence
+coefficient.</li>
 </ol>
-<p>The final <span class="math inline">\(X_{\text {new }}\)</span> is supposed to be <span class="math inline">\(L\)</span> under given outlier positions.</p>
+<p>The final <span class="math inline">\(X_{\text {new }}\)</span> is
+supposed to be <span class="math inline">\(L\)</span> under given
+outlier positions.</p>
 </div>
 <div class="section level2">
 <h2 id="rpca-application">RPCA Application<a class="anchor" aria-label="anchor" href="#rpca-application"></a>
 </h2>
 <p>Recently, RPCA is more widely used, for example,</p>
 <ul>
-<li><p>Video Decomposition: in a surveillance video, the background may be unchanged for a long time while only a few pixels (e.g. people) update. In order to improve the efficiency of store and analysis, we need to decomposite the video into background and foreground. Since the background is unchanged, it can be stored well in a low-rank matrix, while the foreground, which is usually quite small, can be indicated by a sparse matrix. That is what RPCA does.</p></li>
-<li><p>Face recognition: due to complex lighting conditions, a small part of the facial features may be unrecognized (e.g. shadow). In face recognition, we need to remove the effects of shadows and focus on the face data. Actually, since the face data is almost unchanged (for one person), and the shadows affect only a small part, it is also a suitable situation to use RPCA. Here are some examples:</p></li>
+<li><p>Video Decomposition: in a surveillance video, the background may
+be unchanged for a long time while only a few pixels (e.g. people)
+update. In order to improve the efficiency of store and analysis, we
+need to decomposite the video into background and foreground. Since the
+background is unchanged, it can be stored well in a low-rank matrix,
+while the foreground, which is usually quite small, can be indicated by
+a sparse matrix. That is what RPCA does.</p></li>
+<li><p>Face recognition: due to complex lighting conditions, a small
+part of the facial features may be unrecognized (e.g. shadow). In face
+recognition, we need to remove the effects of shadows and focus on the
+face data. Actually, since the face data is almost unchanged (for one
+person), and the shadows affect only a small part, it is also a suitable
+situation to use RPCA. Here are some examples:</p></li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/abess-team/abess/master/docs/Tutorial/fig/rpca_shadow.png" width="70%" height="70%"></p>
 </div>
@@ -199,27 +244,41 @@ X=S+L,
 <div class="section level3">
 <h3 id="fitting-model">Fitting model<a class="anchor" aria-label="anchor" href="#fitting-model"></a>
 </h3>
-<p>Simulated Data Example Fitting model Now we generate an example with 100 rows and 100 columns with 200 outliers. We are looking forward to recover it with a low rank 10.</p>
+<p>Simulated Data Example Fitting model Now we generate an example with
+100 rows and 100 columns with 200 outliers. We are looking forward to
+recover it with a low rank 10.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span>
-<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>     <span class="co"># rows</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">##  Thank you for using abess! To acknowledge our work, please cite the package:</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">##  Zhu J, Wang X, Hu L, Huang J, Jiang K, Zhang Y, Lin S, Zhu J (2022). “abess: A Fast Best Subset Selection Library in Python and R.” Journal of Machine Learning Research, 23(202), 1–7. https://www.jmlr.org/papers/v23/21-1060.html.</span></span></code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>     <span class="co"># rows</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">100</span>     <span class="co"># columns</span></span>
 <span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">200</span>     <span class="co"># outliers</span></span>
 <span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fl">10</span>      <span class="co"># rank(L)</span></span>
 <span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.matrix.html">generate.matrix</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">p</span>, <span class="va">r</span>, <span class="va">s</span><span class="op">)</span></span></code></pre></div>
-<p>In order to use our program, users should call <code>abessrpca</code> with a given outlier number <code>support_size</code> or an integer interval. For the latter case, a support size will be chosen by information criterion (e.g. GIC) adaptively. <code>abessrpca</code> will return a <code>abessrpca</code> object.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>In order to use our program, users should call <code>abessrpca</code>
+with a given outlier number <code>support_size</code> or an integer
+interval. For the latter case, a support size will be chosen by
+information criterion (e.g. GIC) adaptively. <code>abessrpca</code> will
+return a <code>abessrpca</code> object.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res.srpca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abessrpca.html">abessrpca</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">x</span>, <span class="va">dat</span><span class="op">$</span><span class="va">rank</span>, support.size <span class="op">=</span> <span class="va">s</span><span class="op">)</span></span></code></pre></div>
-<p>To extract the estimated coefficients from a fitted <code>abessrpca</code> object, we use the <code>coef</code> function.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p>To extract the estimated coefficients from a fitted
+<code>abessrpca</code> object, we use the <code>coef</code>
+function.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">res.srpca</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="more-on-the-result">More on the result<a class="anchor" aria-label="anchor" href="#more-on-the-result"></a>
 </h3>
-<p>To check the performance of the program, we use TPR, FPR as the criterion.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>To check the performance of the program, we use TPR, FPR as the
+criterion.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">test.model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pred</span>, <span class="va">real</span><span class="op">)</span></span>
 <span><span class="op">{</span></span>
 <span>  <span class="va">tpr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pred</span> <span class="op">!=</span><span class="fl">0</span> <span class="op">&amp;</span> <span class="va">real</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">real</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -229,8 +288,9 @@ X=S+L,
 <span><span class="fu">test.model</span><span class="op">(</span><span class="va">res.srpca</span><span class="op">$</span><span class="va">S</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">dat</span><span class="op">$</span><span class="va">S</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##         tpr         fpr </span></span>
 <span><span class="co">## 0.835000000 0.003367347</span></span></code></pre>
-<p>We can also change different random seeds to test for more situations:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>We can also change different random seeds to test for more
+situations:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">M</span> <span class="op">&lt;-</span> <span class="fl">30</span></span>
 <span><span class="va">res.test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">M</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
 <span><span class="op">{</span></span>

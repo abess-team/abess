@@ -120,10 +120,11 @@
 
       
 
-      </header><script src="v01-abess-guide_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Quick start for <code>abess</code>: Linear regression</h1>
+      <h1 data-toc-skip>Quick start for <code>abess</code>: Linear
+regression</h1>
                         <h4 data-toc-skip class="author">Jin Zhu</h4>
             
       
@@ -137,7 +138,14 @@
 <div class="section level2">
 <h2 id="brief-introduction">Brief introduction<a class="anchor" aria-label="anchor" href="#brief-introduction"></a>
 </h2>
-<p>The R package <code>abess</code> implement a polynomial algorithm <a href="https://doi.org/10.1073/pnas.2014241117" class="external-link"></a> for solving the best-subset selection problem: <span class="math display">\[\min_{\boldsymbol{\beta} \in \mathbb{R}^p} \mathcal{L_n}({\boldsymbol\beta}), \text{ s.t. } \|\boldsymbol\beta\|_0 \leq s,\]</span> where <span class="math inline">\(\mathcal{L}_{n}(\boldsymbol \beta)=\frac{1}{2 n}\|y-X \boldsymbol{\beta}\|_{2}^{2}\)</span>, <span class="math inline">\(\|\boldsymbol{\beta}\|_0=\sum_{i=1}^pI( \boldsymbol{\beta}_i\neq 0)\)</span> is the <span class="math inline">\(\ell_0\)</span>(-pseudo) norm of <span class="math inline">\(\beta\)</span>, and the sparsity level <span class="math inline">\(s\)</span> is usually an unknown non-negative integer. Next, we present an example to show how to use the <code>abess</code> package to solve a simple problem.</p>
+<p>The R package <code>abess</code> implement a polynomial algorithm <a href="https://doi.org/10.1073/pnas.2014241117" class="external-link"></a> for solving the
+best-subset selection problem: <span class="math display">\[\min_{\boldsymbol{\beta} \in \mathbb{R}^p}
+\mathcal{L_n}({\boldsymbol\beta}), \text{ s.t. } \|\boldsymbol\beta\|_0
+\leq s,\]</span> where <span class="math inline">\(\mathcal{L}_{n}(\boldsymbol \beta)=\frac{1}{2
+n}\|y-X \boldsymbol{\beta}\|_{2}^{2}\)</span>, <span class="math inline">\(\|\boldsymbol{\beta}\|_0=\sum_{i=1}^pI(
+\boldsymbol{\beta}_i\neq 0)\)</span> is the <span class="math inline">\(\ell_0\)</span>(-pseudo) norm of <span class="math inline">\(\beta\)</span>, and the sparsity level <span class="math inline">\(s\)</span> is usually an unknown non-negative
+integer. Next, we present an example to show how to use the
+<code>abess</code> package to solve a simple problem.</p>
 </div>
 <div class="section level2">
 <h2 id="quick-example">Quick example<a class="anchor" aria-label="anchor" href="#quick-example"></a>
@@ -145,7 +153,12 @@
 <div class="section level3">
 <h3 id="fixed-support-size-best-subset-selection">Fixed support size best subset selection<a class="anchor" aria-label="anchor" href="#fixed-support-size-best-subset-selection"></a>
 </h3>
-<p>We generate a design matrix <span class="math inline">\(X\)</span> containing 300 observations and each observation has 1000 predictors. The response variable <span class="math inline">\(y\)</span> is linearly related to the first, second, and fifth predictors in <span class="math inline">\(X\)</span>: <span class="math display">\[y = 3X_1 + 1.5X_2 + 2X_5 + \epsilon,\]</span> where <span class="math inline">\(\varepsilon\)</span> is a standard normal random variable.</p>
+<p>We generate a design matrix <span class="math inline">\(X\)</span>
+containing 300 observations and each observation has 1000 predictors.
+The response variable <span class="math inline">\(y\)</span> is linearly
+related to the first, second, and fifth predictors in <span class="math inline">\(X\)</span>: <span class="math display">\[y = 3X_1
++ 1.5X_2 + 2X_5 + \epsilon,\]</span> where <span class="math inline">\(\varepsilon\)</span> is a standard normal random
+variable.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span>
 <span><span class="va">synthetic_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate.data.html">generate.data</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">300</span>, p <span class="op">=</span> <span class="fl">1000</span>, </span>
@@ -164,10 +177,17 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind.data.frame</a></span><span class="op">(</span><span class="st">"y"</span> <span class="op">=</span> <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span>, </span>
 <span>                        <span class="va">synthetic_data</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p>Then, we use the main function <code>abess</code> in the package to fit this dataset. By setting the arguments <code>support.size = s</code>, <code><a href="../reference/abess.html">abess()</a></code> function conducts <strong>Algorithm 1</strong> <a href="https://doi.org/10.1073/pnas.2014241117" class="external-link"></a> for the best-subset selection with a sparsity level <code>s</code>. In our example, we set the options: <code>support.size = 3</code>, and we run <strong>Algorithm 1</strong> with the following command:</p>
+<p>Then, we use the main function <code>abess</code> in the package to
+fit this dataset. By setting the arguments
+<code>support.size = s</code>, <code><a href="../reference/abess.html">abess()</a></code> function conducts
+<strong>Algorithm 1</strong> <a href="https://doi.org/10.1073/pnas.2014241117" class="external-link"></a> for the best-subset
+selection with a sparsity level <code>s</code>. In our example, we set
+the options: <code>support.size = 3</code>, and we run <strong>Algorithm
+1</strong> with the following command:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p>The output of <code>abess</code> comprises the selected best model:</p>
+<p>The output of <code>abess</code> comprises the selected best
+model:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                       3</span></span>
@@ -177,7 +197,9 @@
 <span><span class="co">## x3           0.00000000</span></span>
 <span><span class="co">## x4           0.00000000</span></span>
 <span><span class="co">## x5           1.90592036</span></span></code></pre>
-<p>The support set of the best model is identical to the ground truth, and the coefficient estimation is the same as the oracle estimator given by <code>lm</code> function:</p>
+<p>The support set of the best model is identical to the ground truth,
+and the coefficient estimation is the same as the oracle estimator given
+by <code>lm</code> function:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -192,10 +214,15 @@
 <div class="section level3">
 <h3 id="adaptive-best-subset-selection">Adaptive best subset selection<a class="anchor" aria-label="anchor" href="#adaptive-best-subset-selection"></a>
 </h3>
-<p>Supposing we are unknown about the true sparsity level in real world data, and thus, we need to determine the most proper one. The <strong>Algorithm 3</strong> <a href="https://doi.org/10.1073/pnas.2014241117" class="external-link"></a> is designed for this scenario. <code>abess</code> is capable of performing this algorithm:</p>
+<p>Supposing we are unknown about the true sparsity level in real world
+data, and thus, we need to determine the most proper one. The
+<strong>Algorithm 3</strong> <a href="https://doi.org/10.1073/pnas.2014241117" class="external-link"></a> is designed for this
+scenario. <code>abess</code> is capable of performing this
+algorithm:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></span></code></pre></div>
-<p>The output of <code><a href="../reference/abess.html">abess()</a></code> also comprises the selected best model:</p>
+<p>The output of <code><a href="../reference/abess.html">abess()</a></code> also comprises the selected best
+model:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_size</span> <span class="op">&lt;-</span> <span class="va">abess_fit</span><span class="op">[[</span><span class="st">"best.size"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">best_size</span><span class="op">)</span></span></code></pre></div>
@@ -209,7 +236,9 @@
 <span><span class="co">## x3           0.00000000</span></span>
 <span><span class="co">## x4           0.00000000</span></span>
 <span><span class="co">## x5           1.90592036</span></span></code></pre>
-<p>The output model accurately detect the true model size, which implies the <strong>Algorithm 3</strong> efficiently find both the optimal sparsity level and true effective predictors.</p>
+<p>The output model accurately detect the true model size, which implies
+the <strong>Algorithm 3</strong> efficiently find both the optimal
+sparsity level and true effective predictors.</p>
 </div>
 </div>
 <div class="section level2">
@@ -218,7 +247,12 @@
 <div class="section level3">
 <h3 id="hitters-dataset">Hitters Dataset<a class="anchor" aria-label="anchor" href="#hitters-dataset"></a>
 </h3>
-<p>In this tutorial, we are going to demonstrate how to use the <code>abess</code> package to carry out best subset selection on the <code>Hitters</code> dataset. We hope to use several predictors related to the performance of the baseball athletes last year to predict their salary. First, let’s have a look at this dataset. There are 19 variables except <code>Salary</code> and 322 observations.</p>
+<p>In this tutorial, we are going to demonstrate how to use the
+<code>abess</code> package to carry out best subset selection on the
+<code>Hitters</code> dataset. We hope to use several predictors related
+to the performance of the baseball athletes last year to predict their
+salary. First, let’s have a look at this dataset. There are 19 variables
+except <code>Salary</code> and 322 observations.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"Hitters.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></span></code></pre></div>
@@ -242,7 +276,9 @@
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 59</span></span></code></pre>
-<p>Note that this dataset contains some missing data. So we use the <code><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit()</a></code> function to delete rows that have incomplete information. After that, we have 263 observations remaining.</p>
+<p>Note that this dataset contains some missing data. So we use the
+<code><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit()</a></code> function to delete rows that have incomplete
+information. After that, we have 263 observations remaining.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></span></code></pre></div>
@@ -250,7 +286,9 @@
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 0</span></span></code></pre>
-<p>Then we change the factors into dummy variables with the <code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix()</a></code> function. Note that the <code><a href="../reference/abess.html">abess()</a></code> function will automatically include the intercept.</p>
+<p>Then we change the factors into dummy variables with the
+<code><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix()</a></code> function. Note that the <code><a href="../reference/abess.html">abess()</a></code>
+function will automatically include the intercept.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">.</span>, <span class="va">Hitters</span><span class="op">)</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="va">Hitters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span></span></code></pre></div>
@@ -258,7 +296,12 @@
 <div class="section level3">
 <h3 id="running-abess">Running ABESS<a class="anchor" aria-label="anchor" href="#running-abess"></a>
 </h3>
-<p>The <code><a href="../reference/abess.html">abess()</a></code> function in the <code>abess</code> package allows you to perform best subset selection in a highly efficient way. You can call the <code><a href="../reference/abess.html">abess()</a></code> function using formula just like what you do with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>. Or you can specify the design matrix <code>x</code> and the response <code>y</code>. The <code><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time()</a></code> function records the run time.</p>
+<p>The <code><a href="../reference/abess.html">abess()</a></code> function in the <code>abess</code> package
+allows you to perform best subset selection in a highly efficient way.
+You can call the <code><a href="../reference/abess.html">abess()</a></code> function using formula just like
+what you do with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>. Or you can specify the design matrix
+<code>x</code> and the response <code>y</code>. The
+<code><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time()</a></code> function records the run time.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span>
 <span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">Salary</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">Hitters</span><span class="op">)</span></span>
@@ -269,7 +312,11 @@
 <div class="section level3">
 <h3 id="interpret-the-result">Interpret the Result<a class="anchor" aria-label="anchor" href="#interpret-the-result"></a>
 </h3>
-<p>After get the estimator, we can further do more exploring work. The output of <code><a href="../reference/abess.html">abess()</a></code> function contains the best model for all the candidate support size in the <code>support.size</code>. You can use some generic function to quickly draw some information of those estimators.</p>
+<p>After get the estimator, we can further do more exploring work. The
+output of <code><a href="../reference/abess.html">abess()</a></code> function contains the best model for all
+the candidate support size in the <code>support.size</code>. You can use
+some generic function to quickly draw some information of those
+estimators.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># draw the estimated coefficients on all candidate support size</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
@@ -392,7 +439,11 @@
 <span><span class="co">## 18           17  46032.63 2909.843</span></span>
 <span><span class="co">## 19           18  46016.41 2914.808</span></span>
 <span><span class="co">## 20           19  46008.93 2919.824</span></span></code></pre>
-<p>Prediction is allowed for all the estimated models. Just call <code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code> set to the size of model you are interested in. If <code>support.size</code> is not provided, prediction will be made on the model with best tuning value.</p>
+<p>Prediction is allowed for all the estimated models. Just call
+<code><a href="../reference/predict.abess.html">predict.abess()</a></code> function with the <code>support.size</code>
+set to the size of model you are interested in. If
+<code>support.size</code> is not provided, prediction will be made on
+the model with best tuning value.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hitters_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, </span>
 <span>                        newx <span class="op">=</span> <span class="va">Hitters</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span> <span class="op">==</span> <span class="st">"Salary"</span><span class="op">)</span><span class="op">]</span>, </span>
@@ -405,20 +456,37 @@
 <span><span class="co">## 5 424.10211  498.2470</span></span>
 <span><span class="co">## 6 708.86493  632.3839</span></span>
 <span><span class="co">## 7  59.21692  139.8497</span></span></code></pre>
-<p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change of models with the change of support size. There are 5 types of graph you can generate, including <code>coef</code> for the coefficient value, <code>l2norm</code> for the L2-norm of the coefficients, <code>dev</code> for the deviance and <code>tune</code> for the tuning value. Default if <code>coef</code>.</p>
+<p>The <code><a href="../reference/plot.abess.html">plot.abess()</a></code> function helps to visualize the change
+of models with the change of support size. There are 5 types of graph
+you can generate, including <code>coef</code> for the coefficient value,
+<code>l2norm</code> for the L2-norm of the coefficients,
+<code>dev</code> for the deviance and <code>tune</code> for the tuning
+value. Default if <code>coef</code>.</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v01-abess-guide_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
-<p>The graph shows that, beginning from the most dense model, the 15th variable (Division, A factor with levels E and W indicating player’s division at the end of 1986) is included in the active set until the support size reaches 3.</p>
-<p>We can also generate a graph about the tuning value. Remember that we used the default GIC to tune the support size.</p>
+<p>The graph shows that, beginning from the most dense model, the 15th
+variable (Division, A factor with levels E and W indicating player’s
+division at the end of 1986) is included in the active set until the
+support size reaches 3.</p>
+<p>We can also generate a graph about the tuning value. Remember that we
+used the default GIC to tune the support size.</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v01-abess-guide_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
-<p>The tuning value reaches the lowest point at 6. And We might choose the estimated model with support size equals 6 as our final model. In fact, the tuning values of different model sizes are provided in <code>tune.value</code> of the <code>abess</code> object. You can get the best model size through the following call.</p>
+<p>The tuning value reaches the lowest point at 6. And We might choose
+the estimated model with support size equals 6 as our final model. In
+fact, the tuning values of different model sizes are provided in
+<code>tune.value</code> of the <code>abess</code> object. You can get
+the best model size through the following call.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">[[</span><span class="st">"support.size"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 6</span></span></code></pre>
-<p>To extract any model from the <code>abess</code> object, we can call the <code><a href="../reference/extract.abess.html">extract()</a></code> function with a given <code>support.size</code>. If <code>support.size</code> is not provided, the model with the best tuning value will be returned. Here we extract the model with support size equals 6.</p>
+<p>To extract any model from the <code>abess</code> object, we can call
+the <code><a href="../reference/extract.abess.html">extract()</a></code> function with a given
+<code>support.size</code>. If <code>support.size</code> is not provided,
+the model with the best tuning value will be returned. Here we extract
+the model with support size equals 6.</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best.model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></span></code></pre></div>
@@ -438,7 +506,8 @@
 <span><span class="co">##  $ support.beta: num [1:6] -1.869 7.604 3.698 0.643 -122.952 ...</span></span>
 <span><span class="co">##  $ dev         : num 49800</span></span>
 <span><span class="co">##  $ tune.value  : num 2875</span></span></code></pre>
-<p>The return is a list containing the basic information of the estimated model.</p>
+<p>The return is a list containing the basic information of the
+estimated model.</p>
 </div>
 </div>
 <div class="section level2">
@@ -447,7 +516,24 @@
 <div class="section level3">
 <h3 id="feature-screening-for-ultra-high-dimensional-dataset">Feature screening for ultra-high dimensional dataset<a class="anchor" aria-label="anchor" href="#feature-screening-for-ultra-high-dimensional-dataset"></a>
 </h3>
-<p>The <a href="https://archive.ics.uci.edu/ml/datasets/communities+and+crime" class="external-link"></a> consists of 18 variables about crime from the 1995 FBI UCR (e.g., per capita arson crimes and per capita violent crimes), communities information in the U.S. (e.g., the percent of the population considered urban), socio-economic data from the 90s census (e.g., the median family income), and law enforcement data from the 1990 law enforcement management and admin stats survey (e.g., per capita number of police officers). It would be appropriate if any of the crime state in community can be modeled by the basic community information, socio-economic and law enforcement state in community. Here, without the loss of generality, per capita violent crimes is chosen as the response variable, and 102 numerical variables as well as their pairwise interactions is considered as predictors. <!-- Note that, the numerical variables with at least 50\% percentages missing observations are excluded,  --> <!-- and 200 observations without missing records are randomly picked out from the pool.  --> The pre-processed dataset for statistical modeling has 200 observations and 5253 predictors, and the code for pre-processing are openly shared in <a href="https://github.com/abess-team/abess/blob/master/R-package/data-raw/DATASET_VIGNETTES.R" class="external-link"></a>.<br>
+<p>The <a href="https://archive.ics.uci.edu/ml/datasets/communities+and+crime" class="external-link"></a>
+consists of 18 variables about crime from the 1995 FBI UCR (e.g., per
+capita arson crimes and per capita violent crimes), communities
+information in the U.S. (e.g., the percent of the population considered
+urban), socio-economic data from the 90s census (e.g., the median family
+income), and law enforcement data from the 1990 law enforcement
+management and admin stats survey (e.g., per capita number of police
+officers). It would be appropriate if any of the crime state in
+community can be modeled by the basic community information,
+socio-economic and law enforcement state in community. Here, without the
+loss of generality, per capita violent crimes is chosen as the response
+variable, and 102 numerical variables as well as their pairwise
+interactions is considered as predictors.
+<!-- Note that, the numerical variables with at least 50\% percentages missing observations are excluded,  -->
+<!-- and 200 observations without missing records are randomly picked out from the pool.  -->
+The pre-processed dataset for statistical modeling has 200 observations
+and 5253 predictors, and the code for pre-processing are openly shared
+in <a href="https://github.com/abess-team/abess/blob/master/R-package/data-raw/DATASET_VIGNETTES.R" class="external-link"></a>.<br>
 The pre-processed dataset can be freely downloaded by running:</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">working_directory</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -458,11 +544,15 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file</a></span><span class="op">(</span><span class="va">crime_data_url</span>, <span class="st">"crime.rda"</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">working_directory</span>, <span class="st">"crime.rda"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>As mentioned before, this dataset comprises 5000+ features, much larger than the number of observations:</p>
+<p>As mentioned before, this dataset comprises 5000+ features, much
+larger than the number of observations:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">crime</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1]  500 5254</span></span></code></pre>
-<p>And thus, it would be better to first perform feature screening, which is also supported by the <code>abess</code> function. Suppose we are interested in retaining 1000 variables with the largest marginal utility, then we can conduct the command:</p>
+<p>And thus, it would be better to first perform feature screening,
+which is also supported by the <code>abess</code> function. Suppose we
+are interested in retaining 1000 variables with the largest marginal
+utility, then we can conduct the command:</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">crime</span>, screening.num <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
@@ -490,12 +580,15 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <span><span class="co">##  $ screening.vars: chr [1:1000] "pctBlack" "pctWhite" "medIncome" "pctWdiv" ...</span></span>
 <span><span class="co">##  $ call          : language abess.formula(formula = y ~ ., data = crime, screening.num = 1000)</span></span>
 <span><span class="co">##  - attr(*, "class")= chr "abess"</span></span></code></pre>
-<p>The returned object of <code>abess</code> includes the features selected by screening. We exhibit six variables of them:</p>
+<p>The returned object of <code>abess</code> includes the features
+selected by screening. We exhibit six variables of them:</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">[[</span><span class="st">"screening.vars"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "pctBlack"     "pctWhite"     "medIncome"    "pctWdiv"      "pctPubAsst"  </span></span>
 <span><span class="co">## [6] "medFamIncome"</span></span></code></pre>
-<p>Then, by the generic <code>extract</code> function, we can obtain the best model detected by <code>ABESS</code> algorithm, and get the variables in the best model:</p>
+<p>Then, by the generic <code>extract</code> function, we can obtain the
+best model detected by <code>ABESS</code> algorithm, and get the
+variables in the best model:</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best_model</span><span class="op">)</span></span></code></pre></div>
@@ -535,7 +628,9 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <div class="section level3">
 <h3 id="more-features">More features<a class="anchor" aria-label="anchor" href="#more-features"></a>
 </h3>
-<p>There are plenty features provided by <code>abess</code> packages such as logistic regression and group selection. Please the other articles in our website for more details.</p>
+<p>There are plenty features provided by <code>abess</code> packages
+such as logistic regression and group selection. Please the other
+articles in our website for more details.</p>
 </div>
 </div>
   </div>
