@@ -160,6 +160,7 @@ fitted.results <- predict(abess_fit, newx = test, type = 'response')
 We now calculate the C-index, i.e., the probability that, for a pair of randomly chosen comparable samples, the sample with the higher risk prediction will experience an event before the other sample or belong to a higher binary class. On this dataset, the C-index is 0.64.
 ```{r}
 library(Hmisc)
+library(survival)
 Cindex <- max(1-rcorr.cens(fitted.results, Surv(test[, 1], test[,2]))[1],rcorr.cens(fitted.results, Surv(test[, 1], test[,2]))[1])
 Cindex
 ```

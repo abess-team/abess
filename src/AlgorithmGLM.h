@@ -336,7 +336,7 @@ class abessLogistic : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double,
     }
 
     bool null_model(Eigen::VectorXd &y, Eigen::VectorXd &weights, double &coef0) {
-        coef0 = -log(1 / y.mean() - 1);
+        coef0 = -log(weights.sum() / y.dot(weights) - 1);
         return true;
     }
 };
@@ -406,7 +406,7 @@ class abessLm : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
                            double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
         // int n = x.rows();
         // int p = x.cols();
-        //if (x.cols() == 0) return true;
+        if (x.cols() == 0) return null_model(y, weights, coef0);
 
         // to ensure
         T4 X_full;
@@ -551,6 +551,11 @@ class abessLm : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
 
             return enp;
         }
+    }
+
+    bool null_model(Eigen::VectorXd &y, Eigen::VectorXd &weights, double &coef0) {
+        coef0 = y.dot(weights) / weights.sum();
+        return true;
     }
 };
 
@@ -982,7 +987,7 @@ class abessMLm : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::Vecto
         int n = x.rows();
         int p = x.cols();
         int M = y.cols();
-        //if (p == 0) return true;
+        if (p == 0) return null_model(y, weights, coef0);
 
         // to ensure
         T4 X;
@@ -1143,6 +1148,11 @@ class abessMLm : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::Vecto
             return enp;
         }
     }
+
+    bool null_model(Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef0) {
+        coef0 = weights.transpose() * y / weights.sum();
+        return true;
+    }
 };
 
 template <class T4>
@@ -1171,7 +1181,7 @@ class abessMultinomial : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eige
         int n = x.rows();
         int p = x.cols();
         int M = y.cols();
-        //if (p == 0) return true;
+        if (p == 0) return null_model(y, weights, coef0);
 
         T4 X;
         add_constant_column(X, x, this->fit_intercept);
@@ -1510,6 +1520,12 @@ class abessMultinomial : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eige
 
             return enp;
         }
+    }
+
+    bool null_model(Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &coef0) {
+        coef0 = (weights.transpose() * y / weights.sum()).array().log();
+        coef0 = coef0.array() - coef0(coef0.size() - 1);
+        return true;
     }
 };
 
