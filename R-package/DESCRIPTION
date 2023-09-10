@@ -32,7 +32,7 @@ Imports:
 LinkingTo: 
     Rcpp,
     RcppEigen
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Suggests: 
     testthat,
     knitr,
