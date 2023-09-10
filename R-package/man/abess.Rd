@@ -15,6 +15,9 @@
   tune.type = c("gic", "ebic", "bic", "aic", "cv"),
   weight = NULL,
   normalize = NULL,
+  fit.intercept = TRUE,
+  beta.low = -.Machine$double.xmax,
+  beta.high = .Machine$double.xmax,
   c.max = 2,
   support.size = NULL,
   gs.range = NULL,
@@ -90,6 +93,14 @@ scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
 \code{normalize = 3} for scaling the columns of \code{x} to have \eqn{\sqrt n} norm.
 If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gaussian"} and \code{"mgaussian"},
 \code{3} for \code{"cox"}. Default is \code{normalize = NULL}.}
+
+\item{fit.intercept}{A boolean value indicating whether to fit an intercept.
+We assume the data has been centered if \code{fit.intercept = FALSE}.
+Default: \code{fit.intercept = FALSE}.}
+
+\item{beta.low}{A single value specifying the lower bound of \eqn{\beta}. Default is \code{-.Machine$double.xmax}。}
+
+\item{beta.high}{A single value specifying the upper bound of \eqn{\beta}. Default is \code{.Machine$double.xmax}。}
 
 \item{c.max}{an integer splicing size. Default is: \code{c.max = 2}.}
 
