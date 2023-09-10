@@ -112,6 +112,9 @@ positive response, multi-response modeling in polynomial times.</p>
 <span>  tune.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gic"</span>, <span class="st">"ebic"</span>, <span class="st">"bic"</span>, <span class="st">"aic"</span>, <span class="st">"cv"</span><span class="op">)</span>,</span>
 <span>  weight <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  normalize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fit.intercept <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  beta.low <span class="op">=</span> <span class="op">-</span><span class="va">.Machine</span><span class="op">$</span><span class="va">double.xmax</span>,</span>
+<span>  beta.high <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.xmax</span>,</span>
 <span>  c.max <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  support.size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  gs.range <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -203,6 +206,20 @@ scaling the columns of <code>x</code> to have \(\sqrt n\) norm.
 <code>normalize = 3</code> for scaling the columns of <code>x</code> to have \(\sqrt n\) norm.
 If <code>normalize = NULL</code>, <code>normalize</code> will be set <code>1</code> for <code>"gaussian"</code> and <code>"mgaussian"</code>,
 <code>3</code> for <code>"cox"</code>. Default is <code>normalize = NULL</code>.</p></dd>
+
+
+<dt>fit.intercept</dt>
+<dd><p>A boolean value indicating whether to fit an intercept.
+We assume the data has been centered if <code>fit.intercept = FALSE</code>.
+Default: <code>fit.intercept = FALSE</code>.</p></dd>
+
+
+<dt>beta.low</dt>
+<dd><p>A single value specifying the lower bound of \(\beta\). Default is <code>-.Machine$double.xmax</code>。</p></dd>
+
+
+<dt>beta.high</dt>
+<dd><p>A single value specifying the upper bound of \(\beta\). Default is <code>.Machine$double.xmax</code>。</p></dd>
 
 
 <dt>c.max</dt>

@@ -202,13 +202,13 @@ are 0.</p>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 6 x 10 sparse Matrix of class "dgCMatrix"</span></span>
-<span><span class="co">##                                                                         </span></span>
-<span><span class="co">## [1,]  .         .  .        .        . .  .        .  .         .       </span></span>
-<span><span class="co">## [2,] -0.4285977 . -1.153034 .        . .  .        .  .         .       </span></span>
-<span><span class="co">## [3,]  .         .  .        .        . . -1.821747 .  .         .       </span></span>
-<span><span class="co">## [4,]  .         .  .        .        . .  .        .  .         .       </span></span>
-<span><span class="co">## [5,]  .         .  .        1.384251 . .  .        . -0.5312396 .       </span></span>
-<span><span class="co">## [6,]  0.3649381 .  .        .        . .  .        .  .         0.182562</span></span></code></pre>
+<span><span class="co">##                                                                 </span></span>
+<span><span class="co">## [1,] .  .         . . . .  .       -2.289054  .         .       </span></span>
+<span><span class="co">## [2,] .  .         . . . .  .        .         .         .       </span></span>
+<span><span class="co">## [3,] .  1.1588195 . . . .  .        .         .         1.716157</span></span>
+<span><span class="co">## [4,] .  .         . . . . -1.51281  .         .         .       </span></span>
+<span><span class="co">## [5,] .  .         . . . .  .        .        -0.5410070 .       </span></span>
+<span><span class="co">## [6,] . -0.2054496 . . . .  .        .        -0.4640846 .</span></span></code></pre>
 <p>Then, we apply ABESS algorithm on Matrix <code>x</code> and record
 the runtime in <code>t1</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -216,26 +216,26 @@ the runtime in <code>t1</code>:</p>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">##  Thank you for using abess! To acknowledge our work, please cite the package:</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span>
-<span><span class="co">##  Zhu J, Wang X, Hu L, Huang J, Jiang K, Zhang Y, Lin S, Zhu J (2022). “abess: A Fast Best Subset Selection Library in Python and R.” Journal of Machine Learning Research, 23(202), 1–7. https://www.jmlr.org/papers/v23/21-1060.html.</span></span></code></pre>
+<span><span class="co">##  Zhu J, Wang X, Hu L, Huang J, Jiang K, Zhang Y, Lin S, Zhu J (2022). 'abess: A Fast Best Subset Selection Library in Python and R.' Journal of Machine Learning Research, 23(202), 1-7. https://www.jmlr.org/papers/v23/21-1060.html.</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>We compare the runtime when the input matrix is dense matrix:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##            [,1] [,2]      [,3]     [,4] [,5] [,6]</span></span>
-<span><span class="co">## [1,]  0.0000000    0  0.000000 0.000000    0    0</span></span>
-<span><span class="co">## [2,] -0.4285977    0 -1.153034 0.000000    0    0</span></span>
-<span><span class="co">## [3,]  0.0000000    0  0.000000 0.000000    0    0</span></span>
-<span><span class="co">## [4,]  0.0000000    0  0.000000 0.000000    0    0</span></span>
-<span><span class="co">## [5,]  0.0000000    0  0.000000 1.384251    0    0</span></span>
-<span><span class="co">## [6,]  0.3649381    0  0.000000 0.000000    0    0</span></span></code></pre>
+<pre><code><span><span class="co">##      [,1]       [,2] [,3] [,4] [,5] [,6]</span></span>
+<span><span class="co">## [1,]    0  0.0000000    0    0    0    0</span></span>
+<span><span class="co">## [2,]    0  0.0000000    0    0    0    0</span></span>
+<span><span class="co">## [3,]    0  1.1588195    0    0    0    0</span></span>
+<span><span class="co">## [4,]    0  0.0000000    0    0    0    0</span></span>
+<span><span class="co">## [5,]    0  0.0000000    0    0    0    0</span></span>
+<span><span class="co">## [6,]    0 -0.2054496    0    0    0    0</span></span></code></pre>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user.self sys.self elapsed</span></span>
-<span><span class="co">## t1     0.272     0.01   0.288</span></span>
-<span><span class="co">## t2     0.338     0.04   0.707</span></span></code></pre>
+<span><span class="co">## t1     0.269    0.011   0.298</span></span>
+<span><span class="co">## t2     0.329    0.038   0.402</span></span></code></pre>
 <p>From the comparison, we see that the time required by sparse matrix
 is visibly smaller, and thus, we suggest to assign a sparse matrix to
 <code>abess</code> when the input matrix have a lot of zero entries.</p>
@@ -299,8 +299,8 @@ likely to be a non-optimal one:</p>
 <code class="sourceCode R"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user.self sys.self elapsed</span></span>
-<span><span class="co">## t1     0.024    0.001   0.025</span></span>
-<span><span class="co">## t2     0.064    0.010   0.074</span></span></code></pre>
+<span><span class="co">## t1     0.020    0.001   0.021</span></span>
+<span><span class="co">## t2     0.065    0.009   0.075</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="early-stop">Early stop<a class="anchor" aria-label="anchor" href="#early-stop"></a>
@@ -389,8 +389,8 @@ with the ABESS without early-stopping:</p>
 <code class="sourceCode R"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user.self sys.self elapsed</span></span>
-<span><span class="co">## t1     0.064    0.009   0.074</span></span>
-<span><span class="co">## t2     0.063    0.008   0.072</span></span></code></pre>
+<span><span class="co">## t1     0.064    0.008   0.073</span></span>
+<span><span class="co">## t2     0.064    0.008   0.072</span></span></code></pre>
 <p>we can conclude that early-stopping brings fast computation and might
 maintain statistical guarantee.</p>
 </div>
