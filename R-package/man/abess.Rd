@@ -98,9 +98,9 @@ If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gau
 We assume the data has been centered if \code{fit.intercept = FALSE}.
 Default: \code{fit.intercept = FALSE}.}
 
-\item{beta.low}{A single value specifying the lower bound of \eqn{\beta}. Default is \code{-.Machine$double.xmax}。}
+\item{beta.low}{A single value specifying the lower bound of \eqn{\beta}. Default is \code{-.Machine$double.xmax}.}
 
-\item{beta.high}{A single value specifying the upper bound of \eqn{\beta}. Default is \code{.Machine$double.xmax}。}
+\item{beta.high}{A single value specifying the upper bound of \eqn{\beta}. Default is \code{.Machine$double.xmax}.}
 
 \item{c.max}{an integer splicing size. Default is: \code{c.max = 2}.}
 
