@@ -1,7 +1,7 @@
 Package: abess
 Type: Package
 Title: Fast Best Subset Selection
-Version: 0.4.7
+Version: 0.4.8
 Date: 2023-02-19
 Authors@R: c(
   person(given = "Jin", family = "Zhu", email = "zhuj37@mail2.sysu.edu.cn", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8550-5822")),
