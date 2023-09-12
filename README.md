@@ -125,6 +125,13 @@ $ Rscript abess/docs/simulation/R/timings.R
 
 ## What's news
 
+New features version `4.7`:
+
+- Support limiting beta into a range by clipping method. One application is to perform non-negative fitting.
+- Support no-intercept model for most regressors in ``abess.linear`` with argument ``fit_intercept=False``. We assume that the data has been centered for these models.
+- Support AUC criterion for Logistic and Multinomial Regression.
+
+
 New features version `4.6`:
 
 - Support no-intercept model for most regressors in `abess.linear` with argument `fit_intercept=False`. We assume that the data has been centered for these models. (Python)
