@@ -18,6 +18,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
 ```
 
 ## Brief Introduction

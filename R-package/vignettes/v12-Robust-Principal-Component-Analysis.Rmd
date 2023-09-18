@@ -5,6 +5,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = T)
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
 ```
 
 This vignette introduces what is adaptive best subset selection robust principal component analysis and then we will show how it works using *abess* package on an artificial example.

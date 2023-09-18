@@ -21,6 +21,7 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
 ```
 
 ## Introduction

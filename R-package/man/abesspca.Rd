@@ -168,6 +168,7 @@ because the meaning of these parameters are very similar.
 \examples{
 \donttest{
 library(abess)
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
 
 ## predictor matrix input:
 head(USArrests)

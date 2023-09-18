@@ -15,6 +15,10 @@ output:
     keep_md: yes
 ---
 
+```{r warning=FALSE}
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
+```
+
 ## Introduction
 Principal component analysis (PCA) is an important method in the field of data science, which can reduce the dimension of data and simplify our model. It actually solve an optimization problem like:
 

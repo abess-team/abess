@@ -23,6 +23,7 @@ vignette: |
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
 ```
 
 # Introduction              

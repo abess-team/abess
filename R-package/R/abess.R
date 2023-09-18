@@ -202,6 +202,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' @examples
 #' \donttest{
 #' library(abess)
+#' Sys.setenv("OMP_THREAD_LIMIT" = 2)
 #' n <- 100
 #' p <- 20
 #' support.size <- 3

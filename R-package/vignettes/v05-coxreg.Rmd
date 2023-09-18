@@ -18,6 +18,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
 ```
 
 <!-- In this vignette, a lung cancer dataset is first displayed to the  -->
