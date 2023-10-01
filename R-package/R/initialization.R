@@ -345,7 +345,10 @@ x_matrix_info.Initialization <- function(para, data) {
   if (is.null(para$vn)) {
     para$vn <- paste0("x", 1:para$nvars)
   }
-  
+  # If the colnames are duplicated, a error should be raised
+  if (length(unique(para$vn)) != length(para$vn)) {
+    stop("The colnames of x are duplicated!")
+  }
   para
 }
 
@@ -477,6 +480,10 @@ y_matrix.glm <- function(para, data) {
     para$y_vn <- colnames(data$y)
     if (is.null(para$y_vn)) {
       para$y_vn <- colnames("y", 1:dim(data$y)[2])
+    }
+    # If the colnames are duplicated, a error should be raised
+    if (length(unique(para$y_vn)) != length(para$y_vn)) {
+      stop("The colnames of y are duplicated!")
     }
   }
   data$y <- as.matrix(data$y)
