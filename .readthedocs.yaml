@@ -10,6 +10,8 @@ build:
       - pip install --no-cache-dir pybind11[global]
     pre_build:
       - pip install --no-cache-dir -r docs/requirements.txt
+  apt_packages:
+    - graphviz
 
 python:
   install:

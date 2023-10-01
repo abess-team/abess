@@ -17,6 +17,10 @@ output:
 
 This guide is to show how to use `abess` via mlr3 (Machine Learning in R universe).
 
+```{r warning=FALSE}
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
+```
+
 First, install `mlr3` and `mlr3extralearners` (from github) if they are not in the environment.
 
 ```

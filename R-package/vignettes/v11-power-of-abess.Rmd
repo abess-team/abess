@@ -18,6 +18,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = F, message = F)
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
 ```
 In this part, we are going to explore the power of the abess package using simulated data. 
 We compare the abess package with popular R libraries: `glmnet`, `ncvreg` for linear and logistic regressions in the following section.

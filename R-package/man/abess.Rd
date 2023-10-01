@@ -268,6 +268,7 @@ Please see \href{https://abess-team.github.io/abess/articles/v07-advancedFeature
 \examples{
 \donttest{
 library(abess)
+Sys.setenv("OMP_THREAD_LIMIT" = 2)
 n <- 100
 p <- 20
 support.size <- 3

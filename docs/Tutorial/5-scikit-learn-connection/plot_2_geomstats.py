@@ -53,7 +53,7 @@ labels = np.concatenate((np.zeros(data0.shape[0]),np.ones(data1.shape[0])))
 data = np.concatenate((data0,data1))
 train_data, test_data, train_labels, test_labels = train_test_split(data, labels, test_size=0.33, random_state=0)
 
-mean = FrechetMean(metric=sphere.metric)
+mean = FrechetMean(sphere)
 mean.fit(train_data)
 mean_estimate = mean.estimate_
 

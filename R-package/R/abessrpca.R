@@ -60,6 +60,7 @@
 #' @examples
 #' \donttest{
 #' library(abess)
+#' Sys.setenv("OMP_THREAD_LIMIT" = 2)
 #' n <- 30
 #' p <- 30
 #' true_S_size <- 60
