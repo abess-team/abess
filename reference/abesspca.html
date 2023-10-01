@@ -353,6 +353,7 @@ because the meaning of these parameters are very similar.</p>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span><span class="st">"OMP_THREAD_LIMIT"</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## predictor matrix input:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">USArrests</span><span class="op">)</span></span></span>
@@ -398,10 +399,10 @@ because the meaning of these parameters are very similar.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> abesspca(x = rob_cov, type = "gram")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   PC support.size       ev       pev</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1            1 6666.109 0.9602807</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1            2 6701.072 0.9653173</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  1            3 6728.571 0.9692785</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1            4 6741.184 0.9710956</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  1            1 6459.218 0.9583285</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1            2 6497.667 0.9640329</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  1            3 6523.317 0.9678386</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1            4 6537.718 0.9699752</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## K-component principal component analysis</span></span></span>
 <span class="r-in"><span><span class="va">pca_fit</span> <span class="op">&lt;-</span> <span class="fu">abesspca</span><span class="op">(</span><span class="va">USArrests</span>,</span></span>
