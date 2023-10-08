@@ -1,6 +1,8 @@
 #' @rdname extract.abess
 #' @export
-extract <- function(object, support.size = NULL, ...) UseMethod("extract")
+extract <-
+  function(object, support.size = NULL, ...)
+    UseMethod("extract")
 
 #'
 #' @title Extract one model from a fitted "\code{abess}" object.
@@ -45,12 +47,12 @@ extract.abess <- function(object,
     stopifnot(is.numeric(support.size))
     s_value <- support.size
   }
-
+  
   support_size_index <- match(s_value, object[["support.size"]])
   best_coef <- coef.abess(object, s_value)
-
+  
   multi_y <- object[["family"]] %in% MULTIVARIATE_RESPONSE
-
+  
   if (multi_y) {
     best_coef <- best_coef[[1]]
     beta <- best_coef[-1, , drop = FALSE]
@@ -60,17 +62,18 @@ extract.abess <- function(object,
     intercept <- best_coef[1, 1]
   }
   vars_name <- best_coef@Dimnames[[1]][-1]
-
+  
   if (multi_y) {
     best_coef_sum <- Matrix::rowSums(best_coef, sparseResult = TRUE)
     if (any(intercept != 0)) {
       support_index <- best_coef_sum@i[-1]
-      support_beta <- as.matrix(best_coef[support_index, , drop = FALSE])
-      support_index <- support_index - 1
-    } else {
-      support_index <- best_coef_sum@i
-      support_beta <- as.matrix(best_coef_sum@x[support_index, , drop = FALSE])
     }
+    else {
+      support_index <- best_coef_sum@i
+    }
+    support_beta <-
+      as.matrix(best_coef[support_index, , drop = FALSE])
+    support_index <- support_index - 1
   } else {
     if (intercept != 0.0) {
       support_index <- best_coef@i[-1]
@@ -80,13 +83,13 @@ extract.abess <- function(object,
       support_beta <- best_coef@x
     }
   }
-
+  
   support_vars <- vars_name[support_index]
   support_size <- s_value
   dev <- object[["dev"]][support_size_index]
   dev_explain <- 0
   tune_value <- object[["tune.value"]][support_size_index]
-
+  
   list(
     "beta" = beta,
     "intercept" = intercept,
