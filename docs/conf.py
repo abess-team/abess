@@ -64,6 +64,9 @@ extensions = [
     "numpydoc",
     "sphinx_favicon",
     "sphinx_togglebutton",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "IPython.sphinxext.ipython_directive",
+    "matplotlib.sphinxext.plot_directive",
     # ,
     # 'sphinx_toggleprompt'
 ]
@@ -167,6 +170,35 @@ html_theme_options = {
     },
     # "search_bar_position": "navbar",  # TODO: Deprecated - remove in future version
 }
+
+html_sidebars = {
+    "auto_gallery/**": [
+        "search-field",
+        "sidebar-nav-bs",
+    ],
+    "Python-package/**": [
+        "search-field",
+        "sidebar-nav-bs",
+    ],  # This ensures we test for custom sidebars
+    "Contributing/**": [
+        "search-field",
+        "sidebar-nav-bs",
+    ],
+    # "examples/no-sidebar": [],  # Test what page looks like with no sidebar items
+    # "examples/persistent-search-field": ["search-field"],
+    # Blog sidebars
+    # ref: https://ablog.readthedocs.io/manual/ablog-configuration-options/#blog-sidebars
+    # "examples/blog/*": [
+    #    "ablog/postcard.html",
+    #    "ablog/recentposts.html",
+    #    "ablog/tagcloud.html",
+    #    "ablog/categories.html",
+    #    "ablog/authors.html",
+    #    "ablog/languages.html",
+    #    "ablog/locations.html",
+    #    "ablog/archives.html",
+    # ],
+}
 html_logo = "./image/apple-touch-icon.png"
 html_favicon = "./image/favicon-32x32.png"
 html_context = {
@@ -206,6 +238,9 @@ sphinx_gallery_conf = {
     # 'ignore_pattern': r'noinclude\.py'
 
 }
+
+html_css_files = ["custom.css"]
+html_js_files = ["custom-icon.js"]
 
 # configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
