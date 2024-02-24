@@ -32,7 +32,7 @@ import matplotlib
 project = 'ABESS'
 copyright = '2020, abess-team'
 author = 'abess-team'
-json_url = "https://abess.readthedocs.io/en/latest/_static/switcher.json"
+json_url = "https://abess2.readthedocs.io/en/latest/_static/switcher.json"
 
 # The full version, including alpha/beta/rc tags
 version = os.environ.get("READTHEDOCS_VERSION")
