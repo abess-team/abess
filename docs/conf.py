@@ -121,7 +121,7 @@ pygments_style = "sphinx"
 smartquotes = False
 
 html_theme_options = {
-    "header_links_before_dropdown": 5,
+    "header_links_before_dropdown": 4,
     "icon_links": [
         {
             "name": "GitHub",
@@ -158,7 +158,7 @@ html_theme_options = {
     # "show_nav_level": 2,
     # "navbar_start": ["navbar-logo"],
     # "navbar_end": ["theme-switcher", "navbar-icon-links"],
-    # "navbar_persistent": ["search-button"],
+    "navbar_persistent": [],
     # "primary_sidebar_end": ["custom-template.html", "sidebar-ethical-ads.html"],
     # "article_footer_items": ["test.html", "test.html"],
     # "content_footer_items": ["test.html", "test.html"],
@@ -168,20 +168,21 @@ html_theme_options = {
         "json_url": json_url,
         "version_match": version,
     },
+    "navbar_end": ["search-field.html","theme-switcher","navbar-icon-links.html"],
     # "search_bar_position": "navbar",  # TODO: Deprecated - remove in future version
 }
 
 html_sidebars = {
     "auto_gallery/**": [
-        "search-field",
+    #    "search-field",
         "sidebar-nav-bs",
     ],
     "Python-package/**": [
-        "search-field",
+    #    "search-field",
         "sidebar-nav-bs",
     ],  # This ensures we test for custom sidebars
     "Contributing/**": [
-        "search-field",
+    #    "search-field",
         "sidebar-nav-bs",
     ],
     # "examples/no-sidebar": [],  # Test what page looks like with no sidebar items
@@ -243,13 +244,13 @@ html_css_files = ["custom.css"]
 html_js_files = ["custom-icon.js"]
 
 # configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {
+""" intersphinx_mapping = {
     "numpy": ("https://numpy.org/doc/stable/", None),
     'python': ('https://docs.python.org/{.major}'.format(sys.version_info), None),
     'matplotlib': ('https://matplotlib.org/stable/', None),
     "sklearn": ("https://scikit-learn.org/dev/", None),
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None)
-}
+} """
 
 def setup_to_main(
     app: Sphinx, pagename: str, templatename: str, context, doctree

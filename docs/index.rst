@@ -22,14 +22,6 @@
    FAQ 
    Changelog <./Changelog>
 
-.. toctree::
-   :hidden:
-   :caption: USEFUL LINK
-
-   abess @GitHub <https://github.com/abess-team/abess>
-   abess @PyPI <https://pypi.org/project/abess/>
-   abess @CRAN <https://cran.rstudio.com/web/packages/abess/index.html>
-
 
 Indices and tables
 ==================

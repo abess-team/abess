@@ -55,3 +55,12 @@ div.admonition.admonition-youtube > .admonition-title:after {
   content: "\f26c"; /* fa-solid fa-tv */
 }
 /* end-custom-youtube */
+
+.sphx-glr-thumbcontainer[tooltip]:hover::before,
+.sphx-glr-thumbcontainer[tooltip]:hover::after {
+    display: none;
+}
+:root, html[data-theme="light"], body[data-theme="light"]{
+  --sg-download-a-background-image: linear-gradient(to bottom, #20B2AA, #ADD8E6);
+  --sg-download-a-hover-background-color: #ADD8E6;
+}

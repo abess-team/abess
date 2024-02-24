@@ -2,11 +2,11 @@
   {
     "name": "latest",
     "version": "latest",
-    "url": "https://abess.readthedocs.io/en/latest/"
+    "url": "https://abess2.readthedocs.io/en/latest/"
   },
   {
     "name": "0.4.7 (stable)",
     "version": "0.4.7",
-    "url": "https://abess.readthedocs.io/en/latest/"
+    "url": "https://abess2.readthedocs.io/en/latest/"
   }
 ]
