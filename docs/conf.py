@@ -32,7 +32,7 @@ import matplotlib
 project = 'ABESS'
 copyright = '2020, abess-team'
 author = 'abess-team'
-json_url = "https://abess2.readthedocs.io/en/latest/_static/switcher.json"
+json_url = "https://abess.readthedocs.io/en/latest/_static/switcher.json"
 
 # The full version, including alpha/beta/rc tags
 version = os.environ.get("READTHEDOCS_VERSION")
@@ -244,13 +244,13 @@ html_css_files = ["custom.css"]
 html_js_files = ["custom-icon.js"]
 
 # configuration for intersphinx: refer to the Python standard library.
-""" intersphinx_mapping = {
+intersphinx_mapping = {
     "numpy": ("https://numpy.org/doc/stable/", None),
     'python': ('https://docs.python.org/{.major}'.format(sys.version_info), None),
     'matplotlib': ('https://matplotlib.org/stable/', None),
     "sklearn": ("https://scikit-learn.org/dev/", None),
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None)
-} """
+}
 
 def setup_to_main(
     app: Sphinx, pagename: str, templatename: str, context, doctree
