@@ -55,7 +55,7 @@ jobs:
           platforms: all
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.3.1
+        uses: pypa/cibuildwheel@v2.17.0
         with:
           package-dir: ./python # trigger cibuildwheel in sub-directory
 
