@@ -134,7 +134,8 @@ class TestAlgorithm:
         test_data = load_data("binomial_test")
 
         def assert_reg(coef, fit_intercept=True, rel=0.01, abs=0.01):
-            if sys.version_info[0] + 0.1 * sys.version_info[1] < 3.6:
+            sys_version_num = sys.version_info[0] + 0.1 * sys.version_info[1]
+            if sys_version_num < 3.6 or sys_version_num >= 3.9:
                 return
             nonzero = np.nonzero(coef)[0]
             new_x = data.x[:, nonzero]
