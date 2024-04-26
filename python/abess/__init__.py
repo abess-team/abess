@@ -5,7 +5,7 @@
 # @Site    :
 # @File    : __init__.py
 
-__version__ = "0.4.7"
+__version__ = "0.4.8"
 __author__ = ("Jin Zhu, Kangkang Jiang, "
               "Junhao Huang, Yanhang Zhang, "
               "Yanhang Zhang, Shiyun Lin, "
