@@ -51,8 +51,8 @@ class bess_base(BaseEstimator):
         The full name of each option:
         - 'aic': Akaike information criterion
         - 'bic': Bayesian information criterion
-        - 'gic': Generalized information criterion. It refers to "special information criterion" in Zhu, Junxian, et al. "A polynomial algorithm for best-subset selection problem." Proceedings of the National Academy of Sciences (2020).
-        - 'ebic': Extended Bayesian information criterion
+        - 'gic': Generalized information criterion (see [2-4]). It refers to "special information criterion" in [1].
+        - 'ebic': Extended Bayesian information criterion [5]
         - 'loss': Loss value
 
     ic_coef : float, optional, default=1.0
@@ -127,10 +127,11 @@ class bess_base(BaseEstimator):
 
     References
     ----------
-    - Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang.
-      A polynomial algorithm for best-subset selection problem.
-      Proceedings of the National Academy of Sciences,
-      117(52):33117-33123, 2020.
+    - [1] Zhu, J., Wen, C., Zhu, J., Zhang, H., & Wang, X. (2020). A polynomial algorithm for best-subset selection problem. Proceedings of the National Academy of Sciences, 117(52), 33117-33123.
+    - [2] Tang, B., Zhu, J., Zhu, J., Wang, X., & Zhang, H. (2023). A Consistent and Scalable Algorithm for Best Subset Selection in Single Index Models. arXiv preprint arXiv:2309.06230.
+    - [3] Zhu, J., Zhu, J., Tang, B., Chen, X., Lin, H., & Wang, X. (2023). Best-subset selection in generalized linear models: A fast and consistent algorithm via splicing technique. arXiv preprint arXiv:2308.00251.
+    - [4] Zhang, Y., Zhu, J., Zhu, J., & Wang, X. (2023). A splicing approach to best subset of groups selection. INFORMS Journal on Computing, 35(1), 104-119.
+    - [5] Chen, J., & Chen, Z. (2008). Extended Bayesian information criteria for model selection with large model spaces. Biometrika, 95(3), 759-771.
     """
 
     # attributes
