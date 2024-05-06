@@ -47,6 +47,14 @@ class bess_base(BaseEstimator):
 
     ic_type : {'aic', 'bic', 'gic', 'ebic', 'loss'}, optional, default='ebic'
         The type of criterion for choosing the support size if `cv=1`.
+
+        The full name of each option:
+        - 'aic': Akaike information criterion
+        - 'bic': Bayesian information criterion
+        - 'gic': Generalized information criterion. It refers to "special information criterion" in Zhu, Junxian, et al. "A polynomial algorithm for best-subset selection problem." Proceedings of the National Academy of Sciences (2020).
+        - 'ebic': Extended Bayesian information criterion
+        - 'loss': Loss value
+
     ic_coef : float, optional, default=1.0
         Constant that controls the regularization strength
         on chosen information criterion.
