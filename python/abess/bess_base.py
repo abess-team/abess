@@ -51,7 +51,7 @@ class bess_base(BaseEstimator):
         The full name of each option:
         - 'aic': Akaike information criterion
         - 'bic': Bayesian information criterion
-        - 'gic': Generalized information criterion (see [2-4]). It refers to "special information criterion" in [1].
+        - 'gic': Generalized information criterion (see [2-4]). It refers to special information criterion (SIC) in [1].
         - 'ebic': Extended Bayesian information criterion [5]
         - 'loss': Loss value
 
