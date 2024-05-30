@@ -362,25 +362,25 @@ tune the support size by setting <code>tune.type = "cv"</code> in
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 7 x 7 sparse Matrix of class "dgCMatrix"</span></span>
 <span><span class="co">##                     0         1          2          3           4           5</span></span>
-<span><span class="co">## (intercept) -277.2181 -444.2161 -452.68331 -455.14237 -455.695426 -456.367166</span></span>
-<span><span class="co">## age            .         .         .          .          5.492959    6.962364</span></span>
-<span><span class="co">## sex            .         .         .          .          .         -11.180171</span></span>
-<span><span class="co">## job            .         .       -95.09321  -82.23074  -83.524509  -83.087220</span></span>
-<span><span class="co">## education      .         .         .        -65.20976  -65.602198  -65.501814</span></span>
-<span><span class="co">## region         .      -144.2534  -84.55928  -63.44139  -63.867102  -61.992224</span></span>
+<span><span class="co">## (intercept) -277.2181 -444.2162 -452.68358 -455.14238 -455.695434 -456.352800</span></span>
+<span><span class="co">## age            .         .         .          .          5.492983    6.932135</span></span>
+<span><span class="co">## sex            .         .         .          .          .         -11.246921</span></span>
+<span><span class="co">## job            .         .       -95.09195  -82.23064  -83.524466  -83.130301</span></span>
+<span><span class="co">## education      .         .         .        -65.20971  -65.602162  -65.574434</span></span>
+<span><span class="co">## region         .      -144.2534  -84.56022  -63.44148  -63.867156  -61.900510</span></span>
 <span><span class="co">## marriage       .         .         .          .          .           .       </span></span>
 <span><span class="co">##                       6</span></span>
-<span><span class="co">## (intercept) -456.420322</span></span>
-<span><span class="co">## age            6.794875</span></span>
-<span><span class="co">## sex          -11.346637</span></span>
-<span><span class="co">## job          -82.928554</span></span>
-<span><span class="co">## education    -65.419026</span></span>
-<span><span class="co">## region       -62.036716</span></span>
-<span><span class="co">## marriage      -1.783203</span></span></code></pre>
+<span><span class="co">## (intercept) -456.411167</span></span>
+<span><span class="co">## age            6.758009</span></span>
+<span><span class="co">## sex          -11.446048</span></span>
+<span><span class="co">## job          -82.970295</span></span>
+<span><span class="co">## education    -65.530386</span></span>
+<span><span class="co">## region       -61.918597</span></span>
+<span><span class="co">## marriage      -1.833652</span></span></code></pre>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get the deviance of the estimated model on all candidate support size</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] -462.4805 -498.1930 -503.9212 -505.4016 -505.4117 -505.4433 -505.4442</span></span></code></pre>
+<pre><code><span><span class="co">## [1] -462.4805 -498.1930 -503.9212 -505.4016 -505.4117 -505.4434 -505.4443</span></span></code></pre>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># print the fitted model</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
@@ -390,22 +390,22 @@ tune the support size by setting <code>tune.type = "cv"</code> in
 <span><span class="co">## </span></span>
 <span><span class="co">##   support.size       dev         cv</span></span>
 <span><span class="co">## 1            0 -462.4805  -88.64702</span></span>
-<span><span class="co">## 2            1 -498.1930  -94.02883</span></span>
-<span><span class="co">## 3            2 -503.9212  -99.44427</span></span>
-<span><span class="co">## 4            3 -505.4016 -100.94370</span></span>
+<span><span class="co">## 2            1 -498.1930  -94.02901</span></span>
+<span><span class="co">## 3            2 -503.9212  -99.44424</span></span>
+<span><span class="co">## 4            3 -505.4016 -100.94369</span></span>
 <span><span class="co">## 5            4 -505.4117 -100.99783</span></span>
-<span><span class="co">## 6            5 -505.4433 -100.99987</span></span>
-<span><span class="co">## 7            6 -505.4442 -101.00528</span></span></code></pre>
+<span><span class="co">## 6            5 -505.4434 -101.00148</span></span>
+<span><span class="co">## 7            6 -505.4443 -101.00700</span></span></code></pre>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># predict results for given support sizes</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, newx <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">x</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##              3         4</span></span>
 <span><span class="co">## [1,] -615.2481 -620.5800</span></span>
-<span><span class="co">## [2,] -645.9886 -648.1139</span></span>
-<span><span class="co">## [3,] -675.9042 -683.6169</span></span>
+<span><span class="co">## [2,] -645.9886 -648.1140</span></span>
+<span><span class="co">## [3,] -675.9039 -683.6168</span></span>
 <span><span class="co">## [4,] -378.1178 -369.1630</span></span>
-<span><span class="co">## [5,] -348.6865 -344.9450</span></span>
-<span><span class="co">## [6,] -735.3057 -744.0305</span></span></code></pre>
+<span><span class="co">## [5,] -348.6866 -344.9450</span></span>
+<span><span class="co">## [6,] -735.3054 -744.0304</span></span></code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
@@ -440,9 +440,9 @@ tune the support size by setting <code>tune.type = "cv"</code> in
 <span><span class="co">##                   3</span></span>
 <span><span class="co">## age         .      </span></span>
 <span><span class="co">## sex         .      </span></span>
-<span><span class="co">## job       -82.23074</span></span>
-<span><span class="co">## education -65.20976</span></span>
-<span><span class="co">## region    -63.44139</span></span>
+<span><span class="co">## job       -82.23064</span></span>
+<span><span class="co">## education -65.20971</span></span>
+<span><span class="co">## region    -63.44148</span></span>
 <span><span class="co">## marriage    .</span></span></code></pre>
 </div>
   </div>

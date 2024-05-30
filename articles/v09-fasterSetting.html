@@ -234,8 +234,8 @@ the runtime in <code>t1</code>:</p>
 <code class="sourceCode R"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user.self sys.self elapsed</span></span>
-<span><span class="co">## t1     0.161    0.003   0.166</span></span>
-<span><span class="co">## t2     0.124    0.004   0.128</span></span></code></pre>
+<span><span class="co">## t1     0.215    0.001   0.216</span></span>
+<span><span class="co">## t2     0.169    0.007   0.176</span></span></code></pre>
 <p>From the comparison, we see that the time required by sparse matrix
 is visibly smaller, and thus, we suggest to assign a sparse matrix to
 <code>abess</code> when the input matrix have a lot of zero entries.</p>
@@ -299,8 +299,8 @@ likely to be a non-optimal one:</p>
 <code class="sourceCode R"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user.self sys.self elapsed</span></span>
-<span><span class="co">## t1     0.007    0.000   0.008</span></span>
-<span><span class="co">## t2     0.023    0.001   0.023</span></span></code></pre>
+<span><span class="co">## t1     0.011    0.001   0.012</span></span>
+<span><span class="co">## t2     0.041    0.001   0.041</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="early-stop">Early stop<a class="anchor" aria-label="anchor" href="#early-stop"></a>
@@ -389,8 +389,8 @@ with the ABESS without early-stopping:</p>
 <code class="sourceCode R"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">t1</span>, <span class="va">t2</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">##    user.self sys.self elapsed</span></span>
-<span><span class="co">## t1     0.021    0.001   0.022</span></span>
-<span><span class="co">## t2     0.021    0.001   0.023</span></span></code></pre>
+<span><span class="co">## t1     0.042    0.000   0.043</span></span>
+<span><span class="co">## t2     0.040    0.001   0.041</span></span></code></pre>
 <p>we can conclude that early-stopping brings fast computation and might
 maintain statistical guarantee.</p>
 </div>
