@@ -46,9 +46,9 @@ class bess_base(BaseEstimator):
         has been centered if fit_intercept=False.
 
     ic_type : {'aic', 'bic', 'gic', 'ebic', 'loss'}, optional, default='ebic'
-        The type of criterion for choosing the support size if `cv=1`.
-
+        The type of criterion for choosing the support size if `cv=1`. 
         The full name of each option:
+        
         - 'aic': Akaike information criterion
         - 'bic': Bayesian information criterion
         - 'gic': Generalized information criterion (see [2-4]). It refers to special information criterion (SIC) in [1].
