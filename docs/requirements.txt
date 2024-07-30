@@ -23,4 +23,3 @@ pyts
 dowhy
 numpy<1.23
 imbalanced-learn
-pybind11
