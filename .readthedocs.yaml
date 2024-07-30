@@ -10,7 +10,10 @@ sphinx:
 
 python:
   install:
-  - requirements: docs/requirements.txt
+    - requirements: docs/requirements.txt
+    - method: pip
+    - path: ./python/
+
 
 # Build PDF
 formats:
