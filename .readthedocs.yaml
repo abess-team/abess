@@ -11,8 +11,9 @@ sphinx:
 python:
   install:
     - requirements: docs/requirements.txt
+  install:
     - method: pip
-    - path: ./python/
+      path: ./python/
 
 
 # Build PDF
