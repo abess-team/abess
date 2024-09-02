@@ -20,15 +20,13 @@
 <script src="../pkgdown.js"></script><!-- docsearch --><script src="../docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Classification: Logistic Regression and Multinomial Extension">
-<meta property="og:description" content="abess">
-<meta property="og:image" content="https://abess-team.github.io/abess/logo.svg">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -54,7 +52,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -101,7 +99,7 @@
 <li>
   <a href="https://github.com/abess-team/abess/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -110,7 +108,7 @@
           <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
 </div>
       </form>
-      
+
     </div>
 <!--/.nav-collapse -->
   </div>
@@ -118,7 +116,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -130,7 +128,7 @@ Hu</h4>
             
             <h4 data-toc-skip class="date">6/12/2021</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v03-classification.Rmd" class="external-link"><code>../vignettes/v03-classification.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/vignettes/v03-classification.Rmd" class="external-link"><code>vignettes/v03-classification.Rmd</code></a></small>
       <div class="hidden name"><code>v03-classification.Rmd</code></div>
 
     </div>
@@ -176,19 +174,33 @@ In statistics, the logistic regression is used to model the probability
 of a certain class or event existing such as alive/dead, pass/fail,
 win/lose, or healthy/sick.
 <!-- Therefore, logistic regression is capable of predicting binary results. -->
-Logistic regression function is an <span class="math inline">\(s\)</span>-shaped curve modeling the posterior
-probability <span class="math inline">\(p\)</span> via a linear
-combination of the features. The curve is defined as <span class="math inline">\(p = \frac{1}{1+\exp(-\eta)}\)</span> where <span class="math inline">\(\eta =
-\boldsymbol\beta_0+x\boldsymbol\beta\)</span> and <span class="math inline">\(x\)</span> are predictors, and <span class="math inline">\(\boldsymbol\beta_0, \boldsymbol\beta\)</span> are
-coefficients to be learned from data. The logistic regression model has
-this form: <span class="math display">\[
+Logistic regression function is an
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>-shaped
+curve modeling the posterior probability
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+via a linear combination of the features. The curve is defined as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mi>η</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">p = \frac{1}{1+\exp(-\eta)}</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mo>=</mo><msub><mi>𝛃</mi><mn>0</mn></msub><mo>+</mo><mi>x</mi><mi>𝛃</mi></mrow><annotation encoding="application/x-tex">\eta = \boldsymbol\beta_0+x\boldsymbol\beta</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+are predictors, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝛃</mi><mn>0</mn></msub><mo>,</mo><mi>𝛃</mi></mrow><annotation encoding="application/x-tex">\boldsymbol\beta_0, \boldsymbol\beta</annotation></semantics></math>
+are coefficients to be learned from data. The logistic regression model
+has this form:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>𝛃</mi><mn>0</mn></msub><mo>+</mo><mi>x</mi><mi>𝛃</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
 \log(p/(1-p)) = \boldsymbol\beta_0 + x\boldsymbol\beta.
-\]</span> The quantity <span class="math inline">\(\log(p/(1-p))\)</span> is called the logarithm of
-the odd, also called log-odd or logit. The best subset selection for
-logistic regression aim to balance model accuracy and model complexity,
-where the former is achieves by maximizing the log-likelihood function
-and the latter is characterized by a constraint: <span class="math inline">\(\| \boldsymbol\beta \|_0 \leq s\)</span> and <span class="math inline">\(s\)</span> can be determined in a data driven
-way.</p>
+</annotation></semantics></math> The quantity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\log(p/(1-p))</annotation></semantics></math>
+is called the logarithm of the odd, also called log-odd or logit. The
+best subset selection for logistic regression aim to balance model
+accuracy and model complexity, where the former is achieves by
+maximizing the log-likelihood function and the latter is characterized
+by a constraint:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>𝛃</mi><msub><mo stretchy="false" form="postfix">∥</mo><mn>0</mn></msub><mo>≤</mo><mi>s</mi></mrow><annotation encoding="application/x-tex">\| \boldsymbol\beta \|_0 \leq s</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+can be determined in a data driven way.</p>
 </div>
 <div class="section level2">
 <h2 id="best-subset-selection-for-logistic-regression">Best Subset Selection for Logistic Regression<a class="anchor" aria-label="anchor" href="#best-subset-selection-for-logistic-regression"></a>
@@ -400,34 +412,50 @@ a cat, dog, lion, etc. Each object detected in the image would be
 assigned a probability between 0 and 1, with a sum of one. The extended
 model is multinomial logistic regression.</p>
 <p>To arrive at the multinomial logistic model, one can imagine, for
-<span class="math inline">\(K\)</span> possible classes, running <span class="math inline">\(K-1\)</span> independent logistic regression
-models, in which one class is chosen as a ``pivot’’ and then the other
-<span class="math inline">\(K-1\)</span> classes are separately
-regressed against the pivot outcome. This would proceed as follows, if
-class K (the last outcome) is chosen as the pivot: <span class="math display">\[\ln(\mathbb{P}(y = 1) / \mathbb{P}(y = K)) =
-x^\top \boldsymbol\beta^{(1)}, \]</span> <span class="math display">\[\cdots \cdots\]</span> <span class="math display">\[\ln(\mathbb{P}(y = K - 1) / \mathbb{P}(y = K)) =
-x^\top \boldsymbol\beta^{(K - 1)}.\]</span> Then, the probability to
-choose the <span class="math inline">\(j\)</span>-th class can be easily
-derived to be: <span class="math display">\[\mathbb{P}(y = j) =
-\frac{\exp{(x^\top \boldsymbol\beta^{(j)})}}{1 + \sum_{k=1}^{K-1}
-\exp{(x^\top \boldsymbol\beta^{(k)})}}, \]</span> and subsequently, we
-would predict the <span class="math inline">\(j^{*}\)</span>-th class if
-the <span class="math inline">\(j^* = \arg\max_{j} \mathbb{P}(y =
-j)\)</span>. Notice that, for <span class="math inline">\(K\)</span>
-possible classes case, there are <span class="math inline">\(p \times (K
-- 1)\)</span> unknown parameters: <span class="math inline">\(\boldsymbol\beta^{(1)}, \ldots,
-\boldsymbol\beta^{(K-1)}\)</span> to be estimated. Because the number of
-parameters increase as <span class="math inline">\(K\)</span>, it is
-even more urge to constrain the model complexity. And the best subset
-selection for multinomial logistic regression aims to maximize the
-log-likelihood function and control the model complexity by restricting
-<span class="math inline">\(B = (\boldsymbol\beta^{(1)}, \ldots,
-\boldsymbol\beta^{(K-1)})\)</span> with <span class="math inline">\(\| B
-\|_{0, 2} \leq s\)</span> where <span class="math inline">\(\| B \|_{0,
-2} = \sum_{i = 1}^{p} I(B_{i\cdot} = {\bf 0})\)</span>, <span class="math inline">\(B_{i\cdot}\)</span> is the <span class="math inline">\(i\)</span>-th row of coefficient matrix <span class="math inline">\(B\)</span> and <span class="math inline">\({\bf 0}
-\in R^{K - 1}\)</span> is an all zero vector. In other words, each row
-of <span class="math inline">\(B\)</span> would be either all zero or
-all non-zero.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+possible classes, running
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">K-1</annotation></semantics></math>
+independent logistic regression models, in which one class is chosen as
+a ``pivot’’ and then the other
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">K-1</annotation></semantics></math>
+classes are separately regressed against the pivot outcome. This would
+proceed as follows, if class K (the last outcome) is chosen as the
+pivot:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>x</mi><mi>⊤</mi></msup><msup><mi>𝛃</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">\ln(\mathbb{P}(y = 1) / \mathbb{P}(y = K)) = x^\top \boldsymbol\beta^{(1)}, </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>⋯</mi><mi>⋯</mi></mrow><annotation encoding="application/x-tex">\cdots \cdots</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><mi>K</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><mi>K</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msup><mi>x</mi><mi>⊤</mi></msup><msup><mi>𝛃</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">\ln(\mathbb{P}(y = K - 1) / \mathbb{P}(y = K)) = x^\top \boldsymbol\beta^{(K - 1)}.</annotation></semantics></math>
+Then, the probability to choose the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>-th
+class can be easily derived to be:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>x</mi><mi>⊤</mi></msup><msup><mi>𝛃</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>+</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>K</mi><mo>−</mo><mn>1</mn></mrow></munderover><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>x</mi><mi>⊤</mi></msup><msup><mi>𝛃</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>k</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">\mathbb{P}(y = j) = \frac{\exp{(x^\top \boldsymbol\beta^{(j)})}}{1 + \sum_{k=1}^{K-1} \exp{(x^\top \boldsymbol\beta^{(k)})}}, </annotation></semantics></math>
+and subsequently, we would predict the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>j</mi><mo>*</mo></msup><annotation encoding="application/x-tex">j^{*}</annotation></semantics></math>-th
+class if the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>j</mi><mo>*</mo></msup><mo>=</mo><mo>arg</mo><msub><mo>max</mo><mi>j</mi></msub><mi>ℙ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>=</mo><mi>j</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">j^* = \arg\max_{j} \mathbb{P}(y = j)</annotation></semantics></math>.
+Notice that, for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+possible classes case, there are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>×</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p \times (K - 1)</annotation></semantics></math>
+unknown parameters:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝛃</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>𝛃</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\boldsymbol\beta^{(1)}, \ldots, \boldsymbol\beta^{(K-1)}</annotation></semantics></math>
+to be estimated. Because the number of parameters increase as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>,
+it is even more urge to constrain the model complexity. And the best
+subset selection for multinomial logistic regression aims to maximize
+the log-likelihood function and control the model complexity by
+restricting
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝛃</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>𝛃</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>K</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">B = (\boldsymbol\beta^{(1)}, \ldots, \boldsymbol\beta^{(K-1)})</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>B</mi><msub><mo stretchy="false" form="postfix">∥</mo><mrow><mn>0</mn><mo>,</mo><mn>2</mn></mrow></msub><mo>≤</mo><mi>s</mi></mrow><annotation encoding="application/x-tex">\| B \|_{0, 2} \leq s</annotation></semantics></math>
+where <span class="math inline">$\| B \|_{0, 2} = \sum_{i = 1}^{p}
+I(B_{i\cdot} = {\bf 0})$</span>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>B</mi><mrow><mi>i</mi><mo>⋅</mo></mrow></msub><annotation encoding="application/x-tex">B_{i\cdot}</annotation></semantics></math>
+is the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>-th
+row of coefficient matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+and <span class="math inline">${\bf 0} \in R^{K - 1}$</span> is an all
+zero vector. In other words, each row of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+would be either all zero or all non-zero.</p>
 </div>
 <div class="section level3">
 <h3 id="multinomial-logistic-regression-with-abess-package">Multinomial logistic regression with <code>abess</code> Package<a class="anchor" aria-label="anchor" href="#multinomial-logistic-regression-with-abess-package"></a>
@@ -486,9 +514,7 @@ set of the ground truth coefficient matrix.</p>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -501,17 +527,17 @@ set of the ground truth coefficient matrix.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer>
 </div>
 
-  
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script><script>
   docsearch({
-    
-    
+
+
     apiKey: 'd32715b0e35635336aba6377dd751e21',
     indexName: 'abess',
     inputSelector: 'input#search-input.form-control',

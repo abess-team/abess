@@ -20,15 +20,13 @@
 <script src="../pkgdown.js"></script><!-- docsearch --><script src="../docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Robust Principal Component Analysis">
-<meta property="og:description" content="abess">
-<meta property="og:image" content="https://abess-team.github.io/abess/logo.svg">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -54,7 +52,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -101,7 +99,7 @@
 <li>
   <a href="https://github.com/abess-team/abess/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -110,7 +108,7 @@
           <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
 </div>
       </form>
-      
+
     </div>
 <!--/.nav-collapse -->
   </div>
@@ -118,7 +116,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -126,7 +124,7 @@
       <h1 data-toc-skip>Robust Principal Component Analysis</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v12-Robust-Principal-Component-Analysis.Rmd" class="external-link"><code>../vignettes/v12-Robust-Principal-Component-Analysis.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/vignettes/v12-Robust-Principal-Component-Analysis.Rmd" class="external-link"><code>vignettes/v12-Robust-Principal-Component-Analysis.Rmd</code></a></small>
       <div class="hidden name"><code>v12-Robust-Principal-Component-Analysis.Rmd</code></div>
 
     </div>
@@ -142,12 +140,16 @@ using <em>abess</em> package on an artificial example.</p>
 <p>Principal component analysis (PCA) is an important method in the
 field of data science, which can reduce the dimension of data and
 simplify our model. It solves an optimization problem like:</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>max</mo><mi>v</mi></munder><msup><mi>v</mi><mi>T</mi></msup><mi>Σ</mi><mi>v</mi><mo>,</mo><mspace width="1.0em"></mspace><mi>s</mi><mi>.</mi><mi>t</mi><mi>.</mi><mspace width="0.222em"></mspace><msup><mi>v</mi><mi>T</mi></msup><mi>v</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">
 \max_v v^T \Sigma v, \quad s.t.\  v^Tv=1
-\]</span> where <span class="math inline">\(\Sigma = X^TX/(n-1)\)</span>
-and <span class="math inline">\(X\in \mathbb{R}^{n\times p}\)</span> is
-the centered sample matrix with each row containing one observation of
-<span class="math inline">\(p\)</span> variables.</p>
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Σ</mi><mo>=</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Sigma = X^TX/(n-1)</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>n</mi><mo>×</mo><mi>p</mi></mrow></msup></mrow><annotation encoding="application/x-tex">X\in \mathbb{R}^{n\times p}</annotation></semantics></math>
+is the centered sample matrix with each row containing one observation
+of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+variables.</p>
 </div>
 <div class="section level2">
 <h2 id="robust-pca-rpca">Robust-PCA (RPCA)<a class="anchor" aria-label="anchor" href="#robust-pca-rpca"></a>
@@ -163,59 +165,89 @@ pixels, X-ray spikes.</p></li>
 <p>In these situations, PCA may spend too much attention on unnecessary
 variables. That’s why Robust-PCA (RPCA) is presented, which can be used
 to recover the (low-rank) sample for subsequent processing.</p>
-<p>In mathematics, RPCA manages to divide the sample matrix <span class="math inline">\(X\)</span> into two parts: <span class="math display">\[
+<p>In mathematics, RPCA manages to divide the sample matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+into two parts:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mi>S</mi><mo>+</mo><mi>L</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
 X=S+L,
-\]</span> where <span class="math inline">\(S\)</span> is the sparse
-“outlier” matrix and <span class="math inline">\(L\)</span> is the
-“information” matrix with a low rank. Generally, we also suppose <span class="math inline">\(S\)</span> is not low-rank and <span class="math inline">\(L\)</span> is not sparse, in order to get the
-unique solution.</p>
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+is the sparse “outlier” matrix and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+is the “information” matrix with a low rank. Generally, we also suppose
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+is not low-rank and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+is not sparse, in order to get the unique solution.</p>
 <p><img src="https://raw.githubusercontent.com/abess-team/abess/master/docs/Tutorial/fig/rpca.png" width="70%" height="70%"></p>
-<p>In Lagrange format, <span class="math display">\[
-\min _{S, L}\|X-S-L\|_{F} \leq \varepsilon, s . t . \quad
-\operatorname{rank}(L)=r,\|S\|_{0} \leq s
-\]</span> where <span class="math inline">\(s\)</span> is the sparsity
-of <span class="math inline">\(S\)</span>. After RPCA, the information
-matrix <span class="math inline">\(L\)</span> can be used in further
-analysis.</p>
-<p>Note that it does NOT deal with “noise”, which may stay in <span class="math inline">\(L\)</span> and need further procession.</p>
+<p>In Lagrange format,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>min</mo><mrow><mi>S</mi><mo>,</mo><mi>L</mi></mrow></munder><mo stretchy="false" form="postfix">∥</mo><mi>X</mi><mo>−</mo><mi>S</mi><mo>−</mo><mi>L</mi><msub><mo stretchy="false" form="postfix">∥</mo><mi>F</mi></msub><mo>≤</mo><mi>ε</mi><mo>,</mo><mi>s</mi><mi>.</mi><mi>t</mi><mi>.</mi><mspace width="1.0em"></mspace><mo>rank</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>L</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>r</mi><mo>,</mo><mo stretchy="false" form="postfix">∥</mo><mi>S</mi><msub><mo stretchy="false" form="postfix">∥</mo><mn>0</mn></msub><mo>≤</mo><mi>s</mi></mrow><annotation encoding="application/x-tex">
+\min _{S, L}\|X-S-L\|_{F} \leq \varepsilon, s . t . \quad \operatorname{rank}(L)=r,\|S\|_{0} \leq s
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+is the sparsity of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>.
+After RPCA, the information matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+can be used in further analysis.</p>
+<p>Note that it does NOT deal with “noise”, which may stay in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+and need further procession.</p>
 </div>
 <div class="section level2">
 <h2 id="hard-impute">Hard Impute<a class="anchor" aria-label="anchor" href="#hard-impute"></a>
 </h2>
 <p>To solve its sub-problem, RPCA with known outlier positions, we
 follow a process called “Hard Impute”. The main idea is to estimate the
-outlier values by precise values with KPCA, where <span class="math inline">\(K=r\)</span>.</p>
+outlier values by precise values with KPCA, where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">K=r</annotation></semantics></math>.</p>
 <p>Here are the steps:</p>
 <ol style="list-style-type: decimal">
-<li>Input <span class="math inline">\(X\)</span>, <code>outliers</code>,
-<span class="math inline">\(M, \varepsilon\)</span>, where outliers
-record the non-zero positions in <span class="math inline">\(S\)</span>;</li>
-<li>Denote <span class="math inline">\(X_{n e w} \leftarrow
-\mathbf{0}\)</span> with the same shape of <span class="math inline">\(X\)</span>;</li>
-<li>For <span class="math inline">\(i=1,2, \ldots, M\)</span>
+<li>Input
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>,
+<code>outliers</code>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>,</mo><mi>ε</mi></mrow><annotation encoding="application/x-tex">M, \varepsilon</annotation></semantics></math>,
+where outliers record the non-zero positions in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>;</li>
+<li>Denote
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mrow><mi>n</mi><mi>e</mi><mi>w</mi></mrow></msub><mo>←</mo><mn>𝟎</mn></mrow><annotation encoding="application/x-tex">X_{n e w} \leftarrow \mathbf{0}</annotation></semantics></math>
+with the same shape of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>;</li>
+<li>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">i=1,2, \ldots, M</annotation></semantics></math>
 </li>
 </ol>
 <ul>
-<li><span class="math inline">\(X_{o l
-d}=\left\{\begin{array}{ll}X_{\text {new }}, &amp; \text { for outliers
-} \\ X, &amp; \text { for others }\end{array}\right.\)</span></li>
-<li>Form KPCA on <span class="math inline">\(X_{o l d}\)</span> with
-<span class="math inline">\(K=r\)</span>, and denote <span class="math inline">\(v\)</span> as the eigenvectors;</li>
+<li><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mrow><mi>o</mi><mi>l</mi><mi>d</mi></mrow></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>X</mi><mrow><mtext mathvariant="normal">new </mtext><mspace width="0.333em"></mspace></mrow></msub><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> for outliers </mtext><mspace width="0.333em"></mspace></mrow></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mi>X</mi><mo>,</mo></mtd><mtd columnalign="left" style="text-align: left"><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> for others </mtext><mspace width="0.333em"></mspace></mrow></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">X_{o l d}=\left\{\begin{array}{ll}X_{\text {new }}, &amp; \text { for outliers } \\ X, &amp; \text { for others }\end{array}\right.</annotation></semantics></math></li>
+<li>Form KPCA on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mrow><mi>o</mi><mi>l</mi><mi>d</mi></mrow></msub><annotation encoding="application/x-tex">X_{o l d}</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">K=r</annotation></semantics></math>,
+and denote
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>
+as the eigenvectors;</li>
 <li>
-<span class="math inline">\(X_{\text {new }}=X_{\text {old }} \cdot
-v \cdot v^{T}\)</span>;</li>
-<li>If <span class="math inline">\(\left\|X_{n e w}-X_{o l
-d}\right\|&lt;\varepsilon\)</span>, break: End for;</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mrow><mtext mathvariant="normal">new </mtext><mspace width="0.333em"></mspace></mrow></msub><mo>=</mo><msub><mi>X</mi><mrow><mtext mathvariant="normal">old </mtext><mspace width="0.333em"></mspace></mrow></msub><mo>⋅</mo><mi>v</mi><mo>⋅</mo><msup><mi>v</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">X_{\text {new }}=X_{\text {old }} \cdot v \cdot v^{T}</annotation></semantics></math>;</li>
+<li>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">∥</mo><msub><mi>X</mi><mrow><mi>n</mi><mi>e</mi><mi>w</mi></mrow></msub><mo>−</mo><msub><mi>X</mi><mrow><mi>o</mi><mi>l</mi><mi>d</mi></mrow></msub><mo stretchy="true" form="postfix">∥</mo></mrow><mo>&lt;</mo><mi>ε</mi></mrow><annotation encoding="application/x-tex">\left\|X_{n e w}-X_{o l d}\right\|&lt;\varepsilon</annotation></semantics></math>,
+break: End for;</li>
 </ul>
 <ol start="4" style="list-style-type: decimal">
-<li>Return <span class="math inline">\(X_{\text {new }}\)</span> as
-<span class="math inline">\(L\)</span>; where <span class="math inline">\(M\)</span> is the maximum iteration times and
-<span class="math inline">\(\varepsilon\)</span> is the convergence
-coefficient.</li>
+<li>Return
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mrow><mtext mathvariant="normal">new </mtext><mspace width="0.333em"></mspace></mrow></msub><annotation encoding="application/x-tex">X_{\text {new }}</annotation></semantics></math>
+as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>;
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+is the maximum iteration times and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ε</mi><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math>
+is the convergence coefficient.</li>
 </ol>
-<p>The final <span class="math inline">\(X_{\text {new }}\)</span> is
-supposed to be <span class="math inline">\(L\)</span> under given
-outlier positions.</p>
+<p>The final
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mrow><mtext mathvariant="normal">new </mtext><mspace width="0.333em"></mspace></mrow></msub><annotation encoding="application/x-tex">X_{\text {new }}</annotation></semantics></math>
+is supposed to be
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>L</mi><annotation encoding="application/x-tex">L</annotation></semantics></math>
+under given outlier positions.</p>
 </div>
 <div class="section level2">
 <h2 id="rpca-application">RPCA Application<a class="anchor" aria-label="anchor" href="#rpca-application"></a>
@@ -308,9 +340,7 @@ situations:</p>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -323,17 +353,17 @@ situations:</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer>
 </div>
 
-  
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script><script>
   docsearch({
-    
-    
+
+
     apiKey: 'd32715b0e35635336aba6377dd751e21',
     indexName: 'abess',
     inputSelector: 'input#search-input.form-control',

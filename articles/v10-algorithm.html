@@ -20,15 +20,13 @@
 <script src="../pkgdown.js"></script><!-- docsearch --><script src="../docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="ABESS algorithm: details">
-<meta property="og:description" content="abess">
-<meta property="og:image" content="https://abess-team.github.io/abess/logo.svg">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -54,7 +52,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -101,7 +99,7 @@
 <li>
   <a href="https://github.com/abess-team/abess/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -110,7 +108,7 @@
           <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
 </div>
       </form>
-      
+
     </div>
 <!--/.nav-collapse -->
   </div>
@@ -118,7 +116,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -129,7 +127,7 @@ Yanhang Zhang</h4>
             
             <h4 data-toc-skip class="date">1/20/2022</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v10-algorithm.Rmd" class="external-link"><code>../vignettes/v10-algorithm.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/vignettes/v10-algorithm.Rmd" class="external-link"><code>vignettes/v10-algorithm.Rmd</code></a></small>
       <div class="hidden name"><code>v10-algorithm.Rmd</code></div>
 
     </div>
@@ -153,43 +151,63 @@ and its variants can be applied in similar ways.</p>
 <div class="section level3">
 <h3 id="sacrifices">Sacrifices<a class="anchor" aria-label="anchor" href="#sacrifices"></a>
 </h3>
-<p>Consider the <span class="math inline">\(\ell_{0}\)</span> constraint
-minimization problem, <span class="math display">\[
-\min _{\boldsymbol{\beta}} \mathcal{L}_{n}(\boldsymbol{\beta}), \quad
-\text { s.t }\|\boldsymbol{\beta}\|_{0} \leq \mathrm{s},
-\]</span> where $<em>{n}()=|y-X |</em>{2}^{2}. $ Without loss of
-generality, we consider <span class="math inline">\(\|\boldsymbol{\beta}\|_{0}=\mathrm{s}\)</span>.
-Given any initial set <span class="math inline">\(\mathcal{A} \subset
-\mathcal{S}=\{1,2, \ldots, p\}\)</span> with cardinality <span class="math inline">\(|\mathcal{A}|=s\)</span>, denote <span class="math inline">\(\mathcal{I}=\mathcal{A}^{\mathrm{c}}\)</span> and
-compute <span class="math display">\[
-\hat{\boldsymbol{\beta}}=\arg \min _{\boldsymbol{\beta}_{\mathcal{I}}=0}
-\mathcal{L}_{n}(\boldsymbol{\beta}).
-\]</span> We call <span class="math inline">\(\mathcal{A}\)</span> and
-<span class="math inline">\(\mathcal{I}\)</span> as the active set and
-the inactive set, respectively.</p>
-<p>Given the active set <span class="math inline">\(\mathcal{A}\)</span>
-and <span class="math inline">\(\hat{\boldsymbol{\beta}}\)</span>, we
-can define the following two types of sacrifices:</p>
+<p>Consider the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mo>ℓ</mo><mn>0</mn></msub><annotation encoding="application/x-tex">\ell_{0}</annotation></semantics></math>
+constraint minimization problem,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>min</mo><mi>𝛃</mi></munder><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛃</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="1.0em"></mspace><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> s.t </mtext><mspace width="0.333em"></mspace></mrow><mo stretchy="false" form="postfix">∥</mo><mi>𝛃</mi><msub><mo stretchy="false" form="postfix">∥</mo><mn>0</mn></msub><mo>≤</mo><mi mathvariant="normal">s</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\min _{\boldsymbol{\beta}} \mathcal{L}_{n}(\boldsymbol{\beta}), \quad \text { s.t }\|\boldsymbol{\beta}\|_{0} \leq \mathrm{s},
+</annotation></semantics></math> where $<em>{n}()=|y-X |</em>{2}^{2}. $
+Without loss of generality, we consider
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="postfix">∥</mo><mi>𝛃</mi><msub><mo stretchy="false" form="postfix">∥</mo><mn>0</mn></msub><mo>=</mo><mi mathvariant="normal">s</mi></mrow><annotation encoding="application/x-tex">\|\boldsymbol{\beta}\|_{0}=\mathrm{s}</annotation></semantics></math>.
+Given any initial set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒜</mi><mo>⊂</mo><mi>𝒮</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\mathcal{A} \subset \mathcal{S}=\{1,2, \ldots, p\}</annotation></semantics></math>
+with cardinality
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>𝒜</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>=</mo><mi>s</mi></mrow><annotation encoding="application/x-tex">|\mathcal{A}|=s</annotation></semantics></math>,
+denote
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℐ</mi><mo>=</mo><msup><mi>𝒜</mi><mi mathvariant="normal">c</mi></msup></mrow><annotation encoding="application/x-tex">\mathcal{I}=\mathcal{A}^{\mathrm{c}}</annotation></semantics></math>
+and compute
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mo>=</mo><mo>arg</mo><munder><mo>min</mo><mrow><msub><mi>𝛃</mi><mi>ℐ</mi></msub><mo>=</mo><mn>0</mn></mrow></munder><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛃</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\hat{\boldsymbol{\beta}}=\arg \min _{\boldsymbol{\beta}_{\mathcal{I}}=0} \mathcal{L}_{n}(\boldsymbol{\beta}).
+</annotation></semantics></math> We call
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒜</mi><annotation encoding="application/x-tex">\mathcal{A}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℐ</mi><annotation encoding="application/x-tex">\mathcal{I}</annotation></semantics></math>
+as the active set and the inactive set, respectively.</p>
+<p>Given the active set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒜</mi><annotation encoding="application/x-tex">\mathcal{A}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\boldsymbol{\beta}}</annotation></semantics></math>,
+we can define the following two types of sacrifices:</p>
 <ol style="list-style-type: decimal">
-<li>Backward sacrifice: For any <span class="math inline">\(j \in
-\mathcal{A}\)</span>, the magnitude of discarding variable <span class="math inline">\(j\)</span> is, <span class="math display">\[
-\xi_{j}=\mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}}^{\mathcal{A}
-\backslash\{j\}}\right)-\mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}}^{\mathcal{A}}\right)=\frac{X_{j}^{\top}
-X_{j}}{2 n}\left(\hat{\boldsymbol\beta}_{j}\right)^{2},
-\]</span>
+<li>Backward sacrifice: For any
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>∈</mo><mi>𝒜</mi></mrow><annotation encoding="application/x-tex">j \in \mathcal{A}</annotation></semantics></math>,
+the magnitude of discarding variable
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+is,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mi>j</mi></msub><mo>=</mo><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mrow><mi>𝒜</mi><mo>∖</mo><mo stretchy="false" form="prefix">{</mo><mi>j</mi><mo stretchy="false" form="postfix">}</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mi>𝒜</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><msubsup><mi>X</mi><mi>j</mi><mi>⊤</mi></msubsup><msub><mi>X</mi><mi>j</mi></msub></mrow><mrow><mn>2</mn><mi>n</mi></mrow></mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\xi_{j}=\mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}}^{\mathcal{A} \backslash\{j\}}\right)-\mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}}^{\mathcal{A}}\right)=\frac{X_{j}^{\top} X_{j}}{2 n}\left(\hat{\boldsymbol\beta}_{j}\right)^{2},
+</annotation></semantics></math>
 </li>
-<li>Forward sacrifice: For any <span class="math inline">\(j \in
-\mathcal{I}\)</span>, the magnitude of adding variable <span class="math inline">\(j\)</span> is, <span class="math display">\[
-\zeta_{j}=\mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}^{\mathcal{A}}}\right)-\mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}}^{\mathcal{A}}+\hat{t}^{\{j\}}\right)=\frac{X_{j}^{\top}
-X_{j}}{2 n}\left(\frac{\hat{\boldsymbol d}_{j}}{X_{j}^{\top} X_{j} /
-n}\right)^{2}.
-\]</span> where <span class="math inline">\(\hat{t}=\arg \min _{t}
-\mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}}^{\mathcal{A}}+t^{\{j\}}\right),
-\hat{\boldsymbol d}_{j}=X_{j}^{\top}(y-X \hat{\boldsymbol{\beta}}) /
-n\)</span> Intuitively, for <span class="math inline">\(j \in
-\mathcal{A}\)</span> (or <span class="math inline">\(j \in
-\mathcal{I}\)</span> ), a large <span class="math inline">\(\xi_{j}\)</span> (or <span class="math inline">\(\zeta_{j}\)</span>) implies the <span class="math inline">\(j\)</span> th variable is potentially
-important.</li>
+<li>Forward sacrifice: For any
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>∈</mo><mi>ℐ</mi></mrow><annotation encoding="application/x-tex">j \in \mathcal{I}</annotation></semantics></math>,
+the magnitude of adding variable
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+is,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ζ</mi><mi>j</mi></msub><mo>=</mo><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mover><msup><mi>𝛃</mi><mi>𝒜</mi></msup><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mi>𝒜</mi></msup><mo>+</mo><msup><mover><mi>t</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="false" form="prefix">{</mo><mi>j</mi><mo stretchy="false" form="postfix">}</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><msubsup><mi>X</mi><mi>j</mi><mi>⊤</mi></msubsup><msub><mi>X</mi><mi>j</mi></msub></mrow><mrow><mn>2</mn><mi>n</mi></mrow></mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><msub><mover><mi>𝐝</mi><mo accent="true">̂</mo></mover><mi>j</mi></msub><mrow><msubsup><mi>X</mi><mi>j</mi><mi>⊤</mi></msubsup><msub><mi>X</mi><mi>j</mi></msub><mi>/</mi><mi>n</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\zeta_{j}=\mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}^{\mathcal{A}}}\right)-\mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}}^{\mathcal{A}}+\hat{t}^{\{j\}}\right)=\frac{X_{j}^{\top} X_{j}}{2 n}\left(\frac{\hat{\boldsymbol d}_{j}}{X_{j}^{\top} X_{j} / n}\right)^{2}.
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>t</mi><mo accent="true">̂</mo></mover><mo>=</mo><mo>arg</mo><msub><mo>min</mo><mi>t</mi></msub><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msup><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mi>𝒜</mi></msup><mo>+</mo><msup><mi>t</mi><mrow><mo stretchy="false" form="prefix">{</mo><mi>j</mi><mo stretchy="false" form="postfix">}</mo></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><msub><mover><mi>𝐝</mi><mo accent="true">̂</mo></mover><mi>j</mi></msub><mo>=</mo><msubsup><mi>X</mi><mi>j</mi><mi>⊤</mi></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>−</mo><mi>X</mi><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">\hat{t}=\arg \min _{t} \mathcal{L}_{n}\left(\hat{\boldsymbol{\beta}}^{\mathcal{A}}+t^{\{j\}}\right), \hat{\boldsymbol d}_{j}=X_{j}^{\top}(y-X \hat{\boldsymbol{\beta}}) / n</annotation></semantics></math>
+Intuitively, for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>∈</mo><mi>𝒜</mi></mrow><annotation encoding="application/x-tex">j \in \mathcal{A}</annotation></semantics></math>
+(or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>∈</mo><mi>ℐ</mi></mrow><annotation encoding="application/x-tex">j \in \mathcal{I}</annotation></semantics></math>
+), a large
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ξ</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\xi_{j}</annotation></semantics></math>
+(or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ζ</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\zeta_{j}</annotation></semantics></math>)
+implies the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+th variable is potentially important.</li>
 </ol>
 </div>
 <div class="section level3">
@@ -200,134 +218,134 @@ important.</li>
 </h4>
 <p>Unfortunately, it is noteworthy that these two sacrifices are
 incomparable because they have different sizes of support set. However,
-if we exchange some “irrelevant” variables in <span class="math inline">\(\mathcal{A}\)</span> and some “important”
-variables in <span class="math inline">\(\mathcal{I}\)</span>, it may
-result in a higher-quality solution. This intuition motivates our
-splicing method. Specifically, given any splicing size <span class="math inline">\(k \leq s\)</span>, define</p>
-<p><span class="math display">\[
-\mathcal{A}_{k}=\left\{j \in \mathcal{A}: \sum_{i \in \mathcal{A}}
-\mathrm{I}\left(\xi_{j} \geq \xi_{i}\right) \leq k\right\}
-\]</span> to represent <span class="math inline">\(k\)</span> least
-relevant variables in <span class="math inline">\(\mathcal{A}\)</span>
-and <span class="math display">\[
-\mathcal{I}_{k}=\left\{j \in \mathcal{I}: \sum_{i \in \mathcal{I}}
-\mid\left(\zeta_{j} \leq \zeta_{i}\right) \leq k\right\}
-\]</span> to represent <span class="math inline">\(k\)</span> most
-relevant variables in <span class="math inline">\(\mathcal{I} .\)</span>
-Then, we splice <span class="math inline">\(\mathcal{A}\)</span> and
-<span class="math inline">\(\mathcal{I}\)</span> by exchanging <span class="math inline">\(\mathcal{A}_{k}\)</span> and <span class="math inline">\(\mathcal{I}_{k}\)</span> and obtain a new active
-set <span class="math display">\[
-\tilde{\mathcal{A}}=\left(\mathcal{A} \backslash \mathcal{A}_{k}\right)
-\cup \mathcal{I}_{k}.
-\]</span> Let <span class="math inline">\(\tilde{\mathcal{I}}=\tilde{\mathcal{A}}^{c},
-\tilde{\boldsymbol{\beta}}=\arg \min
-_{\boldsymbol{\beta}_{\overline{\mathcal{I}}}=0}
-\mathcal{L}_{n}(\boldsymbol{\beta})\)</span>, and <span class="math inline">\(\tau_{s}&gt;0\)</span> be a threshold. If <span class="math inline">\(\tau_{s}&lt;\)</span> <span class="math inline">\(\mathcal{L}_{n}(\hat{\boldsymbol\beta})-\mathcal{L}_{n}(\tilde{\boldsymbol\beta})\)</span>,
-then <span class="math inline">\(\tilde{A}\)</span> is preferable to
-<span class="math inline">\(\mathcal{A} .\)</span> The active set can be
-updated iteratively until the loss function cannot be improved by
-splicing. Once the algorithm recovers the true active set, we may splice
-some irrelevant variables, and then the loss function may decrease
-slightly. The threshold <span class="math inline">\(\tau_{s}\)</span>
-can reduce this unnecessary calculation. Typically, <span class="math inline">\(\tau_{s}\)</span> is relatively small, e.g. <span class="math inline">\(\tau_{s}=0.01 s \log (p) \log (\log n) /
-n.\)</span></p>
+if we exchange some “irrelevant” variables in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒜</mi><annotation encoding="application/x-tex">\mathcal{A}</annotation></semantics></math>
+and some “important” variables in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℐ</mi><annotation encoding="application/x-tex">\mathcal{I}</annotation></semantics></math>,
+it may result in a higher-quality solution. This intuition motivates our
+splicing method. Specifically, given any splicing size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≤</mo><mi>s</mi></mrow><annotation encoding="application/x-tex">k \leq s</annotation></semantics></math>,
+define</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒜</mi><mi>k</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mi>j</mi><mo>∈</mo><mi>𝒜</mi><mo>:</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><mi>𝒜</mi></mrow></munder><mi mathvariant="normal">I</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ξ</mi><mi>j</mi></msub><mo>≥</mo><msub><mi>ξ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>k</mi><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">
+\mathcal{A}_{k}=\left\{j \in \mathcal{A}: \sum_{i \in \mathcal{A}} \mathrm{I}\left(\xi_{j} \geq \xi_{i}\right) \leq k\right\}
+</annotation></semantics></math> to represent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+least relevant variables in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒜</mi><annotation encoding="application/x-tex">\mathcal{A}</annotation></semantics></math>
+and
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mi>k</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mi>j</mi><mo>∈</mo><mi>ℐ</mi><mo>:</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><mi>ℐ</mi></mrow></munder><mo>∣</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ζ</mi><mi>j</mi></msub><mo>≤</mo><msub><mi>ζ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>k</mi><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">
+\mathcal{I}_{k}=\left\{j \in \mathcal{I}: \sum_{i \in \mathcal{I}} \mid\left(\zeta_{j} \leq \zeta_{i}\right) \leq k\right\}
+</annotation></semantics></math> to represent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+most relevant variables in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℐ</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal{I} .</annotation></semantics></math>
+Then, we splice
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒜</mi><annotation encoding="application/x-tex">\mathcal{A}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ℐ</mi><annotation encoding="application/x-tex">\mathcal{I}</annotation></semantics></math>
+by exchanging
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒜</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\mathcal{A}_{k}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ℐ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\mathcal{I}_{k}</annotation></semantics></math>
+and obtain a new active set
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝒜</mi><mo accent="true">̃</mo></mover><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝒜</mi><mo>∖</mo><msub><mi>𝒜</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>∪</mo><msub><mi>ℐ</mi><mi>k</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\tilde{\mathcal{A}}=\left(\mathcal{A} \backslash \mathcal{A}_{k}\right) \cup \mathcal{I}_{k}.
+</annotation></semantics></math> Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>ℐ</mi><mo accent="true">̃</mo></mover><mo>=</mo><msup><mover><mi>𝒜</mi><mo accent="true">̃</mo></mover><mi>c</mi></msup><mo>,</mo><mover><mi>𝛃</mi><mo accent="true">̃</mo></mover><mo>=</mo><mo>arg</mo><msub><mo>min</mo><mrow><msub><mi>𝛃</mi><mover><mi>ℐ</mi><mo accent="true">¯</mo></mover></msub><mo>=</mo><mn>0</mn></mrow></msub><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛃</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\tilde{\mathcal{I}}=\tilde{\mathcal{A}}^{c}, \tilde{\boldsymbol{\beta}}=\arg \min _{\boldsymbol{\beta}_{\overline{\mathcal{I}}}=0} \mathcal{L}_{n}(\boldsymbol{\beta})</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mi>s</mi></msub><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\tau_{s}&gt;0</annotation></semantics></math>
+be a threshold. If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mi>s</mi></msub><mo>&lt;</mo></mrow><annotation encoding="application/x-tex">\tau_{s}&lt;</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝛃</mi><mo accent="true">̃</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal{L}_{n}(\hat{\boldsymbol\beta})-\mathcal{L}_{n}(\tilde{\boldsymbol\beta})</annotation></semantics></math>,
+then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>A</mi><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde{A}</annotation></semantics></math>
+is preferable to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒜</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal{A} .</annotation></semantics></math>
+The active set can be updated iteratively until the loss function cannot
+be improved by splicing. Once the algorithm recovers the true active
+set, we may splice some irrelevant variables, and then the loss function
+may decrease slightly. The threshold
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mi>s</mi></msub><annotation encoding="application/x-tex">\tau_{s}</annotation></semantics></math>
+can reduce this unnecessary calculation. Typically,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mi>s</mi></msub><annotation encoding="application/x-tex">\tau_{s}</annotation></semantics></math>
+is relatively small,
+e.g. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mi>s</mi></msub><mo>=</mo><mn>0.01</mn><mi>s</mi><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>log</mo><mi>n</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mi>n</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\tau_{s}=0.01 s \log (p) \log (\log n) / n.</annotation></semantics></math></p>
 <div class="section level5">
 <h5 id="algorithm-1-bess-fixs-best-subset-selection-with-a-given-support-size-s-">Algorithm 1: BESS.Fix(s): Best-Subset Selection with a given support
 size s.<a class="anchor" aria-label="anchor" href="#algorithm-1-bess-fixs-best-subset-selection-with-a-given-support-size-s-"></a>
 </h5>
 <ol style="list-style-type: decimal">
-<li>Input: <span class="math inline">\(X, y\)</span>, positive integers
-<span class="math inline">\(k_{\max}, m_{\max}\)</span>, and a threshold
-<span class="math inline">\(\tau_{s}\)</span>.</li>
-<li>Initialize <span class="math inline">\(\mathcal{A}^{0}=\left\{j:
-\sum_{i=1}^{p} \mathrm{I}\left(\left|\frac{X_{j}^{\top}
-y}{\sqrt{X_{j}^{\top} X_{j}}}\right| \leq \left| \frac{X_{i}^{\top}
-y}{\sqrt{X_{i}^{\top} X_{i}}}\right| \leq \mathrm{s}\right\},
-\mathcal{I}^{0}=\left(\mathcal{A}^{0}\right)^{c}\right.\)</span>, and
-<span class="math inline">\(\left(\boldsymbol\beta^{0},
-d^{0}\right):\)</span>
+<li>Input:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>,</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">X, y</annotation></semantics></math>,
+positive integers
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mo>max</mo></msub><mo>,</mo><msub><mi>m</mi><mo>max</mo></msub></mrow><annotation encoding="application/x-tex">k_{\max}, m_{\max}</annotation></semantics></math>,
+and a threshold
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mi>s</mi></msub><annotation encoding="application/x-tex">\tau_{s}</annotation></semantics></math>.</li>
+<li>Initialize
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝒜</mi><mn>0</mn></msup><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mi>j</mi><mo>:</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>p</mi></msubsup><mi mathvariant="normal">I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">|</mo><mfrac><mrow><msubsup><mi>X</mi><mi>j</mi><mi>⊤</mi></msubsup><mi>y</mi></mrow><msqrt><mrow><msubsup><mi>X</mi><mi>j</mi><mi>⊤</mi></msubsup><msub><mi>X</mi><mi>j</mi></msub></mrow></msqrt></mfrac><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><mrow><mo stretchy="true" form="prefix">|</mo><mfrac><mrow><msubsup><mi>X</mi><mi>i</mi><mi>⊤</mi></msubsup><mi>y</mi></mrow><msqrt><mrow><msubsup><mi>X</mi><mi>i</mi><mi>⊤</mi></msubsup><msub><mi>X</mi><mi>i</mi></msub></mrow></msqrt></mfrac><mo stretchy="true" form="postfix">|</mo></mrow><mo>≤</mo><mi mathvariant="normal">s</mi><mo stretchy="true" form="postfix">}</mo></mrow><mo>,</mo><msup><mi>ℐ</mi><mn>0</mn></msup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝒜</mi><mn>0</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>c</mi></msup></mrow></mrow><annotation encoding="application/x-tex">\mathcal{A}^{0}=\left\{j: \sum_{i=1}^{p} \mathrm{I}\left(\left|\frac{X_{j}^{\top} y}{\sqrt{X_{j}^{\top} X_{j}}}\right| \leq \left| \frac{X_{i}^{\top} y}{\sqrt{X_{i}^{\top} X_{i}}}\right| \leq \mathrm{s}\right\}, \mathcal{I}^{0}=\left(\mathcal{A}^{0}\right)^{c}\right.</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝛃</mi><mn>0</mn></msup><mo>,</mo><msup><mi>d</mi><mn>0</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>:</mo></mrow><annotation encoding="application/x-tex">\left(\boldsymbol\beta^{0}, d^{0}\right):</annotation></semantics></math>
 </li>
 </ol>
-<p><span class="math display">\[\begin{align*}
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><msubsup><mi>𝛃</mi><msup><mi>ℐ</mi><mn>0</mn></msup><mn>0</mn></msubsup><mo>=</mo><mn>0</mn><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><msubsup><mi>d</mi><msup><mi>𝒜</mi><mn>0</mn></msup><mn>0</mn></msubsup><mo>=</mo><mn>0</mn><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><msubsup><mi>𝛃</mi><msup><mi>𝒜</mi><mn>0</mn></msup><mn>0</mn></msubsup><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐗</mi><msup><mi>𝒜</mi><mn>0</mn></msup><mi>⊤</mi></msubsup><msub><mi>𝐗</mi><msup><mi>𝒜</mi><mn>0</mn></msup></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>𝐗</mi><msup><mi>𝒜</mi><mn>0</mn></msup><mi>⊤</mi></msubsup><mi>𝐲</mi><mo>,</mo></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><msubsup><mi>d</mi><msup><mi>ℐ</mi><mn>0</mn></msup><mn>0</mn></msubsup><mo>=</mo><msubsup><mi>X</mi><msup><mi>ℐ</mi><mn>0</mn></msup><mi>⊤</mi></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>−</mo><mi>𝐗</mi><msup><mi>𝛃</mi><mn>0</mn></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{align*}
     &amp;\boldsymbol{\beta}_{\mathcal{I}^{0}}^{0}=0,\\
     &amp;d_{\mathcal{A}^{0}}^{0}=0,\\
-&amp;\boldsymbol{\beta}_{\mathcal{A}^{0}}^{0}=\left(\boldsymbol{X}_{\mathcal{A}^{0}}^{\top}
-\boldsymbol{X}_{\mathcal{A}^{0}}\right)^{-1}
-\boldsymbol{X}_{\mathcal{A}^{0}}^{\top} \boldsymbol{y},\\
-&amp;d_{\mathcal{I}^{0}}^{0}=X_{\mathcal{I}^{0}}^{\top}\left(\boldsymbol{y}-\boldsymbol{X}
-\boldsymbol{\beta}^{0}\right).
-\end{align*}\]</span></p>
+&amp;\boldsymbol{\beta}_{\mathcal{A}^{0}}^{0}=\left(\boldsymbol{X}_{\mathcal{A}^{0}}^{\top} \boldsymbol{X}_{\mathcal{A}^{0}}\right)^{-1} \boldsymbol{X}_{\mathcal{A}^{0}}^{\top} \boldsymbol{y},\\
+&amp;d_{\mathcal{I}^{0}}^{0}=X_{\mathcal{I}^{0}}^{\top}\left(\boldsymbol{y}-\boldsymbol{X} \boldsymbol{\beta}^{0}\right).
+\end{align*}</annotation></semantics></math></p>
 <ol start="3" style="list-style-type: decimal">
 <li>
-<p>For <span class="math inline">\(m=0,1, \ldots, m_{\max}\)</span>,
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>m</mi><mo>max</mo></msub></mrow><annotation encoding="application/x-tex">m=0,1, \ldots, m_{\max}</annotation></semantics></math>,
 do</p>
-<p><span class="math display">\[\left(\boldsymbol{\beta}^{m+1},
-\boldsymbol{d}^{m+1}, \mathcal{A}^{m+1}, \mathcal{I}^{m+1}\right)=
-\text{Splicing} \left(\boldsymbol{\beta}^{m}, \boldsymbol{d}^{m},
-\mathcal{A}^{m}, \mathcal{I}^{m}, k_{\max },
-\tau_{s}\right).\]</span></p>
-<p>If <span class="math inline">\(\left(\mathcal{A}^{m+1},
-\mathcal{I}^{m+1}\right)=\left(\mathcal{A}^{m},
-\mathcal{I}^{m}\right)\)</span>, then stop</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝛃</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msup><mo>,</mo><msup><mi>𝐝</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msup><mo>,</mo><msup><mi>𝒜</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msup><mo>,</mo><msup><mi>ℐ</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mtext mathvariant="normal">Splicing</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝛃</mi><mi>m</mi></msup><mo>,</mo><msup><mi>𝐝</mi><mi>m</mi></msup><mo>,</mo><msup><mi>𝒜</mi><mi>m</mi></msup><mo>,</mo><msup><mi>ℐ</mi><mi>m</mi></msup><mo>,</mo><msub><mi>k</mi><mo>max</mo></msub><mo>,</mo><msub><mi>τ</mi><mi>s</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\left(\boldsymbol{\beta}^{m+1}, \boldsymbol{d}^{m+1}, \mathcal{A}^{m+1}, \mathcal{I}^{m+1}\right)= \text{Splicing} \left(\boldsymbol{\beta}^{m}, \boldsymbol{d}^{m}, \mathcal{A}^{m}, \mathcal{I}^{m}, k_{\max }, \tau_{s}\right).</annotation></semantics></math></p>
+<p>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝒜</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msup><mo>,</mo><msup><mi>ℐ</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝒜</mi><mi>m</mi></msup><mo>,</mo><msup><mi>ℐ</mi><mi>m</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\left(\mathcal{A}^{m+1}, \mathcal{I}^{m+1}\right)=\left(\mathcal{A}^{m}, \mathcal{I}^{m}\right)</annotation></semantics></math>,
+then stop</p>
 <p>End For</p>
 </li>
-<li><p>Output <span class="math inline">\((\hat{\boldsymbol{\beta}},
-\hat{\boldsymbol{d}}, \hat{\mathcal{A}},
-\hat{\mathcal{I}})=\left(\boldsymbol{\beta}^{m+1}, \boldsymbol{d}^{m+1}
-\mathcal{A}^{m+1}, \mathcal{I}^{m+1}\right).\)</span></p></li>
+<li><p>Output
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>𝐝</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>𝒜</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>ℐ</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝛃</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msup><mo>,</mo><msup><mi>𝐝</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msup><msup><mi>𝒜</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msup><mo>,</mo><msup><mi>ℐ</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">(\hat{\boldsymbol{\beta}}, \hat{\boldsymbol{d}}, \hat{\mathcal{A}}, \hat{\mathcal{I}})=\left(\boldsymbol{\beta}^{m+1}, \boldsymbol{d}^{m+1} \mathcal{A}^{m+1}, \mathcal{I}^{m+1}\right).</annotation></semantics></math></p></li>
 </ol>
 </div>
 <div class="section level5">
-<h5 id="algorithm-2-splicing-leftboldsymbolbeta-d-mathcala-mathcali-k_max-tau_sright">Algorithm 2: Splicing <span class="math inline">\(\left(\boldsymbol\beta, d, \mathcal{A},
-\mathcal{I}, k_{\max }, \tau_{s}\right)\)</span><a class="anchor" aria-label="anchor" href="#algorithm-2-splicing-leftboldsymbolbeta-d-mathcala-mathcali-k_max-tau_sright"></a>
+<h5 id="algorithm-2-splicing-leftboldsymbolbeta-d-mathcala-mathcali-k_max-tau_sright">Algorithm 2: Splicing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛃</mi><mo>,</mo><mi>d</mi><mo>,</mo><mi>𝒜</mi><mo>,</mo><mi>ℐ</mi><mo>,</mo><msub><mi>k</mi><mo>max</mo></msub><mo>,</mo><msub><mi>τ</mi><mi>s</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\left(\boldsymbol\beta, d, \mathcal{A}, \mathcal{I}, k_{\max }, \tau_{s}\right)</annotation></semantics></math><a class="anchor" aria-label="anchor" href="#algorithm-2-splicing-leftboldsymbolbeta-d-mathcala-mathcali-k_max-tau_sright"></a>
 </h5>
 <ol style="list-style-type: decimal">
-<li><p>Input: <span class="math inline">\(\boldsymbol{\beta},
-\boldsymbol{d}, \mathcal{A}, \mathcal{I}, k_{\max }\)</span>, and <span class="math inline">\(\tau_{\mathrm{s}} .\)</span></p></li>
-<li><p>Initialize <span class="math inline">\(L_{0}=L=\frac{1}{2 n}\|y-X
-\beta\|_{2}^{2}\)</span>, and set <span class="math inline">\(\xi_{j}=\frac{X_{j}^{\top} X_{j}}{2
-n}\left(\beta_{j}\right)^{2}, \zeta_{j}=\frac{X_{j}^{\top} X_{j}}{2
-n}\left(\frac{d_{j}}{X_{j}^{\top} X_{j} / n}\right)^{2}, j=1, \ldots,
-p.\)</span></p></li>
+<li><p>Input:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝛃</mi><mo>,</mo><mi>𝐝</mi><mo>,</mo><mi>𝒜</mi><mo>,</mo><mi>ℐ</mi><mo>,</mo><msub><mi>k</mi><mo>max</mo></msub></mrow><annotation encoding="application/x-tex">\boldsymbol{\beta}, \boldsymbol{d}, \mathcal{A}, \mathcal{I}, k_{\max }</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mi mathvariant="normal">s</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\tau_{\mathrm{s}} .</annotation></semantics></math></p></li>
+<li><p>Initialize
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mn>0</mn></msub><mo>=</mo><mi>L</mi><mo>=</mo><mfrac><mn>1</mn><mrow><mn>2</mn><mi>n</mi></mrow></mfrac><mo stretchy="false" form="postfix">∥</mo><mi>y</mi><mo>−</mo><mi>X</mi><mi>β</mi><msubsup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">L_{0}=L=\frac{1}{2 n}\|y-X \beta\|_{2}^{2}</annotation></semantics></math>,
+and set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ξ</mi><mi>j</mi></msub><mo>=</mo><mfrac><mrow><msubsup><mi>X</mi><mi>j</mi><mi>⊤</mi></msubsup><msub><mi>X</mi><mi>j</mi></msub></mrow><mrow><mn>2</mn><mi>n</mi></mrow></mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>,</mo><msub><mi>ζ</mi><mi>j</mi></msub><mo>=</mo><mfrac><mrow><msubsup><mi>X</mi><mi>j</mi><mi>⊤</mi></msubsup><msub><mi>X</mi><mi>j</mi></msub></mrow><mrow><mn>2</mn><mi>n</mi></mrow></mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><msub><mi>d</mi><mi>j</mi></msub><mrow><msubsup><mi>X</mi><mi>j</mi><mi>⊤</mi></msubsup><msub><mi>X</mi><mi>j</mi></msub><mi>/</mi><mi>n</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>,</mo><mi>j</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>p</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">\xi_{j}=\frac{X_{j}^{\top} X_{j}}{2 n}\left(\beta_{j}\right)^{2}, \zeta_{j}=\frac{X_{j}^{\top} X_{j}}{2 n}\left(\frac{d_{j}}{X_{j}^{\top} X_{j} / n}\right)^{2}, j=1, \ldots, p.</annotation></semantics></math></p></li>
 <li>
-<p>For <span class="math inline">\(k=1,2, \ldots, k_{\max
-}\)</span>, do</p>
-<p><span class="math display">\[\mathcal{A}_{k}=\left\{j \in
-\mathcal{A}: \sum_{i \in \mathcal{A}} \mathrm{I}\left(\xi_{j} \geq
-\xi_{i}\right) \leq k\right\}\]</span></p>
-<p><span class="math display">\[\mathcal{I}_{k}=\left\{j \in
-\mathcal{I}: \sum_{i \in \mathcal{I}} \mathrm{I}\left(\zeta_{j} \leq
-\zeta_{i}\right) \leq k\right\}\]</span></p>
-<p>Let <span class="math inline">\(\tilde{\mathcal{A}}_{k}=\left(\mathcal{A}
-\backslash \mathcal{A}_{k}\right) \cup \mathcal{I}_{k},
-\tilde{\mathcal{I}}_{k}=\left(\mathcal{I} \backslash
-\mathcal{I}_{k}\right) \cup \mathcal{A}_{k}\)</span> and solve</p>
-<p><span class="math display">\[\tilde{\boldsymbol{\beta}}_{{\mathcal{A}}_{k}}=\left(\boldsymbol{X}_{\mathcal{A}_{k}}^{\top}
-\boldsymbol{X}_{{\mathcal{A}}_{k}}\right)^{-1}
-\boldsymbol{X}_{{\mathcal{A}_{k}}}^{\top} y, \quad
-\tilde{\boldsymbol{\beta}}_{{\mathcal{I}}_{k}}=0\]</span></p>
-<p><span class="math display">\[\tilde{\boldsymbol
-d}_{\mathcal{I}^k}=X_{\mathcal{I}^k}^{\top}(y-X \tilde{\beta}) / n,\quad
-\tilde{\boldsymbol d}_{\mathcal{A}^k} = 0.\]</span></p>
-<p>Compute <span class="math inline">\(\mathcal{L}_{n}(\tilde{\boldsymbol\beta})=\frac{1}{2
-n}\|y-X \tilde{\boldsymbol\beta}\|_{2}^{2}.\)</span></p>
-<p>If <span class="math inline">\(L&gt;\mathcal{L}_{n}(\tilde{\boldsymbol\beta})\)</span>,
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>k</mi><mo>max</mo></msub></mrow><annotation encoding="application/x-tex">k=1,2, \ldots, k_{\max }</annotation></semantics></math>,
+do</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒜</mi><mi>k</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mi>j</mi><mo>∈</mo><mi>𝒜</mi><mo>:</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><mi>𝒜</mi></mrow></munder><mi mathvariant="normal">I</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ξ</mi><mi>j</mi></msub><mo>≥</mo><msub><mi>ξ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>k</mi><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal{A}_{k}=\left\{j \in \mathcal{A}: \sum_{i \in \mathcal{A}} \mathrm{I}\left(\xi_{j} \geq \xi_{i}\right) \leq k\right\}</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℐ</mi><mi>k</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mi>j</mi><mo>∈</mo><mi>ℐ</mi><mo>:</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><mi>ℐ</mi></mrow></munder><mi mathvariant="normal">I</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ζ</mi><mi>j</mi></msub><mo>≤</mo><msub><mi>ζ</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>k</mi><mo stretchy="true" form="postfix">}</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal{I}_{k}=\left\{j \in \mathcal{I}: \sum_{i \in \mathcal{I}} \mathrm{I}\left(\zeta_{j} \leq \zeta_{i}\right) \leq k\right\}</annotation></semantics></math></p>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>𝒜</mi><mo accent="true">̃</mo></mover><mi>k</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝒜</mi><mo>∖</mo><msub><mi>𝒜</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>∪</mo><msub><mi>ℐ</mi><mi>k</mi></msub><mo>,</mo><msub><mover><mi>ℐ</mi><mo accent="true">̃</mo></mover><mi>k</mi></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>ℐ</mi><mo>∖</mo><msub><mi>ℐ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>∪</mo><msub><mi>𝒜</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">\tilde{\mathcal{A}}_{k}=\left(\mathcal{A} \backslash \mathcal{A}_{k}\right) \cup \mathcal{I}_{k}, \tilde{\mathcal{I}}_{k}=\left(\mathcal{I} \backslash \mathcal{I}_{k}\right) \cup \mathcal{A}_{k}</annotation></semantics></math>
+and solve</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>𝛃</mi><mo accent="true">̃</mo></mover><msub><mi>𝒜</mi><mi>k</mi></msub></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msubsup><mi>𝐗</mi><msub><mi>𝒜</mi><mi>k</mi></msub><mi>⊤</mi></msubsup><msub><mi>𝐗</mi><msub><mi>𝒜</mi><mi>k</mi></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><msubsup><mi>𝐗</mi><msub><mi>𝒜</mi><mi>k</mi></msub><mi>⊤</mi></msubsup><mi>y</mi><mo>,</mo><mspace width="1.0em"></mspace><msub><mover><mi>𝛃</mi><mo accent="true">̃</mo></mover><msub><mi>ℐ</mi><mi>k</mi></msub></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\tilde{\boldsymbol{\beta}}_{{\mathcal{A}}_{k}}=\left(\boldsymbol{X}_{\mathcal{A}_{k}}^{\top} \boldsymbol{X}_{{\mathcal{A}}_{k}}\right)^{-1} \boldsymbol{X}_{{\mathcal{A}_{k}}}^{\top} y, \quad \tilde{\boldsymbol{\beta}}_{{\mathcal{I}}_{k}}=0</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>𝐝</mi><mo accent="true">̃</mo></mover><msup><mi>ℐ</mi><mi>k</mi></msup></msub><mo>=</mo><msubsup><mi>X</mi><msup><mi>ℐ</mi><mi>k</mi></msup><mi>⊤</mi></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo>−</mo><mi>X</mi><mover><mi>β</mi><mo accent="true">̃</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mi>/</mi><mi>n</mi><mo>,</mo><mspace width="1.0em"></mspace><msub><mover><mi>𝐝</mi><mo accent="true">̃</mo></mover><msup><mi>𝒜</mi><mi>k</mi></msup></msub><mo>=</mo><mn>0</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">\tilde{\boldsymbol d}_{\mathcal{I}^k}=X_{\mathcal{I}^k}^{\top}(y-X \tilde{\beta}) / n,\quad \tilde{\boldsymbol d}_{\mathcal{A}^k} = 0.</annotation></semantics></math></p>
+<p>Compute
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝛃</mi><mo accent="true">̃</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>1</mn><mrow><mn>2</mn><mi>n</mi></mrow></mfrac><mo stretchy="false" form="postfix">∥</mo><mi>y</mi><mo>−</mo><mi>X</mi><mover><mi>𝛃</mi><mo accent="true">̃</mo></mover><msubsup><mo stretchy="false" form="postfix">∥</mo><mn>2</mn><mn>2</mn></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathcal{L}_{n}(\tilde{\boldsymbol\beta})=\frac{1}{2 n}\|y-X \tilde{\boldsymbol\beta}\|_{2}^{2}.</annotation></semantics></math></p>
+<p>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>&gt;</mo><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝛃</mi><mo accent="true">̃</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">L&gt;\mathcal{L}_{n}(\tilde{\boldsymbol\beta})</annotation></semantics></math>,
 then</p>
-<p><span class="math display">\[(\hat{\boldsymbol{\beta}},
-\hat{\boldsymbol{d}}, \hat{\mathcal{A}},
-\hat{\mathcal{I}})=\left(\tilde{\boldsymbol{\beta}},
-\tilde{\boldsymbol{d}}, \tilde{\mathcal{A}}_{k},
-\tilde{\mathcal{I}}_{k}\right)\]</span></p>
-<p><span class="math display">\[L=\mathcal{L}_{n}(\tilde{\boldsymbol\beta}).\]</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>𝐝</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>𝒜</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>ℐ</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝛃</mi><mo accent="true">̃</mo></mover><mo>,</mo><mover><mi>𝐝</mi><mo accent="true">̃</mo></mover><mo>,</mo><msub><mover><mi>𝒜</mi><mo accent="true">̃</mo></mover><mi>k</mi></msub><mo>,</mo><msub><mover><mi>ℐ</mi><mo accent="true">̃</mo></mover><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">(\hat{\boldsymbol{\beta}}, \hat{\boldsymbol{d}}, \hat{\mathcal{A}}, \hat{\mathcal{I}})=\left(\tilde{\boldsymbol{\beta}}, \tilde{\boldsymbol{d}}, \tilde{\mathcal{A}}_{k}, \tilde{\mathcal{I}}_{k}\right)</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi><mo>=</mo><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝛃</mi><mo accent="true">̃</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">L=\mathcal{L}_{n}(\tilde{\boldsymbol\beta}).</annotation></semantics></math></p>
 <p>End for</p>
 </li>
-<li><p>If <span class="math inline">\(L_{0}-L&lt;\tau_{s}\)</span>, then
-<span class="math inline">\((\hat{\boldsymbol\beta}, \hat{d}, \hat{A},
-\hat{I})=(\boldsymbol\beta, d, \mathcal{A},
-\mathcal{I}).\)</span></p></li>
-<li><p>Output <span class="math inline">\((\hat{\boldsymbol{\beta}},
-\hat{\boldsymbol{d}}, \hat{\mathcal{A}},
-\hat{\mathcal{I}})\)</span>.</p></li>
+<li><p>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mn>0</mn></msub><mo>−</mo><mi>L</mi><mo>&lt;</mo><msub><mi>τ</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">L_{0}-L&lt;\tau_{s}</annotation></semantics></math>,
+then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>d</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>A</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>I</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛃</mi><mo>,</mo><mi>d</mi><mo>,</mo><mi>𝒜</mi><mo>,</mo><mi>ℐ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">(\hat{\boldsymbol\beta}, \hat{d}, \hat{A}, \hat{I})=(\boldsymbol\beta, d, \mathcal{A}, \mathcal{I}).</annotation></semantics></math></p></li>
+<li><p>Output
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>𝐝</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>𝒜</mi><mo accent="true">̂</mo></mover><mo>,</mo><mover><mi>ℐ</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\hat{\boldsymbol{\beta}}, \hat{\boldsymbol{d}}, \hat{\mathcal{A}}, \hat{\mathcal{I}})</annotation></semantics></math>.</p></li>
 </ol>
 <!-- In practice, the support size is usually unknown. We use a data-driven procedure to determine s. Information criteria such as highdimensional BIC (HBIC) (13) and extended BIC (EBIC) (14) are commonly used for this purpose. Specifically, HBIC (13) can be applied to select the tuning parameter in penalized likelihood estimation. To recover the support size $s$ for the best-subset selection, we introduce a criterion that is a special case of HBIC (13). While HBIC aims to tune the parameter for a nonconvex penalized regression, our proposal is used to determine the size of best subset. For any active set $\mathcal{A}$, define an $\mathrm{SIC}$ as follows: --><!-- $$ --><!-- \operatorname{SIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| \log (p) \log \log n, --><!-- $$ --><!-- where $\mathcal{L}_{\mathcal{A}}=\min _{\beta_{\mathcal{I}}=0} \mathcal{L}_{n}(\beta), \mathcal{I}=(\mathcal{A})^{c}$. To identify the true model, the --><!-- model complexity penalty is $\log p$ and the slow diverging rate $\log \log n$ is set to prevent underfitting. Theorem 4 states that the following ABESS algorithm selects the true support size via SIC. --><!-- Let $s_{\max }$ be the maximum support size. Theorem 4 suggests $s_{\max }=o\left(\frac{n}{\log p}\right)$ as the maximum possible recovery size. Typically, we set $s_{\max }=\left[\frac{n}{\log (p) \log \log n}\right]$ --><!-- where $[x]$ denotes the integer part of $x$. -->
 </div>
@@ -336,43 +354,52 @@ then</p>
 <h4 id="determining-the-best-support-size-with-sic">Determining the Best Support Size with SIC<a class="anchor" aria-label="anchor" href="#determining-the-best-support-size-with-sic"></a>
 </h4>
 <p>In practice, the support size is usually unknown. We use a
-data-driven procedure to determine s. For any active set <span class="math inline">\(\mathcal{A}\)</span>, define an <span class="math inline">\(\mathrm{SIC}\)</span> as follows: <span class="math display">\[
-\operatorname{SIC}(\mathcal{A})=n \log
-\mathcal{L}_{\mathcal{A}}+|\mathcal{A}| \log (p) \log \log n,
-\]</span> where <span class="math inline">\(\mathcal{L}_{\mathcal{A}}=\min
-_{\beta_{\mathcal{I}}=0} \mathcal{L}_{n}(\beta),
-\mathcal{I}=(\mathcal{A})^{c}\)</span>. To identify the true model, the
-model complexity penalty is <span class="math inline">\(\log p\)</span>
-and the slow diverging rate <span class="math inline">\(\log \log
-n\)</span> is set to prevent underfitting. Theorem 4 states that the
-following ABESS algorithm selects the true support size via SIC.</p>
-<p>Let <span class="math inline">\(s_{\max }\)</span> be the maximum
-support size. We suggest <span class="math inline">\(s_{\max
-}=o\left(\frac{n}{\log p}\right)\)</span> as the maximum possible
-recovery size. Typically, we set <span class="math inline">\(s_{\max
-}=\left[\frac{n}{\log (p) \log \log n}\right]\)</span> where <span class="math inline">\([x]\)</span> denotes the integer part of <span class="math inline">\(x\)</span>.</p>
+data-driven procedure to determine s. For any active set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒜</mi><annotation encoding="application/x-tex">\mathcal{A}</annotation></semantics></math>,
+define an
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">S</mi><mi mathvariant="normal">I</mi><mi mathvariant="normal">C</mi></mrow><annotation encoding="application/x-tex">\mathrm{SIC}</annotation></semantics></math>
+as follows:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>SIC</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝒜</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>n</mi><mo>log</mo><msub><mi>ℒ</mi><mi>𝒜</mi></msub><mo>+</mo><mrow><mo stretchy="true" form="prefix">|</mo><mi>𝒜</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>log</mo><mo>log</mo><mi>n</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\operatorname{SIC}(\mathcal{A})=n \log \mathcal{L}_{\mathcal{A}}+|\mathcal{A}| \log (p) \log \log n,
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℒ</mi><mi>𝒜</mi></msub><mo>=</mo><msub><mo>min</mo><mrow><msub><mi>β</mi><mi>ℐ</mi></msub><mo>=</mo><mn>0</mn></mrow></msub><msub><mi>ℒ</mi><mi>n</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>β</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mi>ℐ</mi><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝒜</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>c</mi></msup></mrow><annotation encoding="application/x-tex">\mathcal{L}_{\mathcal{A}}=\min _{\beta_{\mathcal{I}}=0} \mathcal{L}_{n}(\beta), \mathcal{I}=(\mathcal{A})^{c}</annotation></semantics></math>.
+To identify the true model, the model complexity penalty is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">\log p</annotation></semantics></math>
+and the slow diverging rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>log</mo><mo>log</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">\log \log n</annotation></semantics></math>
+is set to prevent underfitting. Theorem 4 states that the following
+ABESS algorithm selects the true support size via SIC.</p>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>s</mi><mo>max</mo></msub><annotation encoding="application/x-tex">s_{\max }</annotation></semantics></math>
+be the maximum support size. We suggest
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>s</mi><mo>max</mo></msub><mo>=</mo><mi>o</mi><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mi>n</mi><mrow><mo>log</mo><mi>p</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">s_{\max }=o\left(\frac{n}{\log p}\right)</annotation></semantics></math>
+as the maximum possible recovery size. Typically, we set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>s</mi><mo>max</mo></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mfrac><mi>n</mi><mrow><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>log</mo><mo>log</mo><mi>n</mi></mrow></mfrac><mo stretchy="true" form="postfix">]</mo></mrow></mrow><annotation encoding="application/x-tex">s_{\max }=\left[\frac{n}{\log (p) \log \log n}\right]</annotation></semantics></math>
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mi>x</mi><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[x]</annotation></semantics></math>
+denotes the integer part of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>.</p>
 <div class="section level5">
 <h5 id="algorithm-3-abess-">Algorithm 3: ABESS.<a class="anchor" aria-label="anchor" href="#algorithm-3-abess-"></a>
 </h5>
 <ol style="list-style-type: decimal">
-<li><p>Input: <span class="math inline">\(X, y\)</span>, and the maximum
-support size <span class="math inline">\(s_{\max } .\)</span></p></li>
+<li><p>Input:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>,</mo><mi>y</mi></mrow><annotation encoding="application/x-tex">X, y</annotation></semantics></math>,
+and the maximum support size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>s</mi><mo>max</mo></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">s_{\max } .</annotation></semantics></math></p></li>
 <li>
-<p>For <span class="math inline">\(s=1,2, \ldots, s_{\max
-}\)</span>, do</p>
-<p><span class="math display">\[\left(\hat{\boldsymbol{\beta}}_{s},
-\hat{\boldsymbol{d}}_{s}, \hat{\mathcal{A}}_{s},
-\hat{\mathcal{I}}_{s}\right)= \text{BESS.Fixed}(s).\]</span></p>
+<p>For
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>s</mi><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>s</mi><mo>max</mo></msub></mrow><annotation encoding="application/x-tex">s=1,2, \ldots, s_{\max }</annotation></semantics></math>,
+do</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><mi>s</mi></msub><mo>,</mo><msub><mover><mi>𝐝</mi><mo accent="true">̂</mo></mover><mi>s</mi></msub><mo>,</mo><msub><mover><mi>𝒜</mi><mo accent="true">̂</mo></mover><mi>s</mi></msub><mo>,</mo><msub><mover><mi>ℐ</mi><mo accent="true">̂</mo></mover><mi>s</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mtext mathvariant="normal">BESS.Fixed</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\left(\hat{\boldsymbol{\beta}}_{s}, \hat{\boldsymbol{d}}_{s}, \hat{\mathcal{A}}_{s}, \hat{\mathcal{I}}_{s}\right)= \text{BESS.Fixed}(s).</annotation></semantics></math></p>
 <p>End for</p>
 </li>
 <li>
 <p>Compute the minimum of SIC:</p>
-<p><span class="math display">\[s_{\min }=\arg \min _{s}
-\operatorname{SIC}\left(\hat{\mathcal{A}}_{s}\right).\]</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>s</mi><mo>min</mo></msub><mo>=</mo><mo>arg</mo><munder><mo>min</mo><mi>s</mi></munder><mo>SIC</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>𝒜</mi><mo accent="true">̂</mo></mover><mi>s</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">s_{\min }=\arg \min _{s} \operatorname{SIC}\left(\hat{\mathcal{A}}_{s}\right).</annotation></semantics></math></p>
 </li>
-<li><p>Output <span class="math inline">\(\left(\hat{\boldsymbol{\beta}}_{s_{\operatorname{min}}},
-\hat{\boldsymbol{d}}_{s_{\min }}, \hat{A}_{s_{\min }},
-\hat{\mathcal{I}}_{s_{\min }}\right) .\)</span></p></li>
+<li><p>Output
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mover><mi>𝛃</mi><mo accent="true">̂</mo></mover><msub><mi>s</mi><mo>min</mo></msub></msub><mo>,</mo><msub><mover><mi>𝐝</mi><mo accent="true">̂</mo></mover><msub><mi>s</mi><mo>min</mo></msub></msub><mo>,</mo><msub><mover><mi>A</mi><mo accent="true">̂</mo></mover><msub><mi>s</mi><mo>min</mo></msub></msub><mo>,</mo><msub><mover><mi>ℐ</mi><mo accent="true">̂</mo></mover><msub><mi>s</mi><mo>min</mo></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\left(\hat{\boldsymbol{\beta}}_{s_{\operatorname{min}}}, \hat{\boldsymbol{d}}_{s_{\min }}, \hat{A}_{s_{\min }}, \hat{\mathcal{I}}_{s_{\min }}\right) .</annotation></semantics></math></p></li>
 </ol>
 <!-- # Group linear model --><!-- Group linear model is a linear model which the $p$ predictors are separated into $J$ pre-determined non-overlapping groups, --><!-- $$ --><!-- y = \sum_{j=1}^J X_{G_i} \boldsymbol{\beta_{G_j}}+\epsilon. --><!-- $$ --><!-- Consider the quadratic minimization problem with $\ell_{0,2}$ constraint, --><!-- $$ --><!-- \min _{\boldsymbol{{\boldsymbol\beta}}} \mathcal{L_n}({\boldsymbol\beta}), \quad \text { s.t }\|{{\boldsymbol\beta}}\|_{0,2} \leq \mathrm{s}, --><!-- $$ --><!-- where the $\ell_{0,2}$ (-pseudo) norm is defined as $\|{{\boldsymbol\beta}}\|_{0,2} = \sum_{j=1}^J \mathrm{I} (\|\boldsymbol{\beta_{G_j}}\|_2 \neq 0)$. --><!-- # Nuisance selection --><!-- # Principal component analysis -->
 </div>
@@ -390,41 +417,41 @@ support size <span class="math inline">\(s_{\max } .\)</span></p></li>
 </colgroup>
 <thead><tr class="header">
 <th align="left">Notations in algorithm</th>
-<th align="left">Parameters in <span class="math inline">\(\mathtt{abess}\)</span>
+<th align="left">Parameters in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝚊</mi><mi>𝚋</mi><mi>𝚎</mi><mi>𝚜</mi><mi>𝚜</mi></mrow><annotation encoding="application/x-tex">\mathtt{abess}</annotation></semantics></math>
 </th>
 <th align="left">Definitions</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left"><span class="math inline">\(m_{\max}\)</span></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>m</mi><mo>max</mo></msub><annotation encoding="application/x-tex">m_{\max}</annotation></semantics></math></td>
 <td align="left">max.splicing.iter</td>
 <td align="left">The maximum number of splicing algorithm</td>
 </tr>
 <tr class="even">
-<td align="left"><span class="math inline">\(k_{\max}\)</span></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>k</mi><mo>max</mo></msub><annotation encoding="application/x-tex">k_{\max}</annotation></semantics></math></td>
 <td align="left">c.max</td>
 <td align="left">The maximum splicing size</td>
 </tr>
 <tr class="odd">
-<td align="left"><span class="math inline">\(1,\ldots,s_{\max}\)</span></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>s</mi><mo>max</mo></msub></mrow><annotation encoding="application/x-tex">1,\ldots,s_{\max}</annotation></semantics></math></td>
 <td align="left">support.size</td>
 <td align="left">A sequence representing the support sizes</td>
 </tr>
 <tr class="even">
-<td align="left"><span class="math inline">\(\operatorname{SIC}\)</span></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>SIC</mo><annotation encoding="application/x-tex">\operatorname{SIC}</annotation></semantics></math></td>
 <td align="left">tune.type</td>
 <td align="left">The type of criterion for choosing the support
 size</td>
 </tr>
 <tr class="odd">
-<td align="left"><span class="math inline">\(\{G_1, \ldots,
-G_J\}\)</span></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>G</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>G</mi><mi>J</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{G_1, \ldots, G_J\}</annotation></semantics></math></td>
 <td align="left">group.index</td>
 <td align="left">A vector indicator the group that each variable belongs
 to</td>
 </tr>
 <tr class="even">
-<td align="left"><span class="math inline">\(\lambda\)</span></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math></td>
 <td align="left">lambda</td>
 <td align="left">A value for regularized best subset selection</td>
 </tr>
@@ -440,9 +467,7 @@ to</td>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -455,17 +480,17 @@ to</td>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer>
 </div>
 
-  
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script><script>
   docsearch({
-    
-    
+
+
     apiKey: 'd32715b0e35635336aba6377dd751e21',
     indexName: 'abess',
     inputSelector: 'input#search-input.form-control',

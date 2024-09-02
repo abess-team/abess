@@ -20,15 +20,13 @@
 <script src="../pkgdown.js"></script><!-- docsearch --><script src="../docsearch.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous">
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script><meta property="og:title" content="Principal component analysis">
-<meta property="og:description" content="abess">
-<meta property="og:image" content="https://abess-team.github.io/abess/logo.svg">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -54,7 +52,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -101,7 +99,7 @@
 <li>
   <a href="https://github.com/abess-team/abess/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -110,7 +108,7 @@
           <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
 </div>
       </form>
-      
+
     </div>
 <!--/.nav-collapse -->
   </div>
@@ -118,7 +116,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -128,7 +126,7 @@
 Jin Zhu</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/../vignettes/v08-sPCA.Rmd" class="external-link"><code>../vignettes/v08-sPCA.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/abess-team/abess/tree/master/R-package/vignettes/v08-sPCA.Rmd" class="external-link"><code>vignettes/v08-sPCA.Rmd</code></a></small>
       <div class="hidden name"><code>v08-sPCA.Rmd</code></div>
 
     </div>
@@ -143,22 +141,36 @@ Jin Zhu</h4>
 <p>Principal component analysis (PCA) is an important method in the
 field of data science, which can reduce the dimension of data and
 simplify our model. It actually solve an optimization problem like:</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>max</mo><mi>v</mi></munder><msup><mi>v</mi><mi>⊤</mi></msup><mi>Σ</mi><mi>v</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>s</mi><mi>.</mi><mi>t</mi><mi>.</mi><mspace width="1.0em"></mspace><msup><mi>v</mi><mi>⊤</mi></msup><mi>v</mi><mo>=</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">
     \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1.
-\]</span></p>
-<p>where <span class="math inline">\(\Sigma = X^TX / (n-1)\)</span> and
-<span class="math inline">\(X\)</span> is the <strong>centered</strong>
-sample matrix. We also denote that <span class="math inline">\(X\)</span> is a <span class="math inline">\(n\times p\)</span> matrix, where each row is an
-observation and each column is a variable.</p>
-<p>Then, before further analysis, we can project <span class="math inline">\(X\)</span> to <span class="math inline">\(v\)</span> (thus dimensional reduction), without
-losing too much information.</p>
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Σ</mi><mo>=</mo><msup><mi>X</mi><mi>T</mi></msup><mi>X</mi><mi>/</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Sigma = X^TX / (n-1)</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+is the <strong>centered</strong> sample matrix. We also denote that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+is a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>×</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">n\times p</annotation></semantics></math>
+matrix, where each row is an observation and each column is a
+variable.</p>
+<p>Then, before further analysis, we can project
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>
+(thus dimensional reduction), without losing too much information.</p>
 <p>However, consider that:</p>
 <ul>
-<li><p>The PC is a linear combination of all primary variables (<span class="math inline">\(Xv\)</span>), but sometimes we may tend to use
-less variables for clearer interpretation (and less computational
-complexity);</p></li>
-<li><p>It has been proved that if <span class="math inline">\(p/n\)</span> does not converge to <span class="math inline">\(0\)</span>, the classical PCA is not consistent,
-but this would happen in some high-dimensional data analysis.</p></li>
+<li><p>The PC is a linear combination of all primary variables
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mi>v</mi></mrow><annotation encoding="application/x-tex">Xv</annotation></semantics></math>),
+but sometimes we may tend to use less variables for clearer
+interpretation (and less computational complexity);</p></li>
+<li><p>It has been proved that if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>/</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">p/n</annotation></semantics></math>
+does not converge to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>,
+the classical PCA is not consistent, but this would happen in some
+high-dimensional data analysis.</p></li>
 </ul>
 <p>For example, in gene analysis, the dataset may contain plenty of
 genes (variables) and we would like to find a subset of them, which can
@@ -170,23 +182,28 @@ analysis.</p>
 best choice, since it use all variables. One of the alternatives is
 abessPCA, which is able to seek for principal component with a sparsity
 limitation:</p>
-<p><span class="math display">\[
-    \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq
-s.
-\]</span></p>
-<p>where <span class="math inline">\(s\)</span> is a non-negative
-integer, which indicates how many primary variables are used in
-principal component. With abessPCA, we can search for the best subset of
-variables to form principal component and it retains consistency even
-under <span class="math inline">\(p&gt;&gt;n\)</span>. And we make two
-remarks:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>max</mo><mi>v</mi></munder><msup><mi>v</mi><mi>⊤</mi></msup><mi>Σ</mi><mi>v</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>s</mi><mi>.</mi><mi>t</mi><mi>.</mi><mspace width="1.0em"></mspace><msup><mi>v</mi><mi>⊤</mi></msup><mi>v</mi><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><mo stretchy="true" form="postfix">|</mo></mrow><mi>v</mi><msub><mrow><mo stretchy="true" form="prefix">|</mo><mo stretchy="true" form="postfix">|</mo></mrow><mn>0</mn></msub><mo>≤</mo><mi>s</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+    \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq s.
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+is a non-negative integer, which indicates how many primary variables
+are used in principal component. With abessPCA, we can search for the
+best subset of variables to form principal component and it retains
+consistency even under
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&gt;</mo><mo>&gt;</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">p&gt;&gt;n</annotation></semantics></math>.
+And we make two remarks:</p>
 <ul>
-<li>Clearly, if <span class="math inline">\(s\)</span> is equal or
-larger than the number of primary variables, this sparsity limitation is
-actually useless, so the problem is equivalent to a classical PCA.</li>
+<li>Clearly, if
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+is equal or larger than the number of primary variables, this sparsity
+limitation is actually useless, so the problem is equivalent to a
+classical PCA.</li>
 <li>With less variables, the PC must have lower explained variance.
-However, this decrease is slight if we choose a good <span class="math inline">\(s\)</span> and at this price, we can interpret the
-PC much better. It is worthy.</li>
+However, this decrease is slight if we choose a good
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+and at this price, we can interpret the PC much better. It is
+worthy.</li>
 </ul>
 <p>In the next section, we will show how to form abessPCA in our
 frame.</p>
@@ -218,7 +235,8 @@ retain 99 predictive variables as our data example.</p>
 <h3 id="adaptive-best-subset-selection-for-pca">Adaptive best subset selection for PCA<a class="anchor" aria-label="anchor" href="#adaptive-best-subset-selection-for-pca"></a>
 </h3>
 <p>Next, we turn to fit abessPCA. For fitting the model, we can give
-either predictor matrix <span class="math inline">\(X\)</span>:</p>
+either predictor matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/abess-team/abess" class="external-link">abess</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -288,7 +306,9 @@ robust covariance matrix):</p>
 <h3 id="interpreting-result">Interpreting result<a class="anchor" aria-label="anchor" href="#interpreting-result"></a>
 </h3>
 <p>After fitting abessPCA, we study the percentage of explained variance
-as <span class="math inline">\(s\)</span> increases:</p>
+as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+increases:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">best_pca</span><span class="op">[[</span><span class="st">"support.size"</span><span class="op">]</span><span class="op">]</span>, <span class="va">best_pca</span><span class="op">[[</span><span class="st">"pev"</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v08-sPCA_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
@@ -416,15 +436,19 @@ example, if we choose sparsity 40, the used variables are:</p>
 <p>In some cases, some variables may need to consider together, that is,
 they should be “used” or “unused” for PC at the same time, which we call
 “group information”. The optimization problem becomes:</p>
-<p><span class="math display">\[
-    \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\
-\sum_{g=1}^G I(||v_g||\neq 0)\leq s.
-\]</span></p>
-<p>where we suppose there are <span class="math inline">\(G\)</span>
-groups, and the <span class="math inline">\(g\)</span>-th one correspond
-to <span class="math inline">\(v_g\)</span>, <span class="math inline">\(v = [v_1^T,v_2^T,\cdots,v_G^T]^T\)</span>. Then we
-are interested to find <span class="math inline">\(s\)</span> (or less)
-important groups.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>max</mo><mi>v</mi></munder><msup><mi>v</mi><mi>⊤</mi></msup><mi>Σ</mi><mi>v</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>s</mi><mi>.</mi><mi>t</mi><mi>.</mi><mspace width="1.0em"></mspace><msup><mi>v</mi><mi>⊤</mi></msup><mi>v</mi><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><munderover><mo>∑</mo><mrow><mi>g</mi><mo>=</mo><mn>1</mn></mrow><mi>G</mi></munderover><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mo stretchy="true" form="prefix">|</mo><mo stretchy="true" form="postfix">|</mo></mrow><msub><mi>v</mi><mi>g</mi></msub><mrow><mo stretchy="true" form="prefix">|</mo><mo stretchy="true" form="postfix">|</mo></mrow><mo>≠</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>≤</mo><mi>s</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">
+    \max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ \sum_{g=1}^G I(||v_g||\neq 0)\leq s.
+</annotation></semantics></math></p>
+<p>where we suppose there are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>G</mi><annotation encoding="application/x-tex">G</annotation></semantics></math>
+groups, and the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>-th
+one correspond to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>v</mi><mi>g</mi></msub><annotation encoding="application/x-tex">v_g</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">[</mo><msubsup><mi>v</mi><mn>1</mn><mi>T</mi></msubsup><mo>,</mo><msubsup><mi>v</mi><mn>2</mn><mi>T</mi></msubsup><mo>,</mo><mi>⋯</mi><mo>,</mo><msubsup><mi>v</mi><mi>G</mi><mi>T</mi></msubsup><mo stretchy="true" form="postfix">]</mo></mrow><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">v = [v_1^T,v_2^T,\cdots,v_G^T]^T</annotation></semantics></math>.
+Then we are interested to find
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>
+(or less) important groups.</p>
 <p>Group problem is extraordinary important in real data analysis. Still
 take gene analysis as an example, several sites would be related to one
 pathway, and it is meaningless to consider each of them alone.</p>
@@ -480,33 +504,41 @@ data should be sorted first).</p>
 under sparsity. Actually, we can iteratively solve the largest principal
 component and then mapping the covariance matrix to its orthogonal
 space:</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Σ</mi><mi>′</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>v</mi><msup><mi>v</mi><mi>⊤</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>Σ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>v</mi><msup><mi>v</mi><mi>⊤</mi></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
 \Sigma' = (1-vv^{\top})\Sigma(1-vv^{\top})
-\]</span></p>
-<p>where <span class="math inline">\(\Sigma\)</span> is the covariance
-matrix and <span class="math inline">\(v\)</span> is its (sparse)
-loading vector. We map it into <span class="math inline">\(\Sigma'\)</span>, which indicates the
-orthogonal space of <span class="math inline">\(v\)</span>, and then
-solve the sparse principal component for <span class="math inline">\(\Sigma'\)</span> again. By this iteration
-process, we can acquire multiple principal components and they are
-sorted from the largest to the smallest. In our program, there is an
-additional argument <code>sparse.type</code> to support this feature. By
-setting <code>sparse.type = "kpc"</code>, then best subset selection
-performs on the first <span class="math inline">\(K\)</span> principal
-components where <span class="math inline">\(K\)</span> is decided by
-argument <code>support.size</code>.</p>
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Σ</mi><annotation encoding="application/x-tex">\Sigma</annotation></semantics></math>
+is the covariance matrix and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>
+is its (sparse) loading vector. We map it into
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Σ</mi><mi>′</mi></mrow><annotation encoding="application/x-tex">\Sigma'</annotation></semantics></math>,
+which indicates the orthogonal space of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>,
+and then solve the sparse principal component for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Σ</mi><mi>′</mi></mrow><annotation encoding="application/x-tex">\Sigma'</annotation></semantics></math>
+again. By this iteration process, we can acquire multiple principal
+components and they are sorted from the largest to the smallest. In our
+program, there is an additional argument <code>sparse.type</code> to
+support this feature. By setting <code>sparse.type = "kpc"</code>, then
+best subset selection performs on the first
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+principal components where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>
+is decided by argument <code>support.size</code>.</p>
 <p>Suppose we are interested in the first two principal components, and
 the support size is 50 in the first loading vector and is 40 in the
 second loading vector. In other words, we consecutively solve two
-problem: <span class="math display">\[
-    v_1 \leftarrow \arg\max_{v} v^{\top}\Sigma v,\qquad s.t.\quad
-v^{\top}v=1,\ ||v||_0\leq 10,
-\]</span> <span class="math display">\[
-  v_2 \leftarrow \arg\max_{v} v^{\top} \Sigma^{\prime} v,\qquad
-s.t.\quad v^{\top}v=1,\ ||v||_0\leq 5,
-\]</span> where <span class="math inline">\(\Sigma^{\prime} = (1-v_1
-v_1^\top)\Sigma(1-v_1 v_1^\top)\)</span>. The <span class="math inline">\((v_1, v_2)\)</span> forms a sparse loading
-matrix.</p>
+problem:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mn>1</mn></msub><mo>←</mo><mo>arg</mo><munder><mo>max</mo><mi>v</mi></munder><msup><mi>v</mi><mi>⊤</mi></msup><mi>Σ</mi><mi>v</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>s</mi><mi>.</mi><mi>t</mi><mi>.</mi><mspace width="1.0em"></mspace><msup><mi>v</mi><mi>⊤</mi></msup><mi>v</mi><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><mo stretchy="true" form="postfix">|</mo></mrow><mi>v</mi><msub><mrow><mo stretchy="true" form="prefix">|</mo><mo stretchy="true" form="postfix">|</mo></mrow><mn>0</mn></msub><mo>≤</mo><mn>10</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+    v_1 \leftarrow \arg\max_{v} v^{\top}\Sigma v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq 10,
+</annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mn>2</mn></msub><mo>←</mo><mo>arg</mo><munder><mo>max</mo><mi>v</mi></munder><msup><mi>v</mi><mi>⊤</mi></msup><msup><mi>Σ</mi><mi>′</mi></msup><mi>v</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>s</mi><mi>.</mi><mi>t</mi><mi>.</mi><mspace width="1.0em"></mspace><msup><mi>v</mi><mi>⊤</mi></msup><mi>v</mi><mo>=</mo><mn>1</mn><mo>,</mo><mspace width="0.222em"></mspace><mrow><mo stretchy="true" form="prefix">|</mo><mo stretchy="true" form="postfix">|</mo></mrow><mi>v</mi><msub><mrow><mo stretchy="true" form="prefix">|</mo><mo stretchy="true" form="postfix">|</mo></mrow><mn>0</mn></msub><mo>≤</mo><mn>5</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">
+  v_2 \leftarrow \arg\max_{v} v^{\top} \Sigma^{\prime} v,\qquad s.t.\quad v^{\top}v=1,\ ||v||_0\leq 5,
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Σ</mi><mi>′</mi></msup><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>v</mi><mn>1</mn></msub><msubsup><mi>v</mi><mn>1</mn><mi>⊤</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow><mi>Σ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msub><mi>v</mi><mn>1</mn></msub><msubsup><mi>v</mi><mn>1</mn><mi>⊤</mi></msubsup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\Sigma^{\prime} = (1-v_1 v_1^\top)\Sigma(1-v_1 v_1^\top)</annotation></semantics></math>.
+The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mn>1</mn></msub><mo>,</mo><msub><mi>v</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(v_1, v_2)</annotation></semantics></math>
+forms a sparse loading matrix.</p>
 <p>The code for solving the two problem is:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_kpca</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abesspca.html">abesspca</a></span><span class="op">(</span><span class="va">X</span>, support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">40</span><span class="op">)</span>, sparse.type <span class="op">=</span> <span class="st">"kpc"</span><span class="op">)</span></span>
@@ -558,16 +590,15 @@ matrix.</p>
 <span><span class="co">##  - attr(*, "class")= chr "abesspca"</span></span></code></pre>
 <p>The result <code>best_kpca[["pev"]]</code> shows that two principal
 components raised from two loading matrix could explain 40% variance of
-all variables (i.e., <span class="math inline">\(\text{trace}(\Sigma)\)</span>).</p>
+all variables (i.e.,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">trace</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>Σ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\text{trace}(\Sigma)</annotation></semantics></math>).</p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -580,17 +611,17 @@ all variables (i.e., <span class="math inline">\(\text{trace}(\Sigma)\)</span>).
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer>
 </div>
 
-  
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script><script>
   docsearch({
-    
-    
+
+
     apiKey: 'd32715b0e35635336aba6377dd751e21',
     indexName: 'abess',
     inputSelector: 'input#search-input.form-control',
