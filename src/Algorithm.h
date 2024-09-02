@@ -79,7 +79,6 @@ class Algorithm {
     int group_df = 0;         // freedom
     int sparsity_level = 0;   // Number of non-zero coefficients.
     double lambda_level = 0;  // l2 normalization coefficients.
-    // Eigen::VectorXi train_mask;
     int max_iter;      // Maximum number of iterations taken for the splicing algorithm to converge.
     int exchange_num;  // Max exchange variable num.
     bool warm_start;  // When tuning the optimal parameter combination, whether to use the last solution as a warm start
@@ -158,8 +157,6 @@ class Algorithm {
         this->lambda_change = this->lambda_level != lambda_level;
         this->lambda_level = lambda_level;
     }
-
-    void update_train_mask(Eigen::VectorXi &train_mask) { this->train_mask = train_mask; }
 
     void update_exchange_num(int exchange_num) { this->exchange_num = exchange_num; }
 
