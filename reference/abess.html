@@ -19,7 +19,7 @@ positive response, multi-response modeling in polynomial times."><meta property=
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.9</span>
       </span>
     </div>
 
@@ -455,10 +455,10 @@ More details about GS is referred to Zhang et al (2021).</p>
 user control the parameter estimation in non-gaussian models.
 The parameter estimation procedure use Newton method or approximated Newton method (only consider the diagonal elements in the Hessian matrix).
 Again, we suggest to use the default values unchanged because the same reason for the parameter <code>c.max</code>.</p>
-<p><code>abess</code> support some well-known advanced statistical methods to analyze data, including</p><ul><li><p>sure independent screening:  helpful for ultra-high dimensional predictors (i.e., \(p \gg n\)). Use the parameter <code>screening.num</code> to retain the marginally most important predictors. See Fan et al (2008) for more details.</p></li>
-<li><p>best subset of group selection:  helpful when predictors have group structure. Use the parameter <code>group.index</code> to specify the group structure of predictors. See Zhang et al (2021) for more details.</p></li>
-<li><p>\(l_2\) regularization best subset selection:  helpful when signal-to-ratio is relatively small. Use the parameter <code>lambda</code> to control the magnitude of the regularization term.</p></li>
-<li><p>nuisance selection:  helpful when the prior knowledge of important predictors is available. Use the parameter <code>always.include</code> to retain the important predictors.</p></li>
+<p><code>abess</code> support some well-known advanced statistical methods to analyze data, including</p><ul><li><p>sure independent screening: helpful for ultra-high dimensional predictors (i.e., \(p \gg n\)). Use the parameter <code>screening.num</code> to retain the marginally most important predictors. See Fan et al (2008) for more details.</p></li>
+<li><p>best subset of group selection: helpful when predictors have group structure. Use the parameter <code>group.index</code> to specify the group structure of predictors. See Zhang et al (2021) for more details.</p></li>
+<li><p>\(l_2\) regularization best subset selection: helpful when signal-to-ratio is relatively small. Use the parameter <code>lambda</code> to control the magnitude of the regularization term.</p></li>
+<li><p>nuisance selection: helpful when the prior knowledge of important predictors is available. Use the parameter <code>always.include</code> to retain the important predictors.</p></li>
 </ul><p>The arbitrary combination of the four methods are definitely support.
 Please see <a href="https://abess-team.github.io/abess/articles/v07-advancedFeatures.html">online vignettes</a> for more details about the advanced features support by <code>abess</code>.</p>
     </div>
