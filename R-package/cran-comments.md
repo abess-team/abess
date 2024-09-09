@@ -1,7 +1,3 @@
-## Comment
-
-`abess` is remove from CRAN because incorrect C++ flags in configure scripts. This submission has address this incorrectness.
-
 ## Test environments
 * local R installation, R 4.1.0
 * win-builder (devel)

@@ -1,3 +1,8 @@
+# abess 0.4.9
+* Fix bug in Cpp level
+* Fix error in: https://www.stats.ox.ac.uk/pub/bdr/clang19/abess.log
+* Fix notes in https://cran.r-project.org/web/checks/check_results_abess.html
+
 # abess 0.4.8
 * Support no-intercept GLM model by param 'fit.intercept'.
 * Allow to restrict the range of estimation for beta by param 'beta.high' and 'beta.low'.
