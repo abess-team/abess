@@ -9,17 +9,11 @@
 * win-builder: 0 errors | 0 warnings | 1 note
 * rhub: notes about doi.
 
-1 note in win-builder:
+Fix a note in configure.ac:
 
 ```
-Possibly misspelled words in DESCRIPTION:
-  multinomial (22:584)
-  
-CRAN repository db overrides:
-  X-CRAN-Comment: Archived on 2023-02-18 as configure issues were not
-    corrected in time.
-
-  CXX not set correctly.
+possible bashism in configure.ac line 72 (unsafe echo with backslash):
+echo '         To use all CPU cores for training jobs, you should install OpenMP by running\n'
 ```
 
 First, the word "multinomial" is not misspelled. As we have checked in Google, this word is widely used. The typical examples include multinomial distribution and multinomial logistic regression.
