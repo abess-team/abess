@@ -1,3 +1,6 @@
+# abess 0.4.10
+* Fix note in NOTE about possible bashisms.
+
 # abess 0.4.9
 * Fix bug in Cpp level
 * Fix error in: https://www.stats.ox.ac.uk/pub/bdr/clang19/abess.log
