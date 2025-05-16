@@ -1,5 +1,5 @@
 import numpy as np
-
+from scipy.special import softmax, expit
 
 def sample(p, k):
     full = np.arange(p)
@@ -231,7 +231,8 @@ class make_glm_data:
             xbeta[xbeta > 30] = 30
             xbeta[xbeta < -30] = -30
 
-            p = np.exp(xbeta) / (1 + np.exp(xbeta))
+            # p = np.exp(xbeta) / (1 + np.exp(xbeta))
+            p = expit(xbeta)
             y = np.random.binomial(1, p)
 
         elif family == "poisson":
@@ -299,7 +300,8 @@ class make_glm_data:
                 Tbeta = coef_
             intercept = np.sort(np.random.uniform(-M, M, class_num - 1))
             eta = x @ Tbeta[:, np.newaxis] + intercept
-            logit = 1 / (1 + np.exp(-eta))
+            # logit = 1 / (1 + np.exp(-eta))
+            logit = expit(eta)
             # prob
             prob = np.zeros((n, class_num))
             prob[:, 0] = logit[:, 0]
@@ -445,12 +447,12 @@ class make_multivariate_glm_data:
         elif family in ("multinomial", "binomial"):
             for i in range(M):
                 Tbeta[:, i] = Tbeta[:, i] - Tbeta[:, M - 1]
-            eta = np.exp(np.matmul(X, Tbeta))
+            eta = np.matmul(X, Tbeta)
             # y2 = np.zeros(n)
             y = np.zeros([n, M])
             index = np.linspace(0, M - 1, M)
             for i in range(n):
-                p = eta[i, :] / np.sum(eta[i, :])
+                p = softmax(eta[i, :])
                 j = np.random.choice(index, size=1, replace=True, p=p)
                 # print(j)
                 y[i, int(j[0])] = 1
