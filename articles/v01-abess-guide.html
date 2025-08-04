@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quick start for `abess`: Linear regression • abess</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="../favicon-48x48.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -40,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.10</span>
       </span>
     </div>
 
@@ -330,8 +329,8 @@ estimators.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># draw the estimated coefficients on all candidate support size</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## 20 x 20 sparse Matrix of class "dgCMatrix"</span></span>
-<span><span class="co">##                                                                      </span></span>
+<pre><code><span><span class="co">## 20 x 20 sparse Matrix of class "dgCMatrix"</span></span></code></pre>
+<pre><code><span><span class="co">##                                                                      </span></span>
 <span><span class="co">## (intercept) 535.9259 274.5803864 -47.9559022 -71.4592204   13.9231044</span></span>
 <span><span class="co">## AtBat         .        .           .           .            .        </span></span>
 <span><span class="co">## Hits          .        .           3.3008446   2.8038162    2.6757978</span></span>
@@ -415,13 +414,13 @@ estimators.</p>
 <span><span class="co">## Assists        0.3643305    0.3641325    0.3661464    0.3640952    0.3710692</span></span>
 <span><span class="co">## Errors        -3.2379385   -3.1409199   -3.1840695   -3.2558249   -3.3607605</span></span>
 <span><span class="co">## NewLeagueN     .            .            .          -22.9788245  -24.7623251</span></span></code></pre>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get the deviance of the estimated model on all candidate support size</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/deviance.html" class="external-link">deviance</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] 101367.13  68782.66  58263.42  55607.03  53176.52  52241.95  49800.20</span></span>
 <span><span class="co">##  [8]  49651.96  49079.30  47327.31  47040.89  46947.37  46847.92  46177.09</span></span>
 <span><span class="co">## [15]  46100.11  46077.34  46053.29  46032.63  46016.41  46008.93</span></span></code></pre>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># print the fitted model</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Call:</span></span>
@@ -454,7 +453,7 @@ estimators.</p>
 set to the size of model you are interested in. If
 <code>support.size</code> is not provided, prediction will be made on
 the model with best tuning value.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hitters_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">abess_fit</span>, </span>
 <span>                        newx <span class="op">=</span> <span class="va">Hitters</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">Hitters</span><span class="op">)</span> <span class="op">==</span> <span class="st">"Salary"</span><span class="op">)</span><span class="op">]</span>, </span>
 <span>                        support.size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
@@ -472,7 +471,7 @@ you can generate, including <code>coef</code> for the coefficient value,
 <code>l2norm</code> for the L2-norm of the coefficients,
 <code>dev</code> for the deviance and <code>tune</code> for the tuning
 value. Default if <code>coef</code>.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v01-abess-guide_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
 <p>The graph shows that, beginning from the most dense model, the 15th
@@ -481,7 +480,7 @@ division at the end of 1986) is included in the active set until the
 support size reaches 3.</p>
 <p>We can also generate a graph about the tuning value. Remember that we
 used the default GIC to tune the support size.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="v01-abess-guide_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 <p>The tuning value reaches the lowest point at 6. And We might choose
@@ -489,7 +488,7 @@ the estimated model with support size equals 6 as our final model. In
 fact, the tuning values of different model sizes are provided in
 <code>tune.value</code> of the <code>abess</code> object. You can get
 the best model size through the following call.</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span><span class="op">[[</span><span class="st">"support.size"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 6</span></span></code></pre>
 <p>To extract any model from the <code>abess</code> object, we can call
@@ -497,7 +496,7 @@ the <code><a href="../reference/extract.abess.html">extract()</a></code> functio
 <code>support.size</code>. If <code>support.size</code> is not provided,
 the model with the best tuning value will be returned. Here we extract
 the model with support size equals 6.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best.model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best.model</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 7</span></span>
@@ -545,7 +544,7 @@ The pre-processed dataset for statistical modeling has 200 observations
 and 5253 predictors, and the code for pre-processing are openly shared
 in <a href="https://github.com/abess-team/abess/blob/master/R-package/data-raw/DATASET_VIGNETTES.R" class="external-link"></a>.<br>
 The pre-processed dataset can be freely downloaded by running:</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">working_directory</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"crime.rda"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"crime.rda"</span><span class="op">)</span></span>
@@ -556,14 +555,14 @@ The pre-processed dataset can be freely downloaded by running:</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p>As mentioned before, this dataset comprises 5000+ features, much
 larger than the number of observations:</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">crime</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1]  500 5254</span></span></code></pre>
 <p>And thus, it would be better to first perform feature screening,
 which is also supported by the <code>abess</code> function. Suppose we
 are interested in retaining 1000 variables with the largest marginal
 utility, then we can conduct the command:</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">abess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/abess.html">abess</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">crime</span>, screening.num <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 14</span></span>
@@ -592,14 +591,14 @@ utility, then we can conduct the command:</p>
 <span><span class="co">##  - attr(*, "class")= chr "abess"</span></span></code></pre>
 <p>The returned object of <code>abess</code> includes the features
 selected by screening. We exhibit six variables of them:</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">[[</span><span class="st">"screening.vars"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "pctBlack"     "pctWhite"     "medIncome"    "pctWdiv"      "pctPubAsst"  </span></span>
 <span><span class="co">## [6] "medFamIncome"</span></span></code></pre>
 <p>Then, by the generic <code>extract</code> function, we can obtain the
 best model detected by <code>ABESS</code> algorithm, and get the
 variables in the best model:</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">best_model</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 7</span></span>
@@ -618,7 +617,7 @@ variables in the best model:</p>
 <span><span class="co">##  $ support.beta: num [1:8] 0.192 1.071 1.867 0.301 -0.152 ...</span></span>
 <span><span class="co">##  $ dev         : num 61304</span></span>
 <span><span class="co">##  $ tune.value  : num 5613</span></span></code></pre>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_vars</span> <span class="op">&lt;-</span> <span class="va">best_model</span><span class="op">[[</span><span class="st">"support.vars"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">best_vars</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "pctBlack:pctWhite"             "pctBlack:pctVacantBoarded"    </span></span>
@@ -660,7 +659,7 @@ articles in our website for more details.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer>
