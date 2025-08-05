@@ -32,7 +32,11 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v2
+      - name: Install system dependencies
+        run: |
+          brew install fontconfig freetype
+    
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-r@v2
 
