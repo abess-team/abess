@@ -41,7 +41,11 @@ jobs:
             libharfbuzz-dev \
             libfribidi-dev \
             libfontconfig1-dev \
-            libfreetype6-dev
+            libfreetype6-dev \
+            pkg-config \
+            libpng-dev \
+            libtiff5-dev \
+            libjpeg-dev
 
       - name: Install system libraries on macOS
         if: matrix.os == 'macos-latest'
