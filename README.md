@@ -170,3 +170,37 @@ subset of groups selection. INFORMS Journal on Computing, 35(1):104–119, 2023.
 10.1287/ijoc.2022.1241.
 - Qiang Sun and Heping Zhang (2020). Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079.
 - Zhu Jin, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, and Junxian Zhu. "abess: A Fast Best-Subset Selection Library in Python and R." Journal of Machine Learning Research 23, no. 202 (2022): 1-7.
+
+
+## Contributions
+
+<div align="center">
+<!-- <details> -->
+
+<summary>👏 Thanks for the following support 👏</summary>
+
+### Stargazers
+
+
+<div align="center">
+
+[![Stargazers repo roster for @abess-team/abess](http://reporoster.com/stars/abess-team/abess)](https://github.com/abess-team/abess/stargazers)
+
+
+
+</div>
+
+### Forkers
+
+<div align="center" >
+
+[![Forkers repo roster for @abess-team/abess](http://reporoster.com/forks/abess-team/abess)](https://github.com/abess-team/abess/network/members)
+
+</div>
+<br/></details><br/>
+
+</div>
+
+Any kind of contribution to `abess` would be highly appreciated! Please check the [contributor's guide](https://abess.readthedocs.io/en/latest/Contributing/).
+
+- Bug report via [github issues](https://github.com/abess-team/abess/issues)
