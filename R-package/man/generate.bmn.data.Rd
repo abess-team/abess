@@ -14,7 +14,6 @@ generate.bmn.data(
   beta = 0.7,
   degree = 3,
   alpha = 0.4,
-  lattice.col = 3,
   method = "freq"
 )
 }
@@ -23,13 +22,31 @@ generate.bmn.data(
 
 \item{p}{The number of predictors of interest.}
 
-\item{seed}{random seed. Default: \code{seed = 1}.}
+\item{type}{a numeric value that indicates the type of an interaction matrix}
 
-\item{beta}{The coefficient values in the underlying regression model.
-If it is supplied, \code{support.size} would be omitted.}
+\item{seed}{Seed to be used to reproduce dataset}
 
-\item{alpha}{}
+\item{graph.seed}{Seed used to reproduce the interaction matrix}
+
+\item{theta}{An user specified interaction matrix. It should be a symmetric matrix.}
+
+\item{beta}{a numeric value that specifies the remaining signal of the interaction matrix}
+
+\item{degree}{an integer value that specifies the maximum node degree in the interaction matrix}
+
+\item{alpha}{a numeric value that specifies the minimum signal of the interaction matrix}
+
+\item{method}{the method used for generating samples. One is the "freq", another is it "gibbs". The former is more suitable when p<18, while the later is more suitable when p > 18.}
+}
+\value{
+a list that includes three components: data, weight, theta. data is an n-by-p matrix that record samples; weight: an n-dimensional vector that records the frequency of each row of data; theta is the interaction matrix used for generating samples.
 }
 \description{
-Generate a dataset from binary markov network
+Generate a dataset with binary variables upon the interaction matrix. If the interaction matrix is not provided, and then, an interaction matrix would be generated.
+}
+\examples{
+library(abess)
+p <- 16
+n <- 1e3
+train <- generate.bmn.data(n, p, type = 3, graph.seed = 1, seed = 1, beta = 0.4)
 }
