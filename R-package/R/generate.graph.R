@@ -212,6 +212,110 @@ gen_ld_adjmat <- function(p, degree, alpha) {
   adj
 }
 
+# if (type == 13)
+#   theta <- gen_5nn_cyc(p, lattice_col, degree, beta, alpha, type = "ferro")
+# if (type == 14)
+#   theta <- gen_5nn_cyc(p, lattice_col, degree, beta, alpha, type = "glass")
+# if (type == 15)
+#   theta <- gen_5nn_cyc(p, lattice_col, degree, beta, alpha, type = "glass_weak")
+# if (type == 16)
+#   theta <- gen_rr_adjmat2(p, degree, beta, alpha, type = "ferro")
+# if (type == 17)
+#   theta <- gen_rr_adjmat2(p, degree, beta, alpha, type = "glass")
+# # chain structure: size = p - 1
+# if (type == 1) {
+#   theta <- matrix(0, p, p)
+#   # for(i in 1: p) {
+#   #   theta[i, i] <- sample(c(-0.5, 0, 0.5), 1)
+#   # }
+#   for (i in 1:(p - 1)) {
+#     theta[i, i + 1] <- sample(c(0.5,-0.5), 1)
+#     theta[i + 1, i] <- theta[i, i + 1]
+#   }
+# }
+# # random graph
+# if (type == 2) {
+#   # set.seed(seed)
+#   sigma_inv <-
+#     fastclime::fastclime.generator(
+#       n = 20,
+#       d = p,
+#       graph = "random",
+#       verbose = FALSE
+#     )
+#   sparse <- as.matrix(sigma_inv$theta)
+#   theta <- matrix(0, p, p)
+#   # for(i in 1:p) {
+#   #   theta[i, i] <- sample(c(-0.5, 0, 0.5), 1)
+#   # }
+#   for (i in 1:(p - 1)) {
+#     for (j in (i + 1):p) {
+#       if (sparse[i, j] != 0) {
+#         theta[i, j] <- sample(c(0.5,-0.5), 1)
+#         theta[j, i] <- theta[i, j]
+#       }
+#     }
+#   }
+# }
+# # 4 nearest neighbor: size = 2 * p
+# if (type == 3) {
+#   theta <- matrix(0, p, p)
+#   # for(i in 1:p) {
+#   #   theta[i, i] <- sample(c(-0.5, 0, 0.5), 1)
+#   # }
+#   sqr <- sqrt(p)
+#   for (i in 0:(sqr - 1)) {
+#     for (j in 1:(sqr - 1)) {
+#       theta[i * sqr + j, i * sqr + j + 1] <- sample(c(-0.5, 0.5), 1)
+#       theta[i * sqr + j + 1, i * sqr + j] <-
+#         theta[i * sqr + j, i * sqr + j + 1]
+#     }
+#   }
+#   for (i in 0:(sqr - 2)) {
+#     for (j in 1:sqr) {
+#       theta[i * sqr + j, i * sqr + j + sqr] <- sample(c(-0.5, 0.5), 1)
+#       theta[i * sqr + j + sqr, i * sqr + j] <-
+#         theta[i * sqr + j, i * sqr + j + sqr]
+#     }
+#   }
+# }
+# # 8 nearest neighbor: size = 4 * p
+# if (type == 4) {
+#   theta <- matrix(0, p, p)
+#   # for(i in 1:p) {
+#   #   theta[i, i] <- sample(c(-0.5, 0, 0.5), 1)
+#   # }
+#   sqr <- sqrt(p)
+#   for (i in 0:(sqr - 1)) {
+#     for (j in 1:(sqr - 1)) {
+#       theta[i * sqr + j, i * sqr + j + 1] <- sample(c(-0.5, 0.5), 1)
+#       theta[i * sqr + j + 1, i * sqr + j] <-
+#         theta[i * sqr + j, i * sqr + j + 1]
+#     }
+#   }
+#   for (i in 0:(sqr - 2)) {
+#     for (j in 1:sqr) {
+#       theta[i * sqr + j, i * sqr + j + sqr] <- sample(c(-0.5, 0.5), 1)
+#       theta[i * sqr + j + sqr, i * sqr + j] <-
+#         theta[i * sqr + j, i * sqr + j + sqr]
+#     }
+#   }
+#   for (i in 0:(sqr - 2)) {
+#     for (j in 1:(sqr - 1)) {
+#       theta[i * sqr + j, i * sqr + j + sqr + 1] <- sample(c(-0.5, 0.5), 1)
+#       theta[i * sqr + j + sqr + 1, i * sqr + j] <-
+#         theta[i * sqr + j, i * sqr + j + sqr + 1]
+#     }
+#   }
+#   for (i in 0:(sqr - 2)) {
+#     for (j in 2:sqr) {
+#       theta[i * sqr + j, i * sqr + j + sqr - 1] <- sample(c(-0.5, 0.5), 1)
+#       theta[i * sqr + j + sqr - 1, i * sqr + j] <-
+#         theta[i * sqr + j, i * sqr + j + sqr - 1]
+#     }
+#   }
+# }
+
 sim_theta <- function(p, type, graph_seed, beta, degree, alpha) {
   set.seed(graph_seed)  
   if (type == 1)
@@ -228,110 +332,6 @@ sim_theta <- function(p, type, graph_seed, beta, degree, alpha) {
     theta <- gen_ld_adjmat(p, degree, alpha)
   if (type == 7)
     theta <- gen_rr_adjmat2(p, degree, beta, alpha, type = "ferro")
-
-  # if (type == 13)
-  #   theta <- gen_5nn_cyc(p, lattice_col, degree, beta, alpha, type = "ferro")
-  # if (type == 14)
-  #   theta <- gen_5nn_cyc(p, lattice_col, degree, beta, alpha, type = "glass")
-  # if (type == 15)
-  #   theta <- gen_5nn_cyc(p, lattice_col, degree, beta, alpha, type = "glass_weak")
-  # if (type == 16)
-  #   theta <- gen_rr_adjmat2(p, degree, beta, alpha, type = "ferro")
-  # if (type == 17)
-  #   theta <- gen_rr_adjmat2(p, degree, beta, alpha, type = "glass")
-  # # chain structure: size = p - 1
-  # if (type == 1) {
-  #   theta <- matrix(0, p, p)
-  #   # for(i in 1: p) {
-  #   #   theta[i, i] <- sample(c(-0.5, 0, 0.5), 1)
-  #   # }
-  #   for (i in 1:(p - 1)) {
-  #     theta[i, i + 1] <- sample(c(0.5,-0.5), 1)
-  #     theta[i + 1, i] <- theta[i, i + 1]
-  #   }
-  # }
-  # # random graph
-  # if (type == 2) {
-  #   # set.seed(seed)
-  #   sigma_inv <-
-  #     fastclime::fastclime.generator(
-  #       n = 20,
-  #       d = p,
-  #       graph = "random",
-  #       verbose = FALSE
-  #     )
-  #   sparse <- as.matrix(sigma_inv$theta)
-  #   theta <- matrix(0, p, p)
-  #   # for(i in 1:p) {
-  #   #   theta[i, i] <- sample(c(-0.5, 0, 0.5), 1)
-  #   # }
-  #   for (i in 1:(p - 1)) {
-  #     for (j in (i + 1):p) {
-  #       if (sparse[i, j] != 0) {
-  #         theta[i, j] <- sample(c(0.5,-0.5), 1)
-  #         theta[j, i] <- theta[i, j]
-  #       }
-  #     }
-  #   }
-  # }
-  # # 4 nearest neighbor: size = 2 * p
-  # if (type == 3) {
-  #   theta <- matrix(0, p, p)
-  #   # for(i in 1:p) {
-  #   #   theta[i, i] <- sample(c(-0.5, 0, 0.5), 1)
-  #   # }
-  #   sqr <- sqrt(p)
-  #   for (i in 0:(sqr - 1)) {
-  #     for (j in 1:(sqr - 1)) {
-  #       theta[i * sqr + j, i * sqr + j + 1] <- sample(c(-0.5, 0.5), 1)
-  #       theta[i * sqr + j + 1, i * sqr + j] <-
-  #         theta[i * sqr + j, i * sqr + j + 1]
-  #     }
-  #   }
-  #   for (i in 0:(sqr - 2)) {
-  #     for (j in 1:sqr) {
-  #       theta[i * sqr + j, i * sqr + j + sqr] <- sample(c(-0.5, 0.5), 1)
-  #       theta[i * sqr + j + sqr, i * sqr + j] <-
-  #         theta[i * sqr + j, i * sqr + j + sqr]
-  #     }
-  #   }
-  # }
-  # # 8 nearest neighbor: size = 4 * p
-  # if (type == 4) {
-  #   theta <- matrix(0, p, p)
-  #   # for(i in 1:p) {
-  #   #   theta[i, i] <- sample(c(-0.5, 0, 0.5), 1)
-  #   # }
-  #   sqr <- sqrt(p)
-  #   for (i in 0:(sqr - 1)) {
-  #     for (j in 1:(sqr - 1)) {
-  #       theta[i * sqr + j, i * sqr + j + 1] <- sample(c(-0.5, 0.5), 1)
-  #       theta[i * sqr + j + 1, i * sqr + j] <-
-  #         theta[i * sqr + j, i * sqr + j + 1]
-  #     }
-  #   }
-  #   for (i in 0:(sqr - 2)) {
-  #     for (j in 1:sqr) {
-  #       theta[i * sqr + j, i * sqr + j + sqr] <- sample(c(-0.5, 0.5), 1)
-  #       theta[i * sqr + j + sqr, i * sqr + j] <-
-  #         theta[i * sqr + j, i * sqr + j + sqr]
-  #     }
-  #   }
-  #   for (i in 0:(sqr - 2)) {
-  #     for (j in 1:(sqr - 1)) {
-  #       theta[i * sqr + j, i * sqr + j + sqr + 1] <- sample(c(-0.5, 0.5), 1)
-  #       theta[i * sqr + j + sqr + 1, i * sqr + j] <-
-  #         theta[i * sqr + j, i * sqr + j + sqr + 1]
-  #     }
-  #   }
-  #   for (i in 0:(sqr - 2)) {
-  #     for (j in 2:sqr) {
-  #       theta[i * sqr + j, i * sqr + j + sqr - 1] <- sample(c(-0.5, 0.5), 1)
-  #       theta[i * sqr + j + sqr - 1, i * sqr + j] <-
-  #         theta[i * sqr + j, i * sqr + j + sqr - 1]
-  #     }
-  #   }
-  # }
 
   set.seed(NULL)
   return(theta)
@@ -358,7 +358,8 @@ sim_theta <- function(p, type, graph_seed, beta, degree, alpha) {
 #' library(abess)
 #' p <- 16
 #' n <- 1e3
-#' train <- generate.bmn.data(n, p, type = 3, graph.seed = 1, seed = 1, beta = 0.4)
+#' train <- generate.bmn.data(n, p, type = 7, graph.seed = 1, seed = 1, beta = 1.3, alpha = 0.2)
+#' res <- slide(train[["data"]], train[["weight"]], tune.type = "gic")
 generate.bmn.data <- function(n, p, type = 1, seed = NULL, graph.seed = NULL, theta = NULL,  beta = 0.7, degree = 3, alpha = 0.4, method = "freq") {
   if (is.null(graph.seed)) {
     graph_seed <- round(runif(1 , 0, .Machine$integer.max))
@@ -374,7 +375,7 @@ generate.bmn.data <- function(n, p, type = 1, seed = NULL, graph.seed = NULL, th
         graph_seed = graph_seed,
         beta = beta,
         degree = degree,
-        alpha = alpha, 
+        alpha = alpha
       )
   } else {
     ## check theta (TODO)

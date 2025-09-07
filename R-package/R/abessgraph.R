@@ -10,11 +10,11 @@
 #'
 #' @examples
 #' p <- 16
-#' n <- 1e3
+#' n <- 10
 #' library(abess)
 #' train <- generate.bmn.data(n, p, type = 3, graph.seed = 1, seed = 1, beta = 0.4)
 #' res <- slide(train[["data"]], train[["weight"]], tune.type = "gic", 
-#'                    max.support.size = rep(4, p), support.size = rep(4, p))
+#'              max.support.size = rep(4, p), support.size = rep(4, p))
 #' all((res[[1]] != 0) == (train[["theta"]] != 0))
 #' 
 #' ## use cross validation to nodewisely select support.size
@@ -36,7 +36,7 @@
 #' #' res <- slide(x, sample_weight, tune.type = "bic")
 #' all((res[[1]] != 0) == (train[["theta"]] != 0))
 #' 
-slide <- function(x, weight = NULL,  c.max = 8, max.support.size = NULL, tune.type = "cv", foldid = NULL, support.size = NULL, ic.scale = 1, graph.threshold = 0.0) 
+slide <- function(x, weight = NULL, c.max = 8, max.support.size = NULL, tune.type = "cv", foldid = NULL, support.size = NULL, ic.scale = 1, graph.threshold = 0.0) 
 {
   p <- ncol(x)
   if (is.null(max.support.size)) {
