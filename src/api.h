@@ -130,4 +130,11 @@ List abessRPCA_API(Eigen::MatrixXd x, int n, int p, int max_iter, int exchange_n
                    Eigen::VectorXi always_select, bool early_stop, int thread, bool sparse_matrix, int splicing_type,
                    int sub_search, Eigen::VectorXi A_init);
 
+Eigen::MatrixXd comp_conf(int num_conf, int p);
+Eigen::MatrixXd sample_by_conf(long long n, Eigen::MatrixXd theta, int seed);
+void iteration(Eigen::VectorXd &sample, Eigen::MatrixXd &theta,
+               Eigen::VectorXd &value, int set_seed, int iter_time);
+Eigen::MatrixXd Ising_Gibbs(Eigen::MatrixXd theta, int n_sample, int burn, int skip,
+                            Eigen::VectorXd value, bool using_seed = false, int set_seed = 1);
+
 #endif  // SRC_API_H

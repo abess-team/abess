@@ -28,7 +28,8 @@ Imports:
     Rcpp,
     MASS, 
     methods, 
-    Matrix
+    Matrix, 
+    dplyr
 LinkingTo: 
     Rcpp,
     RcppEigen
