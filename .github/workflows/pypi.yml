@@ -22,7 +22,7 @@ jobs:
       run:
         working-directory: python
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Build SDist
         run: |
@@ -33,7 +33,7 @@ jobs:
           pipx run twine check dist/*
           realpath dist/*
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           path: python/dist/*
 
@@ -46,7 +46,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up QEMU
         if: runner.os == 'Linux'
@@ -55,7 +55,7 @@ jobs:
           platforms: all
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.17.0
+        uses: pypa/cibuildwheel@v3.1.3
         with:
           package-dir: ./python # trigger cibuildwheel in sub-directory
 
@@ -64,7 +64,7 @@ jobs:
         shell: bash
 
       - name: Upload wheels to the project's github page
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: wheelhouse/*.whl
 
@@ -74,7 +74,7 @@ jobs:
   #   runs-on: ubuntu-latest
 
   #   steps:
-  #     - uses: actions/download-artifact@v3
+  #     - uses: actions/download-artifact@v4.1.7
   #       with:
   #         name: artifact
   #         path: dist
@@ -95,7 +95,7 @@ jobs:
     steps:
       # - uses: actions/setup-python@v2
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: artifact
           path: dist

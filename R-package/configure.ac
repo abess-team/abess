@@ -69,7 +69,7 @@ then
     OPENMP_LIB=''
     echo '*****************************************************************************************'
     echo '         OpenMP is unavailable on this Mac OSX system. Training speed may be suboptimal.'
-    echo '         To use all CPU cores for training jobs, you should install OpenMP by running\n'
+    printf '       To use all CPU cores for training jobs, you should install OpenMP by running\n'
     echo '             brew install libomp'
     echo '*****************************************************************************************'
   fi

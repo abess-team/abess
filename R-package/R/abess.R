@@ -174,10 +174,10 @@ abess <- function(x, ...) UseMethod("abess")
 #' 
 #' \code{abess} support some well-known advanced statistical methods to analyze data, including 
 #' \itemize{
-#'   \item{sure independent screening: } {helpful for ultra-high dimensional predictors (i.e., \eqn{p \gg n}). Use the parameter \code{screening.num} to retain the marginally most important predictors. See Fan et al (2008) for more details. }
-#'   \item{best subset of group selection: } {helpful when predictors have group structure. Use the parameter \code{group.index} to specify the group structure of predictors. See Zhang et al (2021) for more details. }
-#'   \item{\eqn{l_2} regularization best subset selection: } {helpful when signal-to-ratio is relatively small. Use the parameter \code{lambda} to control the magnitude of the regularization term.}
-#'   \item{nuisance selection: } {helpful when the prior knowledge of important predictors is available. Use the parameter \code{always.include} to retain the important predictors.}
+#'   \item sure independent screening: helpful for ultra-high dimensional predictors (i.e., \eqn{p \gg n}). Use the parameter \code{screening.num} to retain the marginally most important predictors. See Fan et al (2008) for more details. 
+#'   \item best subset of group selection: helpful when predictors have group structure. Use the parameter \code{group.index} to specify the group structure of predictors. See Zhang et al (2021) for more details. 
+#'   \item \eqn{l_2} regularization best subset selection: helpful when signal-to-ratio is relatively small. Use the parameter \code{lambda} to control the magnitude of the regularization term.
+#'   \item nuisance selection: helpful when the prior knowledge of important predictors is available. Use the parameter \code{always.include} to retain the important predictors.
 #' }
 #' The arbitrary combination of the four methods are definitely support. 
 #' Please see [online vignettes](https://abess-team.github.io/abess/articles/v07-advancedFeatures.html) for more details about the advanced features support by \code{abess}. 
