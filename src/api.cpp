@@ -49,18 +49,29 @@ Eigen::MatrixXd sample_by_conf(long long n, Eigen::MatrixXd theta, int seed) {
   Eigen::VectorXd weight(num_conf);
   
   Eigen::VectorXd vec_diag = theta.diagonal();
-  Eigen::MatrixXd theta_diag = vec_diag.asDiagonal();
-  Eigen::MatrixXd theta_off = theta - theta_diag;
-  
-  for (int num = 0; num < num_conf; num++) {
-    Eigen::VectorXd conf = table.row(num);
-    weight(num) = 0.5 * (double) (conf.transpose() * theta_off * conf) + (double) (vec_diag.transpose() * conf);
-  }
-  weight = weight.array().exp();
-  
-  std::vector<double> w;
-  w.resize(weight.size());
-  Eigen::VectorXd::Map(&w[0], weight.size()) = weight;
+  Eigen::MatrixXd theta_off = theta;
+  theta_off.diagonal().setZero();
+
+//   for (int num = 0; num < num_conf; num++) {
+//     Eigen::VectorXd conf = table.row(num);
+//     weight(num) = 0.5 * (double) (conf.transpose() * theta_off * conf) + (double) (vec_diag.transpose() * conf);
+//   }
+  // compute in a vector manner
+  Eigen::MatrixXd tmp = table * theta_off;  // (num_conf x p)
+  Eigen::VectorXd quad = (tmp.array() * table.array()).rowwise().sum();
+  Eigen::VectorXd linear = table * vec_diag;
+  Eigen::VectorXd weight = 0.5 * quad + linear;
+
+  //   weight = weight.array().exp();
+  // log-sum-exp trick (for stabling)
+  double maxw = weight.maxCoeff();
+  weight = (weight.array() - maxw).exp();
+
+//   std::vector<double> w;
+//   w.resize(weight.size());
+//   Eigen::VectorXd::Map(&w[0], weight.size()) = weight;
+  // construct std::vector<double> for simplify code
+  std::vector<double> w(weight.data(), weight.data() + weight.size());
   
   // int sd = (((long long int)time(0)) * 2718) % 314159265;
   // Rcout << "Seed: "<< sd << endl;
