@@ -96,7 +96,7 @@ If \code{normalize = NULL}, \code{normalize} will be set \code{1} for \code{"gau
 
 \item{fit.intercept}{A boolean value indicating whether to fit an intercept.
 We assume the data has been centered if \code{fit.intercept = FALSE}.
-Default: \code{fit.intercept = FALSE}.}
+Default: \code{fit.intercept = TRUE}.}
 
 \item{beta.low}{A single value specifying the lower bound of \eqn{\beta}. Default is \code{-.Machine$double.xmax}.}
 

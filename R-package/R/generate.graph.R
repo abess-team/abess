@@ -360,7 +360,7 @@ sim_theta <- function(p, type, graph_seed, beta, degree, alpha) {
 #' n <- 1e3
 #' train <- generate.bmn.data(n, p, type = 7, graph.seed = 1, seed = 1, beta = 1.3, alpha = 0.2)
 #' res <- slide(train[["data"]], train[["weight"]], tune.type = "gic")
-generate.bmn.data <- function(n, p, type = 1, seed = NULL, graph.seed = NULL, theta = NULL,  beta = 0.7, degree = 3, alpha = 0.4, method = "freq") {
+generate.bmn.data <- function(n, p, type = 1, seed = NULL, graph.seed = NULL, theta = NULL, beta = 0.7, degree = 3, alpha = 0.4, method = "freq") {
   if (is.null(graph.seed)) {
     graph_seed <- round(runif(1 , 0, .Machine$integer.max))
   } else {

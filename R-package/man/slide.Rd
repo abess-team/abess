@@ -13,7 +13,8 @@ slide(
   foldid = NULL,
   support.size = NULL,
   ic.scale = 1,
-  graph.threshold = 0
+  graph.threshold = 0,
+  newton = "approx"
 )
 }
 \arguments{
@@ -40,6 +41,12 @@ Only used for \code{tune.path = "sequence"}. Default is \code{0:min(n, round(n/(
 
 \item{ic.scale}{A non-negative value used for multiplying the penalty term
 in information criterion. Default: \code{ic.scale = 1}.}
+
+\item{newton}{A character specify the Newton's method for fitting generalized linear models,
+it should be either \code{newton = "exact"} or \code{newton = "approx"}.
+If \code{newton = "exact"}, then the exact hessian is used,
+while \code{newton = "approx"} uses diagonal entry of the hessian,
+and can be faster (especially when \code{family = "cox"}).}
 }
 \value{
 a sparse interaction matrix estimation
@@ -53,7 +60,7 @@ n <- 1e3
 library(abess)
 train <- generate.bmn.data(n, p, type = 3, graph.seed = 1, seed = 1, beta = 0.4)
 res <- slide(train[["data"]], train[["weight"]], tune.type = "gic", 
-                   max.support.size = rep(4, p), support.size = rep(4, p))
+             max.support.size = rep(4, p), support.size = rep(4, p))
 all((res[[1]] != 0) == (train[["theta"]] != 0))
 
 ## use cross validation to nodewisely select support.size

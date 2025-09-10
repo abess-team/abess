@@ -48,5 +48,6 @@ Generate a dataset with binary variables upon the interaction matrix. If the int
 library(abess)
 p <- 16
 n <- 1e3
-train <- generate.bmn.data(n, p, type = 3, graph.seed = 1, seed = 1, beta = 0.4)
+train <- generate.bmn.data(n, p, type = 7, graph.seed = 1, seed = 1, beta = 1.3, alpha = 0.2)
+res <- slide(train[["data"]], train[["weight"]], tune.type = "gic")
 }
