@@ -70,6 +70,7 @@ void sequential_path_cv(Data<T1, T2, T3, T4> &data, Algorithm<T1, T2, T3, T4> *a
     Eigen::Matrix<VectorXd, Dynamic, 1> bd_matrix(sequence_size, 1);
     Eigen::MatrixXd effective_number_matrix(sequence_size, 1);
 
+    //init beta & coef0
     T2 beta_init;
     T3 coef0_init;
     coef_set_zero(beta_size, M, beta_init, coef0_init);

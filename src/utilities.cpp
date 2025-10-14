@@ -36,7 +36,25 @@ Eigen::VectorXi find_ind(Eigen::VectorXi &L, Eigen::VectorXi &gindex, Eigen::Vec
     }
 }
 
-Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &Phi, int N) {
+Eigen::VectorXi find_ind_graph(Eigen::VectorXi &ind, Eigen::MatrixXi &map, int p)
+{
+    // for graph
+    Eigen::VectorXi temp = Eigen::VectorXi::Zero(p);
+
+    for (int i = 0; i < ind.size(); i++){
+        temp(map(ind(i), 0)) = 1;
+        temp(map(ind(i), 1)) = 1;
+    }
+
+    int len = 0;
+    for (int i = 0; i < p; i++)
+        if (temp(i) == 1) temp(len++) = i;
+
+    return temp.head(len).eval();
+}
+
+Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(Eigen::Matrix<Eigen::MatrixXd, -1, -1> &Phi, int N)
+{
     Eigen::Matrix<Eigen::MatrixXd, -1, -1> invPhi(N, 1);
     int row;
     for (int i = 0; i < N; i++) {
@@ -163,13 +181,56 @@ Eigen::VectorXi min_k(Eigen::VectorXd &vec, int k, bool sort_by_value) {
     return ind.head(k).eval();
 }
 
-Eigen::VectorXi max_k(Eigen::VectorXd &vec, int k, bool sort_by_value) {
-    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1);  // [0 1 2 3 ... N-1]
-    auto rule = [vec](int i, int j) -> bool { return vec(i) > vec(j); };              // sort rule
+Eigen::VectorXi min_k(Eigen::Matrix<long double, Eigen::Dynamic, 1> &vec, int k, bool sort_by_value)
+{
+    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
+    auto rule = [vec](int i, int j) -> bool
+    {
+        return vec(i) < vec(j);
+    }; // sort rule
+    std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
+    if (sort_by_value)
+    {
+        std::sort(ind.data(), ind.data() + k, rule);
+    }
+    else
+    {
+        std::sort(ind.data(), ind.data() + k);
+    }
+
+    return ind.head(k).eval();
+}
+
+Eigen::VectorXi max_k(Eigen::VectorXd &vec, int k, bool sort_by_value)
+{
+    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
+    auto rule = [vec](int i, int j) -> bool
+    {
+        return vec(i) > vec(j);
+    }; // sort rule
     std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
     if (sort_by_value) {
         std::sort(ind.data(), ind.data() + k, rule);
     } else {
+        std::sort(ind.data(), ind.data() + k);
+    }
+    return ind.head(k).eval();
+}
+
+Eigen::VectorXi max_k(Eigen::Matrix<long double, Eigen::Dynamic, 1> &vec, int k, bool sort_by_value)
+{
+    Eigen::VectorXi ind = Eigen::VectorXi::LinSpaced(vec.size(), 0, vec.size() - 1); //[0 1 2 3 ... N-1]
+    auto rule = [vec](int i, int j) -> bool
+    {
+        return vec(i) > vec(j);
+    }; // sort rule
+    std::nth_element(ind.data(), ind.data() + k, ind.data() + ind.size(), rule);
+    if (sort_by_value)
+    {
+        std::sort(ind.data(), ind.data() + k, rule);
+    }
+    else
+    {
         std::sort(ind.data(), ind.data() + k);
     }
     return ind.head(k).eval();
@@ -264,8 +325,27 @@ void slice(Eigen::VectorXd &nums, Eigen::VectorXi &ind, Eigen::VectorXd &A, int 
     return;
 }
 
-void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int axis) {
-    if (axis == 0) {
+void slice(Eigen::Matrix<long double, Eigen::Dynamic, 1> &nums, Eigen::VectorXi &ind, Eigen::Matrix<long double, Eigen::Dynamic, 1> &A, int axis)
+{
+    if (ind.size() == 0)
+    {
+        A = Eigen::Matrix<long double, Eigen::Dynamic, 1>::Zero(0);
+    }
+    else
+    {
+        A = Eigen::Matrix<long double, Eigen::Dynamic, 1>::Zero(ind.size());
+        for (int i = 0; i < ind.size(); i++)
+        {
+            A(i) = nums(ind(i));
+        }
+    }
+    return;
+}
+
+void slice(Eigen::MatrixXd &nums, Eigen::VectorXi &ind, Eigen::MatrixXd &A, int axis)
+{
+    if (axis == 0)
+    {
         A = Eigen::MatrixXd::Zero(ind.size(), nums.cols());
         if (ind.size() != 0) {
             for (int i = 0; i < ind.size(); i++) {
@@ -320,8 +400,27 @@ void slice_restore(Eigen::VectorXd &A, Eigen::VectorXi &ind, Eigen::VectorXd &nu
     return;
 }
 
-void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nums, int axis) {
-    if (axis == 0) {
+void slice_restore(Eigen::Matrix<long double, Eigen::Dynamic, 1> &A, Eigen::VectorXi &ind, Eigen::Matrix<long double, Eigen::Dynamic, 1> &nums, int axis)
+{
+    if (ind.size() == 0)
+    {
+        nums = Eigen::Matrix<long double, Eigen::Dynamic, 1>::Zero(nums.size());
+    }
+    else
+    {
+        nums = Eigen::Matrix<long double, Eigen::Dynamic, 1>::Zero(nums.size());
+        for (int i = 0; i < ind.size(); i++)
+        {
+            nums(ind(i)) = A(i);
+        }
+    }
+    return;
+}
+
+void slice_restore(Eigen::MatrixXd &A, Eigen::VectorXi &ind, Eigen::MatrixXd &nums, int axis)
+{
+    if (axis == 0)
+    {
         nums = Eigen::MatrixXd::Zero(nums.rows(), nums.cols());
         if (ind.size() != 0) {
             for (int i = 0; i < ind.size(); i++) {
@@ -382,9 +481,18 @@ void array_quotient(Eigen::VectorXd &A, Eigen::VectorXd &B, int axis) {
     A = A.array() / B.array();
     return;
 }
-void array_quotient(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis) {
-    if (axis == 0) {
-        for (int i = 0; i < A.rows(); i++) {
+void array_quotient(Eigen::Matrix<long double, Eigen::Dynamic, 1> &A, Eigen::VectorXd &B, int axis)
+{
+    Eigen::Matrix<long double, Eigen::Dynamic, 1> B1 = B.cast<long double>();
+    A = A.array() / B1.array();
+    return;
+}
+void array_quotient(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis)
+{
+    if (axis == 0)
+    {
+        for (int i = 0; i < A.rows(); i++)
+        {
             A.row(i) = A.row(i).array() / B.array();
         }
     } else {
@@ -397,7 +505,15 @@ void array_quotient(Eigen::MatrixXd &A, Eigen::VectorXd &B, int axis) {
 
 double matrix_dot(Eigen::VectorXd &A, Eigen::VectorXd &B) { return A.dot(B); }
 
-Eigen::VectorXd matrix_dot(Eigen::MatrixXd &A, Eigen::VectorXd &B) { return A.transpose() * B; }
+double matrix_dot(Eigen::Matrix<long double, Eigen::Dynamic, 1> &A, Eigen::VectorXd &B)
+{
+    Eigen::Matrix<long double, Eigen::Dynamic, 1> B1 = B.cast<long double>();
+    return A.dot(B1);
+}
+Eigen::VectorXd matrix_dot(Eigen::MatrixXd &A, Eigen::VectorXd &B)
+{
+    return A.transpose() * B;
+}
 
 // void matrix_sqrt(Eigen::MatrixXd &A, Eigen::MatrixXd &B)
 // {

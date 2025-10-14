@@ -78,7 +78,7 @@ abess <- function(x, ...) UseMethod("abess")
 #' \code{3} for \code{"cox"}. Default is \code{normalize = NULL}.
 #' @param fit.intercept A boolean value indicating whether to fit an intercept. 
 #' We assume the data has been centered if \code{fit.intercept = FALSE}.
-#' Default: \code{fit.intercept = FALSE}.
+#' Default: \code{fit.intercept = TRUE}.
 #' @param beta.low A single value specifying the lower bound of \eqn{\beta}. Default is \code{-.Machine$double.xmax}.
 #' @param beta.high A single value specifying the upper bound of \eqn{\beta}. Default is \code{.Machine$double.xmax}.
 #' @param c.max an integer splicing size. Default is: \code{c.max = 2}.

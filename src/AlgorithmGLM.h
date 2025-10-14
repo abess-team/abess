@@ -253,7 +253,7 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
             // reweight
             T1 y_pred = this->inv_link_function(X_full, beta_full);
             T1 Z = y - y_pred;
-            array_quotient(Z, D, 1);
+            array_quotient(Z, D, 1);  // a potential bug; for logistic regression, it might be changed to: Eigen::VectorXd D_bare = y_pred.array() * (1.0 - y_pred.array()); array_quotient(Z, D_bare, 1);
             Z += X_full * beta_full;
             for (int i = 0; i < X_full.cols(); i++) {
                 X_new.col(i) = X_full.col(i).cwiseProduct(D);
@@ -301,7 +301,7 @@ class abessLogistic : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double,
     ~abessLogistic(){};
 
     double Xbeta_range[2] = {-30, 30};
-    double PiPj_range[2] = {0.001, 1};  // Pi * Pj
+    double PiPj_range[2] = {1e-3, 1};  // Pi * Pj
 
     Eigen::MatrixXd gradient_core(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights,
                                   Eigen::VectorXd &beta_full) {
