@@ -1,12 +1,14 @@
 #' 
-#' Nodewise logistic regression for inverse Ising problem
+#' Sparsity Learning for Ising moDel rEconstruction (SLIDE)
 #' 
 #' @inheritParams abess.default
 #'
-#' @param max.support.size 
+#' @param max.support.size The maximum node degree in the estimated graph. If prior information is available, we recommend setting this value accordingly. Otherwise, it is internally set to \eqn{n / (\log p \log \log n)} by default. 
+#' @param graph.threshold A numeric value specifying the post-thresholding level for graph estimation. If prior knowledge about the minimum signal strength is available, this can be set to approximately half of that value. The default is \code{0.0}, which means no thresholding is applied.
 #'
 #' @return a sparse interaction matrix estimation
 #' @export
+#' @references Reconstruct Ising Model with Global Optimality via SLIDE. Xuanyu Chen, Jin Zhu, Junxian Zhu, Xueqin Wang, Heping Zhang (2025). Journal of the American Statistical Association (Accepted)
 #'
 #' @examples
 #' p <- 16
@@ -15,25 +17,6 @@
 #' train <- generate.bmn.data(n, p, type = 3, graph.seed = 1, seed = 1, beta = 0.4)
 #' res <- slide(train[["data"]], train[["weight"]], tune.type = "gic", 
 #'              max.support.size = rep(4, p), support.size = rep(4, p))
-#' all((res[[1]] != 0) == (train[["theta"]] != 0))
-#' 
-#' ## use cross validation to nodewisely select support.size
-#' valid <- generate.bmn.data(n, p, type = 3, graph.seed = 1, seed = 10000, beta = 0.4)
-#' all(train[["theta"]] == valid[["theta"]])
-#' x <- rbind(train[["data"]], valid[["data"]])
-#' sample_weight <- c(train[["weight"]], valid[["weight"]])
-#' fold_id <- c(rep(1, length(train[["weight"]])), rep(2, length(valid[["weight"]])))
-#' res <- slide(x, sample_weight, tune.type = "cv", foldid = fold_id, graph.threshold = 0.2)
-#' all((res[[1]] != 0) == (train[["theta"]] != 0))
-#' 
-#' ## use IC to nodewisely select support.size (without post-thresholding)
-#' res <- slide(x, sample_weight, tune.type = "gic", ic.scale = 2)
-#' all((res[[1]] != 0) == (train[["theta"]] != 0))
-#' 
-#' res <- slide(x, sample_weight, tune.type = "gic", ic.scale = 1, graph.threshold = 0.2)
-#' all((res[[1]] != 0) == (train[["theta"]] != 0))
-#' 
-#' #' res <- slide(x, sample_weight, tune.type = "bic")
 #' all((res[[1]] != 0) == (train[["theta"]] != 0))
 #' 
 slide <- function(x, weight = NULL, c.max = 8, max.support.size = NULL, tune.type = "cv", foldid = NULL, support.size = NULL, ic.scale = 1, graph.threshold = 0.0, newton = 'approx') 

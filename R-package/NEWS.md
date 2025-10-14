@@ -1,3 +1,7 @@
+# abess 0.4.11
+* Add a new function `slide` that supports Ising model reconstruction
+* The maintainer's changed from <zhuj37@mail2.sysu.edu.cn> to <zhuj1jqx@gmail.com>.
+
 # abess 0.4.10
 * Fix note in NOTE about possible bashisms.
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/abessgraph.R
 \name{slide}
 \alias{slide}
-\title{Nodewise logistic regression for inverse Ising problem}
+\title{Sparsity Learning for Ising moDel rEconstruction (SLIDE)}
 \usage{
 slide(
   x,
@@ -27,7 +27,7 @@ we set \code{weight = 1} for each observation as default.}
 
 \item{c.max}{an integer splicing size. Default is: \code{c.max = 2}.}
 
-\item{max.support.size}{}
+\item{max.support.size}{The maximum node degree in the estimated graph. If prior information is available, we recommend setting this value accordingly. Otherwise, it is internally set to \eqn{n / (\log p \log \log n)} by default.}
 
 \item{tune.type}{The type of criterion for choosing the support size.
 Available options are \code{"gic"}, \code{"ebic"}, \code{"bic"}, \code{"aic"} and \code{"cv"}.
@@ -42,6 +42,8 @@ Only used for \code{tune.path = "sequence"}. Default is \code{0:min(n, round(n/(
 \item{ic.scale}{A non-negative value used for multiplying the penalty term
 in information criterion. Default: \code{ic.scale = 1}.}
 
+\item{graph.threshold}{A numeric value specifying the post-thresholding level for graph estimation. If prior knowledge about the minimum signal strength is available, this can be set to approximately half of that value. The default is \code{0.0}, which means no thresholding is applied.}
+
 \item{newton}{A character specify the Newton's method for fitting generalized linear models,
 it should be either \code{newton = "exact"} or \code{newton = "approx"}.
 If \code{newton = "exact"}, then the exact hessian is used,
@@ -52,7 +54,7 @@ and can be faster (especially when \code{family = "cox"}).}
 a sparse interaction matrix estimation
 }
 \description{
-Nodewise logistic regression for inverse Ising problem
+Sparsity Learning for Ising moDel rEconstruction (SLIDE)
 }
 \examples{
 p <- 16
@@ -61,25 +63,6 @@ library(abess)
 train <- generate.bmn.data(n, p, type = 3, graph.seed = 1, seed = 1, beta = 0.4)
 res <- slide(train[["data"]], train[["weight"]], tune.type = "gic", 
              max.support.size = rep(4, p), support.size = rep(4, p))
-all((res[[1]] != 0) == (train[["theta"]] != 0))
-
-## use cross validation to nodewisely select support.size
-valid <- generate.bmn.data(n, p, type = 3, graph.seed = 1, seed = 10000, beta = 0.4)
-all(train[["theta"]] == valid[["theta"]])
-x <- rbind(train[["data"]], valid[["data"]])
-sample_weight <- c(train[["weight"]], valid[["weight"]])
-fold_id <- c(rep(1, length(train[["weight"]])), rep(2, length(valid[["weight"]])))
-res <- slide(x, sample_weight, tune.type = "cv", foldid = fold_id, graph.threshold = 0.2)
-all((res[[1]] != 0) == (train[["theta"]] != 0))
-
-## use IC to nodewisely select support.size (without post-thresholding)
-res <- slide(x, sample_weight, tune.type = "gic", ic.scale = 2)
-all((res[[1]] != 0) == (train[["theta"]] != 0))
-
-res <- slide(x, sample_weight, tune.type = "gic", ic.scale = 1, graph.threshold = 0.2)
-all((res[[1]] != 0) == (train[["theta"]] != 0))
-
-#' res <- slide(x, sample_weight, tune.type = "bic")
 all((res[[1]] != 0) == (train[["theta"]] != 0))
 
 }
