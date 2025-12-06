@@ -1,3 +1,11 @@
+I am Jin Zhu (ORCID: 0000-0001-8550-5822), the current maintainer of the package abess. My previous maintainer email address (zhuj37@mail2.sysu.edu.cn) is no longer active. I would like to update my maintainer email to zhuj1jqx@gmail.com.
+
+Both addresses are associated with the same person, as verified on my ORCID profile.No other authorship or maintainership changes are made.
+
+Can you please kindly update the CRAN record accordingly?
+
+Besides, The WARN message during R-devel check originates from R_ext/Callbacks.h in R-devel headers (#warning before C++23), not from the package source. Safe to ignore.
+
 ## Test environments
 * local R installation, R 4.1.0
 * win-builder (devel)

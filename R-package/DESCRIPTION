@@ -2,9 +2,9 @@ Package: abess
 Type: Package
 Title: Fast Best Subset Selection
 Version: 0.4.11
-Date: 2025-10-10
+Date: 2025-12-06
 Authors@R: c(
-  person(given = "Jin", family = "Zhu", email = "zhuj37@mail2.sysu.edu.cn", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8550-5822")),
+  person(given = "Jin", family = "Zhu", email = "zhuj1jqx@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8550-5822")),
   person(given = "Zezhi", family = "Wang", email = "homura@mail.ustc.edu.cn", role = c("aut")),
   person(given = "Liyuan", family = "Hu", email = "huly5@mail2.sysu.edu.cn", role = c("aut")),
   person(given = "Junhao", family = "Huang", email = "huangjh256@mail2.sysu.edu.cn", role = c("aut")),

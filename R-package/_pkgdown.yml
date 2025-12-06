@@ -49,6 +49,10 @@ reference:
   - plot.abessrpca
   - print.abessrpca
 
+- title: Ising model reconstruction
+  contents:
+  - slide
+
 - title: Synthetic datasets
   contents:
   - generate.data
