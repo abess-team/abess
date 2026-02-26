@@ -5,11 +5,7 @@ requires = [
     "pybind11>=2.8.0",
     "cmake>=3.12",
 
-    # use oldest-supported-numpy which provides the oldest numpy version with
-    # wheels on PyPI (it is a similar operation used in scikit-learn)
-    #
-    # see: https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
-    "oldest-supported-numpy"
+    "numpy>=1.20"
 ]
 
 build-backend = "setuptools.build_meta"

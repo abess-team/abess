@@ -46,10 +46,12 @@ class CMakeBuild(build_ext):
         # Can be set with Conda-Build, for example.
         cmake_generator = os.environ.get("CMAKE_GENERATOR", "")
 
+        import pybind11
         cmake_args = [
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
             f"-DPYTHON_EXECUTABLE={sys.executable}",
-            f"-DCMAKE_BUILD_TYPE={cfg}"
+            f"-DCMAKE_BUILD_TYPE={cfg}",
+            f"-Dpybind11_DIR={pybind11.get_cmake_dir()}"
         ]
         build_args = []
         # Adding CMake arguments set as environment variable
