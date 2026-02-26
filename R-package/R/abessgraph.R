@@ -8,7 +8,7 @@
 #'
 #' @return a sparse interaction matrix estimation
 #' @export
-#' @references Reconstruct Ising Model with Global Optimality via SLIDE. Xuanyu Chen, Jin Zhu, Junxian Zhu, Xueqin Wang, Heping Zhang (2025). Journal of the American Statistical Association (Accepted)
+#' @references Reconstruct Ising Model with Global Optimality via SLIDE. Chen, Xuanyu, Jin Zhu, Junxian Zhu, Xueqin Wang, and Heping Zhang (2025) Journal of the American Statistical Association. doi:10.1080/01621459.2025.2571245.
 #'
 #' @examples
 #' p <- 16

@@ -1,10 +1,40 @@
-I am Jin Zhu (ORCID: 0000-0001-8550-5822), the current maintainer of the package abess. My previous maintainer email address (zhuj37@mail2.sysu.edu.cn) is no longer active. I would like to update my maintainer email to zhuj1jqx@gmail.com.
+This is a re-submission of the package abess_0.4.11.tar.gz. 
 
-Both addresses are associated with the same person, as verified on my ORCID profile.No other authorship or maintainership changes are made.
+For the NOTE that: 
+```
+Possibly misspelled words in DESCRIPTION:
+  Ising (22:637)
+```
+We confirm that "Ising" is not a misspelling.
 
-Can you please kindly update the CRAN record accordingly?
+For the next NOTE:
+```
+The Description field contains
+  <https://arxiv.org/abs/2310.09257>, (sequential) principal component
+Please refer to arXiv e-prints via their arXiv DOI <doi:10.48550/arXiv.YYMM.NNNNN>.
+```
+We have replaced this arXiv reference with the corresponding formal publication, whose DOI is presented in the form: <doi:10.1080/01621459.2025.2571245>.
 
-Besides, The WARN message during R-devel check originates from R_ext/Callbacks.h in R-devel headers (#warning before C++23), not from the package source. Safe to ignore.
+For this following NOTE:
+```
+New maintainer:
+  Jin Zhu <zhuj1jqx@gmail.com>
+Old maintainer(s):
+  Jin Zhu <zhuj37@mail2.sysu.edu.cn>
+```
+This comment appears because, as the current maintainer of the abess package, my previous maintainer email address (zhuj37@mail2.sysu.edu.cn) is no longer active. I would like to update my maintainer email to zhuj1jqx@gmail.com.
+
+Both addresses belong to the same person, as verified on my ORCID profile (ORCID: 0000-0001-8550-5822). No other authorship or maintainership changes are made. Can you please kindly update the CRAN record accordingly?
+
+For the WARN that: 
+```
+checking package dependencies ... WARNING
+Cannot process vignettes
+Packages suggested but not available for checking: 'knitr', 'rmarkdown'
+
+VignetteBuilder package required for checking but not installed: ‘knitr’
+```
+The WARN about 'knitr' and 'rmarkdown' not available for checking occurs because these packages are in Suggests. This is expected and safe to ignore (vignettes build locally).
 
 ## Test environments
 * local R installation, R 4.1.0
