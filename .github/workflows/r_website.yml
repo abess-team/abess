@@ -25,6 +25,7 @@ on:
     - '!R-package/configure.win'
     - '!R-package/abess.Rproj'
     - '!R-package/.covrignore'
+  workflow_dispatch:
 
 jobs:
   pkgdown:
@@ -59,7 +60,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          remotes::install_deps("R-package", dependencies = TRUE)
+          remotes::install_deps("R-package", dependencies = TRUE, type = "binary")
           install.packages("pkgdown", type = "binary")
           install.packages("survival", type = "binary")
           install.packages("Hmisc", type = "binary")

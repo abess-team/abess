@@ -21,5 +21,5 @@ geomstats
 DoubleML
 pyts
 dowhy
-numpy<1.23
+numpy>=1.20
 imbalanced-learn
