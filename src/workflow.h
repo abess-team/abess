@@ -222,7 +222,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
             beta_matrix(ind) = algorithm_list[algorithm_index]->get_beta();
             coef0_matrix(ind) = algorithm_list[algorithm_index]->get_coef0();
             train_loss_matrix(ind) = algorithm_list[algorithm_index]->get_train_loss();
-            ic_matrix(ind) = metric->ic(data.n, data.M, data.g_num, algorithm_list[algorithm_index]);
+            ic_matrix(ind) = metric->ic(data.weight.sum(), data.M, data.g_num, algorithm_list[algorithm_index]);
             effective_number_matrix(ind) = algorithm_list[algorithm_index]->get_effective_number();
         }
 

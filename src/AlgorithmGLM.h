@@ -430,8 +430,9 @@ class abessLm : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
     double loss_function(T4 &X, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0,
                          Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size, double lambda) {
         int n = X.rows();
+        double sum_w = weights.sum();
         Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-        return (y - X * beta - coef0 * one).array().square().sum() / n / 2. + lambda * beta.cwiseAbs2().sum();
+        return (y - X * beta - coef0 * one).array().square().sum() / sum_w / 2. + lambda * beta.cwiseAbs2().sum();
     }
 
     void mapping_U(Eigen::VectorXi &U, Eigen::VectorXi &U_ind) {
@@ -1022,8 +1023,9 @@ class abessMLm : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::Vecto
                          Eigen::VectorXd &coef0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size,
                          double lambda) {
         int n = X.rows();
+        double sum_w = weights.sum();
         Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, y.cols());
-        return (y - X * beta - array_product(one, coef0)).array().square().sum() / n / 2.0 +
+        return (y - X * beta - array_product(one, coef0)).array().square().sum() / sum_w / 2.0 +
                lambda * beta.cwiseAbs2().sum();
     }
 

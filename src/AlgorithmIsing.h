@@ -18,7 +18,7 @@ public:
   // ML Xij;
   // Eigen::VectorXi Xij_flag;
 
-  void update_tau(int train_n, int N)
+  void update_tau(double train_n, int N)
   {
     // cout<<"init tau"<<endl;
     this->tau = min(1e-5, 0.1 / this->ising_n);

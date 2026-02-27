@@ -217,7 +217,7 @@ class Metric {
     //   this->group_XTX_list = group_XTX_list_tmp;
     // }
 
-    double ic(int train_n, int M, int N, Algorithm<T1, T2, T3, T4> *algorithm) {
+    double ic(double train_n, int M, int N, Algorithm<T1, T2, T3, T4> *algorithm) {
         // information criterioin: for non-CV
         double loss;
         if (algorithm->model_type == 1 || algorithm->model_type == 5) {
@@ -423,7 +423,7 @@ class Metric {
                 fit_arg.bd_init = algorithm_list[0]->get_bd();
             }
 
-            loss_list(0) = this->ic(data.n, data.M, data.g_num, algorithm_list[0]);
+            loss_list(0) = this->ic(data.weight.sum(), data.M, data.g_num, algorithm_list[0]);
         } else {
             Eigen::VectorXi g_index = data.g_index;
             Eigen::VectorXi g_size = data.g_size;

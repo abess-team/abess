@@ -18,7 +18,7 @@ public:
 
   ~abessGraph(){};
 
-  void update_tau(int train_n, int N)
+  void update_tau(double train_n, int N)
   {
     // cout<<"init tau"<<endl;
     this->tau = 0.01 * (double)this->sparsity_level * log((double)N - (this->x).cols()) * log(log((double)train_n)) / (double)train_n;

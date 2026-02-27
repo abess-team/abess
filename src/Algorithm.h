@@ -171,12 +171,12 @@ class Algorithm {
         // std::cout << "beta range: " << beta_low << "," << beta_high << std::endl;
     }
 
-    virtual void update_tau(int train_n, int N) {
-        if (train_n == 1) {
+    virtual void update_tau(double train_n, int N) {
+        if (train_n <= 1.0) {
             this->tau = 0.0;
         } else {
             this->tau =
-                0.01 * (double)this->sparsity_level * log((double)N) * log(log((double)train_n)) / (double)train_n;
+                0.01 * (double)this->sparsity_level * log((double)N) * log(log(train_n)) / train_n;
         }
     }
 
@@ -300,7 +300,7 @@ class Algorithm {
         int always_select_size = this->always_select.size();
         int C_max = min(min(T0 - always_select_size, this->U_size - T0 - always_select_size), this->exchange_num);
 
-        this->update_tau(train_n, N);
+        this->update_tau(train_weight.sum(), N);
         this->get_A(train_x, train_y, A, I, C_max, this->beta, this->coef0, this->bd, T0, train_weight, g_index, g_size,
                     N, this->tau, this->train_loss);
 
