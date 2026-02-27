@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.special import softmax, expit
 import random
-from abess.cabess import ising_sample_by_conf_wrap, ising_gibbs_wrap
+
 from collections import namedtuple
 
 def sample(p, k):
@@ -551,6 +551,7 @@ def make_ising_data(n = 1000, p = 10, theta = None, seed = None, type = 1, alpha
         raise ValueError("Sorry! Generation for theta have not finished yet. It should be given at present.")
         
     # gene data
+    from abess.pybind_cabess import ising_sample_by_conf_wrap, ising_gibbs_wrap  # noqa: F401
     if (p <= 20):
         seed = random.sample(range(1, 31415926), 2)
         m = np.power(2, p)
