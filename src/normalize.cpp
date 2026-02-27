@@ -34,11 +34,12 @@ void Normalize(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &weights,
                Eigen::VectorXd &normx) {
     int n = X.rows();
     int p = X.cols();
+    double sum_w = weights.sum();
     Eigen::VectorXd tmp(n);
     for (int i = 0; i < p; i++) {
-        meanx(i) = weights.dot(X.col(i)) / double(n);
+        meanx(i) = weights.dot(X.col(i)) / sum_w;
     }
-    meany = (y.dot(weights)) / double(n);
+    meany = (y.dot(weights)) / sum_w;
     for (int i = 0; i < p; i++) {
         X.col(i) = X.col(i).array() - meanx(i);
     }
@@ -61,11 +62,12 @@ void Normalize(Eigen::MatrixXd &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights,
                Eigen::VectorXd &meany, Eigen::VectorXd &normx) {
     int n = X.rows();
     int p = X.cols();
+    double sum_w = weights.sum();
     Eigen::VectorXd tmp(n);
     for (int i = 0; i < p; i++) {
-        meanx(i) = weights.dot(X.col(i)) / double(n);
+        meanx(i) = weights.dot(X.col(i)) / sum_w;
     }
-    meany = y.transpose() * weights / double(n);
+    meany = y.transpose() * weights / sum_w;
     for (int i = 0; i < p; i++) {
         X.col(i) = X.col(i).array() - meanx(i);
     }
@@ -91,9 +93,10 @@ void Normalize(Eigen::MatrixXd &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights,
 void Normalize3(Eigen::MatrixXd &X, Eigen::VectorXd &weights, Eigen::VectorXd &meanx, Eigen::VectorXd &normx) {
     int n = X.rows();
     int p = X.cols();
+    double sum_w = weights.sum();
     Eigen::VectorXd tmp(n);
     for (int i = 0; i < p; i++) {
-        meanx(i) = weights.dot(X.col(i)) / double(n);
+        meanx(i) = weights.dot(X.col(i)) / sum_w;
     }
     for (int i = 0; i < p; i++) {
         X.col(i) = X.col(i).array() - meanx(i);

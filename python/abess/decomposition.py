@@ -136,8 +136,13 @@ class SparsePCA(bess_base):
         return {'requires_y': False}
 
     def __sklearn_tags__(self):
+        try:
+            from sklearn.utils._tags import TransformerTags
+        except ImportError:
+            from sklearn.utils.estimator_tags import TransformerTags
         tags = super().__sklearn_tags__()
         tags.input_tags.sparse = True
+        tags.transformer_tags = TransformerTags()
         return tags
 
     def transform(self, X):
