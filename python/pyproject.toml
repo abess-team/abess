@@ -2,9 +2,9 @@
 requires = [
     "setuptools>=42",
     "wheel",
-    "pybind11>=2.8.0",
-    "cmake>=3.12",
-
+    "pybind11>=2.8.0,<3",
+    "cmake>=3.12,<4",
+    "packaging>=22",
     "numpy>=1.20"
 ]
 
