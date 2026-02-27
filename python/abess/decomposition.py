@@ -137,7 +137,7 @@ class SparsePCA(bess_base):
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()
-        tags.requires_y = False
+        tags.input_tags.sparse = True
         return tags
 
     def transform(self, X):

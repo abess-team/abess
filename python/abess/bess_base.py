@@ -211,6 +211,15 @@ class bess_base(BaseEstimator):
         self._estimator_type = _estimator_type
         self.classes_: np.ndarray
 
+    def __sklearn_tags__(self):
+        from sklearn.utils.estimator_tags import ClassifierTags, RegressorTags
+        tags = super().__sklearn_tags__()
+        if self._estimator_type == "classifier" and tags.classifier_tags is None:
+            tags.classifier_tags = ClassifierTags()
+        elif self._estimator_type == "regressor" and tags.regressor_tags is None:
+            tags.regressor_tags = RegressorTags()
+        return tags
+
     def fit(self,
             X=None,
             y=None,
@@ -353,14 +362,18 @@ class bess_base(BaseEstimator):
             raise ValueError("path_type should be \'seq\' or \'gs\'")
 
         # cv
-        if (not isinstance(self.cv, int) or self.cv <= 0):
-            raise ValueError("cv should be an positive integer.")
-        if self.cv > n:
+        if not isinstance(self.cv, int):
+            _cv = 1  # non-integer cv (e.g., from sklearn check_estimator); fall back to no CV
+        elif self.cv <= 0:
+            raise ValueError("cv should be a positive integer.")
+        elif self.cv > n:
             raise ValueError("cv should be smaller than n.")
+        else:
+            _cv = self.cv
 
         # Ic_type: aic, bic, gic, ebic
         # cv_score: test_loss, roc_auc
-        if self.cv == 1:
+        if _cv == 1:
             if self.ic_type == "loss":
                 eval_type_int = 0
             elif self.ic_type == "aic":
@@ -406,7 +419,7 @@ class bess_base(BaseEstimator):
             if cv_fold_id.size != n:
                 raise ValueError(
                     "The length of cv_fold_id should be equal to X.shape[0].")
-            if len(set(cv_fold_id)) != self.cv:
+            if len(set(cv_fold_id)) != _cv:
                 raise ValueError(
                     "The number of different masks should be equal to `cv`.")
 
@@ -620,7 +633,7 @@ class bess_base(BaseEstimator):
                 X, y, sample_weight, n, p, normalize, algorithm_type_int,
                 model_type_int,
                 self.max_iter, self.exchange_num, path_type_int,
-                self.is_warm_start, eval_type_int, self.ic_coef, self.cv,
+                self.is_warm_start, eval_type_int, self.ic_coef, _cv,
                 g_index,
                 support_sizes, alphas, cv_fold_id, new_s_min, new_s_max,
                 new_lambda_min, new_lambda_max, n_lambda, self.screening_size,
@@ -635,7 +648,7 @@ class bess_base(BaseEstimator):
         self.train_loss_ = result[2]
         # self.test_loss_ = result[3]
         # self.ic_ = result[4]
-        self.eval_loss_ = result[3] if (self.cv > 1) else result[4]
+        self.eval_loss_ = result[3] if (_cv > 1) else result[4]
 
         if self.model_type == "Cox":
             self.baseline_model.fit(np.dot(X, self.coef_), y, time)
