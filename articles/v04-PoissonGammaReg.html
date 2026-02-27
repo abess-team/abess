@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">abess</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.11</span>
       </span>
     </div>
 
@@ -259,7 +259,7 @@ you can generate, including <code>coef</code> for the coefficient value,
 value. Default if <code>coef</code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="700"></p>
 <p>The graph shows that, beginning from the most dense model, the 3rd
 variable (job) is included in the active set until the support size
 reaches 0.</p>
@@ -267,7 +267,7 @@ reaches 0.</p>
 use the default GIC to tune the support size.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="700"></p>
 <p>The tuning value reaches the lowest point at 3. And We might choose
 the estimated model with support size equals 6 as our final model. In
 fact, the tuning values of different model sizes are provided in
@@ -413,11 +413,11 @@ tune the support size by setting <code>tune.type = "cv"</code> in
 <span><span class="co">## [6,] -735.3054 -744.0304</span></span></code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+<p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># tuning plot</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">abess_fit</span>, type <span class="op">=</span> <span class="st">"tune"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-9-2.png" width="700"></p>
+<p><img src="v04-PoissonGammaReg_files/figure-html/unnamed-chunk-9-2.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># extract fitted model</span></span>
 <span><span class="va">best.model</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract.abess.html">extract</a></span><span class="op">(</span><span class="va">abess_fit</span>, support.size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
@@ -467,7 +467,7 @@ tune the support size by setting <code>tune.type = "cv"</code> in
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>
