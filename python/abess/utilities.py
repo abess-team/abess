@@ -39,8 +39,10 @@ def new_data_check(self, X, y=None, weights=None):
     # Check2 : X validation
     X = check_array(X, accept_sparse=True)
     if X.shape[1] != self.n_features_in_:
-        raise ValueError("X.shape[1] should be " +
-                         str(self.n_features_in_))
+        raise ValueError(
+            f"X has {X.shape[1]} features, but {type(self).__name__} "
+            f"is expecting {self.n_features_in_} features as input"
+        )
 
     # Check3 : X, y validation
     if (y is not None) and (weights is None):

@@ -94,6 +94,12 @@ class LogisticRegression(bess_base):
         return {'binary_only': True,
                 'no_validation': True}
 
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags.classifier_tags.multi_class = False
+        tags.no_validation = True
+        return tags
+
     def predict_proba(self, X):
         r"""
         Give the probabilities of new sample
@@ -254,6 +260,10 @@ class LinearRegression(bess_base):
     def _more_tags(self):
         return {'multioutput': False}
 
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        return tags
+
     def predict(self, X):
         r"""
         Predict on given data.
@@ -383,6 +393,11 @@ class CoxPHSurvivalAnalysis(bess_base, BreslowEstimator):
         # an 1-column `y` for testing, but for `CoxPHSurvivalAnalysis()`,
         # 2-column `y` should be given (one for time, another for censoring).
         return {'_skip_test': True}
+
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags._skip_test = True
+        return tags
 
     def predict(self, X):
         r"""
@@ -540,6 +555,11 @@ class PoissonRegression(bess_base):
     def _more_tags(self):
         return {"poor_score": True}
 
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags.regressor_tags.poor_score = True
+        return tags
+
     def predict(self, X):
         r"""
         Predict on given data.
@@ -688,6 +708,12 @@ class MultiTaskRegression(bess_base):
         return {'multioutput': True,
                 'multioutput_only': True}
 
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags.target_tags.multi_output = True
+        tags.target_tags.single_output = False
+        return tags
+
     def predict(self, X):
         r"""
         Prediction of the mean of each response on given data.
@@ -824,6 +850,12 @@ class MultinomialRegression(bess_base):
                 # 'multioutput_only': True,
                 'no_validation': True,
                 'poor_score': True}
+
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags.no_validation = True
+        tags.classifier_tags.poor_score = True
+        return tags
 
     def predict_proba(self, X):
         r"""
@@ -995,6 +1027,12 @@ class GammaRegression(bess_base):
     def _more_tags(self):
         return {'poor_score': True,
                 'requires_positive_y': True}
+
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags.regressor_tags.poor_score = True
+        tags.target_tags.required_positive = True
+        return tags
 
     def predict(self, X):
         r"""

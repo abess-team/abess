@@ -135,6 +135,11 @@ class SparsePCA(bess_base):
     def _more_tags(self):
         return {'requires_y': False}
 
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags.requires_y = False
+        return tags
+
     def transform(self, X):
         r"""
         For PCA model, apply dimensionality reduction
@@ -573,6 +578,11 @@ class RobustPCA(bess_base):
         # There is no "coefficient", not even "model" to test.
         # (It just returns the transformation of `X`.)
         return {'_skip_test': True}
+
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags._skip_test = True
+        return tags
 
     def fit(self, X, y=None, r=None, sparse_matrix=False):
         r"""
