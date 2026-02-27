@@ -58,6 +58,7 @@ reference:
   - generate.data
   - generate.matrix
   - generate.spc.matrix
+  - generate.bmn.data
 
 - title: Real-world dataset
   contents:
