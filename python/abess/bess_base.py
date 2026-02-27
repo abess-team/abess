@@ -3,7 +3,7 @@ import numbers
 import warnings
 import numpy as np
 import pandas as pd
-from scipy.sparse import coo_matrix, csr_matrix
+from scipy.sparse import coo_matrix, csr_matrix, issparse
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_X_y
 from sklearn.exceptions import DataConversionWarning
@@ -276,9 +276,8 @@ class bess_base(BaseEstimator):
                          dtype='numeric')
 
         # Input check & init:
-        if isinstance(X, (list, np.ndarray, np.matrix, pd.DataFrame,
-                      coo_matrix, csr_matrix)):
-            if isinstance(X, (coo_matrix, csr_matrix)):
+        if isinstance(X, (list, np.ndarray, np.matrix, pd.DataFrame)) or issparse(X):
+            if issparse(X):
                 sparse_matrix = True
 
             # Sort for Cox
