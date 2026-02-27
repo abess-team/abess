@@ -212,7 +212,10 @@ class bess_base(BaseEstimator):
         self.classes_: np.ndarray
 
     def __sklearn_tags__(self):
-        from sklearn.utils.estimator_tags import ClassifierTags, RegressorTags
+        try:
+            from sklearn.utils._tags import ClassifierTags, RegressorTags
+        except ImportError:
+            from sklearn.utils.estimator_tags import ClassifierTags, RegressorTags
         tags = super().__sklearn_tags__()
         if self._estimator_type == "classifier" and tags.classifier_tags is None:
             tags.classifier_tags = ClassifierTags()
@@ -362,8 +365,10 @@ class bess_base(BaseEstimator):
             raise ValueError("path_type should be \'seq\' or \'gs\'")
 
         # cv
-        if not isinstance(self.cv, int):
-            _cv = 1  # non-integer cv (e.g., from sklearn check_estimator); fall back to no CV
+        if not isinstance(self.cv, numbers.Integral):
+            if isinstance(self.cv, str):
+                raise ValueError("cv should be a positive integer.")
+            _cv = 1  # non-integer cv (e.g., cross-validator from sklearn); fall back to no CV
         elif self.cv <= 0:
             raise ValueError("cv should be a positive integer.")
         elif self.cv > n:
