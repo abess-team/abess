@@ -54,7 +54,7 @@ void Normalize(Eigen::MatrixXd &X, Eigen::VectorXd &y, Eigen::VectorXd &weights,
         }
     }
     for (int i = 0; i < p; i++) {
-        X.col(i) = sqrt(double(n)) * X.col(i) / normx(i);
+        X.col(i) = sqrt(sum_w) * X.col(i) / normx(i);
     }
 }
 
@@ -86,7 +86,7 @@ void Normalize(Eigen::MatrixXd &X, Eigen::MatrixXd &y, Eigen::VectorXd &weights,
         }
     }
     for (int i = 0; i < p; i++) {
-        X.col(i) = sqrt(double(n)) * X.col(i) / normx(i);
+        X.col(i) = sqrt(sum_w) * X.col(i) / normx(i);
     }
 }
 
@@ -110,13 +110,14 @@ void Normalize3(Eigen::MatrixXd &X, Eigen::VectorXd &weights, Eigen::VectorXd &m
         }
     }
     for (int i = 0; i < p; i++) {
-        X.col(i) = sqrt(double(n)) * X.col(i) / normx(i);
+        X.col(i) = sqrt(sum_w) * X.col(i) / normx(i);
     }
 }
 
 void Normalize4(Eigen::MatrixXd &X, Eigen::VectorXd &weights, Eigen::VectorXd &normx) {
     int n = X.rows();
     int p = X.cols();
+    double sum_w = weights.sum();
     Eigen::VectorXd tmp(n);
     for (int i = 0; i < p; i++) {
         tmp = X.col(i);
@@ -127,7 +128,7 @@ void Normalize4(Eigen::MatrixXd &X, Eigen::VectorXd &weights, Eigen::VectorXd &n
         }
     }
     for (int i = 0; i < p; i++) {
-        X.col(i) = sqrt(double(n)) * X.col(i) / normx(i);
+        X.col(i) = sqrt(sum_w) * X.col(i) / normx(i);
     }
 }
 

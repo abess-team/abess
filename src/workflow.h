@@ -96,9 +96,6 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     //     pack & initial all information of data,
     //     including normalize.
     Data<T1, T2, T3, T4> data(x, y, normalize_type, weight, g_index, sparse_matrix, beta_size);
-    if (algorithm_list[0]->model_type == 1 || algorithm_list[0]->model_type == 5) {
-        add_weight(data.x, data.y, data.weight);
-    }
 
     // Screening:
     //     if there are too many noise variables,
@@ -250,7 +247,7 @@ List abessWorkflow(T4 &x, T1 &y, int n, int p, int normalize_type, Eigen::Vector
     // Restore for normal:
     //    restore the changes if normalization is used.
     restore_for_normal<T2, T3>(best_beta, best_coef0, beta_matrix, coef0_matrix, sparse_matrix, data.normalize_type,
-                               data.n, data.x_mean, data.y_mean, data.x_norm);
+                               data.weight.sum(), data.x_mean, data.y_mean, data.x_norm);
 
     // Store in a list for output
     List out_result;

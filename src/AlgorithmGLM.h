@@ -371,7 +371,12 @@ class abessLm : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
                         Eigen::VectorXi &g_size, int &N) {
         int n = X.rows(), p = X.cols();
         if (this->clear) {
-            this->group_XTX = compute_group_XTX<T4>(X, g_index, g_size, n, p, N);
+            // Scale X rows by sqrt(w_i * n / sum_w) so that group_XTX(g)/n = X_g'WX_g/sum_w
+            double sum_w = weights.sum();
+            Eigen::VectorXd w_scale = (weights.array() * (double(n) / sum_w)).sqrt();
+            T4 X_w;
+            X_w = w_scale.asDiagonal() * X;
+            this->group_XTX = compute_group_XTX<T4>(X_w, g_index, g_size, n, p, N);
             if (this->covariance_update) {
                 // cout<<"create pointer"<<endl;
                 this->covariance = new Eigen::VectorXd *[p];
@@ -490,12 +495,13 @@ class abessLm : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
 
         Eigen::VectorXd d;
         if (!this->covariance_update) {
+            double sum_w = weights.sum();
             Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
-
             if (beta.size() != 0) {
-                d = X.adjoint() * (y - XA * beta_A - coef0 * one) / double(n) - 2 * this->lambda_level * beta;
+                Eigen::VectorXd resid = y - XA * beta_A - coef0 * one;
+                d = X.adjoint() * resid.cwiseProduct(weights) / sum_w - 2 * this->lambda_level * beta;
             } else {
-                d = X.adjoint() * (y - coef0 * one) / double(n);
+                d = X.adjoint() * (y - coef0 * one).cwiseProduct(weights) / sum_w;
             }
         } else {
             Eigen::VectorXd one = Eigen::VectorXd::Ones(n);
@@ -947,7 +953,12 @@ class abessMLm : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::Vecto
                         Eigen::VectorXi &g_size, int &N) {
         int n = X.rows(), p = X.cols();
         if (this->clear) {
-            this->group_XTX = compute_group_XTX<T4>(X, g_index, g_size, n, p, N);
+            // Scale X rows by sqrt(w_i * n / sum_w) so that group_XTX(g)/n = X_g'WX_g/sum_w
+            double sum_w = weights.sum();
+            Eigen::VectorXd w_scale = (weights.array() * (double(n) / sum_w)).sqrt();
+            T4 X_w;
+            X_w = w_scale.asDiagonal() * X;
+            this->group_XTX = compute_group_XTX<T4>(X_w, g_index, g_size, n, p, N);
             if (this->covariance_update) {
                 this->covariance = new Eigen::VectorXd *[p];
                 this->covariance_update_flag = Eigen::VectorXi::Zero(p);
@@ -1086,12 +1097,15 @@ class abessMLm : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::Vecto
 
         Eigen::MatrixXd d;
         if (!this->covariance_update) {
+            double sum_w = weights.sum();
             Eigen::MatrixXd one = Eigen::MatrixXd::Ones(n, y.cols());
             if (beta.size() != 0) {
-                d = X.adjoint() * (y - XA * beta_A - array_product(one, coef0)) / double(n) -
+                Eigen::MatrixXd resid = y - XA * beta_A - array_product(one, coef0);
+                d = X.adjoint() * (resid.array().colwise() * weights.array()).matrix() / sum_w -
                     2 * this->lambda_level * beta;
             } else {
-                d = X.adjoint() * (y - array_product(one, coef0)) / double(n);
+                Eigen::MatrixXd resid = y - array_product(one, coef0);
+                d = X.adjoint() * (resid.array().colwise() * weights.array()).matrix() / sum_w;
             }
         } else {
             if (beta.size() != 0) {

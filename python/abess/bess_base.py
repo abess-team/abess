@@ -480,16 +480,19 @@ class bess_base(BaseEstimator):
                 sample_weight = sample_weight[useful_index]
                 n = len(useful_index)
 
+        # Effective sample size for support_size formula (sum of weights)
+        sum_w = float(sample_weight.sum())
+
         # Path parameters
         if path_type_int == 1:  # seq
             if self.support_size is None:
-                if (n == 1 or p == 1):
+                if (sum_w <= 1 or p == 1):
                     support_sizes = [0, 1]
                 else:
                     support_sizes = list(
                         range(0, max(min(
                             p,
-                            int(n / (np.log(np.log(n)) * np.log(p)))
+                            int(sum_w / (np.log(np.log(sum_w)) * np.log(p)))
                         ), 1)))
             else:
                 if isinstance(self.support_size,
@@ -521,7 +524,7 @@ class bess_base(BaseEstimator):
         elif path_type_int == 2:  # gs
             new_s_min = 0 \
                 if self.s_min is None else self.s_min
-            new_s_max = min(p, int(n / (np.log(np.log(n)) * np.log(p)))) \
+            new_s_max = min(p, int(sum_w / (np.log(np.log(sum_w)) * np.log(p)))) \
                 if self.s_max is None else self.s_max
             new_lambda_min = 0  # \
             # if self.lambda_min is None else self.lambda_min
@@ -585,7 +588,9 @@ class bess_base(BaseEstimator):
         # Sparse X
         if sparse_matrix:
             # Convert all sparse formats to COO (supports .row, .col, .data)
-            if not isinstance(X, coo_matrix):
+            if isinstance(X, np.ndarray):
+                X = coo_matrix(X)
+            elif not isinstance(X, coo_matrix):
                 X = X.tocoo()
             tmp = np.zeros([len(X.data), 3])
             tmp[:, 1] = X.row

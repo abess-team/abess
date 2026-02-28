@@ -306,8 +306,8 @@ void add_constant_column(Eigen::SparseMatrix<double> &X);
  */
 template <class T2, class T3>
 void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, 1> &beta_matrix,
-                        Eigen::Matrix<T3, Dynamic, 1> &coef0_matrix, bool sparse_matrix, int normalize_type, int n,
-                        Eigen::VectorXd x_mean, T3 y_mean, Eigen::VectorXd x_norm) {
+                        Eigen::Matrix<T3, Dynamic, 1> &coef0_matrix, bool sparse_matrix, int normalize_type,
+                        double sum_w, Eigen::VectorXd x_mean, T3 y_mean, Eigen::VectorXd x_norm) {
     if (normalize_type == 0 || sparse_matrix) {
         // no need to restore
         return;
@@ -316,28 +316,28 @@ void restore_for_normal(T2 &beta, T3 &coef0, Eigen::Matrix<T2, Dynamic, 1> &beta
     int sequence_size = beta_matrix.rows();
     if (normalize_type == 1) {
         array_quotient(beta, x_norm, 1);
-        beta = beta * sqrt(double(n));
+        beta = beta * sqrt(sum_w);
         coef0 = y_mean - matrix_dot(beta, x_mean);
         for (int ind = 0; ind < sequence_size; ind++) {
             array_quotient(beta_matrix(ind), x_norm, 1);
-            beta_matrix(ind) = beta_matrix(ind) * sqrt(double(n));
+            beta_matrix(ind) = beta_matrix(ind) * sqrt(sum_w);
             coef0_matrix(ind) = y_mean - matrix_dot(beta_matrix(ind), x_mean);
         }
     } else if (normalize_type == 2) {
         array_quotient(beta, x_norm, 1);
-        beta = beta * sqrt(double(n));
+        beta = beta * sqrt(sum_w);
         coef0 = coef0 - matrix_dot(beta, x_mean);
         for (int ind = 0; ind < sequence_size; ind++) {
             array_quotient(beta_matrix(ind), x_norm, 1);
-            beta_matrix(ind) = beta_matrix(ind) * sqrt(double(n));
+            beta_matrix(ind) = beta_matrix(ind) * sqrt(sum_w);
             coef0_matrix(ind) = coef0_matrix(ind) - matrix_dot(beta_matrix(ind), x_mean);
         }
     } else {
         array_quotient(beta, x_norm, 1);
-        beta = beta * sqrt(double(n));
+        beta = beta * sqrt(sum_w);
         for (int ind = 0; ind < sequence_size; ind++) {
             array_quotient(beta_matrix(ind), x_norm, 1);
-            beta_matrix(ind) = beta_matrix(ind) * sqrt(double(n));
+            beta_matrix(ind) = beta_matrix(ind) * sqrt(sum_w);
         }
     }
     return;
