@@ -343,11 +343,11 @@ abesspca <- function(x,
     }
     if (tune_type == "cv") {
       tune_value <- lapply(result, function(x) {
-        x[["test_loss_all"]]
+        as.vector(x[["test_loss_all"]])
       })
     } else {
       tune_value <- lapply(result, function(x) {
-        x[["ic_all"]]
+        as.vector(x[["ic_all"]])
       })
     }
     result <- NULL

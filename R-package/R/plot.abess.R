@@ -88,6 +88,12 @@ plot.abess <- function(x,
 plot_loss <- function(loss, df,
                       mar = c(0, 4, 2, 4),
                       ic.type, ...) {
+  loss <- as.vector(loss)
+  finite_idx <- is.finite(loss)
+  if (!any(finite_idx)) return(invisible(NULL))
+  loss <- loss[finite_idx]
+  df <- df[finite_idx]
+
   graphics::plot.new() # empty plot
   graphics::plot.window(range(df), range(loss), xaxs = "i")
   oldpar <- graphics::par(mar = mar, lend = "square") # square line ends
