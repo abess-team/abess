@@ -404,21 +404,18 @@ class abessLm : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double, T4> {
 
     bool primary_model_fit(T4 &x, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta, double &coef0,
                            double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index, Eigen::VectorXi &g_size) {
-        // int n = x.rows();
-        // int p = x.cols();
         if (x.cols() == 0) return null_model(y, weights, coef0);
 
-        // to ensure
         T4 X_full;
-
         add_constant_column(X_full, x, this->fit_intercept);
 
-        // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(),
-        // X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
+        // Weighted least squares: solve (X^T W X)β = X^T W y, W = diag(weights)
+        // Equivalent to scaling rows by sqrt(weights) and doing unweighted OLS
+        Eigen::MatrixXd X_dense = Eigen::MatrixXd(X_full);
         Eigen::MatrixXd XTX =
-            X_full.adjoint() * X_full + this->lambda_level * Eigen::MatrixXd::Identity(X_full.cols(), X_full.cols());
-        // if (check_ill_condition(XTX)) return false;
-        Eigen::VectorXd XTy = X_full.adjoint() * y;
+            X_dense.adjoint() * weights.asDiagonal() * X_dense +
+            this->lambda_level * Eigen::MatrixXd::Identity(X_full.cols(), X_full.cols());
+        Eigen::VectorXd XTy = X_dense.adjoint() * y.cwiseProduct(weights);
         Eigen::VectorXd beta_full = XTX.ldlt().solve(XTy);
 
         extract_beta_coef0(beta_full, beta, coef0, this->fit_intercept);
@@ -982,22 +979,22 @@ class abessMLm : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eigen::Vecto
     bool primary_model_fit(T4 &x, Eigen::MatrixXd &y, Eigen::VectorXd &weights, Eigen::MatrixXd &beta,
                            Eigen::VectorXd &coef0, double loss0, Eigen::VectorXi &A, Eigen::VectorXi &g_index,
                            Eigen::VectorXi &g_size) {
-        // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(),
-        // X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
-
         int n = x.rows();
         int p = x.cols();
         int M = y.cols();
         if (p == 0) return null_model(y, weights, coef0);
 
-        // to ensure
         T4 X;
         add_constant_column(X, x, this->fit_intercept);
-        // beta = (X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(),
-        // X.cols())).colPivHouseholderQr().solve(X.adjoint() * y);
-        Eigen::MatrixXd XTX = X.adjoint() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
-        // if (check_ill_condition(XTX)) return false;
-        Eigen::MatrixXd beta0 = XTX.ldlt().solve(X.adjoint() * y);
+
+        // Weighted least squares: solve (X^T W X)β = X^T W y, W = diag(weights)
+        Eigen::MatrixXd X_dense = Eigen::MatrixXd(X);
+        Eigen::MatrixXd XTX =
+            X_dense.adjoint() * weights.asDiagonal() * X_dense +
+            this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
+        // diag(weights) * y: scale each row of y by the corresponding weight
+        Eigen::MatrixXd Wy = y.array().colwise() * weights.array();
+        Eigen::MatrixXd beta0 = XTX.ldlt().solve(X_dense.adjoint() * Wy);
 
         extract_beta_coef0(beta0, beta, coef0, this->fit_intercept);
         trunc(beta, this->beta_range);

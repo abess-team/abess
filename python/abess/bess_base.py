@@ -221,6 +221,8 @@ class bess_base(BaseEstimator):
             tags.classifier_tags = ClassifierTags()
         elif self._estimator_type == "regressor" and tags.regressor_tags is None:
             tags.regressor_tags = RegressorTags()
+        if hasattr(tags, 'input_tags'):
+            tags.input_tags.sparse = True
         return tags
 
     def fit(self,
@@ -582,25 +584,15 @@ class bess_base(BaseEstimator):
 
         # Sparse X
         if sparse_matrix:
-            if not isinstance(X, (coo_matrix)):
-                # print("sparse matrix 1")
-                nonzero = 0
-                tmp = np.zeros([X.shape[0] * X.shape[1], 3])
-                for j in range(X.shape[1]):
-                    for i in range(X.shape[0]):
-                        if X[i, j] != 0.:
-                            tmp[nonzero, :] = np.array([X[i, j], i, j])
-                            nonzero += 1
-                X = tmp[:nonzero, :]
-            else:
-                # print("sparse matrix 2")
-                tmp = np.zeros([len(X.data), 3])
-                tmp[:, 1] = X.row
-                tmp[:, 2] = X.col
-                tmp[:, 0] = X.data
-
-                ind = np.lexsort((tmp[:, 2], tmp[:, 1]))
-                X = tmp[ind, :]
+            # Convert all sparse formats to COO (supports .row, .col, .data)
+            if not isinstance(X, coo_matrix):
+                X = X.tocoo()
+            tmp = np.zeros([len(X.data), 3])
+            tmp[:, 1] = X.row
+            tmp[:, 2] = X.col
+            tmp[:, 0] = X.data
+            ind = np.lexsort((tmp[:, 2], tmp[:, 1]))
+            X = tmp[ind, :]
 
         # normalize
         normalize = 0
