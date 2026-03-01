@@ -254,8 +254,13 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
             T1 y_pred = this->inv_link_function(X_full, beta_full);
             T1 Z = y - y_pred;
             // D_i = h(eta_i) * sw_i; working response needs D_bare_i = h(eta_i) without sw,
-            // so that X_new^T * Z = sum_i sw_i * x_i * (y_i - mu_i) (correctly weighted score)
-            Eigen::VectorXd D_bare = D.cwiseQuotient(weights);
+            // so that X_new^T * Z = sum_i sw_i * x_i * (y_i - mu_i) (correctly weighted score).
+            // Use safe division: when sw_i=0, D_i=0 and X_new row will be 0, so D_bare can be
+            // any finite value (1.0 chosen); avoids 0/0=NaN which would propagate in X_new^T*Z.
+            Eigen::VectorXd D_bare(n);
+            for (int i = 0; i < n; i++) {
+                D_bare(i) = (weights(i) > 0) ? D(i) / weights(i) : 1.0;
+            }
             array_quotient(Z, D_bare, 1);
             Z += X_full * beta_full;
             for (int i = 0; i < X_full.cols(); i++) {
@@ -316,9 +321,11 @@ class abessLogistic : public _abessGLM<Eigen::VectorXd, Eigen::VectorXd, double,
     Eigen::VectorXd hessian_core(T4 &X_full, Eigen::VectorXd &y, Eigen::VectorXd &weights, Eigen::VectorXd &beta_full) {
         Eigen::VectorXd Pi = this->inv_link_function(X_full, beta_full);
         Eigen::VectorXd one = Eigen::VectorXd::Ones(X_full.rows());
-        Eigen::VectorXd W = Pi.cwiseProduct(one - Pi).cwiseProduct(weights);
+        // Truncate Pi*(1-Pi) BEFORE multiplying by weights, so zero-weight rows
+        // yield D_i=0 rather than being clamped to PiPj_range[0].
+        Eigen::VectorXd W = Pi.cwiseProduct(one - Pi);
         trunc(W, PiPj_range);
-        return W;
+        return W.cwiseProduct(weights);
     };
 
     Eigen::VectorXd inv_link_function(T4 &X_full, Eigen::VectorXd &beta_full) {
