@@ -1174,13 +1174,25 @@ class OrdinalRegression(bess_base):
             thread=thread,
             A_init=A_init, group=group,
             splicing_type=splicing_type,
-            important_search=important_search,
-            _estimator_type="classifier"
+            important_search=important_search
         )
 
     def __sklearn_tags__(self):
+        # Provide classifier_tags even though _estimator_type is not set,
+        # to avoid AttributeError when sklearn's sparse check accesses
+        # tags.classifier_tags.multi_class for estimators with predict_proba.
+        try:
+            from sklearn.utils._tags import ClassifierTags
+        except ImportError:
+            try:
+                from sklearn.utils.estimator_tags import ClassifierTags
+            except ImportError:
+                ClassifierTags = None
         tags = super().__sklearn_tags__()
-        tags.classifier_tags.multi_class = True
+        if ClassifierTags is not None and tags.classifier_tags is None:
+            tags.classifier_tags = ClassifierTags()
+        if tags.classifier_tags is not None:
+            tags.classifier_tags.multi_class = True
         tags.no_validation = True
         return tags
 
@@ -1201,13 +1213,14 @@ class OrdinalRegression(bess_base):
             on given X.
         """
         X = new_data_check(self, X)
-        M = len(self.intercept_)
-        cdf = (X @ self.coef_)[:, np.newaxis] + self.intercept_
+        K = len(self.intercept_)  # number of classes (intercept_ has K entries)
+        # Use only the first K-1 entries as thresholds (last entry is unused)
+        cdf = (X @ self.coef_)[:, np.newaxis] + self.intercept_[:-1]
         cdf = 1 / (1 + np.exp(-cdf))
-        proba = np.zeros_like(cdf)
+        proba = np.zeros((X.shape[0], K))
         proba[:, 0] = cdf[:, 0]
-        proba[:, 1:(M - 1)] = cdf[:, 1:(M - 1)] - cdf[:, 0:(M - 2)]
-        proba[:, M - 1] = 1 - cdf[:, M - 1]
+        proba[:, 1:-1] = cdf[:, 1:] - cdf[:, :-1]
+        proba[:, -1] = 1 - cdf[:, -1]
         return proba
 
     def predict(self, X):
@@ -1225,7 +1238,7 @@ class OrdinalRegression(bess_base):
             Predict class labels for samples in X.
         """
         proba = self.predict_proba(X)
-        return np.argmax(proba, axis=1)
+        return self.classes_[np.argmax(proba, axis=1)]
 
     def score(self, X, y, k=None, sample_weight=None, ignore_ties=False):
         """

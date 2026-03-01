@@ -253,7 +253,10 @@ class _abessGLM : public Algorithm<T1, T2, T3, T4> {
             // reweight
             T1 y_pred = this->inv_link_function(X_full, beta_full);
             T1 Z = y - y_pred;
-            array_quotient(Z, D, 1);  // a potential bug; for logistic regression, it might be changed to: Eigen::VectorXd D_bare = y_pred.array() * (1.0 - y_pred.array()); array_quotient(Z, D_bare, 1);
+            // D_i = h(eta_i) * sw_i; working response needs D_bare_i = h(eta_i) without sw,
+            // so that X_new^T * Z = sum_i sw_i * x_i * (y_i - mu_i) (correctly weighted score)
+            Eigen::VectorXd D_bare = D.cwiseQuotient(weights);
+            array_quotient(Z, D_bare, 1);
             Z += X_full * beta_full;
             for (int i = 0; i < X_full.cols(); i++) {
                 X_new.col(i) = X_full.col(i).cwiseProduct(D);
