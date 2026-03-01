@@ -1220,7 +1220,7 @@ class abessMultinomial : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eige
             // ConjugateGradient<MatrixXd, Lower | Upper> cg;
             // cg.compute(X.adjoint() * X);
             Eigen::MatrixXd XTX =
-                X.transpose() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
+                X.transpose() * weights.asDiagonal() * X + this->lambda_level * Eigen::MatrixXd::Identity(X.cols(), X.cols());
             // if (check_ill_condition(XTX)) return false;
             Eigen::MatrixXd invXTX = XTX.ldlt().solve(Eigen::MatrixXd::Identity(X.cols(), X.cols()));
 
@@ -1424,15 +1424,24 @@ class abessMultinomial : public _abessGLM<Eigen::MatrixXd, Eigen::MatrixXd, Eige
         Eigen::MatrixXd dbar = Eigen::MatrixXd::Zero(p, M);
         Eigen::MatrixXd phiG, invphiG;
 
+        Eigen::VectorXd sqrt_weights = weights.cwiseSqrt();
         for (int i = 0; i < N; i++) {
             T4 XG = X.middleCols(g_index(i), g_size(i));
             T4 XG_new(h.rows(), h.cols());
             for (int m = 0; m < M - 1; m++) {
-                XG_new.col(m) = h.col(m).cwiseProduct(XG).cwiseProduct(weights);
+                // Use sqrt(w) so XG_new^T * XG_new gives sum(Pi_m * Pi_l * w_i * x^2)
+                XG_new.col(m) = h.col(m).cwiseProduct(sqrt_weights).cwiseProduct(XG);
             }
             Eigen::MatrixXd XGbar = -XG_new.transpose() * XG_new;
 
-            XGbar.diagonal() = Eigen::VectorXd(XG_new.transpose() * XG) + XGbar.diagonal();
+            // Diagonal: add sum(Pi_m * w_i * x^2) using full weights (not sqrt)
+            Eigen::VectorXd xg_col = XG.col(0);  // dense column vector
+            Eigen::VectorXd xg_sq = xg_col.array().square().matrix();
+            Eigen::VectorXd diag_corr(M - 1);
+            for (int m = 0; m < M - 1; m++) {
+                diag_corr(m) = h.col(m).cwiseProduct(weights).dot(xg_sq);
+            }
+            XGbar.diagonal() += diag_corr;
 
             XGbar = XGbar + 2 * this->lambda_level * Eigen::MatrixXd::Identity(M - 1, M - 1);
 

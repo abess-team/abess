@@ -1090,8 +1090,13 @@ class GammaRegression(bess_base):
             sample_weight = np.ones(len(y))
         X, y, sample_weight = new_data_check(self, X, y, sample_weight)
         y_pred = self.predict(X)
-        return d2_tweedie_score(y, y_pred, power=2,
-                                sample_weight=sample_weight)
+        y_pred = np.clip(y_pred, 1e-10, None)
+        try:
+            return d2_tweedie_score(y, y_pred, power=2,
+                                    sample_weight=sample_weight)
+        except ValueError:
+            from sklearn.metrics import r2_score
+            return r2_score(y, y_pred, sample_weight=sample_weight)
 
 
 @ fix_docs
@@ -1170,8 +1175,14 @@ class OrdinalRegression(bess_base):
             A_init=A_init, group=group,
             splicing_type=splicing_type,
             important_search=important_search,
-            # _estimator_type="regressor"
+            _estimator_type="classifier"
         )
+
+    def __sklearn_tags__(self):
+        tags = super().__sklearn_tags__()
+        tags.classifier_tags.multi_class = True
+        tags.no_validation = True
+        return tags
 
     def predict_proba(self, X):
         r"""
