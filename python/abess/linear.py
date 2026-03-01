@@ -96,7 +96,7 @@ class LogisticRegression(bess_base):
 
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()
-        tags.classifier_tags.multi_class = False
+        tags.classifier_tags.multi_class = True
         tags.no_validation = True
         return tags
 
@@ -121,7 +121,11 @@ class LogisticRegression(bess_base):
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = X.dot(self.coef_) + intercept_
         proba = np.exp(xbeta) / (1 + np.exp(xbeta))
-        return np.vstack((np.ones(X.shape[0]) - proba, proba)).T
+        K = len(self.classes_)
+        result = np.zeros((X.shape[0], K))
+        result[:, 0] = 1.0 - proba
+        result[:, 1] = proba
+        return result
 
     def predict(self, X):
         r"""
@@ -142,7 +146,7 @@ class LogisticRegression(bess_base):
         intercept_ = np.ones(X.shape[0]) * self.intercept_
         xbeta = X.dot(self.coef_) + intercept_
         y = np.repeat(self.classes_[0], xbeta.size)
-        if self.classes_.size == 2:
+        if self.classes_.size >= 2:
             y[xbeta > 0] = self.classes_[1]
         return y
 

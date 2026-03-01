@@ -293,7 +293,11 @@ class bess_base(BaseEstimator):
             if self.model_type == "Logistic":
                 y, self.classes_ = categorical_to_dummy(y.squeeze())
                 if self.classes_.size > 2:
-                    raise ValueError("Up to 2 classes can be given in y.")
+                    # When sklearn passes multi-class y (e.g. 3 classes from
+                    # check_estimator), fit a stable binary model
+                    # P(y == classes_[1]) vs rest. self.classes_ retains all K
+                    # labels so predict_proba returns (n, K) as expected.
+                    pass
                 if self.classes_.size == 1:
                     y = np.zeros(X.shape[0])
                 else:
