@@ -303,7 +303,7 @@ class Metric {
             proba = rowwise_add(proba, coef0);
             proba = proba.array().exp();
             Eigen::VectorXd proba_rowsum = proba.rowwise().sum();
-            proba = proba.cwiseQuotient(proba_rowsum.replicate(1, p));
+            proba = proba.cwiseQuotient(proba_rowsum.replicate(1, M));
             // compute AUC
             if (this->eval_type == 2) {
                 // (One vs One) the AUC of all possible pairwise combinations of classes
@@ -331,7 +331,7 @@ class Metric {
                         auc += this->binary_auc_score(test_y_j, proba_j);
                     }
                 }
-                return -auc / (p * (p - 1));
+                return -auc / (M * (M - 1));
             }
             if (this->eval_type == 3) {
                 // (One vs Rest) the AUC of each class against the rest
@@ -341,7 +341,7 @@ class Metric {
                     Eigen::VectorXd proba_single = proba.col(i);
                     auc += this->binary_auc_score(test_y_single, proba_single);
                 }
-                return -auc / p;
+                return -auc / M;
             }
         }
         if (this->raise_warning) {
