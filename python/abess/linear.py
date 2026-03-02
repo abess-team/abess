@@ -1035,7 +1035,7 @@ class GammaRegression(bess_base):
     def __sklearn_tags__(self):
         tags = super().__sklearn_tags__()
         tags.regressor_tags.poor_score = True
-        tags.target_tags.required_positive = True
+        tags.target_tags.positive_only = True
         return tags
 
     def predict(self, X):
