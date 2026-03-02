@@ -314,7 +314,7 @@ class make_glm_data:
             # y
             y = np.zeros(n)
             for i in range(n):
-                y[i] = np.random.choice(np.arange(class_num), 1, p=prob[i, :])
+                y[i] = np.random.choice(np.arange(class_num), p=prob[i, :])
         else:
             raise ValueError(
                 "Family should be \'gaussian\', \'binomial\', "
