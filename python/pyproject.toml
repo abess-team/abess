@@ -12,12 +12,13 @@ build-backend = "setuptools.build_meta"
 
 # Configuration for cibuildwheel
 [tool.cibuildwheel]
-build = "*linux_i686 *linux_x86_64 *win* *macos*"
+build = "*linux_i686 *linux_x86_64 *linux_aarch64 *win* *macos*"
 skip = "pp*"
 
 # skip test because lack of wheels for dependencies
 test-skip = """\
     *manylinux_i686 \
+    *manylinux_aarch64 \
     *musllinux* \
     *win32
     """
@@ -27,6 +28,9 @@ before-test = "pip install lifelines \"pandas<2.0.0\" scipy scikit-learn"
 
 # install pybind11 for cmake
 before-build = "pip install pybind11[global]"
+
+[tool.cibuildwheel.linux]
+archs = ["x86_64", "i686", "aarch64"]
 
 [tool.cibuildwheel.macos]
 archs = ["x86_64", "universal2", "arm64"]
