@@ -52,5 +52,5 @@ select = "cp36-win* cp37-win*"
 before-test = "pip install lifelines \"pandas<2.0.0\" scipy scikit-learn \"joblib<1.3.0\""
 
 [[tool.cibuildwheel.overrides]]
-select = "cp312-* cp313-*"
+select = "cp312-* cp313-* cp314-*"
 before-test = "pip install lifelines pandas scipy scikit-learn"
