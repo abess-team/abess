@@ -12,7 +12,7 @@ elseif(DARWIN)
     SET(CMAKE_CXX_FLAGS "-Wno-int-in-bool-context")
     SET(CMAKE_CXX_FLAGS_DEBUG "-Wall")
 elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
-    SET(CMAKE_CXX_FLAGS "-march=native -Wno-int-in-bool-context")
+    SET(CMAKE_CXX_FLAGS "-march=armv8-a -Wno-int-in-bool-context")
     SET(CMAKE_CXX_FLAGS_DEBUG "-Wall")
 else()
     SET(CMAKE_CXX_FLAGS "-march=native -Wno-int-in-bool-context -mavx -mfma")
@@ -20,6 +20,12 @@ else()
 endif()
 
 # dependencies
+# Translate old-style hint (passed by setup.py -DPYTHON_EXECUTABLE=...)
+# to new-style used by CMake FindPython
+if(DEFINED PYTHON_EXECUTABLE AND NOT DEFINED Python_EXECUTABLE)
+    set(Python_EXECUTABLE "${PYTHON_EXECUTABLE}")
+endif()
+set(PYBIND11_FINDPYTHON ON)
 find_package(pybind11)
 find_package(OpenMP)
 

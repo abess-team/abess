@@ -2,7 +2,8 @@
 requires = [
     "setuptools>=42",
     "wheel",
-    "pybind11>=2.8.0,<3",
+    "pybind11>=2.8.0,<3; python_version < '3.14'",
+    "pybind11>=3.0.0; python_version >= '3.14'",
     "cmake>=3.12,<4",
     "packaging>=22",
     "numpy>=1.20"
@@ -27,7 +28,7 @@ test-command = "pytest {package}/pytest -v"
 before-test = "pip install lifelines \"pandas<2.0.0\" scipy scikit-learn"
 
 # install pybind11 for cmake
-before-build = "pip install pybind11[global]"
+before-build = "pip install 'pybind11[global]<3'"
 
 [tool.cibuildwheel.linux]
 archs = ["x86_64", "i686", "aarch64"]
@@ -54,3 +55,7 @@ before-test = "pip install lifelines \"pandas<2.0.0\" scipy scikit-learn \"jobli
 [[tool.cibuildwheel.overrides]]
 select = "cp312-* cp312t-* cp313-* cp313t-* cp314-* cp314t-*"
 before-test = "pip install lifelines pandas scipy scikit-learn"
+
+[[tool.cibuildwheel.overrides]]
+select = "cp314-* cp314t-*"
+before-build = "pip install 'pybind11[global]>=3.0.0'"
