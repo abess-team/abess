@@ -20,7 +20,6 @@ else()
 endif()
 
 # dependencies
-set(PYBIND11_FINDPYTHON ON)
 find_package(pybind11)
 find_package(OpenMP)
 
