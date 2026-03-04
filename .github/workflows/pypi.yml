@@ -35,6 +35,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
+          name: artifact-sdist
           path: python/dist/*
 
   build_wheels:
@@ -66,6 +67,7 @@ jobs:
       - name: Upload wheels to the project's github page
         uses: actions/upload-artifact@v4
         with:
+          name: artifact-wheel-${{ matrix.os }}
           path: wheelhouse/*.whl
 
   # upload_TestPyPI:
@@ -97,8 +99,8 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: artifact
           path: dist
+          merge-multiple: true
 
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
