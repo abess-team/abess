@@ -172,9 +172,10 @@ If you use `abess` or reference our tutorials in a presentation or publication, 
 
 > Zhu Jin, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, and Junxian Zhu. "abess: A Fast Best-Subset Selection Library in Python and R." Journal of Machine Learning Research 23, no. 202 (2022): 1-7.
 
-The corresponding BibteX entry:
+<details>
+<summary>BibTeX</summary>
 
-```
+```bibtex
 @article{JMLR:v23:21-1060,
   author  = {Jin Zhu and Xueqin Wang and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu},
   title   = {abess: A Fast Best-Subset Selection Library in Python and R},
@@ -187,13 +188,90 @@ The corresponding BibteX entry:
 }
 ```
 
-If you use the SLIDE algorithm for Ising model reconstruction, please also cite:
+</details>
 
-> Chen, Xuanyu, Jin Zhu, Junxian Zhu, Xueqin Wang, and Heping Zhang. "Reconstruct Ising Model with Global Optimality via SLIDE." Journal of the American Statistical Association (2025). doi:10.1080/01621459.2025.2571245.
+We sincerely appreciate it if you could also cite the specific method(s) you used:
 
-The corresponding BibTeX entry:
+<details>
+<summary>Method-specific citations</summary>
 
+<details>
+<summary>Best subset selection (Zhu et al., 2020, PNAS)</summary>
+
+> Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang. "A polynomial algorithm for best-subset selection problem." Proceedings of the National Academy of Sciences, 2020, 117(52): 33117-33123.
+
+```bibtex
+@article{zhu2020polynomial,
+  author  = {Junxian Zhu and Canhong Wen and Jin Zhu and Heping Zhang and Xueqin Wang},
+  title   = {A polynomial algorithm for best-subset selection problem},
+  journal = {Proceedings of the National Academy of Sciences},
+  year    = {2020},
+  volume  = {117},
+  number  = {52},
+  pages   = {33117--33123}
+}
 ```
+
+</details>
+
+<details>
+<summary>Group subset selection (Zhang et al., 2023, INFORMS)</summary>
+
+> Yanhang Zhang, Junxian Zhu, Jin Zhu, and Xueqin Wang. "A Splicing Approach to Best Subset of Groups Selection." INFORMS Journal on Computing, 2023, 35(1): 104-119. doi:10.1287/ijoc.2022.1241.
+
+```bibtex
+@article{zhang2023splicing,
+  author  = {Yanhang Zhang and Junxian Zhu and Jin Zhu and Xueqin Wang},
+  title   = {A Splicing Approach to Best Subset of Groups Selection},
+  journal = {INFORMS Journal on Computing},
+  year    = {2023},
+  volume  = {35},
+  number  = {1},
+  pages   = {104--119},
+  doi     = {10.1287/ijoc.2022.1241}
+}
+```
+
+</details>
+
+<details>
+<summary>GLM subset selection (Zhu et al., 2023, arXiv)</summary>
+
+> Junxian Zhu, Jin Zhu, Borui Tang, Xuanyu Chen, Hongmei Lin, and Xueqin Wang. "Best-subset selection in generalized linear models: A fast and consistent algorithm via splicing technique." arXiv:2308.00251, 2023.
+
+```bibtex
+@article{zhu2023glm,
+  author  = {Junxian Zhu and Jin Zhu and Borui Tang and Xuanyu Chen and Hongmei Lin and Xueqin Wang},
+  title   = {Best-subset selection in generalized linear models: A fast and consistent algorithm via splicing technique},
+  journal = {arXiv preprint arXiv:2308.00251},
+  year    = {2023}
+}
+```
+
+</details>
+
+<details>
+<summary>Single index models (Tang et al., 2023, arXiv)</summary>
+
+> Borui Tang, Jin Zhu, Junxian Zhu, Xueqin Wang, and Heping Zhang. "A Consistent and Scalable Algorithm for Best Subset Selection in Single Index Models." arXiv:2309.06230, 2023.
+
+```bibtex
+@article{tang2023single,
+  author  = {Borui Tang and Jin Zhu and Junxian Zhu and Xueqin Wang and Heping Zhang},
+  title   = {A Consistent and Scalable Algorithm for Best Subset Selection in Single Index Models},
+  journal = {arXiv preprint arXiv:2309.06230},
+  year    = {2023}
+}
+```
+
+</details>
+
+<details>
+<summary>Ising model / SLIDE (Chen et al., 2025, JASA)</summary>
+
+> Xuanyu Chen, Jin Zhu, Junxian Zhu, Xueqin Wang, and Heping Zhang. "Reconstruct Ising Model with Global Optimality via SLIDE." Journal of the American Statistical Association, 2025. doi:10.1080/01621459.2025.2571245.
+
+```bibtex
 @article{chen2025slide,
   author  = {Xuanyu Chen and Jin Zhu and Junxian Zhu and Xueqin Wang and Heping Zhang},
   title   = {Reconstruct Ising Model with Global Optimality via SLIDE},
@@ -202,6 +280,10 @@ The corresponding BibTeX entry:
   doi     = {10.1080/01621459.2025.2571245}
 }
 ```
+
+</details>
+
+</details>
 
 ## References
 
