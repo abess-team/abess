@@ -2,22 +2,34 @@
 
 # abess: Fast Best-Subset Selection in Python and R
 
-[![Python Build](https://github.com/abess-team/abess/actions/workflows/python_test.yml/badge.svg)](https://github.com/abess-team/abess/actions/workflows/python_test.yml)
-[![R Build](https://github.com/abess-team/abess/actions/workflows/r_test.yml/badge.svg)](https://github.com/abess-team/abess/actions/workflows/r_test.yml)
-[![codecov](https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00)](https://codecov.io/gh/abess-team/abess)
-[![docs](https://readthedocs.org/projects/abess/badge/?version=latest)](https://abess.readthedocs.io/en/latest/?badge=latest)
-[![R docs](https://github.com/abess-team/abess/actions/workflows/r_website.yml/badge.svg)](https://abess-team.github.io/abess/)
-[![cran](https://img.shields.io/cran/v/abess?logo=R)](https://cran.r-project.org/package=abess)
-[![pypi](https://img.shields.io/pypi/v/abess?logo=Pypi)](https://pypi.org/project/abess)
-[![Conda version](https://img.shields.io/conda/vn/conda-forge/abess.svg?logo=condaforge)](https://anaconda.org/conda-forge/abess)
-[![pyversions](https://img.shields.io/pypi/pyversions/abess)](https://img.shields.io/pypi/pyversions/abess)
-[![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76)](https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&utm_medium=referral&utm_content=abess-team/abess&utm_campaign=Badge_Grade)
-[![CodeFactor](https://www.codefactor.io/repository/github/abess-team/abess/badge)](https://www.codefactor.io/repository/github/abess-team/abess)
-[![Platform](https://anaconda.org/conda-forge/abess/badges/platforms.svg)](https://anaconda.org/conda-forge/abess)
-[![Downloads](https://pepy.tech/badge/abess)](https://pepy.tech/project/abess)
+<p align="center">
+<a href="https://github.com/abess-team/abess/actions/workflows/python_test.yml"><img src="https://github.com/abess-team/abess/actions/workflows/python_test.yml/badge.svg" alt="Python Build"></a>
+<a href="https://github.com/abess-team/abess/actions/workflows/r_test.yml"><img src="https://github.com/abess-team/abess/actions/workflows/r_test.yml/badge.svg" alt="R Build"></a>
+<a href="https://codecov.io/gh/abess-team/abess"><img src="https://codecov.io/gh/abess-team/abess/branch/master/graph/badge.svg?token=LK56LHXV00" alt="codecov"></a>
+<a href="https://www.codacy.com/gh/abess-team/abess/dashboard?utm_source=github.com&utm_medium=referral&utm_content=abess-team/abess&utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/3f6e60a3a3e44699a033159633981b76" alt="Codacy Badge"></a>
+<a href="https://www.codefactor.io/repository/github/abess-team/abess"><img src="https://www.codefactor.io/repository/github/abess-team/abess/badge" alt="CodeFactor"></a>
+<br>
+<a href="https://abess.readthedocs.io/en/latest/?badge=latest"><img src="https://readthedocs.org/projects/abess/badge/?version=latest" alt="docs"></a>
+<a href="https://abess-team.github.io/abess/"><img src="https://github.com/abess-team/abess/actions/workflows/r_website.yml/badge.svg" alt="R docs"></a>
+<a href="https://cran.r-project.org/package=abess"><img src="https://img.shields.io/cran/v/abess?logo=R" alt="cran"></a>
+<a href="https://pypi.org/project/abess"><img src="https://img.shields.io/pypi/v/abess?logo=Pypi" alt="pypi"></a>
+<a href="https://anaconda.org/conda-forge/abess"><img src="https://img.shields.io/conda/vn/conda-forge/abess.svg?logo=condaforge" alt="Conda version"></a>
+<a href="https://img.shields.io/pypi/pyversions/abess"><img src="https://img.shields.io/pypi/pyversions/abess" alt="pyversions"></a>
+<a href="https://anaconda.org/conda-forge/abess"><img src="https://anaconda.org/conda-forge/abess/badges/platforms.svg" alt="Platform"></a>
+<a href="https://pepy.tech/project/abess"><img src="https://pepy.tech/badge/abess" alt="Downloads"></a>
+<a href="http://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg" alt="License"></a>
+</p>
 
-<!-- [![Build Status](https://travis-ci.com/abess-team/abess.svg?branch=master)](https://travis-ci.com/abess-team/abess) -->
+## Table of Contents
+
+- [Overview](#overview)
+- [Quick Start](#quick-start)
+- [Runtime Performance](#runtime-performance)
+- [What's New](#whats-new)
+- [Citation](#citation)
+- [Open Source Software](#open-source-software)
+- [References](#references)
+- [Contributing](#contributions)
 
 ## Overview
 
@@ -32,7 +44,8 @@ This framework now supports the detection of best subset under:
 [classification (binary or multi-class)](https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_2_LogisticRegression.html),
 [counting-response modeling](https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_5_PossionGammaRegression.html),
 [censored-response modeling](https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_4_CoxRegression.html#sphx-glr-auto-gallery-1-glm-plot-4-coxregression-py),
-[multi-response modeling (multi-tasks learning)](https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_3_MultiTaskLearning.html), etc.
+[multi-response modeling (multi-tasks learning)](https://abess.readthedocs.io/en/latest/auto_gallery/1-glm/plot_3_MultiTaskLearning.html),
+[Ising model estimation](https://abess.readthedocs.io/en/latest/auto_gallery/index.html), etc.
 It also supports the variants of best subset selection like
 [group best subset selection](https://abess.readthedocs.io/en/latest/auto_gallery/3-advanced-features/plot_best_group.html),
 [nuisance penalized regression](https://abess.readthedocs.io/en/latest/auto_gallery/3-advanced-features/plot_best_nuisance.html),
@@ -123,14 +136,27 @@ $ Rscript abess/docs/simulation/R/timings.R
 
 `abess` is a free software and its source code is publicly available on [Github](https://github.com/abess-team/abess). The core framework is programmed in C++, and user-friendly R and Python interfaces are offered. You can redistribute it and/or modify it under the terms of the [GPL-v3 License](https://www.gnu.org/licenses/gpl-3.0.html). We welcome contributions for `abess`, especially stretching `abess` to the other best subset selection problems.
 
-## What's news
+## What's New
+
+New features version `0.4.11`:
+
+- New `slide()` function (R) and `IsingModel` class (Python) for sparse Ising model estimation via the SLIDE algorithm. Reference: Chen et al. (2025), *JASA*.
+- sklearn 1.6/1.7 and NumPy 2.x compatibility.
+- Free-threaded Python support on Windows.
+- `sample_weight` equivalence fixes for weighted regression.
+
+New features version `0.4.8`:
+
+- Support no-intercept GLM (`fit_intercept=False` / `fit.intercept`).
+- Beta range restriction (`beta_high`/`beta_low`) for non-negative fitting.
+- Support AUC criterion for logistic/multinomial regression.
+- Linux ARM64 (aarch64) wheel builds.
 
 New features version `0.4.7`:
 
 - Support limiting beta into a range by clipping method. One application is to perform non-negative fitting.
 - Support no-intercept model for most regressors in ``abess.linear`` with argument ``fit_intercept=False``. We assume that the data has been centered for these models.
 - Support AUC criterion for Logistic and Multinomial Regression.
-
 
 New features version `0.4.6`:
 
@@ -161,6 +187,22 @@ The corresponding BibteX entry:
 }
 ```
 
+If you use the SLIDE algorithm for Ising model reconstruction, please also cite:
+
+> Chen, Xuanyu, Jin Zhu, Junxian Zhu, Xueqin Wang, and Heping Zhang. "Reconstruct Ising Model with Global Optimality via SLIDE." Journal of the American Statistical Association (2025). doi:10.1080/01621459.2025.2571245.
+
+The corresponding BibTeX entry:
+
+```
+@article{chen2025slide,
+  author  = {Xuanyu Chen and Jin Zhu and Junxian Zhu and Xueqin Wang and Heping Zhang},
+  title   = {Reconstruct Ising Model with Global Optimality via SLIDE},
+  journal = {Journal of the American Statistical Association},
+  year    = {2025},
+  doi     = {10.1080/01621459.2025.2571245}
+}
+```
+
 ## References
 
 - Junxian Zhu, Canhong Wen, Jin Zhu, Heping Zhang, and Xueqin Wang (2020). A polynomial algorithm for best-subset selection problem. Proceedings of the National Academy of Sciences, 117(52):33117-33123.
@@ -170,6 +212,7 @@ subset of groups selection. INFORMS Journal on Computing, 35(1):104–119, 2023.
 10.1287/ijoc.2022.1241.
 - Qiang Sun and Heping Zhang (2020). Targeted Inference Involving High-Dimensional Data Using Nuisance Penalized Regression, Journal of the American Statistical Association, DOI: 10.1080/01621459.2020.1737079.
 - Zhu Jin, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, and Junxian Zhu. "abess: A Fast Best-Subset Selection Library in Python and R." Journal of Machine Learning Research 23, no. 202 (2022): 1-7.
+- Chen, Xuanyu, Jin Zhu, Junxian Zhu, Xueqin Wang, and Heping Zhang (2025). Reconstruct Ising Model with Global Optimality via SLIDE. Journal of the American Statistical Association. doi:10.1080/01621459.2025.2571245.
 
 
 ## Contributions
@@ -177,7 +220,7 @@ subset of groups selection. INFORMS Journal on Computing, 35(1):104–119, 2023.
 <div align="center">
 <!-- <details> -->
 
-<summary>👏 Thanks for the following support 👏</summary>
+<summary>Thanks for the following support</summary>
 
 ### Stargazers
 
