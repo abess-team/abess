@@ -172,9 +172,6 @@ If you use `abess` or reference our tutorials in a presentation or publication, 
 
 > Zhu Jin, Xueqin Wang, Liyuan Hu, Junhao Huang, Kangkang Jiang, Yanhang Zhang, Shiyun Lin, and Junxian Zhu. "abess: A Fast Best-Subset Selection Library in Python and R." Journal of Machine Learning Research 23, no. 202 (2022): 1-7.
 
-<details>
-<summary>BibTeX</summary>
-
 ```bibtex
 @article{JMLR:v23:21-1060,
   author  = {Jin Zhu and Xueqin Wang and Liyuan Hu and Junhao Huang and Kangkang Jiang and Yanhang Zhang and Shiyun Lin and Junxian Zhu},
@@ -191,9 +188,6 @@ If you use `abess` or reference our tutorials in a presentation or publication, 
 </details>
 
 We sincerely appreciate it if you could also cite the specific method(s) you used:
-
-<details>
-<summary>Method-specific citations</summary>
 
 <details>
 <summary>Best subset selection (Zhu et al., 2020, PNAS)</summary>
